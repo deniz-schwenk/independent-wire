@@ -1,0 +1,50 @@
+{
+  "_comment": "Independent Wire — Source Registry. Community-maintained. Add sources via PR.",
+  "version": "0.1",
+  "sources": [
+    {
+      "name": "Reuters",
+      "url": "https://www.reuters.com",
+      "rss": "https://www.reuters.com/arc/outboundfeeds/news/?outputType=xml",
+      "language": "en",
+      "country": "GB",
+      "type": "wire_service",
+      "notes": "Global wire service. Generally considered low-bias."
+    },
+    {
+      "name": "Associated Press",
+      "url": "https://apnews.com",
+      "rss": "https://apnews.com/feed",
+      "language": "en",
+      "country": "US",
+      "type": "wire_service",
+      "notes": "US-based wire service. Fact-focused reporting."
+    },
+    {
+      "name": "Al Jazeera English",
+      "url": "https://www.aljazeera.com",
+      "rss": "https://www.aljazeera.com/xml/rss/all.xml",
+      "language": "en",
+      "country": "QA",
+      "type": "news_network",
+      "notes": "Qatar-based. Strong Middle East/Global South coverage."
+    },
+    {
+      "name": "Deutsche Welle",
+      "url": "https://www.dw.com",
+      "rss": "https://rss.dw.com/rdf/rss-en-all",
+      "language": "en",
+      "country": "DE",
+      "type": "public_broadcaster",
+      "notes": "German public international broadcaster. Multi-language."
+    },
+    {
+      "name": "NHK World",
+      "url": "https://www3.nhk.or.jp/nhkworld/",
+      "language": "en",
+      "country": "JP",
+      "type": "public_broadcaster",
+      "notes": "Japanese public broadcaster. Asia-Pacific focus."
+    }
+  ]
+}

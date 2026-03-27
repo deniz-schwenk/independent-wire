@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://independent-wire.org/schema/topic-package-v1.json",
+  "title": "Topic Package v1",
+  "description": "The atomic output unit of Independent Wire. Contains everything about a single topic: sources, perspectives, divergences, gaps, article, bias analysis, visualizations, and transparency trail.",
+  "type": "object",
+  "required": ["id", "version", "metadata", "sources", "perspectives", "article", "bias_analysis", "transparency"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^tp-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{3}$",
+      "examples": ["tp-2026-03-27-001"]
+    },
+    "version": { "type": "string", "const": "1.0" },
+    "metadata": {
+      "type": "object",
+      "required": ["title", "date", "status", "topic_slug"],
+      "properties": {
+        "title": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "status": { "type": "string", "enum": ["draft", "review", "published", "rejected", "failed"] },
+        "topic_slug": { "type": "string" },
+        "priority": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "region": { "type": "string" },
+        "language": { "type": "string", "default": "en" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "url", "title", "language"],
+        "properties": {
+          "id": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "title": { "type": "string" },
+          "outlet": { "type": "string" },
+          "language": { "type": "string" },
+          "country": { "type": "string" },
+          "date_published": { "type": "string", "format": "date-time" },
+          "claims": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["claim", "verification_status"],
+              "properties": {
+                "claim": { "type": "string" },
+                "verification_status": { "type": "string", "enum": ["verified", "unverifiable", "disputed", "provably_false"] },
+                "verification_note": { "type": "string" },
+                "counter_evidence_url": { "type": "string", "format": "uri" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "perspectives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["position", "actors", "representation"],
+        "properties": {
+          "position": { "type": "string" },
+          "actors": { "type": "array", "items": { "type": "string" } },
+          "representation": { "type": "string", "enum": ["dominant", "significant", "emerging", "marginal"] },
+          "source_ids": { "type": "array", "items": { "type": "string" } },
+          "region": { "type": "string" }
+        }
+      }
+    },
+    "divergences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "description", "source_ids"],
+        "properties": {
+          "type": { "type": "string", "enum": ["factual", "framing", "omission", "emphasis"] },
+          "description": { "type": "string" },
+          "source_ids": { "type": "array", "items": { "type": "string" } },
+          "resolution": { "type": "string", "enum": ["resolved", "unresolved", "partially_resolved"] },
+          "resolution_note": { "type": "string" }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "description"],
+        "properties": {
+          "type": { "type": "string", "enum": ["geographic", "demographic", "temporal", "topical"] },
+          "description": { "type": "string" },
+          "significance": { "type": "string", "enum": ["critical", "notable", "minor"] }
+        }
+      }
+    },
+    "article": {
+      "type": "object",
+      "required": ["headline", "body"],
+      "properties": {
+        "headline": { "type": "string" },
+        "subheadline": { "type": "string" },
+        "body": { "type": "string" },
+        "word_count": { "type": "integer" },
+        "summary": { "type": "string" }
+      }
+    },
+    "bias_analysis": {
+      "type": "object",
+      "required": ["language_bias", "source_bias", "framing_bias", "selection_bias", "geographical_bias"],
+      "properties": {
+        "language_bias": {
+          "type": "object",
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 1 },
+            "findings": { "type": "array", "items": { "type": "string" } },
+            "examples": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "source_bias": {
+          "type": "object",
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 1 },
+            "findings": { "type": "array", "items": { "type": "string" } },
+            "dominant_sources": { "type": "array", "items": { "type": "string" } },
+            "missing_voices": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "framing_bias": {
+          "type": "object",
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 1 },
+            "findings": { "type": "array", "items": { "type": "string" } },
+            "alternative_framings": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "selection_bias": {
+          "type": "object",
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 1 },
+            "findings": { "type": "array", "items": { "type": "string" } },
+            "omitted_contexts": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "geographical_bias": {
+          "type": "object",
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 1 },
+            "findings": { "type": "array", "items": { "type": "string" } },
+            "represented_regions": { "type": "array", "items": { "type": "string" } },
+            "missing_regions": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "overall_score": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "visualizations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "content"],
+        "properties": {
+          "type": { "type": "string", "enum": ["perspective_spectrum", "source_map", "divergence_chart", "fact_check_diagram"] },
+          "content": { "type": "string" },
+          "title": { "type": "string" }
+        }
+      }
+    },
+    "transparency": {
+      "type": "object",
+      "required": ["selection_reason", "confidence", "pipeline_run"],
+      "properties": {
+        "selection_reason": { "type": "string" },
+        "discarded_topics": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+        "search_queries": { "type": "array", "items": { "type": "string" } },
+        "pipeline_run": {
+          "type": "object",
+          "properties": {
+            "run_id": { "type": "string" },
+            "date": { "type": "string", "format": "date-time" },
+            "duration_seconds": { "type": "number" },
+            "total_cost_usd": { "type": "number" },
+            "models_used": { "type": "object", "additionalProperties": { "type": "string" } }
+          }
+        },
+        "revisions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "agent": { "type": "string" },
+              "action": { "type": "string" },
+              "timestamp": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "id": "tp-2026-03-27-001",
+  "version": "1.0",
+  "metadata": {
+    "title": "EU AI Act Enforcement Begins",
+    "date": "2026-03-27",
+    "status": "published",
+    "topic_slug": "eu-ai-act-enforcement",
+    "priority": 2,
+    "tags": ["ai-regulation", "european-union", "technology-policy"],
+    "region": "Europe",
+    "language": "en"
+  },
+  "sources": [
+    {
+      "id": "src-001",
+      "url": "https://example.com/reuters-eu-ai-act",
+      "title": "EU AI Act takes effect, companies scramble to comply",
+      "outlet": "Reuters",
+      "language": "en",
+      "country": "GB",
+      "date_published": "2026-03-26T14:00:00Z",
+      "claims": [
+        {
+          "claim": "Over 60% of EU-based AI companies have not completed compliance assessments",
+          "verification_status": "unverifiable",
+          "verification_note": "Cited as industry survey but original survey not publicly available"
+        }
+      ]
+    },
+    {
+      "id": "src-002",
+      "url": "https://example.com/xinhua-eu-ai",
+      "title": "欧盟人工智能法案正式生效",
+      "outlet": "Xinhua",
+      "language": "zh",
+      "country": "CN",
+      "date_published": "2026-03-26T16:30:00Z",
+      "claims": [
+        {
+          "claim": "Chinese AI companies operating in the EU have already achieved full compliance",
+          "verification_status": "disputed",
+          "verification_note": "Contradicted by European Digital Rights report (src-003) documenting ongoing non-compliance cases"
+        }
+      ]
+    },
+    {
+      "id": "src-003",
+      "url": "https://example.com/edri-compliance-report",
+      "title": "AI Act Compliance Tracker: Month One",
+      "outlet": "European Digital Rights (EDRi)",
+      "language": "en",
+      "country": "BE",
+      "date_published": "2026-03-27T09:00:00Z",
+      "claims": []
+    }
+  ],
+  "perspectives": [
+    {
+      "position": "The AI Act provides necessary consumer protection and sets a global regulatory standard",
+      "actors": ["European Commission", "EDRi", "Consumer advocacy groups"],
+      "representation": "dominant",
+      "source_ids": ["src-001", "src-003"],
+      "region": "Europe"
+    },
+    {
+      "position": "The regulation is overly burdensome and will push AI innovation outside the EU",
+      "actors": ["TechEurope lobby", "Several EU-based AI startups"],
+      "representation": "significant",
+      "source_ids": ["src-001"],
+      "region": "Europe"
+    },
+    {
+      "position": "The AI Act represents European regulatory overreach that fragments the global AI market",
+      "actors": ["US Chamber of Commerce", "Silicon Valley tech companies"],
+      "representation": "emerging",
+      "source_ids": [],
+      "region": "North America"
+    }
+  ],
+  "divergences": [
+    {
+      "type": "factual",
+      "description": "Xinhua reports Chinese companies have achieved full compliance; EDRi documents ongoing non-compliance cases involving Chinese-operated AI systems in the EU",
+      "source_ids": ["src-002", "src-003"],
+      "resolution": "unresolved",
+      "resolution_note": "Independent verification pending. Both sources may define 'compliance' differently."
+    }
+  ],
+  "gaps": [
+    {
+      "type": "geographic",
+      "description": "No sources from African, South American, or South Asian perspectives on the global impact of EU AI regulation",
+      "significance": "notable"
+    },
+    {
+      "type": "demographic",
+      "description": "No voices from workers whose jobs are directly affected by AI systems now under regulation",
+      "significance": "critical"
+    }
+  ],
+  "article": {
+    "headline": "EU AI Act Enforcement Begins Amid Compliance Questions",
+    "subheadline": "As Europe's landmark AI regulation takes effect, the gap between policy ambition and industry readiness becomes visible",
+    "body": "[Article body would be here — source-based, multi-perspective, with inline citations like [src-001]]",
+    "word_count": 0,
+    "summary": "The EU AI Act officially took effect this week, but compliance data tells conflicting stories. European regulators claim progress while industry groups warn of innovation flight. Chinese state media asserts full compliance by domestic firms — a claim disputed by European digital rights organizations."
+  },
+  "bias_analysis": {
+    "language_bias": {
+      "score": 0.2,
+      "findings": ["Generally neutral language", "Slight tendency toward regulatory framing"],
+      "examples": ["'scramble to comply' in headline implies negative judgment of companies"]
+    },
+    "source_bias": {
+      "score": 0.4,
+      "findings": ["Western/European sources dominate", "No Global South perspectives"],
+      "dominant_sources": ["Reuters", "EDRi"],
+      "missing_voices": ["African Union", "Indian tech industry", "Southeast Asian regulators"]
+    },
+    "framing_bias": {
+      "score": 0.3,
+      "findings": ["Topic framed primarily as EU-vs-industry tension", "Alternative framing as global governance question underrepresented"],
+      "alternative_framings": ["Global AI governance fragmentation", "Worker protection lens", "Digital sovereignty lens"]
+    },
+    "selection_bias": {
+      "score": 0.3,
+      "findings": ["Focus on corporate compliance over societal impact"],
+      "omitted_contexts": ["Historical context of EU regulatory approach", "Comparison with other jurisdictions' AI policies"]
+    },
+    "geographical_bias": {
+      "score": 0.5,
+      "findings": ["Strongly European-centric", "Chinese perspective present but only via state media", "Americas, Africa, South Asia absent"],
+      "represented_regions": ["Western Europe", "China"],
+      "missing_regions": ["North America", "Sub-Saharan Africa", "South Asia", "Southeast Asia", "Latin America"]
+    },
+    "overall_score": 0.34
+  },
+  "visualizations": [],
+  "transparency": {
+    "selection_reason": "High-impact regulatory event affecting global AI industry. Multiple conflicting narratives across language boundaries.",
+    "discarded_topics": [
+      "SpaceX Starship test flight (well-covered, single narrative)",
+      "G7 trade meeting (no significant divergences found)"
+    ],
+    "confidence": "medium",
+    "search_queries": [
+      "EU AI Act enforcement March 2026",
+      "AI Act compliance companies",
+      "欧盟人工智能法案 2026",
+      "EU AI regulation industry reaction"
+    ],
+    "pipeline_run": {
+      "run_id": "run-2026-03-27-001",
+      "date": "2026-03-27T06:00:00Z",
+      "duration_seconds": 2847,
+      "total_cost_usd": 1.84,
+      "models_used": {
+        "collector": "kimi-k2.5",
+        "kurator": "glm-5",
+        "chefredaktion": "claude-opus-4.6",
+        "perspektiv": "claude-opus-4.6",
+        "redakteur": "claude-opus-4.6",
+        "qa": "claude-opus-4.6",
+        "bias_detektor": "kimi-k2.5"
+      }
+    },
+    "revisions": [
+      {
+        "agent": "qa",
+        "action": "Flagged src-002 claim as disputed, added counter-evidence reference",
+        "timestamp": "2026-03-27T06:38:00Z"
+      },
+      {
+        "agent": "bias_detektor",
+        "action": "Marked geographical bias as 0.5 — missing Global South perspectives",
+        "timestamp": "2026-03-27T06:42:00Z"
+      }
+    ]
+  }
+}
