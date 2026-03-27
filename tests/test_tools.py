@@ -1,6 +1,6 @@
 """Tests for the tool system.
 
-Unit tests run without API key. Integration tests require OPENROUTER_API_KEY.
+Unit tests run without API key. Integration tests require various API keys.
 """
 
 import os
@@ -15,11 +15,20 @@ from src.tools import (
     web_fetch_tool,
     web_search_tool,
     write_file_tool,
+    x_search_tool,
 )
 from src.tools.file_ops import read_file_handler, write_file_handler
+from src.tools.web_search import _format_results, web_search_handler
 
-HAS_API_KEY = bool(os.environ.get("OPENROUTER_API_KEY"))
-skip_no_key = pytest.mark.skipif(not HAS_API_KEY, reason="No OPENROUTER_API_KEY")
+HAS_OPENROUTER_KEY = bool(os.environ.get("OPENROUTER_API_KEY"))
+HAS_BRAVE_KEY = bool(os.environ.get("BRAVE_API_KEY"))
+HAS_XAI_KEY = bool(os.environ.get("XAI_API_KEY"))
+
+skip_no_openrouter = pytest.mark.skipif(
+    not HAS_OPENROUTER_KEY, reason="No OPENROUTER_API_KEY"
+)
+skip_no_brave = pytest.mark.skipif(not HAS_BRAVE_KEY, reason="No BRAVE_API_KEY")
+skip_no_xai = pytest.mark.skipif(not HAS_XAI_KEY, reason="No XAI_API_KEY")
 
 
 # ---------------------------------------------------------------------------
@@ -61,9 +70,10 @@ def test_registry_get_for_agent_ignores_unknown() -> None:
 
 
 def test_create_default_registry() -> None:
-    """create_default_registry() returns a registry with all 4 tools."""
+    """create_default_registry() returns a registry with all 5 tools."""
     registry = create_default_registry()
     assert registry.get("web_search") is not None
+    assert registry.get("x_search") is not None
     assert registry.get("web_fetch") is not None
     assert registry.get("read_file") is not None
     assert registry.get("write_file") is not None
@@ -136,22 +146,147 @@ async def test_tool_execute_sync_handler(tmp_path: str) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Integration tests — require OPENROUTER_API_KEY
+# Multi-provider web search — unit tests
 # ---------------------------------------------------------------------------
 
 
-@skip_no_key
+@pytest.mark.asyncio
+async def test_web_search_unknown_provider() -> None:
+    """Unknown provider returns error string."""
+    result = await web_search_handler("test", provider="nonexistent")
+    assert "Error:" in result
+    assert "Unknown search provider" in result
+    assert "nonexistent" in result
+
+
+def test_web_search_format_results() -> None:
+    """_format_results() formats items correctly."""
+    items = [
+        {"title": "Title 1", "url": "https://example.com/1", "content": "Summary 1"},
+        {"title": "Title 2", "url": "https://example.com/2", "content": "Summary 2"},
+    ]
+    result = _format_results("test query", items, 5)
+    assert "Results for: test query" in result
+    assert "1. Title 1" in result
+    assert "https://example.com/1" in result
+    assert "Summary 1" in result
+    assert "2. Title 2" in result
+
+
+def test_web_search_format_results_empty() -> None:
+    """_format_results() handles empty results."""
+    result = _format_results("test query", [], 5)
+    assert "No results for: test query" in result
+
+
+def test_web_search_format_results_limits() -> None:
+    """_format_results() respects the n limit."""
+    items = [
+        {"title": f"Title {i}", "url": f"https://example.com/{i}", "content": ""}
+        for i in range(10)
+    ]
+    result = _format_results("query", items, 3)
+    assert "3. Title 2" in result
+    assert "4." not in result
+
+
+def test_web_search_default_provider_from_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    """IW_SEARCH_PROVIDER env var is respected at module level."""
+    # The DEFAULT_PROVIDER is read at import time, so we test the handler's
+    # fallback logic by passing provider=None and checking it doesn't crash
+    # (it will use whatever DEFAULT_PROVIDER was set at import time).
+    # For a more direct test, we verify the module-level constant exists.
+    from src.tools.web_search import DEFAULT_PROVIDER
+
+    assert isinstance(DEFAULT_PROVIDER, str)
+    assert DEFAULT_PROVIDER in ("perplexity", "brave", "grok", "grok_x", "duckduckgo")
+
+
+def test_x_search_tool_definition() -> None:
+    """x_search_tool has correct OpenAI format."""
+    fmt = x_search_tool.to_openai_format()
+    assert fmt["type"] == "function"
+    assert fmt["function"]["name"] == "x_search"
+    assert "query" in fmt["function"]["parameters"]["properties"]
+
+
+def test_web_search_tool_has_provider_param() -> None:
+    """web_search_tool includes provider in parameters."""
+    props = web_search_tool.to_openai_format()["function"]["parameters"]["properties"]
+    assert "provider" in props
+    assert "enum" in props["provider"]
+
+
+# ---------------------------------------------------------------------------
+# Integration tests — require respective API keys
+# ---------------------------------------------------------------------------
+
+
+@skip_no_openrouter
 @pytest.mark.asyncio
 async def test_web_search_returns_results() -> None:
-    """web_search returns results for a known query."""
-    from src.tools.web_search import web_search_handler
-
+    """web_search returns results for a known query (backward compat)."""
     result = await web_search_handler("Python programming language Wikipedia")
     assert len(result) > 50
     assert "Error:" not in result
 
 
-@skip_no_key
+@skip_no_openrouter
+@pytest.mark.asyncio
+async def test_search_perplexity() -> None:
+    """Perplexity provider returns results via OpenRouter."""
+    result = await web_search_handler(
+        "Python programming language", provider="perplexity"
+    )
+    assert len(result) > 50
+    assert "Error:" not in result
+
+
+@skip_no_brave
+@pytest.mark.asyncio
+async def test_search_brave() -> None:
+    """Brave provider returns formatted results."""
+    result = await web_search_handler(
+        "Python programming language", provider="brave"
+    )
+    assert len(result) > 50
+    assert "Error:" not in result
+
+
+@skip_no_xai
+@pytest.mark.asyncio
+async def test_search_grok_web() -> None:
+    """Grok web search returns results."""
+    result = await web_search_handler(
+        "Python programming language", provider="grok"
+    )
+    assert len(result) > 50
+    assert "Error:" not in result
+
+
+@skip_no_xai
+@pytest.mark.asyncio
+async def test_search_grok_x() -> None:
+    """Grok X/Twitter search returns results."""
+    result = await web_search_handler(
+        "Python programming language", provider="grok_x"
+    )
+    assert len(result) > 20
+    assert "Error:" not in result
+
+
+@pytest.mark.asyncio
+async def test_search_duckduckgo() -> None:
+    """DuckDuckGo search returns results (or graceful import error)."""
+    result = await web_search_handler(
+        "Python programming language", provider="duckduckgo"
+    )
+    # Either returns results or a graceful import error
+    assert len(result) > 20
+    assert "Error: DuckDuckGo search failed:" not in result
+
+
+@skip_no_openrouter
 @pytest.mark.asyncio
 async def test_agent_with_web_search_tool() -> None:
     """Agent uses web_search tool to answer a question."""

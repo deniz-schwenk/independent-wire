@@ -22,8 +22,8 @@ dependencies = [
 
 [project.optional-dependencies]
 telegram = ["python-telegram-bot>=20.0"]
-search-brave = ["brave-search"]
-search-tavily = ["tavily-python"]
+search-brave = []              # Brave uses only httpx (already a core dep)
+search-duckduckgo = ["duckduckgo-search"]
 dev = ["pytest", "pytest-asyncio"]
 
 [project.urls]
