@@ -79,3 +79,4 @@ This project is in its early stages. The best way to contribute right now:
 ---
 
 *Independent Wire — Because transparency is not a feature, it is a promise.*
+
