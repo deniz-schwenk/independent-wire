@@ -18,17 +18,35 @@ from src.tools import (
     x_search_tool,
 )
 from src.tools.file_ops import read_file_handler, write_file_handler
-from src.tools.web_search import _format_results, web_search_handler
+from src.tools.web_search import PROVIDERS, _format_results, web_search_handler
 
 HAS_OPENROUTER_KEY = bool(os.environ.get("OPENROUTER_API_KEY"))
 HAS_BRAVE_KEY = bool(os.environ.get("BRAVE_API_KEY"))
 HAS_XAI_KEY = bool(os.environ.get("XAI_API_KEY"))
+HAS_OLLAMA_KEY = bool(os.environ.get("OLLAMA_API_KEY"))
 
 skip_no_openrouter = pytest.mark.skipif(
     not HAS_OPENROUTER_KEY, reason="No OPENROUTER_API_KEY"
 )
 skip_no_brave = pytest.mark.skipif(not HAS_BRAVE_KEY, reason="No BRAVE_API_KEY")
 skip_no_xai = pytest.mark.skipif(not HAS_XAI_KEY, reason="No XAI_API_KEY")
+skip_no_ollama = pytest.mark.skipif(not HAS_OLLAMA_KEY, reason="No OLLAMA_API_KEY")
+
+
+def _ollama_local_available() -> bool:
+    """Check if local Ollama is reachable."""
+    import httpx as _httpx
+
+    try:
+        r = _httpx.get("http://localhost:11434/api/version", timeout=2.0)
+        return r.status_code == 200
+    except Exception:
+        return False
+
+
+skip_no_ollama_local = pytest.mark.skipif(
+    not _ollama_local_available(), reason="Local Ollama not running on localhost:11434"
+)
 
 
 # ---------------------------------------------------------------------------
@@ -199,7 +217,57 @@ def test_web_search_default_provider_from_env(monkeypatch: pytest.MonkeyPatch) -
     from src.tools.web_search import DEFAULT_PROVIDER
 
     assert isinstance(DEFAULT_PROVIDER, str)
-    assert DEFAULT_PROVIDER in ("perplexity", "brave", "grok", "grok_x", "duckduckgo")
+    assert DEFAULT_PROVIDER in ("perplexity", "brave", "grok", "grok_x", "ollama", "duckduckgo")
+
+
+def test_web_search_ollama_provider_in_list() -> None:
+    """'ollama' is in the PROVIDERS dict."""
+    assert "ollama" in PROVIDERS
+
+
+def test_agent_provider_defaults_openrouter() -> None:
+    """Default provider remains openrouter with correct base_url."""
+    from src.agent import Agent, PROVIDER_DEFAULTS
+
+    assert PROVIDER_DEFAULTS["openrouter"]["base_url"] == "https://openrouter.ai/api/v1"
+
+    agent = Agent(
+        name="test",
+        model="test-model",
+        prompt_path="agents/test/AGENTS.md",
+        api_key="test-key",
+    )
+    assert agent.provider == "openrouter"
+    assert agent.base_url == "https://openrouter.ai/api/v1"
+
+
+def test_agent_provider_defaults_ollama() -> None:
+    """provider='ollama' sets localhost base_url and dummy key."""
+    from src.agent import Agent
+
+    agent = Agent(
+        name="test",
+        model="qwen3:4b",
+        prompt_path="agents/test/AGENTS.md",
+        provider="ollama",
+    )
+    assert agent.base_url == "http://localhost:11434/v1"
+    assert agent.provider == "ollama"
+
+
+def test_agent_provider_defaults_ollama_cloud() -> None:
+    """provider='ollama_cloud' sets ollama.com base_url."""
+    from src.agent import Agent
+
+    agent = Agent(
+        name="test",
+        model="gpt-oss:20b-cloud",
+        prompt_path="agents/test/AGENTS.md",
+        provider="ollama_cloud",
+        api_key="test-ollama-key",
+    )
+    assert agent.base_url == "https://ollama.com/v1"
+    assert agent.provider == "ollama_cloud"
 
 
 def test_x_search_tool_definition() -> None:
@@ -307,3 +375,71 @@ async def test_agent_with_web_search_tool() -> None:
     assert result.content
     assert len(result.tool_calls) > 0
     assert result.tool_calls[0]["tool"] == "web_search"
+
+
+# ---------------------------------------------------------------------------
+# Ollama integration tests — require OLLAMA_API_KEY
+# ---------------------------------------------------------------------------
+
+
+@skip_no_ollama
+@pytest.mark.asyncio
+async def test_search_ollama() -> None:
+    """Ollama Web Search API returns results."""
+    result = await web_search_handler(
+        "Python programming language", provider="ollama"
+    )
+    assert len(result) > 50
+    assert "Error:" not in result
+
+
+@skip_no_ollama
+@pytest.mark.asyncio
+async def test_fetch_via_ollama() -> None:
+    """Ollama Web Fetch API returns clean text."""
+    from src.tools.web_fetch import _fetch_via_ollama
+
+    result = await _fetch_via_ollama("https://httpbin.org/html")
+    assert result is not None
+    assert len(result) > 50
+
+
+@skip_no_ollama
+@pytest.mark.asyncio
+async def test_agent_ollama_cloud() -> None:
+    """Agent with provider='ollama_cloud' can make a simple chat call."""
+    from src.agent import Agent
+
+    agent = Agent(
+        name="test-ollama-cloud",
+        model="gpt-oss:20b-cloud",
+        prompt_path="agents/test/AGENTS.md",
+        provider="ollama_cloud",
+    )
+
+    result = await agent.run("Say hello in one sentence.")
+    assert result.content
+    assert len(result.content) > 0
+
+
+# ---------------------------------------------------------------------------
+# Local Ollama tests — require running Ollama instance
+# ---------------------------------------------------------------------------
+
+
+@skip_no_ollama_local
+@pytest.mark.asyncio
+async def test_agent_ollama_local() -> None:
+    """Agent with provider='ollama' can call a local model."""
+    from src.agent import Agent
+
+    agent = Agent(
+        name="test-ollama-local",
+        model="qwen3:4b",
+        prompt_path="agents/test/AGENTS.md",
+        provider="ollama",
+    )
+
+    result = await agent.run("Say hello in one sentence.")
+    assert result.content
+    assert len(result.content) > 0

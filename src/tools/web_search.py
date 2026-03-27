@@ -195,6 +195,32 @@ async def _search_grok_x(query: str, n: int) -> str:
         return f"Error: Grok X search failed: {e}"
 
 
+async def _search_ollama(query: str, n: int) -> str:
+    """Search via Ollama Web Search API. Needs OLLAMA_API_KEY."""
+    api_key = os.environ.get("OLLAMA_API_KEY")
+    if not api_key:
+        logger.warning("OLLAMA_API_KEY not set, falling back to DuckDuckGo")
+        return await _search_duckduckgo(query, n)
+
+    try:
+        async with httpx.AsyncClient() as client:
+            r = await client.post(
+                "https://ollama.com/api/web_search",
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                },
+                json={"query": query},
+                timeout=15.0,
+            )
+            r.raise_for_status()
+
+        items = r.json().get("results", [])
+        return _format_results(query, items, n)
+    except Exception as e:
+        return f"Error: Ollama search failed: {e}"
+
+
 async def _search_duckduckgo(query: str, n: int) -> str:
     """Search via DuckDuckGo. No API key needed. Fallback provider."""
     try:
@@ -230,6 +256,7 @@ PROVIDERS: dict[str, Any] = {
     "brave": _search_brave,
     "grok": _search_grok_web,
     "grok_x": _search_grok_x,
+    "ollama": _search_ollama,
     "duckduckgo": _search_duckduckgo,
 }
 
@@ -246,6 +273,7 @@ async def web_search_handler(
     - brave: Brave Search API, uses BRAVE_API_KEY
     - grok: xAI Grok web search, uses XAI_API_KEY
     - grok_x: xAI Grok X/Twitter search, uses XAI_API_KEY
+    - ollama: Ollama Web Search API, uses OLLAMA_API_KEY
     - duckduckgo: Free, no API key needed (fallback)
     """
     p = (provider or DEFAULT_PROVIDER).strip().lower()
@@ -267,7 +295,7 @@ web_search_tool = Tool(
     name="web_search",
     description=(
         "Search the web for current information. Returns results with titles, URLs, and summaries. "
-        "Supports multiple providers: perplexity (default), brave, grok, duckduckgo."
+        "Supports multiple providers: perplexity (default), brave, grok, ollama, duckduckgo."
     ),
     parameters={
         "type": "object",
@@ -284,10 +312,10 @@ web_search_tool = Tool(
             "provider": {
                 "type": "string",
                 "description": (
-                    "Search provider: perplexity, brave, grok, grok_x, duckduckgo "
+                    "Search provider: perplexity, brave, grok, grok_x, ollama, duckduckgo "
                     "(default: from IW_SEARCH_PROVIDER env or perplexity)"
                 ),
-                "enum": ["perplexity", "brave", "grok", "grok_x", "duckduckgo"],
+                "enum": ["perplexity", "brave", "grok", "grok_x", "ollama", "duckduckgo"],
             },
         },
         "required": ["query"],

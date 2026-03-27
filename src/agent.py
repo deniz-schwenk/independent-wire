@@ -26,6 +26,23 @@ MAX_RETRIES = 3
 BASE_DELAY = 2  # seconds
 RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 529}
 
+# Provider defaults for LLM API endpoints
+PROVIDER_DEFAULTS: dict[str, dict[str, str | None]] = {
+    "openrouter": {
+        "base_url": "https://openrouter.ai/api/v1",
+        "api_key_env": "OPENROUTER_API_KEY",
+    },
+    "ollama": {
+        "base_url": "http://localhost:11434/v1",
+        "api_key_env": None,  # Local Ollama needs no key
+        "api_key_default": "ollama",  # Dummy for openai library
+    },
+    "ollama_cloud": {
+        "base_url": "https://ollama.com/v1",
+        "api_key_env": "OLLAMA_API_KEY",
+    },
+}
+
 
 class AgentError(Exception):
     """Base exception for agent errors."""
@@ -56,7 +73,7 @@ class Agent:
         temperature: float = 0.3,
         max_tokens: int = 8192,
         provider: str = "openrouter",
-        base_url: str = "https://openrouter.ai/api/v1",
+        base_url: str | None = None,
         api_key: str | None = None,
     ) -> None:
         self.name = name
@@ -67,17 +84,28 @@ class Agent:
         self.temperature = temperature
         self.max_tokens = max_tokens
         self.provider = provider
-        self.base_url = base_url
 
-        resolved_key = api_key or os.environ.get("OPENROUTER_API_KEY")
+        # Resolve provider defaults
+        defaults = PROVIDER_DEFAULTS.get(provider, PROVIDER_DEFAULTS["openrouter"])
+        self.base_url = base_url or defaults["base_url"]
+
+        # Resolve API key: explicit > env var > provider default > error
+        resolved_key = api_key
         if not resolved_key:
+            env_var = defaults.get("api_key_env")
+            if env_var:
+                resolved_key = os.environ.get(env_var)
+        if not resolved_key:
+            resolved_key = defaults.get("api_key_default")
+        if not resolved_key:
+            env_var = defaults.get("api_key_env", "OPENROUTER_API_KEY")
             raise ValueError(
-                f"Agent '{name}': No API key provided and OPENROUTER_API_KEY not set"
+                f"Agent '{name}': No API key provided and {env_var} not set"
             )
 
         self._client = AsyncOpenAI(
             api_key=resolved_key,
-            base_url=base_url,
+            base_url=self.base_url,
         )
 
         # Build tool lookup for fast access during tool-call loop
