@@ -24,6 +24,7 @@ dependencies = [
 telegram = ["python-telegram-bot>=20.0"]
 search-brave = ["brave-search"]
 search-tavily = ["tavily-python"]
+dev = ["pytest", "pytest-asyncio"]
 
 [project.urls]
 Homepage = "https://independent-wire.org"

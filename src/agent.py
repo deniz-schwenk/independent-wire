@@ -1,0 +1,316 @@
+"""Independent Wire — Agent abstraction.
+
+An Agent is a configured async LLM caller with identity, model, tools, memory,
+and temperature. It calls the OpenRouter API (OpenAI-compatible), handles tool
+calls in a loop, and returns structured AgentResult objects.
+"""
+
+from __future__ import annotations
+
+import json
+import logging
+import os
+import random
+import time
+from pathlib import Path
+
+from openai import AsyncOpenAI, APIStatusError
+
+from src.models import AgentResult
+from src.tools.registry import Tool
+
+logger = logging.getLogger(__name__)
+
+MAX_TOOL_ITERATIONS = 10
+MAX_RETRIES = 3
+BASE_DELAY = 2  # seconds
+RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 529}
+
+
+class AgentError(Exception):
+    """Base exception for agent errors."""
+
+
+class AgentAPIError(AgentError):
+    """Raised when the LLM API returns a non-retryable error."""
+
+    def __init__(self, message: str, status_code: int | None = None) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+
+
+class AgentTimeoutError(AgentError):
+    """Raised when the LLM API call times out."""
+
+
+class Agent:
+    """A configured LLM caller with identity, model, tools, and memory."""
+
+    def __init__(
+        self,
+        name: str,
+        model: str,
+        prompt_path: str,
+        tools: list[Tool] | None = None,
+        memory_path: str | None = None,
+        temperature: float = 0.3,
+        max_tokens: int = 8192,
+        provider: str = "openrouter",
+        base_url: str = "https://openrouter.ai/api/v1",
+        api_key: str | None = None,
+    ) -> None:
+        self.name = name
+        self.model = model
+        self.prompt_path = prompt_path
+        self.tools = tools or []
+        self.memory_path = memory_path
+        self.temperature = temperature
+        self.max_tokens = max_tokens
+        self.provider = provider
+        self.base_url = base_url
+
+        resolved_key = api_key or os.environ.get("OPENROUTER_API_KEY")
+        if not resolved_key:
+            raise ValueError(
+                f"Agent '{name}': No API key provided and OPENROUTER_API_KEY not set"
+            )
+
+        self._client = AsyncOpenAI(
+            api_key=resolved_key,
+            base_url=base_url,
+        )
+
+        # Build tool lookup for fast access during tool-call loop
+        self._tool_map: dict[str, Tool] = {t.name: t for t in self.tools}
+
+    def _load_system_prompt(self) -> str:
+        """Load system prompt from prompt_path file."""
+        path = Path(self.prompt_path)
+        if not path.exists():
+            raise AgentError(
+                f"Agent '{self.name}': Prompt file not found: {self.prompt_path}"
+            )
+        return path.read_text(encoding="utf-8")
+
+    def _load_memory(self) -> str | None:
+        """Load memory from memory_path if it exists."""
+        if not self.memory_path:
+            return None
+        path = Path(self.memory_path)
+        if not path.exists():
+            return None
+        content = path.read_text(encoding="utf-8").strip()
+        return content if content else None
+
+    def _build_system_prompt(self, output_schema: dict | None = None) -> str:
+        """Build the full system prompt with optional memory and schema instructions."""
+        prompt = self._load_system_prompt()
+
+        memory = self._load_memory()
+        if memory:
+            prompt += f"\n\n---\n\n## Memory\n\n{memory}"
+
+        if output_schema:
+            schema_str = json.dumps(output_schema, indent=2, ensure_ascii=False)
+            prompt += (
+                f"\n\n---\n\n## Output Format\n\n"
+                f"Respond with JSON matching this schema:\n\n```json\n{schema_str}\n```\n\n"
+                f"Return ONLY the JSON object, no additional text."
+            )
+
+        return prompt
+
+    def _build_user_message(self, message: str, context: dict | None = None) -> str:
+        """Build the user message, optionally embedding context."""
+        if not context:
+            return message
+        context_str = json.dumps(context, indent=2, ensure_ascii=False)
+        return f"{message}\n\n---\n\nContext:\n```json\n{context_str}\n```"
+
+    def _get_tool_definitions(self) -> list[dict] | None:
+        """Get OpenAI-format tool definitions, or None if no tools."""
+        if not self.tools:
+            return None
+        return [t.to_openai_format() for t in self.tools]
+
+    async def _call_with_retry(
+        self, messages: list[dict], tools: list[dict] | None
+    ) -> object:
+        """Call the LLM API with exponential backoff retry for transient errors."""
+        kwargs: dict = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": self.temperature,
+            "max_tokens": self.max_tokens,
+        }
+        if tools:
+            kwargs["tools"] = tools
+
+        for attempt in range(MAX_RETRIES + 1):
+            try:
+                return await self._client.chat.completions.create(**kwargs)
+            except APIStatusError as e:
+                if e.status_code not in RETRYABLE_STATUS_CODES or attempt == MAX_RETRIES:
+                    raise AgentAPIError(
+                        f"Agent '{self.name}': API error {e.status_code}: {e.message}",
+                        status_code=e.status_code,
+                    ) from e
+                delay = BASE_DELAY * (2**attempt) + random.uniform(0, 1)
+                logger.warning(
+                    "Agent '%s': API error %d, retry %d/%d in %.1fs",
+                    self.name,
+                    e.status_code,
+                    attempt + 1,
+                    MAX_RETRIES,
+                    delay,
+                )
+                import asyncio
+
+                await asyncio.sleep(delay)
+
+        # Unreachable, but satisfies type checker
+        raise AgentAPIError(f"Agent '{self.name}': Retries exhausted")
+
+    async def _execute_tool_call(self, tool_call: object) -> dict:
+        """Execute a single tool call and return the tool result message."""
+        fn = tool_call.function
+        tool_name = fn.name
+
+        tool = self._tool_map.get(tool_name)
+        if not tool:
+            error_msg = f"Tool '{tool_name}' not available for agent '{self.name}'"
+            logger.error(error_msg)
+            return {
+                "role": "tool",
+                "tool_call_id": tool_call.id,
+                "content": f"Error: {error_msg}",
+            }
+
+        try:
+            kwargs = json.loads(fn.arguments) if fn.arguments else {}
+        except json.JSONDecodeError as e:
+            error_msg = f"Invalid tool arguments for '{tool_name}': {e}"
+            logger.error(error_msg)
+            return {
+                "role": "tool",
+                "tool_call_id": tool_call.id,
+                "content": f"Error: {error_msg}",
+            }
+
+        logger.info("Agent '%s': calling tool '%s' with %s", self.name, tool_name, kwargs)
+
+        try:
+            result = await tool.execute(**kwargs)
+        except Exception as e:
+            error_msg = f"Tool '{tool_name}' execution failed: {e}"
+            logger.error(error_msg)
+            return {
+                "role": "tool",
+                "tool_call_id": tool_call.id,
+                "content": f"Error: {error_msg}",
+            }
+
+        return {
+            "role": "tool",
+            "tool_call_id": tool_call.id,
+            "content": result,
+        }
+
+    async def run(
+        self,
+        message: str,
+        context: dict | None = None,
+        output_schema: dict | None = None,
+    ) -> AgentResult:
+        """Run the agent: send message to LLM, handle tool calls, return result."""
+        start_time = time.monotonic()
+
+        system_prompt = self._build_system_prompt(output_schema)
+        user_message = self._build_user_message(message, context)
+        tool_defs = self._get_tool_definitions()
+
+        messages: list[dict] = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_message},
+        ]
+
+        total_tokens = 0
+        all_tool_calls: list[dict] = []
+
+        # Tool-call loop
+        for iteration in range(MAX_TOOL_ITERATIONS):
+            response = await self._call_with_retry(messages, tool_defs)
+            choice = response.choices[0]
+            resp_message = choice.message
+
+            total_tokens += response.usage.total_tokens if response.usage else 0
+
+            # No tool calls — we're done
+            if not resp_message.tool_calls:
+                break
+
+            # Process tool calls
+            messages.append(resp_message.model_dump())
+
+            for tc in resp_message.tool_calls:
+                all_tool_calls.append({
+                    "tool": tc.function.name,
+                    "arguments": tc.function.arguments,
+                    "id": tc.id,
+                })
+                tool_result = await self._execute_tool_call(tc)
+                messages.append(tool_result)
+
+            logger.info(
+                "Agent '%s': tool iteration %d, %d tool calls processed",
+                self.name,
+                iteration + 1,
+                len(resp_message.tool_calls),
+            )
+        else:
+            logger.warning(
+                "Agent '%s': hit max tool iterations (%d)",
+                self.name,
+                MAX_TOOL_ITERATIONS,
+            )
+
+        duration = time.monotonic() - start_time
+        content = resp_message.content or ""
+        model_used = response.model if hasattr(response, "model") else self.model
+
+        # Parse structured output if schema was requested
+        structured = None
+        if output_schema and content:
+            try:
+                # Strip markdown code fences if present
+                text = content.strip()
+                if text.startswith("```"):
+                    lines = text.split("\n")
+                    # Remove first and last fence lines
+                    lines = [l for l in lines[1:] if not l.strip().startswith("```")]
+                    text = "\n".join(lines)
+                structured = json.loads(text)
+            except (json.JSONDecodeError, ValueError) as e:
+                logger.warning(
+                    "Agent '%s': could not parse structured output: %s",
+                    self.name,
+                    e,
+                )
+
+        logger.info(
+            "Agent '%s': completed in %.1fs, %d tokens, %d tool calls",
+            self.name,
+            duration,
+            total_tokens,
+            len(all_tool_calls),
+        )
+
+        return AgentResult(
+            content=content,
+            structured=structured,
+            tool_calls=all_tool_calls,
+            tokens_used=total_tokens,
+            cost_usd=0.0,  # cost estimation deferred to config/pricing layer
+            model=model_used,
+            duration_seconds=round(duration, 2),
+        )
