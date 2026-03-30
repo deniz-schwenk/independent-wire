@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 MAX_TOOL_ITERATIONS = 10
 MAX_RETRIES = 3
+MAX_STRUCTURED_RETRIES = 2
 BASE_DELAY = 2  # seconds
 RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 529}
 
@@ -244,6 +245,69 @@ class Agent:
             "content": result,
         }
 
+    @staticmethod
+    def _parse_json(text: str) -> dict | list | None:
+        """Try to parse text as JSON, stripping markdown code fences if present."""
+        text = text.strip()
+        if text.startswith("```"):
+            lines = text.split("\n")
+            lines = [l for l in lines[1:] if not l.strip().startswith("```")]
+            text = "\n".join(lines)
+        try:
+            return json.loads(text)
+        except (json.JSONDecodeError, ValueError):
+            return None
+
+    async def _parse_or_retry_structured(
+        self,
+        messages: list[dict],
+        content: str,
+        output_schema: dict,
+        tool_defs: list[dict] | None,
+    ) -> tuple[str, dict | None, int]:
+        """Try to parse content as JSON. If it fails, retry with corrective prompt.
+
+        Returns: (final_content, structured_or_none, additional_tokens_used)
+        """
+        additional_tokens = 0
+
+        parsed = self._parse_json(content)
+        if parsed is not None:
+            return content, parsed, 0
+
+        corrective_message = (
+            "Your previous response could not be parsed as valid JSON. "
+            "Return ONLY a valid JSON object or array matching the requested schema. "
+            "No markdown, no code fences, no explanatory text — just the raw JSON."
+        )
+
+        for attempt in range(1, MAX_STRUCTURED_RETRIES + 1):
+            logger.info(
+                "Agent '%s': structured output retry %d/%d",
+                self.name,
+                attempt,
+                MAX_STRUCTURED_RETRIES,
+            )
+
+            messages.append({"role": "assistant", "content": content})
+            messages.append({"role": "user", "content": corrective_message})
+
+            response = await self._call_with_retry(messages, tools=None)
+            choice = response.choices[0]
+            content = choice.message.content or ""
+            additional_tokens += response.usage.total_tokens if response.usage else 0
+
+            parsed = self._parse_json(content)
+            if parsed is not None:
+                return content, parsed, additional_tokens
+
+        logger.warning(
+            "Agent '%s': structured output parsing failed after %d retries",
+            self.name,
+            MAX_STRUCTURED_RETRIES,
+        )
+        return content, None, additional_tokens
+
     async def run(
         self,
         message: str,
@@ -306,24 +370,13 @@ class Agent:
         content = resp_message.content or ""
         model_used = response.model if hasattr(response, "model") else self.model
 
-        # Parse structured output if schema was requested
+        # Parse structured output if schema was requested, with retry
         structured = None
         if output_schema and content:
-            try:
-                # Strip markdown code fences if present
-                text = content.strip()
-                if text.startswith("```"):
-                    lines = text.split("\n")
-                    # Remove first and last fence lines
-                    lines = [l for l in lines[1:] if not l.strip().startswith("```")]
-                    text = "\n".join(lines)
-                structured = json.loads(text)
-            except (json.JSONDecodeError, ValueError) as e:
-                logger.warning(
-                    "Agent '%s': could not parse structured output: %s",
-                    self.name,
-                    e,
-                )
+            content, structured, extra_tokens = await self._parse_or_retry_structured(
+                messages, content, output_schema, tool_defs,
+            )
+            total_tokens += extra_tokens
 
         logger.info(
             "Agent '%s': completed in %.1fs, %d tokens, %d tool calls",

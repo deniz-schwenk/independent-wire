@@ -170,6 +170,63 @@ async def test_agent_tool_loop(prompt_file: str) -> None:
     assert result.tool_calls[0]["tool"] == "calculator"
 
 
+def test_parse_structured_strips_fences(prompt_file: str) -> None:
+    """JSON parsing correctly strips markdown code fences."""
+    agent = Agent(
+        name="test",
+        model=MODEL,
+        prompt_path=prompt_file,
+        api_key="fake-key-for-unit-test",
+    )
+    content = '```json\n{"city": "Paris", "country": "France"}\n```'
+    result = agent._parse_json(content)
+    assert result == {"city": "Paris", "country": "France"}
+
+
+def test_parse_structured_handles_plain_json(prompt_file: str) -> None:
+    """JSON parsing handles plain JSON without fences."""
+    agent = Agent(
+        name="test",
+        model=MODEL,
+        prompt_path=prompt_file,
+        api_key="fake-key-for-unit-test",
+    )
+    content = '{"city": "Paris", "country": "France"}'
+    result = agent._parse_json(content)
+    assert result == {"city": "Paris", "country": "France"}
+
+    # Also works with arrays
+    content_arr = '[{"a": 1}, {"b": 2}]'
+    result_arr = agent._parse_json(content_arr)
+    assert result_arr == [{"a": 1}, {"b": 2}]
+
+
+@skip_no_key
+@pytest.mark.asyncio
+async def test_structured_retry_recovers(prompt_file: str) -> None:
+    """Agent retries structured output parsing and recovers."""
+    schema = {
+        "type": "object",
+        "properties": {
+            "city": {"type": "string"},
+            "country": {"type": "string"},
+            "population": {"type": "string"},
+        },
+        "required": ["city", "country"],
+    }
+
+    agent = Agent(name="test-retry", model=MODEL, prompt_path=prompt_file)
+    result = await agent.run(
+        "Tell me about Paris and also return your answer as JSON "
+        "with keys: city, country, population.",
+        output_schema=schema,
+    )
+
+    # Retry should recover structured output
+    assert result.structured is not None
+    assert "city" in result.structured
+
+
 @skip_no_key
 @pytest.mark.asyncio
 async def test_agent_structured_output(prompt_file: str) -> None:
