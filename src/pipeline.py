@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
@@ -20,14 +21,38 @@ from src.models import PipelineState, TopicAssignment, TopicPackage
 logger = logging.getLogger(__name__)
 
 
+def _strip_code_fences(text: str) -> str:
+    """Strip markdown code fences from LLM output."""
+    text = text.strip()
+    match = re.match(r"^```(?:json)?\s*\n?(.*?)\n?\s*```$", text, re.DOTALL)
+    if match:
+        return match.group(1).strip()
+    return text
+
+
 def _extract_list(result: object) -> list[dict] | None:
     """Extract a list from an AgentResult (structured or content)."""
     if result.structured and isinstance(result.structured, list):
         return result.structured
     try:
-        parsed = json.loads(result.content)
+        cleaned = _strip_code_fences(result.content)
+        parsed = json.loads(cleaned)
         if isinstance(parsed, list):
             return parsed
+        # Some LLMs wrap lists in an object: {"findings": [...]}
+        if isinstance(parsed, dict):
+            for v in parsed.values():
+                if isinstance(v, list):
+                    return v
+    except (json.JSONDecodeError, ValueError):
+        pass
+    # Last resort: find JSON array in prose
+    try:
+        cleaned = _strip_code_fences(result.content)
+        start = cleaned.find("[")
+        end = cleaned.rfind("]")
+        if start != -1 and end > start:
+            return json.loads(cleaned[start : end + 1])
     except (json.JSONDecodeError, ValueError):
         pass
     return None
@@ -38,7 +63,8 @@ def _extract_dict(result: object) -> dict | None:
     if result.structured and isinstance(result.structured, dict):
         return result.structured
     try:
-        parsed = json.loads(result.content)
+        cleaned = _strip_code_fences(result.content)
+        parsed = json.loads(cleaned)
         if isinstance(parsed, dict):
             return parsed
     except (json.JSONDecodeError, ValueError):
@@ -217,9 +243,16 @@ class Pipeline:
             "summary, source_ids."
         )
 
+        # Truncate findings to avoid context overflow (Issue A)
+        trimmed = [
+            {"title": f.get("title", ""), "summary": f.get("summary", ""),
+             "source_name": f.get("source_name", "")}
+            for f in raw_findings[:20]
+        ]
+
         try:
             result = await agent.run(
-                message, context={"findings": raw_findings}
+                message, context={"findings": trimmed}
             )
             topics = _extract_list(result) or []
 
