@@ -7,6 +7,7 @@ import json
 import logging
 import os
 from dataclasses import asdict
+from pathlib import Path
 from unittest.mock import AsyncMock
 
 import pytest
@@ -185,7 +186,7 @@ async def test_gate_skipped_in_quick_mode() -> None:
 @pytest.mark.asyncio
 async def test_produce_single_error_isolation() -> None:
     """_produce_single catches errors and returns a failed TopicPackage."""
-    # Create a pipeline with no redakteur agent — will raise PipelineStepError
+    # Create a pipeline with no writer agent — will raise PipelineStepError
     pipeline = Pipeline(name="test", agents={})
     pipeline.state = PipelineState(
         run_id="run-test", date="2026-03-30", current_step="produce"
@@ -204,7 +205,15 @@ async def test_produce_single_error_isolation() -> None:
     assert len(packages) == 1
     assert packages[0].status == "failed"
     assert packages[0].error is not None
-    assert "redakteur" in packages[0].error.lower()
+    assert "writer" in packages[0].error.lower()
+
+
+def test_agent_prompt_files_exist() -> None:
+    """All core agent prompt files exist."""
+    repo_root = Path(__file__).parent.parent
+    for agent_name in ["collector", "curator", "editor", "writer"]:
+        path = repo_root / "agents" / agent_name / "AGENTS.md"
+        assert path.exists(), f"Missing prompt file: {path}"
 
 
 # --- Integration test (requires OPENROUTER_API_KEY) ---
@@ -213,7 +222,7 @@ async def test_produce_single_error_isolation() -> None:
 @skip_no_key
 @pytest.mark.asyncio
 async def test_pipeline_collect_curate(tmp_path) -> None:
-    """Real data flow: Collector -> Kurator with cheap models."""
+    """Real data flow: Collector -> Curator with cheap models."""
     # Create simple prompt files
     collector_prompt = tmp_path / "collector.md"
     collector_prompt.write_text(
@@ -222,8 +231,8 @@ async def test_pipeline_collect_curate(tmp_path) -> None:
         "Return exactly 3 findings about technology news. Return ONLY the JSON array."
     )
 
-    kurator_prompt = tmp_path / "kurator.md"
-    kurator_prompt.write_text(
+    curator_prompt = tmp_path / "curator.md"
+    curator_prompt.write_text(
         "You are a news curator. Select the most relevant topics from the findings. "
         "For each selected topic provide: title, topic_slug, relevance_score (1-10), summary, source_ids. "
         "Return ONLY a JSON array."
@@ -234,15 +243,15 @@ async def test_pipeline_collect_curate(tmp_path) -> None:
         model=MODEL,
         prompt_path=str(collector_prompt),
     )
-    kurator = Agent(
-        name="kurator",
+    curator = Agent(
+        name="curator",
         model=MODEL,
-        prompt_path=str(kurator_prompt),
+        prompt_path=str(curator_prompt),
     )
 
     pipeline = Pipeline(
         name="test",
-        agents={"collector": collector, "kurator": kurator},
+        agents={"collector": collector, "curator": curator},
         state_dir=str(tmp_path / "state"),
         output_dir=str(tmp_path / "output"),
     )

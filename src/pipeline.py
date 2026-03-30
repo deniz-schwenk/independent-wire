@@ -206,9 +206,9 @@ class Pipeline:
 
     async def curate(self, raw_findings: list[dict]) -> list[dict]:
         """Select the most newsworthy topics from raw findings."""
-        agent = self.agents.get("kurator")
+        agent = self.agents.get("curator")
         if not agent:
-            logger.error("No 'kurator' agent configured")
+            logger.error("No 'curator' agent configured")
             return []
 
         message = (
@@ -229,16 +229,16 @@ class Pipeline:
             )
             return topics[: self.max_topics]
         except Exception as e:
-            logger.error("Kurator failed: %s", e)
+            logger.error("Curator failed: %s", e)
             return []
 
     async def editorial_conference(
         self, curated_topics: list[dict]
     ) -> list[TopicAssignment]:
         """Prioritize topics and create assignments."""
-        agent = self.agents.get("chefredaktion")
+        agent = self.agents.get("editor")
         if not agent:
-            logger.error("No 'chefredaktion' agent configured")
+            logger.error("No 'editor' agent configured")
             return []
 
         message = (
@@ -266,7 +266,7 @@ class Pipeline:
                 )
             return assignments
         except Exception as e:
-            logger.error("Chefredaktion failed: %s", e)
+            logger.error("Editor failed: %s", e)
             return []
 
     async def gate(self, step_name: str, data: object) -> bool:
@@ -322,26 +322,26 @@ class Pipeline:
             )
             perspectives = _extract_list(result) or []
 
-        # 2. Redakteur (required)
-        redakteur = self.agents.get("redakteur")
-        if not redakteur:
+        # 2. Writer (required)
+        writer = self.agents.get("writer")
+        if not writer:
             raise PipelineStepError(
-                f"No 'redakteur' agent for topic '{assignment.id}'"
+                f"No 'writer' agent for topic '{assignment.id}'"
             )
 
-        redakteur_context = {**assignment_data, "perspectives": perspectives}
-        result = await redakteur.run(
+        writer_context = {**assignment_data, "perspectives": perspectives}
+        result = await writer.run(
             "Write a multi-perspective article on this topic.",
-            context=redakteur_context,
+            context=writer_context,
         )
         article = _extract_dict(result) or {
             "headline": assignment.title,
             "body": result.content,
         }
 
-        # 3. Bias-Detektor (optional)
-        if bias_detektor := self.agents.get("bias_detektor"):
-            result = await bias_detektor.run(
+        # 3. Bias Detector (optional)
+        if bias_detector := self.agents.get("bias_detector"):
+            result = await bias_detector.run(
                 "Analyze this article for bias across all five dimensions.",
                 context={"article": article, "sources": sources},
             )

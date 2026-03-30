@@ -234,7 +234,7 @@ def test_agent_provider_defaults_openrouter() -> None:
     agent = Agent(
         name="test",
         model="test-model",
-        prompt_path="agents/test/AGENTS.md",
+        prompt_path="agents/collector/AGENTS.md",
         api_key="test-key",
     )
     assert agent.provider == "openrouter"
@@ -248,7 +248,7 @@ def test_agent_provider_defaults_ollama() -> None:
     agent = Agent(
         name="test",
         model="qwen3:4b",
-        prompt_path="agents/test/AGENTS.md",
+        prompt_path="agents/collector/AGENTS.md",
         provider="ollama",
     )
     assert agent.base_url == "http://localhost:11434/v1"
@@ -262,7 +262,7 @@ def test_agent_provider_defaults_ollama_cloud() -> None:
     agent = Agent(
         name="test",
         model="gpt-oss:20b-cloud",
-        prompt_path="agents/test/AGENTS.md",
+        prompt_path="agents/collector/AGENTS.md",
         provider="ollama_cloud",
         api_key="test-ollama-key",
     )
@@ -363,7 +363,7 @@ async def test_agent_with_web_search_tool() -> None:
     agent = Agent(
         name="test-search",
         model="openai/gpt-4o-mini",
-        prompt_path="agents/test/AGENTS.md",
+        prompt_path="agents/collector/AGENTS.md",
         tools=[web_search_tool],
     )
 
@@ -413,7 +413,7 @@ async def test_agent_ollama_cloud() -> None:
     agent = Agent(
         name="test-ollama-cloud",
         model="gpt-oss:20b-cloud",
-        prompt_path="agents/test/AGENTS.md",
+        prompt_path="agents/collector/AGENTS.md",
         provider="ollama_cloud",
     )
 
@@ -436,7 +436,7 @@ async def test_agent_ollama_local() -> None:
     agent = Agent(
         name="test-ollama-local",
         model="qwen3:4b",
-        prompt_path="agents/test/AGENTS.md",
+        prompt_path="agents/collector/AGENTS.md",
         provider="ollama",
     )
 
