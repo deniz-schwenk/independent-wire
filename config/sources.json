@@ -12,12 +12,12 @@
       "enabled": true
     },
     {
-      "name": "Tehran Times",
-      "url": "https://news.google.com/rss/search?q=site:tehrantimes.com&hl=en&gl=US&ceid=US:en",
+      "name": "Press TV",
+      "url": "https://www.presstv.ir/rss/rss-101.xml",
       "type": "rss",
       "region": "Middle East",
       "language": "en",
-      "bias_note": "Iranian state-affiliated (via Google News proxy)",
+      "bias_note": "Iranian state-affiliated English broadcaster",
       "enabled": true
     },
     {
@@ -39,12 +39,12 @@
       "enabled": true
     },
     {
-      "name": "Xinhua",
-      "url": "https://news.google.com/rss/search?q=site:english.news.cn&hl=en&gl=US&ceid=US:en",
+      "name": "South China Morning Post",
+      "url": "https://www.scmp.com/rss/91/feed",
       "type": "rss",
       "region": "East Asia",
       "language": "en",
-      "bias_note": "Chinese state news agency (via Google News proxy)",
+      "bias_note": "Hong Kong-based, Beijing-aligned since Alibaba acquisition",
       "enabled": true
     },
     {
@@ -57,12 +57,12 @@
       "enabled": true
     },
     {
-      "name": "TASS",
-      "url": "https://tass.com/rss/v2.xml",
+      "name": "Moscow Times",
+      "url": "https://www.themoscowtimes.com/rss/news",
       "type": "rss",
       "region": "Europe",
       "language": "en",
-      "bias_note": "Russian state news agency",
+      "bias_note": "Independent English-language Russian news outlet",
       "enabled": true
     },
     {
@@ -93,12 +93,12 @@
       "enabled": true
     },
     {
-      "name": "Guardian Nigeria",
-      "url": "https://news.google.com/rss/search?q=site:guardian.ng&hl=en&gl=US&ceid=US:en",
+      "name": "Premium Times Nigeria",
+      "url": "https://www.premiumtimesng.com/feed",
       "type": "rss",
       "region": "Africa",
       "language": "en",
-      "bias_note": "Major Nigerian newspaper (via Google News proxy)",
+      "bias_note": "Major Nigerian investigative newspaper",
       "enabled": true
     },
     {
@@ -120,21 +120,21 @@
       "enabled": true
     },
     {
-      "name": "El Universal",
-      "url": "https://news.google.com/rss/search?q=site:eluniversal.com.mx&hl=es&gl=MX&ceid=MX:es",
+      "name": "El Financiero",
+      "url": "https://www.elfinanciero.com.mx/arc/outboundfeeds/rss/?outputType=xml",
       "type": "rss",
       "region": "Latin America",
       "language": "es",
-      "bias_note": "Major Mexican newspaper (via Google News proxy)",
+      "bias_note": "Major Mexican newspaper, centrist/business-oriented",
       "enabled": true
     },
     {
-      "name": "PTI",
-      "url": "https://news.google.com/rss/search?q=site:ptinews.com&hl=en&gl=US&ceid=US:en",
+      "name": "NDTV",
+      "url": "https://feeds.feedburner.com/ndtvnews-top-stories",
       "type": "rss",
       "region": "South Asia",
       "language": "en",
-      "bias_note": "Indian national news agency (via Google News proxy)",
+      "bias_note": "Major Indian English-language news outlet",
       "enabled": true
     },
     {
@@ -174,12 +174,12 @@
       "enabled": true
     },
     {
-      "name": "ReliefWeb",
-      "url": "https://news.google.com/rss/search?q=site:reliefweb.int&hl=en&gl=US&ceid=US:en",
+      "name": "IPS News",
+      "url": "https://www.ipsnews.net/feed/",
       "type": "rss",
       "region": "International",
       "language": "en",
-      "bias_note": "UN OCHA humanitarian information service (via Google News proxy)",
+      "bias_note": "Inter Press Service, development and humanitarian focus",
       "enabled": true
     },
     {
