@@ -199,6 +199,7 @@ class Pipeline:
             return []
 
         message = (
+            f"Today's date is {self.state.date}. "
             "Scan current news sources and return a JSON array of findings. "
             "Each finding should have: title, summary, source_url, source_name, "
             "language, region."
@@ -230,12 +231,37 @@ class Pipeline:
             logger.error("Collector failed: %s", e)
             return []
 
+    def _load_feed_findings(self) -> list[dict]:
+        """Load feed findings from raw/{date}/feeds.json if available."""
+        if not self.state:
+            return []
+        feeds_path = Path("raw") / self.state.date / "feeds.json"
+        if not feeds_path.exists():
+            return []
+        try:
+            data = json.loads(feeds_path.read_text(encoding="utf-8"))
+            if isinstance(data, list):
+                logger.info("Loaded %d feed findings from %s", len(data), feeds_path)
+                return data
+        except (json.JSONDecodeError, ValueError) as e:
+            logger.warning("Could not load feed findings: %s", e)
+        return []
+
     async def curate(self, raw_findings: list[dict]) -> list[dict]:
         """Select the most newsworthy topics from raw findings."""
         agent = self.agents.get("curator")
         if not agent:
             logger.error("No 'curator' agent configured")
             return []
+
+        # Merge feed findings with collector findings
+        feed_findings = self._load_feed_findings()
+        if feed_findings:
+            logger.info(
+                "Merged %d feed findings with %d collector findings",
+                len(feed_findings), len(raw_findings),
+            )
+            raw_findings = raw_findings + feed_findings
 
         message = (
             "Review these raw findings. Select the most newsworthy topics. "
@@ -247,7 +273,7 @@ class Pipeline:
         trimmed = [
             {"title": f.get("title", ""), "summary": f.get("summary", ""),
              "source_name": f.get("source_name", "")}
-            for f in raw_findings[:20]
+            for f in raw_findings[:40]
         ]
 
         try:
@@ -276,7 +302,9 @@ class Pipeline:
 
         message = (
             "Prioritize these topics for today's report. For each: assign "
-            "priority (1-10), provide selection_reason, assign topic_id."
+            "priority (1-10), provide selection_reason, assign topic_id. "
+            f"Today's date is {self.state.date}. Use this date in topic_id "
+            "format: tp-YYYY-MM-DD-NNN (e.g. tp-" + self.state.date + "-001)."
         )
 
         try:
@@ -314,8 +342,14 @@ class Pipeline:
         self, assignments: list[TopicAssignment]
     ) -> list[TopicPackage]:
         """Produce TopicPackages for all assignments sequentially."""
+        import asyncio
+
         packages: list[TopicPackage] = []
-        for assignment in assignments:
+        for i, assignment in enumerate(assignments):
+            # Delay between topics to avoid upstream rate limits (429s)
+            if i > 0:
+                logger.info("Waiting 30s before next topic to avoid rate limits...")
+                await asyncio.sleep(30)
             try:
                 pkg = await self._produce_single(assignment)
                 packages.append(pkg)

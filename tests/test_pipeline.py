@@ -255,6 +255,10 @@ async def test_pipeline_collect_curate(tmp_path) -> None:
         state_dir=str(tmp_path / "state"),
         output_dir=str(tmp_path / "output"),
     )
+    # Set state so collect() can access self.state.date
+    pipeline.state = PipelineState(
+        run_id="run-test", date="2026-03-31", current_step="collect"
+    )
 
     # Test collect
     raw = await pipeline.collect()

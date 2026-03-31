@@ -18,6 +18,7 @@ classifiers = [
 dependencies = [
     "openai>=1.0",
     "httpx",
+    "feedparser",
 ]
 
 [project.optional-dependencies]

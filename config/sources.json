@@ -1,50 +1,195 @@
 {
-  "_comment": "Independent Wire — Source Registry. Community-maintained. Add sources via PR.",
-  "version": "0.1",
-  "sources": [
+  "_comment": "Independent Wire — Feed sources. type: rss or api. All free, no API keys needed.",
+  "version": "0.2",
+  "feeds": [
     {
-      "name": "Reuters",
-      "url": "https://www.reuters.com",
-      "rss": "https://www.reuters.com/arc/outboundfeeds/news/?outputType=xml",
+      "name": "Al Jazeera",
+      "url": "https://www.aljazeera.com/xml/rss/all.xml",
+      "type": "rss",
+      "region": "Middle East",
       "language": "en",
-      "country": "GB",
-      "type": "wire_service",
-      "notes": "Global wire service. Generally considered low-bias."
+      "bias_note": "Qatar-funded, strong Global South coverage",
+      "enabled": true
     },
     {
-      "name": "Associated Press",
-      "url": "https://apnews.com",
-      "rss": "https://apnews.com/feed",
+      "name": "Tehran Times",
+      "url": "https://www.tehrantimes.com/rss/tp/17",
+      "type": "rss",
+      "region": "Middle East",
       "language": "en",
-      "country": "US",
-      "type": "wire_service",
-      "notes": "US-based wire service. Fact-focused reporting."
+      "bias_note": "Iranian state-affiliated",
+      "enabled": true
     },
     {
-      "name": "Al Jazeera English",
-      "url": "https://www.aljazeera.com",
-      "rss": "https://www.aljazeera.com/xml/rss/all.xml",
+      "name": "Anadolu Agency",
+      "url": "https://www.aa.com.tr/en/rss/default?cat=world",
+      "type": "rss",
+      "region": "Middle East",
       "language": "en",
-      "country": "QA",
-      "type": "news_network",
-      "notes": "Qatar-based. Strong Middle East/Global South coverage."
+      "bias_note": "Turkish state news agency",
+      "enabled": true
     },
     {
-      "name": "Deutsche Welle",
-      "url": "https://www.dw.com",
-      "rss": "https://rss.dw.com/rdf/rss-en-all",
+      "name": "Middle East Eye",
+      "url": "https://www.middleeasteye.net/rss",
+      "type": "rss",
+      "region": "Middle East",
       "language": "en",
-      "country": "DE",
-      "type": "public_broadcaster",
-      "notes": "German public international broadcaster. Multi-language."
+      "bias_note": "Independent, UK-based MENA focus",
+      "enabled": true
     },
     {
-      "name": "NHK World",
-      "url": "https://www3.nhk.or.jp/nhkworld/",
+      "name": "Xinhua",
+      "url": "http://www.news.cn/english/rss/worldrss.xml",
+      "type": "rss",
+      "region": "East Asia",
       "language": "en",
-      "country": "JP",
-      "type": "public_broadcaster",
-      "notes": "Japanese public broadcaster. Asia-Pacific focus."
+      "bias_note": "Chinese state news agency",
+      "enabled": true
+    },
+    {
+      "name": "CGTN",
+      "url": "https://www.cgtn.com/subscribe/rss/section/world.xml",
+      "type": "rss",
+      "region": "East Asia",
+      "language": "en",
+      "bias_note": "Chinese state broadcaster",
+      "enabled": true
+    },
+    {
+      "name": "TASS",
+      "url": "https://tass.com/rss/v2.xml",
+      "type": "rss",
+      "region": "Europe",
+      "language": "en",
+      "bias_note": "Russian state news agency",
+      "enabled": true
+    },
+    {
+      "name": "Ukrinform",
+      "url": "https://www.ukrinform.net/rss/block-lastnews",
+      "type": "rss",
+      "region": "Europe",
+      "language": "en",
+      "bias_note": "Ukrainian state news agency",
+      "enabled": true
+    },
+    {
+      "name": "AllAfrica",
+      "url": "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf",
+      "type": "rss",
+      "region": "Africa",
+      "language": "en",
+      "bias_note": "Pan-African aggregator",
+      "enabled": true
+    },
+    {
+      "name": "Daily Nation",
+      "url": "https://nation.africa/service/rss/kenya/news/s/eqkh4k",
+      "type": "rss",
+      "region": "Africa",
+      "language": "en",
+      "bias_note": "Leading Kenyan newspaper",
+      "enabled": true
+    },
+    {
+      "name": "Guardian Nigeria",
+      "url": "https://guardian.ng/rss",
+      "type": "rss",
+      "region": "Africa",
+      "language": "en",
+      "bias_note": "Major Nigerian newspaper",
+      "enabled": true
+    },
+    {
+      "name": "Agencia Brasil",
+      "url": "https://agenciabrasil.ebc.com.br/rss/ultimasnoticias/feed.xml",
+      "type": "rss",
+      "region": "Latin America",
+      "language": "pt",
+      "bias_note": "Brazilian public news agency",
+      "enabled": true
+    },
+    {
+      "name": "La Nacion",
+      "url": "https://www.lanacion.com.ar/arcio/rss/",
+      "type": "rss",
+      "region": "Latin America",
+      "language": "es",
+      "bias_note": "Major Argentine newspaper, center-right",
+      "enabled": true
+    },
+    {
+      "name": "El Universal",
+      "url": "https://www.eluniversal.com.mx/rss/",
+      "type": "rss",
+      "region": "Latin America",
+      "language": "es",
+      "bias_note": "Major Mexican newspaper",
+      "enabled": true
+    },
+    {
+      "name": "PTI",
+      "url": "https://www.ptinews.com/pti-stories-rss",
+      "type": "rss",
+      "region": "South Asia",
+      "language": "en",
+      "bias_note": "Indian national news agency",
+      "enabled": true
+    },
+    {
+      "name": "Dawn",
+      "url": "https://www.dawn.com/feeds/home",
+      "type": "rss",
+      "region": "South Asia",
+      "language": "en",
+      "bias_note": "Leading Pakistani English newspaper",
+      "enabled": true
+    },
+    {
+      "name": "CNA",
+      "url": "https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml",
+      "type": "rss",
+      "region": "Southeast Asia",
+      "language": "en",
+      "bias_note": "Singaporean news channel",
+      "enabled": true
+    },
+    {
+      "name": "Yonhap",
+      "url": "https://en.yna.co.kr/RSS/news.xml",
+      "type": "rss",
+      "region": "East Asia",
+      "language": "en",
+      "bias_note": "South Korean national news agency",
+      "enabled": true
+    },
+    {
+      "name": "UN News",
+      "url": "https://news.un.org/feed/subscribe/en/news/all/rss.xml",
+      "type": "rss",
+      "region": "International",
+      "language": "en",
+      "bias_note": "United Nations official news",
+      "enabled": true
+    },
+    {
+      "name": "ReliefWeb",
+      "url": "https://reliefweb.int/updates/rss.xml",
+      "type": "rss",
+      "region": "International",
+      "language": "en",
+      "bias_note": "UN OCHA humanitarian information service",
+      "enabled": true
+    },
+    {
+      "name": "GDELT",
+      "url": "https://api.gdeltproject.org/api/v2/doc/doc",
+      "type": "api",
+      "region": "Global",
+      "language": "multi",
+      "bias_note": "Open-source global event database, 100+ languages",
+      "enabled": true
     }
   ]
 }
