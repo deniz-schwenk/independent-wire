@@ -143,6 +143,7 @@ class Pipeline:
             self.state.raw_findings = raw_findings
             self.state.completed_steps.append("collect")
             await self._save_state()
+            self._write_debug_output("01-collector-raw.json", raw_findings)
 
         if "curate" not in self.state.completed_steps:
             self.state.current_step = "curate"
@@ -151,6 +152,7 @@ class Pipeline:
             self.state.curated_topics = curated_topics
             self.state.completed_steps.append("curate")
             await self._save_state()
+            self._write_debug_output("02-curator-topics.json", curated_topics)
 
         if "editorial_conference" not in self.state.completed_steps:
             self.state.current_step = "editorial_conference"
@@ -159,6 +161,10 @@ class Pipeline:
             self.state.assignments = [asdict(a) for a in assignments]
             self.state.completed_steps.append("editorial_conference")
             await self._save_state()
+            self._write_debug_output(
+                "03-editor-assignments.json",
+                [asdict(a) for a in assignments],
+            )
 
             # Gate check after editorial conference (full mode only)
             gate_ok = await self.gate("editorial_conference", assignments)
@@ -353,6 +359,10 @@ class Pipeline:
             try:
                 pkg = await self._produce_single(assignment)
                 packages.append(pkg)
+                slug = assignment.topic_slug or assignment.id
+                self._write_debug_output(
+                    f"04-writer-{slug}.json", pkg.to_dict()
+                )
             except Exception as e:
                 logger.error(
                     "Failed to produce topic '%s': %s", assignment.id, e
@@ -471,6 +481,14 @@ class Pipeline:
         )
 
         return packages
+
+    def _write_debug_output(self, filename: str, data: object) -> None:
+        """Write intermediate step output as JSON for debugging."""
+        out = Path(self.output_dir) / self.state.date
+        out.mkdir(parents=True, exist_ok=True)
+        path = out / filename
+        path.write_text(json.dumps(data, indent=2, ensure_ascii=False))
+        logger.info("Debug output: %s", filename)
 
     async def _save_state(self) -> None:
         """Save current pipeline state to disk."""
