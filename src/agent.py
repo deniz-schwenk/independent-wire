@@ -76,6 +76,7 @@ class Agent:
         provider: str = "openrouter",
         base_url: str | None = None,
         api_key: str | None = None,
+        reasoning: str | bool | None = None,
     ) -> None:
         self.name = name
         self.model = model
@@ -85,6 +86,7 @@ class Agent:
         self.temperature = temperature
         self.max_tokens = max_tokens
         self.provider = provider
+        self.reasoning = reasoning
 
         # Resolve provider defaults
         defaults = PROVIDER_DEFAULTS.get(provider, PROVIDER_DEFAULTS["openrouter"])
@@ -174,6 +176,24 @@ class Agent:
         }
         if tools:
             kwargs["tools"] = tools
+
+        # Map reasoning parameter to provider-specific extra_body
+        extra_body: dict = {}
+        if self.reasoning is not None:
+            if self.provider == "openrouter":
+                if isinstance(self.reasoning, bool):
+                    extra_body["reasoning"] = {
+                        "effort": "high" if self.reasoning else "minimal"
+                    }
+                elif isinstance(self.reasoning, str):
+                    extra_body["reasoning"] = {"effort": self.reasoning}
+            elif self.provider in ("ollama", "ollama_cloud"):
+                if isinstance(self.reasoning, bool):
+                    extra_body["think"] = self.reasoning
+                elif isinstance(self.reasoning, str):
+                    extra_body["think"] = self.reasoning
+        if extra_body:
+            kwargs["extra_body"] = extra_body
 
         for attempt in range(MAX_RETRIES + 1):
             try:
