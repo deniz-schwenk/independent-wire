@@ -13,11 +13,11 @@
     },
     {
       "name": "Tehran Times",
-      "url": "https://www.tehrantimes.com/rss/tp/17",
+      "url": "https://news.google.com/rss/search?q=site:tehrantimes.com&hl=en&gl=US&ceid=US:en",
       "type": "rss",
       "region": "Middle East",
       "language": "en",
-      "bias_note": "Iranian state-affiliated",
+      "bias_note": "Iranian state-affiliated (via Google News proxy)",
       "enabled": true
     },
     {
@@ -40,11 +40,11 @@
     },
     {
       "name": "Xinhua",
-      "url": "http://www.news.cn/english/rss/worldrss.xml",
+      "url": "https://news.google.com/rss/search?q=site:english.news.cn&hl=en&gl=US&ceid=US:en",
       "type": "rss",
       "region": "East Asia",
       "language": "en",
-      "bias_note": "Chinese state news agency",
+      "bias_note": "Chinese state news agency (via Google News proxy)",
       "enabled": true
     },
     {
@@ -85,7 +85,7 @@
     },
     {
       "name": "Daily Nation",
-      "url": "https://nation.africa/service/rss/kenya/news/s/eqkh4k",
+      "url": "https://nation.africa/kenya/rss.xml",
       "type": "rss",
       "region": "Africa",
       "language": "en",
@@ -94,11 +94,11 @@
     },
     {
       "name": "Guardian Nigeria",
-      "url": "https://guardian.ng/rss",
+      "url": "https://news.google.com/rss/search?q=site:guardian.ng&hl=en&gl=US&ceid=US:en",
       "type": "rss",
       "region": "Africa",
       "language": "en",
-      "bias_note": "Major Nigerian newspaper",
+      "bias_note": "Major Nigerian newspaper (via Google News proxy)",
       "enabled": true
     },
     {
@@ -121,20 +121,20 @@
     },
     {
       "name": "El Universal",
-      "url": "https://www.eluniversal.com.mx/rss/",
+      "url": "https://news.google.com/rss/search?q=site:eluniversal.com.mx&hl=es&gl=MX&ceid=MX:es",
       "type": "rss",
       "region": "Latin America",
       "language": "es",
-      "bias_note": "Major Mexican newspaper",
+      "bias_note": "Major Mexican newspaper (via Google News proxy)",
       "enabled": true
     },
     {
       "name": "PTI",
-      "url": "https://www.ptinews.com/pti-stories-rss",
+      "url": "https://news.google.com/rss/search?q=site:ptinews.com&hl=en&gl=US&ceid=US:en",
       "type": "rss",
       "region": "South Asia",
       "language": "en",
-      "bias_note": "Indian national news agency",
+      "bias_note": "Indian national news agency (via Google News proxy)",
       "enabled": true
     },
     {
@@ -175,11 +175,11 @@
     },
     {
       "name": "ReliefWeb",
-      "url": "https://reliefweb.int/updates/rss.xml",
+      "url": "https://news.google.com/rss/search?q=site:reliefweb.int&hl=en&gl=US&ceid=US:en",
       "type": "rss",
       "region": "International",
       "language": "en",
-      "bias_note": "UN OCHA humanitarian information service",
+      "bias_note": "UN OCHA humanitarian information service (via Google News proxy)",
       "enabled": true
     },
     {

@@ -24,7 +24,7 @@ logger = logging.getLogger("fetch_feeds")
 GDELT_API_URL = (
     "https://api.gdeltproject.org/api/v2/doc/doc"
     "?query=sourcelang:eng&mode=ArtList&maxrecords=50"
-    "&sort=DateDesc&format=json"
+    "&sort=DateDesc&format=json&timespan=1h"
 )
 
 
@@ -174,9 +174,13 @@ async def main():
             else:
                 feeds_failed += 1
 
-        # Fetch GDELT
+        # Fetch API sources
         for s in api_sources:
-            entries = await fetch_gdelt(client, s)
+            if "gdelt" in s["url"]:
+                entries = await fetch_gdelt(client, s)
+            else:
+                logger.warning("Unknown API source: %s", s["name"])
+                entries = []
             if entries:
                 all_findings.extend(entries)
                 feeds_ok += 1
