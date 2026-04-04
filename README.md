@@ -32,12 +32,12 @@ The article is one possible *rendering* of the Topic Package — not the package
 A pipeline of specialized AI agents, orchestrated by deterministic Python code — no LLM decides "what to do next":
 
 **Collector** → scans global sources in multiple languages via RSS and web search
-**Kurator** → evaluates relevance, creates structured topic proposals
-**Chefredaktion** → prioritizes topics, maintains editorial memory across runs
-**Perspektiv-Agent** → researches the full spectrum of positions per topic
-**Redakteur** → writes source-based, multi-perspective text
-**QA** → three-tier fact verification: VERIFIED / UNVERIFIABLE / PROVABLY FALSE
-**Bias-Detektor** → analyzes the finished text for bias — marks, never rewrites
+**Curator** → evaluates relevance, creates structured topic proposals
+**Editor** → prioritizes topics, maintains editorial memory across runs
+**Perspective Agent** → researches the full spectrum of positions per topic
+**Writer** → writes source-based, multi-perspective text
+**QA / Fact-Check** → three-tier verification: VERIFIED / UNVERIFIABLE / PROVABLY FALSE
+**Bias Detector** → analyzes the finished text for bias — marks, never rewrites
 
 Each agent can use a different AI model optimized for its role. The system is designed so that no single model, no single source, and no single perspective dominates.
 
@@ -54,7 +54,7 @@ Independent Wire is not a chatbot, not a news app, not a content generator, and 
 | First end-to-end pipeline runs | ✅ 2 runs completed |
 | Multi-provider search (Perplexity, Brave, DuckDuckGo) | ✅ Done |
 | RSS feed ingestion (21 global sources) | ✅ Done |
-| Perspektiv-Agent, Bias-Detektor, QA | 🔜 Next |
+| Perspective Agent, Bias Detector, QA | 🔜 Next |
 | Live demo (15+ sources, 5+ languages) | 🔜 Planned |
 
 [Architecture →](docs/ARCHITECTURE.md) · [Roadmap →](docs/ROADMAP.md) · [Task tracker →](docs/TASKS.md)

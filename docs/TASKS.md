@@ -72,11 +72,11 @@ Diese Fixes betreffen Agent-Prompts, nicht Code. Können einzeln oder gebündelt
 
 | WP | Beschreibung | Status |
 |----|-------------|--------|
-| WP-QA | QA/Faktencheck-Agent: verifiziert Zahlen/Fakten, befüllt divergences + gaps | ⬜ Offen |
-| WP-PERSPEKTIV | Perspektiv-Agent: recherchiert Spektrum der Positionen pro Thema | ⬜ Offen |
-| WP-BIAS | Bias-Detektor: analysiert fertigen Text auf 5 Bias-Dimensionen | ⬜ Offen |
+| WP-QA | QA / Fact-Check Agent: verifiziert Zahlen/Fakten, befüllt divergences + gaps | ⬜ Offen |
+| WP-PERSPEKTIV | Perspective Agent: recherchiert Spektrum der Positionen pro Thema | ⬜ Offen |
+| WP-BIAS | Bias Detector: analysiert fertigen Text auf 5 Bias-Dimensionen | ⬜ Offen |
 | WP-TELEGRAM | Telegram-Notifications + Gating (gate_handler Hook ist ready) | ⬜ Offen |
-| WP-MEMORY | Agent Memory Loading/Saving (Chefredaktion kennt bisherige Berichterstattung) | ⬜ Offen |
+| WP-MEMORY | Agent Memory Loading/Saving (Editor kennt bisherige Berichterstattung) | ⬜ Offen |
 | WP-VISUALS | generate-visuals.py Integration (Mermaid-Diagramme aus Topic Packages) | ⬜ Offen |
 | WP-SOCIAL | Social-Media-Agent: separater Agent zur Quellenanreicherung (X, YouTube, Instagram) vor dem Writer | ⬜ Offen |
 | WP-WEBSITE | GitHub Pages für independentwire.org | ⬜ Offen |
@@ -130,7 +130,7 @@ Diese Fixes betreffen Agent-Prompts, nicht Code. Können einzeln oder gebündelt
 
 ### Erkenntnisse aus World Monitor Wettbewerbs-Analyse (2026-04-04)
 
-**Ergebnis:** Kein Overlap — World Monitor ist ein Echtzeit-OSINT-Dashboard (Situational Awareness), Independent Wire ist eine redaktionelle Pipeline (Perspektiv-Analyse + Bias-Transparenz). Verschiedene Fragen an dasselbe Problem: World Monitor fragt "Was passiert?", Independent Wire fragt "Wie wird darüber berichtet, und was fehlt?"
+**Ergebnis:** Kein Overlap — World Monitor ist ein Echtzeit-OSINT-Dashboard (Situational Awareness), Independent Wire ist eine redaktionelle Pipeline (Perspective Analysis + Bias Transparency). Verschiedene Fragen an dasselbe Problem: World Monitor fragt "Was passiert?", Independent Wire fragt "Wie wird darüber berichtet, und was fehlt?"
 
 **Nutzbar für Independent Wire:**
 - Feed-Katalog (435+ RSS-Feeds mit 4-Tier-System) als Recherche-Startpunkt für `sources.json` Erweiterung

@@ -51,9 +51,9 @@ Core framework is operational. First successful end-to-end pipeline run complete
 
 ### H2.2 — New Agents
 Pipeline slots exist, prompts not yet written.
-- **Perspektiv-Agent:** Researches spectrum of positions per topic
-- **Bias-Detektor:** Analyzes text for bias across 5 dimensions
-- **QA/Faktencheck:** Verifies all factual claims against sources
+- **Perspective Agent:** Researches spectrum of positions per topic
+- **Bias Detector:** Analyzes text for bias across 5 dimensions
+- **QA / Fact-Check:** Verifies all factual claims against sources
 
 ### H2.3 — Globalize Source Base
 From ~10 tech/business sources to 40+ diverse, global sources.
@@ -64,7 +64,7 @@ From ~10 tech/business sources to 40+ diverse, global sources.
 - **Tier 3 — Specialized sources:** Bellingcat, Foreign Policy, Defense One, The Diplomat
 - **Tier 4 — Aggregators / niche sources:** Google News, analyst blogs, regional aggregators
 
-Tiering serves the Perspektiv-Agent and Bias-Detektor as a weighting signal — not as a filter. All tiers are included; the tier flows into the transparency card.
+Tiering serves the Perspective Agent and Bias Detector as a weighting signal — not as a filter. All tiers are included; the tier flows into the transparency card.
 
 **State affiliation flagging:** Sources with known state ties (e.g. RT, Xinhua, IRNA, TRT, CGTN) are included and tagged with a `state_affiliated` flag. The flag is transparency, not exclusion.
 
@@ -76,7 +76,7 @@ Tiering serves the Perspektiv-Agent and Bias-Detektor as a weighting signal — 
 
 **Important caveat (must appear on transparency card):** Editorial independence describes the visible structural relationship between source and state power. It does not capture hidden funding, corporate ownership interests, ideological alignment, or advertising pressure. A structurally independent source can still be biased. A state-directed source can still report facts accurately. This field is one input among many — not a quality judgment.
 
-**Collector deduplication:** Exact duplicates only (identical URL or >95% text similarity). Lower thresholds (e.g. 60% Jaccard) are deliberately NOT used — framing differences between outlets are analytically valuable for the Perspektiv-Agent and Bias-Detektor.
+**Collector deduplication:** Exact duplicates only (identical URL or >95% text similarity). Lower thresholds (e.g. 60% Jaccard) are deliberately NOT used — framing differences between outlets are analytically valuable for the Perspective Agent and Bias Detector.
 
 **Reference research:** World Monitor (worldmonitor.app, AGPL-3.0, github.com/koala73/worldmonitor) maintains 435+ curated RSS feeds with a 4-tier system and state-affiliation flags. Their feed catalog serves as research starting point for expanding `sources.json`. No code imported — only feed URLs and categorization concepts as inspiration.
 
