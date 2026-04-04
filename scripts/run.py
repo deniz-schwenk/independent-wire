@@ -25,13 +25,23 @@ def setup_logging():
 
 
 def create_agents() -> dict[str, Agent]:
-    """Create all pipeline agents with their configurations."""
+    """Create all pipeline agents with their configurations.
+
+    Models via OpenRouter (reliable, large context windows):
+    - minimax/minimax-m2.7: 204k context, good for collection/curation
+    - z-ai/glm-5: 202k context, strong reasoning for editorial/writing
+
+    Ollama Cloud (ollama_cloud provider) is also supported but currently
+    has reliability issues (timeouts, ~30% failure rate on some models).
+    To use Ollama Cloud instead, change provider to "ollama_cloud" and
+    models to "minimax-m2.7:cloud" / "glm-5:cloud".
+    """
     agents_dir = ROOT / "agents"
 
     return {
         "collector": Agent(
             name="collector",
-            model="openai/gpt-4o-mini",
+            model="minimax/minimax-m2.7",
             prompt_path=str(agents_dir / "collector" / "AGENTS.md"),
             tools=[web_search_tool],
             temperature=0.2,
@@ -39,7 +49,7 @@ def create_agents() -> dict[str, Agent]:
         ),
         "curator": Agent(
             name="curator",
-            model="openai/gpt-4o-mini",
+            model="minimax/minimax-m2.7",
             prompt_path=str(agents_dir / "curator" / "AGENTS.md"),
             tools=[],
             temperature=0.2,
@@ -47,15 +57,23 @@ def create_agents() -> dict[str, Agent]:
         ),
         "editor": Agent(
             name="editor",
-            model="openai/gpt-4o-mini",
+            model="z-ai/glm-5",
             prompt_path=str(agents_dir / "editor" / "AGENTS.md"),
             tools=[],
             temperature=0.3,
             provider="openrouter",
         ),
+        "researcher": Agent(
+            name="researcher",
+            model="z-ai/glm-5",
+            prompt_path=str(agents_dir / "researcher" / "AGENTS.md"),
+            tools=[web_search_tool],
+            temperature=0.2,
+            provider="openrouter",
+        ),
         "writer": Agent(
             name="writer",
-            model="openai/gpt-4o-mini",
+            model="z-ai/glm-5",
             prompt_path=str(agents_dir / "writer" / "AGENTS.md"),
             tools=[web_search_tool],
             temperature=0.3,

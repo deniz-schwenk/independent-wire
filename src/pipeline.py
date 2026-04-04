@@ -361,7 +361,7 @@ class Pipeline:
                 packages.append(pkg)
                 slug = assignment.topic_slug or assignment.id
                 self._write_debug_output(
-                    f"04-writer-{slug}.json", pkg.to_dict()
+                    f"05-writer-{slug}.json", pkg.to_dict()
                 )
             except Exception as e:
                 logger.error(
@@ -399,14 +399,38 @@ class Pipeline:
             )
             perspectives = _extract_list(result) or []
 
-        # 2. Writer (required)
+        # 2. Research Agent (multilingual deep search)
+        research_dossier: dict = {}
+        if researcher := self.agents.get("researcher"):
+            result = await researcher.run(
+                "Research this topic with multilingual web searches. "
+                "Find sources in languages relevant to the topic's geographic context.",
+                context=assignment_data,
+            )
+            research_dossier = _extract_dict(result) or {}
+
+        if research_dossier:
+            slug = assignment.topic_slug or assignment.id
+            self._write_debug_output(f"04-researcher-{slug}.json", research_dossier)
+
+        # 10s delay between researcher and writer to avoid rate limits
+        if research_dossier:
+            import asyncio
+            logger.info("Waiting 10s between researcher and writer...")
+            await asyncio.sleep(10)
+
+        # 3. Writer (required)
         writer = self.agents.get("writer")
         if not writer:
             raise PipelineStepError(
                 f"No 'writer' agent for topic '{assignment.id}'"
             )
 
-        writer_context = {**assignment_data, "perspectives": perspectives}
+        writer_context = {
+            **assignment_data,
+            "perspectives": perspectives,
+            "research_dossier": research_dossier,
+        }
         result = await writer.run(
             "Write a multi-perspective article on this topic.",
             context=writer_context,
@@ -479,6 +503,21 @@ class Pipeline:
             total,
             failed,
         )
+
+        # Check source language diversity per topic
+        for pkg in packages:
+            if pkg.status == "failed":
+                continue
+            sources = pkg.article.get("sources", []) if isinstance(pkg.article, dict) else []
+            langs = {s.get("language", "") for s in sources if s.get("language")}
+            if len(langs) == 1:
+                lang = next(iter(langs))
+                logger.warning(
+                    "Verify: topic '%s' has sources in only one language (%s). "
+                    "Consider adding non-English sources.",
+                    pkg.id,
+                    lang,
+                )
 
         return packages
 
