@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Independent Wire — Run the daily pipeline."""
 
+import argparse
 import asyncio
 import logging
 import sys
@@ -82,7 +83,26 @@ def create_agents() -> dict[str, Agent]:
     }
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Independent Wire pipeline")
+    parser.add_argument(
+        "--from", dest="from_step", default=None,
+        choices=["collector", "curator", "editor", "researcher", "writer"],
+        help="Start from this step, loading earlier steps from debug output",
+    )
+    parser.add_argument(
+        "--topic", type=int, default=None,
+        help="Only process this topic number (1-based index)",
+    )
+    parser.add_argument(
+        "--reuse", type=str, default=None,
+        help="Date to load debug output from (YYYY-MM-DD). Default: latest available",
+    )
+    return parser.parse_args()
+
+
 async def main():
+    args = parse_args()
     setup_logging()
     logger = logging.getLogger("independent_wire")
 
@@ -100,7 +120,20 @@ async def main():
     )
 
     try:
-        packages = await pipeline.run()
+        if args.from_step:
+            logger.info(
+                "Partial run: --from %s%s%s",
+                args.from_step,
+                f" --topic {args.topic}" if args.topic else "",
+                f" --reuse {args.reuse}" if args.reuse else "",
+            )
+            packages = await pipeline.run_partial(
+                from_step=args.from_step,
+                topic_filter=args.topic,
+                reuse_date=args.reuse,
+            )
+        else:
+            packages = await pipeline.run()
         elapsed = time.time() - start
 
         completed = [p for p in packages if p.status != "failed"]

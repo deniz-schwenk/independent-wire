@@ -382,9 +382,16 @@ class Pipeline:
         return packages
 
     async def _produce_single(
-        self, assignment: TopicAssignment
+        self,
+        assignment: TopicAssignment,
+        preloaded_dossier: dict | None = None,
     ) -> TopicPackage:
-        """Produce a single TopicPackage from an assignment."""
+        """Produce a single TopicPackage from an assignment.
+
+        If preloaded_dossier is provided, skip the researcher step and use it directly.
+        """
+        import asyncio
+
         assignment_data = asdict(assignment)
         perspectives: list[dict] = []
         article: dict = {}
@@ -401,7 +408,10 @@ class Pipeline:
 
         # 2. Research Agent (multilingual deep search)
         research_dossier: dict = {}
-        if researcher := self.agents.get("researcher"):
+        if preloaded_dossier is not None:
+            research_dossier = preloaded_dossier
+            logger.info("Using preloaded researcher dossier for '%s'", assignment.title)
+        elif researcher := self.agents.get("researcher"):
             result = await researcher.run(
                 "Research this topic with multilingual web searches. "
                 "Find sources in languages relevant to the topic's geographic context.",
@@ -409,13 +419,12 @@ class Pipeline:
             )
             research_dossier = _extract_dict(result) or {}
 
-        if research_dossier:
+        if research_dossier and preloaded_dossier is None:
             slug = assignment.topic_slug or assignment.id
             self._write_debug_output(f"04-researcher-{slug}.json", research_dossier)
 
         # 10s delay between researcher and writer to avoid rate limits
-        if research_dossier:
-            import asyncio
+        if research_dossier and preloaded_dossier is None:
             logger.info("Waiting 10s between researcher and writer...")
             await asyncio.sleep(10)
 
@@ -518,6 +527,180 @@ class Pipeline:
                     pkg.id,
                     lang,
                 )
+
+        return packages
+
+    # ------------------------------------------------------------------
+    # Partial run support
+    # ------------------------------------------------------------------
+
+    def _load_debug_output(self, date: str, filename: str) -> dict | list | None:
+        """Load a debug output file from a previous run."""
+        path = Path(self.output_dir) / date / filename
+        if not path.exists():
+            logger.error("Debug file not found: %s", path)
+            return None
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def _find_latest_output_date(self) -> str | None:
+        """Find the most recent date directory in output/."""
+        out = Path(self.output_dir)
+        if not out.exists():
+            return None
+        dates = sorted(
+            [d.name for d in out.iterdir() if d.is_dir() and d.name[:4].isdigit()]
+        )
+        return dates[-1] if dates else None
+
+    async def run_partial(
+        self,
+        from_step: str,
+        topic_filter: int | None = None,
+        reuse_date: str | None = None,
+    ) -> list[TopicPackage]:
+        """Run pipeline from a specific step, loading earlier data from debug output."""
+        import asyncio
+
+        # Resolve which date to load debug data from
+        reuse = reuse_date or self._find_latest_output_date()
+        if not reuse:
+            raise PipelineError("No previous output found to reuse")
+
+        date = datetime.now().strftime("%Y-%m-%d")
+        run_id = f"run-{date}-{uuid4().hex[:6]}"
+        self.state = PipelineState(
+            run_id=run_id,
+            date=date,
+            current_step=from_step,
+            started_at=datetime.now().isoformat(),
+        )
+
+        logger.info(
+            "Partial run: starting from '%s', reusing data from %s", from_step, reuse
+        )
+
+        # Determine which steps to skip based on from_step
+        step_order = ["collector", "curator", "editor", "researcher", "writer"]
+        from_idx = step_order.index(from_step)
+
+        # --- Load assignments (needed for researcher and writer) ---
+        assignments: list[TopicAssignment] = []
+        if from_idx >= step_order.index("researcher"):
+            raw_assignments = self._load_debug_output(reuse, "03-editor-assignments.json")
+            if not raw_assignments or not isinstance(raw_assignments, list):
+                raise PipelineError(
+                    f"Could not load 03-editor-assignments.json from {reuse}"
+                )
+            for a in raw_assignments:
+                assignments.append(
+                    TopicAssignment(
+                        id=a.get("id", a.get("topic_id", "")),
+                        title=a.get("title", ""),
+                        priority=a.get("priority", 5),
+                        topic_slug=a.get("topic_slug", ""),
+                        selection_reason=a.get("selection_reason", ""),
+                        raw_data=a.get("raw_data", {}),
+                    )
+                )
+            logger.info("Loaded %d assignments from %s", len(assignments), reuse)
+
+        # Apply topic filter (1-based index)
+        if topic_filter is not None:
+            if topic_filter < 1 or topic_filter > len(assignments):
+                raise PipelineError(
+                    f"--topic {topic_filter} out of range (have {len(assignments)} topics)"
+                )
+            assignments = [assignments[topic_filter - 1]]
+            logger.info("Filtered to topic %d: %s", topic_filter, assignments[0].title)
+
+        # --- Load researcher dossiers (needed for --from writer) ---
+        dossiers: dict[str, dict] = {}
+        if from_step == "writer":
+            for assignment in assignments:
+                slug = assignment.topic_slug or assignment.id
+                filename = f"04-researcher-{slug}.json"
+                dossier = self._load_debug_output(reuse, filename)
+                if dossier and isinstance(dossier, dict):
+                    dossiers[slug] = dossier
+                    logger.info("Loaded researcher dossier: %s", filename)
+                else:
+                    logger.warning("No researcher dossier found: %s", filename)
+
+        # --- Execute remaining steps ---
+        packages: list[TopicPackage] = []
+
+        if from_step in ("collector", "curator", "editor"):
+            # Load raw findings for curator/editor starts
+            raw_findings: list[dict] = []
+            if from_idx >= step_order.index("curator"):
+                raw_findings = self._load_debug_output(reuse, "01-collector-raw.json") or []
+                logger.info("Loaded %d raw findings from %s", len(raw_findings), reuse)
+
+            curated_topics: list[dict] = []
+            if from_idx >= step_order.index("editor"):
+                curated_topics = self._load_debug_output(reuse, "02-curator-topics.json") or []
+                logger.info("Loaded %d curated topics from %s", len(curated_topics), reuse)
+
+            # Run the steps that weren't skipped
+            if from_step == "collector":
+                raw_findings = await self.collect()
+                self._write_debug_output("01-collector-raw.json", raw_findings)
+
+            if from_idx <= step_order.index("curator"):
+                curated_topics = await self.curate(raw_findings)
+                self._write_debug_output("02-curator-topics.json", curated_topics)
+
+            if from_idx <= step_order.index("editor"):
+                assignments = await self.editorial_conference(curated_topics)
+                self._write_debug_output(
+                    "03-editor-assignments.json",
+                    [asdict(a) for a in assignments],
+                )
+                if topic_filter is not None:
+                    assignments = [assignments[topic_filter - 1]]
+
+            # Fall through to produce
+            packages = await self.produce(assignments)
+
+        elif from_step == "researcher":
+            # Run researcher + writer for each assignment
+            packages = await self.produce(assignments)
+
+        elif from_step == "writer":
+            # Run only the writer, injecting pre-loaded dossiers
+            for i, assignment in enumerate(assignments):
+                if i > 0:
+                    logger.info("Waiting 30s before next topic to avoid rate limits...")
+                    await asyncio.sleep(30)
+                try:
+                    pkg = await self._produce_single(
+                        assignment, preloaded_dossier=dossiers.get(
+                            assignment.topic_slug or assignment.id
+                        ),
+                    )
+                    packages.append(pkg)
+                    slug = assignment.topic_slug or assignment.id
+                    self._write_debug_output(f"05-writer-{slug}.json", pkg.to_dict())
+                except Exception as e:
+                    logger.error("Failed to produce topic '%s': %s", assignment.id, e)
+                    packages.append(TopicPackage(
+                        id=assignment.id,
+                        metadata={
+                            "title": assignment.title,
+                            "date": self.state.date,
+                            "status": "failed",
+                            "topic_slug": assignment.topic_slug,
+                        },
+                        status="failed",
+                        error=str(e),
+                    ))
+
+        # Verify and write output
+        packages = await self.verify(packages)
+        await self._write_output(packages)
+
+        self.state.current_step = "done"
+        await self._save_state()
 
         return packages
 
