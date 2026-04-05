@@ -80,6 +80,24 @@ def create_agents() -> dict[str, Agent]:
             temperature=0.3,
             provider="openrouter",
         ),
+        "qa_analyze": Agent(
+            name="qa_analyze",
+            model="z-ai/glm-5",
+            prompt_path=str(agents_dir / "qa_analyze" / "AGENTS.md"),
+            tools=[],
+            temperature=0.1,
+            max_tokens=16384,
+            provider="openrouter",
+        ),
+        "qa_rewrite": Agent(
+            name="qa_rewrite",
+            model="z-ai/glm-5",
+            prompt_path=str(agents_dir / "qa_rewrite" / "AGENTS.md"),
+            tools=[],
+            temperature=0.1,
+            max_tokens=16384,
+            provider="openrouter",
+        ),
     }
 
 
@@ -87,7 +105,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Independent Wire pipeline")
     parser.add_argument(
         "--from", dest="from_step", default=None,
-        choices=["collector", "curator", "editor", "researcher", "writer"],
+        choices=["collector", "curator", "editor", "researcher", "writer", "qa_analyze", "qa_rewrite"],
         help="Start from this step, loading earlier steps from debug output",
     )
     parser.add_argument(

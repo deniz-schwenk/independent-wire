@@ -385,10 +385,15 @@ class Pipeline:
         self,
         assignment: TopicAssignment,
         preloaded_dossier: dict | None = None,
+        preloaded_article: dict | None = None,
+        preloaded_qa_analysis: dict | None = None,
     ) -> TopicPackage:
         """Produce a single TopicPackage from an assignment.
 
-        If preloaded_dossier is provided, skip the researcher step and use it directly.
+        Optional preloaded data skips the corresponding step:
+        - preloaded_dossier: skip researcher
+        - preloaded_article: skip writer (and researcher)
+        - preloaded_qa_analysis: skip qa_analyze
         """
         import asyncio
 
@@ -428,42 +433,95 @@ class Pipeline:
             logger.info("Waiting 10s between researcher and writer...")
             await asyncio.sleep(10)
 
-        # 3. Writer (required)
-        writer = self.agents.get("writer")
-        if not writer:
-            raise PipelineStepError(
-                f"No 'writer' agent for topic '{assignment.id}'"
+        # 3. Writer (required, unless preloaded)
+        if preloaded_article is not None:
+            article = preloaded_article
+            logger.info("Using preloaded writer output for '%s'", assignment.title)
+        else:
+            writer = self.agents.get("writer")
+            if not writer:
+                raise PipelineStepError(
+                    f"No 'writer' agent for topic '{assignment.id}'"
+                )
+
+            writer_context = {
+                **assignment_data,
+                "perspectives": perspectives,
+                "research_dossier": research_dossier,
+            }
+            result = await writer.run(
+                "Write a multi-perspective article on this topic.",
+                context=writer_context,
             )
+            article = _extract_dict(result) or {
+                "headline": assignment.title,
+                "body": result.content,
+            }
 
-        writer_context = {
-            **assignment_data,
-            "perspectives": perspectives,
-            "research_dossier": research_dossier,
-        }
-        result = await writer.run(
-            "Write a multi-perspective article on this topic.",
-            context=writer_context,
-        )
-        article = _extract_dict(result) or {
-            "headline": assignment.title,
-            "body": result.content,
-        }
+        # Compute word_count in Python (never trust LLM counting)
+        body_text = article.get("body", "")
+        article["word_count"] = len(body_text.split())
 
-        # 3. Bias Detector (optional)
+        # 4. QA-Analyze (verify all claims)
+        qa_analysis: dict = preloaded_qa_analysis or {}
+        if not qa_analysis and (qa_analyze := self.agents.get("qa_analyze")):
+            qa_context = {
+                "article": article,
+                "research_dossier": research_dossier,
+            }
+            result = await qa_analyze.run(
+                "Verify every factual claim in this article against the available sources.",
+                context=qa_context,
+            )
+            qa_analysis = _extract_dict(result) or {}
+            slug = assignment.topic_slug or assignment.id
+            self._write_debug_output(f"06-qa-analyze-{slug}.json", qa_analysis)
+
+        # 5. QA-Rewrite (apply corrections, only if needed)
+        corrected_article = article.copy()
+        qa_rewrite_output: dict = {}
+        corrections = qa_analysis.get("corrections", [])
+
+        if corrections and (qa_rewrite := self.agents.get("qa_rewrite")):
+            # 10s delay to avoid rate limits
+            await asyncio.sleep(10)
+
+            rewrite_context = {
+                "article": article,
+                "qa_analysis": qa_analysis,
+            }
+            result = await qa_rewrite.run(
+                "Apply the corrections to the article text and produce the final verification card.",
+                context=rewrite_context,
+            )
+            qa_rewrite_output = _extract_dict(result) or {}
+            slug = assignment.topic_slug or assignment.id
+            self._write_debug_output(f"07-qa-rewrite-{slug}.json", qa_rewrite_output)
+
+            # Merge: QA-Rewrite body replaces Writer body
+            if qa_rewrite_output.get("body"):
+                corrected_article["body"] = qa_rewrite_output["body"]
+            if qa_rewrite_output.get("headline"):
+                corrected_article["headline"] = qa_rewrite_output["headline"]
+            if qa_rewrite_output.get("subheadline"):
+                corrected_article["subheadline"] = qa_rewrite_output["subheadline"]
+            if qa_rewrite_output.get("summary"):
+                corrected_article["summary"] = qa_rewrite_output["summary"]
+
+        # Recompute word_count after QA corrections
+        body_text = corrected_article.get("body", "")
+        corrected_article["word_count"] = len(body_text.split())
+
+        # Preserve original article text for transparency
+        article_original = article.get("body", "")
+
+        # 6. Bias Detector (optional)
         if bias_detector := self.agents.get("bias_detector"):
             result = await bias_detector.run(
                 "Analyze this article for bias across all five dimensions.",
-                context={"article": article, "sources": sources},
+                context={"article": corrected_article, "sources": corrected_article.get("sources", [])},
             )
             bias_analysis = _extract_dict(result) or {}
-
-        # 4. QA/Faktencheck (optional)
-        if qa := self.agents.get("qa"):
-            result = await qa.run(
-                "Verify all factual claims in this article.",
-                context={"article": article, "sources": sources},
-            )
-            sources = _extract_list(result) or []
 
         # Assemble TopicPackage
         return TopicPackage(
@@ -475,9 +533,11 @@ class Pipeline:
                 "topic_slug": assignment.topic_slug,
                 "priority": assignment.priority,
             },
-            sources=sources,
+            sources=corrected_article.get("sources", []),
             perspectives=perspectives,
-            article=article,
+            divergences=qa_analysis.get("divergences", []),
+            gaps=qa_analysis.get("gaps", []),
+            article=corrected_article,
             bias_analysis=bias_analysis,
             transparency={
                 "selection_reason": assignment.selection_reason,
@@ -486,6 +546,15 @@ class Pipeline:
                     "run_id": self.state.run_id if self.state else "",
                     "date": self.state.date if self.state else "",
                 },
+                "article_original": article_original,
+                "verification_card": (
+                    qa_rewrite_output.get("verification_card")
+                    or qa_analysis.get("verification_card", [])
+                ),
+                "qa_summary": (
+                    qa_rewrite_output.get("qa_summary")
+                    or qa_analysis.get("qa_summary", {})
+                ),
             },
             status="review",
         )
@@ -580,10 +649,10 @@ class Pipeline:
         )
 
         # Determine which steps to skip based on from_step
-        step_order = ["collector", "curator", "editor", "researcher", "writer"]
+        step_order = ["collector", "curator", "editor", "researcher", "writer", "qa_analyze", "qa_rewrite"]
         from_idx = step_order.index(from_step)
 
-        # --- Load assignments (needed for researcher and writer) ---
+        # --- Load assignments (needed for researcher onward) ---
         assignments: list[TopicAssignment] = []
         if from_idx >= step_order.index("researcher"):
             raw_assignments = self._load_debug_output(reuse, "03-editor-assignments.json")
@@ -613,9 +682,13 @@ class Pipeline:
             assignments = [assignments[topic_filter - 1]]
             logger.info("Filtered to topic %d: %s", topic_filter, assignments[0].title)
 
-        # --- Load researcher dossiers (needed for --from writer) ---
+        # --- Load per-topic data for later steps ---
         dossiers: dict[str, dict] = {}
-        if from_step == "writer":
+        writer_outputs: dict[str, dict] = {}
+        qa_analyze_outputs: dict[str, dict] = {}
+
+        # Load researcher dossiers (needed for --from writer onward)
+        if from_idx >= step_order.index("writer"):
             for assignment in assignments:
                 slug = assignment.topic_slug or assignment.id
                 filename = f"04-researcher-{slug}.json"
@@ -625,6 +698,31 @@ class Pipeline:
                     logger.info("Loaded researcher dossier: %s", filename)
                 else:
                     logger.warning("No researcher dossier found: %s", filename)
+
+        # Load writer outputs (needed for --from qa_analyze onward)
+        if from_idx >= step_order.index("qa_analyze"):
+            for assignment in assignments:
+                slug = assignment.topic_slug or assignment.id
+                filename = f"05-writer-{slug}.json"
+                writer_data = self._load_debug_output(reuse, filename)
+                if writer_data and isinstance(writer_data, dict):
+                    # Writer debug output is a full TopicPackage — extract the article
+                    writer_outputs[slug] = writer_data.get("article", writer_data)
+                    logger.info("Loaded writer output: %s", filename)
+                else:
+                    logger.warning("No writer output found: %s", filename)
+
+        # Load QA-Analyze outputs (needed for --from qa_rewrite)
+        if from_step == "qa_rewrite":
+            for assignment in assignments:
+                slug = assignment.topic_slug or assignment.id
+                filename = f"06-qa-analyze-{slug}.json"
+                qa_data = self._load_debug_output(reuse, filename)
+                if qa_data and isinstance(qa_data, dict):
+                    qa_analyze_outputs[slug] = qa_data
+                    logger.info("Loaded QA-Analyze output: %s", filename)
+                else:
+                    logger.warning("No QA-Analyze output found: %s", filename)
 
         # --- Execute remaining steps ---
         packages: list[TopicPackage] = []
@@ -663,23 +761,23 @@ class Pipeline:
             packages = await self.produce(assignments)
 
         elif from_step == "researcher":
-            # Run researcher + writer for each assignment
             packages = await self.produce(assignments)
 
-        elif from_step == "writer":
-            # Run only the writer, injecting pre-loaded dossiers
+        elif from_step in ("writer", "qa_analyze", "qa_rewrite"):
+            # Run from writer/qa_analyze/qa_rewrite with preloaded data
             for i, assignment in enumerate(assignments):
                 if i > 0:
                     logger.info("Waiting 30s before next topic to avoid rate limits...")
                     await asyncio.sleep(30)
+                slug = assignment.topic_slug or assignment.id
                 try:
                     pkg = await self._produce_single(
-                        assignment, preloaded_dossier=dossiers.get(
-                            assignment.topic_slug or assignment.id
-                        ),
+                        assignment,
+                        preloaded_dossier=dossiers.get(slug),
+                        preloaded_article=writer_outputs.get(slug) if from_idx >= step_order.index("qa_analyze") else None,
+                        preloaded_qa_analysis=qa_analyze_outputs.get(slug) if from_step == "qa_rewrite" else None,
                     )
                     packages.append(pkg)
-                    slug = assignment.topic_slug or assignment.id
                     self._write_debug_output(f"05-writer-{slug}.json", pkg.to_dict())
                 except Exception as e:
                     logger.error("Failed to produce topic '%s': %s", assignment.id, e)
