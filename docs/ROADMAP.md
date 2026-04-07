@@ -1,7 +1,7 @@
 # Independent Wire — Open Source Roadmap
 
 **Created:** 2026-03-26
-**Updated:** 2026-04-04
+**Updated:** 2026-04-05
 **Status:** Living document — strategic overview. For operational task tracking see [TASKS.md](TASKS.md).
 **Basis:** Vision paper (March 2026) + PoC experience (Sessions 1–8) + World Monitor competitive analysis (April 2026)
 
@@ -45,7 +45,8 @@ Core framework is operational. First successful end-to-end pipeline run complete
 | WP-REASONING | Configurable reasoning effort per agent | ✅ Done |
 | WP-RSS | RSS/API feed ingestion (21 sources, GDELT) | ✅ Done |
 | WP-DEBUG-OUTPUT | Step-by-step debug output per pipeline step | ✅ Done |
-| WP-RESEARCH | Multilingual research agent (per topic) | 🔜 Next |
+| WP-RESEARCH | Multilingual research agent (per topic) | ✅ Done |
+| WP-PARTIAL-RUN | CLI flags for partial pipeline runs (--from, --topic, --reuse) | ✅ Done |
 | WP-TELEGRAM | Telegram Interface | ⬜ Planned |
 | WP-MEMORY | Agent Memory | ⬜ Planned |
 

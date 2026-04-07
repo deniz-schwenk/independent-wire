@@ -50,6 +50,7 @@ class TopicPackage:
         return {
             "id": self.id,
             "version": "1.0",
+            "status": self.status,
             "metadata": self.metadata,
             "sources": self.sources,
             "perspectives": self.perspectives,

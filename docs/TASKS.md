@@ -1,7 +1,7 @@
 # Independent Wire — Task Tracker
 
 **Erstellt:** 2026-03-30
-**Aktualisiert:** 2026-04-04
+**Aktualisiert:** 2026-04-06
 **Zweck:** Living Document — wird nach jeder Session aktualisiert
 
 ---
@@ -21,129 +21,81 @@
 | WP-RSS | ✅ | RSS/API feeds: 21 sources in config/sources.json, fetch_feeds.py, Pipeline merges with Collector output |
 | WP-DEBUG-OUTPUT | ✅ | Step-by-step debug JSON per pipeline step (01-collector-raw.json etc.) |
 | WP-REASONING | ✅ | Configurable reasoning effort per agent (None/True/False/"low"/"medium"/"high") |
+| WP-RESEARCH | ✅ | Research Agent: mehrsprachige Tiefenrecherche zwischen Editor und Writer. Lauf 3: 5-8 Sprachen/Topic statt 100% EN |
+| WP-PARTIAL-RUN | ✅ | `--from`/`--topic`/`--reuse` Flags für run.py. Writer-only Test: 2 min statt 30 min |
+| WP-QA | ✅ | QA-Analyze (vereinfacht) + Writer-Correction + Python-Verify. Verification Card entfernt, QA-Rewrite eliminiert. Lauf 5: 1 Korrektur, 3 Divergenzen, 4 Gaps. |
 
+## Erledigte Fixes
+
+| Fix | Status | Beschreibung |
+|-----|--------|-------------|
+| Feed-Fixes | ✅ | 8 kaputte Feeds gefixt. Alle Google News Proxies entfernt. |
+| P-01–P-05 | ✅ | Collector: date-awareness, YouTube/Wiki/social ban, best-effort multilingual, no dup URLs. Writer: Wikipedia only for background |
+| F-01–F-05 | ✅ | 30s delay, date in Editor msg, code-fence parsing, model correction, language diversity warning |
+| P-06 | ✅ | `divergences` und `gaps` werden durch QA-Analyze befüllt |
+| QF-01 | ✅ | max_tokens Default auf 32768 (vorher 8192) |
+| QF-02 | ✅ | Token-Tracking: run-*-stats.json mit tokens_used, duration_seconds pro Agent |
+| QF-03 | ✅ | Warning wenn QA-Analyze leeres Output liefert |
+| QA-Simplify | ✅ | Verification Card entfernt, QA-Rewrite eliminiert, Writer-Correction + Python-Verify eingeführt. |
+
+## Bald umsetzen (nächste Session)
+
+| # | Typ | Bereich | Fix | Priorität |
+|---|-----|---------|-----|-----------|
+| QF-04 | Agent | Alle | max_tokens Default von 32768 auf **65536** erhöhen. Headroom für wachsende Dossiers und komplexere Topics. Einzeiler in `src/agent.py`. | 🔴 Hoch |
+| P-07 | Prompt | QA-Analyze | Wikipedia-Regel als RULE 5 ergänzen. Writer verbietet Wikipedia für Claims/Analyse, QA muss dagegen prüfen (Ungarn-Artikel hatte Wikipedia als src-023 für Polling). | 🔴 Hoch |
+| P-08 | Pipeline | Writer | Quellen-Anzahl im Meta-Transparenz-Absatz durch Python setzen statt LLM. Systematischer Zählfehler (25 vs 20, 29 vs 24). | 🟡 Mittel |
 
 ## Nächste Arbeitspakete (Reihenfolge = Priorität)
 
 | WP | Priorität | Beschreibung | Abhängig von |
 |----|-----------|-------------|--------------|
-| WP-RESEARCH | 🟡 Mittel | Research Agent: themengesteuerte Tiefenrecherche in Originalsprachen zwischen Editor und Writer | WP-INTEGRATION |
-
-## Feed-Fixes (aus zweitem Lauf 2026-03-31)
-
-8 von 21 Feeds failed. URLs müssen gefixt oder ersetzt werden.
-
-| Feed | Problem | Status |
-|------|---------|--------|
-| Tehran Times | Timeout | ⬜ URL prüfen/ersetzen |
-| Daily Nation (Kenya) | 403 Forbidden | ⬜ Alternative URL suchen |
-| Guardian Nigeria | 403 Forbidden | ⬜ Alternative URL suchen |
-| PTI | Invalid XML | ⬜ URL prüfen/ersetzen |
-| El Universal (Mexico) | 404 Not Found | ⬜ Alternative URL suchen |
-| Xinhua | 0 entries (Feed leer) | ⬜ Feed-URL prüfen |
-| TASS | 0 entries (Feed leer) | ⬜ Feed-URL prüfen |
-| ReliefWeb | 0 entries (202 Accepted) | ⬜ API statt RSS testen |
-
-## Prompt-Fixes (aus Qualitätsauswertung 2026-03-30)
-
-Diese Fixes betreffen Agent-Prompts, nicht Code. Können einzeln oder gebündelt umgesetzt werden.
-
-| # | Agent | Problem | Fix | Status |
-|---|-------|---------|-----|--------|
-| P-01 | Collector | Sucht mit veralteten Jahreszahlen ("economy news 2024") | Datum im Pipeline-Message + Prompt: "search for TODAY's news, do NOT use past years" | ✅ Erledigt |
-| P-02 | Collector | YouTube als Quelle (4 von 39 Findings) | Explizite Blocklist: YouTube, Wikipedia, Instagram, TikTok, Reddit, X/Twitter, Facebook | ✅ Erledigt |
-| P-03 | Collector | Alle 39 Findings ausschließlich auf Englisch | Collector: "best effort" nicht-englische Queries. Echte Lösung: WP-RESEARCH (dedizierter Research Agent) + WP-RSS (mehrsprachige Feeds) | ✅ Angepasst |
-| P-04 | Collector | Doppelte URLs (verschiedene Findings, gleiche URL) | Regel: "Each source_url must be unique. Do not extract multiple findings from the same article." | ✅ Erledigt |
-| P-05 | Writer | Wikipedia als Primärquelle (Kongo src-001) | Wikipedia nur für Hintergrundfakten (Bevölkerung, Geographie), nicht als Nachrichtenquelle | ✅ Erledigt |
-| P-06 | Writer | `divergences` und `gaps` Felder werden nicht befüllt | Verschoben auf WP-QA — QA-Agent befüllt diese Felder nach Artikelprüfung | ↗️ Verschoben |
-
-
-## Pipeline-Fixes (aus erstem Lauf)
-
-| # | Bereich | Problem | Fix | Status |
-|---|---------|---------|-----|--------|
-| F-01 | pipeline.py | Rate-Limiting bei 3+ Writer Topics (429 von glm-5) | 30s Delay zwischen Topics in produce() | ✅ Erledigt |
-| F-02 | pipeline.py | Topic-IDs mit falschem Datum (2025-01-09 statt 2026-03-30) | Datum explizit im Editor-Message übergeben | ✅ Erledigt |
-| F-03 | pipeline.py | _extract_list/_extract_dict: Markdown Code-Fences nicht gehandled | _strip_code_fences() + dict-unwrap Fallback | ✅ Erledigt |
-| F-04 | run.py | Claude Code hat eigenmächtig auf gpt-4o-mini umgestellt | Korrigiert: minimax/minimax-m2.7 + z-ai/glm-5 via OpenRouter | ✅ Erledigt |
-| F-05 | pipeline.py | Keine Warnung wenn alle Quellen einsprachig sind | Deterministischer Check in verify(): Warnung wenn alle Quellen im Topic Package dieselbe Sprache haben | ✅ Erledigt |
+| WP-CACHING | 🟢 Klein | Prompt Caching via OpenRouter für GLM5-turbo und Mimo-V2-Pro. Provider-agnostisch: funktioniert mit und ohne Caching. | — |
+| WP-PERSPEKTIV | 🟡 Mittel | Perspektiv-Agent: recherchiert Spektrum der Positionen pro Thema | WP-RESEARCH |
+| WP-MEMORY | 🟢 Klein | Agent Memory Loading/Saving (Editor kennt bisherige Berichterstattung) | — |
 
 ## Zukünftige Arbeitspakete (H2)
 
 | WP | Beschreibung | Status |
 |----|-------------|--------|
-| WP-QA | QA / Fact-Check Agent: verifiziert Zahlen/Fakten, befüllt divergences + gaps | ⬜ Offen |
-| WP-PERSPEKTIV | Perspective Agent: recherchiert Spektrum der Positionen pro Thema | ⬜ Offen |
-| WP-BIAS | Bias Detector: analysiert fertigen Text auf 5 Bias-Dimensionen | ⬜ Offen |
+| WP-BIAS | Bias-Detektor: analysiert fertigen Text auf 5 Bias-Dimensionen | ⬜ Offen |
 | WP-TELEGRAM | Telegram-Notifications + Gating (gate_handler Hook ist ready) | ⬜ Offen |
-| WP-MEMORY | Agent Memory Loading/Saving (Editor kennt bisherige Berichterstattung) | ⬜ Offen |
 | WP-VISUALS | generate-visuals.py Integration (Mermaid-Diagramme aus Topic Packages) | ⬜ Offen |
 | WP-SOCIAL | Social-Media-Agent: separater Agent zur Quellenanreicherung (X, YouTube, Instagram) vor dem Writer | ⬜ Offen |
 | WP-WEBSITE | GitHub Pages für independentwire.org | ⬜ Offen |
 | WP-DNS | DNS-Konfiguration Cloudflare + .de/.eu Domains | ⬜ Offen |
-| WP-SOURCE-TIERING | `sources.json` Schema erweitern: `tier` (1-4), `source_type`, `state_affiliated`, `editorial_independence` Felder. Bestehende Quellen migrieren, World Monitor Feed-Katalog als Recherche-Startpunkt für Erweiterung auf 40+ | ⬜ Offen |
-| WP-DEDUP | Collector-Deduplizierung: exakte URL-Dedup + >95% Text-Similarity als Pipeline-Step. Bewusst KEIN Jaccard <95% — Framing-Unterschiede sind analytisch wertvoll | ⬜ Offen |
-| WP-OSINT-FEEDS | Verifizieren ob 26 Telegram-OSINT-Kanäle (Aurora Intel, BNO News, Bellingcat, LiveUAMap, NEXTA etc.) kostenfreie RSS/Web-Alternativen haben. Falls ja + Mehrwert: in `sources.json` aufnehmen | ⬜ Offen |
 
-## Zukünftige Arbeitspakete (H3)
+## Erkenntnisse aus den Pipeline-Läufen
 
-| WP | Beschreibung | Status |
-|----|-------------|--------|
-| WP-ACLED-GDELT | ACLED (Konflikt-/Protestdaten) + GDELT (globale Event-DB mit Tonalitätsanalyse) als ergänzende Signalquellen für den Collector evaluieren. Beide bieten kostenfreien API-Zugang. Potenzial: Topic-Discovery-Trigger, geographische Abdeckungsvalidierung | ⬜ H3 |
-| WP-TELEGRAM-OSINT | Direkte Telegram-API-Integration (GramJS/MTProto) für 26+ kuratierte OSINT-Kanäle als Echtzeit-Quellenlayer. Eigene Infrastruktur nötig (MTProto-Client, Message-Polling, Deduplizierung) | ⬜ H3 |
+### Lauf 1 (2026-03-30)
+**Daten:** 39 Findings → 3 Topics → 2 produziert, 1 failed (Rate-Limit)
+**Laufzeit:** 19 Minuten | **Modelle:** minimax-m2.7 + glm-5 via OpenRouter
 
+### Lauf 2 (2026-03-31)
+**Daten:** 38 Collector + 445 RSS = 483 Findings → 3 Topics → 3/3 produziert, 0 failed
+**Laufzeit:** 19.5 Minuten
 
-## Erkenntnisse aus dem ersten Pipeline-Lauf (2026-03-30)
+### Lauf 3 (2026-04-05) — mit Research Agent
+**Daten:** 3 Topics → 3/3 produziert, 0 failed
+**Laufzeit:** 29.6 Minuten
+**Researcher-Ergebnisse:** 5-8 Sprachen/Topic, 18-38 Quellen, 76-85% non-English Queries.
 
-**Lauf-Daten:** 39 Findings → 3 Topics → 2 produziert, 1 failed (Rate-Limit)
-**Laufzeit:** 19 Minuten (1153 Sekunden)
-**Modelle:** minimax/minimax-m2.7 (Collector, Curator) + z-ai/glm-5 (Editor, Writer) via OpenRouter
-**Kosten:** ~$0.30-0.50 geschätzt
+### Lauf 4 (2026-04-05) — QA (komplexe Version, vor Vereinfachung)
+**Daten:** 1 Topic (Iran-Konflikt), QA-only Partial Run
+**Ergebnisse:** 30 Claims geprüft, 2 Korrekturen (Subheadline + Source Count)
+**Problem:** QA-Analyze mit Verification Card: 29.170 Tokens, ~8 min. Bei 2/3 Folge-Läufen: leeres `{}` (JSON-Parsing-Fehler wegen zu großem Output).
+**Erkenntnis:** Verification Card ist Haupttreiber der Komplexität → vereinfacht in TASK-QA-SIMPLIFY.
 
-### Was funktioniert
-- Pipeline-Mechanik Collect→Curate→Edit→Write läuft stabil
-- Writer recherchiert eigenständig nach (10-11 Tool-Calls pro Topic)
-- Multi-Perspektivität ist real: Iran-Position, westliche Reaktion, asiatische Notfallmaßnahmen
-- Transparenz-Absätze am Artikelende identifizieren Quellenlücken ehrlich
-- Editor-Begründungen ("selection_reason") sind die stärkste Leistung
-- Error Isolation funktioniert: Topic 2 failed, Pipeline produzierte Topic 3 trotzdem
+### Lauf 5 (2026-04-06) — QA (vereinfachte Version)
+**Daten:** 1 Topic (Ungarn-Wahl), QA-only Partial Run gegen unkorrigierten Lauf-3-Output
+**Tokens:** QA-Analyze 20.049 (70s) + Writer-Correction 15.836 (32s) = 35.885 gesamt (102s)
+**Ergebnisse:**
+- 1 Korrektur: "25 sources" → "20 sources" (systematischer Writer-Zählfehler)
+- 3 Divergenzen: Kaczyński-Orbán Verbindung fehlt (omission), Diaspora-Framing (framing), EU-Gelder vs. Innenpolitik (emphasis)
+- 4 Gaps: rumänische Quellen, slowakisch/tschechisch, Kaczyński-Verbindung, Business-Community
+- Python-Verify: 1/1 Korrekturen erfolgreich angewandt
 
-### Was nicht funktioniert
-- Collector: alle Findings auf Englisch trotz globaler Abdeckung
-- Collector: zeitliche Vermischung (2024er-Daten neben 2026er-News)
-- Writer: `divergences` und `gaps` Felder bleiben leer
-- Writer: Wikipedia als Primärquelle akzeptiert
-- Kein Faktencheck: alle Zahlen und Statistiken ungeprüft
-- Ollama Cloud: ~30% Ausfallrate, für Produktion nicht geeignet (OpenRouter stattdessen)
-
-### Architektur-Entscheidung
-- Artikellänge richtet sich nach Themen-Tiefe, nicht nach Format-Vorgaben
-- Sobald Memory existiert (WP-MEMORY), referenziert der Writer frühere Berichterstattung statt Kontext von Null aufzubauen
-
-### Erkenntnisse aus dem zweiten Pipeline-Lauf (2026-03-31)
-
-**Lauf-Daten:** 38 Collector + 445 RSS = 483 Findings → 3 Topics → 3/3 produziert, 0 failed
-**Laufzeit:** 19.5 Minuten (1169 Sekunden)
-**Verbesserungen gegenüber Lauf 1:** Kein 429-Fehler, korrekte Topic-IDs, RSS-Feeds integriert, Debug-Output vorhanden, aktuellere Suchanfragen
-
-**Offenes Problem — Sprach-Diversität:** Alle Quellen in beiden Läufen sind 100% Englisch. Länder-Diversität ist gut (Somalia, Mosambik, Libanon, Ruanda etc.), aber die Sprache ist durchgehend EN. RSS-Feeds liefern englische Inhalte selbst von nicht-englischen Outlets. Lösung: WP-RESEARCH (dedizierter Research Agent mit gezielten nicht-englischen Suchen pro Topic).
-
-### Erkenntnisse aus World Monitor Wettbewerbs-Analyse (2026-04-04)
-
-**Ergebnis:** Kein Overlap — World Monitor ist ein Echtzeit-OSINT-Dashboard (Situational Awareness), Independent Wire ist eine redaktionelle Pipeline (Perspective Analysis + Bias Transparency). Verschiedene Fragen an dasselbe Problem: World Monitor fragt "Was passiert?", Independent Wire fragt "Wie wird darüber berichtet, und was fehlt?"
-
-**Nutzbar für Independent Wire:**
-- Feed-Katalog (435+ RSS-Feeds mit 4-Tier-System) als Recherche-Startpunkt für `sources.json` Erweiterung
-- Source-Tiering-Konzept + State-Affiliation-Flags → übernommen als 4-stufige `editorial_independence` Taxonomie
-- Liste von 26 Telegram-OSINT-Kanälen als Quellen-Verzeichnis
-- Erkenntnis: Collector-Deduplizierung nur bei >95% (nicht 60% Jaccard wie World Monitor), da Framing-Unterschiede analytisch wertvoll
-
-**Nicht nutzbar:** Code (TypeScript, Dashboard-Architektur), Signal-Korrelations-Engine, Market-Entity-Knowledge-Base, Threat-Classification-Pipeline
-
-**Entscheidung — Editorial Independence Taxonomie:**
-4-stufige Skala statt binärem Flag: `independent` → `publicly_funded_autonomous` → `state_influenced` → `state_directed`
-
-Wichtiger Caveat (muss auf Transparenz-Karte erscheinen): Das Feld erfasst die sichtbare strukturelle Beziehung zur Staatsmacht. Es erfasst NICHT verdeckte Finanzierung, Eigentümerinteressen, ideologische Ausrichtung oder Werbeabhängigkeit. Ein strukturell unabhängiges Outlet kann trotzdem massiv geframt sein. Ein staatlich gelenktes Outlet kann trotzdem faktenbasiert berichten. Unabhängigkeit/Abhängigkeit sagt nichts direkt über den Wahrheitsgehalt aus.
+**Vergleich alt vs. neu:** 29K Tokens + 480s + leeres Output → 36K Tokens + 102s + vollständiges Ergebnis.
 
 ---
 

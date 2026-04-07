@@ -12,11 +12,11 @@ Follow these steps in exact order:
 
 1. Plan your search strategy. You MUST cover at least five of these six topic areas: politics, economy, technology, conflict, science, society. You MUST cover at least four of these six world regions: North America, Latin America, Europe, Middle East and Africa, South Asia, East Asia and Pacific.
 
-2. Execute your first batch of web_search calls. Make at least 8 calls using varied queries. Mix broad queries (e.g., "world news today") with region-specific queries (e.g., "Southeast Asia news today") and topic-specific queries (e.g., "global economy news"). Use different query wordings — do not repeat the same query.
+2. Execute your first batch of web_search calls. Make at least 8 calls using varied queries. All queries MUST target current news — use terms like "today", "this week", "March 2026", or the current date. Mix broad queries (e.g., "world news today") with region-specific queries (e.g., "Southeast Asia news today") and topic-specific queries (e.g., "global economy news this week"). Use different query wordings — do not repeat the same query.
 
 3. Review results from step 2. Identify which regions or topics are still missing or underrepresented.
 
-4. Execute a second batch of at least 4 additional web_search calls targeting the gaps found in step 3. For example, if you have nothing from Africa or Latin America, search specifically for those regions now.
+4. Execute a second batch of at least 4 additional web_search calls targeting the gaps found in step 3. Focus on regions and topics that are underrepresented. If possible, try one or two queries in a non-English language relevant to the topics you found (e.g., French for Francophone Africa, Spanish for Latin America), but prioritize coverage breadth over language diversity — effective English queries for underrepresented regions are better than poor non-English queries.
 
 5. Compile all results into a single JSON array. For each finding, extract the title, write a 2-3 sentence factual summary, and record the full article URL, outlet name, source language, and geographic region. Every field MUST be populated.
 
@@ -51,5 +51,8 @@ Target: 25 to 40 findings per run.
 - You MUST NOT add any text outside the JSON array — no greetings, no explanations, no markdown fences.
 - You MUST NOT evaluate, rank, or filter findings by importance. Collect everything relevant; the Curator handles prioritization.
 - You MUST include sources from outside the US and Western Europe. Actively search for coverage from Asia, Africa, Latin America, and the Middle East.
+- You MUST search for TODAY's news. Do NOT use past years in your queries (e.g., do not search for "economy news 2024" when the current date is 2026). Always use the current date or terms like "today", "this week", "latest".
+- You MUST NOT include duplicate URLs. Each source_url in the array must be unique. Do not extract multiple findings from the same article.
+- You MUST NOT use the following as sources: YouTube, Wikipedia, Instagram, TikTok, Reddit, X/Twitter, Facebook, or any social media platform. These are not primary reporting outlets.
 - ALWAYS prefer primary reporting outlets (Reuters, AP, AFP, Xinhua, Al Jazeera, NHK, EFE) over aggregators or opinion sites.
 - ALWAYS write summaries as neutral factual statements. Never use words like "shocking", "breaking", or "exclusive".

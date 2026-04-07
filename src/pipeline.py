@@ -400,31 +400,23 @@ class Pipeline:
         assignment: TopicAssignment,
         preloaded_dossier: dict | None = None,
         preloaded_article: dict | None = None,
+        skip_perspektiv: bool = False,
     ) -> TopicPackage:
         """Produce a single TopicPackage from an assignment.
 
         Optional preloaded data skips the corresponding step:
         - preloaded_dossier: skip researcher
-        - preloaded_article: skip writer (and researcher)
+        - preloaded_article: skip writer (and researcher and perspektiv)
+        - skip_perspektiv: skip perspektiv even when dossier is available
         """
         import asyncio
 
         assignment_data = asdict(assignment)
-        perspectives: list[dict] = []
         article: dict = {}
         bias_analysis: dict = {}
         sources: list[dict] = []
 
         slug = assignment.topic_slug or assignment.id
-
-        # 1. Perspektiv-Agent (optional)
-        if perspektiv := self.agents.get("perspektiv"):
-            result = await perspektiv.run(
-                "Research the spectrum of perspectives on this topic.",
-                context=assignment_data,
-            )
-            self._track_agent(result, "perspektiv", slug)
-            perspectives = _extract_list(result) or []
 
         # 2. Research Agent (multilingual deep search)
         research_dossier: dict = {}
@@ -437,16 +429,48 @@ class Pipeline:
                 "Find sources in languages relevant to the topic's geographic context.",
                 context=assignment_data,
             )
-            research_dossier = _extract_dict(result) or {}
             self._track_agent(result, "researcher", slug)
+            research_dossier = _extract_dict(result) or {}
 
-        if research_dossier and preloaded_dossier is None:
-            self._write_debug_output(f"04-researcher-{slug}.json", research_dossier)
+            # Always write debug output (raw content if parsing failed)
+            if research_dossier:
+                self._write_debug_output(f"04-researcher-{slug}.json", research_dossier)
+            else:
+                logger.warning(
+                    "Researcher for '%s' returned unparseable output (%d tokens). "
+                    "Saving raw content to debug file.",
+                    assignment.title,
+                    result.tokens_used,
+                )
+                self._write_debug_output(
+                    f"04-researcher-{slug}-RAW.json",
+                    {"_raw_content": result.content[:5000], "_tokens_used": result.tokens_used},
+                )
 
-        # 10s delay between researcher and writer to avoid rate limits
+        # 10s delay between researcher and perspektiv/writer to avoid rate limits
         if research_dossier and preloaded_dossier is None:
-            logger.info("Waiting 10s between researcher and writer...")
+            logger.info("Waiting 10s after researcher...")
             await asyncio.sleep(10)
+
+        # 2b. Perspective Agent (stakeholder mapping, no tools)
+        perspective_analysis: dict = {}
+        if not skip_perspektiv and preloaded_article is None and research_dossier:
+            if perspektiv := self.agents.get("perspektiv"):
+                perspektiv_context = {
+                    **assignment_data,
+                    "research_dossier": research_dossier,
+                }
+                result = await perspektiv.run(
+                    "Analyze the research dossier. Map all stakeholders, identify missing voices, "
+                    "and surface framing divergences between regions and language groups.",
+                    context=perspektiv_context,
+                )
+                perspective_analysis = _extract_dict(result) or {}
+                self._track_agent(result, "perspektiv", slug)
+                self._write_debug_output(f"04b-perspektiv-{slug}.json", perspective_analysis)
+
+                # 5s delay before writer
+                await asyncio.sleep(5)
 
         # 3. Writer (required, unless preloaded)
         if preloaded_article is not None:
@@ -461,7 +485,7 @@ class Pipeline:
 
             writer_context = {
                 **assignment_data,
-                "perspectives": perspectives,
+                "perspective_analysis": perspective_analysis,
                 "research_dossier": research_dossier,
             }
             result = await writer.run(
@@ -518,7 +542,7 @@ class Pipeline:
             self._write_debug_output(f"06-qa-analyze-{slug}.json", qa_analysis)
 
             if not qa_analysis or not any(
-                qa_analysis.get(k) is not None for k in ("corrections", "divergences", "gaps")
+                qa_analysis.get(k) is not None for k in ("corrections", "divergences")
             ):
                 logger.warning(
                     "QA-Analyze for '%s' returned no usable fields — "
@@ -630,9 +654,9 @@ class Pipeline:
                 "priority": assignment.priority,
             },
             sources=article.get("sources", []),
-            perspectives=perspectives,
+            perspectives=perspective_analysis.get("stakeholders", []),
             divergences=qa_analysis.get("divergences", []),
-            gaps=qa_analysis.get("gaps", []),
+            gaps=perspective_analysis.get("missing_voices", []),
             article=article,
             bias_analysis=bias_analysis,
             transparency={
@@ -645,6 +669,7 @@ class Pipeline:
                 "article_original": article_original if corrections else None,
                 "qa_corrections": corrections,
                 "qa_corrections_applied": applied if corrections else 0,
+                "framing_divergences": perspective_analysis.get("framing_divergences", []),
             },
             status="review",
         )
@@ -739,7 +764,7 @@ class Pipeline:
         )
 
         # Determine which steps to skip based on from_step
-        step_order = ["collector", "curator", "editor", "researcher", "writer", "qa_analyze"]
+        step_order = ["collector", "curator", "editor", "researcher", "perspektiv", "writer", "qa_analyze"]
         from_idx = step_order.index(from_step)
 
         # --- Load assignments (needed for researcher onward) ---
@@ -776,8 +801,8 @@ class Pipeline:
         dossiers: dict[str, dict] = {}
         writer_outputs: dict[str, dict] = {}
 
-        # Load researcher dossiers (needed for --from writer onward)
-        if from_idx >= step_order.index("writer"):
+        # Load researcher dossiers (needed for --from perspektiv onward)
+        if from_idx >= step_order.index("perspektiv"):
             for assignment in assignments:
                 slug = assignment.topic_slug or assignment.id
                 filename = f"04-researcher-{slug}.json"
@@ -840,8 +865,8 @@ class Pipeline:
         elif from_step == "researcher":
             packages = await self.produce(assignments)
 
-        elif from_step in ("writer", "qa_analyze"):
-            # Run from writer/qa_analyze with preloaded data
+        elif from_step in ("perspektiv", "writer", "qa_analyze"):
+            # Run from perspektiv/writer/qa_analyze with preloaded data
             for i, assignment in enumerate(assignments):
                 if i > 0:
                     logger.info("Waiting 30s before next topic to avoid rate limits...")
@@ -852,6 +877,7 @@ class Pipeline:
                         assignment,
                         preloaded_dossier=dossiers.get(slug),
                         preloaded_article=writer_outputs.get(slug) if from_idx >= step_order.index("qa_analyze") else None,
+                        skip_perspektiv=from_step in ("writer", "qa_analyze"),
                     )
                     packages.append(pkg)
                     self._write_debug_output(f"05-writer-{slug}.json", pkg.to_dict())
