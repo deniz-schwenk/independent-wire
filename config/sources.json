@@ -729,17 +729,6 @@
       "enabled": true
     },
     {
-      "name": "Daily Maverick",
-      "url": "https://www.dailymaverick.co.za/feed/",
-      "type": "rss",
-      "region": "Africa",
-      "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "South African investigative journalism. Replaces Africanews + News24.",
-      "enabled": false
-    },
-    {
       "name": "RFI",
       "url": "https://www.rfi.fr/fr/rss",
       "type": "rss",
@@ -782,6 +771,17 @@
       "editorial_independence": "independent",
       "bias_note": "UN OCHA humanitarian crisis reports. Primary source for underreported crises.",
       "enabled": true
+    },
+    {
+      "name": "OCCRP",
+      "url": "https://www.occrp.org/en/daily/rss",
+      "type": "rss",
+      "region": "International",
+      "language": "en",
+      "tier": 3,
+      "editorial_independence": "independent",
+      "bias_note": "Organized Crime and Corruption Reporting Project. Cross-border investigative journalism (Panama Papers, Pandora Papers, FinCEN Files).",
+      "enabled": false
     }
   ]
 }
