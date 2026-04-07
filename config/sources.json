@@ -774,7 +774,7 @@
     },
     {
       "name": "OCCRP",
-      "url": "https://www.occrp.org/en/daily/rss",
+      "url": "https://www.occrp.org/en/investigations?format=feed&type=rss",
       "type": "rss",
       "region": "International",
       "language": "en",
