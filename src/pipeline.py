@@ -72,6 +72,138 @@ def _extract_dict(result: object) -> dict | None:
     return None
 
 
+def _deduplicate_search_results(search_results: list[dict]) -> list[dict]:
+    """Deduplicate search results by URL, merging query sources.
+
+    Parses URLs from the raw plaintext search results (format: "N. title\\n   url\\n   snippet").
+    If the same URL appears in results from multiple queries, keeps the entry with the
+    longest snippet and records all queries that found it.
+    """
+    # Parse individual results from each search result block
+    url_pattern = re.compile(r"^\s{3}(https?://\S+)", re.MULTILINE)
+    # Pattern to extract numbered entries: "N. title\n   url\n   snippet"
+    entry_pattern = re.compile(
+        r"^\d+\.\s+(.+)\n\s{3}(https?://\S+)\n\s{3}(.+?)(?=\n\d+\.\s|\nResults for:|\Z)",
+        re.MULTILINE | re.DOTALL,
+    )
+
+    # Map URL → best entry info
+    url_map: dict[str, dict] = {}  # url → {title, snippet, found_by}
+
+    for sr in search_results:
+        raw = sr.get("results", "")
+        query_str = sr.get("query", "")
+
+        for match in entry_pattern.finditer(raw):
+            title = match.group(1).strip()
+            url = match.group(2).strip()
+            snippet = match.group(3).strip()
+
+            if url in url_map:
+                url_map[url]["found_by"].append(query_str)
+                # Keep the longer snippet
+                if len(snippet) > len(url_map[url]["snippet"]):
+                    url_map[url]["snippet"] = snippet
+                    url_map[url]["title"] = title
+            else:
+                url_map[url] = {
+                    "title": title,
+                    "url": url,
+                    "snippet": snippet,
+                    "found_by": [query_str],
+                }
+
+    # Rebuild search results with deduplicated entries
+    deduped: list[dict] = []
+    seen_urls: set[str] = set()
+
+    for sr in search_results:
+        raw = sr.get("results", "")
+        query_str = sr.get("query", "")
+
+        # Rebuild the results text, skipping URLs already emitted
+        new_lines = []
+        entry_num = 1
+        for match in entry_pattern.finditer(raw):
+            url = match.group(2).strip()
+            if url in seen_urls:
+                continue
+            seen_urls.add(url)
+            info = url_map.get(url, {})
+            title = info.get("title", match.group(1).strip())
+            snippet = info.get("snippet", match.group(3).strip())
+            found_by = info.get("found_by", [query_str])
+            found_by_note = ""
+            if len(found_by) > 1:
+                other_queries = [q for q in found_by if q != query_str]
+                found_by_note = f"\n   [Also found by: {'; '.join(other_queries)}]"
+            new_lines.append(f"{entry_num}. {title}\n   {url}\n   {snippet}{found_by_note}")
+            entry_num += 1
+
+        if new_lines:
+            header = f"Results for: {query_str}"
+            new_entry = dict(sr)
+            new_entry["results"] = header + "\n\n" + "\n\n".join(new_lines)
+            deduped.append(new_entry)
+        elif not entry_pattern.search(raw):
+            # No parseable entries (e.g., "No results" or error) — keep as-is
+            deduped.append(sr)
+
+    duplicates_removed = sum(len(v["found_by"]) - 1 for v in url_map.values() if len(v["found_by"]) > 1)
+    if duplicates_removed:
+        logger.info("Deduplication: removed %d duplicate URLs across queries", duplicates_removed)
+
+    return deduped
+
+
+def _build_bias_card(
+    article: dict,
+    perspective_analysis: dict,
+    qa_analysis: dict,
+    research_dossier: dict,
+) -> dict:
+    """Build the deterministic portion of the Bias Transparency Card.
+
+    Pure data aggregation from existing pipeline outputs — no LLM calls.
+    """
+    writer_sources = article.get("sources", [])
+    researcher_sources = research_dossier.get("sources", [])
+    stakeholders = perspective_analysis.get("stakeholders", [])
+
+    # Source balance — count by language and country
+    by_language: dict[str, int] = {}
+    by_country: dict[str, int] = {}
+    for s in writer_sources:
+        lang = s.get("language", "unknown")
+        by_language[lang] = by_language.get(lang, 0) + 1
+        country = s.get("country", "unknown")
+        by_country[country] = by_country.get(country, 0) + 1
+
+    # Geographic coverage — compare writer vs researcher sources
+    writer_countries = {s.get("country", "") for s in writer_sources}
+    researcher_countries = {s.get("country", "") for s in researcher_sources}
+    missing_countries = sorted(researcher_countries - writer_countries - {""})
+
+    return {
+        "source_balance": {
+            "total": len(writer_sources),
+            "by_language": by_language,
+            "by_country": by_country,
+        },
+        "geographic_coverage": {
+            "represented": sorted(writer_countries - {""}),
+            "missing_from_dossier": missing_countries,
+        },
+        "perspectives": {
+            "total_identified": len(stakeholders),
+            "missing_voices": perspective_analysis.get("missing_voices", []),
+        },
+        "framing_divergences": perspective_analysis.get("framing_divergences", []),
+        "factual_divergences": qa_analysis.get("divergences", []),
+        "coverage_gaps": research_dossier.get("coverage_gaps", []),
+    }
+
+
 class PipelineError(Exception):
     """Base exception for pipeline errors."""
 
@@ -119,8 +251,24 @@ class Pipeline:
             "model": result.model,
         })
 
-    async def run(self, date: str | None = None) -> list[TopicPackage]:
-        """Execute the full pipeline. Returns completed TopicPackages."""
+    # Map CLI step names to internal pipeline step names
+    _STEP_TO_INTERNAL = {
+        "collector": "collect",
+        "curator": "curate",
+        "editor": "editorial_conference",
+        "researcher": "produce",
+        "perspektiv": "produce",
+        "writer": "produce",
+        "qa_analyze": "produce",
+    }
+
+    STEP_ORDER = ["collector", "curator", "editor", "researcher", "perspektiv", "writer", "qa_analyze", "bias_detector"]
+
+    async def run(self, date: str | None = None, to_step: str | None = None) -> list[TopicPackage]:
+        """Execute the full pipeline. Returns completed TopicPackages.
+
+        If to_step is given, stop after that step (inclusive).
+        """
         date = date or datetime.now().strftime("%Y-%m-%d")
 
         # Check for incomplete state
@@ -136,6 +284,9 @@ class Pipeline:
                 current_step="collect",
                 started_at=datetime.now().isoformat(),
             )
+
+        # Determine stop point
+        to_idx = self.STEP_ORDER.index(to_step) if to_step else len(self.STEP_ORDER) - 1
 
         # Execute steps in order, skipping already completed ones
         raw_findings: list[dict] = self.state.raw_findings
@@ -156,6 +307,12 @@ class Pipeline:
             await self._save_state()
             self._write_debug_output("01-collector-raw.json", raw_findings)
 
+        if to_idx <= self.STEP_ORDER.index("collector"):
+            logger.info("Stopping after step 'collector' as requested.")
+            self.state.current_step = "done"
+            await self._save_state()
+            return packages
+
         if "curate" not in self.state.completed_steps:
             self.state.current_step = "curate"
             await self._save_state()
@@ -164,6 +321,12 @@ class Pipeline:
             self.state.completed_steps.append("curate")
             await self._save_state()
             self._write_debug_output("02-curator-topics.json", curated_topics)
+
+        if to_idx <= self.STEP_ORDER.index("curator"):
+            logger.info("Stopping after step 'curator' as requested.")
+            self.state.current_step = "done"
+            await self._save_state()
+            return packages
 
         if "editorial_conference" not in self.state.completed_steps:
             self.state.current_step = "editorial_conference"
@@ -184,13 +347,27 @@ class Pipeline:
                     "Gate rejected after editorial_conference"
                 )
 
+        if to_idx <= self.STEP_ORDER.index("editor"):
+            logger.info("Stopping after step 'editor' as requested.")
+            self.state.current_step = "done"
+            await self._save_state()
+            return packages
+
         if "produce" not in self.state.completed_steps:
             self.state.current_step = "produce"
             await self._save_state()
-            packages = await self.produce(assignments)
+            packages = await self.produce(assignments, to_step=to_step)
             self.state.packages = [asdict(p) for p in packages]
             self.state.completed_steps.append("produce")
             await self._save_state()
+
+        # If --to stops before qa_analyze, skip verify and write_output
+        if to_step and self.STEP_ORDER.index(to_step) < self.STEP_ORDER.index("qa_analyze"):
+            if to_step in ("researcher", "perspektiv", "writer"):
+                logger.info("Stopping after step '%s' as requested.", to_step)
+            self.state.current_step = "done"
+            await self._save_state()
+            return packages
 
         if "verify" not in self.state.completed_steps:
             self.state.current_step = "verify"
@@ -209,44 +386,73 @@ class Pipeline:
         return packages
 
     async def collect(self) -> list[dict]:
-        """Scan current news sources and return raw findings."""
-        agent = self.agents.get("collector")
-        if not agent:
-            logger.error("No 'collector' agent configured")
+        """Two-phase collection: plan queries, execute in Python, assemble findings."""
+        from src.tools import web_search_tool
+
+        planner = self.agents.get("collector_plan")
+        assembler = self.agents.get("collector_assemble")
+
+        if not planner and not assembler and "collector" not in self.agents:
+            logger.info("No collector configured, skipping collection step")
             return []
 
-        message = (
-            f"Today's date is {self.state.date}. "
-            "Scan current news sources and return a JSON array of findings. "
-            "Each finding should have: title, summary, source_url, source_name, "
-            "language, region."
+        if not planner or not assembler:
+            logger.error("No 'collector_plan' or 'collector_assemble' agent configured")
+            return []
+
+        # Phase 1: Plan search queries
+        plan_result = await planner.run(
+            f"Plan search queries for today's global news scan. Today is {self.state.date}.",
+            output_schema={"type": "array", "items": {"type": "object"}},
         )
+        self._track_agent(plan_result, "collector_plan")
 
-        schema = {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "title": {"type": "string"},
-                    "summary": {"type": "string"},
-                    "source_url": {"type": "string"},
-                    "source_name": {"type": "string"},
-                    "language": {"type": "string"},
-                    "region": {"type": "string"},
-                },
-            },
-        }
+        queries = plan_result.structured
+        if not queries or not isinstance(queries, list):
+            queries = _extract_list(plan_result) or []
+        if not queries:
+            logger.warning("Collector planner returned no queries")
+            return []
 
+        logger.info("Collector plan: %d queries", len(queries))
+        self._write_debug_output("01-collector-plan.json", queries)
+
+        # Phase 2: Execute searches in Python (no LLM)
+        search_results = []
+        for q in queries:
+            query_str = q.get("query", "")
+            if not query_str:
+                continue
+            try:
+                result_text = await web_search_tool.execute(query=query_str)
+                search_results.append({"query": q, "results": result_text})
+            except Exception as e:
+                logger.warning("Collector search failed for '%s': %s", query_str, e)
+                search_results.append({"query": q, "results": f"Error: {e}"})
+
+        logger.info("Collector search: %d/%d queries returned results",
+                     len([r for r in search_results if not r["results"].startswith("Error")]),
+                     len(search_results))
+
+        # Deduplicate by URL
+        search_results = _deduplicate_search_results(search_results)
+
+        self._write_debug_output("01-collector-search.json", search_results)
+
+        # Phase 3: Assemble findings (one LLM call, no tools)
         try:
-            result = await agent.run(message, output_schema=schema)
-            self._track_agent(result, "collector")
-            parsed = _extract_list(result)
+            assemble_result = await assembler.run(
+                "Compile these search results into a JSON array of news findings.",
+                context={"search_results": search_results},
+            )
+            self._track_agent(assemble_result, "collector_assemble")
+            parsed = _extract_list(assemble_result)
             if parsed is not None:
                 return parsed
-            logger.warning("Collector returned non-list output")
+            logger.warning("Collector assembler returned non-list output")
             return []
         except Exception as e:
-            logger.error("Collector failed: %s", e)
+            logger.error("Collector assembly failed: %s", e)
             return []
 
     def _load_feed_findings(self) -> list[dict]:
@@ -359,7 +565,7 @@ class Pipeline:
         return await self.gate_handler(step_name, data)
 
     async def produce(
-        self, assignments: list[TopicAssignment]
+        self, assignments: list[TopicAssignment], to_step: str | None = None,
     ) -> list[TopicPackage]:
         """Produce TopicPackages for all assignments sequentially."""
         import asyncio
@@ -371,7 +577,7 @@ class Pipeline:
                 logger.info("Waiting 30s before next topic to avoid rate limits...")
                 await asyncio.sleep(30)
             try:
-                pkg = await self._produce_single(assignment)
+                pkg = await self._produce_single(assignment, to_step=to_step)
                 packages.append(pkg)
                 slug = assignment.topic_slug or assignment.id
                 self._write_debug_output(
@@ -401,6 +607,7 @@ class Pipeline:
         preloaded_dossier: dict | None = None,
         preloaded_article: dict | None = None,
         skip_perspektiv: bool = False,
+        to_step: str | None = None,
     ) -> TopicPackage:
         """Produce a single TopicPackage from an assignment.
 
@@ -408,6 +615,7 @@ class Pipeline:
         - preloaded_dossier: skip researcher
         - preloaded_article: skip writer (and researcher and perspektiv)
         - skip_perspektiv: skip perspektiv even when dossier is available
+        - to_step: stop after this step (inclusive)
         """
         import asyncio
 
@@ -417,34 +625,26 @@ class Pipeline:
 
         slug = assignment.topic_slug or assignment.id
 
-        # 2. Research Agent (multilingual deep search)
+        # 2. Research Agent — two-phase: plan → search → assemble
         research_dossier: dict = {}
         if preloaded_dossier is not None:
             research_dossier = preloaded_dossier
             logger.info("Using preloaded researcher dossier for '%s'", assignment.title)
-        elif researcher := self.agents.get("researcher"):
-            result = await researcher.run(
-                "Research this topic with multilingual web searches. "
-                "Find sources in languages relevant to the topic's geographic context.",
-                context=assignment_data,
-            )
-            self._track_agent(result, "researcher", slug)
-            research_dossier = _extract_dict(result) or {}
+        else:
+            research_dossier = await self._research_two_phase(assignment_data, slug)
 
-            # Always write debug output (raw content if parsing failed)
-            if research_dossier:
-                self._write_debug_output(f"04-researcher-{slug}.json", research_dossier)
-            else:
-                logger.warning(
-                    "Researcher for '%s' returned unparseable output (%d tokens). "
-                    "Saving raw content to debug file.",
-                    assignment.title,
-                    result.tokens_used,
-                )
-                self._write_debug_output(
-                    f"04-researcher-{slug}-RAW.json",
-                    {"_raw_content": result.content[:5000], "_tokens_used": result.tokens_used},
-                )
+        if to_step == "researcher":
+            return TopicPackage(
+                id=assignment.id,
+                metadata={
+                    "title": assignment.title,
+                    "date": self.state.date if self.state else "",
+                    "status": "partial",
+                    "topic_slug": assignment.topic_slug,
+                    "stopped_at": "researcher",
+                },
+                status="partial",
+            )
 
         # 10s delay between researcher and perspektiv/writer to avoid rate limits
         if research_dossier and preloaded_dossier is None:
@@ -470,6 +670,21 @@ class Pipeline:
 
                 # 5s delay before writer
                 await asyncio.sleep(5)
+
+        if to_step == "perspektiv":
+            return TopicPackage(
+                id=assignment.id,
+                metadata={
+                    "title": assignment.title,
+                    "date": self.state.date if self.state else "",
+                    "status": "partial",
+                    "topic_slug": assignment.topic_slug,
+                    "stopped_at": "perspektiv",
+                },
+                perspectives=perspective_analysis.get("stakeholders", []),
+                gaps=perspective_analysis.get("missing_voices", []),
+                status="partial",
+            )
 
         # 3. Writer (required, unless preloaded)
         if preloaded_article is not None:
@@ -524,6 +739,23 @@ class Pipeline:
                     assignment.title,
                 )
 
+        if to_step == "writer":
+            return TopicPackage(
+                id=assignment.id,
+                metadata={
+                    "title": assignment.title,
+                    "date": self.state.date if self.state else "",
+                    "status": "partial",
+                    "topic_slug": assignment.topic_slug,
+                    "stopped_at": "writer",
+                },
+                sources=article.get("sources", []),
+                perspectives=perspective_analysis.get("stakeholders", []),
+                gaps=perspective_analysis.get("missing_voices", []),
+                article=article,
+                status="partial",
+            )
+
         # 4. QA-Analyze (find errors, divergences, gaps)
         qa_analysis: dict = {}
         if qa_analyze := self.agents.get("qa_analyze"):
@@ -531,10 +763,19 @@ class Pipeline:
                 "article": article,
                 "research_dossier": research_dossier,
             }
+            qa_schema = {
+                "type": "object",
+                "properties": {
+                    "corrections": {"type": "array"},
+                    "divergences": {"type": "array"},
+                },
+                "required": ["corrections", "divergences"],
+            }
             result = await qa_analyze.run(
                 "Review this article against the available sources. Find factual errors, "
                 "source divergences the article doesn't reflect, and coverage gaps.",
                 context=qa_context,
+                output_schema=qa_schema,
             )
             qa_analysis = _extract_dict(result) or {}
             self._track_agent(result, "qa_analyze", slug)
@@ -549,63 +790,88 @@ class Pipeline:
                     assignment.title,
                 )
 
-        # 5. Writer-Correction (only if corrections needed)
+        # 5. Writer-Correction with retry (only if corrections needed)
         corrections = qa_analysis.get("corrections", [])
         article_original = article.get("body", "")
         applied = 0
+        max_correction_attempts = 3
 
         if corrections and (writer := self.agents.get("writer")):
-            await asyncio.sleep(10)  # Rate limit
+            pending_corrections = corrections
+            for attempt in range(1, max_correction_attempts + 1):
+                await asyncio.sleep(10)  # Rate limit
 
-            correction_context = {
-                "task": "correction",
-                "original_article": article,
-                "corrections": corrections,
-            }
-            result = await writer.run(
-                "You wrote this article. QA found factual errors that need correction. "
-                "Apply ONLY the listed corrections to the article. Return the complete "
-                "article JSON (headline, subheadline, body, summary, sources) with the "
-                "corrections applied. Do not change anything else.",
-                context=correction_context,
-            )
-            corrected = _extract_dict(result) or {}
-            self._track_agent(result, "writer", slug)
-            self._write_debug_output(f"07-writer-correction-{slug}.json", corrected)
+                if attempt == 1:
+                    message = (
+                        "You wrote this article. QA found factual errors that need correction. "
+                        "Apply ONLY the listed corrections to the article. Return the complete "
+                        "article JSON (headline, subheadline, body, summary, sources) with the "
+                        "corrections applied. Do not change anything else."
+                    )
+                else:
+                    message = (
+                        "These corrections were not applied in your previous attempt. "
+                        "The flagged text still appears in the article. You MUST rewrite or "
+                        "remove the flagged passages. Do not keep the original text."
+                    )
 
-            # Merge corrected fields into article
-            if corrected.get("body"):
-                article["body"] = corrected["body"]
-            if corrected.get("headline"):
-                article["headline"] = corrected["headline"]
-            if corrected.get("subheadline"):
-                article["subheadline"] = corrected["subheadline"]
-            if corrected.get("summary"):
-                article["summary"] = corrected["summary"]
-
-            # 6. Deterministic verification — check corrections were applied
-            not_applied = []
-            for correction in corrections:
-                excerpt = correction.get("article_excerpt", "")
-                if excerpt and excerpt not in article.get("body", ""):
-                    applied += 1
-                elif excerpt:
-                    not_applied.append(excerpt[:80])
-
-            if not_applied:
-                logger.warning(
-                    "Writer-Correction for '%s': %d/%d corrections NOT applied: %s",
-                    assignment.title,
-                    len(not_applied),
-                    len(corrections),
-                    not_applied,
-                )
-            else:
                 logger.info(
-                    "Writer-Correction for '%s': all %d corrections applied.",
-                    assignment.title,
-                    len(corrections),
+                    "Writer-Correction attempt %d/%d for '%s' (%d corrections)",
+                    attempt, max_correction_attempts, assignment.title, len(pending_corrections),
                 )
+
+                correction_context = {
+                    "task": "correction",
+                    "original_article": article,
+                    "corrections": pending_corrections,
+                }
+                result = await writer.run(message, context=correction_context)
+                corrected = _extract_dict(result) or {}
+                self._track_agent(result, "writer", slug)
+                self._write_debug_output(f"07-writer-correction-{slug}.json", corrected)
+
+                # Merge corrected fields into article
+                if corrected.get("body"):
+                    article["body"] = corrected["body"]
+                if corrected.get("headline"):
+                    article["headline"] = corrected["headline"]
+                if corrected.get("subheadline"):
+                    article["subheadline"] = corrected["subheadline"]
+                if corrected.get("summary"):
+                    article["summary"] = corrected["summary"]
+
+                # 6. Deterministic verification — check corrections were applied
+                still_unapplied = []
+                applied = 0
+                for correction in corrections:
+                    excerpt = correction.get("article_excerpt", "")
+                    if excerpt and excerpt not in article.get("body", ""):
+                        applied += 1
+                    elif excerpt:
+                        still_unapplied.append(correction)
+
+                if not still_unapplied:
+                    logger.info(
+                        "Writer-Correction for '%s': all %d corrections applied (attempt %d/%d).",
+                        assignment.title, len(corrections), attempt, max_correction_attempts,
+                    )
+                    break
+
+                if attempt < max_correction_attempts:
+                    logger.info(
+                        "Writer-Correction for '%s': %d/%d corrections still unapplied, retrying...",
+                        assignment.title, len(still_unapplied), len(corrections),
+                    )
+                    pending_corrections = still_unapplied
+                else:
+                    logger.warning(
+                        "Writer-Correction for '%s': %d/%d corrections NOT applied after %d attempts: %s",
+                        assignment.title,
+                        len(still_unapplied),
+                        len(corrections),
+                        max_correction_attempts,
+                        [c.get("article_excerpt", "")[:80] for c in still_unapplied],
+                    )
 
         # Compute word_count in Python (never trust LLM counting)
         article["word_count"] = len(article.get("body", "").split())
@@ -633,14 +899,23 @@ class Pipeline:
                     assignment.title,
                 )
 
-        # 7. Bias Detector (optional)
-        if bias_detector := self.agents.get("bias_detector"):
-            result = await bias_detector.run(
-                "Analyze this article for bias across all five dimensions.",
-                context={"article": article, "sources": article.get("sources", [])},
+        # 7. Bias Transparency Card (hybrid: Python aggregation + LLM language analysis)
+        bias_card = _build_bias_card(article, perspective_analysis, qa_analysis, research_dossier)
+
+        if bias_language := self.agents.get("bias_language"):
+            result = await bias_language.run(
+                "Analyze this article text for linguistic bias patterns. "
+                "Then write a reader note that synthesizes the bias card data "
+                "with your language findings.",
+                context={"article_body": article.get("body", ""), "bias_card": bias_card},
             )
-            self._track_agent(result, "bias_detector", slug)
-            bias_analysis = _extract_dict(result) or {}
+            self._track_agent(result, "bias_language", slug)
+            llm_result = _extract_dict(result) or {}
+            bias_card["language_bias"] = llm_result.get("language_bias", {})
+            bias_card["reader_note"] = llm_result.get("reader_note", "")
+
+        self._write_debug_output(f"08-bias-card-{slug}.json", bias_card)
+        bias_analysis = bias_card
 
         # Assemble TopicPackage
         return TopicPackage(
@@ -672,6 +947,96 @@ class Pipeline:
             },
             status="review",
         )
+
+    async def _research_two_phase(self, assignment_data: dict, slug: str) -> dict:
+        """Two-phase research: plan queries, execute in Python, assemble dossier."""
+        from src.tools import web_search_tool
+
+        planner = self.agents.get("researcher_plan")
+        assembler = self.agents.get("researcher_assemble")
+        if not planner or not assembler:
+            logger.error("No 'researcher_plan' or 'researcher_assemble' agent configured")
+            return {}
+
+        # Phase 1: Plan multilingual queries
+        plan_result = await planner.run(
+            f"Plan multilingual research queries for this topic. Today is {self.state.date}.",
+            context=assignment_data,
+            output_schema={"type": "array", "items": {"type": "object"}},
+        )
+        self._track_agent(plan_result, "researcher_plan", slug)
+
+        queries = plan_result.structured
+        if not queries or not isinstance(queries, list):
+            queries = _extract_list(plan_result) or []
+        if not queries:
+            logger.warning("Researcher planner for '%s' returned no queries", slug)
+            return {}
+
+        languages = {q.get("language", "en") for q in queries}
+        logger.info("Researcher plan: %d queries across %d languages for '%s'",
+                     len(queries), len(languages), slug)
+        self._write_debug_output(f"04-researcher-plan-{slug}.json", queries)
+
+        # Phase 2: Execute searches in Python (no LLM)
+        search_results = []
+        for q in queries:
+            query_str = q.get("query", "")
+            if not query_str:
+                continue
+            try:
+                result_text = await web_search_tool.execute(query=query_str)
+                search_results.append({
+                    "query": query_str,
+                    "language": q.get("language", "en"),
+                    "results": result_text,
+                })
+            except Exception as e:
+                logger.warning("Research search failed for '%s': %s", query_str, e)
+                search_results.append({
+                    "query": query_str,
+                    "language": q.get("language", "en"),
+                    "results": f"Error: {e}",
+                })
+
+        successful = len([r for r in search_results if not r["results"].startswith("Error")])
+        logger.info("Researcher search: %d/%d queries returned results for '%s'",
+                     successful, len(search_results), slug)
+
+        # Deduplicate by URL
+        search_results = _deduplicate_search_results(search_results)
+
+        self._write_debug_output(f"04-researcher-search-{slug}.json", search_results)
+
+        # Phase 3: Assemble dossier (one LLM call, no tools)
+        assemble_result = await assembler.run(
+            "Build a research dossier from these search results. "
+            "Extract sources, actors, divergences, and coverage gaps.",
+            context={
+                "assignment": assignment_data,
+                "search_results": search_results,
+            },
+        )
+        self._track_agent(assemble_result, "researcher_assemble", slug)
+
+        dossier = _extract_dict(assemble_result) or {}
+
+        # Write debug output (raw content if parsing failed)
+        if dossier:
+            self._write_debug_output(f"04-researcher-{slug}.json", dossier)
+        else:
+            logger.warning(
+                "Researcher assembler for '%s' returned unparseable output (%d tokens). "
+                "Saving raw content to debug file.",
+                slug,
+                assemble_result.tokens_used,
+            )
+            self._write_debug_output(
+                f"04-researcher-{slug}-RAW.json",
+                {"_raw_content": assemble_result.content[:5000], "_tokens_used": assemble_result.tokens_used},
+            )
+
+        return dossier
 
     async def verify(
         self, packages: list[TopicPackage]
@@ -740,8 +1105,12 @@ class Pipeline:
         from_step: str,
         topic_filter: int | None = None,
         reuse_date: str | None = None,
+        to_step: str | None = None,
     ) -> list[TopicPackage]:
-        """Run pipeline from a specific step, loading earlier data from debug output."""
+        """Run pipeline from a specific step, loading earlier data from debug output.
+
+        If to_step is given, stop after that step (inclusive).
+        """
         import asyncio
 
         # Resolve which date to load debug data from
@@ -759,12 +1128,16 @@ class Pipeline:
         )
 
         logger.info(
-            "Partial run: starting from '%s', reusing data from %s", from_step, reuse
+            "Partial run: starting from '%s'%s, reusing data from %s",
+            from_step,
+            f" to '{to_step}'" if to_step else "",
+            reuse,
         )
 
-        # Determine which steps to skip based on from_step
-        step_order = ["collector", "curator", "editor", "researcher", "perspektiv", "writer", "qa_analyze"]
+        # Determine which steps to skip/run based on from_step and to_step
+        step_order = self.STEP_ORDER
         from_idx = step_order.index(from_step)
+        to_idx = step_order.index(to_step) if to_step else len(step_order) - 1
 
         # --- Load assignments (needed for researcher onward) ---
         assignments: list[TopicAssignment] = []
@@ -844,10 +1217,20 @@ class Pipeline:
             if from_step == "collector":
                 raw_findings = await self.collect()
                 self._write_debug_output("01-collector-raw.json", raw_findings)
+                if to_step == "collector":
+                    logger.info("Stopping after step 'collector' as requested.")
+                    self.state.current_step = "done"
+                    await self._save_state()
+                    return packages
 
             if from_idx <= step_order.index("curator"):
                 curated_topics = await self.curate(raw_findings)
                 self._write_debug_output("02-curator-topics.json", curated_topics)
+                if to_idx <= step_order.index("curator"):
+                    logger.info("Stopping after step 'curator' as requested.")
+                    self.state.current_step = "done"
+                    await self._save_state()
+                    return packages
 
             if from_idx <= step_order.index("editor"):
                 assignments = await self.editorial_conference(curated_topics)
@@ -857,12 +1240,17 @@ class Pipeline:
                 )
                 if topic_filter is not None:
                     assignments = [assignments[topic_filter - 1]]
+                if to_idx <= step_order.index("editor"):
+                    logger.info("Stopping after step 'editor' as requested.")
+                    self.state.current_step = "done"
+                    await self._save_state()
+                    return packages
 
             # Fall through to produce
-            packages = await self.produce(assignments)
+            packages = await self.produce(assignments, to_step=to_step)
 
         elif from_step == "researcher":
-            packages = await self.produce(assignments)
+            packages = await self.produce(assignments, to_step=to_step)
 
         elif from_step in ("perspektiv", "writer", "qa_analyze"):
             # Run from perspektiv/writer/qa_analyze with preloaded data
@@ -877,6 +1265,7 @@ class Pipeline:
                         preloaded_dossier=dossiers.get(slug),
                         preloaded_article=writer_outputs.get(slug) if from_idx >= step_order.index("qa_analyze") else None,
                         skip_perspektiv=from_step in ("writer", "qa_analyze"),
+                        to_step=to_step,
                     )
                     packages.append(pkg)
                     self._write_debug_output(f"05-writer-{slug}.json", pkg.to_dict())
@@ -894,9 +1283,74 @@ class Pipeline:
                         error=str(e),
                     ))
 
+        elif from_step == "bias_detector":
+            # Run only the bias card step with all data loaded from debug output
+            for i, assignment in enumerate(assignments):
+                slug = assignment.topic_slug or assignment.id
+
+                # Load article — prefer corrected version, fall back to writer output
+                correction_file = f"07-writer-correction-{slug}.json"
+                writer_file = f"05-writer-{slug}.json"
+                article_data = self._load_debug_output(reuse, correction_file)
+                if not article_data or not isinstance(article_data, dict):
+                    article_data = self._load_debug_output(reuse, writer_file)
+                if not article_data or not isinstance(article_data, dict):
+                    logger.error("No article found for '%s'", slug)
+                    continue
+                # Writer debug output may be a full TopicPackage — extract the article
+                article = article_data.get("article", article_data)
+
+                # Load supporting data
+                perspective_analysis = self._load_debug_output(reuse, f"04b-perspektiv-{slug}.json") or {}
+                qa_analysis = self._load_debug_output(reuse, f"06-qa-analyze-{slug}.json") or {}
+                research_dossier = self._load_debug_output(reuse, f"04-researcher-{slug}.json") or {}
+
+                # Build bias card (Python, 0 tokens)
+                bias_card = _build_bias_card(article, perspective_analysis, qa_analysis, research_dossier)
+
+                # LLM language analysis
+                if bias_language := self.agents.get("bias_language"):
+                    result = await bias_language.run(
+                        "Analyze this article text for linguistic bias patterns. "
+                        "Then write a reader note that synthesizes the bias card data "
+                        "with your language findings.",
+                        context={"article_body": article.get("body", ""), "bias_card": bias_card},
+                    )
+                    self._track_agent(result, "bias_language", slug)
+                    llm_result = _extract_dict(result) or {}
+                    bias_card["language_bias"] = llm_result.get("language_bias", {})
+                    bias_card["reader_note"] = llm_result.get("reader_note", "")
+
+                self._write_debug_output(f"08-bias-card-{slug}.json", bias_card)
+
+                packages.append(TopicPackage(
+                    id=assignment.id,
+                    metadata={
+                        "title": assignment.title,
+                        "date": self.state.date,
+                        "status": "review",
+                        "topic_slug": slug,
+                    },
+                    sources=article.get("sources", []),
+                    article=article,
+                    bias_analysis=bias_card,
+                    status="review",
+                ))
+
+        # Skip verify and write_output if we stopped before writer
+        writer_idx = step_order.index("writer")
+        if to_idx < writer_idx:
+            logger.info("Stopping after step '%s' as requested.", to_step)
+            self.state.current_step = "done"
+            await self._save_state()
+            return packages
+
         # Verify and write output
         packages = await self.verify(packages)
         await self._write_output(packages)
+
+        if to_step:
+            logger.info("Stopping after step '%s' as requested.", to_step)
 
         self.state.current_step = "done"
         await self._save_state()

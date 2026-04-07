@@ -40,14 +40,24 @@ def create_agents() -> dict[str, Agent]:
     agents_dir = ROOT / "agents"
 
     return {
-        "collector": Agent(
-            name="collector",
-            model="minimax/minimax-m2.7",
-            prompt_path=str(agents_dir / "collector" / "AGENTS.md"),
-            tools=[web_search_tool],
-            temperature=0.2,
-            provider="openrouter",
-        ),
+        # DISABLED: Collector deactivated — RSS feeds provide sufficient coverage.
+        # Reactivate when scaling to 200+ feeds as pre-filter for the Curator.
+        # "collector_plan": Agent(
+        #     name="collector_plan",
+        #     model="z-ai/glm-5",
+        #     prompt_path=str(agents_dir / "collector" / "PLAN.md"),
+        #     tools=[],
+        #     temperature=0.5,
+        #     provider="openrouter",
+        # ),
+        # "collector_assemble": Agent(
+        #     name="collector_assemble",
+        #     model="minimax/minimax-m2.7",
+        #     prompt_path=str(agents_dir / "collector" / "ASSEMBLE.md"),
+        #     tools=[],
+        #     temperature=0.2,
+        #     provider="openrouter",
+        # ),
         "curator": Agent(
             name="curator",
             model="minimax/minimax-m2.7",
@@ -64,11 +74,19 @@ def create_agents() -> dict[str, Agent]:
             temperature=0.3,
             provider="openrouter",
         ),
-        "researcher": Agent(
-            name="researcher",
+        "researcher_plan": Agent(
+            name="researcher_plan",
             model="z-ai/glm-5",
-            prompt_path=str(agents_dir / "researcher" / "AGENTS.md"),
-            tools=[web_search_tool],
+            prompt_path=str(agents_dir / "researcher" / "PLAN.md"),
+            tools=[],
+            temperature=0.5,
+            provider="openrouter",
+        ),
+        "researcher_assemble": Agent(
+            name="researcher_assemble",
+            model="z-ai/glm-5",
+            prompt_path=str(agents_dir / "researcher" / "ASSEMBLE.md"),
+            tools=[],
             temperature=0.2,
             provider="openrouter",
         ),
@@ -96,6 +114,14 @@ def create_agents() -> dict[str, Agent]:
             temperature=0.1,
             provider="openrouter",
         ),
+        "bias_language": Agent(
+            name="bias_language",
+            model="z-ai/glm-5",
+            prompt_path=str(agents_dir / "bias_detector" / "AGENTS.md"),
+            tools=[],
+            temperature=0.1,
+            provider="openrouter",
+        ),
     }
 
 
@@ -103,8 +129,13 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Independent Wire pipeline")
     parser.add_argument(
         "--from", dest="from_step", default=None,
-        choices=["collector", "curator", "editor", "researcher", "perspektiv", "writer", "qa_analyze"],
+        choices=["collector", "curator", "editor", "researcher", "perspektiv", "writer", "qa_analyze", "bias_detector"],
         help="Start from this step, loading earlier steps from debug output",
+    )
+    parser.add_argument(
+        "--to", dest="to_step", default=None,
+        choices=["collector", "curator", "editor", "researcher", "perspektiv", "writer", "qa_analyze", "bias_detector"],
+        help="Stop after this step (inclusive). Default: run to the end.",
     )
     parser.add_argument(
         "--topic", type=int, default=None,
@@ -135,11 +166,22 @@ async def main():
         mode="quick",
     )
 
+    # Validate --from / --to ordering
+    step_order = ["collector", "curator", "editor", "researcher", "perspektiv", "writer", "qa_analyze", "bias_detector"]
+    if args.from_step and args.to_step:
+        if step_order.index(args.to_step) < step_order.index(args.from_step):
+            logger.error(
+                "--to '%s' is before --from '%s' in the pipeline order. "
+                "Order: %s", args.to_step, args.from_step, " → ".join(step_order),
+            )
+            sys.exit(1)
+
     try:
         if args.from_step:
             logger.info(
-                "Partial run: --from %s%s%s",
+                "Partial run: --from %s%s%s%s",
                 args.from_step,
+                f" --to {args.to_step}" if args.to_step else "",
                 f" --topic {args.topic}" if args.topic else "",
                 f" --reuse {args.reuse}" if args.reuse else "",
             )
@@ -147,9 +189,10 @@ async def main():
                 from_step=args.from_step,
                 topic_filter=args.topic,
                 reuse_date=args.reuse,
+                to_step=args.to_step,
             )
         else:
-            packages = await pipeline.run()
+            packages = await pipeline.run(to_step=args.to_step)
         elapsed = time.time() - start
 
         completed = [p for p in packages if p.status != "failed"]
