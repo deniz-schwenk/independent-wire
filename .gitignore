@@ -41,3 +41,9 @@ logs/
 htmlcov/
 .pytest_cache/
 .gstack/
+
+# Internal planning files (not for public repo)
+SESSION-HANDOFF-*.md
+TASK-*.md
+WP-*.md
+CLAUDE.md
