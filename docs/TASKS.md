@@ -1,14 +1,14 @@
 # Independent Wire — Task Tracker
 
-**Erstellt:** 2026-03-30
-**Aktualisiert:** 2026-04-06
-**Zweck:** Living Document — wird nach jeder Session aktualisiert
+**Created:** 2026-03-30
+**Updated:** 2026-04-07
+**Purpose:** Living document — updated after each session
 
 ---
 
-## Erledigte Arbeitspakete
+## Completed Work Packages
 
-| WP | Status | Beschreibung |
+| WP | Status | Description |
 |----|--------|-------------|
 | WP-AGENT | ✅ | Agent class: async LLM calls, tool loop, retry logic |
 | WP-TOOLS | ✅ | Tool system: web_search, web_fetch, file_ops, ToolRegistry |
@@ -21,82 +21,96 @@
 | WP-RSS | ✅ | RSS/API feeds: 21 sources in config/sources.json, fetch_feeds.py, Pipeline merges with Collector output |
 | WP-DEBUG-OUTPUT | ✅ | Step-by-step debug JSON per pipeline step (01-collector-raw.json etc.) |
 | WP-REASONING | ✅ | Configurable reasoning effort per agent (None/True/False/"low"/"medium"/"high") |
-| WP-RESEARCH | ✅ | Research Agent: mehrsprachige Tiefenrecherche zwischen Editor und Writer. Lauf 3: 5-8 Sprachen/Topic statt 100% EN |
-| WP-PARTIAL-RUN | ✅ | `--from`/`--topic`/`--reuse` Flags für run.py. Writer-only Test: 2 min statt 30 min |
-| WP-QA | ✅ | QA-Analyze (vereinfacht) + Writer-Correction + Python-Verify. Verification Card entfernt, QA-Rewrite eliminiert. Lauf 5: 1 Korrektur, 3 Divergenzen, 4 Gaps. |
+| WP-RESEARCH | ✅ | Research Agent: multilingual deep research between Editor and Writer. Lauf 3: 5-8 languages/topic instead of 100% EN |
+| WP-PARTIAL-RUN | ✅ | `--from`/`--topic`/`--reuse` flags for run.py. Writer-only test: 2 min instead of 30 min |
+| WP-QA | ✅ | QA-Analyze (simplified) + Writer-Correction + Python-Verify. Verification Card removed, QA-Rewrite eliminated. Lauf 5: 1 correction, 3 divergences, 4 gaps. |
+| WP-PERSPEKTIV | ✅ | Perspektiv Agent: researches spectrum of positions per topic. Integrated into pipeline between Researcher and Writer. |
+| WP-RESEARCHER-SPLIT | ✅ | Two-phase Researcher: Plan (LLM) → Python search → Assemble (LLM). Eliminates context accumulation. Tokens dropped from 85K to ~30K. |
+| WP-BIAS | ✅ | Hybrid Bias Transparency Card: Python aggregation (0 tokens) + slim LLM language analysis (~8-11K tokens). Reader note synthesizes structural + language findings. |
 
-## Erledigte Fixes
+## Completed Fixes
 
-| Fix | Status | Beschreibung |
+| Fix | Status | Description |
 |-----|--------|-------------|
-| Feed-Fixes | ✅ | 8 kaputte Feeds gefixt. Alle Google News Proxies entfernt. |
+| Feed-Fixes | ✅ | 8 broken feeds fixed. All Google News proxies removed. |
 | P-01–P-05 | ✅ | Collector: date-awareness, YouTube/Wiki/social ban, best-effort multilingual, no dup URLs. Writer: Wikipedia only for background |
-| F-01–F-05 | ✅ | 30s delay, date in Editor msg, code-fence parsing, model correction, language diversity warning |
-| P-06 | ✅ | `divergences` und `gaps` werden durch QA-Analyze befüllt |
-| QF-01 | ✅ | max_tokens Default auf 32768 (vorher 8192) |
-| QF-02 | ✅ | Token-Tracking: run-*-stats.json mit tokens_used, duration_seconds pro Agent |
-| QF-03 | ✅ | Warning wenn QA-Analyze leeres Output liefert |
-| QA-Simplify | ✅ | Verification Card entfernt, QA-Rewrite eliminiert, Writer-Correction + Python-Verify eingeführt. |
+| P-06 | ✅ | `divergences` and `gaps` populated by QA-Analyze |
+| P-07 | ✅ | Wikipedia rule added as RULE 5 to QA-Analyze. Writer bans Wikipedia for claims/analysis, QA checks against it. |
+| P-08 | ✅ | Python sets source count in meta-transparency paragraph instead of LLM. Fixes systematic counting error (25 vs 20, 29 vs 24). |
+| F-01–F-05 | ✅ | 30s delay, date in Editor message, code-fence parsing, model correction, language diversity warning |
+| QF-01 | ✅ | max_tokens default raised to 32768 (was 8192) |
+| QF-02 | ✅ | Token tracking: run-*-stats.json with tokens_used, duration_seconds per agent |
+| QF-03 | ✅ | Warning when QA-Analyze returns empty output |
+| QF-04 | ✅ | max_tokens default raised to 65536. Headroom for growing dossiers and complex topics. |
+| QA-Simplify | ✅ | Verification Card removed, QA-Rewrite eliminated, Writer-Correction + Python-Verify introduced. |
+| QF-08 | ✅ | output_schema added to QA-Analyze call, enables structured retry on JSON failures |
 
-## Bald umsetzen (nächste Session)
+## Upcoming Work Packages
 
-| # | Typ | Bereich | Fix | Priorität |
-|---|-----|---------|-----|-----------|
-| QF-04 | Agent | Alle | max_tokens Default von 32768 auf **65536** erhöhen. Headroom für wachsende Dossiers und komplexere Topics. Einzeiler in `src/agent.py`. | 🔴 Hoch |
-| P-07 | Prompt | QA-Analyze | Wikipedia-Regel als RULE 5 ergänzen. Writer verbietet Wikipedia für Claims/Analyse, QA muss dagegen prüfen (Ungarn-Artikel hatte Wikipedia als src-023 für Polling). | 🔴 Hoch |
-| P-08 | Pipeline | Writer | Quellen-Anzahl im Meta-Transparenz-Absatz durch Python setzen statt LLM. Systematischer Zählfehler (25 vs 20, 29 vs 24). | 🟡 Mittel |
+| WP | Priority | Description | Depends on |
+|----|----------|-------------|------------|
+| WP-RENDERING | 🔴 High | Topic Package → HTML rendering. Minimal template for article + Bias Card. Required for demo. | — |
+| WP-MEMORY | 🟡 Medium | Agent Memory Loading/Saving (Editor knows past coverage) | — |
+| WP-CACHING | 🟢 Low | Prompt Caching via OpenRouter. Two-phase split improves caching (system prompts are stable prefixes). | — |
+| Feed expansion | 🟡 Medium | Scale from 21 to 50+ feeds using WorldMonitor catalog. At 200+, reactivate Collector as pre-filter. | — |
+| Model evaluation | 🟡 Medium | Evaluate 8 models across 4 agent roles for quality and cost optimization. | — |
 
-## Nächste Arbeitspakete (Reihenfolge = Priorität)
+## Future Work Packages
 
-| WP | Priorität | Beschreibung | Abhängig von |
-|----|-----------|-------------|--------------|
-| WP-CACHING | 🟢 Klein | Prompt Caching via OpenRouter für GLM5-turbo und Mimo-V2-Pro. Provider-agnostisch: funktioniert mit und ohne Caching. | — |
-| WP-PERSPEKTIV | 🟡 Mittel | Perspektiv-Agent: recherchiert Spektrum der Positionen pro Thema | WP-RESEARCH |
-| WP-MEMORY | 🟢 Klein | Agent Memory Loading/Saving (Editor kennt bisherige Berichterstattung) | — |
-
-## Zukünftige Arbeitspakete (H2)
-
-| WP | Beschreibung | Status |
+| WP | Description | Status |
 |----|-------------|--------|
-| WP-BIAS | Bias-Detektor: analysiert fertigen Text auf 5 Bias-Dimensionen | ⬜ Offen |
-| WP-TELEGRAM | Telegram-Notifications + Gating (gate_handler Hook ist ready) | ⬜ Offen |
-| WP-VISUALS | generate-visuals.py Integration (Mermaid-Diagramme aus Topic Packages) | ⬜ Offen |
-| WP-SOCIAL | Social-Media-Agent: separater Agent zur Quellenanreicherung (X, YouTube, Instagram) vor dem Writer | ⬜ Offen |
-| WP-WEBSITE | GitHub Pages für independentwire.org | ⬜ Offen |
-| WP-DNS | DNS-Konfiguration Cloudflare + .de/.eu Domains | ⬜ Offen |
+| WP-TELEGRAM | Telegram notifications + Gating (gate_handler hook is ready) | Open |
+| WP-VISUALS | generate-visuals.py integration (Mermaid diagrams from Topic Packages) | Open |
+| WP-SOCIAL | Social media agent: separate agent for source enrichment (X, YouTube, Instagram) before Writer | Open |
+| WP-WEBSITE | GitHub Pages for independentwire.org | Open |
+| WP-DNS | DNS configuration Cloudflare + .de/.eu domains | Open |
 
-## Erkenntnisse aus den Pipeline-Läufen
+## Pipeline Run History
 
 ### Lauf 1 (2026-03-30)
-**Daten:** 39 Findings → 3 Topics → 2 produziert, 1 failed (Rate-Limit)
-**Laufzeit:** 19 Minuten | **Modelle:** minimax-m2.7 + glm-5 via OpenRouter
+**Data:** 39 findings → 3 topics → 2 produced, 1 failed (rate limit)
+**Duration:** 19 minutes | **Models:** minimax-m2.7 + glm-5 via OpenRouter
 
 ### Lauf 2 (2026-03-31)
-**Daten:** 38 Collector + 445 RSS = 483 Findings → 3 Topics → 3/3 produziert, 0 failed
-**Laufzeit:** 19.5 Minuten
+**Data:** 38 Collector + 445 RSS = 483 findings → 3 topics → 3/3 produced, 0 failed
+**Duration:** 19.5 minutes
 
-### Lauf 3 (2026-04-05) — mit Research Agent
-**Daten:** 3 Topics → 3/3 produziert, 0 failed
-**Laufzeit:** 29.6 Minuten
-**Researcher-Ergebnisse:** 5-8 Sprachen/Topic, 18-38 Quellen, 76-85% non-English Queries.
+### Lauf 3 (2026-04-05) — with Research Agent
+**Data:** 3 topics → 3/3 produced, 0 failed
+**Duration:** 29.6 minutes
+**Researcher results:** 5-8 languages/topic, 18-38 sources, 76-85% non-English queries.
 
-### Lauf 4 (2026-04-05) — QA (komplexe Version, vor Vereinfachung)
-**Daten:** 1 Topic (Iran-Konflikt), QA-only Partial Run
-**Ergebnisse:** 30 Claims geprüft, 2 Korrekturen (Subheadline + Source Count)
-**Problem:** QA-Analyze mit Verification Card: 29.170 Tokens, ~8 min. Bei 2/3 Folge-Läufen: leeres `{}` (JSON-Parsing-Fehler wegen zu großem Output).
-**Erkenntnis:** Verification Card ist Haupttreiber der Komplexität → vereinfacht in TASK-QA-SIMPLIFY.
+### Lauf 4 (2026-04-05) — QA (complex version, before simplification)
+**Data:** 1 topic (Iran conflict), QA-only partial run
+**Results:** 30 claims checked, 2 corrections (subheadline + source count)
+**Problem:** QA-Analyze with Verification Card: 29,170 tokens, ~8 min. In 2/3 follow-up runs: empty `{}` (JSON parsing error due to oversized output).
+**Lesson:** Verification Card was the main complexity driver → simplified in QA-Simplify.
 
-### Lauf 5 (2026-04-06) — QA (vereinfachte Version)
-**Daten:** 1 Topic (Ungarn-Wahl), QA-only Partial Run gegen unkorrigierten Lauf-3-Output
-**Tokens:** QA-Analyze 20.049 (70s) + Writer-Correction 15.836 (32s) = 35.885 gesamt (102s)
-**Ergebnisse:**
-- 1 Korrektur: "25 sources" → "20 sources" (systematischer Writer-Zählfehler)
-- 3 Divergenzen: Kaczyński-Orbán Verbindung fehlt (omission), Diaspora-Framing (framing), EU-Gelder vs. Innenpolitik (emphasis)
-- 4 Gaps: rumänische Quellen, slowakisch/tschechisch, Kaczyński-Verbindung, Business-Community
-- Python-Verify: 1/1 Korrekturen erfolgreich angewandt
+### Lauf 5 (2026-04-06) — QA (simplified version)
+**Data:** 1 topic (Hungary election), QA-only partial run against uncorrected Lauf 3 output
+**Tokens:** QA-Analyze 20,049 (70s) + Writer-Correction 15,836 (32s) = 35,885 total (102s)
+**Results:**
+- 1 correction: "25 sources" → "20 sources" (systematic Writer counting error)
+- 3 divergences: Kaczyński-Orbán connection missing (omission), diaspora framing (framing), EU funds vs. domestic politics (emphasis)
+- 4 gaps: Romanian sources, Slovak/Czech, Kaczyński connection, business community
+- Python-Verify: 1/1 corrections successfully applied
 
-**Vergleich alt vs. neu:** 29K Tokens + 480s + leeres Output → 36K Tokens + 102s + vollständiges Ergebnis.
+**Comparison old vs. new:** 29K tokens + 480s + empty output → 36K tokens + 102s + complete results.
+
+### Lauf 7 (2026-04-07) — full 3-topic run
+**Data:** 3 topics → 2/3 produced, 1 failed (Hormuz — 85K token Researcher crash)
+**Lesson:** Researcher context accumulation problem → triggered WP-RESEARCHER-SPLIT.
+
+### Lauf 9 (2026-04-07) — first complete run with new architecture
+**Data:** 3 topics → 3/3 produced, 0 failures. 391,224 tokens, 47.7 minutes.
+**New features tested:** Two-phase Researcher, disabled Collector, Writer-Correction retry, Bias Transparency Card.
+**Results:**
+- Topic 1 (US-Israel-Iran Escalation): 134K tokens — QA returned empty `{}` (fixed by QF-08)
+- Topic 2 (Humanitarian Crisis Gaza): 127K tokens — 4 corrections, all applied first attempt
+- Topic 3 (Iranian Retaliation): 119K tokens — 2 corrections, all applied first attempt
+- Bias Cards: All 3 rated severity "low", reader notes correctly synthesize missing voices
+- Writer-Correction: All 6 corrections applied on first attempt
 
 ---
 
-*Dieses Dokument wird nach jeder Session aktualisiert. Änderungen per Git nachvollziehbar.*
+*This document is updated after each session. Changes are tracked via git.*
