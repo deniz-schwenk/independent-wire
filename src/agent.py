@@ -267,7 +267,15 @@ class Agent:
 
     @staticmethod
     def _parse_json(text: str) -> dict | list | None:
-        """Try to parse text as JSON, stripping markdown code fences if present."""
+        """Try to parse text as JSON, stripping markdown code fences if present.
+
+        Includes repair steps for common malformed JSON from budget LLMs:
+        1. Extract JSON from surrounding prose
+        2. Remove trailing commas before } or ]
+        3. Fix truncated JSON by appending missing closing brackets
+        """
+        import re as _re
+
         text = text.strip()
         if text.startswith("```"):
             lines = text.split("\n")
@@ -276,7 +284,71 @@ class Agent:
         try:
             return json.loads(text)
         except (json.JSONDecodeError, ValueError):
-            return None
+            pass
+
+        # Repair 1: Extract JSON from surrounding prose
+        first_brace = -1
+        for i, ch in enumerate(text):
+            if ch in "{[":
+                first_brace = i
+                break
+        if first_brace >= 0:
+            bracket = "}" if text[first_brace] == "{" else "]"
+            last_bracket = text.rfind(bracket)
+            if last_bracket > first_brace:
+                extracted = text[first_brace : last_bracket + 1]
+                try:
+                    return json.loads(extracted)
+                except (json.JSONDecodeError, ValueError):
+                    text = extracted  # use extracted for subsequent repairs
+
+        # Repair 2: Remove trailing commas before } or ]
+        cleaned = _re.sub(r",\s*([}\]])", r"\1", text)
+        try:
+            return json.loads(cleaned)
+        except (json.JSONDecodeError, ValueError):
+            pass
+
+        # Repair 3: Fix truncated JSON by appending missing closing brackets
+        try:
+            json.loads(cleaned)
+        except json.JSONDecodeError as e:
+            if "Expecting" in str(e) or "Unterminated" in str(e) or "end of input" in str(e).lower():
+                stack = []
+                in_string = False
+                escape = False
+                for ch in cleaned:
+                    if escape:
+                        escape = False
+                        continue
+                    if ch == "\\":
+                        escape = True
+                        continue
+                    if ch == '"' and not escape:
+                        in_string = not in_string
+                        continue
+                    if in_string:
+                        continue
+                    if ch in "{[":
+                        stack.append("}" if ch == "{" else "]")
+                    elif ch in "}]":
+                        if stack:
+                            stack.pop()
+
+                if stack:
+                    closing = "".join(reversed(stack))
+                    repaired = cleaned + closing
+                    try:
+                        result = json.loads(repaired)
+                        logger.warning(
+                            "Agent JSON repair: fixed truncated JSON (added %d closing brackets)",
+                            len(stack),
+                        )
+                        return result
+                    except (json.JSONDecodeError, ValueError):
+                        pass
+
+        return None
 
     async def _parse_or_retry_structured(
         self,
