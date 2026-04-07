@@ -414,7 +414,6 @@ class Pipeline:
         assignment_data = asdict(assignment)
         article: dict = {}
         bias_analysis: dict = {}
-        sources: list[dict] = []
 
         slug = assignment.topic_slug or assignment.id
 
