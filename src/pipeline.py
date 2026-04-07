@@ -107,6 +107,17 @@ class Pipeline:
         self.mode = mode
         self.gate_handler = gate_handler
         self.state: PipelineState | None = None
+        self._agent_stats: list[dict] = []
+
+    def _track_agent(self, result: object, agent_name: str, topic_slug: str | None = None) -> None:
+        """Record agent metrics for the run stats."""
+        self._agent_stats.append({
+            "agent": agent_name,
+            "topic": topic_slug,
+            "tokens_used": result.tokens_used,
+            "duration_seconds": result.duration_seconds,
+            "model": result.model,
+        })
 
     async def run(self, date: str | None = None) -> list[TopicPackage]:
         """Execute the full pipeline. Returns completed TopicPackages."""
@@ -228,6 +239,7 @@ class Pipeline:
 
         try:
             result = await agent.run(message, output_schema=schema)
+            self._track_agent(result, "collector")
             parsed = _extract_list(result)
             if parsed is not None:
                 return parsed
@@ -286,6 +298,7 @@ class Pipeline:
             result = await agent.run(
                 message, context={"findings": trimmed}
             )
+            self._track_agent(result, "curator")
             topics = _extract_list(result) or []
 
             # Sort by relevance_score (descending) and limit
@@ -317,6 +330,7 @@ class Pipeline:
             result = await agent.run(
                 message, context={"topics": curated_topics}
             )
+            self._track_agent(result, "editor")
             raw_assignments = _extract_list(result) or []
 
             assignments = []
@@ -386,14 +400,12 @@ class Pipeline:
         assignment: TopicAssignment,
         preloaded_dossier: dict | None = None,
         preloaded_article: dict | None = None,
-        preloaded_qa_analysis: dict | None = None,
     ) -> TopicPackage:
         """Produce a single TopicPackage from an assignment.
 
         Optional preloaded data skips the corresponding step:
         - preloaded_dossier: skip researcher
         - preloaded_article: skip writer (and researcher)
-        - preloaded_qa_analysis: skip qa_analyze
         """
         import asyncio
 
@@ -403,12 +415,15 @@ class Pipeline:
         bias_analysis: dict = {}
         sources: list[dict] = []
 
+        slug = assignment.topic_slug or assignment.id
+
         # 1. Perspektiv-Agent (optional)
         if perspektiv := self.agents.get("perspektiv"):
             result = await perspektiv.run(
                 "Research the spectrum of perspectives on this topic.",
                 context=assignment_data,
             )
+            self._track_agent(result, "perspektiv", slug)
             perspectives = _extract_list(result) or []
 
         # 2. Research Agent (multilingual deep search)
@@ -423,9 +438,9 @@ class Pipeline:
                 context=assignment_data,
             )
             research_dossier = _extract_dict(result) or {}
+            self._track_agent(result, "researcher", slug)
 
         if research_dossier and preloaded_dossier is None:
-            slug = assignment.topic_slug or assignment.id
             self._write_debug_output(f"04-researcher-{slug}.json", research_dossier)
 
         # 10s delay between researcher and writer to avoid rate limits
@@ -453,6 +468,7 @@ class Pipeline:
                 "Write a multi-perspective article on this topic.",
                 context=writer_context,
             )
+            self._track_agent(result, "writer", slug)
             article = _extract_dict(result) or {
                 "headline": assignment.title,
                 "body": result.content,
@@ -462,65 +478,145 @@ class Pipeline:
         body_text = article.get("body", "")
         article["word_count"] = len(body_text.split())
 
-        # 4. QA-Analyze (verify all claims)
-        qa_analysis: dict = preloaded_qa_analysis or {}
-        if not qa_analysis and (qa_analyze := self.agents.get("qa_analyze")):
+        # Fix meta-transparency source/language counts (Writer miscounts systematically)
+        body = article.get("body", "")
+        writer_sources = article.get("sources", [])
+        if body and writer_sources:
+            actual_count = len(writer_sources)
+            langs = {s.get("language", "") for s in writer_sources if s.get("language")}
+            actual_langs = len(langs)
+            meta_pattern = re.compile(
+                r"(This (?:report|article|analysis) draws on )\d+( sources in )\d+( languages?)"
+            )
+            new_body = meta_pattern.sub(
+                rf"\g<1>{actual_count}\g<2>{actual_langs}\3",
+                body,
+            )
+            if new_body != body:
+                article["body"] = new_body
+                logger.info(
+                    "Fixed meta-transparency: %d sources in %d languages for '%s'",
+                    actual_count,
+                    actual_langs,
+                    assignment.title,
+                )
+
+        # 4. QA-Analyze (find errors, divergences, gaps)
+        qa_analysis: dict = {}
+        if qa_analyze := self.agents.get("qa_analyze"):
             qa_context = {
                 "article": article,
                 "research_dossier": research_dossier,
             }
             result = await qa_analyze.run(
-                "Verify every factual claim in this article against the available sources.",
+                "Review this article against the available sources. Find factual errors, "
+                "source divergences the article doesn't reflect, and coverage gaps.",
                 context=qa_context,
             )
             qa_analysis = _extract_dict(result) or {}
-            slug = assignment.topic_slug or assignment.id
+            self._track_agent(result, "qa_analyze", slug)
             self._write_debug_output(f"06-qa-analyze-{slug}.json", qa_analysis)
 
-        # 5. QA-Rewrite (apply corrections, only if needed)
-        corrected_article = article.copy()
-        qa_rewrite_output: dict = {}
+            if not qa_analysis or not any(
+                qa_analysis.get(k) is not None for k in ("corrections", "divergences", "gaps")
+            ):
+                logger.warning(
+                    "QA-Analyze for '%s' returned no usable fields — "
+                    "output may be truncated. Check debug file.",
+                    assignment.title,
+                )
+
+        # 5. Writer-Correction (only if corrections needed)
         corrections = qa_analysis.get("corrections", [])
-
-        if corrections and (qa_rewrite := self.agents.get("qa_rewrite")):
-            # 10s delay to avoid rate limits
-            await asyncio.sleep(10)
-
-            rewrite_context = {
-                "article": article,
-                "qa_analysis": qa_analysis,
-            }
-            result = await qa_rewrite.run(
-                "Apply the corrections to the article text and produce the final verification card.",
-                context=rewrite_context,
-            )
-            qa_rewrite_output = _extract_dict(result) or {}
-            slug = assignment.topic_slug or assignment.id
-            self._write_debug_output(f"07-qa-rewrite-{slug}.json", qa_rewrite_output)
-
-            # Merge: QA-Rewrite body replaces Writer body
-            if qa_rewrite_output.get("body"):
-                corrected_article["body"] = qa_rewrite_output["body"]
-            if qa_rewrite_output.get("headline"):
-                corrected_article["headline"] = qa_rewrite_output["headline"]
-            if qa_rewrite_output.get("subheadline"):
-                corrected_article["subheadline"] = qa_rewrite_output["subheadline"]
-            if qa_rewrite_output.get("summary"):
-                corrected_article["summary"] = qa_rewrite_output["summary"]
-
-        # Recompute word_count after QA corrections
-        body_text = corrected_article.get("body", "")
-        corrected_article["word_count"] = len(body_text.split())
-
-        # Preserve original article text for transparency
         article_original = article.get("body", "")
+        applied = 0
 
-        # 6. Bias Detector (optional)
+        if corrections and (writer := self.agents.get("writer")):
+            await asyncio.sleep(10)  # Rate limit
+
+            correction_context = {
+                "task": "correction",
+                "original_article": article,
+                "corrections": corrections,
+            }
+            result = await writer.run(
+                "You wrote this article. QA found factual errors that need correction. "
+                "Apply ONLY the listed corrections to the article. Return the complete "
+                "article JSON (headline, subheadline, body, summary, sources) with the "
+                "corrections applied. Do not change anything else.",
+                context=correction_context,
+            )
+            corrected = _extract_dict(result) or {}
+            self._track_agent(result, "writer", slug)
+            self._write_debug_output(f"07-writer-correction-{slug}.json", corrected)
+
+            # Merge corrected fields into article
+            if corrected.get("body"):
+                article["body"] = corrected["body"]
+            if corrected.get("headline"):
+                article["headline"] = corrected["headline"]
+            if corrected.get("subheadline"):
+                article["subheadline"] = corrected["subheadline"]
+            if corrected.get("summary"):
+                article["summary"] = corrected["summary"]
+
+            # 6. Deterministic verification — check corrections were applied
+            not_applied = []
+            for correction in corrections:
+                excerpt = correction.get("article_excerpt", "")
+                if excerpt and excerpt not in article.get("body", ""):
+                    applied += 1
+                elif excerpt:
+                    not_applied.append(excerpt[:80])
+
+            if not_applied:
+                logger.warning(
+                    "Writer-Correction for '%s': %d/%d corrections NOT applied: %s",
+                    assignment.title,
+                    len(not_applied),
+                    len(corrections),
+                    not_applied,
+                )
+            else:
+                logger.info(
+                    "Writer-Correction for '%s': all %d corrections applied.",
+                    assignment.title,
+                    len(corrections),
+                )
+
+        # Compute word_count in Python (never trust LLM counting)
+        article["word_count"] = len(article.get("body", "").split())
+
+        # Fix meta-transparency again after corrections (may re-introduce wrong counts)
+        body = article.get("body", "")
+        writer_sources = article.get("sources", [])
+        if body and writer_sources:
+            actual_count = len(writer_sources)
+            langs = {s.get("language", "") for s in writer_sources if s.get("language")}
+            actual_langs = len(langs)
+            meta_pattern = re.compile(
+                r"(This (?:report|article|analysis) draws on )\d+( sources in )\d+( languages?)"
+            )
+            new_body = meta_pattern.sub(
+                rf"\g<1>{actual_count}\g<2>{actual_langs}\3",
+                body,
+            )
+            if new_body != body:
+                article["body"] = new_body
+                logger.info(
+                    "Fixed meta-transparency: %d sources in %d languages for '%s'",
+                    actual_count,
+                    actual_langs,
+                    assignment.title,
+                )
+
+        # 7. Bias Detector (optional)
         if bias_detector := self.agents.get("bias_detector"):
             result = await bias_detector.run(
                 "Analyze this article for bias across all five dimensions.",
-                context={"article": corrected_article, "sources": corrected_article.get("sources", [])},
+                context={"article": article, "sources": article.get("sources", [])},
             )
+            self._track_agent(result, "bias_detector", slug)
             bias_analysis = _extract_dict(result) or {}
 
         # Assemble TopicPackage
@@ -533,11 +629,11 @@ class Pipeline:
                 "topic_slug": assignment.topic_slug,
                 "priority": assignment.priority,
             },
-            sources=corrected_article.get("sources", []),
+            sources=article.get("sources", []),
             perspectives=perspectives,
             divergences=qa_analysis.get("divergences", []),
             gaps=qa_analysis.get("gaps", []),
-            article=corrected_article,
+            article=article,
             bias_analysis=bias_analysis,
             transparency={
                 "selection_reason": assignment.selection_reason,
@@ -546,15 +642,9 @@ class Pipeline:
                     "run_id": self.state.run_id if self.state else "",
                     "date": self.state.date if self.state else "",
                 },
-                "article_original": article_original,
-                "verification_card": (
-                    qa_rewrite_output.get("verification_card")
-                    or qa_analysis.get("verification_card", [])
-                ),
-                "qa_summary": (
-                    qa_rewrite_output.get("qa_summary")
-                    or qa_analysis.get("qa_summary", {})
-                ),
+                "article_original": article_original if corrections else None,
+                "qa_corrections": corrections,
+                "qa_corrections_applied": applied if corrections else 0,
             },
             status="review",
         )
@@ -649,7 +739,7 @@ class Pipeline:
         )
 
         # Determine which steps to skip based on from_step
-        step_order = ["collector", "curator", "editor", "researcher", "writer", "qa_analyze", "qa_rewrite"]
+        step_order = ["collector", "curator", "editor", "researcher", "writer", "qa_analyze"]
         from_idx = step_order.index(from_step)
 
         # --- Load assignments (needed for researcher onward) ---
@@ -685,7 +775,6 @@ class Pipeline:
         # --- Load per-topic data for later steps ---
         dossiers: dict[str, dict] = {}
         writer_outputs: dict[str, dict] = {}
-        qa_analyze_outputs: dict[str, dict] = {}
 
         # Load researcher dossiers (needed for --from writer onward)
         if from_idx >= step_order.index("writer"):
@@ -711,18 +800,6 @@ class Pipeline:
                     logger.info("Loaded writer output: %s", filename)
                 else:
                     logger.warning("No writer output found: %s", filename)
-
-        # Load QA-Analyze outputs (needed for --from qa_rewrite)
-        if from_step == "qa_rewrite":
-            for assignment in assignments:
-                slug = assignment.topic_slug or assignment.id
-                filename = f"06-qa-analyze-{slug}.json"
-                qa_data = self._load_debug_output(reuse, filename)
-                if qa_data and isinstance(qa_data, dict):
-                    qa_analyze_outputs[slug] = qa_data
-                    logger.info("Loaded QA-Analyze output: %s", filename)
-                else:
-                    logger.warning("No QA-Analyze output found: %s", filename)
 
         # --- Execute remaining steps ---
         packages: list[TopicPackage] = []
@@ -763,8 +840,8 @@ class Pipeline:
         elif from_step == "researcher":
             packages = await self.produce(assignments)
 
-        elif from_step in ("writer", "qa_analyze", "qa_rewrite"):
-            # Run from writer/qa_analyze/qa_rewrite with preloaded data
+        elif from_step in ("writer", "qa_analyze"):
+            # Run from writer/qa_analyze with preloaded data
             for i, assignment in enumerate(assignments):
                 if i > 0:
                     logger.info("Waiting 30s before next topic to avoid rate limits...")
@@ -775,7 +852,6 @@ class Pipeline:
                         assignment,
                         preloaded_dossier=dossiers.get(slug),
                         preloaded_article=writer_outputs.get(slug) if from_idx >= step_order.index("qa_analyze") else None,
-                        preloaded_qa_analysis=qa_analyze_outputs.get(slug) if from_step == "qa_rewrite" else None,
                     )
                     packages.append(pkg)
                     self._write_debug_output(f"05-writer-{slug}.json", pkg.to_dict())
@@ -851,3 +927,15 @@ class Pipeline:
             "packages": [p.id for p in packages],
         }
         summary_path.write_text(json.dumps(summary, indent=2))
+
+        # Write agent stats (token usage, durations)
+        if self._agent_stats:
+            stats_path = out / f"{self.state.run_id}-stats.json"
+            stats = {
+                "run_id": self.state.run_id,
+                "date": self.state.date,
+                "agents": self._agent_stats,
+                "total_tokens": sum(s["tokens_used"] for s in self._agent_stats),
+                "total_duration_seconds": sum(s["duration_seconds"] for s in self._agent_stats),
+            }
+            stats_path.write_text(json.dumps(stats, indent=2))
