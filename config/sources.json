@@ -143,7 +143,7 @@
       "tier": 2,
       "editorial_independence": "independent",
       "bias_note": "Major Argentine newspaper, center-right",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "El Financiero",
@@ -297,7 +297,7 @@
       "tier": 2,
       "editorial_independence": "independent",
       "bias_note": "European public broadcaster consortium",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "ANSA",
@@ -444,14 +444,14 @@
     },
     {
       "name": "Kyiv Independent",
-      "url": "https://kyivindependent.com/feed/",
+      "url": "https://kyivindependent.com/news-archive/rss/",
       "type": "rss",
       "region": "Europe",
       "language": "en",
       "tier": 2,
       "editorial_independence": "independent",
       "bias_note": "Ukrainian independent, pro-Ukraine perspective",
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "RT",
@@ -488,7 +488,7 @@
     },
     {
       "name": "TVN24",
-      "url": "https://tvn24.pl/swiat.xml",
+      "url": "https://tvn24.pl/najwazniejsze.xml",
       "type": "rss",
       "region": "Europe",
       "language": "pl",
@@ -499,25 +499,25 @@
     },
     {
       "name": "NHK World",
-      "url": "https://www3.nhk.or.jp/nhkworld/en/news/list/rss.xml",
+      "url": "https://www3.nhk.or.jp/nhkworld/data/en/news/backstory/rss.xml",
       "type": "rss",
       "region": "East Asia",
       "language": "en",
       "tier": 2,
       "editorial_independence": "publicly_funded_autonomous",
       "bias_note": "Japanese public broadcaster",
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "Eurasianet",
-      "url": "https://eurasianet.org/feed",
+      "url": "https://eurasianet.org/rss",
       "type": "rss",
       "region": "Central Asia",
       "language": "en",
       "tier": 2,
       "editorial_independence": "independent",
       "bias_note": "Central Asia + South Caucasus, Columbia University based",
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "Al Arabiya",
@@ -531,19 +531,8 @@
       "enabled": false
     },
     {
-      "name": "L'Orient-Le Jour",
-      "url": "https://www.lorientlejour.com/feed",
-      "type": "rss",
-      "region": "Middle East",
-      "language": "fr",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Lebanese francophone daily, Nahost-Frankophonie bridge",
-      "enabled": false
-    },
-    {
       "name": "Africanews",
-      "url": "https://www.africanews.com/feed/rss",
+      "url": "https://fr.africanews.com/feed/rss?themes=af_pics-of-the-day",
       "type": "rss",
       "region": "Africa",
       "language": "en",
@@ -554,7 +543,7 @@
     },
     {
       "name": "Jeune Afrique",
-      "url": "https://www.jeuneafrique.com/feed/",
+      "url": "https://www.jeuneafrique.com/pays/asie/feed",
       "type": "rss",
       "region": "Africa",
       "language": "fr",
@@ -565,7 +554,7 @@
     },
     {
       "name": "News24",
-      "url": "https://feeds.news24.com/articles/news24/TopStories/rss",
+      "url": "https://www.news24.com/news24RSSFeed/0,,2,00.xml",
       "type": "rss",
       "region": "Africa",
       "language": "en",
@@ -598,14 +587,14 @@
     },
     {
       "name": "Mada Masr",
-      "url": "https://www.madamasr.com/en/feed",
+      "url": "https://www.madamasr.com/en/feed/",
       "type": "rss",
       "region": "Africa",
       "language": "en",
       "tier": 2,
       "editorial_independence": "independent",
       "bias_note": "Egyptian independent investigative, journalist-owned, blocked in Egypt since 2017",
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "Morocco World News",
@@ -697,7 +686,7 @@
     },
     {
       "name": "The Hindu",
-      "url": "https://www.thehindu.com/news/national/feeder/default.rss",
+      "url": "https://www.thehindu.com/feeder/default.rss",
       "type": "rss",
       "region": "South Asia",
       "language": "en",
