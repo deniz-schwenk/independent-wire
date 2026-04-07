@@ -773,15 +773,15 @@
       "enabled": true
     },
     {
-      "name": "OCCRP",
-      "url": "https://www.occrp.org/en/investigations?format=feed&type=rss",
+      "name": "Global Voices",
+      "url": "https://globalvoices.org/feed/",
       "type": "rss",
       "region": "International",
       "language": "en",
       "tier": 3,
       "editorial_independence": "independent",
-      "bias_note": "Organized Crime and Corruption Reporting Project. Cross-border investigative journalism (Panama Papers, Pandora Papers, FinCEN Files).",
-      "enabled": false
+      "bias_note": "Citizen journalism from 167 countries. Harvard Berkman Center origin. Covers stories mainstream media ignores.",
+      "enabled": true
     }
   ]
 }
