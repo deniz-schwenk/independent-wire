@@ -782,6 +782,17 @@
       "editorial_independence": "independent",
       "bias_note": "Citizen journalism from 167 countries. Harvard Berkman Center origin. Covers stories mainstream media ignores.",
       "enabled": true
+    },
+    {
+      "name": "The Conversation",
+      "url": "https://theconversation.com/global/articles.atom",
+      "type": "rss",
+      "region": "International",
+      "language": "en",
+      "tier": 3,
+      "editorial_independence": "independent",
+      "bias_note": "Academic experts writing for general public. Nonprofit, Creative Commons.",
+      "enabled": true
     }
   ]
 }
