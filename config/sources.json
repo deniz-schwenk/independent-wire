@@ -135,17 +135,6 @@
       "enabled": true
     },
     {
-      "name": "La Nacion",
-      "url": "https://www.lanacion.com.ar/arcio/rss/",
-      "type": "rss",
-      "region": "Latin America",
-      "language": "es",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Major Argentine newspaper, center-right",
-      "enabled": false
-    },
-    {
       "name": "El Financiero",
       "url": "https://www.elfinanciero.com.mx/arc/outboundfeeds/rss/?outputType=xml",
       "type": "rss",
@@ -287,17 +276,6 @@
       "editorial_independence": "publicly_funded_autonomous",
       "bias_note": "German state-funded, editorially independent",
       "enabled": true
-    },
-    {
-      "name": "EuroNews",
-      "url": "https://www.euronews.com/rss?format=xml",
-      "type": "rss",
-      "region": "International",
-      "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "European public broadcaster consortium",
-      "enabled": false
     },
     {
       "name": "ANSA",
@@ -487,17 +465,6 @@
       "enabled": true
     },
     {
-      "name": "TVN24",
-      "url": "https://tvn24.pl/najwazniejsze.xml",
-      "type": "rss",
-      "region": "Europe",
-      "language": "pl",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Polish commercial TV, Warner Bros Discovery owned",
-      "enabled": false
-    },
-    {
       "name": "NHK World",
       "url": "https://www3.nhk.or.jp/nhkworld/data/en/news/backstory/rss.xml",
       "type": "rss",
@@ -527,40 +494,7 @@
       "language": "ar",
       "tier": 2,
       "editorial_independence": "state_influenced",
-      "bias_note": "Saudi-aligned Arabic news, MBC Group",
-      "enabled": false
-    },
-    {
-      "name": "Africanews",
-      "url": "https://fr.africanews.com/feed/rss?themes=af_pics-of-the-day",
-      "type": "rss",
-      "region": "Africa",
-      "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Pan-African, Euronews sister",
-      "enabled": false
-    },
-    {
-      "name": "Jeune Afrique",
-      "url": "https://www.jeuneafrique.com/pays/asie/feed",
-      "type": "rss",
-      "region": "Africa",
-      "language": "fr",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Francophone Africa reference publication",
-      "enabled": false
-    },
-    {
-      "name": "News24",
-      "url": "https://www.news24.com/news24RSSFeed/0,,2,00.xml",
-      "type": "rss",
-      "region": "Africa",
-      "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Largest South African news site",
+      "bias_note": "Saudi-aligned Arabic news, MBC Group. Cloud IPs blocked — content enters via Researcher web_search.",
       "enabled": false
     },
     {
@@ -685,17 +619,6 @@
       "enabled": true
     },
     {
-      "name": "The Hindu",
-      "url": "https://www.thehindu.com/feeder/default.rss",
-      "type": "rss",
-      "region": "South Asia",
-      "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Major Indian newspaper of record",
-      "enabled": false
-    },
-    {
       "name": "Indian Express",
       "url": "https://indianexpress.com/section/india/feed/",
       "type": "rss",
@@ -803,6 +726,61 @@
       "tier": 3,
       "editorial_independence": "independent",
       "bias_note": "Investigative cybersecurity journalism",
+      "enabled": true
+    },
+    {
+      "name": "Daily Maverick",
+      "url": "https://www.dailymaverick.co.za/feed/",
+      "type": "rss",
+      "region": "Africa",
+      "language": "en",
+      "tier": 2,
+      "editorial_independence": "independent",
+      "bias_note": "South African investigative journalism. Replaces Africanews + News24.",
+      "enabled": false
+    },
+    {
+      "name": "RFI",
+      "url": "https://www.rfi.fr/fr/rss",
+      "type": "rss",
+      "region": "International",
+      "language": "fr",
+      "tier": 2,
+      "editorial_independence": "publicly_funded_autonomous",
+      "bias_note": "Radio France Internationale, francophone global. Replaces Jeune Afrique.",
+      "enabled": true
+    },
+    {
+      "name": "Notes from Poland",
+      "url": "https://notesfrompoland.com/feed/",
+      "type": "rss",
+      "region": "Europe",
+      "language": "en",
+      "tier": 3,
+      "editorial_independence": "independent",
+      "bias_note": "English-language Polish news and analysis. Replaces TVN24.",
+      "enabled": true
+    },
+    {
+      "name": "Politico Europe",
+      "url": "https://www.politico.eu/feed/",
+      "type": "rss",
+      "region": "Europe",
+      "language": "en",
+      "tier": 2,
+      "editorial_independence": "independent",
+      "bias_note": "EU politics and policy from Brussels. Replaces EuroNews.",
+      "enabled": true
+    },
+    {
+      "name": "ReliefWeb",
+      "url": "https://reliefweb.int/updates/rss.xml",
+      "type": "rss",
+      "region": "International",
+      "language": "en",
+      "tier": 1,
+      "editorial_independence": "independent",
+      "bias_note": "UN OCHA humanitarian crisis reports. Primary source for underreported crises.",
       "enabled": true
     }
   ]
