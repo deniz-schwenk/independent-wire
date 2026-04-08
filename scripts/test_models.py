@@ -4,8 +4,8 @@
 Usage:
     python scripts/test_models.py --role curator --reuse 2026-04-07
     python scripts/test_models.py --role researcher_assemble --reuse 2026-04-07 --topic 1
+    python scripts/test_models.py --role researcher_plan --reuse 2026-04-07 --topic 1
     python scripts/test_models.py --role writer --reuse 2026-04-07 --topic 1
-    python scripts/test_models.py --role perspektiv_qa_bias --reuse 2026-04-07 --topic 1
 """
 
 import argparse
@@ -14,154 +14,152 @@ import json
 import logging
 import sys
 import time
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from src.agent import Agent
+from src.tools import web_search_tool
 
-# Models to evaluate per role
+# IMPORTANT: The first entry in each list is the Reference Quality model.
+# Its eval_model_name MUST be "Reference Quality" — never "Opus", "Claude", or any brand name.
+# This output serves as the benchmark against which all other models are evaluated.
+
 MODELS = {
     "curator": [
-        {"slug": "deepseek/deepseek-v3.2", "name": "DeepSeek V3.2"},
-        {"slug": "stepfun/step-3.5-flash", "name": "Step 3.5 Flash"},
+        {"slug": "anthropic/claude-opus-4.6", "name": "Reference Quality"},
         {"slug": "minimax/minimax-m2.7", "name": "MiniMax M2.7"},
+        {"slug": "deepseek/deepseek-v3.2", "name": "DeepSeek V3.2"},
         {"slug": "moonshotai/kimi-k2.5", "name": "Kimi K2.5"},
         {"slug": "xiaomi/mimo-v2-pro", "name": "MiMo-V2-Pro"},
     ],
     "researcher_assemble": [
-        {"slug": "z-ai/glm-5-turbo", "name": "GLM 5 Turbo"},
+        {"slug": "anthropic/claude-opus-4.6", "name": "Reference Quality"},
+        {"slug": "z-ai/glm-5", "name": "GLM 5"},
+        {"slug": "deepseek/deepseek-v3.2", "name": "DeepSeek V3.2"},
+        {"slug": "moonshotai/kimi-k2.5", "name": "Kimi K2.5"},
+        {"slug": "xiaomi/mimo-v2-pro", "name": "MiMo-V2-Pro"},
+    ],
+    "researcher_plan": [
+        {"slug": "anthropic/claude-opus-4.6", "name": "Reference Quality"},
+        {"slug": "z-ai/glm-5", "name": "GLM 5"},
         {"slug": "deepseek/deepseek-v3.2", "name": "DeepSeek V3.2"},
         {"slug": "moonshotai/kimi-k2.5", "name": "Kimi K2.5"},
         {"slug": "xiaomi/mimo-v2-pro", "name": "MiMo-V2-Pro"},
     ],
     "writer": [
-        {"slug": "z-ai/glm-5-turbo", "name": "GLM 5 Turbo"},
-        {"slug": "moonshotai/kimi-k2.5", "name": "Kimi K2.5"},
-        {"slug": "xiaomi/mimo-v2-pro", "name": "MiMo-V2-Pro"},
-    ],
-    "perspektiv_qa_bias": [
+        {"slug": "anthropic/claude-opus-4.6", "name": "Reference Quality"},
         {"slug": "z-ai/glm-5", "name": "GLM 5"},
+        {"slug": "z-ai/glm-5-turbo", "name": "GLM 5 Turbo"},
         {"slug": "deepseek/deepseek-v3.2", "name": "DeepSeek V3.2"},
-        {"slug": "z-ai/glm-5.1", "name": "GLM 5.1"},
         {"slug": "moonshotai/kimi-k2.5", "name": "Kimi K2.5"},
         {"slug": "xiaomi/mimo-v2-pro", "name": "MiMo-V2-Pro"},
     ],
 }
 
-# Role → (prompt_path, temperature, tools)
 ROLE_CONFIG = {
     "curator": {
         "prompt": "agents/curator/AGENTS.md",
         "temperature": 0.2,
+        "tools": False,
     },
     "researcher_assemble": {
         "prompt": "agents/researcher/ASSEMBLE.md",
         "temperature": 0.2,
+        "tools": False,
+    },
+    "researcher_plan": {
+        "prompt": "agents/researcher/PLAN.md",
+        "temperature": 0.5,
+        "tools": False,
     },
     "writer": {
         "prompt": "agents/writer/AGENTS.md",
         "temperature": 0.3,
-    },
-    "perspektiv_qa_bias": {
-        "prompt": "agents/perspektiv/AGENTS.md",
-        "temperature": 0.1,
+        "tools": True,
     },
 }
 
 
-def find_debug_files(output_dir: Path) -> dict[str, Path]:
-    """Index debug output files by prefix pattern."""
-    files = {}
-    for f in sorted(output_dir.glob("*.json")):
-        files[f.name] = f
-    return files
+def load_assignments(output_dir: Path) -> list[dict]:
+    """Load editor assignments from debug output."""
+    path = output_dir / "03-editor-assignments.json"
+    if not path.exists():
+        raise FileNotFoundError(f"No editor assignments at {path}")
+    data = json.loads(path.read_text())
+    return data if isinstance(data, list) else data.get("assignments", [])
 
 
-def load_topic_slug(output_dir: Path, topic_num: int) -> str | None:
-    """Find the slug for topic N from editor assignments."""
-    for f in sorted(output_dir.glob("02-editor-*.json")):
-        data = json.loads(f.read_text())
-        assignments = data if isinstance(data, list) else data.get("assignments", [])
-        if topic_num <= len(assignments):
-            title = assignments[topic_num - 1].get("title", "")
-            # Derive slug from title (same logic as pipeline)
-            import re
-            slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")[:60]
-            return slug
-    return None
-
-
-def load_input_for_role(role: str, output_dir: Path, topic_num: int | None) -> tuple[str, dict]:
+def load_input_for_role(
+    role: str, output_dir: Path, topic_num: int | None, reuse_date: str,
+) -> tuple[str, dict]:
     """Load the saved input that would be sent to this agent role.
 
-    Returns (message, context) matching what pipeline.py sends.
+    Messages and context match pipeline.py exactly.
     """
     if role == "curator":
-        # Curator gets RSS findings
         raw_dir = output_dir.parent.parent / "raw" / output_dir.name
         feeds_path = raw_dir / "feeds.json"
         if not feeds_path.exists():
             raise FileNotFoundError(f"No feeds file at {feeds_path}")
         findings = json.loads(feeds_path.read_text())
+        trimmed = [
+            {"title": f.get("title", ""), "summary": f.get("summary", ""),
+             "source_name": f.get("source_name", "")}
+            for f in findings[:40]
+        ]
         return (
-            f"Evaluate these {len(findings)} findings and select the top 3 most "
-            "significant international news topics for today's report.",
-            {"findings": findings},
+            "Review these raw findings. Select the most newsworthy topics. "
+            "For each selected topic provide: title, topic_slug, relevance_score, "
+            "summary, source_ids.",
+            {"findings": trimmed},
         )
 
     if not topic_num:
         raise ValueError(f"--topic required for role '{role}'")
 
-    slug = load_topic_slug(output_dir, topic_num)
-    if not slug:
-        raise FileNotFoundError(f"Could not find slug for topic {topic_num}")
+    assignments = load_assignments(output_dir)
+    if topic_num > len(assignments):
+        raise ValueError(f"Topic {topic_num} not found (only {len(assignments)} assignments)")
+    assignment = assignments[topic_num - 1]
+    slug = assignment["topic_slug"]
 
-    if role == "researcher_assemble":
-        # Load search results that the assembler would receive
-        search_file = next(output_dir.glob(f"03b-search-results-{slug}*.json"), None)
-        plan_file = next(output_dir.glob(f"03a-research-plan-{slug}*.json"), None)
-        if not search_file:
-            raise FileNotFoundError(f"No search results for {slug}")
-        search_results = json.loads(search_file.read_text())
-        plan = json.loads(plan_file.read_text()) if plan_file else {}
+    if role == "researcher_plan":
         return (
-            "Assemble a comprehensive research dossier from these multilingual search results.",
-            {"search_results": search_results, "research_plan": plan},
+            f"Plan multilingual research queries for this topic. Today is {reuse_date}.",
+            assignment,
         )
 
-    if role == "writer":
-        dossier_file = next(output_dir.glob(f"04-researcher-{slug}*.json"), None)
-        perspektiv_file = next(output_dir.glob(f"04b-perspektiv-{slug}*.json"), None)
-        editor_file = next(output_dir.glob("02-editor-*.json"), None)
-        if not dossier_file:
-            raise FileNotFoundError(f"No dossier for {slug}")
-        dossier = json.loads(dossier_file.read_text())
-        perspective = json.loads(perspektiv_file.read_text()) if perspektiv_file else {}
-        assignment = {}
-        if editor_file:
-            ed = json.loads(editor_file.read_text())
-            assignments = ed if isinstance(ed, list) else ed.get("assignments", [])
-            if topic_num <= len(assignments):
-                assignment = assignments[topic_num - 1]
+    if role == "researcher_assemble":
+        search_file = output_dir / f"04-researcher-search-{slug}.json"
+        if not search_file.exists():
+            raise FileNotFoundError(f"No search results at {search_file}")
+        search_results = json.loads(search_file.read_text())
         return (
-            "Write an article based on the research dossier and perspective analysis.",
+            "Build a research dossier from these search results. "
+            "Extract sources, actors, divergences, and coverage gaps.",
             {
                 "assignment": assignment,
-                "research_dossier": dossier,
-                "perspective_analysis": perspective,
+                "search_results": search_results,
             },
         )
 
-    if role == "perspektiv_qa_bias":
-        dossier_file = next(output_dir.glob(f"04-researcher-{slug}*.json"), None)
-        if not dossier_file:
-            raise FileNotFoundError(f"No dossier for {slug}")
+    if role == "writer":
+        dossier_file = output_dir / f"04-researcher-{slug}.json"
+        perspektiv_file = output_dir / f"04b-perspektiv-{slug}.json"
+        if not dossier_file.exists():
+            raise FileNotFoundError(f"No dossier at {dossier_file}")
         dossier = json.loads(dossier_file.read_text())
+        perspective = json.loads(perspektiv_file.read_text()) if perspektiv_file.exists() else {}
         return (
-            "Analyze the spectrum of perspectives represented in this research dossier.",
-            {"research_dossier": dossier},
+            "Write a multi-perspective article on this topic.",
+            {
+                **assignment,
+                "perspective_analysis": perspective,
+                "research_dossier": dossier,
+            },
         )
 
     raise ValueError(f"Unknown role: {role}")
@@ -178,24 +176,27 @@ async def run_model(
     config = ROLE_CONFIG[role]
     prompt_path = str(ROOT / config["prompt"])
 
+    tools = [web_search_tool] if config.get("tools") else []
+
     agent = Agent(
         name=f"eval_{role}",
         model=model_slug,
         prompt_path=prompt_path,
-        tools=[],
+        tools=tools,
         temperature=config["temperature"],
         provider="openrouter",
     )
 
     result_record = {
-        "model_slug": model_slug,
-        "model_name": model_name,
-        "role": role,
-        "tokens_used": 0,
+        "eval_role": role,
+        "eval_model_slug": model_slug,
+        "eval_model_name": model_name,
         "duration_seconds": 0,
+        "tokens_used": 0,
         "json_parseable": False,
         "content_length": 0,
         "error": None,
+        "raw_output": "",
     }
 
     try:
@@ -203,19 +204,16 @@ async def run_model(
         result = await agent.run(message, context=context)
         duration = time.monotonic() - start
 
-        result_record["tokens_used"] = result.tokens_used
         result_record["duration_seconds"] = round(duration, 1)
+        result_record["tokens_used"] = result.tokens_used
         result_record["content_length"] = len(result.content)
-        result_record["model_reported"] = result.model
+        result_record["raw_output"] = result.content
 
-        # Check if output is valid JSON
         parsed = Agent._parse_json(result.content)
         result_record["json_parseable"] = parsed is not None
-        result_record["content_preview"] = result.content[:500]
 
     except Exception as e:
         result_record["error"] = str(e)
-        result_record["duration_seconds"] = 0
 
     return result_record
 
@@ -251,14 +249,45 @@ async def main():
 
     # Load input for this role
     logger.info("Loading input for role '%s' from %s", args.role, args.reuse)
-    message, context = load_input_for_role(args.role, output_dir, args.topic)
+    message, context = load_input_for_role(args.role, output_dir, args.topic, args.reuse)
+
+    # Save input record
+    eval_dir = ROOT / "output" / "eval" / args.reuse
+    eval_dir.mkdir(parents=True, exist_ok=True)
+
+    config = ROLE_CONFIG[args.role]
+    prompt_path = ROOT / config["prompt"]
+    system_prompt_text = prompt_path.read_text(encoding="utf-8")
+
+    # Build full user message same way Agent does
+    full_user_message = message
+    if context:
+        context_str = json.dumps(context, indent=2, ensure_ascii=False)
+        full_user_message = f"{message}\n\n---\n\nContext:\n```json\n{context_str}\n```"
+
+    input_record = {
+        "eval_role": args.role,
+        "system_prompt": system_prompt_text,
+        "user_message": full_user_message,
+        "message": message,
+        "context_keys": list(context.keys()),
+        "date": args.reuse,
+        "topic": args.topic,
+    }
+    input_path = eval_dir / f"{args.role}--_input.json"
+    input_path.write_text(json.dumps(input_record, indent=2, ensure_ascii=False))
+    logger.info("Saved input to %s", input_path.name)
 
     models = MODELS[args.role]
     logger.info("Evaluating %d models for role '%s'", len(models), args.role)
 
-    # Run models sequentially
+    # Run models sequentially with rate limiting
     results = []
-    for model_info in models:
+    for i, model_info in enumerate(models):
+        if i > 0:
+            logger.info("Waiting 15s between models...")
+            await asyncio.sleep(15)
+
         logger.info("Running %s (%s)...", model_info["name"], model_info["slug"])
         result = await run_model(
             model_info["slug"],
@@ -268,6 +297,11 @@ async def main():
             context,
         )
         results.append(result)
+
+        # Save individual result
+        safe_name = model_info["name"].lower().replace(" ", "-")
+        out_path = eval_dir / f"{args.role}--{safe_name}.json"
+        out_path.write_text(json.dumps(result, indent=2, ensure_ascii=False))
 
         status = "OK" if not result["error"] else f"ERROR: {result['error'][:80]}"
         json_ok = "JSON OK" if result["json_parseable"] else "JSON FAIL"
@@ -280,15 +314,6 @@ async def main():
             status,
         )
 
-    # Save results
-    eval_dir = ROOT / "output" / "eval" / args.reuse
-    eval_dir.mkdir(parents=True, exist_ok=True)
-
-    for result in results:
-        safe_name = result["model_name"].lower().replace(" ", "-")
-        out_path = eval_dir / f"{args.role}-{safe_name}.json"
-        out_path.write_text(json.dumps(result, indent=2, ensure_ascii=False))
-
     # Print summary
     print(f"\n{'='*70}")
     print(f"Model Evaluation: {args.role}")
@@ -300,7 +325,7 @@ async def main():
         status = "OK" if not r["error"] else "ERROR"
         json_ok = "OK" if r["json_parseable"] else "FAIL"
         print(
-            f"{r['model_name']:<25s} {r['tokens_used']:>8d} "
+            f"{r['eval_model_name']:<25s} {r['tokens_used']:>8d} "
             f"{r['duration_seconds']:>7.1f}s {json_ok:>8s} "
             f"{r['content_length']:>8d} {status:>10s}"
         )
