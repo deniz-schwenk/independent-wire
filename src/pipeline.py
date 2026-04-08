@@ -471,6 +471,147 @@ class Pipeline:
             logger.warning("Could not load feed findings: %s", e)
         return []
 
+    def _prepare_curator_input(self, raw_findings: list[dict]) -> list[dict]:
+        """Compress all findings for the Curator. Pure Python, no LLM.
+
+        Keeps ALL findings (no filtering, no dedup beyond URL).
+        Strips fields the Curator doesn't need (url, region, language, feed_source).
+        Only includes summary if it exists AND differs from the title.
+        """
+        # URL dedup (safety net — already done in fetch_feeds.py)
+        seen_urls: set[str] = set()
+        unique: list[dict] = []
+        for f in raw_findings:
+            url = f.get("source_url", "")
+            if url and url in seen_urls:
+                continue
+            if url:
+                seen_urls.add(url)
+            unique.append(f)
+
+        url_dupes = len(raw_findings) - len(unique)
+        if url_dupes:
+            logger.info("Curator prep: removed %d URL duplicates", url_dupes)
+
+        # Compress: only title + summary (if useful) + source_name + index
+        compressed: list[dict] = []
+        for i, f in enumerate(unique):
+            title = f.get("title", "").strip()
+            if not title:
+                continue
+
+            entry: dict = {
+                "id": f"finding-{i}",
+                "title": title,
+                "source_name": f.get("source_name", ""),
+            }
+
+            # Include summary only if it exists and adds information beyond the title
+            summary = f.get("summary", "").strip()
+            if summary and summary.lower() != title.lower() and not title.lower().startswith(summary.lower()[:50]):
+                entry["summary"] = summary
+
+            compressed.append(entry)
+
+        logger.info(
+            "Curator prep: %d raw → %d unique → %d with titles (compressed)",
+            len(raw_findings), len(unique), len(compressed),
+        )
+
+        return compressed
+
+    def _enrich_curator_output(
+        self, topics: list[dict], raw_findings: list[dict]
+    ) -> list[dict]:
+        """Add geographic_coverage, missing_perspectives, languages deterministically.
+
+        The Curator only clusters and scores. This function computes metadata
+        from the original finding fields (region, language, source_name) that
+        the Curator never sees. Pure Python, 0 LLM tokens.
+        """
+        # Load source metadata for tier/editorial_independence
+        sources_path = Path("config") / "sources.json"
+        source_meta: dict[str, dict] = {}
+        if sources_path.exists():
+            data = json.loads(sources_path.read_text(encoding="utf-8"))
+            source_meta = {s["name"]: s for s in data.get("feeds", [])}
+
+        # Build index: finding-N → original finding dict
+        finding_index: dict[str, dict] = {}
+        for i, f in enumerate(raw_findings):
+            finding_index[f"finding-{i}"] = f
+
+        # All regions and languages across ALL findings (for gap detection)
+        all_regions: set[str] = set()
+        all_languages: set[str] = set()
+        for f in raw_findings:
+            r = f.get("region", "")
+            if r:
+                all_regions.add(r)
+            lang = f.get("language", "")
+            if lang:
+                all_languages.add(lang)
+
+        for topic in topics:
+            source_ids = topic.get("source_ids", [])
+
+            # Collect metadata from clustered findings
+            topic_regions: set[str] = set()
+            topic_languages: set[str] = set()
+            topic_sources: list[dict] = []
+
+            for sid in source_ids:
+                finding = finding_index.get(sid)
+                if not finding:
+                    continue
+                r = finding.get("region", "")
+                if r:
+                    topic_regions.add(r)
+                lang = finding.get("language", "")
+                if lang:
+                    topic_languages.add(lang)
+
+                sname = finding.get("source_name", "")
+                meta = source_meta.get(sname, {})
+                topic_sources.append({
+                    "name": sname,
+                    "tier": meta.get("tier"),
+                    "editorial_independence": meta.get("editorial_independence"),
+                })
+
+            # Deterministic enrichment
+            topic["geographic_coverage"] = sorted(topic_regions)
+            topic["languages"] = sorted(topic_languages)
+            topic["source_count"] = len(source_ids)
+
+            # Missing regions: all regions in the full feed set minus this topic's regions
+            missing_regions = sorted(all_regions - topic_regions)
+            topic["missing_regions"] = missing_regions
+
+            # Missing languages
+            missing_langs = sorted(all_languages - topic_languages)
+            topic["missing_languages"] = missing_langs
+
+            # Source diversity
+            topic["source_diversity"] = topic_sources
+
+            # Build missing_perspectives string (human-readable)
+            parts: list[str] = []
+            if missing_regions:
+                parts.append(f"No sources from: {', '.join(missing_regions)}")
+            if missing_langs:
+                parts.append(f"No coverage in: {', '.join(missing_langs)}")
+
+            # Keep LLM-generated missing_perspectives if present, append deterministic data
+            existing = topic.get("missing_perspectives", "")
+            deterministic = ". ".join(parts) if parts else ""
+            if existing and deterministic:
+                topic["missing_perspectives"] = f"{existing} [Deterministic: {deterministic}]"
+            elif deterministic:
+                topic["missing_perspectives"] = deterministic
+
+        return topics
+
     async def curate(self, raw_findings: list[dict]) -> list[dict]:
         """Select the most newsworthy topics from raw findings."""
         agent = self.agents.get("curator")
@@ -487,25 +628,36 @@ class Pipeline:
             )
             raw_findings = raw_findings + feed_findings
 
+        # Prepare compressed input (all findings, no filtering)
+        prepared = self._prepare_curator_input(raw_findings)
+        self._write_debug_output("01b-curator-prepared.json", {
+            "raw_count": len(raw_findings),
+            "prepared_count": len(prepared),
+            "sources_represented": len(set(f.get("source_name", "") for f in prepared)),
+            "token_estimate": sum(len(json.dumps(f)) for f in prepared) // 4,
+        })
+
         message = (
-            "Review these raw findings. Select the most newsworthy topics. "
-            "For each selected topic provide: title, topic_slug, relevance_score, "
+            "Review these findings. Cluster related findings into topics. "
+            "Score each topic's newsworthiness on a 1-10 scale. "
+            "For each topic provide: title, topic_slug, relevance_score, "
             "summary, source_ids."
         )
 
-        # Truncate findings to avoid context overflow (Issue A)
-        trimmed = [
-            {"title": f.get("title", ""), "summary": f.get("summary", ""),
-             "source_name": f.get("source_name", "")}
-            for f in raw_findings[:40]
-        ]
+        # Curator output is a small JSON array (~2-5K tokens).
+        # Reduce max_tokens to fit within context window with large input.
+        saved_max_tokens = agent.max_tokens
+        agent.max_tokens = min(agent.max_tokens, 16384)
 
         try:
             result = await agent.run(
-                message, context={"findings": trimmed}
+                message, context={"findings": prepared}
             )
             self._track_agent(result, "curator")
             topics = _extract_list(result) or []
+
+            # Deterministic enrichment (geographic_coverage, missing_perspectives, etc.)
+            topics = self._enrich_curator_output(topics, raw_findings)
 
             # Sort by relevance_score (descending) and limit
             topics.sort(
@@ -515,6 +667,8 @@ class Pipeline:
         except Exception as e:
             logger.error("Curator failed: %s", e)
             return []
+        finally:
+            agent.max_tokens = saved_max_tokens
 
     async def editorial_conference(
         self, curated_topics: list[dict]
