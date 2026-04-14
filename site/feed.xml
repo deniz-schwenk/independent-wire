@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Independent Wire</title>
+    <link>https://independentwire.org</link>
+    <description>An independent newsroom. Open. Transparent. For everyone.</description>
+    <language>en</language>
+    <atom:link href="https://independentwire.org/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Trump Attacks Pope Leo XIV After Pontiff Condemns US-Israeli Strikes on Iran as 'Illegal and Immoral'</title>
+      <link>https://independentwire.org/reports/tp-2026-04-13-003.html</link>
+      <description>Pope Leo XIV condemned US-Israeli strikes on Iran as 'illegal and immoral' and declared that God rejects the prayers of warmongers, prompting President Trump to attack the pontiff as 'weak on crime' and 'terrible for foreign policy.' The confrontation has strained Vatican-Washington diplomacy, led to the cancellation of a planned papal US visit, and contributed to a drop in Catholic voter support for Trump below 50 percent. Global coverage frames the clash differently: Western outlets emphasize the personal feud, Iranian and Chinese sources foreground the moral indictment of the war, and Spanish-language media highlight the domestic political fallout among US Catholics.</description>
+      <pubDate>Mon, 13 Apr 2026 00:00:00 -0000</pubDate>
+      <guid>https://independentwire.org/reports/tp-2026-04-13-003.html</guid>
+    </item>
+    <item>
+      <title>Peter Magyar Ousts Viktor Orbán in Landmark Hungarian Election</title>
+      <link>https://independentwire.org/reports/tp-2026-04-13-002.html</link>
+      <description>Peter Magyar's Tisza party won 137 of 199 seats in Hungary's April 12, 2026 parliamentary election, ending Viktor Orbán's 16-year rule with a two-thirds supermajority on record 77.8% turnout. Western European sources frame the result as a restoration of EU norms, Russian-language outlets call it a strategic loss for Moscow, and Chinese coverage attributes the outcome primarily to domestic economic failure. Magyar has pledged a new constitution, EU realignment, and energy diversification, though French and Ukrainian sources suggest he may maintain some pragmatic ties with Russia.</description>
+      <pubDate>Mon, 13 Apr 2026 00:00:00 -0000</pubDate>
+      <guid>https://independentwire.org/reports/tp-2026-04-13-002.html</guid>
+    </item>
+    <item>
+      <title>US Declares Naval Blockade of Strait of Hormuz After Islamabad Talks Collapse, Drawing Competing Legal and Strategic Frames Worldwide</title>
+      <link>https://independentwire.org/reports/tp-2026-04-13-001.html</link>
+      <description>The United States declared an immediate naval blockade of the Strait of Hormuz on April 12, 2026, after peace talks with Iran collapsed in Islamabad, pushing oil prices past $103 per barrel and disrupting roughly 20 percent of global oil supply. The action is framed as a response to Iranian 'extortion' by US and allied sources, as an illegal act of war by Iranian, Chinese, and Russian sources, and as a self-defeating 'discriminatory interdiction' by Saudi-affiliated analysis. European allies have refused military participation, a UN Security Council resolution was vetoed by Russia and China, and no multilateral framework currently governs the crisis.</description>
+      <pubDate>Mon, 13 Apr 2026 00:00:00 -0000</pubDate>
+      <guid>https://independentwire.org/reports/tp-2026-04-13-001.html</guid>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Trump Attacks Pope Leo XIV After Pontiff Condemns US-Israeli Strikes on Iran as &#x27;Illegal and Immoral&#x27;</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Sources table */
+.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.sources-table th {
+  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 3px solid #000;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
+.sources-table a { color: var(--color-primary); text-decoration: none; }
+.sources-table a:hover { text-decoration: underline; }
+.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>Trump Attacks Pope Leo XIV After Pontiff Condemns US-Israeli Strikes on Iran as &#x27;Illegal and Immoral&#x27;</h1>
+<p class="subtitle">The confrontation between the first American-born pope and the US president has fractured Catholic support for Trump, strained Vatican-Washington diplomacy, and exposed divergent global framings of the conflict.</p>
+<p class="date">April 13, 2026</p>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">19</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">0</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Countries</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 840 840" class="source-network" role="img" aria-label="Source network: 19 sources from 9 countries">
+<path d="M622.5,240.0 A280,280 0 0 1 622.5,520.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="247.5" x2="635.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M622.5,520.0 A280,280 0 0 1 452.5,650.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="512.5" x2="635.5" y2="527.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M452.5,650.5 A280,280 0 0 1 240.0,622.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="448.6" y1="636.0" x2="456.4" y2="664.9" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M240.0,622.5 A280,280 0 0 1 109.5,452.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="247.5" y1="609.5" x2="232.5" y2="635.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M109.5,452.5 A280,280 0 0 1 137.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="124.0" y1="448.6" x2="95.1" y2="456.4" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M137.5,240.0 A280,280 0 0 1 307.5,109.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="150.5" y1="247.5" x2="124.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M307.5,109.5 A280,280 0 0 1 498.3,126.2" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="311.4" y1="124.0" x2="303.6" y2="95.1" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M498.3,126.2 A280,280 0 0 1 622.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="492.0" y1="139.8" x2="504.7" y2="112.6" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="362.1" x2="534.4" y2="311.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="304.8" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Iran (1 source)</title></circle>
+<text class="count-label" x="549.0" y="308.8" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="549.0" y="334.8" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Iran</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="397.9" x2="575.5" y2="467.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="594.7" cy="475.6" r="21" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Turkey (2 sources)</title></circle>
+<text class="count-label" x="594.7" y="479.6" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="594.7" y="510.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Turkey</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="406.8" y1="414.9" x2="495.1" y2="529.9" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="507.8" cy="546.6" r="21" fill="#0891b2" stroke="#000" stroke-width="1.5"><title>China (2 sources)</title></circle>
+<text class="count-label" x="507.8" y="550.6" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="507.8" y="581.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">China</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="374.3" y1="423.6" x2="354.7" y2="572.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="352.6" cy="588.2" r="16" fill="#0d9488" stroke="#000" stroke-width="1.5"><title>Russia (1 source)</title></circle>
+<text class="count-label" x="352.6" y="592.2" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="352.6" y="618.2" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Russia</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="353.2" y1="345.1" x2="268.0" y2="234.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="252.2" cy="213.4" r="26" fill="#3b82f6" stroke="#000" stroke-width="1.5"><title>US (6 sources)</title></circle>
+<text class="count-label" x="252.2" y="217.4" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">6</text>
+<text class="name-label" x="252.2" y="253.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">US</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="402.7" y1="342.3" x2="467.0" y2="235.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="475.3" cy="221.4" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>Spain (1 source)</title></circle>
+<text class="count-label" x="475.3" y="225.4" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="475.3" y="251.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Spain</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="409.7" y1="347.6" x2="524.6" y2="222.2" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="538.8" cy="206.7" r="21" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>France (2 sources)</title></circle>
+<text class="count-label" x="538.8" y="210.7" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="538.8" y="241.7" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">France</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="415.6" y1="354.1" x2="508.6" y2="286.5" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="529.7" cy="271.3" r="26" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>Italy (3 sources)</title></circle>
+<text class="count-label" x="529.7" y="275.3" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">3</text>
+<text class="name-label" x="529.7" y="311.3" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Italy</text>
+</g>
+<circle cx="380" cy="380" r="44" fill="#000"/>
+<text x="380" y="374" font-size="22" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" dominant-baseline="middle">19</text>
+<text x="380" y="394" font-size="9" font-family="'Space Mono', 'Courier New', monospace" fill="white" letter-spacing="0.1em" text-anchor="middle">SOURCES</text>
+<text x="685.0" y="380.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">MIDDLE EAST &amp; N. AFRICA</text>
+<text x="565.7" y="622.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EAST ASIA</text>
+<text x="340.2" y="682.4" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">SOUTH &amp; CENTRAL ASIA</text>
+<text x="138.0" y="565.7" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SE ASIA &amp; OCEANIA</text>
+<text x="77.6" y="340.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SUB-SAHARAN AFRICA</text>
+<text x="194.3" y="138.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">AMERICAS</text>
+<text x="406.6" y="76.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">LATIN AMERICA</text>
+<text x="586.1" y="155.1" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EUROPE</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#3b82f612;color:#3b82f6;border:1px solid #3b82f630" title="United States: 6 sources">United States (6)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="Italy: 3 sources">Italy (3)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="France: 2 sources">France (2)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Turkey: 2 sources">Turkey (2)</span>
+<span class="country-badge" style="background:#0891b212;color:#0891b2;border:1px solid #0891b230" title="China: 2 sources">China (2)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Iran: 1 source">Iran</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="Peru: 1 source">Peru</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="Spain: 1 source">Spain</span>
+<span class="country-badge" style="background:#0d948812;color:#0d9488;border:1px solid #0d948830" title="Russia: 1 source">Russia</span>
+</div>
+
+<div class="reader-note">This article draws on 19 sources in 8 languages, giving it unusually broad geographic reach, but several important voices are missing: no Iranian civilians, senior Iranian political or religious leaders, US congressional figures, or theologians and international law scholars were available, despite the story hinging on moral and legal arguments. The article is largely clean in its language, though it occasionally uses loaded terms — such as &#x27;outbursts&#x27; for Trump&#x27;s social media posts and &#x27;leverage&#x27; for Iran&#x27;s diplomatic moves — that embed small judgments the reader should notice. All major framing divergences identified across sources — including how Western outlets treat this as a personal feud while Iranian and Chinese outlets foreground the Pope&#x27;s legal and moral condemnation of the war — are explicitly disclosed in the text rather than hidden.</div>
+
+<div class="article-body">
+<p>Pope Leo XIV&#x27;s condemnation of US-Israeli military operations in Iran as &quot;illegal and immoral&quot; has triggered an escalating public confrontation with President Donald Trump, who responded with personal attacks on the pontiff via social media, calling him &quot;weak on crime&quot; and &quot;terrible for foreign policy&quot; <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. The clash — described by Chinese state media as the sharpest division between the Vatican and Washington in decades <a href="#src-008" class="source-ref"><sup>[8]</sup></a> — has drawn in Catholic bishops, Vatican diplomats, and Iranian officials, while raising questions about the political cost to Trump among Catholic voters.</p>
+<p>The dispute intensified after Pope Leo XIV delivered a Palm Sunday sermon in which he stated that God rejects the prayers of warmongers whose hands are &quot;full of blood&quot; <a href="#src-014" class="source-ref"><sup>[14]</sup></a><a href="#src-016" class="source-ref"><sup>[16]</sup></a>. As the Chinese outlet Guancha reported: &#x27;<span lang="zh">教皇：耶稣拒绝发动战争者，你们手上都是血</span>&#x27; (The Pope: Jesus rejects warmongers — your hands are covered in blood) <a href="#src-014" class="source-ref"><sup>[14]</sup></a>. The pontiff attributed the war to an &quot;illusion of absolute power&quot; and &quot;money-worship&quot; <a href="#src-005" class="source-ref"><sup>[5]</sup></a>, and separately called Trump&#x27;s threats to destroy Iranian civilization &quot;truly unacceptable,&quot; stating that attacks on civilian infrastructure violate international law <a href="#src-017" class="source-ref"><sup>[17]</sup></a>. As Asriran reported in Farsi: &#x27;<span lang="fa" dir="rtl">انتقاد پاپ لئو از ترامپ</span>: <span lang="fa" dir="rtl">توهم قدرت مطلق عامل جنگ علیه ایران شد</span>&#x27; (Pope Leo&#x27;s criticism of Trump: the illusion of absolute power caused the war against Iran) <a href="#src-005" class="source-ref"><sup>[5]</sup></a>.</p>
+<p>How the confrontation is framed varies sharply across regions. English-language outlets in the United States and Europe have largely treated the story as a personal and diplomatic clash between two powerful figures, emphasizing Trump&#x27;s social media outbursts and the diplomatic fallout <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-003" class="source-ref"><sup>[3]</sup></a>. Iranian and Chinese sources, by contrast, foreground the Pope&#x27;s substantive moral and legal indictment of the war itself, treating his words as a condemnation of US-Israeli military operations rather than a personality-driven feud <a href="#src-005" class="source-ref"><sup>[5]</sup></a><a href="#src-008" class="source-ref"><sup>[8]</sup></a><a href="#src-014" class="source-ref"><sup>[14]</sup></a>.</p>
+<p>Trump&#x27;s response went beyond policy disagreement. He labeled the Pope &quot;weak on crime&quot; and &quot;terrible for foreign policy&quot; on Truth Social <a href="#src-002" class="source-ref"><sup>[2]</sup></a>, and Turkish outlets reported a specific national-security argument: Trump stated he does not want a Pope who is unconcerned about Iran obtaining nuclear weapons <a href="#src-007" class="source-ref"><sup>[7]</sup></a>. The Turkish outlet Nefes Gazetesi further reported Trump&#x27;s claim that the Pope would not have been elected without his influence: &#x27;Trump, Papa&#x27;yı hedef aldı: Ben olmasam seçilmezdi!&#x27; (Trump targeted the Pope: He wouldn&#x27;t have been elected without me!) <a href="#src-012" class="source-ref"><sup>[12]</sup></a>. This nuclear-threat framing — treating Trump&#x27;s attack as a substantive policy disagreement rather than merely a personal insult — was largely absent from Western European and US coverage <a href="#src-007" class="source-ref"><sup>[7]</sup></a><a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+<p>The diplomatic fallout has been concrete. The Daily Beast reported, citing Vatican insiders, that Cardinal Christophe Pierre, the Vatican&#x27;s envoy to the United States, faced a confrontational meeting with Trump administration officials that insiders described as &quot;bullying&quot; <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. The Pentagon denied reports that it had threatened or lectured the Holy See&#x27;s ambassador <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. Separately, the Vatican indefinitely postponed a planned 2026 papal visit to the United States — a decision multiple outlets linked to the foreign policy disagreements <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-018" class="source-ref"><sup>[18]</sup></a>.</p>
+<p>French and Italian sources have highlighted escalation details that received little English-language coverage. Le Grand Continent analyzed a specific rhetorical move by the Trump administration referencing the &quot;Avignon Papacy&quot; — the 14th-century period when popes were effectively held captive in France — which the outlet interpreted as a veiled threat against the Holy See&#x27;s independence <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. Il Fatto Quotidiano described US-Vatican relations as having entered a &quot;critical phase&quot; <a href="#src-015" class="source-ref"><sup>[15]</sup></a>, while Famiglia Cristiana reported that Vatican Secretary of State Pietro Parolin has advocated for multilateral diplomacy, warning that &quot;peace is not guaranteed by weapons and by balances imposed by the strongest&quot; and denouncing the decline of international law <a href="#src-009" class="source-ref"><sup>[9]</sup></a>.</p>
+<p>Within the United States, the confrontation has opened a rift among Catholic voters. Spanish-language outlet ACI Prensa reported polling data showing Catholic approval of Trump has dropped below 50 percent, with 52 percent of Catholic voters disapproving of his management of the Iran war <a href="#src-006" class="source-ref"><sup>[6]</sup></a>. The US Conference of Catholic Bishops formally aligned with the Pope&#x27;s position: Archbishop Paul Coakley, the USCCB president, condemned Trump&#x27;s threats against Iran as morally unjustifiable under Catholic just-war doctrine and called for diplomatic de-escalation <a href="#src-011" class="source-ref"><sup>[11]</sup></a><a href="#src-019" class="source-ref"><sup>[19]</sup></a>. This internal-Church-politics dimension — the downstream effects on Catholic voters and institutional alignment — was emphasized in Spanish-language reporting but largely absent from English-language US coverage, which focused on the Trump-Pope confrontation itself <a href="#src-006" class="source-ref"><sup>[6]</sup></a><a href="#src-011" class="source-ref"><sup>[11]</sup></a>.</p>
+<p>Iran has sought to leverage the Pope&#x27;s moral authority. Mohammad Reza Sabouri, Iran&#x27;s ambassador to Italy, explicitly invoked the Vatican&#x27;s role as a potential mediator and diplomatic ally against what he termed US-Israeli aggression, proposing conditions for international guarantees in an interview with the Italian outlet Formiche <a href="#src-010" class="source-ref"><sup>[10]</sup></a>. This framing of the Vatican as serving Iranian strategic interests is entirely absent from Western reporting, which treats the Pope&#x27;s stance as an independent moral position <a href="#src-010" class="source-ref"><sup>[10]</sup></a>.</p>
+<p>Russian analysis from Forbes Russia examined the domestic political fallout for Trump, noting party splits within the Republican coalition and a lack of coordination with non-Israeli allies on the Iran campaign <a href="#src-013" class="source-ref"><sup>[13]</sup></a>.</p>
+<p>This report draws on 19 sources in 8 languages (English, French, Farsi, Spanish, Turkish, Italian, Chinese, and Russian). Several significant perspectives are absent. No direct testimony from Iranian civilians, lay Catholics living in Iran, or the Iranian diaspora — communities directly affected both by the military strikes the Pope condemned and by his defense of their civilization — was available. No reaction from Iran&#x27;s senior political leadership or religious authorities (such as the Supreme Leader&#x27;s office or senior Shia clerics) regarding the Pope&#x27;s specific condemnation was found; the Iranian ambassador to Italy is the sole Iranian governmental voice. No perspectives from the US Congress — neither Republican hawks supporting the Iran operations nor Catholic Democratic members who might align with the Pope — were represented, despite the constitutional and political relevance of congressional opinion. No theologians or international law scholars were quoted in any source, despite the Pope&#x27;s condemnation resting on moral and legal arguments. No reporting from Sub-Saharan Africa or Southeast Asia was identified, leaving the Global South Catholic community — the fastest-growing segment of the Church — unrepresented.</p>
+<p>As of mid-April 2026, the Vatican has confirmed no papal visit to the United States is planned for the year <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-018" class="source-ref"><sup>[18]</sup></a>. The USCCB continues to call for diplomatic de-escalation <a href="#src-019" class="source-ref"><sup>[19]</sup></a>, while the Pope has signaled he will maintain his public criticism of the war <a href="#src-017" class="source-ref"><sup>[17]</sup></a>. Whether the rift translates into sustained erosion of Trump&#x27;s Catholic voter base — or whether the nuclear-threat framing emphasized in Turkish and some US conservative media reshapes the debate — remains unresolved.</p>
+</div>
+<p class="word-count">1,065 words</p>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Western sources (rsrc-001, rsrc-002, rsrc-003) frame the story primarily as a personal and diplomatic clash between Trump and the Pope, while Iranian (rsrc-005) and Chinese (rsrc-008, rsrc-014) sources foreground the Pope&#x27;s substantive moral and legal condemnation of the war itself.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article explicitly addresses this divergence in the third paragraph, contrasting Western framing with Iranian and Chinese framing.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Turkish sources (rsrc-007, rsrc-012) highlight Trump&#x27;s nuclear-security counter-argument and his claim of influence over the papal election, framing his attack as a policy disagreement rather than a personal feud — a dimension largely absent from Western European and US coverage.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article addresses this in the fourth paragraph, explicitly noting the nuclear-threat framing and its absence from Western coverage.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">French (rsrc-004) and Italian (rsrc-009, rsrc-015) sources highlight specific escalation details — the Avignon Papacy reference and Parolin&#x27;s multilateral diplomacy advocacy — that received little English-language coverage.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article covers these details in the sixth paragraph, explicitly noting they received little English-language coverage.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></div>
+  <div class="divergence-desc">Spanish-language sources (rsrc-006, rsrc-011) emphasize the internal split within the US Catholic community and the drop in Trump&#x27;s approval among Catholic voters, a dimension largely absent from English-language US coverage.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article addresses this in the seventh paragraph, explicitly contrasting Spanish-language emphasis with English-language omission.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Iranian source (rsrc-010) frames the Vatican as a potential moral mediator serving Iranian strategic interests, while Western sources treat the Pope&#x27;s stance as an independent moral position.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article addresses this in the eighth paragraph, explicitly noting the absence of this framing from Western reporting.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">No source in either pool supports the claim that the Vatican chose Lampedusa as an alternative destination to the cancelled US visit. The original article introduced this specific detail without any sourcing.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The unsupported Lampedusa claim was removed from the corrected article. The sentence now states only that the US visit was indefinitely postponed.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The original article stated &#x27;7 languages&#x27; but listed eight languages in the same sentence (English, French, Farsi, Spanish, Turkish, Italian, Chinese, Russian).</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Corrected to &#x27;8 languages&#x27; in the transparency paragraph.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p>Overall language bias severity: <span class="badge" style="background:#0f766e15;color:#0f766e;border:1px solid #0f766e40">low</span></p>
+<div class="bias-finding">
+  <span class="bias-excerpt">has triggered an escalating public confrontation</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Escalating&#x27; characterizes the trajectory of the dispute editorially in the article&#x27;s own voice; the article could instead describe specific sequential events and let the reader assess whether the confrontation intensified.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">the sharpest division between the Vatican and Washington in decades</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">Although attributed to Chinese state media, the article embeds this superlative characterization (&#x27;sharpest&#x27;) in its own framing clause (&#x27;The clash — described by…as&#x27;) without noting that other sources do not use this characterization, allowing it to function as the article&#x27;s own assessment of severity.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Trump&#x27;s social media outbursts</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Outbursts&#x27; implies impulsive, uncontrolled behavior rather than deliberate communication; &#x27;posts&#x27; or &#x27;statements&#x27; would describe the same actions without embedding a judgment about Trump&#x27;s temperament.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Iran has sought to leverage the Pope&#x27;s moral authority</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Leverage&#x27; implies calculated, instrumental exploitation of the Pope&#x27;s position; a neutral construction such as &#x27;invoked&#x27; or &#x27;cited&#x27; would describe Iran&#x27;s actions without presupposing strategic manipulation.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">insiders described as &quot;bullying&quot;</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">hedging</span>
+  <div class="bias-explanation">The attribution chain — &#x27;citing Vatican insiders&#x27; who &#x27;described&#x27; the meeting — layers two unnamed sources without specifying how many insiders, their roles, or whether they were present, making it difficult for the reader to assess the reliability of the characterization.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">7</span></div>
+<div class="bar-row"><span class="bar-label">it</span><div class="bar-track"><div class="bar-fill" style="width:43%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">es</span><div class="bar-track"><div class="bar-fill" style="width:29%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">tr</span><div class="bar-track"><div class="bar-fill" style="width:29%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">zh</span><div class="bar-track"><div class="bar-fill" style="width:29%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">fr</span><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">fa</span><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">ru</span><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div><span class="bar-count">1</span></div>
+</div>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">Lack of direct reaction from the Iranian government or religious leadership regarding the Pope&#x27;s specific comments, other than the ambassador&#x27;s interview in Italy.</div>
+<div class="coverage-gap">No sources from Sub-Saharan Africa or Southeast Asia, despite the assignment mentioning Africa (Premium Times Nigeria) as a region of interest.</div>
+<div class="coverage-gap">Limited detail on the specific &#x27;American colloquialisms&#x27; the Pope reportedly used in his homilies to appeal to the US public.</div>
+<div class="coverage-gap">Absence of perspectives from the &#x27;affected community&#x27;—lay Catholics within Iran or the Iranian diaspora—regarding the Pope&#x27;s defense of their civilization.</div>
+
+<h2>Sources</h2>
+<div class="sources-table-wrap">
+<table class="sources-table">
+<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>
+<tbody>
+<tr id="src-001"><td class="source-num">1</td><td>Euronews</td><td><a href="https://www.euronews.com/2026/04/10/pentagon-denies-threatening-vatican-over-popes-remarks-on-us-intervention-in-iran" target="_blank" rel="noopener">Pentagon denies threatening Vatican over pope&#x27;s remarks on US intervention in Iran</a></td><td>en</td><td>France</td></tr><tr id="src-002"><td class="source-num">2</td><td>OSV News</td><td><a href="https://www.osvnews.com/trump-lashes-out-at-pope-leo-amid-iran-war-rebuke/" target="_blank" rel="noopener">Trump lashes out at Pope Leo XIV amid Iran war rebuke</a></td><td>en</td><td>United States</td></tr><tr id="src-003"><td class="source-num">3</td><td>The Daily Beast</td><td><a href="https://www.thedailybeast.com/vatican-sources-spill-secrets-of-maga-goons-bullying/" target="_blank" rel="noopener">Vatican Official Spills Secrets of MAGA Goons&#x27; &#x27;Bullying&#x27;</a></td><td>en</td><td>United States</td></tr><tr id="src-004"><td class="source-num">4</td><td>Le Grand Continent</td><td><a href="https://legrandcontinent.eu/fr/2026/04/10/en-evoquant-la-captivite-du-pape-a-avignon-ladministration-trump-annonce-t-elle-une-escalade-vis-a-vis-de-leglise-catholique/" target="_blank" rel="noopener">En évoquant la captivité du pape à Avignon, l&#x27;administration Trump annonce-t-elle une escalade vis-à-vis de l&#x27;Église catholique ?</a></td><td>fr</td><td>France</td></tr><tr id="src-005"><td class="source-num">5</td><td>Asriran</td><td><a href="https://www.asriran.com/fa/news/1155537/%D8%A7%D9%86%D8%AA%D9%82%D8%A7%D8%AF-%D9%BE%D8%A7%D9%BE-%D9%84%D8%A6%D9%88-%D8%A7%D8%B2-%D8%AA%D8%B1%D8%A7%D9%85%D9%BE-%D8%AA%D9%88%D9%87%D9%85-%D9%82%D8%AF%D8%B1%D8%AA-%D9%85%D8%B7%D9%84%D9%82-%D8%B9%D8%A7%D9%85%D9%84-%D8%AC%D9%86%DA%AF-%D8%B9%D9%84%DB%8C%D9%87-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%B4%D8%AF" target="_blank" rel="noopener">انتقاد پاپ لئو از ترامپ: توهم قدرت مطلق عامل جنگ علیه ایران شد</a></td><td>fa</td><td>Iran</td></tr><tr id="src-006"><td class="source-num">6</td><td>ACI Prensa</td><td><a href="https://www.aciprensa.com/noticias/123997/guerra-con-iran-apoyo-catolico-a-trump-cae-debajo-del-50-percent-en-estados-unidos" target="_blank" rel="noopener">Guerra con Irán: Apoyo católico a Trump cae debajo del 50% en Estados Unidos</a></td><td>es</td><td>Peru</td></tr><tr id="src-007"><td class="source-num">7</td><td>Son Dakika</td><td><a href="https://www.sondakika.com/guncel/haber-trump-tan-papa-14-leo-ya-sert-elestiriler-19743687/" target="_blank" rel="noopener">Trump, Papa 14. Leo&#x27;yu Sert Sözlerle Eleştirdi</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-008"><td class="source-num">8</td><td>NetEase (163.com)</td><td><a href="https://www.163.com/dy/article/KQA8C4Q0051481US.html" target="_blank" rel="noopener">&quot;教皇和美国总统面临数十年来最尖锐分歧&quot;|利奥|华盛顿</a></td><td>zh</td><td>China</td></tr><tr id="src-009"><td class="source-num">9</td><td>Famiglia Cristiana</td><td><a href="https://www.famigliacristiana.it/attualita/mondo/notizie-guerra-usa-israele-iran-posizione-vaticano-parolin-ds9ytkfj" target="_blank" rel="noopener">Notizie guerra USA-Israele-Iran: la posizione del Vaticano. Parolin ...</a></td><td>it</td><td>Italy</td></tr><tr id="src-010"><td class="source-num">10</td><td>Formiche</td><td><a href="https://formiche.net/2026/03/guerra-in-iran-la-via-diplomatica-spiegata-dallambasciatore-di-teheran-a-roma/" target="_blank" rel="noopener">Guerra in Iran, la via diplomatica spiegata dall&#x27;ambasciatore di Teheran a Roma</a></td><td>it</td><td>Italy</td></tr><tr id="src-011"><td class="source-num">11</td><td>InfoCatólica</td><td><a href="https://www.infocatolica.com/?t=noticia&amp;cod=54569" target="_blank" rel="noopener">El presidente de la CEE de EE.UU. pide desescalada en Oriente Medio tras ataques de EEUU e Israel contra Irán</a></td><td>es</td><td>Spain</td></tr><tr id="src-012"><td class="source-num">12</td><td>Nefes Gazetesi</td><td><a href="https://www.nefes.com.tr/amp/trump-papayi-hedef-aldi-ben-olmasam-secilmezdi-117612" target="_blank" rel="noopener">Trump, Papa&#x27;yı hedef aldı: Ben olmasam seçilmezdi!</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-013"><td class="source-num">13</td><td>Forbes Russia</td><td><a href="https://www.forbes.ru/mneniya/558893-otvetstvennost-za-vojnu-как-operacia-v-irane-obernulas-problemami-dla-trampa" target="_blank" rel="noopener">Ответственность за войну: как операция в Иране обернулась проблемами для Трампа</a></td><td>ru</td><td>Russia</td></tr><tr id="src-014"><td class="source-num">14</td><td>Guancha</td><td><a href="https://www.guancha.cn/internation/2026_03_30_811856.shtml" target="_blank" rel="noopener">教皇：耶稣拒绝发动战争者，你们手上都是血</a></td><td>zh</td><td>China</td></tr><tr id="src-015"><td class="source-num">15</td><td>Il Fatto Quotidiano</td><td><a href="https://www.ilfattoquotidiano.it/2026/04/09/i-rapporti-tra-stati-uniti-e-santa-sede-in-una-fase-critica-le-relazioni-si-sono-deteriorate-dopo-la-guerra-in-iran/8350511/" target="_blank" rel="noopener">Usa e Santa Sede, relazioni deteriorate dopo la guerra in Iran</a></td><td>it</td><td>Italy</td></tr><tr id="src-016"><td class="source-num">16</td><td>The World (PRX)</td><td><a href="https://theworld.org/segments/2026/03/30/pope-leo-xiv-admonishes-war-advocates-whose-hands-are-full-of-blood" target="_blank" rel="noopener">Pope Leo XIV admonishes war advocates whose &#x27;hands are full of blood&#x27;</a></td><td>en</td><td>United States</td></tr><tr id="src-017"><td class="source-num">17</td><td>America Magazine</td><td><a href="https://www.americamagazine.org/news/2026/04/10/pope-leo-war-iran-criticism/" target="_blank" rel="noopener">Pope Leo amplifies criticism of Iran war and says &#x27;God does not...&#x27;</a></td><td>en</td><td>United States</td></tr><tr id="src-018"><td class="source-num">18</td><td>Los Angeles Times</td><td><a href="https://www.latimes.com/world-nation/story/2026-04-10/president-pope-worlds-most-influential-americans-are-at-odds-over-iran" target="_blank" rel="noopener">A president and a pope: The world&#x27;s most influential Americans are at odds over Iran</a></td><td>en</td><td>United States</td></tr><tr id="src-019"><td class="source-num">19</td><td>USCCB</td><td><a href="https://www.usccb.org/news/2026/archbishop-coakley-invites-all-join-pope-leo-xivs-vigil-peace-midst-threats-increased" target="_blank" rel="noopener">Archbishop Coakley Invites All to Join Pope Leo XIV&#x27;s Vigil for Peace</a></td><td>en</td><td>United States</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>While this story is partly derivative of the Iran blockade topic, the clash between a sitting US president and the first American-born pope introduces distinct dimensions — religion and politics, soft power vs. hard power, and global Catholic opinion — that warrant standalone treatment. Fourteen sources across seven regions (the widest geographic spread in today&#x27;s set, including Africa via Premium Times Nigeria) and three languages ensure sufficient material. The editorial diversity is strong: state-directed (Press TV), state-influenced (Anadolu, SCMP, Hürriyet), publicly-funded (BBC, NPR, Al Jazeera), and independent (Guardian, Middle East Eye, Meduza, Dawn, Axios) outlets will frame the confrontation very differently. Priority is moderated below the Hungary story because the topic is more personality-driven and partially overlaps with the blockade coverage.</dd>
+<dt>QA Corrections Applied</dt><dd><ul><li>Removed the Writer&#x27;s process note (&#x27;Now I have sufficient material to write the article. Let me compile the sources and draft.&#x27;) and the outer JSON wrapper artifact from the article body; the correctly structured inner article content is now used directly.</li>
+<li>Removed the unsupported claim that the Vatican opted &#x27;instead for a trip to Lampedusa&#x27; as no source in either pool mentions Lampedusa as an alternative destination; the sentence now states only that the visit was postponed.</li>
+<li>Corrected &#x27;7 languages&#x27; to &#x27;8 languages&#x27; in the transparency paragraph, as the article itself lists eight languages (English, French, Farsi, Spanish, Turkish, Italian, Chinese, and Russian).</li></ul></dd>
+<dt>Confidence</dt><dd>medium</dd>
+<dt>Pipeline Run</dt><dd>run-2026-04-13-26a820 &middot; 2026-04-13</dd>
+</dl>
+</div>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>

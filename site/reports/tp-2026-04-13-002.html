@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Peter Magyar Ousts Viktor Orbán in Landmark Hungarian Election</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Sources table */
+.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.sources-table th {
+  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 3px solid #000;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
+.sources-table a { color: var(--color-primary); text-decoration: none; }
+.sources-table a:hover { text-decoration: underline; }
+.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>Peter Magyar Ousts Viktor Orbán in Landmark Hungarian Election</h1>
+<p class="subtitle">Record 77.8% turnout delivers 137 seats to the pro-EU party, reshaping Hungary&#x27;s relationship with Brussels, NATO, and Moscow while raising questions about the future of Central European populism.</p>
+<p class="date">April 13, 2026</p>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">15</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">0</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Countries</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 840 840" class="source-network" role="img" aria-label="Source network: 15 sources from 11 countries">
+<path d="M622.5,240.0 A280,280 0 0 1 622.5,520.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="247.5" x2="635.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M622.5,520.0 A280,280 0 0 1 452.5,650.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="512.5" x2="635.5" y2="527.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M452.5,650.5 A280,280 0 0 1 240.0,622.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="448.6" y1="636.0" x2="456.4" y2="664.9" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M240.0,622.5 A280,280 0 0 1 109.5,452.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="247.5" y1="609.5" x2="232.5" y2="635.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M109.5,452.5 A280,280 0 0 1 137.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="124.0" y1="448.6" x2="95.1" y2="456.4" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M137.5,240.0 A280,280 0 0 1 307.5,109.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="150.5" y1="247.5" x2="124.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M307.5,109.5 A280,280 0 0 1 498.3,126.2" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="311.4" y1="124.0" x2="303.6" y2="95.1" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M498.3,126.2 A280,280 0 0 1 622.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="492.0" y1="139.8" x2="504.7" y2="112.6" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="362.1" x2="534.4" y2="311.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="304.8" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>S. Arabia (1 source)</title></circle>
+<text class="count-label" x="549.0" y="308.8" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="549.0" y="334.8" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">S. Arabia</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="397.9" x2="580.1" y2="469.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="594.7" cy="475.6" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Israel (1 source)</title></circle>
+<text class="count-label" x="594.7" y="479.6" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="594.7" y="505.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Israel</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="415.6" y1="405.9" x2="516.7" y2="479.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="529.7" cy="488.7" r="16" fill="#0891b2" stroke="#000" stroke-width="1.5"><title>China (1 source)</title></circle>
+<text class="count-label" x="529.7" y="492.7" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="529.7" y="518.7" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">China</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="395.8" y1="421.1" x2="458.5" y2="584.5" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="464.2" cy="599.4" r="16" fill="#0891b2" stroke="#000" stroke-width="1.5"><title>S. Korea (1 source)</title></circle>
+<text class="count-label" x="464.2" y="603.4" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="464.2" y="629.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">S. Korea</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="374.3" y1="423.6" x2="355.3" y2="567.4" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="352.6" cy="588.2" r="21" fill="#0d9488" stroke="#000" stroke-width="1.5"><title>Russia (2 sources)</title></circle>
+<text class="count-label" x="352.6" y="592.2" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="352.6" y="623.2" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Russia</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="353.2" y1="345.1" x2="261.9" y2="226.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="252.2" cy="213.4" r="16" fill="#3b82f6" stroke="#000" stroke-width="1.5"><title>US (1 source)</title></circle>
+<text class="count-label" x="252.2" y="217.4" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="252.2" y="243.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">US</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="402.7" y1="342.3" x2="467.0" y2="235.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="475.3" cy="221.4" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>UK (1 source)</title></circle>
+<text class="count-label" x="475.3" y="225.4" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="475.3" y="251.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">UK</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="407.5" y1="345.6" x2="513.7" y2="212.9" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="526.8" cy="196.5" r="21" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>Germany (2 sources)</title></circle>
+<text class="count-label" x="526.8" y="200.5" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="526.8" y="231.5" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Germany</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="411.8" y1="349.6" x2="495.0" y2="270.2" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="513.8" cy="252.3" r="26" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>France (3 sources)</title></circle>
+<text class="count-label" x="513.8" y="256.3" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">3</text>
+<text class="name-label" x="513.8" y="292.3" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">France</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="415.6" y1="354.1" x2="557.2" y2="251.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="570.1" cy="241.9" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>Ukraine (1 source)</title></circle>
+<text class="count-label" x="570.1" y="245.9" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="570.1" y="271.9" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Ukraine</text>
+</g>
+<circle cx="380" cy="380" r="44" fill="#000"/>
+<text x="380" y="374" font-size="22" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" dominant-baseline="middle">15</text>
+<text x="380" y="394" font-size="9" font-family="'Space Mono', 'Courier New', monospace" fill="white" letter-spacing="0.1em" text-anchor="middle">SOURCES</text>
+<text x="685.0" y="380.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">MIDDLE EAST &amp; N. AFRICA</text>
+<text x="565.7" y="622.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EAST ASIA</text>
+<text x="340.2" y="682.4" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">SOUTH &amp; CENTRAL ASIA</text>
+<text x="138.0" y="565.7" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SE ASIA &amp; OCEANIA</text>
+<text x="77.6" y="340.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SUB-SAHARAN AFRICA</text>
+<text x="194.3" y="138.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">AMERICAS</text>
+<text x="406.6" y="76.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">LATIN AMERICA</text>
+<text x="586.1" y="155.1" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EUROPE</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="Hungary: 2 sources">Hungary (2)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="France: 2 sources">France (2)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="Germany: 2 sources">Germany (2)</span>
+<span class="country-badge" style="background:#0d948812;color:#0d9488;border:1px solid #0d948830" title="Russia: 2 sources">Russia (2)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="United Kingdom: 1 source">United Kingdom</span>
+<span class="country-badge" style="background:#0891b212;color:#0891b2;border:1px solid #0891b230" title="South Korea: 1 source">South Korea</span>
+<span class="country-badge" style="background:#3b82f612;color:#3b82f6;border:1px solid #3b82f630" title="United States: 1 source">United States</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="Israel/France: 1 source">Israel/France</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="Ukraine: 1 source">Ukraine</span>
+<span class="country-badge" style="background:#0891b212;color:#0891b2;border:1px solid #0891b230" title="China: 1 source">China</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Saudi Arabia: 1 source">Saudi Arabia</span>
+</div>
+
+<div class="reader-note">This article draws on 15 sources in 7 languages across 10 countries, giving it unusually broad geographic range, but no ordinary Hungarian voters, civil society voices, or Fidesz party members are heard directly — the motivations behind the landslide and the defeated side&#x27;s response are described by journalists rather than by the people involved. The article does a strong job surfacing how different regions frame the same event in sharply different ways (Western celebration vs. Russian alarm vs. Chinese economic focus), though its own prose occasionally adopts evaluative language — words like &#x27;celebratory,&#x27; &#x27;starkly,&#x27; and &#x27;entirely absent&#x27; — that subtly guides the reader&#x27;s interpretation before the evidence is presented. No official reactions from the Russian, Ukrainian, or U.S. governments were available, and perspectives from the Global South on what this result means for right-wing populism worldwide are completely missing.</div>
+
+<div class="article-body">
+<p>Peter Magyar&#x27;s Tisza party secured a two-thirds supermajority in Hungary&#x27;s parliamentary election on April 12, 2026, winning 137 of 199 seats in the National Assembly and ending Viktor Orbán&#x27;s 16-year tenure as prime minister <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-002" class="source-ref"><sup>[2]</sup></a>. Voter turnout reached a record 77.8% <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. Orbán conceded defeat and congratulated Magyar on election night <a href="#src-002" class="source-ref"><sup>[2]</sup></a>.</p>
+<p>Magyar declared the result without precedent in Hungarian democratic history. &quot;In the history of democratic Hungary, this many people have never voted before, and no single party has ever received such a strong mandate as Tisza,&quot; he told supporters <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. Hungarian-language reporting from MTI detailed his domestic agenda: a new constitution, wealth taxes on billionaires, pension increases, and tax cuts <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. As MTI reported: &quot;Magyar Péter: a Tisza Párt megnyeri a választásokat&quot; (Peter Magyar: the Tisza Party wins the elections) <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. These domestic policy specifics — central to Hungarian coverage — received minimal attention in international reporting, which focused overwhelmingly on geopolitical consequences.</p>
+<p>Orbán had signaled before the vote that he would resign as Fidesz party leader in the event of a significant loss. As HVG reported: &quot;Orbán nagy vereség esetén a Fidesz elnöki címéről&quot; (Orbán [would step down] from the Fidesz presidency in case of a major defeat) <a href="#src-005" class="source-ref"><sup>[5]</sup></a>. The Chosun Daily reported that his concession marked the end of Hungary&#x27;s obstruction of EU sanctions against Russia and its blocking of collective NATO positions <a href="#src-002" class="source-ref"><sup>[2]</sup></a>.</p>
+<p>The election result produced sharply divergent framings across regions. Western European sources treated the outcome primarily as a restoration of EU institutional norms. Le Monde focused on the potential unblocking of €18 billion in frozen EU funds, reporting that European Commission President Ursula von der Leyen welcomed the pro-European victory <a href="#src-007" class="source-ref"><sup>[7]</sup></a>. German coverage was similarly celebratory: Euronews German quoted Daniel Freund, a German Member of the European Parliament, characterizing the outgoing government as a corrupt mafia state <a href="#src-009" class="source-ref"><sup>[9]</sup></a>. WirtschaftsWoche reported that Brussels greeted the result with open enthusiasm <a href="#src-010" class="source-ref"><sup>[10]</sup></a>.</p>
+<p>Russian-language sources framed the identical result in starkly different terms. News.ru described the election as a <span lang="ru">«Черный день»</span> (Black Day), predicting an intensified anti-Russian course in Hungarian foreign policy <a href="#src-011" class="source-ref"><sup>[11]</sup></a>. RTVI reported that Magyar had accused Russia of election interference and outlined plans to diversify Hungary&#x27;s energy sources away from Moscow: <span lang="ru">«Против него настроятся все»</span> (Everyone will turn against him), the outlet&#x27;s headline read, referring to the forces that would drive a wedge between Russia and Hungary <a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+<p>The question of how far Magyar will actually break from Moscow remains contested. Atlanticist and Ukrainian-oriented sources emphasized the immediate unblocking of a €90 billion Ukraine aid package and the strengthening of NATO cohesion as the primary geopolitical consequences <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. The Atlantic Council predicted reduced Kremlin influence across the region <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. Yet French and Russian-language sources introduced a more cautious reading. Le Grand Continent noted that Magyar remains conservative on immigration and social issues, suggesting the shift is more about EU alignment and anti-corruption than a fundamental ideological transformation <a href="#src-008" class="source-ref"><sup>[8]</sup></a>. Glavred, a Ukrainian outlet, examined what it called Magyar&#x27;s &quot;pragmatic&quot; stance, reporting that he may maintain the Druzhba oil pipeline — a key conduit for Hungarian crude oil imports — while simultaneously supporting Ukrainian territorial integrity <a href="#src-013" class="source-ref"><sup>[13]</sup></a>. This complicates the narrative of a clean geopolitical break.</p>
+<p>Chinese coverage offered yet another lens. Sina Finance attributed Orbán&#x27;s defeat primarily to the domestic economic crisis — high inflation and a cost-of-living squeeze — treating the geopolitical dimension as secondary <a href="#src-014" class="source-ref"><sup>[14]</sup></a>. As Sina Finance reported: &quot;<span lang="zh">匈牙利今日举行大选，欧尔班面临执政</span>16<span lang="zh">年来最大挑战</span>&quot; (Hungary holds general election today; Orbán faces the biggest challenge in 16 years of governance) <a href="#src-014" class="source-ref"><sup>[14]</sup></a>. This framing contrasts with Western and Atlanticist sources, which foregrounded democratic backsliding and pro-EU sentiment as the primary drivers, mentioning economic factors only in passing <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-003" class="source-ref"><sup>[3]</sup></a><a href="#src-009" class="source-ref"><sup>[9]</sup></a>.</p>
+<p>A dimension entirely absent from most global coverage appeared in Middle Eastern reporting. i24 News analyzed the loss of Orbán as a blow to Israel&#x27;s diplomatic position within EU institutions, noting that Hungary under Orbán had served as a shield blocking EU actions critical of Israeli policy <a href="#src-006" class="source-ref"><sup>[6]</sup></a>. As i24 reported: &quot;Hongrie : Une Alternance Historique Aux Lourdes Conséquences pour Israël&quot; (Hungary: A historic change of power with heavy consequences for Israel) <a href="#src-006" class="source-ref"><sup>[6]</sup></a>. No other regional source addressed this angle.</p>
+<p>German sources raised a forward-looking concern absent elsewhere. WirtschaftsWoche noted that while Brussels celebrates, leaders in Prague and Bratislava may attempt to adopt Orbán&#x27;s populist mantle, framing the result not as the end of Central European illiberalism but as a potential redistribution of it <a href="#src-010" class="source-ref"><sup>[10]</sup></a>. Asharq News, reporting in Arabic, focused on the mechanics of the Tisza movement&#x27;s mobilization of discontented voters as the decisive factor <a href="#src-015" class="source-ref"><sup>[15]</sup></a>.</p>
+<p>This report draws on 15 sources in 7 languages (English, Hungarian, French, German, Russian, Chinese, and Arabic) from 10 countries. Several significant perspectives remain absent. No direct testimony from ordinary Hungarian voters, civil society activists, or the grassroots supporters whose mobilization through the Tisza movement is credited with the landslide was available; their motivations are described by journalists but never heard firsthand. No reactions from neighboring governments in Prague, Bratislava, Belgrade, or the Western Balkans were found, despite analysis suggesting these capitals may seek to replicate Orbán&#x27;s populist model. No official response from the Russian government, the Ukrainian government, or the United States was represented. No Hungarian or European business leaders, energy companies, or financial market analysts were quoted despite the story&#x27;s economic dimensions. No perspectives from the Global South — Africa, Latin America, or Southeast Asia — were present regarding the implications for global right-wing populist movements. No voices from Fidesz party members or smaller Hungarian parliamentary parties addressed how the defeated side is responding to the supermajority result.</p>
+<p>Magyar is expected to form a government in the coming weeks. The two-thirds supermajority gives Tisza the constitutional authority to rewrite Hungary&#x27;s Fundamental Law — the constitution Orbán&#x27;s government enacted in 2011 — without requiring support from any other party <a href="#src-004" class="source-ref"><sup>[4]</sup></a><a href="#src-001" class="source-ref"><sup>[1]</sup></a>. The immediate diplomatic tests include negotiations with Brussels over the release of frozen EU funds <a href="#src-007" class="source-ref"><sup>[7]</sup></a>, a decision on Hungary&#x27;s stance toward the €90 billion Ukraine aid package <a href="#src-003" class="source-ref"><sup>[3]</sup></a>, and the management of energy ties with Russia amid infrastructure constraints on the Druzhba pipeline <a href="#src-013" class="source-ref"><sup>[13]</sup></a>.</p>
+</div>
+<p class="word-count">1,013 words</p>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Western European sources (Le Monde, Euronews German, WirtschaftsWoche) frame the result primarily as a restoration of EU rule-of-law norms and celebrate the outcome, while Russian-language sources (News.ru, RTVI) frame the identical result as a strategic and geopolitical loss for Moscow.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article explicitly contrasts these framings in consecutive paragraphs, presenting both the Western celebratory framing and the Russian &#x27;Black Day&#x27; framing without privileging either.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">Atlanticist and Ukrainian sources (Atlantic Council, Glavred) emphasize the unblocking of a €90 billion Ukraine aid package as an immediate consequence, while French and Russian-language sources suggest Magyar may maintain pragmatic energy ties with Russia via the Druzhba pipeline, complicating the picture of a clean break.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article presents both positions in the paragraph on the contested question of Magyar&#x27;s relationship with Moscow, noting the €90 billion aid package alongside the Druzhba pipeline caveat.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></div>
+  <div class="divergence-desc">Chinese coverage (Sina Finance) attributes Orbán&#x27;s defeat primarily to domestic economic crisis and inflation, while Western and Atlanticist sources foreground democratic backsliding and pro-EU sentiment as the primary drivers.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article dedicates a paragraph to the Chinese framing and explicitly contrasts it with the Western emphasis on democratic backsliding.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">Middle Eastern coverage (i24 News) raises the specific consequence for Israel&#x27;s diplomatic position in the EU — a perspective entirely absent from all other regional sources in the pool.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article includes a dedicated paragraph on the i24 News angle and explicitly notes that no other regional source addressed this perspective.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">Hungarian-language sources (MTI, HVG) provide specific domestic policy details — wealth taxes, pension increases, constitutional reform — that are largely absent from international coverage focused on geopolitics.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article includes a paragraph drawing on MTI for domestic policy specifics and explicitly notes that international coverage glossed over these details.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The article originally claimed the previous turnout record was 70.5% set in 2002. This figure appears in no source in either pool and was therefore unsupported.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The unsupported comparative figure has been removed; the corrected article states only that 77.8% was a record, which is supported by rsrc-001.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The article originally stated Orbán conceded &#x27;by phone.&#x27; rsrc-002 confirms only that he conceded; the method of concession is not attested in any source.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The phrase &#x27;by phone&#x27; has been removed from the corrected article.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The article originally stated Hungary received &#x27;roughly 90% of its crude oil imports in 2025&#x27; via the Druzhba pipeline. No source in either pool provides this statistic.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The unsupported percentage figure has been replaced with the neutral, source-supported description &#x27;a key conduit for Hungarian crude oil imports&#x27;.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p>Overall language bias severity: <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></p>
+<div class="bias-finding">
+  <span class="bias-excerpt">ending Viktor Orbán&#x27;s 16-year tenure as prime minister</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Ending&#x27; combined with &#x27;16-year tenure&#x27; carries a connotation of overdue conclusion; a neutral construction such as &#x27;concluding&#x27; or simply stating the duration of his time in office would avoid the implicit judgment that the tenure was something to be ended.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Russian-language sources framed the identical result in starkly different terms</span> <span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">intensifier</span>
+  <div class="bias-explanation">&#x27;Starkly&#x27; amplifies the degree of divergence editorially without quantifying it; the contrast between the framings is already evident from the quoted material and does not require an intensifier to convey the difference.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">German coverage was similarly celebratory</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Celebratory&#x27; characterizes the tone of German coverage as a whole with an evaluative adjective applied by the article&#x27;s editorial voice rather than attributed to a specific source or supported by a direct quote in that sentence.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Brussels greeted the result with open enthusiasm</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">Although attributed to WirtschaftsWoche, the article presents &#x27;open enthusiasm&#x27; in its own narrative voice as a paraphrase rather than a direct quote, embedding an evaluative characterization of the EU&#x27;s institutional response without letting the reader assess the evidence independently.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">characterizing the outgoing government as a corrupt mafia state</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Corrupt mafia state&#x27; is attributed to Daniel Freund but is presented in indirect speech without quotation marks, which risks blending the source&#x27;s highly charged characterization into the article&#x27;s own narrative register; direct quotation would more clearly separate editorial voice from source opinion.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">This complicates the narrative of a clean geopolitical break</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Clean geopolitical break&#x27; is an editorial characterization that frames other sources&#x27; positions as overly simplistic; the article is making an interpretive judgment about the quality of those framings rather than neutrally noting the divergence.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">A dimension entirely absent from most global coverage appeared in Middle Eastern reporting</span> <span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">intensifier</span>
+  <div class="bias-explanation">&#x27;Entirely absent&#x27; is an editorial intensification; &#x27;absent&#x27; alone conveys the same factual point without the amplifying adverb, which adds rhetorical emphasis rather than informational content.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">mentioning economic factors only in passing</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Only in passing&#x27; is an editorial judgment about the adequacy of other sources&#x27; coverage, implying they were negligent in their treatment of economic factors rather than neutrally noting that economic factors received less emphasis.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">fr</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">ru</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">hu</span><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">de</span><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">zh</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">ar</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">1</span></div>
+</div>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">Complete absence of perspectives from the Global South (Africa, Latin America, and Southeast Asia) regarding the impact on global right-wing populist movements.</div>
+<div class="coverage-gap">Lack of detailed reporting on the specific &#x27;inter-party coalition&#x27; mentioned in Ukrainian sources—it is unclear which other parties, if any, are subsumed under the Tisza mandate.</div>
+<div class="coverage-gap">Limited information on the reaction of other &#x27;illiberal&#x27; allies beyond brief mentions of Prague and Bratislava; specifically, no sources from Serbia or the Western Balkans were present.</div>
+<div class="coverage-gap">No sources address the potential for civil unrest or the specific legal mechanisms Orbán&#x27;s party might use to challenge the &#x27;two-thirds&#x27; transition.</div>
+
+<h2>Sources</h2>
+<div class="sources-table-wrap">
+<table class="sources-table">
+<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>
+<tbody>
+<tr id="src-001"><td class="source-num">1</td><td>The Independent</td><td><a href="https://www.independent.co.uk/news/world/europe/hungary-elections-2026-live-results-orban-magyar-b2956329.html" target="_blank" rel="noopener">Hungary elections live: World reacts after Trump ally Orban ousted in landslide</a></td><td>en</td><td>United Kingdom</td></tr><tr id="src-002"><td class="source-num">2</td><td>The Chosun Daily</td><td><a href="https://www.chosun.com/english/world-en/2026/04/13/4MYFAXF3KVCPHE33BRUIAXPRI4/" target="_blank" rel="noopener">Orbán&#x27;s 16-Year Rule Ends as Hungary Elects Pro-EU Government</a></td><td>en</td><td>South Korea</td></tr><tr id="src-003"><td class="source-num">3</td><td>Atlantic Council</td><td><a href="https://www.atlanticcouncil.org/content-series/fastthinking/fast-thinking-orbans-out-in-hungary-now-what/" target="_blank" rel="noopener">Fast Thinking: Orbán&#x27;s out in Hungary. Now what?</a></td><td>en</td><td>United States</td></tr><tr id="src-004"><td class="source-num">4</td><td>MTI (Hungarian News Agency)</td><td><a href="https://mti.hu/hirek/2026/04/11/valasztas-2026-magyar-peter-tisza-part-megnyeri-valasztasokat" target="_blank" rel="noopener">Magyar Péter: a Tisza Párt megnyeri a választásokat</a></td><td>hu</td><td>Hungary</td></tr><tr id="src-005"><td class="source-num">5</td><td>HVG</td><td><a href="https://hvg.hu/itthon/20260412_orban-viktor-szavazas-sajtotajekoztato-valasztas-eredmeny-magas-reszvetel-lemondas-vereseg-gyozelem" target="_blank" rel="noopener">Orbán nagy vereség esetén a Fidesz elnöki címéről ...</a></td><td>hu</td><td>Hungary</td></tr><tr id="src-006"><td class="source-num">6</td><td>i24 News</td><td><a href="https://www.i24news.tv/fr/actu/international/europe/artc-hongrie-une-alternance-historique-aux-lourdes-consequences-pour-israel-analyse" target="_blank" rel="noopener">Hongrie : Une Alternance Historique Aux Lourdes Conséquences pour Israël</a></td><td>fr</td><td>Israel/France</td></tr><tr id="src-007"><td class="source-num">7</td><td>Le Monde</td><td><a href="https://www.lemonde.fr/international/live/2026/04/13/en-direct-elections-en-hongrie-ensemble-nous-avons-fait-tomber-le-regime-orban-a-declare-peter-magyar-conservateur-pro-europeen-apres-sa-victoire-ecrasante-aux-legislatives_6679608_3210.html" target="_blank" rel="noopener">EN DIRECT, élections en Hongrie</a></td><td>fr</td><td>France</td></tr><tr id="src-008"><td class="source-num">8</td><td>Le Grand Continent</td><td><a href="https://legrandcontinent.eu/fr/2026/04/12/elections-hongrie-la-defaite-de-viktor-orban-face-a-peter-magyar/" target="_blank" rel="noopener">Élections hongroises : la défaite de Viktor Orbán face à Péter Magyar</a></td><td>fr</td><td>France</td></tr><tr id="src-009"><td class="source-num">9</td><td>Euronews (German)</td><td><a href="https://de.euronews.com/2026/04/13/ungarn-wahlsieg-magyar-deutschland-reaktionen" target="_blank" rel="noopener">Wahlsieg von Magyar: So reagiert Deutschland auf das Ende der Ära Orbán</a></td><td>de</td><td>Germany</td></tr><tr id="src-010"><td class="source-num">10</td><td>WirtschaftsWoche</td><td><a href="https://www.wiwo.de/politik/ausland/ungarn-wahl-2026-in-bruessel-herrscht-helle-freude-ueber-sieg-von-peter-magyar/100215961.html" target="_blank" rel="noopener">Ungarn-Wahl 2026: In Brüssel herrscht helle Freude über Sieg von Peter Magyar</a></td><td>de</td><td>Germany</td></tr><tr id="src-011"><td class="source-num">11</td><td>News.ru</td><td><a href="https://news.ru/world/chernyj-den-chto-na-zapade-i-v-rossii-govoryat-ob-itogah-vyborov-v-vengrii" target="_blank" rel="noopener">«Черный день»: что на Западе и в России говорят об итогах выборов в Венгрии</a></td><td>ru</td><td>Russia</td></tr><tr id="src-012"><td class="source-num">12</td><td>RTVI</td><td><a href="https://rtvi.com/opinions/protiv-nego-nastroyatsya-vse-kto-possorit-rossiyu-s-vengriej/" target="_blank" rel="noopener">«Против него настроятся все». Кто поссорит Россию с Венгрией</a></td><td>ru</td><td>Russia</td></tr><tr id="src-013"><td class="source-num">13</td><td>Glavred</td><td><a href="https://glavred.info/world/orban-2-0-ili-nadezhda-dlya-es-chto-govoril-lider-oppozicii-vengrii-o-rf-ukraine-i-voyne-10755494.html" target="_blank" rel="noopener">Петер Мадяр — что известно о главном сопернике Орбана</a></td><td>ru</td><td>Ukraine</td></tr><tr id="src-014"><td class="source-num">14</td><td>Sina Finance</td><td><a href="https://finance.sina.com.cn/jjxw/2026-04-12/doc-inhufuya0442561.shtml" target="_blank" rel="noopener">匈牙利今日举行大选，欧尔班面临执政16年来最大挑战</a></td><td>zh</td><td>China</td></tr><tr id="src-015"><td class="source-num">15</td><td>Asharq News</td><td><a href="https://asharq.com/politics/179140/" target="_blank" rel="noopener">نهاية عهد أوربان.. زعيم المعارضة بيتر ماجيار يفوز في انتخابات المجر</a></td><td>ar</td><td>Saudi Arabia</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>A two-thirds supermajority ending 16 years of Orbán&#x27;s rule is a structurally significant shift for EU politics, NATO cohesion, and the trajectory of democratic backsliding globally. Nineteen sources from five regions provide the highest raw source count in today&#x27;s set, with genuine editorial diversity: BBC World (Tier 1), independent outlets (Guardian, Le Monde, El País, Kyiv Independent), state-influenced sources (SCMP, Anadolu, Ukrinform), and Russian-language coverage (BBC Russian) that will frame the result through competing geopolitical lenses — pro-EU realignment vs. loss of a Russia-sympathetic partner. The absence of South Asian, African, and Latin American perspectives is a productive gap to surface.</dd>
+<dt>QA Corrections Applied</dt><dd><ul><li>Removed unsupported claim that the previous turnout record was &#x27;70.5% set in 2002&#x27; — no source in either pool provides this figure; sentence now states only that 77.8% was a record.</li>
+<li>Removed unsupported detail that Orbán conceded &#x27;by phone&#x27; — rsrc-002 confirms only that he conceded defeat; the method is not attested in any source.</li>
+<li>Removed unsupported &#x27;90% of its crude oil imports in 2025&#x27; statistic for the Druzhba pipeline — rsrc-013 mentions the pipeline but provides no such figure; replaced with the neutral phrase &#x27;a key conduit for Hungarian crude oil imports&#x27;.</li></ul></dd>
+<dt>Confidence</dt><dd>medium</dd>
+<dt>Pipeline Run</dt><dd>run-2026-04-13-26a820 &middot; 2026-04-13</dd>
+</dl>
+</div>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>
