@@ -59,26 +59,42 @@ header .tagline {
   text-transform: uppercase;
 }
 
-/* Date groups */
-.date-group {
+/* Date bar */
+.date-bar {
+  background: #000;
+  color: #fff;
   font-family: var(--font-mono);
   font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-text);
-  border-bottom: 3px solid #000;
-  padding-bottom: 0.35rem;
-  margin: 2.5rem 0 1rem 0;
+  letter-spacing: 0.12em;
+  padding: 10px 16px;
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1.2rem;
 }
-.dossier-count {
+
+/* Follow-up hint */
+.follow-up-hint {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
+  color: #444;
+  margin: 0 0 12px 0;
+}
+.follow-up-label {
   color: #999;
-  font-weight: 400;
+}
+.follow-up-link {
+  color: #000;
+  text-decoration: none;
+}
+.follow-up-link:hover {
+  text-decoration: underline;
+  text-decoration-color: #999;
+  text-underline-offset: 2px;
+}
+.follow-up-date {
+  color: #999;
 }
 
 /* Cards */
@@ -225,13 +241,13 @@ footer a {
 </header>
 
 <main>
-<h3 class="date-group"><span>April 14, 2026</span><span class="dossier-count">3 DOSSIERS</span></h3>
+<div class="date-bar"><span>APRIL 14, 2026</span><span>3 DOSSIERS</span></div>
 <article class="tp-card">
   <span class="topic-id">TOPIC 01 / tp-2026-04-14-001</span>
   <h2><a href="reports/tp-2026-04-14-001.html">Trump Threatens to Destroy Iranian Vessels Challenging Hormuz Blockade as Iran Calls Action &#x27;Piracy&#x27;</a></h2>
   <p class="subheadline">The explicit threat to sink approaching ships marks a shift from economic interdiction to potential kinetic engagement, drawing sharp responses from Tehran and Beijing while global shipping markets convulse.</p>
   <p class="summary">U.S. President Donald Trump threatened on April 13 to destroy any Iranian vessels approaching the American naval blockade of the Strait of Hormuz, escalating the crisis from economic interdiction to a direct threat of armed engagement. Iran&#x27;s military command labeled the blockade &#x27;piracy&#x27; and warned that no Gulf ports would be safe, while China&#x27;s defence minister stated Beijing would honor energy agreements with Tehran and warned against external interference. The blockade has halted an estimated 2 million barrels per day of Iranian oil exports, with war risk insurance canceled and energy prices projected to spike across Asia.</p>
-  <div style="font-family: 'Space Mono', monospace; font-size: 0.75rem; color: #666; margin-top: 8px;">&#8627; Follow-up: &ldquo;US Declares Naval Blockade of Strait of Hormuz After Islamabad Talks Collapse, Drawing Competing Legal and Strategic Frames Worldwide&rdquo; (April 13, 2026)</div>
+  <div class="follow-up-hint"><span class="follow-up-label">&#8627; Follow-up:</span> <a href="reports/tp-2026-04-13-001.html" class="follow-up-link">&ldquo;US Declares Naval Blockade of Strait of Hormuz After Islamabad Talks Collapse, Drawing Competing Legal and Strategic Frames Worldwide&rdquo;</a> <span class="follow-up-date">(April 13, 2026)</span></div>
   <div class="meta-bar">
     <div class="meta-item"><span class="meta-number">20</span><span class="meta-label">Sources</span></div>
     <div class="meta-item"><span class="meta-number">9</span><span class="meta-label">Languages</span></div>
@@ -245,7 +261,7 @@ footer a {
   <h2><a href="reports/tp-2026-04-14-002.html">UN, IEA, and World Bank Warn Strait of Hormuz Blockade Threatens 45 Million With Acute Hunger as Institutional Emergency Responses Prove Insufficient</a></h2>
   <p class="subheadline">The largest strategic oil release in history and emergency financing cannot prevent refined fuel shortages in Europe, fertilizer price spikes across Latin America and Turkey, or a potential 50% collapse in African cereal yields, according to assessments from multiple international organizations.</p>
   <p class="summary">International organizations including the IEA, FAO, World Bank, and WFP have issued escalating warnings that the Strait of Hormuz blockade is triggering a global food security crisis beyond the initial energy market disruption. The IEA&#x27;s record 412 million barrel emergency oil release cannot prevent refined fuel shortages in Europe, while fertilizer price spikes threaten agricultural output from Brazil to sub-Saharan Africa, where a 50% collapse in cereal yields is projected. The World Bank estimates 45 million additional people could face acute hunger, while the WFP warns global acute food insecurity could reach 363 million people if the conflict persists through June. Humanitarian aid supplies are stranded in Dubai for up to six months.</p>
-  <div style="font-family: 'Space Mono', monospace; font-size: 0.75rem; color: #666; margin-top: 8px;">&#8627; Follow-up: &ldquo;US Declares Naval Blockade of Strait of Hormuz After Islamabad Talks Collapse, Drawing Competing Legal and Strategic Frames Worldwide&rdquo; (April 13, 2026)</div>
+  <div class="follow-up-hint"><span class="follow-up-label">&#8627; Follow-up:</span> <a href="reports/tp-2026-04-13-001.html" class="follow-up-link">&ldquo;US Declares Naval Blockade of Strait of Hormuz After Islamabad Talks Collapse, Drawing Competing Legal and Strategic Frames Worldwide&rdquo;</a> <span class="follow-up-date">(April 13, 2026)</span></div>
   <div class="meta-bar">
     <div class="meta-item"><span class="meta-number">20</span><span class="meta-label">Sources</span></div>
     <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
@@ -267,7 +283,7 @@ footer a {
   </div>
   <div class="card-footer"><span>996 words &middot; April 14, 2026</span><a href="reports/tp-2026-04-14-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
 </article>
-<h3 class="date-group"><span>April 13, 2026</span><span class="dossier-count">3 DOSSIERS</span></h3>
+<div class="date-bar"><span>APRIL 13, 2026</span><span>3 DOSSIERS</span></div>
 <article class="tp-card">
   <span class="topic-id">TOPIC 04 / tp-2026-04-13-001</span>
   <h2><a href="reports/tp-2026-04-13-001.html">US Declares Naval Blockade of Strait of Hormuz After Islamabad Talks Collapse, Drawing Competing Legal and Strategic Frames Worldwide</a></h2>

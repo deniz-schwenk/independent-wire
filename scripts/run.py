@@ -4,6 +4,7 @@
 import argparse
 import asyncio
 import logging
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -28,14 +29,10 @@ def setup_logging():
 def create_agents() -> dict[str, Agent]:
     """Create all pipeline agents with their configurations.
 
-    Models via OpenRouter (reliable, large context windows):
-    - minimax/minimax-m2.7: 204k context, good for collection/curation
-    - z-ai/glm-5: 202k context, strong reasoning for editorial/writing
-
-    Ollama Cloud (ollama_cloud provider) is also supported but currently
-    has reliability issues (timeouts, ~30% failure rate on some models).
-    To use Ollama Cloud instead, change provider to "ollama_cloud" and
-    models to "minimax-m2.7:cloud" / "glm-5:cloud".
+    Models via OpenRouter (eval-validated, April 2026):
+    - google/gemini-3-flash-preview: Curator, Researcher Plan, Researcher Assemble (reasoning=none)
+    - anthropic/claude-opus-4.6: Editor, Perspektiv, Writer, Bias Language (reasoning=none)
+    - anthropic/claude-sonnet-4.6: QA-Analyze (reasoning=none, NEVER use r-medium)
     """
     agents_dir = ROOT / "agents"
 
@@ -60,67 +57,83 @@ def create_agents() -> dict[str, Agent]:
         # ),
         "curator": Agent(
             name="curator",
-            model="minimax/minimax-m2.7",
+            model="google/gemini-3-flash-preview",
             prompt_path=str(agents_dir / "curator" / "AGENTS.md"),
             tools=[],
             temperature=0.2,
+            max_tokens=16384,
             provider="openrouter",
+            reasoning="none",
         ),
         "editor": Agent(
             name="editor",
-            model="z-ai/glm-5",
+            model="anthropic/claude-opus-4.6",
             prompt_path=str(agents_dir / "editor" / "AGENTS.md"),
             tools=[],
             temperature=0.3,
+            max_tokens=16384,
             provider="openrouter",
+            reasoning="none",
         ),
         "researcher_plan": Agent(
             name="researcher_plan",
-            model="z-ai/glm-5",
+            model="google/gemini-3-flash-preview",
             prompt_path=str(agents_dir / "researcher" / "PLAN.md"),
             tools=[],
             temperature=0.5,
+            max_tokens=16384,
             provider="openrouter",
+            reasoning="none",
         ),
         "researcher_assemble": Agent(
             name="researcher_assemble",
-            model="z-ai/glm-5",
+            model="google/gemini-3-flash-preview",
             prompt_path=str(agents_dir / "researcher" / "ASSEMBLE.md"),
             tools=[],
             temperature=0.2,
+            max_tokens=16384,
             provider="openrouter",
+            reasoning="none",
         ),
         "perspektiv": Agent(
             name="perspektiv",
-            model="z-ai/glm-5",
+            model="anthropic/claude-opus-4.6",
             prompt_path=str(agents_dir / "perspektiv" / "AGENTS.md"),
             tools=[],
             temperature=0.1,
+            max_tokens=16384,
             provider="openrouter",
+            reasoning="none",
         ),
         "writer": Agent(
             name="writer",
-            model="z-ai/glm-5",
+            model="anthropic/claude-opus-4.6",
             prompt_path=str(agents_dir / "writer" / "AGENTS.md"),
             tools=[web_search_tool],
             temperature=0.3,
+            max_tokens=65536,
             provider="openrouter",
+            reasoning="none",
         ),
         "qa_analyze": Agent(
             name="qa_analyze",
-            model="z-ai/glm-5",
+            model="anthropic/claude-sonnet-4.6",
             prompt_path=str(agents_dir / "qa_analyze" / "AGENTS.md"),
             tools=[],
             temperature=0.1,
+            max_tokens=32768,
             provider="openrouter",
+            reasoning="none",
         ),
         "bias_language": Agent(
             name="bias_language",
-            model="z-ai/glm-5",
+            model="anthropic/claude-opus-4.6",
             prompt_path=str(agents_dir / "bias_detector" / "AGENTS.md"),
             tools=[],
             temperature=0.1,
+            max_tokens=16384,
             provider="openrouter",
+            reasoning="none",
         ),
     }
 
@@ -145,6 +158,14 @@ def parse_args():
         "--reuse", type=str, default=None,
         help="Date to load debug output from (YYYY-MM-DD). Default: latest available",
     )
+    parser.add_argument(
+        "--fetch", action="store_true",
+        help="Run fetch_feeds.py before the pipeline",
+    )
+    parser.add_argument(
+        "--publish", action="store_true",
+        help="Run publish.py after the pipeline (if at least 1 topic succeeded)",
+    )
     return parser.parse_args()
 
 
@@ -152,6 +173,16 @@ async def main():
     args = parse_args()
     setup_logging()
     logger = logging.getLogger("independent_wire")
+
+    # Pre-pipeline: fetch feeds if requested
+    if args.fetch:
+        logger.info("Fetching feeds...")
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "fetch_feeds.py")],
+        )
+        if result.returncode != 0:
+            logger.error("fetch_feeds.py failed (exit %d)", result.returncode)
+            sys.exit(1)
 
     logger.info("Starting Independent Wire pipeline...")
     start = time.time()
@@ -203,6 +234,13 @@ async def main():
             logger.info("  completed %s: %s", p.id, p.metadata.get("title", ""))
         for p in failed:
             logger.info("  failed %s: %s", p.id, p.error or "unknown error")
+
+        # Post-pipeline: publish if requested and at least 1 topic succeeded
+        if args.publish and completed:
+            logger.info("Publishing site...")
+            subprocess.run(
+                [sys.executable, str(ROOT / "scripts" / "publish.py")],
+            )
 
     except KeyboardInterrupt:
         logger.info("Pipeline interrupted by user.")

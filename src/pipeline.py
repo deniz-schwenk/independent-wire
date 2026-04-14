@@ -22,11 +22,23 @@ logger = logging.getLogger(__name__)
 
 
 def _strip_code_fences(text: str) -> str:
-    """Strip markdown code fences from LLM output."""
+    """Strip markdown code fences from LLM output.
+
+    Handles variations: ```json, ```, ```JSON, triple backticks with language tags,
+    and multiple code fence blocks (takes the first one).
+    """
     text = text.strip()
-    match = re.match(r"^```(?:json)?\s*\n?(.*?)\n?\s*```$", text, re.DOTALL)
+    # Full wrap: ```json ... ``` or ``` ... ```
+    match = re.match(r"^```(?:\w+)?\s*\n(.*?)\n\s*```\s*$", text, re.DOTALL)
     if match:
         return match.group(1).strip()
+    # Partial: starts with fence but no closing (truncated output)
+    match = re.match(r"^```(?:\w+)?\s*\n(.*)", text, re.DOTALL)
+    if match:
+        inner = match.group(1).strip()
+        # Remove trailing ``` if present somewhere inside
+        inner = re.sub(r"\n\s*```\s*$", "", inner)
+        return inner
     return text
 
 
@@ -55,20 +67,78 @@ def _extract_list(result: object) -> list[dict] | None:
             return json.loads(cleaned[start : end + 1])
     except (json.JSONDecodeError, ValueError):
         pass
+
+    # Attempt 4: use json_repair for LLM-typical malformed JSON
+    try:
+        from json_repair import repair_json
+        repaired = repair_json(result.content, return_objects=True)
+        if isinstance(repaired, list):
+            logger.info("_extract_list: recovered JSON via json_repair")
+            return repaired
+    except Exception:
+        pass
+
     return None
 
 
 def _extract_dict(result: object) -> dict | None:
-    """Extract a dict from an AgentResult (structured or content)."""
+    """Extract a dict from an AgentResult (structured or content).
+
+    Tries multiple fallback strategies for common LLM output issues:
+    1. Structured output (already parsed)
+    2. Strip code fences and parse
+    3. Find first { to last } and parse that substring
+    4. Use Agent._parse_json() for trailing comma removal and truncation repair
+    """
     if result.structured and isinstance(result.structured, dict):
         return result.structured
+
+    content = (result.content or "").strip()
+    if not content:
+        return None
+
+    # Attempt 1: strip code fences and parse directly
     try:
-        cleaned = _strip_code_fences(result.content)
+        cleaned = _strip_code_fences(content)
         parsed = json.loads(cleaned)
         if isinstance(parsed, dict):
             return parsed
     except (json.JSONDecodeError, ValueError):
         pass
+
+    # Attempt 2: find first { to last } in the raw content
+    first_brace = content.find("{")
+    if first_brace >= 0:
+        last_brace = content.rfind("}")
+        if last_brace > first_brace:
+            try:
+                parsed = json.loads(content[first_brace:last_brace + 1])
+                if isinstance(parsed, dict):
+                    logger.info("_extract_dict: recovered JSON via brace extraction")
+                    return parsed
+            except (json.JSONDecodeError, ValueError):
+                pass
+
+    # Attempt 3: use Agent._parse_json() which handles trailing commas and truncation
+    try:
+        from src.agent import Agent
+        parsed = Agent._parse_json(content)
+        if isinstance(parsed, dict):
+            logger.info("_extract_dict: recovered JSON via Agent._parse_json")
+            return parsed
+    except Exception:
+        pass
+
+    # Attempt 4: use json_repair for LLM-typical malformed JSON
+    try:
+        from json_repair import repair_json
+        repaired = repair_json(content, return_objects=True)
+        if isinstance(repaired, dict):
+            logger.info("_extract_dict: recovered JSON via json_repair")
+            return repaired
+    except Exception:
+        pass
+
     return None
 
 
@@ -640,8 +710,7 @@ class Pipeline:
         message = (
             "Review these findings. Cluster related findings into topics. "
             "Score each topic's newsworthiness on a 1-10 scale. "
-            "For each topic provide: title, topic_slug, relevance_score, "
-            "summary, source_ids."
+            "For each topic provide: title, relevance_score, summary, source_ids."
         )
 
         # Curator output is a small JSON array (~2-5K tokens).
@@ -670,6 +739,71 @@ class Pipeline:
         finally:
             agent.max_tokens = saved_max_tokens
 
+    def _scan_previous_coverage(self, days: int = 7) -> list[dict]:
+        """Scan output directory for Topic Packages from the last N days.
+
+        Returns list of dicts with: tp_id, date, headline, slug, summary.
+        Sorted by date descending (most recent first).
+        """
+        if not self.state:
+            return []
+
+        current_date = datetime.strptime(self.state.date, "%Y-%m-%d")
+        out = Path(self.output_dir)
+        if not out.exists():
+            return []
+
+        results: list[dict] = []
+        for d in out.iterdir():
+            if not d.is_dir() or len(d.name) != 10:
+                continue
+            # Skip current date's directory
+            if d.name == self.state.date:
+                continue
+            try:
+                dir_date = datetime.strptime(d.name, "%Y-%m-%d")
+            except ValueError:
+                continue
+            if (current_date - dir_date).days > days or dir_date > current_date:
+                continue
+
+            for tp_path in d.glob("tp-*.json"):
+                try:
+                    data = json.loads(tp_path.read_text(encoding="utf-8"))
+                    meta = data.get("metadata", {})
+                    article = data.get("article", {})
+                    headline = article.get("headline", "")
+                    if not headline:
+                        continue
+                    results.append({
+                        "tp_id": data.get("id", ""),
+                        "date": meta.get("date", d.name),
+                        "headline": headline,
+                        "slug": meta.get("topic_slug", ""),
+                        "summary": article.get("summary", ""),
+                    })
+                except (json.JSONDecodeError, KeyError):
+                    continue
+
+        results.sort(key=lambda x: x["date"], reverse=True)
+        date_dirs = len({r["date"] for r in results})
+        logger.info(
+            "Loaded %d previous TPs from %d days for coverage continuity",
+            len(results), date_dirs,
+        )
+        return results
+
+    def _get_previous_headline(self, tp_id: str) -> str:
+        """Look up headline from a previous TP by ID."""
+        parts = tp_id.split("-")
+        if len(parts) >= 5:
+            date_str = f"{parts[1]}-{parts[2]}-{parts[3]}"
+            tp_path = Path(self.output_dir) / date_str / f"{tp_id}.json"
+            if tp_path.exists():
+                data = json.loads(tp_path.read_text(encoding="utf-8"))
+                return data.get("article", {}).get("headline", "")
+        return ""
+
     async def editorial_conference(
         self, curated_topics: list[dict]
     ) -> list[TopicAssignment]:
@@ -678,6 +812,8 @@ class Pipeline:
         if not agent:
             logger.error("No 'editor' agent configured")
             return []
+
+        previous_coverage = self._scan_previous_coverage()
 
         message = (
             "Prioritize these topics for today's report. For each: assign "
@@ -688,7 +824,10 @@ class Pipeline:
 
         try:
             result = await agent.run(
-                message, context={"topics": curated_topics}
+                message, context={
+                    "topics": curated_topics,
+                    "previous_coverage": previous_coverage,
+                }
             )
             self._track_agent(result, "editor")
             raw_assignments = _extract_list(result) or []
@@ -703,6 +842,8 @@ class Pipeline:
                         topic_slug=a.get("topic_slug", ""),
                         selection_reason=a.get("selection_reason", ""),
                         raw_data=a.get("raw_data", {}),
+                        follow_up_to=a.get("follow_up_to"),
+                        follow_up_reason=a.get("follow_up_reason"),
                     )
                 )
             return assignments
@@ -762,6 +903,7 @@ class Pipeline:
         preloaded_article: dict | None = None,
         skip_perspektiv: bool = False,
         to_step: str | None = None,
+        preloaded_perspectives: dict | None = None,
     ) -> TopicPackage:
         """Produce a single TopicPackage from an assignment.
 
@@ -769,6 +911,7 @@ class Pipeline:
         - preloaded_dossier: skip researcher
         - preloaded_article: skip writer (and researcher and perspektiv)
         - skip_perspektiv: skip perspektiv even when dossier is available
+        - preloaded_perspectives: use this perspektiv data when step is skipped
         - to_step: stop after this step (inclusive)
         """
         import asyncio
@@ -806,12 +949,17 @@ class Pipeline:
             await asyncio.sleep(10)
 
         # 2b. Perspective Agent (stakeholder mapping, no tools)
-        perspective_analysis: dict = {}
-        if not skip_perspektiv and preloaded_article is None and research_dossier:
+        perspective_analysis: dict = preloaded_perspectives or {}
+        if preloaded_perspectives:
+            logger.info("Using preloaded perspektiv data for '%s'", assignment.title)
+        elif not skip_perspektiv and preloaded_article is None and research_dossier:
             if perspektiv := self.agents.get("perspektiv"):
                 perspektiv_context = {
-                    **assignment_data,
-                    "research_dossier": research_dossier,
+                    "title": assignment.title,
+                    "selection_reason": assignment.selection_reason,
+                    "sources": research_dossier.get("sources", []),
+                    "preliminary_divergences": research_dossier.get("preliminary_divergences", []),
+                    "coverage_gaps": research_dossier.get("coverage_gaps", []),
                 }
                 result = await perspektiv.run(
                     "Analyze the research dossier. Map all stakeholders, identify missing voices, "
@@ -820,6 +968,8 @@ class Pipeline:
                 )
                 perspective_analysis = _extract_dict(result) or {}
                 self._track_agent(result, "perspektiv", slug)
+                if not perspective_analysis and result.content:
+                    self._log_raw_on_parse_failure(result, "Perspektiv", slug, "04b-perspektiv")
                 self._write_debug_output(f"04b-perspektiv-{slug}.json", perspective_analysis)
 
                 # 5s delay before writer
@@ -852,19 +1002,48 @@ class Pipeline:
                 )
 
             writer_context = {
-                **assignment_data,
+                "title": assignment.title,
+                "selection_reason": assignment.selection_reason,
                 "perspective_analysis": perspective_analysis,
-                "research_dossier": research_dossier,
+                "sources": research_dossier.get("sources", []),
+                "coverage_gaps": research_dossier.get("coverage_gaps", []),
             }
+
+            # Load follow-up addendum if this topic is a follow-up
+            writer_addendum = None
+            if assignment.follow_up_to:
+                followup_path = Path("agents/writer/FOLLOWUP.md")
+                if followup_path.exists():
+                    writer_addendum = followup_path.read_text(encoding="utf-8")
+                    logger.info(
+                        "Loaded follow-up addendum for '%s' (follows %s)",
+                        assignment.title, assignment.follow_up_to,
+                    )
+                else:
+                    # FOLLOWUP.md not yet delivered by Prompt Engineer
+                    logger.warning(
+                        "Follow-up topic '%s' but FOLLOWUP.md not found",
+                        assignment.title,
+                    )
+
+                writer_context["follow_up"] = {
+                    "previous_headline": self._get_previous_headline(assignment.follow_up_to),
+                    "reason": assignment.follow_up_reason or "",
+                }
+
             result = await writer.run(
                 "Write a multi-perspective article on this topic.",
                 context=writer_context,
+                system_addendum=writer_addendum,
             )
             self._track_agent(result, "writer", slug)
-            article = _extract_dict(result) or {
-                "headline": assignment.title,
-                "body": result.content,
-            }
+            article = _extract_dict(result)
+            if not article:
+                self._log_raw_on_parse_failure(result, "Writer", slug, "05-writer")
+                article = {
+                    "headline": assignment.title,
+                    "body": result.content,
+                }
 
         # Compute word_count in Python (never trust LLM counting)
         body_text = article.get("body", "")
@@ -910,127 +1089,56 @@ class Pipeline:
                 status="partial",
             )
 
-        # 4. QA-Analyze (find errors, divergences, gaps)
+        # 4. QA+Fix (single call: find errors + apply corrections + return corrected article)
         qa_analysis: dict = {}
+        article_original = article.get("body", "")
         if qa_analyze := self.agents.get("qa_analyze"):
             qa_context = {
                 "article": article,
-                "research_dossier": research_dossier,
-            }
-            qa_schema = {
-                "type": "object",
-                "properties": {
-                    "corrections": {"type": "array"},
-                    "divergences": {"type": "array"},
-                },
-                "required": ["corrections", "divergences"],
+                "sources": research_dossier.get("sources", []),
+                "preliminary_divergences": research_dossier.get("preliminary_divergences", []),
             }
             result = await qa_analyze.run(
-                "Review this article against the available sources. Find factual errors, "
-                "source divergences the article doesn't reflect, and coverage gaps.",
+                "Check this article against the source material. Find errors and divergences. "
+                "Apply corrections directly in the article. Return the corrected article.",
                 context=qa_context,
-                output_schema=qa_schema,
             )
             qa_analysis = _extract_dict(result) or {}
             self._track_agent(result, "qa_analyze", slug)
+            if not qa_analysis and result.content:
+                self._log_raw_on_parse_failure(result, "QA+Fix", slug, "06-qa-analyze")
             self._write_debug_output(f"06-qa-analyze-{slug}.json", qa_analysis)
 
-            if not qa_analysis or not any(
-                qa_analysis.get(k) is not None for k in ("corrections", "divergences")
-            ):
+            # Take corrected article from QA+Fix output
+            qa_article = qa_analysis.get("article")
+            if qa_article and isinstance(qa_article, dict) and qa_article.get("body"):
+                article["body"] = qa_article["body"]
+                if qa_article.get("headline"):
+                    article["headline"] = qa_article["headline"]
+                if qa_article.get("subheadline"):
+                    article["subheadline"] = qa_article["subheadline"]
+                if qa_article.get("summary"):
+                    article["summary"] = qa_article["summary"]
+                if qa_article.get("sources"):
+                    article["sources"] = qa_article["sources"]
+
+                corrections_applied = qa_analysis.get("corrections_applied", [])
+                logger.info(
+                    "QA+Fix for '%s': %d problems found, %d corrections applied",
+                    assignment.title,
+                    len(qa_analysis.get("problems_found", [])),
+                    len(corrections_applied),
+                )
+            else:
                 logger.warning(
-                    "QA-Analyze for '%s' returned no usable fields — "
-                    "output may be truncated. Check debug file.",
+                    "QA+Fix for '%s' returned no usable article — keeping original",
                     assignment.title,
                 )
-
-        # 5. Writer-Correction with retry (only if corrections needed)
-        corrections = qa_analysis.get("corrections", [])
-        article_original = article.get("body", "")
-        applied = 0
-        max_correction_attempts = 3
-
-        if corrections and (writer := self.agents.get("writer")):
-            pending_corrections = corrections
-            for attempt in range(1, max_correction_attempts + 1):
-                await asyncio.sleep(10)  # Rate limit
-
-                if attempt == 1:
-                    message = (
-                        "You wrote this article. QA found factual errors that need correction. "
-                        "Apply ONLY the listed corrections to the article. Return the complete "
-                        "article JSON (headline, subheadline, body, summary, sources) with the "
-                        "corrections applied. Do not change anything else."
-                    )
-                else:
-                    message = (
-                        "These corrections were not applied in your previous attempt. "
-                        "The flagged text still appears in the article. You MUST rewrite or "
-                        "remove the flagged passages. Do not keep the original text."
-                    )
-
-                logger.info(
-                    "Writer-Correction attempt %d/%d for '%s' (%d corrections)",
-                    attempt, max_correction_attempts, assignment.title, len(pending_corrections),
-                )
-
-                correction_context = {
-                    "task": "correction",
-                    "original_article": article,
-                    "corrections": pending_corrections,
-                }
-                result = await writer.run(message, context=correction_context)
-                corrected = _extract_dict(result) or {}
-                self._track_agent(result, "writer", slug)
-                self._write_debug_output(f"07-writer-correction-{slug}.json", corrected)
-
-                # Merge corrected fields into article
-                if corrected.get("body"):
-                    article["body"] = corrected["body"]
-                if corrected.get("headline"):
-                    article["headline"] = corrected["headline"]
-                if corrected.get("subheadline"):
-                    article["subheadline"] = corrected["subheadline"]
-                if corrected.get("summary"):
-                    article["summary"] = corrected["summary"]
-
-                # 6. Deterministic verification — check corrections were applied
-                still_unapplied = []
-                applied = 0
-                for correction in corrections:
-                    excerpt = correction.get("article_excerpt", "")
-                    if excerpt and excerpt not in article.get("body", ""):
-                        applied += 1
-                    elif excerpt:
-                        still_unapplied.append(correction)
-
-                if not still_unapplied:
-                    logger.info(
-                        "Writer-Correction for '%s': all %d corrections applied (attempt %d/%d).",
-                        assignment.title, len(corrections), attempt, max_correction_attempts,
-                    )
-                    break
-
-                if attempt < max_correction_attempts:
-                    logger.info(
-                        "Writer-Correction for '%s': %d/%d corrections still unapplied, retrying...",
-                        assignment.title, len(still_unapplied), len(corrections),
-                    )
-                    pending_corrections = still_unapplied
-                else:
-                    logger.warning(
-                        "Writer-Correction for '%s': %d/%d corrections NOT applied after %d attempts: %s",
-                        assignment.title,
-                        len(still_unapplied),
-                        len(corrections),
-                        max_correction_attempts,
-                        [c.get("article_excerpt", "")[:80] for c in still_unapplied],
-                    )
 
         # Compute word_count in Python (never trust LLM counting)
         article["word_count"] = len(article.get("body", "").split())
 
-        # Fix meta-transparency again after corrections (may re-introduce wrong counts)
+        # Fix meta-transparency after QA+Fix (may re-introduce wrong counts)
         body = article.get("body", "")
         writer_sources = article.get("sources", [])
         if body and writer_sources:
@@ -1065,11 +1173,31 @@ class Pipeline:
             )
             self._track_agent(result, "bias_language", slug)
             llm_result = _extract_dict(result) or {}
+            if not llm_result and result.content:
+                self._log_raw_on_parse_failure(result, "Bias Language", slug, "08-bias-language")
             bias_card["language_bias"] = llm_result.get("language_bias", {})
             bias_card["reader_note"] = llm_result.get("reader_note", "")
 
         self._write_debug_output(f"08-bias-card-{slug}.json", bias_card)
         bias_analysis = bias_card
+
+        # Build follow_up object for TP (Python assembly, not agent output)
+        follow_up_data = None
+        if assignment.follow_up_to:
+            prev_headline = self._get_previous_headline(assignment.follow_up_to)
+            parts = assignment.follow_up_to.split("-")
+            prev_date = f"{parts[1]}-{parts[2]}-{parts[3]}" if len(parts) >= 5 else ""
+            follow_up_data = {
+                "previous_tp_id": assignment.follow_up_to,
+                "previous_headline": prev_headline,
+                "previous_date": prev_date,
+                "previous_slug": "",
+                "reason": assignment.follow_up_reason or "",
+            }
+            tp_path = Path(self.output_dir) / prev_date / f"{assignment.follow_up_to}.json"
+            if tp_path.exists():
+                prev_data = json.loads(tp_path.read_text(encoding="utf-8"))
+                follow_up_data["previous_slug"] = prev_data.get("metadata", {}).get("topic_slug", "")
 
         # Assemble TopicPackage
         return TopicPackage(
@@ -1080,6 +1208,7 @@ class Pipeline:
                 "status": "review",
                 "topic_slug": assignment.topic_slug,
                 "priority": assignment.priority,
+                "follow_up": follow_up_data,
             },
             sources=article.get("sources", []),
             perspectives=perspective_analysis.get("stakeholders", []),
@@ -1094,9 +1223,9 @@ class Pipeline:
                     "run_id": self.state.run_id if self.state else "",
                     "date": self.state.date if self.state else "",
                 },
-                "article_original": article_original if corrections else None,
-                "qa_corrections": corrections,
-                "qa_corrections_applied": applied if corrections else 0,
+                "article_original": article_original if qa_analysis.get("corrections_applied") else None,
+                "qa_problems_found": qa_analysis.get("problems_found", []),
+                "qa_corrections_applied": qa_analysis.get("corrections_applied", []),
                 "framing_divergences": perspective_analysis.get("framing_divergences", []),
             },
             status="review",
@@ -1113,9 +1242,14 @@ class Pipeline:
             return {}
 
         # Phase 1: Plan multilingual queries
+        plan_context = {
+            "title": assignment_data.get("title", ""),
+            "selection_reason": assignment_data.get("selection_reason", ""),
+            "raw_data": assignment_data.get("raw_data", {}),
+        }
         plan_result = await planner.run(
             f"Plan multilingual research queries for this topic. Today is {self.state.date}.",
-            context=assignment_data,
+            context=plan_context,
             output_schema={"type": "array", "items": {"type": "object"}},
         )
         self._track_agent(plan_result, "researcher_plan", slug)
@@ -1167,7 +1301,10 @@ class Pipeline:
             "Build a research dossier from these search results. "
             "Extract sources, actors, divergences, and coverage gaps.",
             context={
-                "assignment": assignment_data,
+                "assignment": {
+                    "title": assignment_data.get("title", ""),
+                    "selection_reason": assignment_data.get("selection_reason", ""),
+                },
                 "search_results": search_results,
             },
         )
@@ -1179,16 +1316,7 @@ class Pipeline:
         if dossier:
             self._write_debug_output(f"04-researcher-{slug}.json", dossier)
         else:
-            logger.warning(
-                "Researcher assembler for '%s' returned unparseable output (%d tokens). "
-                "Saving raw content to debug file.",
-                slug,
-                assemble_result.tokens_used,
-            )
-            self._write_debug_output(
-                f"04-researcher-{slug}-RAW.json",
-                {"_raw_content": assemble_result.content[:5000], "_tokens_used": assemble_result.tokens_used},
-            )
+            self._log_raw_on_parse_failure(assemble_result, "Researcher Assemble", slug, "04-researcher")
 
         return dossier
 
@@ -1310,6 +1438,8 @@ class Pipeline:
                         topic_slug=a.get("topic_slug", ""),
                         selection_reason=a.get("selection_reason", ""),
                         raw_data=a.get("raw_data", {}),
+                        follow_up_to=a.get("follow_up_to"),
+                        follow_up_reason=a.get("follow_up_reason"),
                     )
                 )
             logger.info("Loaded %d assignments from %s", len(assignments), reuse)
@@ -1338,6 +1468,19 @@ class Pipeline:
                     logger.info("Loaded researcher dossier: %s", filename)
                 else:
                     logger.warning("No researcher dossier found: %s", filename)
+
+        # Load perspektiv outputs (needed when perspektiv is skipped: --from writer/qa_analyze onward)
+        perspektiv_outputs: dict[str, dict] = {}
+        if from_idx >= step_order.index("writer"):
+            for assignment in assignments:
+                slug = assignment.topic_slug or assignment.id
+                filename = f"04b-perspektiv-{slug}.json"
+                perspektiv_data = self._load_debug_output(reuse, filename)
+                if perspektiv_data and isinstance(perspektiv_data, dict):
+                    perspektiv_outputs[slug] = perspektiv_data
+                    logger.info("Loaded perspektiv output: %s", filename)
+                else:
+                    logger.warning("No perspektiv output found: %s", filename)
 
         # Load writer outputs (needed for --from qa_analyze onward)
         if from_idx >= step_order.index("qa_analyze"):
@@ -1420,6 +1563,7 @@ class Pipeline:
                         preloaded_article=writer_outputs.get(slug) if from_idx >= step_order.index("qa_analyze") else None,
                         skip_perspektiv=from_step in ("writer", "qa_analyze"),
                         to_step=to_step,
+                        preloaded_perspectives=perspektiv_outputs.get(slug),
                     )
                     packages.append(pkg)
                     self._write_debug_output(f"05-writer-{slug}.json", pkg.to_dict())
@@ -1518,6 +1662,23 @@ class Pipeline:
         path = out / filename
         path.write_text(json.dumps(data, indent=2, ensure_ascii=False))
         logger.info("Debug output: %s", filename)
+
+    def _log_raw_on_parse_failure(
+        self, result: object, agent_name: str, slug: str, debug_prefix: str,
+    ) -> None:
+        """Write raw LLM content to a debug file when _extract_dict fails."""
+        content = getattr(result, "content", "") or ""
+        if not content:
+            return
+        filename = f"{debug_prefix}-{slug}-RAW.txt"
+        out = Path(self.output_dir) / self.state.date
+        out.mkdir(parents=True, exist_ok=True)
+        path = out / filename
+        path.write_text(content, encoding="utf-8")
+        logger.warning(
+            "%s for '%s': JSON extraction failed (%d chars). Raw output saved to %s",
+            agent_name, slug, len(content), filename,
+        )
 
     async def _save_state(self) -> None:
         """Save current pipeline state to disk."""

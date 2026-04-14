@@ -19,6 +19,7 @@ dependencies = [
     "openai>=1.0",
     "httpx",
     "feedparser",
+    "json-repair",
 ]
 
 [project.optional-dependencies]

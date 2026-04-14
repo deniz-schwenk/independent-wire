@@ -118,11 +118,15 @@ def build_card(meta: dict, index: int) -> str:
     if follow_up:
         prev_headline = _esc(follow_up.get("previous_headline", ""))
         prev_date = follow_up.get("previous_date", "")
+        prev_tp_id = follow_up.get("previous_tp_id", "")
         formatted_date = _format_date(prev_date) if prev_date else ""
+        prev_href = f"reports/{prev_tp_id}.html" if prev_tp_id else "#"
         follow_up_hint = (
-            f'  <div style="font-family: \'Space Mono\', monospace; font-size: 0.75rem; '
-            f'color: #666; margin-top: 8px;">'
-            f'&#8627; Follow-up: &ldquo;{prev_headline}&rdquo; ({formatted_date})</div>\n'
+            f'  <div class="follow-up-hint">'
+            f'<span class="follow-up-label">&#8627; Follow-up:</span> '
+            f'<a href="{_esc(prev_href)}" class="follow-up-link">&ldquo;{prev_headline}&rdquo;</a> '
+            f'<span class="follow-up-date">({formatted_date})</span>'
+            f'</div>\n'
         )
     return f"""<article class="tp-card">
   <span class="topic-id">{_esc(topic_num)}</span>
@@ -151,7 +155,7 @@ def build_index(all_meta: list[dict]) -> str:
     for date_str in sorted(by_date.keys(), reverse=True):
         date_entries = sorted(by_date[date_str], key=lambda x: x["id"])
         count = len(date_entries)
-        cards_html += f'<h3 class="date-group"><span>{_format_date(date_str)}</span><span class="dossier-count">{count} DOSSIER{"S" if count != 1 else ""}</span></h3>\n'
+        cards_html += f'<div class="date-bar"><span>{_format_date(date_str).upper()}</span><span>{count} DOSSIER{"S" if count != 1 else ""}</span></div>\n'
         for meta in date_entries:
             card_index += 1
             cards_html += build_card(meta, card_index) + "\n"
@@ -217,26 +221,42 @@ header .tagline {{
   text-transform: uppercase;
 }}
 
-/* Date groups */
-.date-group {{
+/* Date bar */
+.date-bar {{
+  background: #000;
+  color: #fff;
   font-family: var(--font-mono);
   font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-text);
-  border-bottom: 3px solid #000;
-  padding-bottom: 0.35rem;
-  margin: 2.5rem 0 1rem 0;
+  letter-spacing: 0.12em;
+  padding: 10px 16px;
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1.2rem;
 }}
-.dossier-count {{
+
+/* Follow-up hint */
+.follow-up-hint {{
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
+  color: #444;
+  margin: 0 0 12px 0;
+}}
+.follow-up-label {{
   color: #999;
-  font-weight: 400;
+}}
+.follow-up-link {{
+  color: #000;
+  text-decoration: none;
+}}
+.follow-up-link:hover {{
+  text-decoration: underline;
+  text-decoration-color: #999;
+  text-underline-offset: 2px;
+}}
+.follow-up-date {{
+  color: #999;
 }}
 
 /* Cards */
