@@ -2,7 +2,7 @@
 
 **The news you read was chosen for you. This system shows you why — and what's missing.**
 
-**[→ Read the latest dossiers at independentwire.org](https://independentwire.org)**
+**[→ Read the latest dossiers at independent-wire.org](https://independent-wire.org)**
 
 Independent Wire is an open-source AI pipeline that produces multi-perspective news dossiers with full source transparency. It scans 72 sources in 20+ languages, identifies where coverage diverges, documents which voices are missing, and publishes everything — including its own biases and limitations.
 
@@ -48,15 +48,15 @@ It is not neutral — nothing is. But it is transparent about how and where it i
 
 ## Project Status
 
-The pipeline is operational and publishing dossiers at [independentwire.org](https://independentwire.org).
+The pipeline is operational and publishing dossiers at [independent-wire.org](https://independent-wire.org).
 
 | Component | Status |
 |-----------|--------|
 | Pipeline (8 agents, 3 models) | ✅ Operational — 13+ runs completed |
 | Source base (72 feeds, 20+ languages) | ✅ Live |
 | Topic Package rendering (HTML, self-contained) | ✅ Live |
-| Publication website | ✅ Live at [independentwire.org](https://independentwire.org) |
-| RSS feed | ✅ Available at [independentwire.org/feed.xml](https://independentwire.org/feed.xml) |
+| Publication website | ✅ Live at [independent-wire.org](https://independent-wire.org) |
+| RSS feed | ✅ Available at [independent-wire.org/feed.xml](https://independent-wire.org/feed.xml) |
 | Editor memory (coverage continuity) | ✅ Implemented |
 | Prompt caching | 🔜 Planned |
 | MCP server (query TPs from Claude/ChatGPT) | 🔜 Planned |
@@ -70,7 +70,7 @@ All cost data, including per-agent token breakdowns, is documented in [COST-OPTI
 
 ## Architecture
 
-Three abstractions: **Agent** (configured LLM caller), **Pipeline** (deterministic orchestration), **Tool** (swappable external capability). Async from day one. Three dependencies: `openai`, `httpx`, `feedparser`.
+Three abstractions: **Agent** (configured LLM caller), **Pipeline** (deterministic orchestration), **Tool** (swappable external capability). Async from day one. Three dependencies: `openai` (API client for OpenRouter), `httpx`, `feedparser`.
 
 Details: [ARCHITECTURE.md](docs/ARCHITECTURE.md) · [ROADMAP.md](docs/ROADMAP.md) · [TASKS.md](docs/TASKS.md)
 
@@ -84,7 +84,7 @@ Who can read the prompts can check the agenda. Who can change the prompts is fre
 
 The project is in active development by a single developer. The best ways to contribute right now:
 
-- **Read a dossier** at [independentwire.org](https://independentwire.org) and open an issue with feedback
+- **Read a dossier** at [independent-wire.org](https://independent-wire.org) and open an issue with feedback
 - **Review the prompts** in `agents/` — editorial improvements are as valuable as code
 - **Expand the source base** — suggest feeds from underrepresented regions in `config/sources.json`
 - Star the repo to signal interest
