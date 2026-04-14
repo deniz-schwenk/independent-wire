@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>UN, IEA, and World Bank Warn Strait of Hormuz Blockade Threatens 45 Million With Acute Hunger as Institutional Emergency Responses Prove Insufficient</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Sources table */
+.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.sources-table th {
+  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 3px solid #000;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
+.sources-table a { color: var(--color-primary); text-decoration: none; }
+.sources-table a:hover { text-decoration: underline; }
+.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>UN, IEA, and World Bank Warn Strait of Hormuz Blockade Threatens 45 Million With Acute Hunger as Institutional Emergency Responses Prove Insufficient</h1>
+<p class="subtitle">The largest strategic oil release in history and emergency financing cannot prevent refined fuel shortages in Europe, fertilizer price spikes across Latin America and Turkey, or a potential 50% collapse in African cereal yields, according to assessments from multiple international organizations.</p>
+<p class="date">April 14, 2026</p>
+
+<div class="follow-up-ref" style="font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #444; padding: 12px 16px; border-left: 3px solid #000; margin: 16px 0; background: #f5f5f5;">
+FOLLOW-UP &mdash; Previous coverage: &ldquo;US Declares Naval Blockade of Strait of Hormuz After Islamabad Talks Collapse, Drawing Competing Legal and Strategic Frames Worldwide&rdquo; (April 13, 2026)
+<a href="tp-2026-04-13-001.html" style="font-family: 'Space Mono', monospace; color: #000;">&rarr; Read previous</a>
+</div>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">20</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Countries</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 840 840" class="source-network" role="img" aria-label="Source network: 20 sources from 12 countries">
+<path d="M622.5,240.0 A280,280 0 0 1 622.5,520.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="247.5" x2="635.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M622.5,520.0 A280,280 0 0 1 452.5,650.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="512.5" x2="635.5" y2="527.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M452.5,650.5 A280,280 0 0 1 240.0,622.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="448.6" y1="636.0" x2="456.4" y2="664.9" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M240.0,622.5 A280,280 0 0 1 109.5,452.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="247.5" y1="609.5" x2="232.5" y2="635.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M109.5,452.5 A280,280 0 0 1 137.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="124.0" y1="448.6" x2="95.1" y2="456.4" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M137.5,240.0 A280,280 0 0 1 307.5,109.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="150.5" y1="247.5" x2="124.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M307.5,109.5 A280,280 0 0 1 498.3,126.2" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="311.4" y1="124.0" x2="303.6" y2="95.1" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M498.3,126.2 A280,280 0 0 1 622.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="492.0" y1="139.8" x2="504.7" y2="112.6" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<g class="source-node">
+<line class="conn-line" x1="424.0" y1="380.0" x2="574.0" y2="380.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="590.0" cy="380.0" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Turkey (1 source)</title></circle>
+<text class="count-label" x="590.0" y="384.0" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="590.0" y="410.0" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Turkey</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="415.6" y1="405.9" x2="512.7" y2="476.4" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="529.7" cy="488.7" r="21" fill="#0891b2" stroke="#000" stroke-width="1.5"><title>China (2 sources)</title></circle>
+<text class="count-label" x="529.7" y="492.7" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="529.7" y="523.7" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">China</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="395.8" y1="421.1" x2="458.5" y2="584.5" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="464.2" cy="599.4" r="16" fill="#0891b2" stroke="#000" stroke-width="1.5"><title>S. Korea (1 source)</title></circle>
+<text class="count-label" x="464.2" y="603.4" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="464.2" y="629.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">S. Korea</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="353.2" y1="345.1" x2="261.9" y2="226.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="252.2" cy="213.4" r="16" fill="#3b82f6" stroke="#000" stroke-width="1.5"><title>Mexico (1 source)</title></circle>
+<text class="count-label" x="252.2" y="217.4" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="252.2" y="243.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Mexico</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="383.8" y1="336.2" x2="396.9" y2="186.7" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="398.3" cy="170.8" r="16" fill="#2563eb" stroke="#000" stroke-width="1.5"><title>Brazil (1 source)</title></circle>
+<text class="count-label" x="398.3" y="174.8" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="398.3" y="200.8" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Brazil</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="402.7" y1="342.3" x2="467.0" y2="235.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="475.3" cy="221.4" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>Spain (1 source)</title></circle>
+<text class="count-label" x="475.3" y="225.4" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="475.3" y="251.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Spain</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="409.7" y1="347.6" x2="524.6" y2="222.2" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="538.8" cy="206.7" r="21" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>France (2 sources)</title></circle>
+<text class="count-label" x="538.8" y="210.7" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="538.8" y="241.7" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">France</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="415.6" y1="354.1" x2="512.7" y2="283.6" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="529.7" cy="271.3" r="21" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>Italy (2 sources)</title></circle>
+<text class="count-label" x="529.7" y="275.3" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="529.7" y="306.3" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Italy</text>
+</g>
+<circle cx="380" cy="380" r="44" fill="#000"/>
+<text x="380" y="374" font-size="22" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" dominant-baseline="middle">20</text>
+<text x="380" y="394" font-size="9" font-family="'Space Mono', 'Courier New', monospace" fill="white" letter-spacing="0.1em" text-anchor="middle">SOURCES</text>
+<text x="685.0" y="380.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">MIDDLE EAST &amp; N. AFRICA</text>
+<text x="565.7" y="622.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EAST ASIA</text>
+<text x="340.2" y="682.4" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">SOUTH &amp; CENTRAL ASIA</text>
+<text x="138.0" y="565.7" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SE ASIA &amp; OCEANIA</text>
+<text x="77.6" y="340.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SUB-SAHARAN AFRICA</text>
+<text x="194.3" y="138.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">AMERICAS</text>
+<text x="406.6" y="76.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">LATIN AMERICA</text>
+<text x="586.1" y="155.1" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EUROPE</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="USA: 5 sources">USA (5)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="Italy: 2 sources">Italy (2)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="France: 2 sources">France (2)</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="UK: 2 sources">UK (2)</span>
+<span class="country-badge" style="background:#0891b212;color:#0891b2;border:1px solid #0891b230" title="China: 2 sources">China (2)</span>
+<span class="country-badge" style="background:#2563eb12;color:#2563eb;border:1px solid #2563eb30" title="Brazil: 1 source">Brazil</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="Spain: 1 source">Spain</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Turkey: 1 source">Turkey</span>
+<span class="country-badge" style="background:#3b82f612;color:#3b82f6;border:1px solid #3b82f630" title="Mexico: 1 source">Mexico</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="Belgium: 1 source">Belgium</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="Hong Kong: 1 source">Hong Kong</span>
+<span class="country-badge" style="background:#0891b212;color:#0891b2;border:1px solid #0891b230" title="South Korea: 1 source">South Korea</span>
+</div>
+
+<div class="reader-note">This article draws on 20 sources in 8 languages, giving it unusually broad geographic reach, but no government officials, affected farmers, fertilizer producers, shipping companies, or humanitarian NGOs are directly quoted — the analysis relies entirely on institutional reports and media coverage rather than the voices of people making decisions or experiencing the crisis. The article&#x27;s own language occasionally characterizes the severity and significance of events editorially rather than letting the data speak, particularly when describing the crisis as an &#x27;emergency&#x27; or judging what other media outlets have overlooked. Two earlier factual errors — a misattributed hunger figure and an unsupported Mexican tomato price statistic — were corrected before publication, but readers should note that casualty and hunger projections (45 million vs. 363 million) come from different organizations using different methodologies and time horizons.</div>
+
+<div class="article-body">
+<p>The economic and humanitarian consequences of the Strait of Hormuz blockade have expanded beyond energy markets into a documented global food security emergency, with the World Bank estimating that approximately 45 million additional people could fall into acute food insecurity if the disruption persists <a href="#src-003" class="source-ref"><sup>[3]</sup></a>, while the World Food Programme projects that global acute food insecurity could reach 363 million people if the conflict continues through June with oil prices above $100 per barrel <a href="#src-016" class="source-ref"><sup>[16]</sup></a>. This represents a material escalation from the initial supply disruption documented when the United States declared a naval blockade following the collapse of talks in Islamabad, as institutional actors including the FAO, IEA, World Bank, and UN have now issued specific warnings about cascading agricultural, humanitarian, and energy consequences.</p>
+<p>The blockade, in effect since late February 2026, has halted an estimated 30–35% of global crude oil transit and 20–30% of internationally traded fertilizers <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. The International Energy Agency coordinated a 412 million barrel emergency stock release — the largest in its history — with 32 member countries participating over a four-month period beginning in late March <a href="#src-008" class="source-ref"><sup>[8]</sup></a><a href="#src-017" class="source-ref"><sup>[17]</sup></a>. The United States alone committed 172 million barrels from its strategic reserve <a href="#src-017" class="source-ref"><sup>[17]</sup></a>. The IEA has assessed this as the largest supply disruption ever recorded, surpassing previous oil shocks <a href="#src-014" class="source-ref"><sup>[14]</sup></a>. Yet IEA Executive Director Fatih Birol warned that Europe would still face shortages of refined products, specifically diesel and jet fuel, beginning in April 2026, because the emergency release is composed primarily of crude oil rather than the processed fuels Europe needs <a href="#src-011" class="source-ref"><sup>[11]</sup></a>.</p>
+<p>The crisis extends well beyond petroleum. A sharp divergence in how different regions frame the disruption reveals the breadth of its impact. Latin American and Turkish sources foreground the fertilizer dimension: Turkish reporting documents nitrogen fertilizer prices jumping from $400 to $700 per ton, with 30% of global urea trade at risk <a href="#src-010" class="source-ref"><sup>[10]</sup></a>. Brazilian agricultural media, citing the International Food Policy Research Institute, warns that Brazil&#x27;s heavy dependence on Gulf fertilizer imports for soy, corn, and wheat production exposes the country&#x27;s agribusiness sector to severe cost increases <a href="#src-006" class="source-ref"><sup>[6]</sup></a>. As Notícias Agrícolas reported: &#x27;Crise no Estreito de Ormuz pode provocar choque global nos alimentos e elevar custos do agro brasileiro&#x27; (The Strait of Hormuz crisis could provoke a global food shock and raise costs for Brazilian agribusiness) <a href="#src-006" class="source-ref"><sup>[6]</sup></a>. Persian-language coverage from Euronews Persian highlights a dimension underrepresented in English-language reporting: Gulf countries provide 30–40% of global urea and ammonia production, making the &#x27;non-oil&#x27; shock — petrochemicals and fertilizers — as consequential as the crude oil disruption itself. As the outlet reported: &#x27;<span lang="fa" dir="rtl">توقف صادرات غیرنفتی خلیج فارس</span>&#x27; (The halt of non-oil exports from the Persian Gulf) constitutes a distinct economic shock <a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+<p>By contrast, European and English-language institutional sources emphasize immediate energy market disruptions, inflation dynamics, and refined fuel shortages <a href="#src-011" class="source-ref"><sup>[11]</sup></a><a href="#src-014" class="source-ref"><sup>[14]</sup></a>. Chinese sources frame the crisis through a lens of national resilience: one Chinese outlet reports that China&#x27;s grain reserves of 910 million tons can sustain the country for one to two years, far exceeding international safety standards <a href="#src-009" class="source-ref"><sup>[9]</sup></a>. A separate Chinese analysis from CLS/Caixin maps the blockade across &#x27;ten major industrial chain crises&#x27; — described as &#x27;<span lang="zh">十大产业链危机</span>&#x27; (ten major industrial chain crises) — extending from logistics paralysis to what it characterizes as civilizational restructuring <a href="#src-015" class="source-ref"><sup>[15]</sup></a>. This framing treats the disruption as a systemic transformation event, whereas Western institutional sources treat it as a severe but bounded supply shock with quantifiable parameters.</p>
+<p>Arabic-language coverage reveals a further fault line within the affected region itself. Al-Araby Al-Jadeed reports that Gulf states maintain food security resilience through strategic reserves despite a 15–30% increase in shipping costs for grains and rice <a href="#src-005" class="source-ref"><sup>[5]</sup></a>. This framing — &#x27;<span lang="fa" dir="rtl">صمود الأمن الغذائي الخليجي رغم التحديات</span>&#x27; (Resilience of Gulf food security despite challenges) <a href="#src-005" class="source-ref"><sup>[5]</sup></a> — contrasts sharply with the situation facing import-dependent nations elsewhere in the Middle East and North Africa, a disparity that Western and institutional sources largely overlook by treating the region as a monolithic category.</p>
+<p>The FAO has warned that a prolonged blockade risks a &#x27;systematic shock&#x27; to global agriculture through fertilizer and energy shortages, with potential impacts on 2026–2027 crop yields amounting to what it describes as a global agrifood catastrophe <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. French-language analysis from Le Grand Continent provides granularity absent from English-language institutional sources: it estimates a potential 50% collapse in African cereal yields for the 2026 season, noting that the blockade struck during the critical input purchasing period for West Africa&#x27;s June–July planting season and the Horn of Africa&#x27;s June–August Meher season <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. Le Grand Continent identifies May 15, 2026, as the final deadline for loading fertilizers onto ships to arrive in time for planting — &#x27;au-delà de cette date, la saison 2026 est considérée comme perdue&#x27; (beyond this date, the 2026 season is considered lost) <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. The World Bank estimates the disruption risks pushing 45 million additional people into acute hunger and has activated financing projects in Malawi, Madagascar, and Yemen <a href="#src-003" class="source-ref"><sup>[3]</sup></a>.</p>
+<p>A dimension almost entirely absent from trade-focused coverage is the paralysis of humanitarian aid logistics. El País reports that WFP and UNICEF supplies — including food and medicines — are stranded in Dubai logistics hubs with delays of up to six months <a href="#src-007" class="source-ref"><sup>[7]</sup></a>. The WFP has described this as the most significant supply chain disruption to humanitarian operations since COVID-19 <a href="#src-016" class="source-ref"><sup>[16]</sup></a>. Fortune reports that East African farmers in Kenya and Ethiopia already face fertilizer shortages worsening existing food insecurity <a href="#src-018" class="source-ref"><sup>[18]</sup></a>. In Mexico, tomato prices have surged — with Diario de Yucatán reporting a 61% increase attributed to drought and rising input costs linked to the Middle East conflict <a href="#src-013" class="source-ref"><sup>[13]</sup></a>, while broader produce price increases across tomatoes and chilies have been reported at up to 200% <a href="#src-019" class="source-ref"><sup>[19]</sup></a>.</p>
+<p>The International Crisis Group and Time magazine have both called for a &#x27;Hormuz Transit Initiative&#x27; modeled on the Black Sea Grain Initiative to ensure safe passage of food and fertilizer shipments <a href="#src-020" class="source-ref"><sup>[20]</sup></a>. No government has publicly endorsed the proposal.</p>
+<p>This article draws on 20 sources in 8 languages (English, French, Spanish, Portuguese, Arabic, Turkish, Persian, and Chinese) from 11 countries. No government officials from Gulf states, major importing nations (India, China, Japan), or the most vulnerable African nations (Kenya, Ethiopia, Malawi) are directly quoted. No perspectives from smallholder farmers, agricultural workers, or food-insecure populations — the 45 million people identified as at risk — are represented. No voices from the fertilizer industry (producers such as Yara or Qatar Fertiliser Company), shipping companies rerouting around the Strait, or agribusiness firms facing input cost surges appear in available reporting. No Russian or Ukrainian government or agricultural sector perspectives are included, despite both countries&#x27; roles as major fertilizer and grain exporters whose responses could significantly shape global food prices. No humanitarian NGOs such as Oxfam or Action Against Hunger are quoted.</p>
+<p>The next critical juncture, according to Le Grand Continent, is May 15, 2026 — the deadline for fertilizer shipments to reach African ports in time for the planting season <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. The WFP projects that if the conflict continues through June with oil prices above $100 per barrel, global acute food insecurity could reach 363 million people, matching levels seen at the start of the Ukraine war <a href="#src-016" class="source-ref"><sup>[16]</sup></a>.</p>
+</div>
+<p class="word-count">1,185 words</p>
+
+<h2>Perspectives &mdash; Stakeholder Analysis</h2>
+<div class="card-grid">
+<div class="card">
+  <div class="card-header"><span class="card-actor">Fatih Birol</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; France</div>
+  <div class="card-position">Warns that Europe will face refined product shortages, specifically diesel and jet fuel, in April 2026 despite the IEA&#x27;s record emergency stock release. Frames the disruption as unprecedented in scale.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">International Energy Agency (IEA)</span><span class="badge" style="background:#0f766e15;color:#0f766e;border:1px solid #0f766e40">strong</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; France</div>
+  <div class="card-position">Coordinated a 412 million barrel emergency stock release — the largest in history — with Asian members acting first and Americas/Europe following. Assesses this as the largest supply disruption ever recorded, surpassing previous oil shocks, but warns that refined product shortages will still hit Europe.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Food and Agriculture Organization (FAO)</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; Italy</div>
+  <div class="card-position">Warns that a prolonged Strait of Hormuz blockade risks a &#x27;systematic shock&#x27; to global agriculture through fertilizer and energy shortages, with potential impacts on 2026-2027 crop yields amounting to a global agrifood catastrophe.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">United Nations (UN News)</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; USA</div>
+  <div class="card-position">Quantifies the disruption as halting 30-35% of global crude oil and 20-30% of fertilizer trade, predicting a delayed but severe price surge later in 2026. Frames the situation with urgency: &#x27;the clock is ticking.&#x27;</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">World Bank</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; USA</div>
+  <div class="card-position">Estimates the disruption risks pushing 45 million additional people into acute hunger. Has active financing projects in Malawi, Madagascar, and Yemen to address food insecurity.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">World Food Programme (WFP)</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; Global</div>
+  <div class="card-position">Humanitarian aid supplies are reported stranded in Dubai hubs with delays of up to 6 months, paralyzing the organization&#x27;s ability to respond to existing crises.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">UNICEF</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; Global</div>
+  <div class="card-position">Aid supplies, including food and medicines, are stuck in Dubai logistics hubs due to the blockade, with delays of up to 6 months reported.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">International Food Policy Research Institute (IFPRI)</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">academia</span> &middot; USA</div>
+  <div class="card-position">Alerts that the Hormuz crisis could provoke a global food shock and specifically elevate costs for Brazilian agribusiness, given Brazil&#x27;s heavy dependence on Gulf fertilizer imports for soy, corn, and wheat production.</div>
+  
+</div>
+</div>
+
+<h2>Missing Voices</h2>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No government officials from any country — neither Gulf states (Saudi Arabia, UAE, Qatar, Iran), nor major importing nations (India, China, Japan), nor African nations at highest risk (Kenya, Ethiopia, Malawi) — are directly quoted. Given that government policy responses (export bans, subsidy programs, emergency reserves deployment) are central to how this crisis unfolds, the absence of any state-level voice is a fundamental gap.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No perspectives from smallholder farmers, agricultural workers, or food-insecure populations in the regions identified as most vulnerable — sub-Saharan Africa, Yemen, South and Southeast Asia. The World Bank estimates 45 million people at risk of acute hunger, yet none of those directly affected are heard.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">industry</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No voices from the fertilizer industry (producers like Yara, OCI, or Qatar Fertiliser Company), shipping and logistics companies rerouting around the Strait, or agribusiness firms facing input cost surges. These actors are making real-time decisions — suspending exports, raising prices, seeking alternative routes — that directly shape the crisis trajectory.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">civil_society</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No humanitarian NGOs (Oxfam, Action Against Hunger, Mercy Corps) or consumer advocacy groups are quoted, despite the crisis having both an acute humanitarian dimension (aid stranded in Dubai) and a consumer price dimension (61% tomato price spikes in Mexico). These organizations typically provide ground-level assessments that institutional actors cannot.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No Russian or Ukrainian government or agricultural sector voices, despite both countries being major global fertilizer and grain exporters whose response to the disruption — whether they increase exports to fill the gap or restrict them to protect domestic supply — will significantly shape global food prices.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">academia</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">Beyond IFPRI (referenced indirectly via a Brazilian outlet), no agricultural economists, energy analysts, or food security researchers are quoted providing independent analysis of the crisis duration, severity modeling, or historical comparisons. Academic voices would help contextualize the institutional projections.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">legislature</span><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">minor</span></div>
+  <div class="missing-voice-desc">No parliamentary or legislative voices from any country discussing emergency food security legislation, subsidy packages, or oversight of government crisis responses. In a crisis of this scale, legislative action (emergency appropriations, price controls, export restrictions) is a significant policy dimension.</div>
+</div>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The 45 million acute hunger figure is attributed to the World Bank (src-003/rsrc-003), while the WFP (src-016/rsrc-016) projects a separate figure of 363 million total people facing acute food insecurity. The original article&#x27;s lede conflated these two figures by attributing 45 million to the WFP.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article now correctly attributes 45 million to the World Bank and 363 million to the WFP in both the lede and the summary.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">Mexican tomato price increase: src-013 (Diario de Yucatán) reports a 61% increase attributed to drought; src-019 (Tridge) reports a 200% increase covering tomatoes and chilies combined. The original article cited &#x27;up to 190%&#x27; for tomatoes specifically, a figure supported by neither source, and attributed the cause to &#x27;frost&#x27; rather than drought.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article cites the 61% figure from src-013 with drought as the cause, and separately notes the broader 200% figure from src-019 with clarification that it covers tomatoes and chilies together.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Chinese sources (src-009, src-015) frame the crisis as domestically manageable due to large grain reserves and frame the blockade as a civilizational restructuring event, diverging sharply from Western institutional sources that treat it as a severe but bounded supply shock.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article explicitly addresses this framing divergence in the paragraph discussing Chinese sources versus Western institutional sources.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Arabic-language sources (src-005) distinguish between Gulf states (resilient due to strategic reserves) and import-dependent MENA nations, a divide that Western and institutional sources largely ignore by treating the region as monolithic.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article explicitly addresses this intra-regional divergence in the paragraph on Arabic-language coverage.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></div>
+  <div class="divergence-desc">Latin American and Turkish sources (src-006, src-010) foreground the fertilizer/urea dimension as the primary crisis vector, while English-language institutional sources (src-011, src-014) emphasize energy market disruptions and refined fuel shortages.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article explicitly contrasts these regional framings across consecutive paragraphs.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">src-013 attributes Mexican food price inflation primarily to drought, while the article&#x27;s original framing emphasized frost and Middle East conflict costs. The drought dimension from src-013 was absent from the original article&#x27;s causal framing.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article now includes drought as the cause cited by src-013.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p>Overall language bias severity: <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></p>
+<div class="bias-finding">
+  <span class="bias-excerpt">a documented global food security emergency</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Emergency&#x27; characterizes the severity of the situation editorially in the article&#x27;s own voice; while institutional sources may use this term, the article presents it as established fact rather than attributing the characterization to a specific organization.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">This represents a material escalation from the initial supply disruption</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Material escalation&#x27; is an evaluative judgment about the degree of change, presented as the article&#x27;s own assessment rather than attributed to any source; whether the shift constitutes a &#x27;material&#x27; escalation is an interpretive claim.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">a global agrifood catastrophe</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">While introduced with &#x27;what it describes as,&#x27; the phrase &#x27;global agrifood catastrophe&#x27; is not a direct quote from the FAO source — it paraphrases the FAO&#x27;s warning using a term (&#x27;catastrophe&#x27;) that carries stronger emotional weight than the attributed language warrants without a verbatim citation.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">the most significant supply chain disruption to humanitarian operations since COVID-19</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">hedging</span>
+  <div class="bias-explanation">The superlative &#x27;most significant&#x27; is attributed to the WFP but presented without any specific metric or comparison data, making it function as an unverifiable institutional claim passed through as fact rather than a precisely sourced assessment.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">what it characterizes as civilizational restructuring</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Civilizational restructuring&#x27; is attributed to a Chinese source via &#x27;what it characterizes as,&#x27; but the article then uses this framing to set up a contrast with Western sources, giving the most dramatic possible characterization rhetorical prominence in structuring the paragraph&#x27;s argument.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">a dimension almost entirely absent from trade-focused coverage</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Almost entirely absent&#x27; is an editorial judgment about the completeness of other outlets&#x27; coverage, presented as the article&#x27;s own assessment without quantifying how many sources were surveyed or what threshold defines &#x27;almost entirely.&#x27;</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">a disparity that Western and institutional sources largely overlook by treating the region as a monolithic category</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Largely overlook&#x27; and &#x27;monolithic category&#x27; are editorial characterizations of how other sources frame the region, embedding a judgment about the quality of Western reporting without attribution or specific evidence of which sources treat the region this way.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">11</span></div>
+<div class="bar-row"><span class="bar-label">es</span><div class="bar-track"><div class="bar-fill" style="width:18%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">zh</span><div class="bar-track"><div class="bar-fill" style="width:18%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">fr</span><div class="bar-track"><div class="bar-fill" style="width:9%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">ar</span><div class="bar-track"><div class="bar-fill" style="width:9%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">pt</span><div class="bar-track"><div class="bar-fill" style="width:9%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">tr</span><div class="bar-track"><div class="bar-fill" style="width:9%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">fa</span><div class="bar-track"><div class="bar-fill" style="width:9%"></div></div><span class="bar-count">1</span></div>
+</div>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">Lack of direct reporting from East African nations (e.g., Kenya, Ethiopia) despite being identified by international orgs as high-risk zones for the 2026-2027 harvest collapse.</div>
+<div class="coverage-gap">Minimal coverage of the specific impact on Southeast Asian agriculture (Vietnam, Thailand, Indonesia) beyond general mentions of &#x27;Asia&#x27;.</div>
+<div class="coverage-gap">No sources detailing the specific response of the Russian or Ukrainian agricultural sectors to the suspension of ammonium nitrate exports mentioned in snippets.</div>
+<div class="coverage-gap">Limited information on the &#x27;alternative routes&#x27; being explored by Gulf countries to bypass the Strait for food imports.</div>
+
+<h2>Sources</h2>
+<div class="sources-table-wrap">
+<table class="sources-table">
+<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>
+<tbody>
+<tr id="src-001"><td class="source-num">1</td><td>FAO</td><td><a href="https://www.fao.org/newsroom/detail/fao--protracted-strait-of-hormuz-crisis-could-turn-into-global-agrifood-catastrophe/en" target="_blank" rel="noopener">FAO: Protracted Strait of Hormuz crisis could turn into global agrifood catastrophe</a></td><td>en</td><td>Italy</td></tr><tr id="src-002"><td class="source-num">2</td><td>UN News</td><td><a href="https://news.un.org/en/story/2026/04/1167289" target="_blank" rel="noopener">&#x27;Clock is ticking&#x27;: Hormuz disruption raises fears of global food crisis</a></td><td>en</td><td>USA</td></tr><tr id="src-003"><td class="source-num">3</td><td>World Bank</td><td><a href="https://www.worldbank.org/en/topic/agriculture/brief/food-security-update" target="_blank" rel="noopener">Food Security | Food Insecurity Statistics &amp; Solutions - World Bank</a></td><td>en</td><td>USA</td></tr><tr id="src-004"><td class="source-num">4</td><td>Le Grand Continent</td><td><a href="https://legrandcontinent.eu/fr/2026/04/07/ormuz-famine/" target="_blank" rel="noopener">En Afrique, le blocage d&#x27;Ormuz peut-il provoquer une famine ...</a></td><td>fr</td><td>France</td></tr><tr id="src-005"><td class="source-num">5</td><td>Al-Araby Al-Jadeed</td><td><a href="https://www.alaraby.co.uk/economy/%D8%B5%D9%85%D9%88%D8%AF-%D8%A7%D9%84%D8%A3%D9%85%D9%86-%D8%A7%D9%84%D8%AE%D9%84%D9%8A%D8%AC%D9%8A-%D8%B1%D8%BA%D9%85-%D8%A7%D9%84%D8%AA%D8%AD%D8%AF%D9%8A%D8%A7%D8%AA" target="_blank" rel="noopener">صمود الأمن الغذائي الخليجي رغم التحديات - العربي الجديد</a></td><td>ar</td><td>UK</td></tr><tr id="src-006"><td class="source-num">6</td><td>Notícias Agrícolas</td><td><a href="https://www.noticiasagricolas.com.br/noticias/agronegocio/417037-crise-no-estreito-de-hormuz-pode-provocar-choque-global-nos-alimentos-e-elevar-custos-do-agro-brasileiro-alerta-ifpri.html" target="_blank" rel="noopener">Crise no Estreito de Ormuz pode provocar choque global nos alimentos e elevar custos do agro brasileiro alerta ifpri</a></td><td>pt</td><td>Brazil</td></tr><tr id="src-007"><td class="source-num">7</td><td>El País</td><td><a href="https://elpais.com/planeta-futuro/2026-03-17/el-bloqueo-del-estrecho-de-ormuz-estrangula-el-paso-of-alimentos-y-medicinas-para-atender-las-crisis-humanitarias.html" target="_blank" rel="noopener">El bloqueo del estrecho de Ormuz estrangula el paso de alimentos y medicinas</a></td><td>es</td><td>Spain</td></tr><tr id="src-008"><td class="source-num">8</td><td>Argus Media</td><td><a href="https://www.argusmedia.com/en/news-and-insights/latest-market-news/2801358-iea-emergency-stock-release-to-be-70pc-crude" target="_blank" rel="noopener">IEA emergency stock release to be 70pc crude</a></td><td>en</td><td>UK</td></tr><tr id="src-009"><td class="source-num">9</td><td>UniFuncs</td><td><a href="https://unifuncs.com/s/oVxTaIh4" target="_blank" rel="noopener">中国粮食储备能撑几年？</a></td><td>zh</td><td>China</td></tr><tr id="src-010"><td class="source-num">10</td><td>Gazete Oksijen</td><td><a href="https://gazeteoksijen.com/ekonomi/hurmuz-bogazi-krizi-gubre-arzini-vurdu-fiyatlar-sicradi-gida-guvenligi-riski-buyuyor-269911" target="_blank" rel="noopener">Hürmüz krizi gübre arzını vurdu, gıda güvenliği riski büyüyor</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-011"><td class="source-num">11</td><td>Energy News</td><td><a href="https://energynews.oedigital.com/refined-products/2026/04/01/iea-warns-that-middle-east-oil-disruptions-will-hit-europe-in-april" target="_blank" rel="noopener">IEA warns that Middle East oil disruptions will hit Europe in April</a></td><td>en</td><td>USA</td></tr><tr id="src-012"><td class="source-num">12</td><td>Euronews Persian</td><td><a href="https://parsi.euronews.com/2026/03/25/strait-of-hormuz-what-shock-non-oil-exports-persian-gulf-bring-to-world-economy" target="_blank" rel="noopener">بحران تنگه هرمز؛ توقف «صادرات غیرنفتی» خلیج فارس چه شوکی به ...</a></td><td>fa</td><td>France</td></tr><tr id="src-013"><td class="source-num">13</td><td>Diario de Yucatán</td><td><a href="https://www.yucatan.com.mx/mexico/2026/03/30/se-prenden-senales-de-alerta-en-mexico-por-la-inflacion-alimentaria.html" target="_blank" rel="noopener">Se prenden señales de alerta en México por la inflación alimentaria</a></td><td>es</td><td>Mexico</td></tr><tr id="src-014"><td class="source-num">14</td><td>NE Global Media</td><td><a href="https://www.neglobal.eu/iea-to-carry-out-stock-release-as-middle-east-war-disrupts-markets/" target="_blank" rel="noopener">IEA to carry out stock release as Middle East war disrupts markets</a></td><td>en</td><td>Belgium</td></tr><tr id="src-015"><td class="source-num">15</td><td>Caixin / CLS</td><td><a href="https://www.cls.cn/detail/2304733" target="_blank" rel="noopener">最全剖析！霍尔木兹海峡长期封锁下十大产业链危机脉络梳理</a></td><td>zh</td><td>China</td></tr><tr id="src-016"><td class="source-num">16</td><td>World Food Programme</td><td><a href="https://www.wfp.org/news/wfp-projects-food-insecurity-could-reach-record-levels-result-middle-east-escalation" target="_blank" rel="noopener">WFP projects food insecurity could reach record levels as a result of Middle East escalation</a></td><td>en</td><td>Italy</td></tr><tr id="src-017"><td class="source-num">17</td><td>Asia Times</td><td><a href="https://asiatimes.com/2026/03/412-million-barrels-will-soon-flood-oil-markets-will-it-matter/" target="_blank" rel="noopener">412 million barrels will soon flood oil markets — will it matter?</a></td><td>en</td><td>Hong Kong</td></tr><tr id="src-018"><td class="source-num">18</td><td>Fortune</td><td><a href="https://fortune.com/2026/04/09/global-food-emergency-how-bad-strait-hormuz-grocery-prices-shortages/" target="_blank" rel="noopener">A global food emergency: Why the closed Strait of Hormuz puts half the world at risk</a></td><td>en</td><td>USA</td></tr><tr id="src-019"><td class="source-num">19</td><td>Tridge</td><td><a href="https://www.tridge.com/news/inflation-in-mexico-stains-with-the-sauces-p-qlcktqwj" target="_blank" rel="noopener">Inflation in Mexico &#x27;stains&#x27; with the sauces: Prices of tomato and chilies increase 200%</a></td><td>en</td><td>South Korea</td></tr><tr id="src-020"><td class="source-num">20</td><td>Time</td><td><a href="https://time.com/article/2026/04/03/gulf-war-food-crisis-asia-africa-hormuz-transit-deal-/" target="_blank" rel="noopener">A Long Gulf War Can Starve the World. A Hormuz Transit Deal Could Save Millions</a></td><td>en</td><td>USA</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>Supported by 36 sources spanning 8 regions — the broadest geographic coverage of any topic today — including African outlets (Daily Nation, Premium Times Nigeria, Vanguard Nigeria, AllAfrica), Latin American (El Financiero, Folha de S.Paulo), and Southeast Asian (CNA) perspectives rarely represented in crisis coverage. The involvement of institutional voices (UN News, IEA, IMF, World Bank) alongside regional independent media creates competing frames: Global South outlets emphasize poverty and food catastrophe while European sources focus on inflation and energy markets. This is a distinct economic-humanitarian angle that warrants separate treatment from the military blockade story.</dd>
+<dt>QA Corrections Applied</dt><dd><ul><li>Opening paragraph: Removed incorrect attribution of the 45 million figure to the WFP; rewritten to correctly attribute 45 million to the World Bank (src-003) and the 363 million projection to the WFP (src-016) as two distinct figures from two distinct institutions.</li>
+<li>Mexico tomato price paragraph: Replaced unsupported &#x27;190%&#x27; figure and incorrect &#x27;frost&#x27; cause with the source-supported 61% tomato price increase attributed to drought per src-013, while retaining the broader 200% figure from src-019 with clarification that it covers tomatoes and chilies together.</li>
+<li>Summary: Updated to distinguish the World Bank&#x27;s 45 million figure from the WFP&#x27;s 363 million projection, and removed the conflation of the two.</li></ul></dd>
+<dt>Confidence</dt><dd>medium</dd>
+<dt>Pipeline Run</dt><dd>run-2026-04-14-93608f &middot; 2026-04-14</dd>
+</dl>
+</div>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>
