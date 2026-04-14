@@ -2,66 +2,77 @@
 
 **The news you read was chosen for you. This system shows you why — and what's missing.**
 
-Independent Wire is an open-source AI pipeline that doesn't just report the news. It analyzes *how* the news is reported — which perspectives are included, which are absent, where sources contradict each other, and what structural biases shape the coverage you see.
+**[→ Read the latest dossiers at independentwire.org](https://independentwire.org)**
 
-No publisher. No algorithm optimizing for engagement. No hidden editorial line. Every decision the system makes — from topic selection to source weighting — is traceable, auditable, and open.
+Independent Wire is an open-source AI pipeline that produces multi-perspective news dossiers with full source transparency. It scans 72 sources in 20+ languages, identifies where coverage diverges, documents which voices are missing, and publishes everything — including its own biases and limitations.
 
-> 🚧 **Under active development** — Framework operational, first pipeline runs completed. [Read the vision paper →](docs/VISION-independent-wire.pdf)
+No publisher. No engagement algorithm. No hidden editorial line. Every decision the system makes is traceable, auditable, and open.
 
-## The Problem
+## What It Produces
 
-Every piece of news you read has passed through a chain of human decisions: which topic gets picked up, which angle chosen, which sources cited, which facts emphasized, which omitted. These decisions are invisible to the reader. The result is a system that *feels* like information but is actually a *selection* — shaped by economic pressure, institutional bias, cultural perspective, and editorial hierarchy.
+Independent Wire does not produce articles. It produces **Topic Packages** — structured transparency bundles containing:
 
-AI news products reproduce this problem. They aggregate, summarize, and optimize — but they don't make the editorial process transparent. They replace one black box with another.
-
-## What Independent Wire Does Differently
-
-Independent Wire produces **Topic Packages** — not articles. A Topic Package is a structured transparency bundle containing:
-
-- **The facts** — what happened, according to whom, in what language, verified against original sources
+- **The article** — source-based, multi-perspective, with every claim traced to a cited source in its original language
 - **The perspectives** — who says what, how strongly represented, from which region
-- **The divergences** — where sources explicitly contradict each other
+- **The divergences** — where sources contradict each other in fact, framing, or emphasis
 - **The gaps** — which regions, demographics, or viewpoints no source covers
-- **The bias card** — systematic analysis across 5 dimensions: language, source, framing, selection, and geographical bias
-- **The transparency trail** — why this topic was selected, what was discarded, what the system cannot see
+- **The bias card** — analysis of the article's own language bias, source balance, and geographic coverage
+- **The reader note** — an honest self-assessment, placed *before* the article, not after
+- **The transparency trail** — why this topic was selected, what was corrected by QA, what the system cannot see
 
-The article is one possible *rendering* of the Topic Package — not the package itself.
+The article is one rendering of the Topic Package. The same data could produce a podcast briefing, a newsletter, or an API response.
 
 ## How It Works
 
-A pipeline of specialized AI agents, orchestrated by deterministic Python code — no LLM decides "what to do next":
+A pipeline of specialized AI agents, orchestrated by deterministic Python code. No LLM decides "what to do next."
 
-**Collector** → scans global sources in multiple languages via RSS and web search
-**Curator** → evaluates relevance, creates structured topic proposals
-**Editor** → prioritizes topics, maintains editorial memory across runs
-**Perspective Agent** → researches the full spectrum of positions per topic
-**Writer** → writes source-based, multi-perspective text
-**QA / Fact-Check** → three-tier verification: VERIFIED / UNVERIFIABLE / PROVABLY FALSE
-**Bias Detector** → analyzes the finished text for bias — marks, never rewrites
+```
+RSS Feeds (72 sources, 20+ languages)
+  → Curator — clusters and scores ~1,400 findings
+  → Editor — prioritizes topics, selects top 3 with reasoning
+     → Researcher — plans multilingual search queries, executes via Python, assembles dossier
+     → Perspective Agent — maps stakeholders, identifies missing voices, documents framing divergences
+     → Writer — produces source-attributed article from dossier + perspective analysis
+     → QA+Fix — finds errors, applies corrections, documents changes
+     → Bias Detector — Python aggregation + LLM language analysis → bias transparency card
+  → Topic Package JSON → HTML rendering → Publication
+```
 
-Each agent can use a different AI model optimized for its role. The system is designed so that no single model, no single source, and no single perspective dominates.
+Each agent uses a different model optimized for its role. Three production models: Gemini 3 Flash (research tasks), Claude Opus 4.6 (editorial and analytical tasks), Claude Sonnet 4.6 (QA). All prompts are in the repo under `agents/`.
 
 ## What This Is Not
 
-Independent Wire is not a chatbot, not a news app, not a content generator, and not a replacement for investigative journalism. It cannot conduct confidential interviews, meet whistleblowers, or visit a factory. It is not neutral — nothing is. But it is **transparent about how and where it is not neutral**, which is more than most systems offer.
+Independent Wire is not a chatbot, not a news aggregator with a nice UI, and not a replacement for investigative journalism. It cannot conduct confidential interviews, meet whistleblowers, or visit a factory.
+
+It is not neutral — nothing is. But it is transparent about how and where it is not neutral. That is more than most systems offer.
 
 ## Project Status
 
-| Phase | Status |
-|-------|--------|
-| Vision, schema, architecture | ✅ Complete |
-| Framework (Agent + Pipeline + Tool) | ✅ Operational |
-| First end-to-end pipeline runs | ✅ 2 runs completed |
-| Multi-provider search (Perplexity, Brave, DuckDuckGo) | ✅ Done |
-| RSS feed ingestion (21 global sources) | ✅ Done |
-| Perspective Agent, Bias Detector, QA | 🔜 Next |
-| Live demo (15+ sources, 5+ languages) | 🔜 Planned |
+The pipeline is operational and publishing dossiers at [independentwire.org](https://independentwire.org).
 
-[Architecture →](docs/ARCHITECTURE.md) · [Roadmap →](docs/ROADMAP.md) · [Task tracker →](docs/TASKS.md)
+| Component | Status |
+|-----------|--------|
+| Pipeline (8 agents, 3 models) | ✅ Operational — 13+ runs completed |
+| Source base (72 feeds, 20+ languages) | ✅ Live |
+| Topic Package rendering (HTML, self-contained) | ✅ Live |
+| Publication website | ✅ Live at [independentwire.org](https://independentwire.org) |
+| RSS feed | ✅ Available at [independentwire.org/feed.xml](https://independentwire.org/feed.xml) |
+| Editor memory (coverage continuity) | ✅ Implemented |
+| Prompt caching | 🔜 Planned |
+| MCP server (query TPs from Claude/ChatGPT) | 🔜 Planned |
+| Source expansion (100+ feeds) | 🔜 Planned |
 
 ## Cost Transparency
 
-Independent Wire runs on commercial AI APIs via OpenRouter. Two pipeline runs have been completed at ~$0.30–0.50 each (3 topics, 19 minutes). No advertising. No subscriptions. No data collection. Just API costs.
+A single pipeline run (3 topics) costs approximately €3.27 and takes 25 minutes. The system runs on commercial AI APIs via OpenRouter. No advertising. No subscriptions. No data collection. Operating cost = AI API cost.
+
+All cost data, including per-agent token breakdowns, is documented in [COST-OPTIMIZATION-ANALYSIS.md](docs/COST-OPTIMIZATION-ANALYSIS.md).
+
+## Architecture
+
+Three abstractions: **Agent** (configured LLM caller), **Pipeline** (deterministic orchestration), **Tool** (swappable external capability). Async from day one. Three dependencies: `openai`, `httpx`, `feedparser`.
+
+Details: [ARCHITECTURE.md](docs/ARCHITECTURE.md) · [ROADMAP.md](docs/ROADMAP.md) · [TASKS.md](docs/TASKS.md)
 
 ## License
 
@@ -71,13 +82,15 @@ Who can read the prompts can check the agenda. Who can change the prompts is fre
 
 ## Contributing
 
-This project is in its early stages. The best way to contribute right now:
+The project is in active development by a single developer. The best ways to contribute right now:
 
-- Read the [architecture](docs/ARCHITECTURE.md) and the [vision paper](docs/VISION-independent-wire.pdf)
-- Open issues with questions or suggestions
+- **Read a dossier** at [independentwire.org](https://independentwire.org) and open an issue with feedback
+- **Review the prompts** in `agents/` — editorial improvements are as valuable as code
+- **Expand the source base** — suggest feeds from underrepresented regions in `config/sources.json`
 - Star the repo to signal interest
+
+Read the [vision paper](docs/VISION-independent-wire.pdf) for the full rationale behind the project.
 
 ---
 
 *Independent Wire — Because transparency is not a feature, it is a promise.*
-
