@@ -76,7 +76,18 @@ class AgentResult:
 
 ### 2. Pipeline
 
-A Pipeline is a sequence of agent calls with data flow, gating, and integrity checks.
+A Pipeline is a sequence of agent calls with data flow, gating, and integrity checks. The current pipeline flow:
+
+1. **Curate** — LLM clusters and scores ~1,400 RSS findings into topics
+2. **Edit** — LLM prioritizes topics, selects top 3 with reasoning
+3. **Per topic** (sequential):
+   - Researcher Plan → Python search execution → Researcher Assemble
+   - Perspektiv Agent (stakeholder map, missing voices)
+   - Writer (article with web_search tool)
+   - QA+Fix (single call: find errors + apply corrections + return corrected article)
+   - Python post-processing (word_count, meta-transparency, sanity checks)
+   - Python bias aggregation → Bias Language Analyzer
+   - → Topic Package JSON
 
 ```python
 class Pipeline:
@@ -92,12 +103,15 @@ class Pipeline:
         ...
 
     async def run(self, date: str = None) -> list[TopicPackage]: ...
-    async def collect(self) -> list[dict]: ...
     async def curate(self, raw: list[dict]) -> list[dict]: ...
     async def editorial_conference(self, topics: list[dict]) -> list[dict]: ...
+    async def research(self, assignment: dict) -> dict: ...
+    async def perspektiv(self, assignment: dict, research: dict) -> dict: ...
+    async def write(self, assignment: dict, research: dict, perspectives: dict) -> dict: ...
+    async def qa_fix(self, article: dict, dossier_sources: list, divergences: list) -> dict: ...
+    async def build_bias_card(self, package: dict) -> dict: ...
     async def gate(self, step_name: str, data: any) -> bool: ...
     async def produce_topic_package(self, assignment: dict) -> TopicPackage: ...
-    async def verify(self, packages: list[TopicPackage]) -> list[TopicPackage]: ...
 ```
 
 **Key design decisions:**
@@ -147,10 +161,11 @@ File-based, environment-overridable, path-agnostic. API keys are **never** in th
 dependencies = [
     "openai>=1.0",          # OpenAI-compatible API client (works with OpenRouter)
     "httpx",                # async HTTP for tool implementations
+    "feedparser",           # RSS feed parsing
 ]
 ```
 
-No numpy. No pandas. No langchain. No pytorch. Two core dependencies.
+No numpy. No pandas. No langchain. No pytorch. Three core dependencies.
 
 ---
 
@@ -166,41 +181,82 @@ No numpy. No pandas. No langchain. No pytorch. Two core dependencies.
 | **Structured output** | Agent's `output_schema` parameter |
 | **Error recovery** | Pipeline resumes from last checkpoint |
 
+## Current Model Assignments (April 2026)
+
+All assignments validated through 90+ eval calls across 14 models. Three production models, reasoning=none everywhere.
+
+| Agent | Model | Provider | Role |
+|-------|-------|----------|------|
+| Curator | google/gemini-3-flash-preview | OpenRouter | Cluster + score + summarize 1,400+ findings |
+| Editor | anthropic/claude-opus-4.6 | OpenRouter | Prioritize topics, assign selection_reason |
+| Researcher Plan | google/gemini-3-flash-preview | OpenRouter | Generate multilingual search queries |
+| Researcher Assemble | google/gemini-3-flash-preview | OpenRouter | Build research dossier from search results |
+| Perspektiv | anthropic/claude-opus-4.6 | OpenRouter | Stakeholder map, missing voices, framing divergences |
+| Writer | anthropic/claude-opus-4.6 | OpenRouter | Write article with web_search tool access |
+| QA+Fix | anthropic/claude-sonnet-4.6 | OpenRouter | Find errors, apply corrections, return corrected article |
+| Bias Language | anthropic/claude-opus-4.6 | OpenRouter | Analyze language bias in finished article |
+
 ## File Structure
 
 ```
 independent-wire/
 ├── src/
 │   ├── agent.py              # Agent class + AgentResult
-│   ├── pipeline.py           # Pipeline class
-│   ├── tools/
-│   │   ├── registry.py       # ToolRegistry
-│   │   ├── web_search.py     # web_search tool
-│   │   └── file_ops.py       # read_file, write_file tools
-│   ├── telegram.py           # TelegramNotifier (optional)
+│   ├── pipeline.py           # Pipeline class (sequential orchestration)
+│   ├── models.py             # TopicPackage dataclass, AgentResult
 │   ├── config.py             # Configuration loader
-│   └── models.py             # TopicPackage dataclass, AgentResult
+│   └── tools/
+│       ├── registry.py       # ToolRegistry
+│       ├── web_search.py     # web_search tool (Perplexity, Brave, DuckDuckGo)
+│       └── file_ops.py       # read_file, write_file tools
 ├── agents/                   # Agent prompts (public, in repo)
-│   ├── collector/AGENTS.md
-│   ├── kurator/AGENTS.md
-│   ├── chefredaktion/AGENTS.md
-│   ├── redakteur/AGENTS.md
+│   ├── curator/AGENTS.md, CLUSTER.md, SCORE.md
+│   ├── editor/AGENTS.md
+│   ├── researcher/PLAN.md, ASSEMBLE.md
 │   ├── perspektiv/AGENTS.md
-│   ├── bias_detektor/AGENTS.md
-│   └── qa/AGENTS.md
+│   ├── writer/AGENTS.md
+│   ├── qa_analyze/AGENTS.md
+│   └── bias_detector/AGENTS.md
 ├── config/
 │   ├── style-guide.md
-│   ├── sources.json
+│   ├── sources.json          # 72 RSS feeds, v0.3
 │   └── profiles/
 ├── scripts/
-│   └── generate-visuals.py
+│   ├── run.py                # Main pipeline entry point (--from/--to/--topic/--reuse)
+│   ├── render.py             # Topic Package JSON → self-contained HTML
+│   ├── publish.py            # Site generator (index.html, feed.xml, sitemap.xml)
+│   ├── fetch_feeds.py        # RSS feed fetcher → raw/YYYY-MM-DD/feeds.json
+│   ├── test_models.py        # Multi-model eval
+│   ├── test_clustering.py    # Python clustering eval
+│   ├── test_curator_twostage.py  # Two-Stage vs One-Pass eval
+│   ├── test_eval_gap.py      # Editor/Perspektiv/QA/Bias eval
+│   └── test_researcher_writer.py # Researcher/Writer eval
+├── raw/                      # Raw feed data per date
+│   └── YYYY-MM-DD/feeds.json
+├── output/                   # Pipeline output + eval results
+│   ├── YYYY-MM-DD/           # Debug output per pipeline step
+│   └── eval/                 # Eval results (8 directories)
+├── state/                    # Pipeline state files for crash recovery
+│   └── run-YYYY-MM-DD-{hash}.json
 ├── schema/
 │   └── topic-package-v1.json
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   ├── ROADMAP.md
-│   └── VISUALIZATIONS.md
+│   ├── TASKS.md
+│   ├── VISUALIZATIONS.md
+│   ├── FEED-CATALOG.md
+│   ├── archive/              # Completed tasks, WPs, briefings
+│   └── handoffs/             # Session handoff files
 ├── .env.example
 ├── pyproject.toml
+├── .github/
+│   └── workflows/
+│       └── deploy-site.yml   # GitHub Pages deployment on push to site/
+├── site/                     # Publication website (generated by publish.py)
+│   ├── index.html            # Homepage with TP cards
+│   ├── feed.xml              # RSS 2.0 feed
+│   ├── CNAME                 # Custom domain (independentwire.org)
+│   └── reports/              # Rendered TP HTML files
 └── LICENSE (AGPL-3.0)
 ```
