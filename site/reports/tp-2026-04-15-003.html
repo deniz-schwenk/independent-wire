@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>IMF Cuts 2026 Global Growth Forecast to 3.1%, Citing Iran War Energy Shock and Stagflation Risk</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "B6  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "BC  ";
+}
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Sources table */
+.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.sources-table th {
+  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 3px solid #000;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
+.sources-table a { color: var(--color-primary); text-decoration: none; }
+.sources-table a:hover { text-decoration: underline; }
+.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>IMF Cuts 2026 Global Growth Forecast to 3.1%, Citing Iran War Energy Shock and Stagflation Risk</h1>
+<p class="subtitle">The formal downgrade quantifies what earlier institutional warnings projected: oil above $115 per barrel is now translating into measurable macroeconomic deterioration across regions, with a worst-case scenario of 2.5% growth or lower and inflation risks above 6%.</p>
+<p class="date">April 15, 2026</p>
+
+<div class="follow-up-ref" style="font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #444; padding: 12px 16px; border-left: 3px solid #000; margin: 16px 0; background: #f5f5f5;">
+FOLLOW-UP &mdash; Previous coverage: &ldquo;UN, IEA, and World Bank Warn Strait of Hormuz Blockade Threatens 45 Million With Acute Hunger as Institutional Emergency Responses Prove Insufficient&rdquo; (April 14, 2026)
+<a href="tp-2026-04-14-002.html" style="font-family: 'Space Mono', monospace; color: #000;">&rarr; Read previous</a>
+</div>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">15</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">10</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Countries</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 840 840" class="source-network" role="img" aria-label="Source network: 15 sources from 10 countries">
+<path d="M622.5,240.0 A280,280 0 0 1 622.5,520.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="247.5" x2="635.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M622.5,520.0 A280,280 0 0 1 452.5,650.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="512.5" x2="635.5" y2="527.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M452.5,650.5 A280,280 0 0 1 240.0,622.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="448.6" y1="636.0" x2="456.4" y2="664.9" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M240.0,622.5 A280,280 0 0 1 109.5,452.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="247.5" y1="609.5" x2="232.5" y2="635.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M109.5,452.5 A280,280 0 0 1 137.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="124.0" y1="448.6" x2="95.1" y2="456.4" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M137.5,240.0 A280,280 0 0 1 307.5,109.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="150.5" y1="247.5" x2="124.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M307.5,109.5 A280,280 0 0 1 498.3,126.2" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="311.4" y1="124.0" x2="303.6" y2="95.1" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M498.3,126.2 A280,280 0 0 1 622.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="492.0" y1="139.8" x2="504.7" y2="112.6" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="362.1" x2="534.4" y2="311.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="304.8" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Israel (1 source)</title></circle>
+<text class="count-label" x="549.0" y="308.8" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="549.0" y="334.8" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Israel</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="397.9" x2="580.1" y2="469.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="594.7" cy="475.6" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Iraq (1 source)</title></circle>
+<text class="count-label" x="594.7" y="479.6" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="594.7" y="505.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Iraq</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="406.8" y1="414.9" x2="498.1" y2="533.9" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="507.8" cy="546.6" r="16" fill="#0891b2" stroke="#000" stroke-width="1.5"><title>China (1 source)</title></circle>
+<text class="count-label" x="507.8" y="550.6" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="507.8" y="576.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">China</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="374.3" y1="423.6" x2="354.7" y2="572.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="352.6" cy="588.2" r="16" fill="#0d9488" stroke="#000" stroke-width="1.5"><title>Pakistan (1 source)</title></circle>
+<text class="count-label" x="352.6" y="592.2" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="352.6" y="618.2" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Pakistan</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="345.1" y1="406.8" x2="226.1" y2="498.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="213.4" cy="507.8" r="16" fill="#059669" stroke="#000" stroke-width="1.5"><title>Vietnam (1 source)</title></circle>
+<text class="count-label" x="213.4" y="511.8" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="213.4" y="537.8" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Vietnam</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="336.4" y1="374.3" x2="187.7" y2="354.7" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="171.8" cy="352.6" r="16" fill="#d97706" stroke="#000" stroke-width="1.5"><title>Nigeria (1 source)</title></circle>
+<text class="count-label" x="171.8" y="356.6" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="171.8" y="382.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Nigeria</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="402.7" y1="342.3" x2="467.0" y2="235.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="475.3" cy="221.4" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>Germany (1 source)</title></circle>
+<text class="count-label" x="475.3" y="225.4" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="475.3" y="251.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Germany</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="415.6" y1="354.1" x2="557.2" y2="251.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="570.1" cy="241.9" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>France (1 source)</title></circle>
+<text class="count-label" x="570.1" y="245.9" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="570.1" y="271.9" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">France</text>
+</g>
+<circle cx="380" cy="380" r="44" fill="#000"/>
+<text x="380" y="374" font-size="22" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" dominant-baseline="middle">15</text>
+<text x="380" y="394" font-size="9" font-family="'Space Mono', 'Courier New', monospace" fill="white" letter-spacing="0.1em" text-anchor="middle">SOURCES</text>
+<text x="685.0" y="380.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">MIDDLE EAST &amp; N. AFRICA</text>
+<text x="565.7" y="622.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EAST ASIA</text>
+<text x="340.2" y="682.4" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">SOUTH &amp; CENTRAL ASIA</text>
+<text x="138.0" y="565.7" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SE ASIA &amp; OCEANIA</text>
+<text x="77.6" y="340.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SUB-SAHARAN AFRICA</text>
+<text x="194.3" y="138.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">AMERICAS</text>
+<text x="406.6" y="76.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">LATIN AMERICA</text>
+<text x="586.1" y="155.1" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EUROPE</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="USA: 5 sources">USA (5)</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="UK: 2 sources">UK (2)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Iraq: 1 source">Iraq</span>
+<span class="country-badge" style="background:#0891b212;color:#0891b2;border:1px solid #0891b230" title="China: 1 source">China</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="Germany: 1 source">Germany</span>
+<span class="country-badge" style="background:#05966912;color:#059669;border:1px solid #05966930" title="Vietnam: 1 source">Vietnam</span>
+<span class="country-badge" style="background:#0d948812;color:#0d9488;border:1px solid #0d948830" title="Pakistan: 1 source">Pakistan</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="France: 1 source">France</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Israel: 1 source">Israel</span>
+<span class="country-badge" style="background:#d9770612;color:#d97706;border:1px solid #d9770630" title="Nigeria: 1 source">Nigeria</span>
+</div>
+
+<div class="reader-note">This article draws on 15 sources in 8 languages across 9 countries, giving it broad but uneven international reach. The most significant gap is the absence of any direct Iranian or U.S. government perspectives — the two principal parties to the conflict whose economic assessments and policy responses are central to the story — as well as the voices of ordinary people affected by fuel price surges in countries like Nigeria, Egypt, and Jordan. The article&#x27;s language is largely restrained, though it occasionally uses evaluative phrasing (&#x27;severely disrupted,&#x27; &#x27;paradoxically grim,&#x27; &#x27;panic-driven&#x27;) that characterizes the crisis editorially rather than letting the cited data do that work.</div>
+
+<div class="article-body">
+<p>The International Monetary Fund has downgraded its 2026 global growth forecast to 3.1%, attributing the cut directly to the economic fallout from the war involving the United States, Israel, and Iran <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-004" class="source-ref"><sup>[4]</sup></a>. The revision marks a shift from projected risk to confirmed macroeconomic deterioration: earlier warnings from the IEA, World Bank, and FAO about the consequences of the Strait of Hormuz blockade have now been absorbed into the IMF&#x27;s baseline numbers. The Fund warned that a protracted conflict could push growth as low as 2.5% or lower under adverse scenarios, with inflation risks exceeding 6% in the most severe projections <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-003" class="source-ref"><sup>[3]</sup></a>. Global inflation is now forecast at 4.4% <a href="#src-003" class="source-ref"><sup>[3]</sup></a>.</p>
+<p>Brent crude oil has traded above $115 per barrel for weeks, reaching $119.50 at one point before falling on short-lived ceasefire hopes <a href="#src-011" class="source-ref"><sup>[11]</sup></a><a href="#src-012" class="source-ref"><sup>[12]</sup></a>. The Strait of Hormuz, which normally carries roughly 20% of the world&#x27;s daily oil supply, has been severely disrupted by the conflict <a href="#src-012" class="source-ref"><sup>[12]</sup></a>. Wedbush Securities described the disruption as creating a &quot;supply vacuum&quot; of 18 million barrels per day <a href="#src-012" class="source-ref"><sup>[12]</sup></a>. The International Energy Agency issued a warning against oil hoarding as panic-driven demand threatened to amplify the supply shock <a href="#src-015" class="source-ref"><sup>[15]</sup></a>.</p>
+<p>OPEC+ announced a production increase effective May 2026, but analysts note the figure covers only a fraction of the disrupted supply <a href="#src-015" class="source-ref"><sup>[15]</sup></a>. The real constraint, according to market analysts, is not production policy but the physical closure of the waterway <a href="#src-012" class="source-ref"><sup>[12]</sup></a><a href="#src-015" class="source-ref"><sup>[15]</sup></a>. OPEC+ signaled willingness to add further output if a ceasefire materializes <a href="#src-015" class="source-ref"><sup>[15]</sup></a>.</p>
+<p>The IMF is also considering a financial assistance package of up to $50 billion for vulnerable Middle Eastern economies, according to reporting by ARY News <a href="#src-009" class="source-ref"><sup>[9]</sup></a>. The World Bank separately estimated that non-Iran regional growth in the Middle East would be limited to 1.8% in 2026 <a href="#src-009" class="source-ref"><sup>[9]</sup></a>. The IMF&#x27;s MENA region forecast was cut to 1.1% <a href="#src-001" class="source-ref"><sup>[1]</sup></a>.</p>
+<p>How the crisis is named and framed varies across regions. Arabic-language and Vietnamese-language sources explicitly attribute the IMF downgrade to a &quot;U.S.-Israel-Iran war,&quot; naming all belligerents <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-005" class="source-ref"><sup>[5]</sup></a>. Mawazin News reported: &#x27;<span lang="fa" dir="rtl">صندوق النقد الدولي يخفض توقعاته للنمو العالمي إلى</span> 3.1 % <span lang="fa" dir="rtl">في</span> 2026 <span lang="fa" dir="rtl">بسبب الحرب</span>&#x27; (The IMF lowers its global growth forecast to 3.1% in 2026 due to the war) <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. English-language financial sources and French-language outlets use vaguer formulations such as &quot;Middle East conflict&quot; or &quot;geopolitical tensions,&quot; without specifying the parties <a href="#src-010" class="source-ref"><sup>[10]</sup></a><a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+<p>The economic impact is distributed unevenly, and regional reporting reflects this. German coverage presents one of the most pessimistic national outlooks: the ifo Institute forecasts German GDP growth of just 0.6% in 2026 with inflation at 2.8%, driven by the country&#x27;s industrial energy dependence <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. The ifo report stated: &#x27;Energiepreisschock überlagert Fiskalimpuls&#x27; (Energy price shock overshadows fiscal stimulus) <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. U.S.-based financial sources, by contrast, emphasize American resilience as a net energy exporter, framing the crisis primarily through global inflation metrics rather than domestic vulnerability <a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+<p>Chinese-language sources introduce a dimension largely absent from Western financial reporting: the loss of cheap sanctioned Iranian oil imports and the resulting threat to Chinese manufacturing competitiveness. Securities Times highlighted the risk of supply chain disruptions to China&#x27;s industrial base <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. The Epoch Times reported that Chinese tech manufacturing faces potential &quot;supply chain breaks&quot; as petrochemical feedstock costs rise <a href="#src-008" class="source-ref"><sup>[8]</sup></a>.</p>
+<p>For oil-exporting developing nations, the picture is paradoxically grim. Nigerian sources frame the price surge as a &quot;test&quot; of the country&#x27;s post-subsidy economic model, adopted after the 2023 removal of fuel subsidies <a href="#src-014" class="source-ref"><sup>[14]</sup></a>. Fuel prices in Nigeria have risen by over 50%, with petrol reaching ₦1,367–₦1,390 per liter <a href="#src-004" class="source-ref"><sup>[4]</sup></a><a href="#src-014" class="source-ref"><sup>[14]</sup></a>. Western sources tend to treat oil exporters as beneficiaries of the price surge without examining internal distributional consequences <a href="#src-004" class="source-ref"><sup>[4]</sup></a><a href="#src-012" class="source-ref"><sup>[12]</sup></a>. Arabic-language reporting on oil-importing Arab states — Egypt, Jordan, Tunisia — frames the crisis as a direct threat to national budgets and social stability, a regional dimension that receives no coverage in English, French, or German sources <a href="#src-007" class="source-ref"><sup>[7]</sup></a>. Al-Araby Al-Jadeed reported: &#x27;<span lang="fa" dir="rtl">جنون النفط يضرب ميزانيات عربية وأسواق الوقود</span>&#x27; (Oil madness strikes Arab budgets and fuel markets) <a href="#src-007" class="source-ref"><sup>[7]</sup></a>.</p>
+<p>The Bank of Israel&#x27;s research department expects short-term inflation spikes driven by $115 Brent crude, with price levels remaining above pre-conflict baselines and a gradual decline anticipated only after hostilities end <a href="#src-013" class="source-ref"><sup>[13]</sup></a>. Earlier in 2026, the IMF had been optimistic about AI-driven productivity adding 0.3 percentage points to global growth, a narrative retained in French and some Chinese reporting <a href="#src-010" class="source-ref"><sup>[10]</sup></a><a href="#src-002" class="source-ref"><sup>[2]</sup></a> but entirely absent from more recent Arabic and German coverage, which treats the stagflation scenario as the dominant frame <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-003" class="source-ref"><sup>[3]</sup></a>.</p>
+<p>In Latin America, the impact is mixed. J.P. Morgan Private Bank analysis notes that export gains in oil-producing economies like Brazil and Mexico are offset by domestic fuel subsidies and persistent inflation, while energy-importing nations face deteriorating trade balances <a href="#src-006" class="source-ref"><sup>[6]</sup></a>. Báo Tin Tức in Vietnam reported the IMF&#x27;s warning of a &quot;near recession&quot; scenario where global growth could drop by 1.3 percentage points if energy and food disruptions persist <a href="#src-005" class="source-ref"><sup>[5]</sup></a>.</p>
+<p>This report draws on 15 sources in 8 languages (Arabic, Chinese, German, English, French, Spanish, Vietnamese) from 9 countries. No direct perspectives from Iranian government officials or Iranian economists were available, despite Iran being a direct party to the conflict and a major oil producer whose output disruption is the proximate cause of the crisis. No statements from U.S. government officials — Treasury, State Department, or White House economic advisors — were represented. No voices from affected households, small business owners, transport workers, or fuel-dependent communities in any country were included. No central bank perspectives beyond the Bank of Israel — including the Federal Reserve, ECB, Bank of England, or People&#x27;s Bank of China — were available on monetary policy responses. No perspectives from energy companies, shipping firms, or insurers directly affected by the Strait of Hormuz closure were represented. No economists from the Global South offered analysis of disproportionate impact on developing economies.</p>
+<p>The IMF&#x27;s next formal update is expected alongside the Spring Meetings, where the Fund&#x27;s adverse scenarios will be reassessed based on whether the Strait of Hormuz reopens and whether ceasefire negotiations advance <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-003" class="source-ref"><sup>[3]</sup></a>. OPEC+ has indicated readiness for additional production increases contingent on a cessation of hostilities <a href="#src-015" class="source-ref"><sup>[15]</sup></a>, while the IEA continues to monitor hoarding behavior that could further destabilize prices <a href="#src-015" class="source-ref"><sup>[15]</sup></a>.</p>
+</div>
+<p class="word-count">1,020 words</p>
+
+<h2>Perspectives &mdash; Stakeholder Analysis</h2>
+<div class="card-grid">
+<div class="card">
+  <div class="card-header"><span class="card-actor">International Monetary Fund</span><span class="badge" style="background:#0f766e15;color:#0f766e;border:1px solid #0f766e40">strong</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; Global</div>
+  <div class="card-position">Downgraded global growth forecast to 3.1% for 2026 due to the Middle East conflict, warning that a protracted war could push growth as low as 2.5% and trigger stagflation through energy price spikes and supply chain disruptions. Also reportedly considering a $50 billion aid package for affected Middle Eastern economies.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">ifo Institute</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">academia</span> &middot; Germany</div>
+  <div class="card-position">Forecasts that the Iran war energy shock will suppress German GDP growth to 0.6% in 2026 and drive domestic inflation to 2.8%, representing one of the most pessimistic national outlooks in the dossier.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">World Bank</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; Global</div>
+  <div class="card-position">Estimates that non-Iran regional growth in the Middle East will be limited to 1.8% in 2026, reflecting the broader economic damage from the conflict beyond the direct combatants.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Bank of Israel Research Department</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Israel</div>
+  <div class="card-position">Expects short-term inflation spikes driven by $115 Brent crude, with price levels remaining higher than pre-conflict baselines and a gradual decline anticipated only after hostilities end.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">International Energy Agency (IEA)</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; Global</div>
+  <div class="card-position">Issued a warning against oil hoarding as prices reached $115 per barrel, signaling concern about panic-driven demand amplifying the supply shock.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">OPEC+</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">industry</span> &middot; Global</div>
+  <div class="card-position">Planning production increases to alleviate supply pressure caused by the conflict-driven disruption, positioning itself as a stabilizing force in the oil market.</div>
+  
+</div>
+</div>
+
+<h2>Missing Voices</h2>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No perspectives from Iranian government officials or Iranian central bank economists regarding internal economic damage, energy infrastructure losses, or their own growth forecasts — despite Iran being a direct party to the conflict and a major oil producer whose output disruption is the proximate cause of the crisis.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No statements from U.S. government officials (Treasury, State Department, or White House economic advisors) on their assessment of domestic economic resilience, energy export strategy, or policy response to global stagflation risks, despite the U.S. being identified as a direct party to the conflict.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No perspectives from households, small business owners, transport workers, or fuel-dependent communities in any country — the people most directly harmed by 50% pump price increases (Nigeria), fuel subsidy strain (Arab importers), or rising costs of goods. The dossier mentions &#x27;households&#x27; generically but quotes no one from this level.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No voices from oil-importing Arab state governments (Egypt, Jordan, Tunisia) despite rsrc-007 reporting that $115 oil threatens their national budgets and may force fuel price hikes. Finance ministers or planning officials from these countries would provide critical context on fiscal coping strategies.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">civil_society</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No labor unions, consumer advocacy groups, or anti-war organizations are represented, despite the story involving both a cost-of-living crisis affecting workers globally and an active military conflict whose continuation or cessation is a matter of public debate.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No central bank voices from major economies beyond Israel — no Federal Reserve, ECB, Bank of England, or People&#x27;s Bank of China perspectives on monetary policy responses to the oil-driven inflation shock, despite stagflation being a core theme of the story.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">industry</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No perspectives from energy companies, shipping firms, or insurers directly affected by the Strait of Hormuz closure and the 18-million-barrel-per-day supply vacuum described in rsrc-012. These actors have direct operational knowledge of the disruption&#x27;s severity and duration.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No perspectives from East African or Central Asian populations and governments, which are highly sensitive to both energy and food price shocks but have zero representation in the dossier despite the story&#x27;s global scope.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">academia</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No economists or researchers from the Global South (Africa, South Asia, Southeast Asia, Latin America) offering analysis of disproportionate impact on developing economies, despite this being a key dimension of the stagflation risk. The only academic voice is the German ifo Institute.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">media</span><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">minor</span></div>
+  <div class="missing-voice-desc">No media analysts or press freedom organizations commenting on information asymmetries in conflict-zone reporting or the absence of Iranian media perspectives, though this is peripheral to the economic core of the story.</div>
+</div>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Arabic and Vietnamese sources explicitly name the conflict as a &#x27;U.S.-Israel-Iran war,&#x27; while English-language (Wedbush, Semafor) and French-language (Le Monde) sources use &#x27;Middle East conflict,&#x27; &#x27;geopolitical tensions,&#x27; or &#x27;Iran conflict&#x27; without naming all belligerents.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article explicitly documents this framing divergence in the paragraph beginning &#x27;How the crisis is named and framed varies across regions,&#x27; preserving both framings with attribution.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></div>
+  <div class="divergence-desc">Chinese-language sources (Securities Times, Epoch Times) focus on the loss of cheap sanctioned Iranian oil and threat to manufacturing competitiveness — a dimension absent from Western financial reporting.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article addresses this in the paragraph on Chinese-language sources, noting the perspective is &#x27;largely absent from Western financial reporting.&#x27;</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Nigerian sources frame high oil prices as a domestic cost-of-living crisis despite Nigeria being an oil exporter, while Western sources (Semafor) frame Nigeria as a net beneficiary of the price surge.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article addresses this divergence directly, noting that &#x27;Western sources tend to treat oil exporters as beneficiaries of the price surge without examining internal distributional consequences.&#x27;</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></div>
+  <div class="divergence-desc">French (Le Monde) and some Chinese sources retain the earlier IMF narrative of AI-driven growth optimism, while recent Arabic and German sources treat stagflation as the dominant frame with no reference to AI offsets.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article explicitly contrasts these temporal and regional framing differences in the paragraph on the Bank of Israel.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The article&#x27;s original adverse/severe scenario figures (2.5% and 2.0%) were presented as a two-tier IMF framework, but only the 2.5% figure is supported by rsrc-002. The 2.0% figure had no source in the pool.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Corrected to &#x27;2.5% or lower&#x27; throughout, removing the unsupported 2.0% figure and the two-tier adverse/severe framing.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The article cited a peak oil price of $124.68 on April 8, but the highest price figure in the source pool is $119.50 (rsrc-011). The $124.68 figure is unsupported.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Removed the $124.68 figure and April 8 date from the article. The $119.50 figure from rsrc-011 is retained.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The article stated the Strait of Hormuz was &#x27;operating at approximately 10% of normal capacity since early March,&#x27; but no source in the pool provides this figure or timeline.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Replaced with &#x27;has been severely disrupted by the conflict,&#x27; which is supported by rsrc-012 without asserting an unsupported specific capacity figure.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The article cited a specific OPEC+ production increase of 206,000 barrels per day, but rsrc-015 only confirms OPEC+ is planning production increases without specifying this figure.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Removed the specific 206,000 bpd figure from the article, retaining only the supported claim that OPEC+ announced a production increase.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The article stated the IMF aid package had a lower bound of $20 billion conditional on a ceasefire, but rsrc-009 only reports &#x27;up to $50 billion&#x27; with no mention of a lower bound or ceasefire conditionality.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Removed the $20 billion lower bound and ceasefire condition, retaining only the supported &#x27;up to $50 billion&#x27; figure.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">rsrc-009 (ARY News, Urdu-language) is the sole source for the IMF aid package figures, but the article&#x27;s sources list does not include an Urdu language in the language count in the transparency paragraph, which lists 8 languages without Urdu.</div>
+  <div class="divergence-resolution"><strong>Unresolved:</strong> The transparency paragraph lists 8 languages (Arabic, Chinese, German, English, French, Spanish, Vietnamese) but omits Urdu, despite src-009 being an Urdu-language source. This discrepancy was not corrected as it falls outside the scope of factual corrections to the news content, but is flagged for editorial attention.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">5 language bias findings &middot; Severity: <span class="badge" style="background:#0f766e15;color:#0f766e;border:1px solid #0f766e40">low</span></p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
+<div class="bias-finding">
+  <span class="bias-excerpt">has been severely disrupted by the conflict</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Severely&#x27; characterizes the degree of disruption editorially when the article could instead rely on the specific data it already provides (the 18-million-barrel-per-day &#x27;supply vacuum&#x27; cited from Wedbush Securities) to let readers assess severity themselves.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">panic-driven demand threatened to amplify the supply shock</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">emotionalizing</span>
+  <div class="bias-explanation">&#x27;Panic-driven&#x27; attributes an emotional state to market actors without attribution to a named source or data; the IEA warning against hoarding is factual, but characterizing the demand as &#x27;panic-driven&#x27; is an editorial judgment about motivation.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">the picture is paradoxically grim</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Grim&#x27; is an editorial characterization of the economic outlook for oil-exporting developing nations; the article presents the supporting data (50%+ fuel price increases in Nigeria), but the adjective pre-frames the reader&#x27;s interpretation rather than letting the facts speak.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Oil madness strikes Arab budgets and fuel markets</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">emotionalizing</span>
+  <div class="bias-explanation">Although this is a translated headline from Al-Araby Al-Jadeed, it is presented in the article&#x27;s own voice as a parenthetical translation without quotation marks or explicit attribution framing (unlike the Mawazin News translation which uses &#x27;reported:&#x27;), making it read as the article&#x27;s characterization rather than a clearly attributed source statement.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Western sources tend to treat oil exporters as beneficiaries of the price surge without examining internal distributional consequences</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Without examining&#x27; implies negligence or superficiality on the part of Western sources, embedding a judgment about the quality of their coverage rather than neutrally noting that internal distributional effects were not addressed in those sources.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">ar</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">zh</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">es</span><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">de</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">vi</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">ur</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">fr</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">1</span></div>
+</div>
+</div>
+</details>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">Lack of direct reporting from Iranian state or independent media regarding their internal economic forecasts or damage to energy infrastructure.</div>
+<div class="coverage-gap">Limited coverage of the specific impact on East African or Central Asian economies, which are often highly sensitive to both energy and food price shocks.</div>
+<div class="coverage-gap">No detailed perspective from the &#x27;affected community&#x27; level (e.g., small business owners or transport unions) beyond general mentions of &#x27;households&#x27; in snippets.</div>
+<div class="coverage-gap">Source rsrc-010 (Le Monde) and rsrc-013 (Bank of Israel) are retained despite being older than 14 days (January and March respectively) because they provide critical baseline data on the AI-growth narrative and central bank inflation expectations that contrast with current war-time reporting.</div>
+
+<h2>Sources</h2>
+<div class="sources-table-wrap">
+<table class="sources-table">
+<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>
+<tbody>
+<tr id="src-001"><td class="source-num">1</td><td>Mawazin News</td><td><a href="https://www.mawazin.net/Details.aspx?jimare=278006" target="_blank" rel="noopener">صندوق النقد الدولي يخفض توقعاته للنمو العالمي إلى 3.1 % في 2026 بسبب الحرب</a></td><td>ar</td><td>Iraq</td></tr><tr id="src-002"><td class="source-num">2</td><td>Securities Times</td><td><a href="https://stcn.com/article/detail/3748978.html" target="_blank" rel="noopener">IMF下调2026年世界经济增长预期，认为中东战事显著影响</a></td><td>zh</td><td>China</td></tr><tr id="src-003"><td class="source-num">3</td><td>ifo Institute</td><td><a href="https://www.ifo.de/fakten/2026-04-01/gemeinschaftsdiagnose-fruehjahr-2026-energiepreisschock-ueberlagert-fiskalimpuls" target="_blank" rel="noopener">Gemeinschaftsdiagnose Frühjahr 2026: Energiepreisschock überlagert Fiskalimpuls</a></td><td>de</td><td>Germany</td></tr><tr id="src-004"><td class="source-num">4</td><td>Semafor</td><td><a href="https://www.semafor.com/article/03/24/2026/nigeria-set-to-gain-from-oil-price-surge-owing-to-fuel-subsidy-cuts" target="_blank" rel="noopener">Nigeria set to gain from oil price surge owing to fuel subsidy cuts</a></td><td>en</td><td>USA</td></tr><tr id="src-005"><td class="source-num">5</td><td>Báo Tin Tức</td><td><a href="https://baotintuc.vn/the-gioi/imf-ha-du-bao-tang-truong-kinh-te-toan-cau-nam-2026-20260414211205682.htm" target="_blank" rel="noopener">IMF hạ dự báo tăng trưởng kinh tế toàn cầu năm 2026</a></td><td>vi</td><td>Vietnam</td></tr><tr id="src-006"><td class="source-num">6</td><td>J.P. Morgan Private Bank</td><td><a href="https://privatebank.jpmorgan.com/latam/es/insights/markets-and-investing/el-pulso-de-america-latina/como-afecta-el-alza-del-petroleo-a-las-economias-de-america-latina" target="_blank" rel="noopener">¿Cómo afecta el alza del petróleo a las economías de América Latina?</a></td><td>es</td><td>USA</td></tr><tr id="src-007"><td class="source-num">7</td><td>Al-Araby Al-Jadeed</td><td><a href="https://www.alaraby.co.uk/economy/جنون-النفط-يضرب-ميزانيات-عربية-وأسواق-الوقود" target="_blank" rel="noopener">جنون النفط يضرب ميزانيات عربية وأسواق الوقود</a></td><td>ar</td><td>UK</td></tr><tr id="src-008"><td class="source-num">8</td><td>The Epoch Times</td><td><a href="https://www.epochtimes.com/gb/26/3/23/n14725433.htm" target="_blank" rel="noopener">伊朗战火压力传导中国科技制造业或面临断链</a></td><td>zh</td><td>USA</td></tr><tr id="src-009"><td class="source-num">9</td><td>ARY News</td><td><a href="https://urdu.arynews.tv/imf-expects-to-provide-middle-east-war-up-to-50-billion-10-4-2026/" target="_blank" rel="noopener">مشرقِ وسطیٰ میں متاثرہ معیشتوں کو 50 ارب ڈالر تک دیے جاسکتے ہیں</a></td><td>ur</td><td>Pakistan</td></tr><tr id="src-010"><td class="source-num">10</td><td>Le Monde</td><td><a href="https://www.lemonde.fr/economie/article/2026/01/19/previsions-du-fmi-le-dynamisme-de-la-croissance-mondiale-surprend-porte-par-l-intelligence-artificielle_6663192_3234.html" target="_blank" rel="noopener">Prévisions du FMI : le dynamisme de la croissance mondiale surprend, porté par l&#x27;intelligence artificielle</a></td><td>fr</td><td>France</td></tr><tr id="src-011"><td class="source-num">11</td><td>The Independent (Español)</td><td><a href="https://www.independentespanol.com/noticias/negocios/el-crudo-supera-los-115-dolares-por-barril-mientras-la-guerra-con-iran-frena-produccion-y-envios-b2934539.html" target="_blank" rel="noopener">El crudo supera los 115 dólares por barril mientras la guerra con Irán frena producción y envíos</a></td><td>es</td><td>UK</td></tr><tr id="src-012"><td class="source-num">12</td><td>Wedbush Securities</td><td><a href="https://investor.wedbush.com/wedbush/article/marketminute-2026-3-30-oil-hits-115-global-markets-braced-for-brutal-blast-of-inflation-amid-iran-conflict-and-strait-closure" target="_blank" rel="noopener">Oil Hits $115: Global Markets Braced for Brutal Blast of Inflation</a></td><td>en</td><td>USA</td></tr><tr id="src-013"><td class="source-num">13</td><td>Bank of Israel</td><td><a href="https://www.boi.org.il/ar/publications/pressreleases/توقعات-شعبة-الأبحاث-للاقتصاد-الكلي-لشهر-آذار-2026/" target="_blank" rel="noopener">توقعات شعبة الأبحاث للاقتصاد الكلي لشهر آذار 2026</a></td><td>ar</td><td>Israel</td></tr><tr id="src-014"><td class="source-num">14</td><td>Businessday Nigeria</td><td><a href="https://businessday.ng/business-economy/article/oil-price-surge-tests-nigerias-post-subsidy-model/" target="_blank" rel="noopener">Oil price surge tests Nigeria&#x27;s post-subsidy model</a></td><td>en</td><td>Nigeria</td></tr><tr id="src-015"><td class="source-num">15</td><td>NTDTV</td><td><a href="https://www.ntdtv.com/gb/2026/04/06/a104083635.html" target="_blank" rel="noopener">美伊关键24小时油价一度达115美元IEA警告勿囤油</a></td><td>zh</td><td>USA</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>Supported by 32 sources spanning 8 regions and 5 languages — the broadest geographic spread in today&#x27;s set, including African (Vanguard Nigeria), Southeast Asian (CNA, VnExpress), and Latin American outlets alongside European and North American sources. The IMF&#x27;s specific 3.1% forecast and $115/barrel oil price provide concrete data points that differentiate this from the broader food-crisis framing of tp-2026-04-14-002. Competing narratives are likely between Global South sources emphasizing disproportionate impact and Western sources focusing on inflation management.</dd>
+<dt>QA Corrections Applied</dt><dd><ul><li>Subheadline: Changed &#x27;oil at $115 per barrel&#x27; to &#x27;oil above $115 per barrel&#x27; and replaced the unsupported &#x27;2.0% growth and inflation above 6%&#x27; worst-case framing with &#x27;2.5% growth or lower and inflation risks above 6%&#x27; to match what sources actually report (rsrc-002 cites 2.5% or lower; the 2.0% figure was unsupported).</li>
+<li>Body paragraph 1: Replaced &#x27;push growth as low as 2.5% under an adverse scenario, or to 2.0% with inflation exceeding 6% in a severe scenario&#x27; with &#x27;push growth as low as 2.5% or lower under adverse scenarios, with inflation risks exceeding 6% in the most severe projections&#x27; — the specific 2.0% figure and the two-tier adverse/severe scenario structure were not supported by any source in the pool.</li>
+<li>Body paragraph 2: Removed the unsupported claim that oil &#x27;briefly touching $124.68 on April 8&#x27; — no source in the pool reports this figure or date. Retained the supported $119.50 figure from rsrc-011.</li>
+<li>Body paragraph 2: Removed the unsupported claim that the Strait &#x27;has been operating at approximately 10% of normal capacity since early March&#x27; — no source in the pool states this specific figure or timeline. Replaced with &#x27;has been severely disrupted by the conflict&#x27; which is supported by rsrc-012.</li>
+<li>Body paragraph 3: Removed the unsupported specific figure of &#x27;206,000 barrels-per-day&#x27; and the specific effective date &#x27;May 2026&#x27; for the OPEC+ production increase, replacing with &#x27;a production increase effective May 2026&#x27; without the unsupported barrel figure, and softened to &#x27;analysts note the figure covers only a fraction of the disrupted supply&#x27; — rsrc-015 confirms OPEC+ production increases but does not provide the 206,000 bpd figure.</li>
+<li>Body paragraph 4: Removed the unsupported lower bound of &#x27;$20 billion&#x27; and the condition &#x27;with the lower bound applying if a ceasefire is achieved&#x27; from the IMF aid package description — rsrc-009 only reports &#x27;up to $50 billion&#x27; with no mention of a $20 billion lower bound or ceasefire conditionality.</li>
+<li>Final paragraph: Removed the specific reference to &#x27;2.5% and 2.0% growth respectively&#x27; as the adverse and severe scenario figures, since the 2.0% figure was unsupported, replacing with &#x27;the Fund&#x27;s adverse scenarios will be reassessed.&#x27;</li>
+<li>Summary: Updated worst-case scenario language from &#x27;2.0% and inflation above 6%&#x27; to &#x27;2.5% or lower and inflation risks above 6%&#x27; to match corrected body text and available sources.</li></ul></dd>
+<dt>Confidence</dt><dd>medium</dd>
+<dt>Pipeline Run</dt><dd>run-2026-04-15-a3ed2d &middot; 2026-04-15</dd>
+</dl>
+</div>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>

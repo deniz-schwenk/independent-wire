@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Israel and Lebanon Hold First Direct Talks in Over 40 Years as Fighting Continues</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "B6  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "BC  ";
+}
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Sources table */
+.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.sources-table th {
+  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 3px solid #000;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
+.sources-table a { color: var(--color-primary); text-decoration: none; }
+.sources-table a:hover { text-decoration: underline; }
+.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>Israel and Lebanon Hold First Direct Talks in Over 40 Years as Fighting Continues</h1>
+<p class="subtitle">Washington-hosted ambassadorial meeting draws sharply divergent reactions: Israeli officials call it a joint effort against Hezbollah, while Arabic-language media describe Lebanon as &#x27;swallowing a bitter pill.&#x27;</p>
+<p class="date">April 15, 2026</p>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">13</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Countries</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 840 840" class="source-network" role="img" aria-label="Source network: 13 sources from 7 countries">
+<path d="M622.5,240.0 A280,280 0 0 1 622.5,520.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="247.5" x2="635.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M622.5,520.0 A280,280 0 0 1 452.5,650.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="512.5" x2="635.5" y2="527.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M452.5,650.5 A280,280 0 0 1 240.0,622.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="448.6" y1="636.0" x2="456.4" y2="664.9" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M240.0,622.5 A280,280 0 0 1 109.5,452.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="247.5" y1="609.5" x2="232.5" y2="635.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M109.5,452.5 A280,280 0 0 1 137.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="124.0" y1="448.6" x2="95.1" y2="456.4" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M137.5,240.0 A280,280 0 0 1 307.5,109.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="150.5" y1="247.5" x2="124.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M307.5,109.5 A280,280 0 0 1 498.3,126.2" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="311.4" y1="124.0" x2="303.6" y2="95.1" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M498.3,126.2 A280,280 0 0 1 622.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="492.0" y1="139.8" x2="504.7" y2="112.6" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="362.1" x2="529.8" y2="313.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="304.8" r="21" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Turkey (2 sources)</title></circle>
+<text class="count-label" x="549.0" y="308.8" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="549.0" y="339.8" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Turkey</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="397.9" x2="570.9" y2="465.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="594.7" cy="475.6" r="26" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Israel (5 sources)</title></circle>
+<text class="count-label" x="594.7" y="479.6" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">5</text>
+<text class="name-label" x="594.7" y="515.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Israel</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="406.8" y1="414.9" x2="498.1" y2="533.9" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="507.8" cy="546.6" r="16" fill="#0891b2" stroke="#000" stroke-width="1.5"><title>China (1 source)</title></circle>
+<text class="count-label" x="507.8" y="550.6" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="507.8" y="576.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">China</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="374.3" y1="423.6" x2="354.7" y2="572.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="352.6" cy="588.2" r="16" fill="#0d9488" stroke="#000" stroke-width="1.5"><title>Russia (1 source)</title></circle>
+<text class="count-label" x="352.6" y="592.2" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="352.6" y="618.2" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Russia</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="353.2" y1="345.1" x2="264.9" y2="230.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="252.2" cy="213.4" r="21" fill="#3b82f6" stroke="#000" stroke-width="1.5"><title>US (2 sources)</title></circle>
+<text class="count-label" x="252.2" y="217.4" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="252.2" y="248.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">US</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="402.7" y1="342.3" x2="467.0" y2="235.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="475.3" cy="221.4" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>UK (1 source)</title></circle>
+<text class="count-label" x="475.3" y="225.4" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="475.3" y="251.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">UK</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="415.6" y1="354.1" x2="557.2" y2="251.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="570.1" cy="241.9" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>France (1 source)</title></circle>
+<text class="count-label" x="570.1" y="245.9" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="570.1" y="271.9" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">France</text>
+</g>
+<circle cx="380" cy="380" r="44" fill="#000"/>
+<text x="380" y="374" font-size="22" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" dominant-baseline="middle">13</text>
+<text x="380" y="394" font-size="9" font-family="'Space Mono', 'Courier New', monospace" fill="white" letter-spacing="0.1em" text-anchor="middle">SOURCES</text>
+<text x="685.0" y="380.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">MIDDLE EAST &amp; N. AFRICA</text>
+<text x="565.7" y="622.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EAST ASIA</text>
+<text x="340.2" y="682.4" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">SOUTH &amp; CENTRAL ASIA</text>
+<text x="138.0" y="565.7" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SE ASIA &amp; OCEANIA</text>
+<text x="77.6" y="340.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SUB-SAHARAN AFRICA</text>
+<text x="194.3" y="138.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">AMERICAS</text>
+<text x="406.6" y="76.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">LATIN AMERICA</text>
+<text x="586.1" y="155.1" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EUROPE</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Israel: 5 sources">Israel (5)</span>
+<span class="country-badge" style="background:#3b82f612;color:#3b82f6;border:1px solid #3b82f630" title="United States: 2 sources">United States (2)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Turkey: 2 sources">Turkey (2)</span>
+<span class="country-badge" style="background:#0d948812;color:#0d9488;border:1px solid #0d948830" title="Russia: 1 source">Russia</span>
+<span class="country-badge" style="background:#0891b212;color:#0891b2;border:1px solid #0891b230" title="China: 1 source">China</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="France: 1 source">France</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="United Kingdom: 1 source">United Kingdom</span>
+</div>
+
+<div class="reader-note">This article draws on 13 sources in 5 languages across 7 countries, giving it broad but uneven coverage — 5 of the 13 sources are Israeli, and no Iranian government perspective is included despite Iran&#x27;s central role as Hezbollah&#x27;s primary backer. The voices most directly affected by the conflict — civilians in southern Lebanon under bombardment and residents of northern Israel facing rocket fire — are entirely absent. The article does a strong job presenting the sharply divergent Israeli and Arabic-language framings of the talks side by side, though occasional editorial language (such as characterizing Lebanon&#x27;s position as one of &#x27;desperation&#x27;) slightly colors the presentation beyond what the underlying sources convey.</div>
+
+<div class="article-body">
+<p>Israeli and Lebanese ambassadors met at the U.S. State Department on April 14, 2026, for the first direct high-level diplomatic talks between the two countries in more than 40 years — what Hebrew-language outlet Mako described as &#x27;after 43 years&#x27; <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-003" class="source-ref"><sup>[3]</sup></a><a href="#src-008" class="source-ref"><sup>[8]</sup></a>. U.S. Secretary of State Marco Rubio hosted the session between Israeli Ambassador Yechiel Leiter and Lebanese Ambassador Nada Hamadeh Moawad, with the stated aim of restoring the collapsed November 2024 ceasefire and outlining a framework for a broader peace agreement <a href="#src-011" class="source-ref"><sup>[11]</sup></a><a href="#src-012" class="source-ref"><sup>[12]</sup></a>. The Axios report also identified a third participant, Michel Issa, as part of the delegations <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. The meeting took place while Israeli strikes on Lebanon and Hezbollah rocket fire into northern Israel continued unabated <a href="#src-012" class="source-ref"><sup>[12]</sup></a><a href="#src-005" class="source-ref"><sup>[5]</sup></a>.</p>
+<p>Prime Minister Benjamin Netanyahu directed the Israeli Cabinet to begin the direct negotiations following what multiple sources describe as sustained pressure from U.S. President Donald Trump <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. Israeli Hebrew-language outlet Mako reported that Trump threatened to impose a unilateral truce if Israel refused to engage diplomatically <a href="#src-008" class="source-ref"><sup>[8]</sup></a>. Axios reported that Netanyahu framed the initiative around Hezbollah disarmament without requiring a prior ceasefire <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. The Israeli posture of continuing military operations during talks — described in Hebrew media as &#x27;negotiating under fire&#x27; — was presented by Maariv as a deliberate strategic position <a href="#src-005" class="source-ref"><sup>[5]</sup></a>.</p>
+<p>The two sides&#x27; public framing of the talks diverged immediately. Israeli Ambassador Leiter told reporters after the meeting that both countries are &#x27;on the same side,&#x27; casting the negotiations as a joint Israeli-Lebanese effort to remove Hezbollah&#x27;s armed presence <a href="#src-003" class="source-ref"><sup>[3]</sup></a><a href="#src-012" class="source-ref"><sup>[12]</sup></a>. The Jerusalem Post and Times of Israel amplified this framing, emphasizing agreement between the delegations on the need to address Hezbollah <a href="#src-003" class="source-ref"><sup>[3]</sup></a><a href="#src-011" class="source-ref"><sup>[11]</sup></a>.</p>
+<p>Arabic-language coverage told a different story. RT Arabic reported that the Lebanese delegation operated under the principle &#x27;<span lang="fa" dir="rtl">سيادتنا مقابل أمنكم</span>&#x27; (our sovereignty for your security), centering Lebanese sovereignty rather than alignment with Israel against Hezbollah <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. Asharq Al-Awsat described Lebanon as &#x27;<span lang="fa" dir="rtl">يتجرّع المفاوضات المباشرة</span>&#x27; (swallowing the bitter pill of direct negotiations), emphasizing the desperation of a country seeking a ceasefire under duress <a href="#src-009" class="source-ref"><sup>[9]</sup></a>. Both RT Arabic and Xinhua highlighted that Lebanon refused to issue a joint statement or sign a common protocol with Israel, a detail largely absent from U.S. and Israeli reporting <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-006" class="source-ref"><sup>[6]</sup></a>. As Xinhua reported: &#x27;<span lang="zh">以黎代表在华盛顿举行会谈</span>&#x27; (Israeli and Lebanese representatives held talks in Washington), with the Chinese outlet focusing on the trade-off between Israeli withdrawal and Hezbollah disarmament and noting Hezbollah&#x27;s claim that Israel had violated the 2024 ceasefire <a href="#src-006" class="source-ref"><sup>[6]</sup></a>.</p>
+<p>Hezbollah rejected the negotiations outright. In a televised speech on April 13, Hezbollah leader Naim Qassem called the talks &#x27;futile&#x27; and demanded the Lebanese government cancel them entirely <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. TRT Arabi reported that Qassem characterized the negotiations as a ploy designed to pressure Hezbollah into disarmament, describing participation as &#x27;submission and surrender&#x27; <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. Hezbollah escalated militarily during the talks themselves: the Times of Israel reported that the group bombarded northern Israel with rockets as the ambassadors met in Washington <a href="#src-012" class="source-ref"><sup>[12]</sup></a>. French outlet RTL noted that while the Lebanese government negotiated, Lebanese society remained &#x27;deeply divided&#x27; over the legitimacy of the talks, with Hezbollah labeling them as capitulation <a href="#src-007" class="source-ref"><sup>[7]</sup></a>.</p>
+<p>The role of the United States emerged as another point of framing divergence. U.S. and Israeli sources positioned Washington as the indispensable broker that made the talks possible, with Axios and Mako emphasizing American pressure on Israel and Trump&#x27;s personal involvement <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-008" class="source-ref"><sup>[8]</sup></a>. Arabic-language sources offered a different reading. Syria TV linked the timing of the negotiations to the commencement of oil exploration in Lebanese waters and U.S. envoy Amos Hochstein&#x27;s push for land border demarcation between the two countries <a href="#src-010" class="source-ref"><sup>[10]</sup></a>. As Syria TV reported: &#x27;<span lang="fa" dir="rtl">مع بدء التنقيب عن النفط في لبنان</span>.. <span lang="fa" dir="rtl">واشنطن تدفع لترسيم الحدود البرية مع إسرائيل</span>&#x27; (With the start of oil exploration in Lebanon, Washington pushes for land border demarcation with Israel) <a href="#src-010" class="source-ref"><sup>[10]</sup></a>. This economic dimension — the strategic interest in resolving land boundaries alongside offshore energy rights — was entirely absent from Israeli, U.S., and European coverage, which framed the talks exclusively through a security-diplomacy lens <a href="#src-010" class="source-ref"><sup>[10]</sup></a>.</p>
+<p>Maariv reported that Lebanese President Michel Aoun communicated directly with Ambassador Moawad during the Washington session, indicating presidential-level oversight of the negotiating process <a href="#src-005" class="source-ref"><sup>[5]</sup></a>. Defense News reported that Lebanon&#x27;s core demand was an immediate ceasefire and the restoration of state authority in the south, while Israel insisted that no ceasefire could proceed without a concrete plan for Hezbollah&#x27;s disarmament <a href="#src-013" class="source-ref"><sup>[13]</sup></a>.</p>
+<p>This report draws on 13 sources in 5 languages (English, Arabic, Hebrew, French, and Chinese) from 7 countries. No direct testimony from civilians in southern Lebanon living under bombardment or from residents of northern Israel facing rocket fire was available, despite these populations being most directly affected by both the conflict and any negotiated outcome. No Iranian government perspectives were represented, a significant gap given Iran&#x27;s role as Hezbollah&#x27;s primary state sponsor and the concurrent U.S.-Iran tensions over the Strait of Hormuz. No voices from the Lebanese Parliament — where Hezbollah and its allies hold significant seats and where any agreement would require political ratification — were included. UNIFIL, which patrols the Blue Line and would be directly affected by border demarcation, was not represented. No Lebanese Armed Forces perspectives on their capacity to enforce potential security arrangements in the south were available. No oil and gas industry voices addressed the economic stakes of border demarcation despite Syria TV&#x27;s reporting on the link to energy exploration.</p>
+<p>The two sides agreed to continue direct negotiations, though no timeline for a second round has been publicly announced <a href="#src-011" class="source-ref"><sup>[11]</sup></a><a href="#src-013" class="source-ref"><sup>[13]</sup></a>. Whether the talks can produce results while military operations continue on both sides — and while Hezbollah, a central actor in any durable agreement, refuses to participate — remains the defining unresolved question <a href="#src-004" class="source-ref"><sup>[4]</sup></a><a href="#src-005" class="source-ref"><sup>[5]</sup></a><a href="#src-013" class="source-ref"><sup>[13]</sup></a>.</p>
+</div>
+<p class="word-count">941 words</p>
+
+<h2>Perspectives &mdash; Stakeholder Analysis</h2>
+<div class="card-grid">
+<div class="card">
+  <div class="card-header"><span class="card-actor">Benjamin Netanyahu</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Israel</div>
+  <div class="card-position">Directed the Israeli Cabinet to begin direct negotiations with Lebanon, with a focus on Hezbollah disarmament without requiring a prior ceasefire. Acted under US pressure but framed the initiative as an Israeli security imperative.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Yechiel Leiter</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Israel</div>
+  <div class="card-position">Served as Israel&#x27;s lead negotiator in Washington and publicly framed the talks as a joint Israeli-Lebanese effort against Hezbollah, stating both sides are &#x27;on the same side.&#x27;</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Nada Hamadeh Moawad</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Lebanon</div>
+  <div class="card-position">Represented Lebanon in the Washington talks under a framework of &#x27;our sovereignty for your security,&#x27; emphasizing Lebanese sovereignty as the central negotiating principle rather than alignment with Israel against Hezbollah.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Naim Qassem</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">military</span> &middot; Lebanon</div>
+  <div class="card-position">Explicitly rejected the direct negotiations, calling them a futile ploy designed to pressure Hezbollah into disarmament, and demanded the Lebanese government cancel the talks entirely.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Michel Aoun</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Lebanon</div>
+  <div class="card-position">Communicated directly with the Lebanese ambassador during the Washington talks, indicating presidential-level engagement and oversight of the negotiating process.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Donald Trump</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; United States</div>
+  <div class="card-position">Applied direct pressure on Israel to open diplomatic channels with Lebanon, reportedly threatening a unilateral truce if Israel refused to engage in talks.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Amos Hochstein</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; United States</div>
+  <div class="card-position">Pushed for land border demarcation between Israel and Lebanon, with the timing linked to the commencement of oil exploration in Lebanese waters, suggesting economic and strategic motivations alongside the diplomatic process.</div>
+  
+</div>
+</div>
+
+<h2>Missing Voices</h2>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No perspectives from civilians in Southern Lebanon who are living under active shelling and displacement, or from residents of Northern Israel who face ongoing rocket fire. These are the populations most directly impacted by both the conflict and the outcome of any negotiated agreement, and their views on ambassadorial-level talks conducted in Washington while violence continues are entirely absent.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No Iranian government or foreign ministry voices, despite Iran being Hezbollah&#x27;s primary state sponsor and a central actor in the regional dynamics that underpin these negotiations. Iran&#x27;s position on direct Lebanese-Israeli talks — and whether Tehran views them as undermining its regional influence — is a critical missing dimension.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">legislature</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No voices from the Lebanese Parliament, where Hezbollah and its allies hold significant seats and where any negotiated agreement would require political ratification or at minimum tacit acceptance. The deep divisions within Lebanese politics over the legitimacy of direct talks with Israel are referenced in multiple sources but no parliamentarians are quoted.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">international_org</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No perspectives from UNIFIL (the UN Interim Force in Lebanon), which patrols the Blue Line and would be directly affected by any border demarcation agreement, or from the UN Secretary-General&#x27;s office, which has historically mediated Israeli-Lebanese disputes. Their assessment of the 13 disputed points on the Blue Line is absent.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">civil_society</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No Lebanese civil society organizations, human rights groups, or anti-war movements are represented, despite multiple sources noting that Lebanese society is &#x27;deeply divided&#x27; over the talks. These groups would provide ground-level perspectives on public sentiment beyond the government-Hezbollah binary.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">industry</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No voices from the oil and gas sector or energy companies involved in Lebanese offshore exploration, despite Syria TV explicitly linking the timing of the talks to the start of oil exploration. The economic stakes of border demarcation for energy rights are unvoiced.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">military</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No perspectives from the Lebanese Armed Forces (LAF), which would be responsible for implementing any security arrangements in Southern Lebanon, including potential Hezbollah disarmament provisions. The LAF&#x27;s capacity and willingness to enforce such terms is a central question left unaddressed.</div>
+</div>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Israeli and Western sources (Jerusalem Post, Times of Israel, Axios) frame the talks as a historic breakthrough and joint effort against Hezbollah, while Arabic-language sources (Asharq Al-Awsat, RT Arabic) emphasize Lebanese reluctance, sovereignty concerns, and the &#x27;bitter&#x27; necessity of the talks.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article preserves the Writer&#x27;s explicit side-by-side presentation of both framings across dedicated paragraphs.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Hebrew sources (Maariv) explicitly frame Israel&#x27;s continued military operations as a deliberate strategic posture (&#x27;negotiating under fire&#x27;), while Lebanese and Arabic sources foreground Lebanon&#x27;s demand for an immediate ceasefire as the primary goal.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article addresses both the Israeli &#x27;negotiating under fire&#x27; framing and Lebanon&#x27;s ceasefire demand via Defense News.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">Axios (rsrc-001) identifies a third named participant, Michel Issa, in addition to Leiter and Moawad. The original article omitted this actor entirely.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> A sentence was added noting Axios&#x27;s identification of Michel Issa as a third participant.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The original article described the gap since last talks as &#x27;more than three decades,&#x27; while the Mako source headline states &#x27;43 years,&#x27; a materially more precise and larger figure.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Headline and body text updated to &#x27;more than 40 years&#x27; with explicit attribution to Mako&#x27;s &#x27;43 years&#x27; figure.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">The original article claimed the session lasted &#x27;two hours,&#x27; but no source in either pool supports this specific duration.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The unsupported &#x27;two-hour&#x27; duration claim was removed from the article.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">Chinese and Russian-state sources (Xinhua, RT Arabic) highlight Lebanon&#x27;s refusal to issue a joint statement or sign a common protocol, a detail absent from U.S. and Israeli coverage.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The original article already included this detail; it is preserved in the corrected version.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">Syria TV links the talks&#x27; timing to the start of oil exploration in Lebanese waters and Amos Hochstein&#x27;s push for land border demarcation — an economic dimension entirely absent from Israeli, U.S., and European sources.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The original article already included this dimension; it is preserved in the corrected version.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">5 language bias findings &middot; Severity: <span class="badge" style="background:#0f766e15;color:#0f766e;border:1px solid #0f766e40">low</span></p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
+<div class="bias-finding">
+  <span class="bias-excerpt">Israeli strikes on Lebanon and Hezbollah rocket fire into northern Israel continued unabated</span> <span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">intensifier</span>
+  <div class="bias-explanation">&#x27;Unabated&#x27; intensifies the characterization of ongoing violence beyond what the cited sources establish — the article provides no specific data on strike frequency or escalation trends that would substantiate this absolute term, making it an editorial amplification rather than a factual description.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">the collapsed November 2024 ceasefire</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Collapsed&#x27; characterizes the ceasefire&#x27;s failure with a dramatic, definitive judgment — the article does not attribute this characterization to any source, and a more neutral formulation (e.g., &#x27;the ceasefire that broke down&#x27;) would convey the same information without the editorial connotation of sudden, total failure.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">emphasizing the desperation of a country seeking a ceasefire under duress</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">emotionalizing</span>
+  <div class="bias-explanation">&#x27;Desperation&#x27; and &#x27;under duress&#x27; are the article&#x27;s own editorial characterization of Lebanon&#x27;s position, not a direct translation or attribution from Asharq Al-Awsat — the Arabic phrase is translated separately, but the gloss &#x27;desperation of a country seeking a ceasefire under duress&#x27; adds emotional weight that goes beyond what the quoted metaphor (&#x27;swallowing the bitter pill&#x27;) conveys.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">a central actor in any durable agreement</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Central&#x27; and &#x27;durable&#x27; embed editorial judgments — that Hezbollah is not merely important but central, and that the relevant standard for an agreement is durability — without attribution to any source, positioning the article&#x27;s own analytical frame as fact.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">a significant gap given Iran&#x27;s role as Hezbollah&#x27;s primary state sponsor</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Significant&#x27; characterizes the importance of the gap editorially rather than letting the reader assess it; while Iran&#x27;s role is widely documented, the judgment that this omission is &#x27;significant&#x27; is the article&#x27;s own unattributed evaluation.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">5</span></div>
+<div class="bar-row"><span class="bar-label">ar</span><div class="bar-track"><div class="bar-fill" style="width:80%"></div></div><span class="bar-count">4</span></div>
+<div class="bar-row"><span class="bar-label">he</span><div class="bar-track"><div class="bar-fill" style="width:40%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">zh</span><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">fr</span><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><span class="bar-count">1</span></div>
+</div>
+</div>
+</details>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">No direct sources from the Lebanese government&#x27;s official press office or the Lebanese Ministry of Foreign Affairs to confirm their internal framing of the &#x27;sovereignty&#x27; mandate.</div>
+<div class="coverage-gap">Lack of Iranian media perspectives, which are critical given Hezbollah&#x27;s involvement and the regional nature of the conflict.</div>
+<div class="coverage-gap">Limited detail on the &#x27;13 disputed points&#x27; on the Blue Line mentioned in one snippet; the specific geographic stakes of the land demarcation are not fully detailed.</div>
+<div class="coverage-gap">No sources from the &#x27;affected communities&#x27; in Southern Lebanon or Northern Israel regarding their view on ambassadorial-level talks while active shelling continues.</div>
+
+<h2>Sources</h2>
+<div class="sources-table-wrap">
+<table class="sources-table">
+<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>
+<tbody>
+<tr id="src-001"><td class="source-num">1</td><td>Axios</td><td><a href="https://www.axios.com/2026/04/09/israel-lebanon-negotiations-ceasefire" target="_blank" rel="noopener">Netanyahu announces negotiations with Lebanon after U.S. pressure</a></td><td>en</td><td>United States</td></tr><tr id="src-002"><td class="source-num">2</td><td>RT Arabic</td><td><a href="https://arabic.rt.com/world/1778329-%D8%A3%D9%88%D9%84-%D9%85%D9%81%D8%A7%D9%88%D8%B6%D8%A7%D8%AA-%D9%85%D8%A8%D8%A7%D8%B4%D8%B1%D8%A9-%D8%A8%D9%8A%D9%86-%D9%84%D8%A8%D9%86%D8%A7%D9%86-%D9%88%D8%A5%D8%B3%D8%B1%D8%A7%D8%A6%D9%8A%D9%84-%D9%81%D9%8A-%D9%88%D8%A7%D8%B4%D9%86%D8%B7%D9%86-%D8%B3%D9%8A%D8%A7%D8%AF%D8%AA%D9%86%D8%A7-%D9%85%D9%82%D8%A7%D8%A8%D9%84-%D8%A3%D9%85%D9%86%D9%83%D9%85-%D9%88%D8%B1%D9%81%D8%B6-%D9%84%D8%A8%D9%86%D8%A7%D9%86%D9%8A-%D9%84%D8%A8%D9%84%D8%A7%D8%BA-%D9%85%D8%B4%D8%AA%D8%B1%D9%83/" target="_blank" rel="noopener">أول مفاوضات مباشرة بين لبنان وإسرائيل في واشنطن.. &quot;سيادتنا مقابل أمنكم&quot; ورفض لبناني لبيان مشترك</a></td><td>ar</td><td>Russia</td></tr><tr id="src-003"><td class="source-num">3</td><td>The Jerusalem Post</td><td><a href="https://www.jpost.com/middle-east/article-892918" target="_blank" rel="noopener">&#x27;We&#x27;re on the same side&#x27;: Israel, Lebanon envoys conclude historic talks</a></td><td>en</td><td>Israel</td></tr><tr id="src-004"><td class="source-num">4</td><td>TRT Arabi</td><td><a href="https://www.trtarabi.com/article/926686990aec" target="_blank" rel="noopener">حزب الله يؤكد رفضه للمفاوضات المباشرة مع إسرائيل ويدعو حكومة لبنان ...</a></td><td>ar</td><td>Turkey</td></tr><tr id="src-005"><td class="source-num">5</td><td>Maariv</td><td><a href="https://www.maariv.co.il/news/politics/article-1309736" target="_blank" rel="noopener">לאחר סיום השיחות ההיסטוריות בוושינגטון - ישראל ולבנון הסכימו לעבור למו&quot;מ ישיר</a></td><td>he</td><td>Israel</td></tr><tr id="src-006"><td class="source-num">6</td><td>Xinhua</td><td><a href="https://www.news.cn/world/20260415/0fdab79b40c4410ca0ee4faac446383e/c.html" target="_blank" rel="noopener">以黎代表在华盛顿举行会谈</a></td><td>zh</td><td>China</td></tr><tr id="src-007"><td class="source-num">7</td><td>RTL</td><td><a href="https://www.rtl.fr/actu/international/en-direct-guerre-au-moyen-orient-des-responsables-du-liban-et-d-israel-a-washington-pour-negocier-le-hezbollah-reclame-l-annulation-des-pourparlers-7900623577" target="_blank" rel="noopener">Guerre au Moyen-Orient : Israël et le Liban acceptent d&#x27;entamer des négociations directes en vue d&#x27;une &quot;paix durable&quot;</a></td><td>fr</td><td>France</td></tr><tr id="src-008"><td class="source-num">8</td><td>Mako</td><td><a href="https://www.mako.co.il/news-diplomatic/2026_q2/Article-f5c3f04872c8d91026.htm" target="_blank" rel="noopener">פסגה בוושינגטון: אחרי 43 שנה – ישראל ולבנון חוזרות לשולחן המו&quot;מ</a></td><td>he</td><td>Israel</td></tr><tr id="src-009"><td class="source-num">9</td><td>Asharq Al-Awsat</td><td><a href="https://aawsat.com/%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85-%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A/%D8%A7%D9%84%D9%85%D8%B4%D8%B1%D9%82-%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A/5262446-%D9%84%D8%A8%D9%86%D8%A7%D9%86-%D9%8A%D8%AA%D8%AC%D8%B1%D9%91%D8%B9-%D8%A7%D9%84%D9%85%D9%81%D8%A7%D9%88%D8%B6%D8%A7%D8%AA-%D8%A7%D9%84%D9%85%D8%A8%D8%A7%D8%B4%D8%B1%D8%A9-%D9%85%D8%B9-%D8%A5%D8%B3%D8%B1%D8%A7%D8%A6%D9%8A%D9%84" target="_blank" rel="noopener">لبنان يتجرّع المفاوضات المباشرة مع إسرائيل</a></td><td>ar</td><td>United Kingdom</td></tr><tr id="src-010"><td class="source-num">10</td><td>Syria TV</td><td><a href="https://www.syria.tv/%D9%85%D8%B9-%D8%A8%D8%AF%D8%A1-%D8%A7%D9%84%D8%AA%D9%86%D9%82%D9%8A%D8%A8-%D8%B9%D9%86-%D8%A7%D9%84%D9%86%D9%81%D8%B7-%D9%81%D9%8A-%D9%84%D8%A8%D9%86%D8%A7%D9%86-%D9%88%D8%A7%D8%B4%D9%86%D8%B7%D9%86-%D8%AA%D8%AF%D9%81%D8%B9-%D9%84%D8%AA%D8%B1%D8%B3%D9%8A%D9%85-%D8%A7%D9%84%D8%AD%D8%AF%D9%88%D8%AF-%D8%A7%D9%84%D8%A8%D8%B1%D9%8A%D8%A9-%D9%85%D8%B9-%D8%A5%D8%B3%D8%B1%D8%A7%D8%A6%D9%8A%D9%84" target="_blank" rel="noopener">مع بدء التنقيب عن النفط في لبنان.. واشنطن تدفع لترسيم الحدود البرية مع إسرائيل</a></td><td>ar</td><td>Turkey</td></tr><tr id="src-011"><td class="source-num">11</td><td>Times of Israel</td><td><a href="https://www.timesofisrael.com/israeli-lebanese-envoys-hold-historic-summit-in-washington-to-discuss-peace-deal/" target="_blank" rel="noopener">Israeli, Lebanese envoys hold historic summit in Washington to discuss peace deal</a></td><td>en</td><td>Israel</td></tr><tr id="src-012"><td class="source-num">12</td><td>Times of Israel</td><td><a href="https://www.timesofisrael.com/liveblog_entry/hezbollah-bombards-northern-israel-as-lebanese-and-israeli-envoys-meet-in-dc/" target="_blank" rel="noopener">Hezbollah bombards northern Israel as Lebanese and Israeli envoys meet in DC</a></td><td>en</td><td>Israel</td></tr><tr id="src-013"><td class="source-num">13</td><td>Defense News</td><td><a href="https://www.defensenews.com/global/mideast-africa/2026/04/14/lebanon-and-israel-talks-set-to-begin-in-washington/" target="_blank" rel="noopener">Lebanon and Israel talks set to begin in Washington</a></td><td>en</td><td>United States</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>Covered by 22 sources across 6 regions and 5 languages, with a strong mix of editorial independence types — state-directed RT, state-influenced Hurriyet and SCMP, publicly funded France 24 and BBC, and independent outlets like Le Monde and Foreign Policy. The first direct Israeli-Lebanese political talks in decades represent a genuinely historic diplomatic shift with competing narratives likely between Israeli security framing, Lebanese sovereignty concerns, and Hezbollah-adjacent perspectives. Sufficient diversity for robust multi-perspective analysis.</dd>
+<dt>QA Corrections Applied</dt><dd><ul><li>Changed headline from &#x27;Over 30 Years&#x27; to &#x27;Over 40 Years&#x27; to reflect the more precise &#x27;43 years&#x27; figure given in the Mako source (src-008).</li>
+<li>Changed &#x27;more than three decades&#x27; in the opening paragraph to &#x27;more than 40 years&#x27; and added attribution to Mako&#x27;s &#x27;43 years&#x27; figure (src-008).</li>
+<li>Removed the unsupported claim that the session lasted &#x27;two hours,&#x27; as no source in either pool specifies the meeting&#x27;s duration.</li>
+<li>Added a sentence noting that Axios identified a third participant, Michel Issa, alongside the two named ambassadors (src-001).</li>
+<li>Updated the summary to replace &#x27;over 30 years&#x27; with &#x27;more than 40 years&#x27; for consistency with the corrected body text.</li></ul></dd>
+<dt>Confidence</dt><dd>medium</dd>
+<dt>Pipeline Run</dt><dd>run-2026-04-15-a3ed2d &middot; 2026-04-15</dd>
+</dl>
+</div>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>

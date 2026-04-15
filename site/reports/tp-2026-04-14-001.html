@@ -142,6 +142,22 @@ h2 {
 .divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
 .divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
 
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "B6  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "BC  ";
+}
+
 /* Bias findings */
 .bias-finding {
   border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
@@ -474,7 +490,10 @@ FOLLOW-UP &mdash; Previous coverage: &ldquo;US Declares Naval Blockade of Strait
 </div>
 
 <h2>Bias Analysis</h2>
-<p>Overall language bias severity: <span class="badge" style="background:#0f766e15;color:#0f766e;border:1px solid #0f766e40">low</span></p>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">5 language bias findings &middot; Severity: <span class="badge" style="background:#0f766e15;color:#0f766e;border:1px solid #0f766e40">low</span></p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
 <div class="bias-finding">
   <span class="bias-excerpt">a qualitative shift from the economic interdiction announced the previous day to a direct threat of armed engagement</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
   <div class="bias-explanation">&#x27;Qualitative shift&#x27; is an editorial characterization that frames the escalation as categorically different in kind, a judgment the article presents as fact rather than attributing to any analyst or source.</div>
@@ -507,6 +526,8 @@ FOLLOW-UP &mdash; Previous coverage: &ldquo;US Declares Naval Blockade of Strait
 <div class="bar-row"><span class="bar-label">ar</span><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div><span class="bar-count">1</span></div>
 <div class="bar-row"><span class="bar-label">ja</span><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div><span class="bar-count">1</span></div>
 </div>
+</div>
+</details>
 
 <h2>Coverage Gaps</h2>
 <div class="coverage-gap">Lack of direct statements from the Iranian Ministry of Foreign Affairs or the Presidency, with Iranian coverage dominated by IRGC military commanders.</div>
