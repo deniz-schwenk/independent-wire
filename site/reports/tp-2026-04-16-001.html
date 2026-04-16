@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>European Jet Fuel Reserves Fall to Six Weeks as Iran Threatens Red Sea Closure Alongside Hormuz Blockade</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "B6  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "BC  ";
+}
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Sources table */
+.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.sources-table th {
+  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 3px solid #000;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
+.sources-table a { color: var(--color-primary); text-decoration: none; }
+.sources-table a:hover { text-decoration: underline; }
+.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>European Jet Fuel Reserves Fall to Six Weeks as Iran Threatens Red Sea Closure Alongside Hormuz Blockade</h1>
+<p class="subtitle">Aviation industry warns of systemic fuel shortages at EU airports within three weeks while failed Islamabad peace talks leave diplomatic path uncertain.</p>
+<p class="date">April 16, 2026</p>
+
+<div class="follow-up-ref" style="font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #444; padding: 12px 16px; border-left: 3px solid #000; margin: 16px 0; background: #f5f5f5;">
+FOLLOW-UP &mdash; Previous coverage: &ldquo;Iran Demands $270 Billion in War Reparations From Five Arab States as U.S. Blockade of Hormuz Enters Second Day&rdquo; (April 15, 2026)
+<a href="tp-2026-04-15-001.html" style="font-family: 'Space Mono', monospace; color: #000;">&rarr; Read previous</a>
+</div>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">15</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Countries</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 840 840" class="source-network" role="img" aria-label="Source network: 15 sources from 8 countries">
+<path d="M622.5,240.0 A280,280 0 0 1 622.5,520.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="247.5" x2="635.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M622.5,520.0 A280,280 0 0 1 452.5,650.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="512.5" x2="635.5" y2="527.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M452.5,650.5 A280,280 0 0 1 240.0,622.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="448.6" y1="636.0" x2="456.4" y2="664.9" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M240.0,622.5 A280,280 0 0 1 109.5,452.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="247.5" y1="609.5" x2="232.5" y2="635.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M109.5,452.5 A280,280 0 0 1 137.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="124.0" y1="448.6" x2="95.1" y2="456.4" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M137.5,240.0 A280,280 0 0 1 307.5,109.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="150.5" y1="247.5" x2="124.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M307.5,109.5 A280,280 0 0 1 498.3,126.2" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="311.4" y1="124.0" x2="303.6" y2="95.1" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M498.3,126.2 A280,280 0 0 1 622.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="492.0" y1="139.8" x2="504.7" y2="112.6" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="362.1" x2="529.8" y2="313.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="304.8" r="21" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Iran (2 sources)</title></circle>
+<text class="count-label" x="549.0" y="308.8" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="549.0" y="339.8" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Iran</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="397.9" x2="570.9" y2="465.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="594.7" cy="475.6" r="26" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Turkey (3 sources)</title></circle>
+<text class="count-label" x="594.7" y="479.6" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">3</text>
+<text class="name-label" x="594.7" y="515.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Turkey</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="406.8" y1="414.9" x2="498.1" y2="533.9" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="507.8" cy="546.6" r="16" fill="#0891b2" stroke="#000" stroke-width="1.5"><title>China (1 source)</title></circle>
+<text class="count-label" x="507.8" y="550.6" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="507.8" y="576.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">China</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="353.2" y1="345.1" x2="264.9" y2="230.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="252.2" cy="213.4" r="21" fill="#3b82f6" stroke="#000" stroke-width="1.5"><title>US (2 sources)</title></circle>
+<text class="count-label" x="252.2" y="217.4" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="252.2" y="248.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">US</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="402.7" y1="342.3" x2="467.0" y2="235.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="475.3" cy="221.4" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>UK (1 source)</title></circle>
+<text class="count-label" x="475.3" y="225.4" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="475.3" y="251.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">UK</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="407.5" y1="345.6" x2="516.8" y2="209.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="526.8" cy="196.5" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>Germany (1 source)</title></circle>
+<text class="count-label" x="526.8" y="200.5" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="526.8" y="226.5" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Germany</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="411.8" y1="349.6" x2="495.0" y2="270.2" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="513.8" cy="252.3" r="26" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>France (4 sources)</title></circle>
+<text class="count-label" x="513.8" y="256.3" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">4</text>
+<text class="name-label" x="513.8" y="292.3" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">France</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="415.6" y1="354.1" x2="557.2" y2="251.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="570.1" cy="241.9" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>Netherlands (1 source)</title></circle>
+<text class="count-label" x="570.1" y="245.9" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="570.1" y="271.9" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Netherlands</text>
+</g>
+<circle cx="380" cy="380" r="44" fill="#000"/>
+<text x="380" y="374" font-size="22" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" dominant-baseline="middle">15</text>
+<text x="380" y="394" font-size="9" font-family="'Space Mono', 'Courier New', monospace" fill="white" letter-spacing="0.1em" text-anchor="middle">SOURCES</text>
+<text x="685.0" y="380.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">MIDDLE EAST &amp; N. AFRICA</text>
+<text x="565.7" y="622.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EAST ASIA</text>
+<text x="340.2" y="682.4" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">SOUTH &amp; CENTRAL ASIA</text>
+<text x="138.0" y="565.7" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SE ASIA &amp; OCEANIA</text>
+<text x="77.6" y="340.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SUB-SAHARAN AFRICA</text>
+<text x="194.3" y="138.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">AMERICAS</text>
+<text x="406.6" y="76.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">LATIN AMERICA</text>
+<text x="586.1" y="155.1" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EUROPE</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="France: 4 sources">France (4)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Turkey: 3 sources">Turkey (3)</span>
+<span class="country-badge" style="background:#3b82f612;color:#3b82f6;border:1px solid #3b82f630" title="United States: 2 sources">United States (2)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Iran: 2 sources">Iran (2)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="United Kingdom: 1 source">United Kingdom</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="Netherlands: 1 source">Netherlands</span>
+<span class="country-badge" style="background:#0891b212;color:#0891b2;border:1px solid #0891b230" title="China: 1 source">China</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="Germany: 1 source">Germany</span>
+</div>
+
+<div class="reader-note">This article draws on 15 sources in 7 languages and explicitly surfaces the major framing divide: European sources treat the Red Sea and Hormuz disruptions as an energy emergency, while Iranian sources treat them as a defensive military response to US aggression — readers should weigh both framings rather than defaulting to either. No EU institutional leaders or member-state energy ministers are quoted despite the crisis being described as a European emergency, and no Iranian civilians affected by the blockade or the war itself are heard — the Iranian perspective comes entirely from senior officials and a pro-government analyst. One unresolved divergence worth noting: a German source reportedly suggests Europe is &#x27;not immediately affected&#x27; by the Hormuz blockade, directly contradicting the three-week shortage warning, but that source could not be verified within the available pool.</div>
+
+<div class="article-body">
+<p>Iran has threatened to disrupt shipping through the Red Sea and Bab al-Mandab strait in addition to its existing restrictions on the Strait of Hormuz, a move that European aviation authorities say could trigger systemic jet fuel shortages at EU airports within three weeks <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-004" class="source-ref"><sup>[4]</sup></a>. The threat represents a material escalation in the US-Iran conflict, which began in late February 2026 and has already produced a US naval blockade of Iranian ports, a failed round of high-level peace talks in Islamabad, and a fragile ceasefire set to expire on April 22 <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+<p>Forty percent of Europe&#x27;s jet fuel imports transit the Strait of Hormuz, and no cargoes have arrived since the war began, according to ACI Europe, the continent&#x27;s airport trade association <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. Jet fuel prices across Europe have doubled, and airports have already begun implementing fuel rationing <a href="#src-005" class="source-ref"><sup>[5]</sup></a><a href="#src-010" class="source-ref"><sup>[10]</sup></a>. Airlines for Europe (A4E), the airline industry lobby, is demanding urgent emergency measures from the EU <a href="#src-005" class="source-ref"><sup>[5]</sup></a>. French-language reporting indicates that Ryanair and Air France-KLM are planning flight cancellations as the supply situation deteriorates <a href="#src-010" class="source-ref"><sup>[10]</sup></a>.</p>
+<p>The distinction between crude oil and refined fuel is central to understanding the crisis. German-language Euronews reported that the EU holds 90 days of crude oil reserves, and the International Energy Agency has released 400 million barrels from strategic stocks to contain price spikes <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. However, these measures address crude oil, not the refined kerosene that aircraft require. As Euronews reported: &#x27;Was die Sperrung der Straße von Hormus für Ölpreise, Gas und...&#x27; (What the closure of the Strait of Hormuz means for oil prices, gas, and...) — the vulnerability lies specifically in refined product supply chains <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. Some states have as little as eight to ten days of jet fuel supply remaining <a href="#src-001" class="source-ref"><sup>[1]</sup></a>.</p>
+<p>Iran&#x27;s framing of the maritime disruptions differs sharply from the European crisis narrative. Ali Akbar Velayati, senior advisor to Iran&#x27;s Supreme Leader, stated that the Strait of Hormuz remains open to the world but is permanently closed to &#x27;enemies&#x27; of Iran and their military interests <a href="#src-013" class="source-ref"><sup>[13]</sup></a>. Iranian and Persian-language sources describe the Bab al-Mandab threat as a defensive response to the possibility that the United States might attempt to occupy Kharg Island, Iran&#x27;s primary oil export terminal <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. Radio Zamaneh reported: &#x27;<span lang="fa" dir="rtl">باب‌المندب، سلاح جدید ایران در برابر احتمال اشغال خارگ</span>&#x27; (Bab al-Mandab, Iran&#x27;s new weapon against the possibility of Kharg occupation) <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. Euronews Arabic detailed Iran&#x27;s warning that it would halt all exports and imports through the Persian Gulf, Gulf of Oman, and the Red Sea if the US naval blockade continues <a href="#src-009" class="source-ref"><sup>[9]</sup></a>.</p>
+<p>European and Western sources treat the Red Sea threat primarily as an energy supply emergency. Iranian and Arabic-language sources treat it as a strategic military lever <a href="#src-004" class="source-ref"><sup>[4]</sup></a><a href="#src-009" class="source-ref"><sup>[9]</sup></a><a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-010" class="source-ref"><sup>[10]</sup></a>. The EU&#x27;s naval mission Aspides has warned of increased Houthi attacks in the Red Sea and Gulf of Aden, assessing high risk for vessels linked to the United States or Israel and medium risk for other shipping <a href="#src-015" class="source-ref"><sup>[15]</sup></a>. As Verkehrs Rundschau reported: &#x27;EU-Mission warnt vor steigender Gefahr für Schifffahrt im Roten Meer&#x27; (EU mission warns of increasing danger for shipping in the Red Sea) <a href="#src-015" class="source-ref"><sup>[15]</sup></a>.</p>
+<p>Not all energy-dependent states face the same vulnerability. Taiwan has bypassed the Hormuz chokepoint entirely by sourcing oil from Saudi Red Sea ports and maintains 140 days of reserves, according to Connaissance des Énergies <a href="#src-011" class="source-ref"><sup>[11]</sup></a>. This adaptation strategy has received virtually no coverage outside French-language media.</p>
+<p>The diplomatic picture remains fractured. High-level talks in Islamabad on April 11-12 between US Vice President JD Vance and Iranian Parliament Speaker Mohammad Bagher Ghalibaf ended without agreement after 21 hours of negotiations <a href="#src-014" class="source-ref"><sup>[14]</sup></a><a href="#src-002" class="source-ref"><sup>[2]</sup></a>. Time Magazine reported that the US offered sanctions relief in exchange for nuclear guarantees, which Iran rejected <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. Iranian analyst Mohammad Marandi, quoted by Tabnak, argued that the Trump administration approached the talks with &#x27;maximalist&#x27; demands and did not negotiate seriously <a href="#src-007" class="source-ref"><sup>[7]</sup></a>. Robert Malley, referenced in the same report, confirmed that no agreement was reached <a href="#src-007" class="source-ref"><sup>[7]</sup></a>.</p>
+<p>Turkish and Chinese sources emphasize the ongoing potential for diplomacy. Anadolu Agency highlighted the constructive role of regional powers including Turkey, Egypt, and Saudi Arabia in facilitating the Islamabad process <a href="#src-006" class="source-ref"><sup>[6]</sup></a>. People&#x27;s Daily reported that US President Donald Trump suggested talks might resume within two days, expressing optimism that the war is &#x27;close to over&#x27; <a href="#src-008" class="source-ref"><sup>[8]</sup></a>. As People&#x27;s Daily reported: &#x27;<span lang="zh">特朗普暗示美伊</span>&quot;<span lang="zh">未来两天</span>&quot;<span lang="zh">或重启伊斯兰堡会谈</span>&#x27; (Trump hints US and Iran may restart Islamabad talks &#x27;within two days&#x27;) <a href="#src-008" class="source-ref"><sup>[8]</sup></a>. Pakistani Prime Minister Shehbaz Sharif is actively working to involve Turkey, Qatar, and Saudi Arabia in a broader multilateral mediation effort <a href="#src-012" class="source-ref"><sup>[12]</sup></a>. Iranian sources, by contrast, frame the same diplomatic moment as one where Iran successfully resisted US pressure <a href="#src-007" class="source-ref"><sup>[7]</sup></a><a href="#src-013" class="source-ref"><sup>[13]</sup></a>.</p>
+<p>This report draws on 15 sources in 7 languages (English, German, French, Turkish, Persian, Arabic, and Chinese). No direct voices from EU institutional leaders — neither the European Commission nor any member state energy minister — were available despite the crisis being described as a systemic European emergency. No perspectives from major Asian fuel-importing governments such as India, Japan, or South Korea were represented, despite their heavy dependence on Hormuz transit. No airline passengers, aviation workers, or airport-dependent communities facing cancellations and economic disruption were heard. No Iranian civilians affected by the US naval blockade or the war itself were represented; the Iranian perspective comes exclusively from senior officials and a pro-government analyst. No anti-war organizations or humanitarian groups from any country were included. Saudi, Qatari, and Turkish officials involved in mediation are referenced but none speak directly.</p>
+<p>The ceasefire is set to expire on April 22 <a href="#src-012" class="source-ref"><sup>[12]</sup></a>. Whether a second round of Islamabad talks materializes in the coming days, as Trump has suggested <a href="#src-008" class="source-ref"><sup>[8]</sup></a>, or whether the Red Sea threat translates into actual disruption of the Bab al-Mandab strait, will determine whether Europe&#x27;s jet fuel crisis deepens from a supply squeeze into a full systemic shortage <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-004" class="source-ref"><sup>[4]</sup></a>.</p>
+</div>
+<p class="word-count">960 words</p>
+
+<h2>Perspectives &mdash; Stakeholder Analysis</h2>
+<div class="card-grid">
+<div class="card">
+  <div class="card-header"><span class="card-actor">ACI Europe</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">industry</span> &middot; Europe</div>
+  <div class="card-position">Warns that EU airports face systemic jet fuel shortages within three weeks if Hormuz-transiting cargoes are not restored, given that 40% of Europe&#x27;s jet fuel imports pass through the strait and no cargoes have arrived since the war began.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">IEA</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; Global</div>
+  <div class="card-position">Has released 400 million barrels of oil from strategic reserves to mitigate price spikes caused by the Hormuz blockade, though this addresses crude oil rather than the refined kerosene shortfall.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Airlines for Europe (A4E)</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">industry</span> &middot; Europe</div>
+  <div class="card-position">Demanding urgent emergency measures from the EU to address the deepening jet fuel crisis, as fuel prices in Europe have doubled and airports have begun implementing fuel restrictions.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Mohammad Marandi</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">academia</span> &middot; Iran</div>
+  <div class="card-position">Argues that the Trump administration did not take the Islamabad negotiations seriously, framing the US approach as &#x27;maximalist&#x27; and dismissive of Iranian positions.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Robert Malley</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; United States</div>
+  <div class="card-position">Referenced as confirming that no agreement was reached during the Islamabad talks, without elaborating on the reasons for the breakdown.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Donald Trump</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; United States</div>
+  <div class="card-position">Expresses optimism that the Iran war is &#x27;close to over&#x27; and hints at a second round of talks in Islamabad within days, despite the reported atmosphere of distrust from the Iranian side.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Shehbaz Sharif</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Pakistan</div>
+  <div class="card-position">Actively mediating between the US and Iran to secure a ceasefire extension, working to involve Turkey, Qatar, and Saudi Arabia in a broader multilateral mediation process.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Ali Akbar Velayati</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Iran</div>
+  <div class="card-position">States that the Strait of Hormuz remains open to the world but is permanently closed to &#x27;enemies&#x27; of Iran and their military interests, framing the blockade as a targeted defensive measure rather than a blanket closure.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">JD Vance</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; United States</div>
+  <div class="card-position">Led the US delegation at the Islamabad peace talks, emphasizing US &#x27;red lines&#x27; in negotiations with Iran.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Mohammad Bagher Ghalibaf</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">legislature</span> &middot; Iran</div>
+  <div class="card-position">Led the Iranian delegation at the Islamabad peace talks as Speaker of the Iranian Parliament, representing Iran&#x27;s negotiating position at the highest diplomatic level.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">EU Mission Aspides</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">military</span> &middot; Europe</div>
+  <div class="card-position">Warns of increased Houthi attacks in the Red Sea and Gulf of Aden, signaling that the maritime threat is expanding beyond the Strait of Hormuz to a second critical chokepoint.</div>
+  
+</div>
+</div>
+
+<h2>Missing Voices</h2>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No EU institutional voices — neither the European Commission, European Council, nor any individual EU member state energy minister — are quoted despite the crisis being framed as a systemic European emergency requiring emergency measures.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No perspectives from Iranian civilians affected by the US naval blockade of Iranian ports, the war itself, or the economic consequences of the conflict. The Iranian side is represented only by senior officials and a pro-government analyst.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No perspectives from airline passengers, aviation workers, or airport-dependent communities facing flight cancellations and economic disruption. The dossier reports Ryanair and Air France-KLM planning cancellations and fuel rationing in Italy, but no one directly affected by these measures is heard.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No voices from major Asian fuel-importing governments (India, Japan, South Korea) that also depend heavily on Hormuz transit. Their absence prevents comparison of reserve strategies and vulnerability assessments beyond the European frame.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No direct quotes from Saudi Arabian, Qatari, or Turkish officials despite their reported involvement in the mediation process. These regional mediators are referenced by CBS News and Anadolu Agency but none speak directly.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">industry</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No individual airlines (Ryanair, Air France-KLM) or oil and gas companies are quoted, despite being the entities implementing fuel rationing and flight cancellations. Their operational decisions are reported secondhand through trade associations.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">civil_society</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No anti-war organizations, humanitarian groups, or peace advocacy voices from any country are represented, despite the story centering on an active armed conflict and peace negotiations.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">industry</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No shipping or maritime industry voices (shipowners, insurers, port operators) despite the story revolving around the closure of two major maritime chokepoints and EU Aspides warnings about attacks on vessels.</div>
+</div>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Western and European sources (Argus/ACI, INFO.FR, TGRT Haber) frame the crisis as a systemic economic emergency for European aviation, while Iranian sources (ILNA, Radio Zamaneh) frame the same maritime restrictions as a legitimate defensive weapon against US aggression and the threat to Kharg Island.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article explicitly contrasts these two framings in the paragraph beginning &#x27;European and Western sources treat the Red Sea threat primarily as an energy supply emergency. Iranian and Arabic-language sources treat it as a strategic military lever.&#x27;</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Turkish and Chinese sources (Anadolu Agency, People&#x27;s Daily) emphasize ongoing diplomatic potential and the role of regional mediators, while Time Magazine focuses on the failure of the 21-hour talks due to nuclear and trust issues.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article presents both framings: the Time Magazine failure narrative and the Turkish/Chinese optimism about resumed talks, in consecutive paragraphs.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Iranian sources (Tabnak) frame the Islamabad outcome as Iran successfully resisting US maximalist pressure, while US-aligned sources (Time) frame it as a failure of diplomacy due to Iran&#x27;s rejection of sanctions relief for nuclear guarantees.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article presents both the Time Magazine account of US offers rejected by Iran and the Tabnak/Marandi framing of Iran resisting maximalist US demands.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">The preliminary divergences note that German sources (Table Media) report some domestic politicians believe Europe is &#x27;not immediately affected&#x27; by the Hormuz blockade, directly contradicting the ACI three-week warning. However, Table Media is not among the 15 sources in either pool and cannot be verified or cited.</div>
+  <div class="divergence-resolution"><strong>Unresolved:</strong> This divergence cannot be addressed because Table Media is not present in either the Writer&#x27;s or Researcher&#x27;s source pools. No correction was applied per Rule 1.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The scope of Iran&#x27;s maritime threat as reported by Euronews Arabic (src-009) includes the Persian Gulf, Gulf of Oman, and Red Sea, but the original article omitted the Persian Gulf from this list.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Corrected in the article to include &#x27;Persian Gulf&#x27; alongside Gulf of Oman and Red Sea, matching the src-009 source title.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">The Italy-specific fuel rationing claim was attributed to src-005 (TGRT Haber), but neither rsrc-005 nor rsrc-010 researcher summaries specify Italy as the location of rationing. The geographic specificity is unsupported by the available source summaries.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Removed the Italy-specific attribution; the claim now reads that airports (unspecified) have begun implementing fuel rationing, which is supported by both rsrc-005 and rsrc-010.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">5 language bias findings &middot; Severity: <span class="badge" style="background:#0f766e15;color:#0f766e;border:1px solid #0f766e40">low</span></p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
+<div class="bias-finding">
+  <span class="bias-excerpt">a material escalation</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Material&#x27; characterizes the significance of the escalation as an editorial judgment rather than attributing that assessment to a named source or defining what threshold makes it &#x27;material.&#x27;</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">a fragile ceasefire set to expire on April 22</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Fragile&#x27; characterizes the ceasefire&#x27;s stability editorially; the article does not attribute this assessment to any source or provide specific evidence of violations or near-collapses that would substantiate the descriptor.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">The diplomatic picture remains fractured</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Fractured&#x27; is an editorial characterization of the state of diplomacy that embeds a judgment of dysfunction; the facts that follow (talks ended without agreement) could support this reading, but the word itself is the author&#x27;s framing rather than an attributed assessment.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">whether the Red Sea threat translates into actual disruption of the Bab al-Mandab strait, will determine whether Europe&#x27;s jet fuel crisis deepens from a supply squeeze into a full systemic shortage</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Full systemic shortage&#x27; intensifies the projected outcome beyond what the sourced material establishes; the ACI Europe warning describes a three-week timeline for shortages, but &#x27;full systemic&#x27; adds editorial gravity not attributed to any source.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">This adaptation strategy has received virtually no coverage outside French-language media.</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">hedging</span>
+  <div class="bias-explanation">&#x27;Virtually no coverage&#x27; is an unverifiable editorial claim about the media landscape at large; the article can only confirm the strategy appeared in the French-language source pool, not that it was absent from all other global coverage.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">fa</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">tr</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">de</span><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">fr</span><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">zh</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">ar</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">1</span></div>
+</div>
+</div>
+</details>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">No direct sources from the Pakistani government or Islamabad-based outlets were included to provide the local perspective on hosting the talks.</div>
+<div class="coverage-gap">Limited information on the specific &#x27;10-point proposal&#x27; mentioned by Iranian and Turkish sources; the actual contents of the peace plan are not detailed in the snippets.</div>
+<div class="coverage-gap">Lack of sources from major Asian fuel consumers (India, Japan) who also rely on the Strait of Hormuz, which would provide a comparison to the European &#x27;six-week&#x27; reserve claim.</div>
+<div class="coverage-gap">Source rsrc-003 (Euronews) is dated 2026-04-01, which is more than 14 days old, but was retained as it provides critical context on the distinction between crude oil reserves (90 days) and refined kerosene vulnerability.</div>
+<div class="coverage-gap">Source rsrc-011 (Connaissance des Énergies) is dated 2026-04-06, more than 14 days old, but was retained to show the specific regional counter-strategy of Taiwan using Saudi Red Sea ports.</div>
+
+<h2>Sources</h2>
+<div class="sources-table-wrap">
+<table class="sources-table">
+<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>
+<tbody>
+<tr id="src-001"><td class="source-num">1</td><td>Argus Media</td><td><a href="https://www.argusmedia.com/en/news-and-insights/latest-market-news/2812577-eu-could-face-jet-fuel-shortages-in-three-weeks-aci" target="_blank" rel="noopener">EU could face jet fuel shortages in three weeks: ACI</a></td><td>en</td><td>United Kingdom</td></tr><tr id="src-002"><td class="source-num">2</td><td>Time Magazine</td><td><a href="https://time.com/article/2026/04/13/iran-US-peace-talks-islamabad-war-nuclear/" target="_blank" rel="noopener">Why the Iran-U.S. Peace Talks Failed</a></td><td>en</td><td>United States</td></tr><tr id="src-003"><td class="source-num">3</td><td>Euronews</td><td><a href="https://de.euronews.com/my-europe/2026/04/01/strasse-von-hormus-oelpreise-europa" target="_blank" rel="noopener">Was die Sperrung der Straße von Hormus für Ölpreise, Gas und ...</a></td><td>de</td><td>France</td></tr><tr id="src-004"><td class="source-num">4</td><td>Radio Zamaneh</td><td><a href="https://www.radiozamaneh.com/883873/" target="_blank" rel="noopener">باب‌المندب، سلاح جدید ایران در برابر احتمال اشغال خارگ</a></td><td>fa</td><td>Netherlands</td></tr><tr id="src-005"><td class="source-num">5</td><td>TGRT Haber</td><td><a href="https://www.tgrthaber.com/ekonomi/havacilik-sektoru-alarm-verdi-jet-yakit-krizi-derinlesiyor-3294500" target="_blank" rel="noopener">Havacılık sektörü alarm verdi: Jet yakıt krizi derinleşiyor</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-006"><td class="source-num">6</td><td>Anadolu Agency</td><td><a href="https://www.aa.com.tr/tr/analiz/islamabad-baris-zirvesi-israil-abd-ve-iran-savasinda-diplomasi-cikisi-olabilir-mi/3886254" target="_blank" rel="noopener">İslamabad Barış Zirvesi: İsrail/ABD ve Iran savaşında diplomasi çıkışı olabilir mi?</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-007"><td class="source-num">7</td><td>Tabnak</td><td><a href="https://www.tabnak.ir/fa/news/1366644/" target="_blank" rel="noopener">پس‌لرزه‌های مذاکرات ایران و آمریکا در اسلام‌آباد</a></td><td>fa</td><td>Iran</td></tr><tr id="src-008"><td class="source-num">8</td><td>People&#x27;s Daily</td><td><a href="https://world.people.com.cn/n1/2026/0415/c1002-40701728.html" target="_blank" rel="noopener">特朗普暗示美伊&quot;未来两天&quot;或重启伊斯兰堡会谈</a></td><td>zh</td><td>China</td></tr><tr id="src-009"><td class="source-num">9</td><td>Euronews Arabic</td><td><a href="https://arabic.euronews.com/2026/04/15/iran-threatens-to-halt-exports-through-the-gulf-the-sea-of-oman-and-the-red-sea" target="_blank" rel="noopener">إيران تلوّح بوقف التصدير عبر الخليج وبحر عُمان والبحر الأحمر</a></td><td>ar</td><td>France</td></tr><tr id="src-010"><td class="source-num">10</td><td>INFO.FR</td><td><a href="https://info.fr/kerosene-europe-penurie-systemique-detroit-ormuz-bloque/" target="_blank" rel="noopener">Kérosène : l&#x27;Europe à 21 jours d&#x27;une pénurie systémique</a></td><td>fr</td><td>France</td></tr><tr id="src-011"><td class="source-num">11</td><td>Connaissance des Énergies</td><td><a href="https://www.connaissancedesenergies.org/afp/taiwan-va-sapprovisionner-en-petrole-depuis-les-ports-saoudiens-de-la-mer-rouge-260406" target="_blank" rel="noopener">Taïwan va s&#x27;approvisionner en pétrole depuis les ports saoudiens de la mer Rouge</a></td><td>fr</td><td>France</td></tr><tr id="src-012"><td class="source-num">12</td><td>CBS News</td><td><a href="https://www.cbsnews.com/live-updates/trump-iran-war-strait-hormuz-ceasefire-pakistan-peace-talks-israel-lebanon/" target="_blank" rel="noopener">Trump says Iran war &#x27;close to over&#x27; as Pakistan pushes for new peace talks</a></td><td>en</td><td>United States</td></tr><tr id="src-013"><td class="source-num">13</td><td>ILNA</td><td><a href="https://www.ilna.ir/%D8%A8%D8%AE%D8%B4-%D8%B3%DB%8C%D8%A7%D8%B3%DB%8C-3/1768394/" target="_blank" rel="noopener">تنگه هرمز به روی جهان باز است؛اما برای همیشه به روی دشمنان ایران بسته ...</a></td><td>fa</td><td>Iran</td></tr><tr id="src-014"><td class="source-num">14</td><td>IHA</td><td><a href="https://www.iha.com.tr/haber-abd-iran-gorusmelerinin-yapilacagi-islamabadda-kirmizi-alarm-1195696" target="_blank" rel="noopener">ABD-İran görüşmelerinin yapılacağı İslamabad&#x27;da &#x27;kırmızı alarm&#x27;</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-015"><td class="source-num">15</td><td>Verkehrs Rundschau</td><td><a href="https://www.verkehrsrundschau.de/nachrichten/vermischtes/eu-mission-warnt-vor-steigender-gefahr-fuer-schifffahrt-im-roten-meer-3786821" target="_blank" rel="noopener">EU-Mission warnt vor steigender Gefahr für Schifffahrt im Roten Meer</a></td><td>de</td><td>Germany</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>Backed by 15 sources across 6 regions including state-directed Iranian media (Press TV), state-influenced Turkish and Chinese outlets, and independent Western sources (Financial Times, Guardian, NPR), creating sharply competing narratives on blockade legitimacy and peace prospects. The new Red Sea threat and European jet fuel reserve data represent concrete escalatory developments beyond prior coverage of the Hormuz blockade itself. The Pakistan-mediated talks in Islamabad provide a diplomatic counter-narrative to the military escalation, offering rich multi-perspective material.</dd>
+<dt>QA Corrections Applied</dt><dd><ul><li>Removed unsupported Italy-specific attribution from fuel rationing claim; changed &#x27;airports in Italy have already begun implementing fuel rationing [src-005]&#x27; to &#x27;airports have already begun implementing fuel rationing [src-005][src-010]&#x27; — neither rsrc-005 nor rsrc-010 researcher summaries specify Italy.</li>
+<li>Expanded Iran&#x27;s maritime threat scope in the Euronews Arabic paragraph to include &#x27;Persian Gulf&#x27; alongside &#x27;Gulf of Oman and the Red Sea,&#x27; matching the src-009 title which references &#x27;the Gulf, Sea of Oman, and the Red Sea.&#x27;</li></ul></dd>
+<dt>Confidence</dt><dd>medium</dd>
+<dt>Pipeline Run</dt><dd>run-2026-04-16-57c3d6 &middot; 2026-04-16</dd>
+</dl>
+</div>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>

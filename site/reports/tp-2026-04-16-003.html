@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Berlin Donor Conference Pledges €1.5 Billion for Sudan as War Enters Fourth Year</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "B6  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "BC  ";
+}
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Sources table */
+.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.sources-table th {
+  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 3px solid #000;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
+.sources-table a { color: var(--color-primary); text-decoration: none; }
+.sources-table a:hover { text-decoration: underline; }
+.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>Berlin Donor Conference Pledges €1.5 Billion for Sudan as War Enters Fourth Year</h1>
+<p class="subtitle">Sudanese government rejects the conference as &#x27;colonialist&#x27; while aid agencies warn pledges fall short of the world&#x27;s largest humanitarian crisis.</p>
+<p class="date">April 16, 2026</p>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">13</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Countries</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 840 840" class="source-network" role="img" aria-label="Source network: 13 sources from 9 countries">
+<path d="M622.5,240.0 A280,280 0 0 1 622.5,520.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="247.5" x2="635.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M622.5,520.0 A280,280 0 0 1 452.5,650.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="512.5" x2="635.5" y2="527.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M452.5,650.5 A280,280 0 0 1 240.0,622.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="448.6" y1="636.0" x2="456.4" y2="664.9" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M240.0,622.5 A280,280 0 0 1 109.5,452.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="247.5" y1="609.5" x2="232.5" y2="635.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M109.5,452.5 A280,280 0 0 1 137.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="124.0" y1="448.6" x2="95.1" y2="456.4" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M137.5,240.0 A280,280 0 0 1 307.5,109.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="150.5" y1="247.5" x2="124.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M307.5,109.5 A280,280 0 0 1 498.3,126.2" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="311.4" y1="124.0" x2="303.6" y2="95.1" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M498.3,126.2 A280,280 0 0 1 622.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="492.0" y1="139.8" x2="504.7" y2="112.6" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<g class="source-node">
+<line class="conn-line" x1="406.8" y1="414.9" x2="498.1" y2="533.9" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="507.8" cy="546.6" r="16" fill="#0891b2" stroke="#000" stroke-width="1.5"><title>China (1 source)</title></circle>
+<text class="count-label" x="507.8" y="550.6" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="507.8" y="576.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">China</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="336.4" y1="374.3" x2="187.7" y2="354.7" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="171.8" cy="352.6" r="16" fill="#d97706" stroke="#000" stroke-width="1.5"><title>S. Africa (1 source)</title></circle>
+<text class="count-label" x="171.8" y="356.6" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="171.8" y="382.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">S. Africa</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="402.7" y1="342.3" x2="467.0" y2="235.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="475.3" cy="221.4" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>UK (1 source)</title></circle>
+<text class="count-label" x="475.3" y="225.4" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="475.3" y="251.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">UK</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="407.5" y1="345.6" x2="510.6" y2="216.8" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="526.8" cy="196.5" r="26" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>Germany (3 sources)</title></circle>
+<text class="count-label" x="526.8" y="200.5" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">3</text>
+<text class="name-label" x="526.8" y="236.5" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Germany</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="411.8" y1="349.6" x2="502.2" y2="263.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="513.8" cy="252.3" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>Spain (1 source)</title></circle>
+<text class="count-label" x="513.8" y="256.3" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="513.8" y="282.3" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Spain</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="415.6" y1="354.1" x2="557.2" y2="251.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="570.1" cy="241.9" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>France (1 source)</title></circle>
+<text class="count-label" x="570.1" y="245.9" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="570.1" y="271.9" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">France</text>
+</g>
+<circle cx="380" cy="380" r="44" fill="#000"/>
+<text x="380" y="374" font-size="22" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" dominant-baseline="middle">13</text>
+<text x="380" y="394" font-size="9" font-family="'Space Mono', 'Courier New', monospace" fill="white" letter-spacing="0.1em" text-anchor="middle">SOURCES</text>
+<text x="685.0" y="380.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">MIDDLE EAST &amp; N. AFRICA</text>
+<text x="565.7" y="622.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EAST ASIA</text>
+<text x="340.2" y="682.4" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">SOUTH &amp; CENTRAL ASIA</text>
+<text x="138.0" y="565.7" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SE ASIA &amp; OCEANIA</text>
+<text x="77.6" y="340.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SUB-SAHARAN AFRICA</text>
+<text x="194.3" y="138.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">AMERICAS</text>
+<text x="406.6" y="76.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">LATIN AMERICA</text>
+<text x="586.1" y="155.1" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EUROPE</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="Germany: 3 sources">Germany (3)</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="Sudan: 2 sources">Sudan (2)</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="USA: 2 sources">USA (2)</span>
+<span class="country-badge" style="background:#d9770612;color:#d97706;border:1px solid #d9770630" title="South Africa: 1 source">South Africa</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="France: 1 source">France</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="Spain: 1 source">Spain</span>
+<span class="country-badge" style="background:#0891b212;color:#0891b2;border:1px solid #0891b230" title="China: 1 source">China</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="Ireland: 1 source">Ireland</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="United Kingdom: 1 source">United Kingdom</span>
+</div>
+
+<div class="reader-note">This article draws on 13 sources in six languages, giving it broad geographic reach, but no direct testimony from Sudanese civilians, displaced people, or famine-affected communities appears anywhere — despite their being the central subjects of the crisis. Neither the Sudanese Armed Forces nor the Rapid Support Forces, the two warring parties whose exclusion from the conference is itself contested, are represented. The article&#x27;s own language occasionally editorializes — characterizing the conference as having a &#x27;structural problem&#x27; and describing conditions in evaluative terms — which subtly steers interpretation in places where the underlying facts could speak for themselves.</div>
+
+<div class="article-body">
+<p>Donors pledged approximately €1.5 billion at the International Sudan Conference in Berlin on April 15, 2026, marking three years since war erupted between the Sudanese Armed Forces (SAF) and the Rapid Support Forces (RSF) <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-004" class="source-ref"><sup>[4]</sup></a>. Germany, which hosted the conference, contributed between €212 million and €230 million of the total, depending on the source — German-language outlets reported the lower figure while English-language reporting cited the higher <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-004" class="source-ref"><sup>[4]</sup></a><a href="#src-008" class="source-ref"><sup>[8]</sup></a>. The pledges exceeded an initial target of $1 billion but remain far below what aid organizations say is needed to address a crisis affecting more than 30 million people <a href="#src-009" class="source-ref"><sup>[9]</sup></a><a href="#src-011" class="source-ref"><sup>[11]</sup></a>.</p>
+<p>The United Nations reports that 14 million Sudanese — roughly a quarter of the population — have been displaced, including approximately 9 million internally displaced and 4.4 million as refugees in neighboring countries <a href="#src-012" class="source-ref"><sup>[12]</sup></a>. An estimated 21 million face acute food insecurity, including 6.3 million at emergency levels, and more than 200 attacks on health facilities have been documented since the war began in April 2023 <a href="#src-012" class="source-ref"><sup>[12]</sup></a>. Arabic-language Sudanese media describes conditions in starker terms: Al Taghier reported that civilians have resorted to eating tree leaves and that 61.7% of the population faces food insecurity — &#x27;<span lang="fa" dir="rtl">السودان على حافة المجاعة</span>&#x27; (Sudan is on the brink of famine) <a href="#src-007" class="source-ref"><sup>[7]</sup></a>. Analyst Eric Reeves documented famine spreading to specific locations in North Darfur, including Um Baru and Kernoi, alongside the collapse of the health system in those areas <a href="#src-006" class="source-ref"><sup>[6]</sup></a>.</p>
+<p>The conference&#x27;s framing diverges sharply depending on the source. German Foreign Minister Wadephul described the Sudan conflict as a &#x27;brutal catastrophe&#x27; and called for a global weapons embargo to halt the flow of modern arms to both warring parties <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. UN High Commissioner for Human Rights Volker Türk echoed this demand, criticizing the use of drones and modern weapons in the conflict <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. German Development Minister Alabali Radovan warned against the world forgetting the Sudan crisis, emphasizing the need for basic services including water and education, and highlighting systematic sexual violence as a defining feature of the war — a dimension largely absent from non-German coverage <a href="#src-008" class="source-ref"><sup>[8]</sup></a>.</p>
+<p>The Sudanese government rejected the conference outright. As El Demócrata reported: &#x27;Sudán califica de inaceptable y colonialista la conferencia humanitaria de Berlín&#x27; (Sudan labels the Berlin humanitarian conference unacceptable and colonialist) <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. Khartoum accused the organizers of violating national sovereignty and legitimizing militias <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. Separately, the Sudanese Prime Minister characterized the conference results and pledges as non-binding, as reported by Radio Dabanga: &#x27;<span lang="fa" dir="rtl">مؤتمر برلين يخرج بتعهدات تبلغ</span> 1.5 <span lang="fa" dir="rtl">مليار دولار لدعم السودان</span>&#x27; (The Berlin conference produces pledges of $1.5 billion to support Sudan) <a href="#src-005" class="source-ref"><sup>[5]</sup></a>. The Spanish-language source amplified the sovereignty framing prominently in its headline, while European sources subordinated it to the humanitarian narrative <a href="#src-003" class="source-ref"><sup>[3]</sup></a><a href="#src-004" class="source-ref"><sup>[4]</sup></a><a href="#src-008" class="source-ref"><sup>[8]</sup></a>.</p>
+<p>The African Union offered qualified support. Le Monde reported that Mahamoud Ali Youssouf, President of the African Union Commission, welcomed the German initiative but stressed the critical absence of a cessation of hostilities: &#x27;Après trois ans de guerre au Soudan, la conférence de Berlin recueille plus de 1,3 milliard d&#x27;euros de promesses d&#x27;aide&#x27; (After three years of war in Sudan, the Berlin conference collects more than €1.3 billion in aid pledges) <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. This tension — between welcoming funds and noting the lack of a ceasefire — reflects a broader structural problem with the conference.</p>
+<p>Chinese-language coverage foregrounded a different concern entirely. Artto News emphasized that neither the SAF nor the RSF participated in the Berlin conference, treating this exclusion as the primary reason peace prospects remain dim and the pledges as secondary to the political failure <a href="#src-009" class="source-ref"><sup>[9]</sup></a>. RTE and DW confirmed that both warring parties were deliberately excluded, with the conference instead including approximately 40 political and civilian figures <a href="#src-010" class="source-ref"><sup>[10]</sup></a><a href="#src-011" class="source-ref"><sup>[11]</sup></a>. This framing contrasts with Western European sources, which acknowledged the absence but centered the humanitarian funding narrative <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-004" class="source-ref"><sup>[4]</sup></a>.</p>
+<p>Amnesty International introduced an accountability dimension absent from most government and mainstream media coverage. The organization noted that less than 40% of the 2025 humanitarian response plan for Sudan had been funded, and urged high-income countries to address NGO operational disruptions that prevent aid from reaching affected populations <a href="#src-013" class="source-ref"><sup>[13]</sup></a>. This record of past shortfalls raises questions about whether the new pledges will translate into actual disbursements — a concern that no conference-focused source addressed in detail.</p>
+<p>This report draws on 13 sources in six languages (English, French, German, Arabic, Spanish, and Chinese). No direct testimony from Sudanese civilians, displaced persons, or famine-affected communities was available despite their being the central subjects of the conference and the crisis. No perspectives from either the SAF or RSF — the two belligerents whose actions created the crisis and whose absence from Berlin is itself contested — were represented. No voices from frontline humanitarian organizations such as Médecins Sans Frontières or the Sudanese Red Crescent, who could speak to the gap between pledges and actual aid delivery, were found. Perspectives from regional governments with direct stakes — Egypt, Chad, South Sudan, Saudi Arabia, and the UAE, several of which host large refugee populations or face accusations of arms supply — were also absent.</p>
+<p>The conference concluded with no ceasefire agreement and no mechanism to compel the warring parties to negotiate <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-009" class="source-ref"><sup>[9]</sup></a>. Whether the €1.5 billion in pledges will be disbursed, and whether aid can reach besieged areas where famine conditions are confirmed, remains unresolved <a href="#src-006" class="source-ref"><sup>[6]</sup></a><a href="#src-013" class="source-ref"><sup>[13]</sup></a>. The next expected development is the implementation of pledged funds against a backdrop of continued fighting and restricted humanitarian access <a href="#src-012" class="source-ref"><sup>[12]</sup></a><a href="#src-013" class="source-ref"><sup>[13]</sup></a>.</p>
+</div>
+<p class="word-count">896 words</p>
+
+<h2>Perspectives &mdash; Stakeholder Analysis</h2>
+<div class="card-grid">
+<div class="card">
+  <div class="card-header"><span class="card-actor">Government of Sudan</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Sudan</div>
+  <div class="card-position">Aggressively rejects the Berlin conference as colonialist and a violation of sovereignty, claiming it legitimizes militias. The Sudanese Prime Minister separately characterizes the conference results and pledges as non-binding.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Mahamoud Ali Youssouf</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; African Union</div>
+  <div class="card-position">Welcomes the German initiative but stresses the critical absence of a cessation of hostilities, offering only qualified support for the conference outcomes.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Wadephul</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Germany</div>
+  <div class="card-position">Describes the Sudan conflict as a brutal catastrophe and demands a global weapons embargo to halt the flow of modern arms to the warring parties.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Volker Türk</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; Switzerland</div>
+  <div class="card-position">Criticizes the use of modern weapons and drones in the Sudan conflict and calls for a comprehensive ban on arms deliveries to the warring parties.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Alabali Radovan</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Germany</div>
+  <div class="card-position">Warns against the world forgetting the Sudan crisis and emphasizes the need for basic service provision including water, education, and addressing systematic sexual violence.</div>
+  
+</div>
+</div>
+
+<h2>Missing Voices</h2>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No direct testimony from Sudanese civilians, displaced persons, or famine-affected communities — the people eating tree leaves, fleeing North Darfur, or trapped in besieged areas. Despite being the central subjects of the entire conference and the world&#x27;s largest humanitarian crisis, their voices are entirely absent from the dossier. Arabic-language sources describe their conditions but do not quote them.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">military</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No perspectives from either the Sudanese Armed Forces (SAF) or the Rapid Support Forces (RSF), the two primary belligerents whose actions created the crisis and whose absence from the Berlin conference is itself a major point of contention. Their strategic calculations, ceasefire positions, and responses to arms embargo calls are unrepresented.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">civil_society</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No voices from Sudanese or international NGOs operating on the ground — organizations like Médecins Sans Frontières, the Sudanese Red Crescent, or local mutual aid networks — who could speak to aid delivery logistics, access blockages, and the practical gap between pledges and actual relief reaching affected populations.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">international_org</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No perspectives from UN operational agencies such as OCHA, WFP, or UNHCR, which manage the humanitarian response plan that was less than 40% funded in 2025. Their assessment of whether €1.5 billion is adequate, how it compares to the actual funding gap, and what operational barriers exist would be essential context.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No perspectives from regional governments with direct stakes — Egypt, Chad, South Sudan, Ethiopia, Saudi Arabia, or the UAE — several of which host large Sudanese refugee populations or have been accused of supplying arms to the warring parties. Their positions on the arms embargo demand and the conference&#x27;s legitimacy are absent.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">academia</span><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">minor</span></div>
+  <div class="missing-voice-desc">No conflict analysts, famine researchers, or Sudan specialists who could contextualize the pledges against historical precedent for donor follow-through, or assess the political economy of the war and prospects for negotiated settlement.</div>
+</div>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">Germany&#x27;s financial contribution to the conference is reported as €230 million by English-language sources (src-001/AllAfrica) and as €212 million by German-language sources (src-004/Deutschlandfunk, src-008/BMZ). The original article cited only the higher figure.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article now presents both figures and identifies which language sources carry which number, allowing readers to assess the discrepancy.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Western European sources (src-001, src-004, src-008) frame the conference as a successful humanitarian mobilization and diplomatic effort; Sudanese government-aligned and Spanish-language sources (src-003, src-005) frame it as a colonialist violation of sovereignty.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The original article already addressed this divergence by presenting both framings in separate paragraphs. No additional correction was required.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></div>
+  <div class="divergence-desc">Arabic-language sources (src-007) provide visceral ground-level detail on famine conditions (civilians eating tree leaves, 61.7% food insecurity) that is largely absent from English and German clinical financial reporting.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The original article already incorporated the Arabic-language detail from src-007 in the second paragraph. No additional correction was required.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></div>
+  <div class="divergence-desc">Chinese-language coverage (src-009) and the RTÉ/DW sources (src-010, src-011) treat the exclusion of warring parties as the primary political failure, while Western European sources center the humanitarian funding narrative.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The original article already contrasted these framings explicitly in the sixth paragraph. No additional correction was required.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The article&#x27;s displacement sub-figures (9 million internally displaced + 4.4 million refugees = 13.4 million) did not arithmetically sum to the stated total of 14 million from src-012, creating an internal inconsistency in the presentation of UN data.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article adds &#x27;approximately&#x27; before the sub-figures to signal they are component estimates rather than an exhaustive breakdown summing to exactly 14 million, preserving the UN&#x27;s headline total.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">The article&#x27;s transparency note stated &#x27;five languages&#x27; while listing six (English, French, German, Arabic, Spanish, Chinese), an internal counting error.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Corrected to &#x27;six languages&#x27; in the transparency note.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">6 language bias findings &middot; Severity: <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
+<div class="bias-finding">
+  <span class="bias-excerpt">brutal catastrophe</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">Although this phrase originates from German Foreign Minister Wadephul, the article introduces it with &#x27;described the Sudan conflict as&#x27; — proper attribution. However, the article does not place quotation marks around &#x27;brutal catastrophe&#x27; in the English rendering, which blurs the line between attributed characterization and editorial voice; a reader scanning quickly could read it as the article&#x27;s own assessment of the conflict.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">This tension — between welcoming funds and noting the lack of a ceasefire — reflects a broader structural problem with the conference.</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Structural problem&#x27; is an editorial judgment characterizing the conference&#x27;s design as flawed without attributing that assessment to any source; the article could instead describe the specific gap (no ceasefire mechanism, no belligerent participation) and let the reader draw the conclusion.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">a concern that no conference-focused source addressed in detail</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">Characterizing the absence of disbursement analysis as a &#x27;concern&#x27; frames it editorially as something that should worry the reader, rather than neutrally noting that no source examined the question of whether pledges would be fulfilled.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">the two belligerents whose actions created the crisis</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Created the crisis&#x27; assigns sole causal responsibility for the entire humanitarian situation to the SAF and RSF as a matter of editorial assertion; while they are the primary warring parties, the causal chain includes international arms suppliers, political failures, and pre-existing structural conditions that this phrasing collapses into a single attribution.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">conditions in starker terms</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Starker&#x27; is a comparative judgment by the article&#x27;s editorial voice characterizing Arabic-language reporting as more vivid or severe than other sources, rather than neutrally noting that the Arabic-language sources included specific details absent from other coverage.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">visceral ground-level detail</span> <span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">intensifier</span>
+  <div class="bias-explanation">&#x27;Visceral&#x27; is an intensifier that characterizes the Arabic-language reporting emotionally rather than descriptively; it tells the reader how to feel about the detail (as gut-wrenching) rather than simply noting that the source provided specific accounts of famine conditions.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">6</span></div>
+<div class="bar-row"><span class="bar-label">de</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">ar</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">fr</span><div class="bar-track"><div class="bar-fill" style="width:17%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">es</span><div class="bar-track"><div class="bar-fill" style="width:17%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">zh</span><div class="bar-track"><div class="bar-fill" style="width:17%"></div></div><span class="bar-count">1</span></div>
+</div>
+</div>
+</details>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">Lack of direct quotes or perspectives from the Rapid Support Forces (RSF), despite their role as a primary belligerent and the subject of government accusations regarding the conference.</div>
+<div class="coverage-gap">Limited coverage of the specific logistical &#x27;road and infrastructure&#x27; problems mentioned in passing in video snippets that prevent aid from reaching famine zones.</div>
+<div class="coverage-gap">No detailed breakdown of the €1.5 billion pledge by country beyond Germany and the EU; the specific contributions of other major &#x27;high-income countries&#x27; are not listed.</div>
+<div class="coverage-gap">Source rsrc-006 (Sudan Reeves) was retained despite being from February 2026 because it provides specific geographic famine locations (Um Baru, Kernoi) that explain the severity of the crisis mentioned in the April conference results.</div>
+
+<h2>Sources</h2>
+<div class="sources-table-wrap">
+<table class="sources-table">
+<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>
+<tbody>
+<tr id="src-001"><td class="source-num">1</td><td>AllAfrica</td><td><a href="https://allafrica.com/stories/202604160271.html" target="_blank" rel="noopener">Donors Pledge €1.5 Billion for Sudan At Berlin Conference</a></td><td>en</td><td>South Africa</td></tr><tr id="src-002"><td class="source-num">2</td><td>Le Monde</td><td><a href="https://www.lemonde.fr/afrique/article/2026/04/15/apres-trois-ans-de-guerre-au-soudan-la-conference-de-berlin-recueille-plus-de-1-3-milliard-d-euros-de-promesses-d-aide-pour-le-soudan_6680231_3213.html" target="_blank" rel="noopener">Après trois ans de guerre au Soudan, la conférence de Berlin recueille plus de 1,3 milliard d&#x27;euros de promesses d&#x27;aide pour le Soudan</a></td><td>fr</td><td>France</td></tr><tr id="src-003"><td class="source-num">3</td><td>El Demócrata</td><td><a href="https://www.democrata.es/internacional/sudan-califica-de-inaceptable-y-colonialista-la-conferencia-humanitaria-de-berlin-sobre-su-crisis/" target="_blank" rel="noopener">Sudán arremete contra la Conferencia Humanitaria de Berlin</a></td><td>es</td><td>Spain</td></tr><tr id="src-004"><td class="source-num">4</td><td>Deutschlandfunk</td><td><a href="https://www.deutschlandfunk.de/unterstuetzung-von-fast-1-5-milliarden-euro-fuer-den-sudan-zugesagt-100.html" target="_blank" rel="noopener">Unterstützung von fast 1,5 Milliarden Euro für den Sudan zugesagt</a></td><td>de</td><td>Germany</td></tr><tr id="src-005"><td class="source-num">5</td><td>Radio Dabanga</td><td><a href="https://www.dabangasudan.org/ar/all-news/article/%D9%85%D8%A4%D8%AA%D9%85%D8%B1-%D8%A8%D8%B1%D9%84%D9%8A%D9%86-%D9%8A%D8%AE%D8%B1%D8%AC-%D8%A8%D8%AA%D8%B9%D9%87%D8%AF%D8%A7%D8%AA-%D8%AA%D8%A8%D9%84%D8%BA-1-5-%D9%85%D9%84%D9%8A%D8%A7%D8%B1-%D8%AF" target="_blank" rel="noopener">مؤتمر برلين يخرج بتعهدات تبلغ 1.5 مليار دولار لدعم السودان</a></td><td>ar</td><td>Sudan</td></tr><tr id="src-006"><td class="source-num">6</td><td>Sudan Reeves</td><td><a href="https://sudanreeves.org/2026/02/09/sudan-famine-update-february-9-2026/" target="_blank" rel="noopener">Sudan Famine Update, February 9, 2026 - by Eric Reeves</a></td><td>en</td><td>USA</td></tr><tr id="src-007"><td class="source-num">7</td><td>Al Taghier</td><td><a href="https://altaghier.tv/2026/04/13/%D8%AA%D9%82%D8%B1%D9%8A%D8%B1-%D8%A7%D9%84%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA-%D8%A7%D9%84%D8%A5%D9%86%D8%B3%D8%A7%D9%86%D9%8A%D8%A9-%D8%A7%D9%84%D8%B3%D9%88%D8%AF%D8%A7%D9%86-%D8%B9%D9%84%D9%89/" target="_blank" rel="noopener">تقرير المنظمات الإنسانية: السودان على حافة المجاعة</a></td><td>ar</td><td>Sudan</td></tr><tr id="src-008"><td class="source-num">8</td><td>BMZ (Federal Ministry for Economic Cooperation and Development)</td><td><a href="https://www.bmz.de/de/aktuelles/aktuelle-meldungen/unterstuetzung-fuer-sudan-298482" target="_blank" rel="noopener">Sudan-Konferenz in Berlin: Deutschland erhöht Unterstützung für ...</a></td><td>de</td><td>Germany</td></tr><tr id="src-009"><td class="source-num">9</td><td>Artto News</td><td><a href="https://arttonews.com/%E8%B6%8510%E4%BA%BF%E8%8B%B1%E9%95%91%E6%89%BF%E8%AF%BA%EF%BC%9A%E8%8B%8F%E4%B8%B9%E4%BA%BA%E9%81%93%E5%8D%B1%E6%9C%BA%E5%8A%A0%E5%89%A7/" target="_blank" rel="noopener">超10亿英镑承诺：苏丹人道危机加剧</a></td><td>zh</td><td>China</td></tr><tr id="src-010"><td class="source-num">10</td><td>RTÉ</td><td><a href="https://www.rte.ie/news/world/2026/0415/1568343-sudan-war/" target="_blank" rel="noopener">Donors pledge €1.3bn as Sudan marks three years of war</a></td><td>en</td><td>Ireland</td></tr><tr id="src-011"><td class="source-num">11</td><td>DW</td><td><a href="https://amp.dw.com/en/berlin-hosts-sudan-conference-a-brutal-forgotten-conflict/a-76798246" target="_blank" rel="noopener">Berlin hosts Sudan Conference: a brutal, forgotten conflict</a></td><td>en</td><td>Germany</td></tr><tr id="src-012"><td class="source-num">12</td><td>UN News</td><td><a href="https://news.un.org/en/story/2026/04/1167281" target="_blank" rel="noopener">Sudan: 14 million displaced; hunger and attacks on health continue as war enters fourth year</a></td><td>en</td><td>USA</td></tr><tr id="src-013"><td class="source-num">13</td><td>Amnesty International</td><td><a href="https://www.amnesty.org/en/latest/news/2026/04/sudan-high-income-countries-must-use-berlin-meeting-to-save-lives-as-conflict-hits-three-year-mark/" target="_blank" rel="noopener">Sudan: High-income countries must use Berlin meeting to save lives as conflict hits three-year mark</a></td><td>en</td><td>United Kingdom</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>Twelve sources spanning Africa (AllAfrica), Europe (Guardian, DW, Tagesschau), Middle East (Anadolu), East Asia (Japan Today), and Latin America (El Pais) in three languages provide genuinely diverse geographic framing. The Berlin conference creates a concrete news peg with competing narratives — Western donors emphasizing humanitarian generosity versus African and crisis-analysis sources questioning whether pledges match the scale of need. The story fills a critical gap: Africa is underrepresented in today&#x27;s other topics, and this is described as the world&#x27;s largest humanitarian crisis.</dd>
+<dt>QA Corrections Applied</dt><dd><ul><li>Replaced &#x27;€230 million&#x27; with &#x27;between €212 million and €230 million of the total, depending on the source — German-language outlets reported the lower figure while English-language reporting cited the higher&#x27; to reflect the cross-source discrepancy flagged in preliminary_divergences [src-001][src-004][src-008].</li>
+<li>Changed &#x27;9 million internally and 4.4 million as refugees&#x27; to &#x27;approximately 9 million internally displaced and 4.4 million as refugees&#x27; and removed the false implication that these sub-figures sum to exactly 14 million, preserving the UN&#x27;s headline total while acknowledging the sub-figures are approximate components [src-012].</li>
+<li>Changed &#x27;five languages&#x27; to &#x27;six languages&#x27; in the transparency note, correcting an internal arithmetic error (the article listed six languages: English, French, German, Arabic, Spanish, and Chinese).</li>
+<li>Updated the summary to reflect the corrected Germany contribution range (€212 million to €230 million) consistent with the body correction.</li></ul></dd>
+<dt>Confidence</dt><dd>medium</dd>
+<dt>Pipeline Run</dt><dd>run-2026-04-16-57c3d6 &middot; 2026-04-16</dd>
+</dl>
+</div>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>
