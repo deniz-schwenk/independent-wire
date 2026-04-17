@@ -168,8 +168,7 @@ def load_input_for_role(
         return (
             "Review these findings. Cluster related findings into topics. "
             "Score each topic's newsworthiness on a 1-10 scale. "
-            "For each topic provide: title, topic_slug, relevance_score, "
-            "summary, source_ids.",
+            "For each topic provide: title, relevance_score, summary, source_ids.",
             {"findings": compressed},
         )
 
@@ -234,7 +233,7 @@ def resolve_reasoning_param(
     if model_slug.startswith("anthropic/claude"):
         # Opus: effort levels ignored, use adaptive thinking
         return True
-    return reasoning_level  # "low", "medium", "high"
+    return reasoning_level  # "none", "minimal", "low", "medium", "high"
 
 
 async def run_model(
@@ -321,7 +320,7 @@ async def main():
     )
     parser.add_argument(
         "--reasoning", default=None,
-        choices=["off", "low", "medium", "high", "on"],
+        choices=["off", "none", "minimal", "low", "medium", "high", "on"],
         help="Reasoning level (single model mode)",
     )
     parser.add_argument(

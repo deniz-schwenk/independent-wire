@@ -26,6 +26,8 @@ class TopicAssignment:
     topic_slug: str
     selection_reason: str
     raw_data: dict = field(default_factory=dict)  # data from Kurator
+    follow_up_to: str | None = None      # tp_id of previous TP this follows up on
+    follow_up_reason: str | None = None  # why this is a follow-up
 
 
 @dataclass

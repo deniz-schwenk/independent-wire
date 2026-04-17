@@ -42,6 +42,57 @@ def _strip_code_fences(text: str) -> str:
     return text
 
 
+def _extract_date_from_url(url: str) -> str | None:
+    """Extract publication date from common news URL patterns.
+
+    Most news outlets embed dates in URLs:
+    - /2026/04/14/  (path segments)
+    - /2026-04-14/  (ISO in path)
+    - /20260414/    (compact)
+    - /article/2026/04/  (year/month only)
+
+    Returns ISO date string (YYYY-MM-DD) or None if no date found.
+    """
+    # Pattern 1: /YYYY/MM/DD/ or /YYYY-MM-DD/
+    m = re.search(r'/(\d{4})[/-](\d{2})[/-](\d{2})(?:/|[^0-9])', url)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12 and 1 <= d <= 31:
+            return f"{y:04d}-{mo:02d}-{d:02d}"
+
+    # Pattern 2: /YYYYMMDD/ (compact, e.g. some Asian outlets)
+    m = re.search(r'/(\d{4})(\d{2})(\d{2})(?:/|[^0-9]|$)', url)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12 and 1 <= d <= 31:
+            return f"{y:04d}-{mo:02d}-{d:02d}"
+
+    # Pattern 3: /YYYY/MM/ (year and month only, no day)
+    m = re.search(r'/(\d{4})[/-](\d{2})(?:/|[^0-9])', url)
+    if m:
+        y, mo = int(m.group(1)), int(m.group(2))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12:
+            return f"{y:04d}-{mo:02d}-01"
+
+    return None
+
+
+def _sanitize_null_strings(obj: dict | list | str | None) -> dict | list | str | None:
+    """Recursively replace LLM-generated string 'null'/'None'/'N/A'/'' with actual None.
+
+    LLMs sometimes write "null" as a string instead of the JSON null value.
+    This is valid JSON but causes visible 'null' labels in rendered output.
+    Only applies to string values — does not affect keys, numbers, or booleans.
+    """
+    if isinstance(obj, dict):
+        return {k: _sanitize_null_strings(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_sanitize_null_strings(item) for item in obj]
+    if isinstance(obj, str) and obj.strip().lower() in ("null", "none", "n/a", ""):
+        return None
+    return obj
+
+
 def _extract_list(result: object) -> list[dict] | None:
     """Extract a list from an AgentResult (structured or content)."""
     if result.structured and isinstance(result.structured, list):
@@ -297,7 +348,8 @@ class Pipeline:
         agents: dict[str, Agent],
         output_dir: str = "./output",
         state_dir: str = "./state",
-        max_topics: int = 7,
+        max_topics: int = 10,
+        max_produce: int = 3,
         mode: str = "full",
         gate_handler: Callable | None = None,
     ) -> None:
@@ -306,6 +358,7 @@ class Pipeline:
         self.output_dir = output_dir
         self.state_dir = state_dir
         self.max_topics = max_topics
+        self.max_produce = max_produce
         self.mode = mode
         self.gate_handler = gate_handler
         self.state: PipelineState | None = None
@@ -409,6 +462,38 @@ class Pipeline:
                 "03-editor-assignments.json",
                 [asdict(a) for a in assignments],
             )
+
+            # Filter out rejected topics (priority 0) — Editor includes them
+            # for transparency but they must not enter production.
+            rejected = [a for a in assignments if a.priority <= 0]
+            assignments = [a for a in assignments if a.priority > 0]
+            if rejected:
+                rejected_titles = [a.title for a in rejected]
+                logger.info(
+                    "Filtered %d rejected topic(s): %s",
+                    len(rejected), rejected_titles,
+                )
+            if not assignments:
+                logger.warning("Editor rejected all topics — no production this run")
+                self.state.current_step = "done"
+                await self._save_state()
+                return packages
+
+            # Sort by priority (desc), tiebreaker: source count (desc), then position
+            assignments.sort(
+                key=lambda a: (
+                    -a.priority,
+                    -len(a.raw_data.get("source_ids", [])),
+                )
+            )
+
+            # Slice to production budget
+            if len(assignments) > self.max_produce:
+                logger.info(
+                    "Production budget: %d accepted topics, producing top %d",
+                    len(assignments), self.max_produce,
+                )
+                assignments = assignments[: self.max_produce]
 
             # Gate check after editorial conference (full mode only)
             gate_ok = await self.gate("editorial_conference", assignments)
@@ -732,6 +817,14 @@ class Pipeline:
             topics.sort(
                 key=lambda t: t.get("relevance_score", 0), reverse=True
             )
+
+            # Write unsliced output for transparency before max_topics cap
+            self._write_debug_output("02-curator-topics-unsliced.json", topics)
+            logger.info(
+                "Curator produced %d topics, slicing to top %d",
+                len(topics), self.max_topics,
+            )
+
             return topics[: self.max_topics]
         except Exception as e:
             logger.error("Curator failed: %s", e)
@@ -967,6 +1060,8 @@ class Pipeline:
                     context=perspektiv_context,
                 )
                 perspective_analysis = _extract_dict(result) or {}
+                if perspective_analysis:
+                    perspective_analysis = _sanitize_null_strings(perspective_analysis)
                 self._track_agent(result, "perspektiv", slug)
                 if not perspective_analysis and result.content:
                     self._log_raw_on_parse_failure(result, "Perspektiv", slug, "04b-perspektiv")
@@ -1199,6 +1294,24 @@ class Pipeline:
                 prev_data = json.loads(tp_path.read_text(encoding="utf-8"))
                 follow_up_data["previous_slug"] = prev_data.get("metadata", {}).get("topic_slug", "")
 
+        # Restore estimated_date from research dossier onto Writer's sources.
+        # The Writer re-indexes rsrc-NNN → src-NNN but drops estimated_date.
+        # Python copies it back via URL lookup — no prompt change needed.
+        dossier_dates = {
+            s["url"]: s.get("estimated_date")
+            for s in research_dossier.get("sources", [])
+            if s.get("estimated_date")
+        }
+        for src in article.get("sources", []):
+            url = src.get("url", "")
+            if url in dossier_dates:
+                src["estimated_date"] = dossier_dates[url]
+            elif url:
+                # Writer-added source (via web_search) — try URL extraction
+                est = _extract_date_from_url(url)
+                if est:
+                    src["estimated_date"] = est
+
         # Assemble TopicPackage
         return TopicPackage(
             id=assignment.id,
@@ -1294,6 +1407,19 @@ class Pipeline:
         # Deduplicate by URL
         search_results = _deduplicate_search_results(search_results)
 
+        # Enrich search results with estimated publication dates from URLs
+        for sr in search_results:
+            raw = sr.get("results", "")
+            url_pattern = re.compile(r"^\s{3}(https?://\S+)", re.MULTILINE)
+            urls_with_dates = []
+            for url_match in url_pattern.finditer(raw):
+                url = url_match.group(1)
+                est_date = _extract_date_from_url(url)
+                if est_date:
+                    urls_with_dates.append({"url": url, "estimated_date": est_date})
+            if urls_with_dates:
+                sr["url_dates"] = urls_with_dates
+
         self._write_debug_output(f"04-researcher-search-{slug}.json", search_results)
 
         # Phase 3: Assemble dossier (one LLM call, no tools)
@@ -1305,12 +1431,33 @@ class Pipeline:
                     "title": assignment_data.get("title", ""),
                     "selection_reason": assignment_data.get("selection_reason", ""),
                 },
+                "date": self.state.date,
                 "search_results": search_results,
             },
         )
         self._track_agent(assemble_result, "researcher_assemble", slug)
 
         dossier = _extract_dict(assemble_result) or {}
+
+        # Check for old sources and log warnings
+        if dossier and self.state:
+            run_date = datetime.strptime(self.state.date, "%Y-%m-%d")
+            for source in dossier.get("sources", []):
+                url = source.get("url", "")
+                est_date_str = source.get("estimated_date") or _extract_date_from_url(url)
+                if est_date_str:
+                    try:
+                        est_date = datetime.strptime(est_date_str, "%Y-%m-%d")
+                        age_days = (run_date - est_date).days
+                        if age_days > 30:
+                            logger.warning(
+                                "Old source in '%s': %s (%s, %d days old)",
+                                slug, source.get("outlet", ""), est_date_str, age_days,
+                            )
+                        if not source.get("estimated_date"):
+                            source["estimated_date"] = est_date_str
+                    except ValueError:
+                        pass
 
         # Write debug output (raw content if parsing failed)
         if dossier:
@@ -1452,6 +1599,32 @@ class Pipeline:
                 )
             assignments = [assignments[topic_filter - 1]]
             logger.info("Filtered to topic %d: %s", topic_filter, assignments[0].title)
+
+        # Filter out rejected topics (priority 0)
+        pre_filter_count = len(assignments)
+        assignments = [a for a in assignments if a.priority > 0]
+        filtered_count = pre_filter_count - len(assignments)
+        if filtered_count:
+            logger.info("Filtered %d rejected topic(s) (priority 0)", filtered_count)
+        if not assignments:
+            logger.warning("All selected assignments have priority 0 — nothing to produce")
+            self.state.current_step = "done"
+            await self._save_state()
+            return packages
+
+        # Sort + slice to production budget (same logic as run())
+        assignments.sort(
+            key=lambda a: (
+                -a.priority,
+                -len(a.raw_data.get("source_ids", [])),
+            )
+        )
+        if len(assignments) > self.max_produce:
+            logger.info(
+                "Production budget: %d accepted topics, producing top %d",
+                len(assignments), self.max_produce,
+            )
+            assignments = assignments[: self.max_produce]
 
         # --- Load per-topic data for later steps ---
         dossiers: dict[str, dict] = {}

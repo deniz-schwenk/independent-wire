@@ -1,7 +1,7 @@
 # Independent Wire — Task Tracker
 
 **Created:** 2026-03-30
-**Updated:** 2026-04-14 (Session 8 — WP-MEMORY-V1 live, README rewrite, site live, strategic WPs added)
+**Updated:** 2026-04-15 (Session 9 — Curator capacity, priority filter, null sanitizing, source recency, bias card collapse, writer prompt, auto-deploy)
 **Purpose:** Living document — updated after each session
 
 ---
@@ -32,6 +32,8 @@
 | WP-QA-FIX-MERGE | ✅ | QA+Fix: merged QA-Analyze + Writer-Correction into single Sonnet call. Eliminated 3× Opus retry loop. Input filtering for all agents. |
 | WP-RENDERING | ✅ | Topic Package → HTML renderer. 12 sections: Header, Metadata Bar, Radial Source Network, Reader Note, Article, Perspectives, Missing Voices, Divergences, Bias Card, Coverage Gaps, Sources Table, Transparency Trail. Self-contained HTML, no JS, stdlib-only Python. |
 | WP-WEBSITE | ✅ | Publication site: publish.py generates index.html + feed.xml from rendered TPs. Brutalist design system (Space Mono + Space Grotesk). GitHub Actions deployment workflow. |
+| WP-CURATOR-CAPACITY | ✅ | Curator targets 10-20 topics. max_topics=10 (Editor sees), max_produce=3 (pipeline produces). Debug: 02-curator-topics-unsliced.json written before slice. Dead prompts deleted (CLUSTER.md, SCORE.md). |
+| WP-SOURCE-RECENCY | ✅ | URL date extraction (_extract_date_from_url). Search results enriched with url_dates. Pipeline date passed to Assembler context. Assembler prompt updated: estimated_date field, recency-aware selection, age notes in coverage_gaps. Pipeline logs warnings for sources >30 days old. Dead prompt deleted (researcher/AGENTS.md). |
 
 ## Completed Fixes
 
@@ -47,6 +49,12 @@
 | QF-08 | ✅ | output_schema for QA-Analyze structured retry |
 | Curator-Cleanup | ✅ | 4 output fields only (title, relevance_score, summary, source_ids). Python computes geographic_coverage, missing_perspectives, topic_slug |
 | Curator-Model | ✅ | minimax-m2.7 (D-Tier) → google/gemini-3-flash-preview (A-Tier), reasoning=none |
+| FIX-NULL-SANITIZE | ✅ | _sanitize_null_strings() normalizes LLM string "null"/"None"/"N/A" to Python None. Applied after Perspektiv output. Defense-in-depth guard in render.py build_perspectives(). |
+| FIX-PRIORITY-FILTER | ✅ | Pipeline filters priority <= 0 after Editor output. Rejected topics stay in debug (03-editor-assignments.json) but don't enter production. Applied in both run() and run_partial(). |
+| FIX-DATE-RESTORE | ✅ | estimated_date restored from Assembler dossier onto Writer's sources via URL lookup in _produce_single(). Writer-added sources (web_search) get date via URL extraction. |
+| FIX-AUTO-DEPLOY | ✅ | run.py --publish now git add + commit + push site/ after publish.py. GitHub Actions deploys automatically. |
+| FIX-WRITER-PROMPT | ✅ | Pipeline conditionals removed, redundancies deduplicated (99→77 lines, ~30% reduction). Prose structure guidance added. |
+| FIX-BIAS-COLLAPSE | ✅ | Bias card: reader_note stays prominent, findings + bar chart behind native details/summary element. Summary line shows count + severity. |
 ## Model Evaluation Status (April 2026)
 
 ### Directly Evaluated
@@ -83,11 +91,28 @@ Key cross-cutting findings:
 | WP-WEBSITE | ✅ Done | Publication site: publish.py, index.html, feed.xml, GitHub Actions. Brutalist design. | **Done** |
 | WP-LAUF-10 | ✅ Done | Full pipeline run with all eval-validated models. 3/3 topics, $7.84, 47 min. | **Done** |
 | WP-QA-FIX-MERGE | ✅ Done | QA+Fix merged, input filtering, retry loop eliminated. Lauf 11: 25 min, ~495K tokens. | **Done** |
-| WP-MEMORY | 🟡 Medium | Agent Memory Loading/Saving (Editor knows past coverage) | ✅ Done (Lauf 13) |
+| WP-MEMORY | ✅ Done | Agent Memory Loading/Saving (Editor knows past coverage) | **Done** (Lauf 13) |
+| WP-CURATOR-CAPACITY | ✅ Done | Curator 10-20 topics, Editor sees 10, max_produce=3, priority filter | **Done** (Lauf 14) |
+| WP-SOURCE-RECENCY | ✅ Done | URL date extraction, estimated_date, pipeline warnings | **Done** (Lauf 14) |
 | WP-SEO | 🔴 High | Meta-Tags, OpenGraph, Sitemap — required before LinkedIn launch | Open |
 | WP-FEED-EXPAND | 🟡 Medium | Scale from 72 to 100+ feeds. At 200+, reactivate Collector as pre-filter. | Open |
 | WP-CACHING | 🟢 Low | Prompt Caching via OpenRouter | Open |
 ## Future Work Packages
+
+### Production Hardening
+
+| WP | Priority | Description | Status |
+|----|----------|-------------|--------|
+| WP-CLI | 🟡 Medium | Installable CLI: `iw run`, `iw publish`, `iw fetch` via pyproject.toml entry points. Replace `source .venv/bin/activate && source .env && python scripts/run.py` | Open |
+| WP-CONFIG | 🟡 Medium | Config file (`iw.yaml`): models, providers, max_topics, max_produce. Model presets (cost-optimized, quality-max). `iw run --preset cost-optimized --topics 5` | Open |
+| WP-ONBOARDING | 🟢 Low | `iw init` setup wizard: API keys, provider preference, feed selection. "First dossier in 5 minutes" for non-developers. Depends on WP-CLI + WP-CONFIG | Open |
+| WP-BUDGET-LIMITS | 🔴 High | max_cost_per_run parameter, token-cost accumulator in Pipeline, abort on threshold. Prevents runaway costs from loops or bugs. | Open |
+| WP-OUTPUT-SAFETY | 🔴 High | Post-Writer LLM check for defamation, discrimination, harmful content. Small Sonnet/Haiku call. Reputational risk mitigation for public newsroom. | Open |
+| WP-INPUT-SANITIZE | 🟡 Medium | RSS feed title/summary validation against prompt injection. Manipulated feeds could attempt to hijack Curator or Editor. | Open |
+| WP-CONTINUOUS-EVAL | 🟢 Low | Weekly Claude-judge scoring of dossier quality: source diversity, perspective breadth, writing quality. Trend detection over 30+ days. | Open |
+| WP-MONITORING | 🟢 Low | Historical run stats dashboard: cost trends, source diversity over time, quality metrics. Anomaly alerts (double costs, halved diversity). | Open |
+
+### Features
 
 | WP | Description | Status |
 |----|-------------|--------|
@@ -96,8 +121,13 @@ Key cross-cutting findings:
 | WP-SOCIAL | Social media agent: separate source enrichment (X, YouTube, Instagram) | Open |
 | WP-MCP-SERVER | MCP Server: Topic Packages as structured data for Claude/ChatGPT. Reference Instance building block. See WP-MCP-SERVER.md | Open |
 | WP-DNS | DNS configuration Cloudflare + .de/.eu domains | Open |
-| FIX-RSRC-MAPPING | Perspektiv `source_ids` use `rsrc-*` IDs from Researcher dossier, but Topic Package uses `src-*` IDs. Mapping is lost during assembly → Stakeholder Cards can't link to sources. Fix: either pipeline maps rsrc→src during TP assembly, or Perspektiv Agent receives src-IDs. | Open |
-| FIX-GAPS-DUPLICATE | `gaps[]` (top-level) and `bias_analysis.perspectives.missing_voices[]` contain identical data (both from Perspektiv Agent). Remove one during TP assembly in `pipeline.py`. | Open |
+
+### Known Bugs
+
+| Bug | Description | Status |
+|-----|-------------|--------|
+| FIX-RSRC-MAPPING | Perspektiv `source_ids` use `rsrc-*` IDs from Researcher dossier, but Topic Package uses `src-*` IDs. Mapping lost during assembly → Stakeholder Cards can't link to sources. | Open |
+| FIX-GAPS-DUPLICATE | `gaps[]` (top-level) and `bias_analysis.perspectives.missing_voices[]` contain identical data (both from Perspektiv Agent). Remove one during TP assembly. | Open |
 
 ## Eval Infrastructure
 
@@ -155,9 +185,22 @@ tp-003 (Hungary/Orbán): Writer + QA both failed JSON parsing due to unescaped `
 source title (`„Az EU költségvetése nem ATM": több...`). Manually repaired — 22 sources, 6 languages,
 6 divergences recovered from RAW output.
 
+### Lauf 14 (2026-04-15) — Curator capacity, priority filter, source recency live
+3/3 produced, 0 failures. 30 min, €3.30 (~521K tokens).
+First run with: Curator 20→10→3 pipeline, priority-0 filter, null sanitizing, source recency.
+Curator: 20 topics produced (unsliced), top 10 to Editor. Previous max: 3.
+Editor: 8 accepted (priority 2-9), 2 rejected (Hungary duplicate, Congress scandal). Full range used.
+Production: Top 3 by priority (9, 8, 7). Budget cap saved ~€2.20 on 5 unpublished accepted topics.
+Follow-ups: 2/3 (tp-001→Iran blockade, tp-003→IMF downgrade). tp-002 (Israel-Lebanon) standalone.
+Source recency: estimated_date present on all 15 Assembler sources. Restored to TP via URL lookup.
+Pipeline warnings: 2 old sources flagged (Le Monde 86 days, Bank of Israel 45 days).
+Null sanitizing: 0 string-"null" across 18 perspectives — fix confirmed working.
+Topics: Iran Reparations + Blockade (17 src, 6 lang), Israel-Lebanon Talks (13 src, 5 lang),
+IMF Growth Downgrade (15 src, 8 lang).
+
 ## Known Issue: LLM JSON Output with Multilingual Quotes
 
-**Status:** Active — `json-repair` fallback pending (TASK-JSON-REPAIR)
+**Status:** Mitigated — `json-repair` fallback active since Lauf 13
 **Severity:** Medium — causes silent data loss when unescaped quotes break JSON parsing
 **Observed:** Lauf 13 tp-003, Hungarian source title with `„..."` containing unescaped ASCII `"`
 
@@ -166,7 +209,7 @@ French `«»`, Chinese `「」`), the closing quote sometimes uses ASCII `"` whi
 All existing fallbacks (strip fences, brace extraction, trailing comma removal) cannot fix this.
 
 **Mitigation path:**
-1. Immediate: `json-repair` library as additional fallback (TASK-JSON-REPAIR)
+1. ✅ Implemented: `json-repair` library as Attempt 4 fallback in _extract_dict and _extract_list
 2. If insufficient: consider XML output from agents, converted to JSON by Python.
    XML handles embedded quotes naturally via `&quot;` entities.
 3. Monitor frequency across future runs before escalating to XML.

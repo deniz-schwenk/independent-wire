@@ -77,6 +77,7 @@ class Agent:
         base_url: str | None = None,
         api_key: str | None = None,
         reasoning: str | bool | None = None,
+        extra_body_override: dict | None = None,
     ) -> None:
         self.name = name
         self.model = model
@@ -87,6 +88,7 @@ class Agent:
         self.max_tokens = max_tokens
         self.provider = provider
         self.reasoning = reasoning
+        self._extra_body_override = extra_body_override or {}
 
         # Resolve provider defaults
         defaults = PROVIDER_DEFAULTS.get(provider, PROVIDER_DEFAULTS["openrouter"])
@@ -133,13 +135,18 @@ class Agent:
         content = path.read_text(encoding="utf-8").strip()
         return content if content else None
 
-    def _build_system_prompt(self, output_schema: dict | None = None) -> str:
+    def _build_system_prompt(
+        self, output_schema: dict | None = None, system_addendum: str | None = None,
+    ) -> str:
         """Build the full system prompt with optional memory and schema instructions."""
         prompt = self._load_system_prompt()
 
         memory = self._load_memory()
         if memory:
             prompt += f"\n\n---\n\n## Memory\n\n{memory}"
+
+        if system_addendum:
+            prompt += f"\n\n---\n\n{system_addendum}"
 
         if output_schema:
             schema_str = json.dumps(output_schema, indent=2, ensure_ascii=False)
@@ -179,7 +186,9 @@ class Agent:
 
         # Map reasoning parameter to provider-specific extra_body
         extra_body: dict = {}
-        if self.reasoning is not None:
+        if self.reasoning is None and self.provider == "openrouter":
+            extra_body["reasoning"] = {"effort": "none"}
+        elif self.reasoning is not None:
             if self.provider == "openrouter":
                 if isinstance(self.reasoning, bool):
                     extra_body["reasoning"] = {
@@ -192,6 +201,7 @@ class Agent:
                     extra_body["think"] = self.reasoning
                 elif isinstance(self.reasoning, str):
                     extra_body["think"] = self.reasoning
+        extra_body.update(self._extra_body_override)
         if extra_body:
             kwargs["extra_body"] = extra_body
 
@@ -405,11 +415,12 @@ class Agent:
         message: str,
         context: dict | None = None,
         output_schema: dict | None = None,
+        system_addendum: str | None = None,
     ) -> AgentResult:
         """Run the agent: send message to LLM, handle tool calls, return result."""
         start_time = time.monotonic()
 
-        system_prompt = self._build_system_prompt(output_schema)
+        system_prompt = self._build_system_prompt(output_schema, system_addendum)
         user_message = self._build_user_message(message, context)
         tool_defs = self._get_tool_definitions()
 

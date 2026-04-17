@@ -193,7 +193,8 @@ async def main():
         agents=agents,
         output_dir=str(ROOT / "output"),
         state_dir=str(ROOT / "state"),
-        max_topics=3,
+        max_topics=10,
+        max_produce=3,
         mode="quick",
     )
 
@@ -238,9 +239,38 @@ async def main():
         # Post-pipeline: publish if requested and at least 1 topic succeeded
         if args.publish and completed:
             logger.info("Publishing site...")
-            subprocess.run(
+            result = subprocess.run(
                 [sys.executable, str(ROOT / "scripts" / "publish.py")],
             )
+            if result.returncode == 0:
+                logger.info("Deploying to GitHub Pages...")
+                subprocess.run(
+                    ["git", "add", "site/"],
+                    cwd=str(ROOT),
+                )
+                date_str = packages[0].metadata.get("date", "unknown")
+                commit_msg = f"Publish {date_str}: {len(completed)} dossier{'s' if len(completed) != 1 else ''}"
+                commit_result = subprocess.run(
+                    ["git", "commit", "-m", commit_msg],
+                    cwd=str(ROOT),
+                    capture_output=True,
+                    text=True,
+                )
+                if commit_result.returncode == 0:
+                    push_result = subprocess.run(
+                        ["git", "push"],
+                        cwd=str(ROOT),
+                        capture_output=True,
+                        text=True,
+                    )
+                    if push_result.returncode == 0:
+                        logger.info("Deployed: %s", commit_msg)
+                    else:
+                        logger.error("Git push failed: %s", push_result.stderr)
+                elif "nothing to commit" in commit_result.stdout:
+                    logger.info("No site changes to deploy")
+                else:
+                    logger.error("Git commit failed: %s", commit_result.stderr)
 
     except KeyboardInterrupt:
         logger.info("Pipeline interrupted by user.")

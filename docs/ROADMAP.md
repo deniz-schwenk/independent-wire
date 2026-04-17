@@ -1,7 +1,7 @@
 # Independent Wire — Open Source Roadmap
 
 **Created:** 2026-03-26
-**Updated:** 2026-04-14 (Session 7+8 — site live, WP-MEMORY-V1 implemented, README rewrite)
+**Updated:** 2026-04-16 (Session 10 — Sustainability principles, output format clarification, eval workflow planned)
 **Status:** Living document — strategic overview.
 **Basis:** Vision paper (March 2026) + PoC experience (Sessions 1–12) + Model Evals (Sessions 4–5) + Cost Optimization (Session 6) + Rendering + Website (Session 7)
 
@@ -53,6 +53,8 @@ Core framework operational. Pipeline produces Topic Packages with multilingual r
 | WP-MODEL-EVAL | Model evaluation across 14 models, all 8 roles, reasoning tests. 90+ eval calls. | ✅ Done |
 | WP-TELEGRAM | Telegram Interface | ⬜ Planned |
 | WP-MEMORY | Agent Memory (Editor coverage continuity) | ✅ Done |
+| WP-CURATOR-CAPACITY | Curator 10-20 topics, Editor sees 10, max_produce=3 | ✅ Done |
+| WP-SOURCE-RECENCY | URL date extraction, estimated_date on sources, age warnings | ✅ Done |
 | WP-SEO | Meta-Tags, OpenGraph, Sitemap (pre-launch) | ⬜ Planned |
 | WP-CACHING | Prompt caching via OpenRouter | ⬜ Planned |
 
@@ -122,14 +124,33 @@ Pipeline operational, publishing dossiers at independentwire.org. 13+ runs compl
 Vision, architecture diagram, quick-start, contribution guide.
 ## H3 — Community & Growth (After Milestone)
 
-- **H3.1** — Visibility (Hacker News, Fediverse, Reddit, conferences)
+### H3.0 — Production Hardening
+- **H3.0.1** — CLI tool: `iw run`, `iw publish`, `iw fetch` via pyproject.toml entry points
+- **H3.0.2** — Config file: `iw.yaml` for models, providers, max_topics, max_produce. Model presets (`cost-optimized`, `quality-max`)
+- **H3.0.3** — User onboarding: `iw init` setup wizard (API keys, provider, feeds)
+- **H3.0.4** — Budget limits: max_cost_per_run parameter, token-cost accumulator with abort on threshold
+- **H3.0.5** — Output safety check: post-Writer LLM call to flag defamation, discrimination, harmful content
+- **H3.0.6** — Input sanitizing: RSS feed title/summary validation against prompt injection
+- **H3.0.7** — Continuous evals: weekly Claude-judge scoring of dossier quality (source diversity, perspective breadth, writing quality)
+- **H3.0.8** — Monitoring dashboard: historical run stats, cost trends, quality metrics over time
+
+### H3.1 — Visibility
+- Hacker News, Fediverse, Reddit, conferences
 - **H3.2** — Community infrastructure (Discussions, Issues, prompt library)
-- **H3.3** — Funding (GitHub Sponsors, Prototype Fund, Mozilla/Knight Foundation)
-- **H3.4** — Additional formats (API, RSS, podcast, newsletter, localization)
-- **H3.4b** — MCP Server: Topic Packages as structured data for Claude, ChatGPT, and other MCP-fähige clients. First building block of the Reference Instance strategy (see WP-MCP-SERVER.md)
+- **H3.3** — Sustainability
+  - No commercial model. No advertising. No investor equity.
+  - Operating cost target: <$1/run (~$30/month for daily operation)
+  - Funding paths: community sponsorship (GitHub Sponsors), public interest grants (Prototype Fund, Mozilla Foundation, Knight Foundation), institutional partnerships
+  - Reference Instance hosting: dedicated funding track (see WP-MCP-SERVER.md)
+- **H3.4** — Additional output formats
+  - Topic Package JSON is the primary output format. HTML rendering (independent-wire.org) is one rendering of this data.
+  - Alternative renderings (Markdown, PDF, newsletter, podcast script) can be built against the documented schema.
+  - Community-contributed renderings are welcome — the pipeline produces structured data, not a specific visual format.
+  - Planned: API, podcast, newsletter, localization
+- **H3.4b** — MCP Server: Topic Packages as structured data for Claude, ChatGPT, and other MCP-capable clients. First building block of the Reference Instance strategy (see WP-MCP-SERVER.md)
 - **H3.5** — Technical evolution (Docker, parallelization, narrative tracking)
-- **H3.6** — Structured event data: Evaluate ACLED and GDELT as supplementary signal sources.
-- **H3.7** — Telegram OSINT ingestion: Direct Telegram API integration for curated OSINT channels.
+- **H3.6** — Structured event data: Evaluate ACLED and GDELT as supplementary signal sources
+- **H3.7** — Telegram OSINT ingestion: Direct Telegram API integration for curated OSINT channels
 
 ---
 
@@ -183,3 +204,12 @@ Vision, architecture diagram, quick-start, contribution guide.
 | Site live | GitHub Pages deployed with custom domain independentwire.org via Cloudflare DNS | 2026-04-14 |
 | WP-MEMORY-V1 | Editor coverage continuity + follow-up detection. Editor sees previous 7 days of TPs. Writer gets minimal follow-up context (headline + reason only). Articles must stand alone. | 2026-04-14 |
 | Reference Instance strategy | Two-track approach: (A) Community adapts pipeline for open-source models, (B) Funded reference instance provides TPs via MCP/API to all. Tracks are complementary, not exclusive. | 2026-04-14 |
+| Curator capacity separation | max_topics=10 (Editor sees), max_produce=3 (pipeline produces). Curator targets 10-20 clusters. Cheap steps work broad, expensive steps work selective. | 2026-04-15 |
+| Priority-0 filter | Editor rejects topics with priority 0. Pipeline filters them before production — no API spend on rejected topics. | 2026-04-15 |
+| Tiebreaker for production | Priority desc → source_count desc → array position. Editor decides, Python executes. No Python second-guessing of editorial judgment. | 2026-04-15 |
+| LLM null-string sanitizing | Recursive normalizer converts string "null"/"None"/"N/A"/"" to actual None. Defense in depth: render.py also guards against display. | 2026-04-15 |
+| Source recency awareness | URL date extraction in Python. Assembler prompt includes estimated_date field. Pipeline warns on sources >30 days old. Flag, never filter — old sources may be the only voice from a critical region. | 2026-04-15 |
+| Bias card collapse | Reader note stays prominent. Detailed findings + source balance behind native HTML details/summary. No JavaScript. Reduces alarm fatigue. | 2026-04-15 |
+| Writer prompt tightened | Pipeline conditionals removed (perspective_analysis always present). Redundancies deduplicated. Prose structure guidance added. 99→77 lines, ~30% reduction. | 2026-04-15 |
+| Dead prompts cleaned | curator/CLUSTER.md, curator/SCORE.md (Two-Stage), researcher/AGENTS.md (monolithic) deleted. Only active prompts remain in agents/. | 2026-04-15 |
+| Auto-deploy | run.py --publish now git add + commit + push site/ after publish.py. GitHub Actions triggers automatically. | 2026-04-15 |
