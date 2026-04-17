@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Israel-Lebanon 10-Day Ceasefire Takes Effect as Both Sides Report Violations Within Hours</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "B6  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "BC  ";
+}
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Sources table */
+.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.sources-table th {
+  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 3px solid #000;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
+.sources-table a { color: var(--color-primary); text-decoration: none; }
+.sources-table a:hover { text-decoration: underline; }
+.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>Israel-Lebanon 10-Day Ceasefire Takes Effect as Both Sides Report Violations Within Hours</h1>
+<p class="subtitle">The US-brokered truce, which began at midnight on April 17, is already contested: the Lebanese Army accuses Israel of shelling southern villages, while Israeli sources document Hezbollah rocket fire into northern Israel minutes before the deadline.</p>
+<p class="date">April 17, 2026</p>
+
+<div class="follow-up-ref" style="font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #444; padding: 12px 16px; border-left: 3px solid #000; margin: 16px 0; background: #f5f5f5;">
+FOLLOW-UP &mdash; Previous coverage: &ldquo;Israel and Lebanon Hold First Direct Talks in Over 40 Years as Fighting Continues&rdquo; (April 15, 2026)
+<a href="tp-2026-04-15-002.html" style="font-family: 'Space Mono', monospace; color: #000;">&rarr; Read previous</a>
+</div>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">15</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">4</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Countries</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 840 840" class="source-network" role="img" aria-label="Source network: 15 sources from 11 countries">
+<path d="M622.5,240.0 A280,280 0 0 1 622.5,520.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="247.5" x2="635.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M622.5,520.0 A280,280 0 0 1 452.5,650.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="512.5" x2="635.5" y2="527.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M452.5,650.5 A280,280 0 0 1 240.0,622.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="448.6" y1="636.0" x2="456.4" y2="664.9" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M240.0,622.5 A280,280 0 0 1 109.5,452.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="247.5" y1="609.5" x2="232.5" y2="635.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M109.5,452.5 A280,280 0 0 1 137.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="124.0" y1="448.6" x2="95.1" y2="456.4" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M137.5,240.0 A280,280 0 0 1 307.5,109.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="150.5" y1="247.5" x2="124.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M307.5,109.5 A280,280 0 0 1 498.3,126.2" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="311.4" y1="124.0" x2="303.6" y2="95.1" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M498.3,126.2 A280,280 0 0 1 622.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="492.0" y1="139.8" x2="504.7" y2="112.6" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="362.1" x2="534.4" y2="311.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="304.8" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Iran (1 source)</title></circle>
+<text class="count-label" x="549.0" y="308.8" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="549.0" y="334.8" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Iran</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="423.6" y1="373.9" x2="596.9" y2="349.5" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="612.7" cy="347.3" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Turkey (1 source)</title></circle>
+<text class="count-label" x="612.7" y="351.3" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="612.7" y="377.3" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Turkey</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="423.6" y1="386.1" x2="547.4" y2="403.5" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="563.2" cy="405.7" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>UAE (1 source)</title></circle>
+<text class="count-label" x="563.2" y="409.7" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="563.2" y="435.7" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">UAE</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="397.9" x2="570.9" y2="465.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="594.7" cy="475.6" r="26" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Israel (3 sources)</title></circle>
+<text class="count-label" x="594.7" y="479.6" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">3</text>
+<text class="name-label" x="594.7" y="515.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Israel</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="386.9" y1="423.5" x2="406.4" y2="546.9" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="408.9" cy="562.7" r="16" fill="#0d9488" stroke="#000" stroke-width="1.5"><title>Pakistan (1 source)</title></circle>
+<text class="count-label" x="408.9" y="566.7" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="408.9" y="592.7" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Pakistan</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="362.1" y1="420.2" x2="290.9" y2="580.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="284.4" cy="594.7" r="16" fill="#0d9488" stroke="#000" stroke-width="1.5"><title>Russia (1 source)</title></circle>
+<text class="count-label" x="284.4" y="598.7" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="284.4" y="624.7" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Russia</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="353.2" y1="345.1" x2="264.9" y2="230.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="252.2" cy="213.4" r="21" fill="#3b82f6" stroke="#000" stroke-width="1.5"><title>US (2 sources)</title></circle>
+<text class="count-label" x="252.2" y="217.4" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="252.2" y="248.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">US</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="409.7" y1="347.6" x2="507.7" y2="240.7" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="521.9" cy="225.2" r="21" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>UK (2 sources)</title></circle>
+<text class="count-label" x="521.9" y="229.2" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="521.9" y="260.2" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">UK</text>
+</g>
+<circle cx="380" cy="380" r="44" fill="#000"/>
+<text x="380" y="374" font-size="22" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" dominant-baseline="middle">15</text>
+<text x="380" y="394" font-size="9" font-family="'Space Mono', 'Courier New', monospace" fill="white" letter-spacing="0.1em" text-anchor="middle">SOURCES</text>
+<text x="685.0" y="380.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">MIDDLE EAST &amp; N. AFRICA</text>
+<text x="565.7" y="622.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EAST ASIA</text>
+<text x="340.2" y="682.4" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">SOUTH &amp; CENTRAL ASIA</text>
+<text x="138.0" y="565.7" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SE ASIA &amp; OCEANIA</text>
+<text x="77.6" y="340.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SUB-SAHARAN AFRICA</text>
+<text x="194.3" y="138.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">AMERICAS</text>
+<text x="406.6" y="76.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">LATIN AMERICA</text>
+<text x="586.1" y="155.1" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EUROPE</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Israel: 3 sources">Israel (3)</span>
+<span class="country-badge" style="background:#3b82f612;color:#3b82f6;border:1px solid #3b82f630" title="United States: 2 sources">United States (2)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="United Kingdom: 2 sources">United Kingdom (2)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="United Arab Emirates: 1 source">United Arab Emirates</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="Algeria: 1 source">Algeria</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Iran: 1 source">Iran</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Turkey: 1 source">Turkey</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="International: 1 source">International</span>
+<span class="country-badge" style="background:#0d948812;color:#0d9488;border:1px solid #0d948830" title="Russia: 1 source">Russia</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="Malaysia: 1 source">Malaysia</span>
+<span class="country-badge" style="background:#0d948812;color:#0d9488;border:1px solid #0d948830" title="Pakistan: 1 source">Pakistan</span>
+</div>
+
+<div class="reader-note">This article draws on 15 sources in four languages across nine countries, but no displaced Lebanese civilians, no residents of northern Israel affected by rocket fire, and no Lebanese Cabinet-level officials were quoted in any available reporting — meaning the people most directly affected by the ceasefire and the Lebanese state&#x27;s own diplomatic position are absent. The question of who brokered the ceasefire and who violated it first is narrated very differently depending on the language and region of the source: Iranian media credit Iranian diplomacy and link the truce to broader negotiations, while Western and Israeli sources credit US mediation and treat the arrangement as localized, and neither account has been independently verified over the other. The article&#x27;s language is largely restrained, though it occasionally uses evaluative phrasing — such as &#x27;acute&#x27; and &#x27;fault line&#x27; — that editorially characterizes the significance of events rather than letting the reported facts stand on their own.</div>
+
+<div class="article-body">
+<p>A 10-day ceasefire between Israel and Lebanon took effect at midnight local time on April 17, 2026, but within hours both sides accused the other of breaching its terms <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-005" class="source-ref"><sup>[5]</sup></a>. The Lebanese Army reported Israeli artillery shelling and machine-gun fire targeting the southern villages of Khiam and Dibbine approximately 30 minutes after the truce began <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-011" class="source-ref"><sup>[11]</sup></a><a href="#src-012" class="source-ref"><sup>[12]</sup></a>. Israeli sources documented heavy Hezbollah rocket barrages into northern Israel — including rockets toward Karmiel and Nahariya — in the final minutes before midnight, with at least two people seriously injured <a href="#src-005" class="source-ref"><sup>[5]</sup></a><a href="#src-013" class="source-ref"><sup>[13]</sup></a>. The agreement, brokered by the United States, was intended to create conditions for a longer-term settlement.</p>
+<p>US President Donald Trump announced the truce on April 16 and described it as a potential turning point for Lebanon <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. Israeli Prime Minister Benjamin Netanyahu confirmed he had accepted the temporary pause at Washington&#x27;s request, framing it as a limited, conditional trial to test the possibility of a permanent deal rather than a concession <a href="#src-006" class="source-ref"><sup>[6]</sup></a>. Under the terms reported by multiple outlets, Israel agreed not to carry out offensive military operations against Lebanese targets but reserved the right to defend itself &quot;against planned, imminent, or ongoing attacks&quot; <a href="#src-014" class="source-ref"><sup>[14]</sup></a>. Israeli forces would remain deployed in a security zone in southern Lebanon, which sources describe as an active buffer maintained throughout the truce period <a href="#src-008" class="source-ref"><sup>[8]</sup></a><a href="#src-014" class="source-ref"><sup>[14]</sup></a>.</p>
+<p>The question of who brokered the ceasefire — and what it encompasses — is itself contested across regional media. Western and Israeli sources credit Trump&#x27;s direct mediation and frame the truce as a bilateral US-brokered arrangement between Israel and Lebanon <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-006" class="source-ref"><sup>[6]</sup></a>. Persian-language Iranian media present a fundamentally different narrative. Tabnak reported: &#x27;<span lang="fa" dir="rtl">تلاش‌های ایران به برقراری آتش‌بس در لبنان انجامید</span>&#x27; (Iran&#x27;s efforts led to the establishment of a ceasefire in Lebanon), framing the truce as a product of Iranian diplomacy and linking it — according to Iranian sources — to broader Iran-US negotiations <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. The Iranian ambassador in Beirut asserted that the resumption of Iran-US talks is contingent on the implementation of ceasefire commitments <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. English-language and Israeli sources make no such connection, treating the Lebanon truce as a localized 10-day arrangement with no relationship to wider diplomatic frameworks <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-006" class="source-ref"><sup>[6]</sup></a>.</p>
+<p>Hezbollah&#x27;s role in the ceasefire reveals another fault line. Arabic-language sources detail the specific diplomatic back-channel through which the group was informed: Hezbollah MP Hassan Fadlallah confirmed the group was briefed on the short-term ceasefire via the Iranian ambassador in Beirut <a href="#src-009" class="source-ref"><sup>[9]</sup></a>. Hezbollah MP Ibrahim al-Moussawi stated that the group&#x27;s commitment is conditional on a total cessation of Israeli attacks across all Lebanese territory, framing compliance as reciprocal <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. English-language and Israeli sources largely omit this dimension, presenting the ceasefire as a state-to-state arrangement in which Hezbollah is a target of operations rather than a negotiating party <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-005" class="source-ref"><sup>[5]</sup></a>.</p>
+<p>The narrative of who violated the ceasefire first diverges sharply along linguistic and regional lines. Hebrew-language Israeli media foreground Hezbollah&#x27;s rocket fire into Nahariya and Karmiel in the minutes before midnight as the defining context, casting Hezbollah as the aggressor up to the final moment <a href="#src-005" class="source-ref"><sup>[5]</sup></a><a href="#src-013" class="source-ref"><sup>[13]</sup></a>. Arabic-language sources foreground Israeli shelling and military incursions occurring after the midnight deadline, casting Israel as the immediate violator of the agreement it signed <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-011" class="source-ref"><sup>[11]</sup></a>. The Lebanese Army formally accused Israel of violating the ceasefire &quot;multiple times&quot; overnight <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-010" class="source-ref"><sup>[10]</sup></a>. Israel&#x27;s military said it was investigating the claims <a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+<p>The terms of the ceasefire are themselves disputed. Israeli sources emphasize Israel&#x27;s retention of an active security zone in southern Lebanon and its reserved right to strike Hezbollah targets during the truce, framing the agreement as a limited operational pause that preserves Israeli military freedom of action <a href="#src-005" class="source-ref"><sup>[5]</sup></a><a href="#src-008" class="source-ref"><sup>[8]</sup></a>. Independent Arabia reported specific conditions including the disarmament of Hezbollah <a href="#src-008" class="source-ref"><sup>[8]</sup></a>. Hezbollah-aligned and Arabic-language sources frame the ceasefire as requiring a total cessation of all Israeli movement and full withdrawal, presenting any continued Israeli presence as a violation <a href="#src-003" class="source-ref"><sup>[3]</sup></a>.</p>
+<p>The humanitarian situation remains acute. Lebanese civilians have been displaced by the conflict, with families sheltering in areas near Sidon and in Beirut&#x27;s southern suburbs <a href="#src-015" class="source-ref"><sup>[15]</sup></a>. Despite the ceasefire, the Lebanese Army warned displaced civilians against returning to southern Lebanon due to ongoing safety risks, including unexploded ordnance and intermittent shelling <a href="#src-010" class="source-ref"><sup>[10]</sup></a><a href="#src-011" class="source-ref"><sup>[11]</sup></a>. This warning was reported in Hebrew-language Israeli media and by international wire services but was largely absent from English-language and Persian-language coverage, which focused on the diplomatic achievement <a href="#src-010" class="source-ref"><sup>[10]</sup></a><a href="#src-014" class="source-ref"><sup>[14]</sup></a>. A UNIFIL statement from March 12, 2026, documented over 120 projectiles and violations of UN Security Council Resolution 1701 in the weeks preceding the ceasefire, providing a baseline for the scale of pre-truce hostilities <a href="#src-007" class="source-ref"><sup>[7]</sup></a>.</p>
+<p>This report draws on 15 sources in 4 languages (English, Arabic, Hebrew, and Persian) across 9 countries. No displaced Lebanese civilians or residents of northern Israel affected by Hezbollah rocket fire were directly quoted in available reporting. No Lebanese government officials at the Cabinet level — such as the Prime Minister or Foreign Minister — provided statements on the ceasefire terms, leaving the Lebanese state&#x27;s official diplomatic position absent despite Lebanon being a named party to the agreement. No humanitarian NGOs such as the ICRC, MSF, or UNHCR were quoted on the feasibility of civilian return or conditions in displacement camps. No current UNIFIL spokesperson commented on the ceasefire&#x27;s monitoring mechanism or its relationship to Resolution 1701 compliance.</p>
+<p>The ceasefire is set to last 10 days, with the possibility of extension if progress is made in peace talks and Lebanon demonstrates its ability to assert sovereignty over its territory <a href="#src-014" class="source-ref"><sup>[14]</sup></a>. Whether the truce holds through its first full day remains uncertain, with both sides maintaining positions that the other has already breached its terms <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-005" class="source-ref"><sup>[5]</sup></a>.</p>
+</div>
+<p class="word-count">927 words</p>
+
+<h2>Perspectives &mdash; Stakeholder Analysis</h2>
+<div class="card-grid">
+<div class="card">
+  <div class="card-header"><span class="card-actor">Donald Trump</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; United States</div>
+  <div class="card-position">Brokered the 10-day ceasefire and publicly framed it as a historic achievement for Lebanon. Credited by Western and Israeli sources as the primary mediator.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Lebanese Army</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">military</span> &middot; Lebanon</div>
+  <div class="card-position">Accused Israel of violating the ceasefire agreement within the first hours after it took effect at midnight. Also warned civilians against returning to southern Lebanon due to ongoing safety risks from continued Israeli operations.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Iranian Ambassador in Beirut</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Iran</div>
+  <div class="card-position">Served as the diplomatic back-channel through which Hezbollah was informed of the ceasefire. Asserts that the resumption of Iran-US talks is contingent on the implementation of ceasefire commitments, framing the truce as a product of Iranian diplomacy.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Ibrahim al-Moussawi</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">legislature</span> &middot; Lebanon</div>
+  <div class="card-position">States that Hezbollah&#x27;s commitment to the ceasefire is conditional on a total cessation of Israeli attacks across all Lebanese territory, framing compliance as reciprocal rather than unilateral.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">IDF (Israeli Defense Forces)</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">military</span> &middot; Israel</div>
+  <div class="card-position">Responded to Hezbollah rocket fire by striking launchers just before the truce took effect. Israeli sources emphasize the IDF&#x27;s retention of an active security zone and the right to strike Hezbollah targets during the truce period.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Benjamin Netanyahu</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Israel</div>
+  <div class="card-position">Agreed to the temporary 10-day pause at the request of the United States to test the possibility of a permanent deal, framing the ceasefire as a limited, conditional trial rather than a concession.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Hassan Fadlallah</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">legislature</span> &middot; Lebanon</div>
+  <div class="card-position">Confirmed that Hezbollah was briefed on the short-term ceasefire through diplomatic channels, specifically via the Iranian ambassador, indicating the group&#x27;s awareness but not necessarily its formal endorsement.</div>
+  
+</div>
+</div>
+
+<h2>Missing Voices</h2>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No Lebanese government officials at the Cabinet level (e.g., Prime Minister, Foreign Minister) are quoted in any source. The Lebanese state&#x27;s official diplomatic position on the ceasefire terms — distinct from the Lebanese Army&#x27;s operational statements and Hezbollah&#x27;s political conditions — is entirely absent, despite Lebanon being a named party to the agreement.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">Over one million (some sources say two million) Lebanese civilians have been displaced by the conflict. No displaced persons, residents of southern Lebanon, or communities in northern Israel affected by Hezbollah rocket fire are quoted. Their perspectives on the feasibility of return, the destruction of their homes, and the credibility of the ceasefire are essential to understanding the humanitarian dimension.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">civil_society</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No humanitarian NGOs (e.g., Lebanese Red Cross, ICRC, MSF, UNHCR) or Lebanese civil society organizations are quoted regarding the logistics and feasibility of civilian return to devastated areas, the humanitarian conditions in displacement camps, or the scale of infrastructure destruction.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">international_org</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">UNIFIL is referenced (rsrc-007) but with no quoted spokesperson and with a statement dated over a month before the ceasefire. No current UNIFIL, UN, or EU official is quoted on the ceasefire&#x27;s terms, its monitoring mechanism, or its relationship to Resolution 1701 compliance — despite UNIFIL being the mandated monitoring body in southern Lebanon.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">academia</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No conflict analysts, international law scholars, or Middle East policy experts are quoted to contextualize the ceasefire&#x27;s legal framework, its precedents, or the likelihood of its holding. Given the complexity of the overlapping diplomatic tracks (Iran-US, Israel-Lebanon, the disputed &#x27;Islamabad Agreement&#x27;), expert analysis would clarify the structural dynamics.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No US State Department or National Security Council officials beyond Trump himself are quoted on the operational details, monitoring mechanisms, or enforcement provisions of the ceasefire. The diplomatic machinery behind the agreement is invisible.</div>
+</div>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Iranian and Persian-language sources (src-004) frame the ceasefire as a direct result of Iranian diplomacy linked to broader Iran-US negotiations, while Western and Israeli sources (src-001, src-006) credit Trump&#x27;s direct mediation as a bilateral US-brokered arrangement with no connection to wider diplomatic frameworks.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article presents both narratives clearly, attributing the Iranian diplomatic framing to Iranian sources and noting that Western and Israeli sources make no such connection.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Hebrew-language sources (src-005, src-013) foreground Hezbollah rocket fire before midnight as the primary violation context, while Arabic-language sources (src-002, src-011) foreground Israeli shelling after midnight as the defining violation.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article preserves the paragraph presenting both framings side by side with their respective source attributions.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">Israeli sources (src-005, src-008) emphasize Israel&#x27;s retained security zone and right to strike during the truce, while Hezbollah-aligned and Arabic-language sources (src-003) frame the ceasefire as requiring total Israeli withdrawal and cessation of all movement.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article presents both positions in the paragraph on disputed ceasefire terms, attributing each to its respective source base.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Iranian sources (src-004) claim the Lebanon ceasefire is part of a broader agreement involving Pakistani mediation in Islamabad, while Israeli and US sources (src-001, src-006, src-014) treat the Lebanon truce as a separate, localized 10-day arrangement.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article now explicitly attributes the Pakistani mediation claim to Iranian sources rather than presenting it as established fact, and notes that Western and Israeli sources make no such connection.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">The article&#x27;s original casualty figure of &#x27;at least seven people, two of them seriously&#x27; is not supported by any source. The only specific figure in the source pool is two people seriously injured (src-013). The total of seven has no sourced basis.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Corrected to reflect only the figure supported by src-013: at least two people seriously injured.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">The claim that these were &#x27;the first direct Israel-Lebanon diplomatic talks in over four decades&#x27; appears in the article but is not supported by any source in either pool.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The unsupported historical characterization was removed from the article.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The specific depth of the Israeli security zone (&#x27;approximately 10 kilometers&#x27;) cited in the article is not found in any source in either pool.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The unsupported 10-kilometer figure was removed; the article now refers to the security zone without specifying a depth.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The direct quote attributed to Netanyahu — &#x27;much stronger, more extensive and more continuous than before&#x27; — does not appear in any source in either pool.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The unsupported direct quote was removed and replaced with a neutral paraphrase referencing the sources that describe the security zone.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">6 language bias findings &middot; Severity: <span class="badge" style="background:#0f766e15;color:#0f766e;border:1px solid #0f766e40">low</span></p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
+<div class="bias-finding">
+  <span class="bias-excerpt">The humanitarian situation remains acute</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Acute&#x27; characterizes the severity of the humanitarian situation as an editorial judgment rather than letting the specific facts in the paragraph — displacement, unexploded ordnance, warnings against return — speak for themselves.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">casting Hezbollah as the aggressor up to the final moment</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Aggressor&#x27; is a judgment-laden characterization; while the sentence attributes this framing to Hebrew-language media, the word &#x27;casting&#x27; combined with &#x27;aggressor&#x27; presents the Israeli media framing in more vivid, loaded language than the parallel description of the Arabic framing (&#x27;casting Israel as the immediate violator&#x27;), creating a subtle asymmetry in how each side&#x27;s narrative is rendered.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">a potential turning point for Lebanon</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">While this phrase paraphrases Trump&#x27;s characterization, it is not placed in direct quotation marks or explicitly attributed with language like &#x27;what he called,&#x27; making it read as a narrative endorsement of the ceasefire&#x27;s significance rather than a clearly attributed political claim.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">a fundamentally different narrative</span> <span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">intensifier</span>
+  <div class="bias-explanation">&#x27;Fundamentally&#x27; amplifies the degree of divergence between Iranian and Western framings without specific criteria for what makes the difference fundamental rather than simply significant or notable; the facts that follow already demonstrate the contrast without the intensifier.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">reveals another fault line</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Reveals&#x27; and &#x27;fault line&#x27; together editorialize the significance of the disagreement over Hezbollah&#x27;s role, characterizing it as a deep structural fracture rather than neutrally noting that sources differ on this point.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">diverges sharply along linguistic and regional lines</span> <span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">intensifier</span>
+  <div class="bias-explanation">&#x27;Sharply&#x27; amplifies the degree of divergence as an editorial characterization; the specific examples that follow already demonstrate the contrast, making the intensifier an unnecessary evaluative addition.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">7</span></div>
+<div class="bar-row"><span class="bar-label">ar</span><div class="bar-track"><div class="bar-fill" style="width:71%"></div></div><span class="bar-count">5</span></div>
+<div class="bar-row"><span class="bar-label">he</span><div class="bar-track"><div class="bar-fill" style="width:29%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">fa</span><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div><span class="bar-count">1</span></div>
+</div>
+</div>
+</details>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">Lack of direct reporting from Lebanese civil society or humanitarian NGOs regarding the immediate feasibility of the return of 2 million displaced persons given the reported destruction.</div>
+<div class="coverage-gap">No sources from the Lebanese government (Cabinet level) were present in the snippets to clarify the official state position versus the Lebanese Army&#x27;s statements.</div>
+<div class="coverage-gap">The &#x27;Islamabad Agreement&#x27; mentioned in Hebrew and Persian sources is not detailed in the English-language snippets provided, leaving a gap in the international diplomatic context.</div>
+<div class="coverage-gap">Source rsrc-007 (UNIFIL) is dated March 2026, more than 14 days before the current date, but was retained to provide the necessary baseline for Resolution 1701 monitoring which is central to the truce terms.</div>
+
+<h2>Sources</h2>
+<div class="sources-table-wrap">
+<table class="sources-table">
+<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>
+<tbody>
+<tr id="src-001"><td class="source-num">1</td><td>Local 10 News</td><td><a href="https://www.local10.com/news/world/2026/04/16/a-10-day-ceasefire-agreed-on-by-israel-and-lebanon-goes-into-effect/" target="_blank" rel="noopener">A 10-day ceasefire agreed on by Israel and Lebanon goes into effect</a></td><td>en</td><td>United States</td></tr><tr id="src-002"><td class="source-num">2</td><td>Sky News Arabia</td><td><a href="https://www.skynewsarabia.com/live-story/1855676/72183-%D8%A7%D9%84%D8%AC%D9%8A%D8%B4-%D8%A7%D9%84%D9%84%D8%A8%D9%86%D8%A7%D9%86%D9%8A-%D8%A5%D8%B3%D8%B1%D8%A7%D8%A6%D9%8A%D9%84-%D8%A7%D9%84%D8%AA%D9%87%D9%83%D8%AA-%D8%A7%D8%AA%D9%81%D8%A7%D9%82-%D9%88%D9%82%D9%81-%D8%A5%D8%B7%D9%84%D8%A7%D9%82-%D8%A7%D9%84%D9%86%D8%A7%D8%B1" target="_blank" rel="noopener">الجيش اللبناني: إسرائيل انتهكت اتفاق وقف إطلاق النار</a></td><td>ar</td><td>United Arab Emirates</td></tr><tr id="src-003"><td class="source-num">3</td><td>Elkhabar</td><td><a href="https://www.elkhabar.com/monde/%D8%AD%D8%B2%D8%A8-%D8%A7%D9%84%D9%84%D9%87-%D9%8A%D9%83%D8%B4%D9%81-%D9%85%D9%88%D9%82%D9%81%D9%87-%D9%85%D9%86-%D8%A7%D8%AA%D9%81%D8%A7%D9%82-%D9%88%D9%82%D9%81-%D8%A5%D8%B7%D9%84%D8%A7%D9%82-%D8%A7%D9%84%D9%86%D8%A7%D8%B1-270589" target="_blank" rel="noopener">حزب الله يكشف موقفه من اتفاق وقف إطلاق النار</a></td><td>ar</td><td>Algeria</td></tr><tr id="src-004"><td class="source-num">4</td><td>Tabnak</td><td><a href="https://www.tabnak.ir/fa/news/1367492/%D8%AA%D9%84%D8%A7%D8%B4%E2%80%8C%D9%87%D8%A7%DB%8C-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%A8%D9%87-%D8%A8%D8%B1%D9%82%D8%B1%D8%A7%D8%B1%DB%8C-%D8%A2%D8%AA%D8%B4%E2%80%8C%D8%A8%D8%B3-%D8%AF%D8%B1-%D9%84%D8%A8%D9%86%D8%A7%D9%86-%D8%A7%D9%86%D8%AC%D8%A7%D9%85%DB%8C%D8%AF" target="_blank" rel="noopener">تلاش‌های ایران به برقراری آتش‌بس در لبنان انجامید</a></td><td>fa</td><td>Iran</td></tr><tr id="src-005"><td class="source-num">5</td><td>Mako</td><td><a href="https://www.mako.co.il/news-politics/2026_q2/liveblog-56a850d88289d91027.htm" target="_blank" rel="noopener">הפסקת האש בלבנון נכנסה לתוקף | כל העדכונים</a></td><td>he</td><td>Israel</td></tr><tr id="src-006"><td class="source-num">6</td><td>Anadolu Agency</td><td><a href="https://www.aa.com.tr/ar/%D8%A7%D9%84%D8%AF%D9%88%D9%84-%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9/%D9%86%D8%AA%D9%86%D9%8A%D8%A7%D9%87%D9%88-%D9%88%D8%A7%D9%81%D9%82%D8%AA-%D8%B9%D9%84%D9%89-%D9%88%D9%82%D9%81-%D8%A5%D8%B7%D9%84%D8%A7%D9%82-%D9%86%D8%A7%D8%B1-%D9%85%D8%A4%D9%82%D8%AA-%D9%85%D8%B9-%D9%84%D8%A8%D9%86%D8%A7%D9%86-%D9%84%D9%8010-%D8%A3%D9%8A%D8%A7%D9%85/3908503" target="_blank" rel="noopener">نتنياهو: وافقت على وقف إطلاق نار مؤقت مع لبنان لـ10 أيام</a></td><td>ar</td><td>Turkey</td></tr><tr id="src-007"><td class="source-num">7</td><td>UNIFIL</td><td><a href="https://unifil.unmissions.org/en/press-releases/unifil-statement-12-march-2026" target="_blank" rel="noopener">UNIFIL statement (12 March 2026)</a></td><td>en</td><td>International</td></tr><tr id="src-008"><td class="source-num">8</td><td>Independent Arabia</td><td><a href="https://www.independentarabia.com/node/646788/%D8%A7%D9%84%D8%A3%D8%AE%D8%A8%D8%A7%D8%B1/%D9%88%D9%82%D9%81-%D8%A7%D9%84%D9%86%D8%A7%D8%B1-%D8%A8%D9%8A%D9%86-%D8%AD%D8%B2%D8%A8-%D8%A7%D9%84%D9%84%D9%87-%D9%88%D8%A5%D8%B3%D8%B1%D8%A7%D8%A6%D9%8A%D9%84-%D9%81%D9%8A-%D9%84%D8%A8%D9%86%D8%A7%D9%86-%D9%8A%D8%AF%D8%AE%D9%84-%D8%AD%D9%8A%D8%B2-%D8%A7%D9%84%D8%AA%D9%86%D9%81%D9%8A%D8%B0" target="_blank" rel="noopener">وقف النار بين &quot;حزب الله&quot; وإسرائيل في لبنان يدخل حيز التنفيذ</a></td><td>ar</td><td>United Kingdom</td></tr><tr id="src-009"><td class="source-num">9</td><td>RT Arabic</td><td><a href="https://arabic.rt.com/middle_east/1779307-%D8%AD%D8%B2%D8%A8-%D8%A7%D9%84%D9%84%D9%87-%D8%A7%D9%84%D9%84%D8%A8%D9%86%D8%A7%D9%86%DB%8C-%D8%AA%D9%85-%D8%A5%D8%B7%D9%84%D8%A7%D8%B9%D9%86%D8%A7-%D8%B9%D9%84%D9%89-%D8%A5%D8%B9%D9%84%D8%A7%D9%86-%D9%88%D9%82%D9%81-%D8%A5%D8%B7%D9%84%D8%A7%D9%82-%D9%86%D8%A7%D8%B1-%D9%82%D8%B5%D9%8A%D8%B1-%D8%A7%D9%84%D8%A3%D8%AC%D9%84/" target="_blank" rel="noopener">حزب الله اللبناني: تم إطلاعنا على إعلان وقف إطلاق نار قصير الأجل</a></td><td>ar</td><td>Russia</td></tr><tr id="src-010"><td class="source-num">10</td><td>JDN</td><td><a href="https://www.jdn.co.il/news/2631005/" target="_blank" rel="noopener">צבא לבנון: ישראל הפרה את הפסקת האש מספר פעמים הלילה</a></td><td>he</td><td>Israel</td></tr><tr id="src-011"><td class="source-num">11</td><td>Bernama</td><td><a href="https://www.bernama.com/en/region/news.php?id=2545878" target="_blank" rel="noopener">Lebanese Army Reports Ceasefire Violations By Israel</a></td><td>en</td><td>Malaysia</td></tr><tr id="src-012"><td class="source-num">12</td><td>Arab News Pakistan</td><td><a href="https://www.arabnews.pk/node/2640197/middle-east" target="_blank" rel="noopener">Lebanon army reports Israeli &#x27;acts of aggression&#x27; in &#x27;violation of ceasefire&#x27;</a></td><td>en</td><td>Pakistan</td></tr><tr id="src-013"><td class="source-num">13</td><td>Times of Israel</td><td><a href="https://www.timesofisrael.com/israel-hezbollah-ceasefire-takes-effect-two-seriously-hurt-by-rocket-hours-before-truce/" target="_blank" rel="noopener">Israel-Hezbollah ceasefire takes effect; two seriously hurt by rocket hours before truce</a></td><td>en</td><td>Israel</td></tr><tr id="src-014"><td class="source-num">14</td><td>News4JAX</td><td><a href="https://www.news4jax.com/news/world/2026/04/17/a-10-day-ceasefire-in-lebanon-goes-into-effect/" target="_blank" rel="noopener">A 10-day ceasefire in Lebanon goes into effect</a></td><td>en</td><td>United States</td></tr><tr id="src-015"><td class="source-num">15</td><td>YouTube (news report)</td><td><a href="https://www.youtube.com/watch?v=K51jhOIIdWs" target="_blank" rel="noopener">Lebanon ceasefire: Displaced people hope to return home</a></td><td>en</td><td>United Kingdom</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>Covered by 41 sources across 7 regions and 6 languages, with a rich mix of editorial perspectives: state-directed Iranian media (Press TV), Qatari-funded Al Jazeera, independent Middle East Eye, and Western outlets (BBC, Guardian, ANSA, Axios). The simultaneous celebration in Beirut and reports of Israeli violations create a core narrative tension that demands multi-perspective analysis. The displacement of over a million people gives this humanitarian weight beyond the diplomatic dimension.</dd>
+<dt>QA Corrections Applied</dt><dd><ul><li>Removed unsupported casualty total of &#x27;at least seven people&#x27; — replaced with &#x27;at least two people seriously injured&#x27; consistent with src-013 headline; removed the unsupported breakdown of seven total injured.</li>
+<li>Removed unsupported claim that these were &#x27;the first direct Israel-Lebanon diplomatic talks in over four decades&#x27; — no source in either pool supports this characterization.</li>
+<li>Removed unsupported &#x27;10 kilometers&#x27; depth figure for the Israeli security zone — no source in either pool specifies this measurement; replaced with a neutral description referencing the security zone&#x27;s existence.</li>
+<li>Removed unsupported direct quote attributed to Netanyahu (&#x27;much stronger, more extensive and more continuous than before&#x27;) — this verbatim quote does not appear in any source in either pool; replaced with a neutral paraphrase referencing sources.</li>
+<li>Reframed &#x27;conducted through Pakistani mediation in Islamabad&#x27; from a stated fact to an Iranian-sourced claim — the article now attributes this characterization to Iranian sources rather than presenting it as established fact.</li>
+<li>Removed unsupported displacement figure of &#x27;over 1.2 million Lebanese civilians&#x27; — no source in either pool provides this specific number; replaced with a general reference to displaced civilians consistent with src-015.</li></ul></dd>
+<dt>Confidence</dt><dd>medium</dd>
+<dt>Pipeline Run</dt><dd>run-2026-04-17-3bedd0 &middot; 2026-04-17</dd>
+</dl>
+</div>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>
