@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Iran Re-Closes Strait of Hormuz and Fires on Commercial Tanker, Reversing Brief Ceasefire Opening</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "B6  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "BC  ";
+}
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Sources table */
+.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.sources-table th {
+  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 3px solid #000;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
+.sources-table a { color: var(--color-primary); text-decoration: none; }
+.sources-table a:hover { text-decoration: underline; }
+.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>Iran Re-Closes Strait of Hormuz and Fires on Commercial Tanker, Reversing Brief Ceasefire Opening</h1>
+<p class="subtitle">The IRGC reimposed a full blockade on April 18 after accusing the United States of violating the terms of the strait&#x27;s reopening, sending oil markets into renewed turmoil days after a 40-nation Paris summit sought a multinational plan to restore navigation.</p>
+<p class="date">April 18, 2026</p>
+
+<div class="follow-up-ref" style="font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #444; padding: 12px 16px; border-left: 3px solid #000; margin: 16px 0; background: #f5f5f5;">
+FOLLOW-UP &mdash; Previous coverage: &ldquo;France and UK Convene 40-Nation Paris Summit on Multinational Mission to Reopen Strait of Hormuz&rdquo; (April 17, 2026)
+<a href="tp-2026-04-17-003.html" style="font-family: 'Space Mono', monospace; color: #000;">&rarr; Read previous</a>
+</div>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">12</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">4</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Countries</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 840 840" class="source-network" role="img" aria-label="Source network: 12 sources from 6 countries">
+<path d="M622.5,240.0 A280,280 0 0 1 622.5,520.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="247.5" x2="635.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M622.5,520.0 A280,280 0 0 1 452.5,650.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="512.5" x2="635.5" y2="527.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M452.5,650.5 A280,280 0 0 1 240.0,622.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="448.6" y1="636.0" x2="456.4" y2="664.9" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M240.0,622.5 A280,280 0 0 1 109.5,452.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="247.5" y1="609.5" x2="232.5" y2="635.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M109.5,452.5 A280,280 0 0 1 137.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="124.0" y1="448.6" x2="95.1" y2="456.4" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M137.5,240.0 A280,280 0 0 1 307.5,109.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="150.5" y1="247.5" x2="124.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M307.5,109.5 A280,280 0 0 1 498.3,126.2" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="311.4" y1="124.0" x2="303.6" y2="95.1" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M498.3,126.2 A280,280 0 0 1 622.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="492.0" y1="139.8" x2="504.7" y2="112.6" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="362.1" x2="529.8" y2="313.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="304.8" r="21" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Iran (2 sources)</title></circle>
+<text class="count-label" x="549.0" y="308.8" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="549.0" y="339.8" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Iran</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="397.9" x2="575.5" y2="467.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="594.7" cy="475.6" r="21" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Turkey (2 sources)</title></circle>
+<text class="count-label" x="594.7" y="479.6" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="594.7" y="510.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Turkey</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="406.8" y1="414.9" x2="495.1" y2="529.9" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="507.8" cy="546.6" r="21" fill="#0891b2" stroke="#000" stroke-width="1.5"><title>China (2 sources)</title></circle>
+<text class="count-label" x="507.8" y="550.6" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="507.8" y="581.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">China</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="353.2" y1="345.1" x2="268.0" y2="234.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="252.2" cy="213.4" r="26" fill="#3b82f6" stroke="#000" stroke-width="1.5"><title>US (4 sources)</title></circle>
+<text class="count-label" x="252.2" y="217.4" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">4</text>
+<text class="name-label" x="252.2" y="253.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">US</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="402.7" y1="342.3" x2="467.0" y2="235.1" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="475.3" cy="221.4" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>Spain (1 source)</title></circle>
+<text class="count-label" x="475.3" y="225.4" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="475.3" y="251.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Spain</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="415.6" y1="354.1" x2="557.2" y2="251.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="570.1" cy="241.9" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>France (1 source)</title></circle>
+<text class="count-label" x="570.1" y="245.9" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="570.1" y="271.9" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">France</text>
+</g>
+<circle cx="380" cy="380" r="44" fill="#000"/>
+<text x="380" y="374" font-size="22" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" dominant-baseline="middle">12</text>
+<text x="380" y="394" font-size="9" font-family="'Space Mono', 'Courier New', monospace" fill="white" letter-spacing="0.1em" text-anchor="middle">SOURCES</text>
+<text x="685.0" y="380.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">MIDDLE EAST &amp; N. AFRICA</text>
+<text x="565.7" y="622.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EAST ASIA</text>
+<text x="340.2" y="682.4" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">SOUTH &amp; CENTRAL ASIA</text>
+<text x="138.0" y="565.7" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SE ASIA &amp; OCEANIA</text>
+<text x="77.6" y="340.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SUB-SAHARAN AFRICA</text>
+<text x="194.3" y="138.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">AMERICAS</text>
+<text x="406.6" y="76.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">LATIN AMERICA</text>
+<text x="586.1" y="155.1" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EUROPE</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#3b82f612;color:#3b82f6;border:1px solid #3b82f630" title="United States: 4 sources">United States (4)</span>
+<span class="country-badge" style="background:#0891b212;color:#0891b2;border:1px solid #0891b230" title="China: 2 sources">China (2)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Turkey: 2 sources">Turkey (2)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Iran: 2 sources">Iran (2)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="France: 1 source">France</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="Spain: 1 source">Spain</span>
+</div>
+
+<div class="reader-note">This article draws on 12 sources in 4 languages across 6 countries, giving it broader-than-usual geographic range, but several critical perspectives are absent: no commercial shipping companies whose vessels were targeted, no statements from Oman or the UAE despite incidents near their waters, and no voices from oil-importing developing nations most affected by price spikes. An unresolved factual question also hangs over the reporting — Arabic-language outlets reportedly describe severe damage to a tanker near Musandam, while the sources available here say only that vessels were forced to turn back, and no Arabic-language source was available to settle the discrepancy. The article&#x27;s own language is mostly restrained but occasionally editorializes, particularly when characterizing Iran&#x27;s re-closure as directly undercutting the Paris summit and when using unattributed analyst claims to frame the multinational coalition as potentially hollow.</div>
+
+<div class="article-body">
+<p>Iran&#x27;s Islamic Revolutionary Guard Corps reimposed a full closure of the Strait of Hormuz on April 18, 2026, reversing a brief reopening tied to the Lebanon-Israel ceasefire and reportedly firing on at least one commercial tanker attempting transit <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-007" class="source-ref"><sup>[7]</sup></a><a href="#src-011" class="source-ref"><sup>[11]</sup></a>. The re-closure came just one day after a 40-nation summit convened in Paris to coordinate a multinational mission to guarantee freedom of navigation through the waterway, which carries roughly 20 percent of the world&#x27;s seaborne crude oil <a href="#src-008" class="source-ref"><sup>[8]</sup></a><a href="#src-009" class="source-ref"><sup>[9]</sup></a>.</p>
+<p>Iran had announced the conditional opening of the strait to merchant vessels on April 17, with Foreign Minister Abbas Araghchi linking the move to the Lebanon-Israel ceasefire <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-003" class="source-ref"><sup>[3]</sup></a>. Hours later, Iran&#x27;s joint military command reversed the decision, stating that the United States had violated the terms by refusing to lift its own blockade of Iranian ports <a href="#src-011" class="source-ref"><sup>[11]</sup></a>. The IRGC declared that the strait would remain under &quot;strict management&quot; and that no vessel would transit without Iranian authorization <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-011" class="source-ref"><sup>[11]</sup></a>.</p>
+<p>Persian-language outlet Didban Iran identified the tanker AUROURA by name as one of the vessels forced to turn back near the Musandam coast during the re-closure <a href="#src-007" class="source-ref"><sup>[7]</sup></a>. English-language sources referred more generally to &quot;disruptions&quot; and &quot;reimposed restrictions&quot; without naming specific affected ships <a href="#src-004" class="source-ref"><sup>[4]</sup></a><a href="#src-011" class="source-ref"><sup>[11]</sup></a>. The precise nature of the reported firing — whether naval gunfire, drone strike, or warning shots — remains unclear across available sources; most describe the IRGC &quot;targeting&quot; vessels rather than specifying the weapon system used <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-004" class="source-ref"><sup>[4]</sup></a><a href="#src-007" class="source-ref"><sup>[7]</sup></a>.</p>
+<p>The April 18 escalation follows an established pattern. In early March, the IRGC claimed to have struck more than 10 oil tankers that ignored transit bans in the strait, as reported by the Turkish defense outlet SDE: &#x27;İran Hürmüz Boğazı&#x27;nda 10 Petrol Tankerini Vurduğunu Açıkladı&#x27; (Iran announced it struck over 10 oil tankers in the Strait of Hormuz) <a href="#src-005" class="source-ref"><sup>[5]</sup></a>. That precedent — largely absent from Western and Chinese coverage of the April events — established the IRGC&#x27;s willingness to use force against commercial shipping <a href="#src-005" class="source-ref"><sup>[5]</sup></a>.</p>
+<p>Iranian and Persian-language sources frame the closure as a defensive response to a U.S. maritime blockade of Iranian ports. Euronews Persian reported the IRGC&#x27;s position that the strait would remain blocked as long as Iranian ports were under siege: &#x27;<span lang="fa" dir="rtl">سپاه بار دیگر تنگه هرمز را مسدود کرد</span>&#x27; (The IRGC once again blocked the Strait of Hormuz) <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. Tabnak framed the stalled Islamabad negotiations as a story of Iranian sovereignty, headlining its coverage &#x27;<span lang="fa" dir="rtl">نه ایران به زیاده خواهی آمریکا</span>&#x27; (Iran&#x27;s no to American greed) <a href="#src-010" class="source-ref"><sup>[10]</sup></a>. Iranian Parliament Speaker Mohammad Bagher Ghalibaf asserted that jurisdiction over the strait belongs to Iran and warned that Tehran would not tolerate continued U.S. blockades, as reported by iFeng <a href="#src-006" class="source-ref"><sup>[6]</sup></a>.</p>
+<p>Western English-language sources frame the same events as aggressive disruptions of international navigation. Fortune reported that U.S. Admiral Brad Cooper confirmed American destroyers had transited the strait to begin mine clearance operations, presenting the U.S. military presence as a freedom-of-navigation mission <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. KSAT, citing wire reports, described Iran as &quot;reimposing restrictions&quot; and &quot;accusing the U.S. of violating the deal&quot; — language that positions Iran as the party disrupting an agreed arrangement <a href="#src-011" class="source-ref"><sup>[11]</sup></a>. France and the United Kingdom demanded permanent freedom of navigation in the strait, according to VOA Chinese, though neither government&#x27;s direct statements appeared in available sources <a href="#src-009" class="source-ref"><sup>[9]</sup></a>.</p>
+<p>Chinese-language sources foregrounded the economic consequences for energy markets. The 21st Century Business Herald reported that even during the nominally open ceasefire period, ships required explicit IRGC permission to transit — a detail that Western sources largely omitted when describing the opening as a general ceasefire concession <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. The same outlet noted a 10 percent drop in international oil prices following the initial reopening announcement <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. That relief proved short-lived: the U.S. Energy Information Administration had already raised its 2026 Brent crude forecast to $96 per barrel, citing the Hormuz chokepoint as a major supply disruption with outages peaking in April <a href="#src-008" class="source-ref"><sup>[8]</sup></a>. Goldman Sachs warned that another month of closure could push Brent above $100 per barrel for the remainder of 2026 <a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+<p>The re-closure directly undercuts the Paris summit&#x27;s objectives. The 40-nation meeting had aimed to assemble a &quot;strictly peaceful and defensive&quot; multinational mission to protect commercial shipping and support mine clearance, with the UK planning to deploy RFA Lyme Bay and mine-clearing assets from Bahrain <a href="#src-009" class="source-ref"><sup>[9]</sup></a>. Analysts had already cautioned that the coalition risked becoming a theoretical concept if security conditions did not stabilize <a href="#src-009" class="source-ref"><sup>[9]</sup></a>.</p>
+<p>This report draws on 12 sources in 4 languages (English, Persian, Chinese, and Turkish) from 6 countries. No direct statements from the commercial shipping companies whose vessels were targeted or turned back — including the operators of the AUROURA — were available. No official statements from Oman or the UAE were found, despite incidents occurring near their territorial waters at Musandam. No perspectives from oil-importing developing nations in South Asia, Southeast Asia, or Africa were represented, despite their acute vulnerability to oil price spikes. No statements from the International Maritime Organization or maritime insurance bodies such as Lloyd&#x27;s were available. No OPEC representatives commented on supply compensation measures. The positions of France and the United Kingdom are referenced indirectly but not directly quoted.</p>
+<p>The strait&#x27;s status as of April 18 remains that of a full IRGC-enforced closure, with Iran conditioning any reopening on the lifting of the U.S. blockade of Iranian ports <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-011" class="source-ref"><sup>[11]</sup></a>. The ceasefire is set to expire on April 22, and no new negotiation date has been announced following the collapse of the Islamabad talks <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-010" class="source-ref"><sup>[10]</sup></a>. Goldman Sachs has warned that another month of closure could push Brent above $100 per barrel for the remainder of 2026 <a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+</div>
+<p class="word-count">919 words</p>
+
+<h2>Perspectives &mdash; Stakeholder Analysis</h2>
+<div class="card-grid">
+<div class="card">
+  <div class="card-header"><span class="card-actor">Islamic Revolutionary Guard Corps (IRGC)</span><span class="badge" style="background:#0f766e15;color:#0f766e;border:1px solid #0f766e40">strong</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">military</span> &middot; Iran</div>
+  <div class="card-position">Announced and enforced the re-closure of the Strait of Hormuz on April 18, threatening continued blockage if Iranian ports remain under siege. Has an established pattern of targeting commercial tankers that violate transit bans, claiming to have struck 10+ vessels in a prior March incident.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Abbas Araghchi</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Iran</div>
+  <div class="card-position">Announced the conditional opening of the strait to merchant ships during the Lebanon-Israel ceasefire period, positioning Iran as willing to allow transit under its own terms and timeline.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Mohammad Bagher Ghalibaf</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">legislature</span> &middot; Iran</div>
+  <div class="card-position">Asserts that jurisdiction over the Strait of Hormuz belongs to Iran and warns that Iran will not tolerate continued U.S. maritime blockades, framing the issue as one of national sovereignty.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Brad Cooper</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">military</span> &middot; United States</div>
+  <div class="card-position">Confirmed that U.S. destroyers transited the Strait of Hormuz to begin mine clearance operations, framing the U.S. military presence as a freedom-of-navigation and safety mission.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Energy Information Administration (EIA)</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; United States</div>
+  <div class="card-position">Raised its 2026 Brent crude forecast to $96/bbl, citing the Hormuz chokepoint closure as a major supply disruption affecting approximately 20% of global oil supply with outages peaking in April.</div>
+  
+</div>
+</div>
+
+<h2>Missing Voices</h2>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">industry</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No direct statements from commercial shipping companies whose vessels were targeted, turned back, or damaged — including the operators of the AUROURA and other tankers. These companies bear the immediate operational and financial risk of the closure and their perspective on insurance costs, rerouting decisions, and crew safety is essential to understanding the real-world impact.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No official statements from Oman or the UAE, despite incidents occurring near Musandam and Fujairah in or adjacent to their territorial waters. These Gulf states are directly affected by the closure both as transit neighbors and as energy exporters with alternative pipeline infrastructure.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No perspectives from populations in oil-importing developing nations (e.g., South Asian, Southeast Asian, or African countries) who face the most acute economic consequences of oil price spikes and supply disruptions caused by the closure. The dossier notes a 10% oil price drop on reopening and a forecast of $96/bbl, but the human impact on fuel-dependent economies is unrepresented.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No statements from France or the United Kingdom, despite rsrc-009 reporting that both countries demanded permanent freedom of navigation in the strait. Their diplomatic positions are referenced but not directly quoted.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">international_org</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No statements from the International Maritime Organization (IMO), which is the UN body responsible for maritime safety and navigation standards, or from international insurance bodies (e.g., Lloyd&#x27;s) that set war-risk premiums for the strait. Their assessments directly shape whether commercial vessels attempt transit.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">civil_society</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No perspectives from Iranian civil society or anti-war groups, either domestic or diaspora, who may oppose the IRGC&#x27;s escalatory actions and their economic consequences for ordinary Iranians under sanctions and blockade conditions.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No statements from the Iranian presidency or Supreme Leader&#x27;s office. The dossier includes the IRGC (military), the foreign minister, and the parliament speaker, but the supreme decision-making authority in Iran — the Supreme Leader — is absent despite the strategic magnitude of the closure decision.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">industry</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No perspectives from major oil producers or OPEC representatives on supply compensation measures, spare capacity deployment, or pricing strategy in response to the 20% global supply disruption.</div>
+</div>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Iranian and Persian-language sources (src-001, src-010) frame the closure as a defensive response to a U.S. maritime blockade of Iranian ports. Western English-language sources (src-004, src-011) frame the same events as aggressive disruptions of international freedom of navigation.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article presents both framings explicitly in separate paragraphs, attributing each to its respective source group.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">Persian sources (src-003 via rsrc-003) report that ships required explicit IRGC permission to transit even during the nominally &#x27;open&#x27; ceasefire period. Western sources described the opening as a general ceasefire-related concession without this qualification.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article includes this detail in the Chinese-language sources paragraph, noting that Western sources omitted it.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The Researcher&#x27;s preliminary divergences note that Arabic-language reports describe &#x27;severe damage&#x27; to a Panamanian-flagged tanker near Musandam, while available sources (src-007) describe vessels only being &#x27;forced to turn back.&#x27; No Arabic-language source is present in the pipeline to verify or incorporate this claim.</div>
+  <div class="divergence-resolution"><strong>Unresolved:</strong> No Arabic-language source is available in the pipeline to confirm or deny the &#x27;severe damage&#x27; detail. The article retains the more conservative &#x27;forced to turn back&#x27; language from src-007. The discrepancy is noted here but cannot be resolved without additional sourcing.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">The Researcher&#x27;s preliminary divergences flag that Chinese and Turkish sources emphasize alternative pipeline routes as a response to the closure, a detail absent from the article. Neither rsrc-003 nor rsrc-008 summaries explicitly confirm this detail, so it cannot be added from available sources.</div>
+  <div class="divergence-resolution"><strong>Unresolved:</strong> The pipeline alternative detail is flagged in the Researcher&#x27;s dossier but is not confirmed in any available source summary. It cannot be incorporated without introducing unsupported information.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The article&#x27;s final paragraph originally cited Goldman Sachs as warning of $120/bbl by Q3 2026, while src-012 supports only an &#x27;over $100&#x27; figure throughout 2026. The $120 figure had no source support in the pipeline.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The unsupported $120 figure was removed and replaced with the source-supported &#x27;above $100 per barrel for the remainder of 2026&#x27; language consistent with src-012.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></div>
+  <div class="divergence-desc">The article&#x27;s subheadline and opening paragraph attribute convening of the Paris summit specifically to France and the United Kingdom, but no source in the pipeline directly confirms this joint convening. src-009 covers their demands for permanent freedom of navigation but does not explicitly state they convened the summit.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The opening paragraph was revised to remove the specific attribution of summit convening to France and the UK, using neutral language instead. The subheadline reference to the summit does not attribute convening to specific nations and was left unchanged.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">6 language bias findings &middot; Severity: <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
+<div class="bias-finding">
+  <span class="bias-excerpt">The re-closure directly undercuts the Paris summit&#x27;s objectives.</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Directly undercuts&#x27; is an editorial characterization that frames Iran&#x27;s action as deliberately sabotaging the summit, rather than neutrally stating that the re-closure occurred after or in tension with the summit&#x27;s goals — the causal and intentional relationship is asserted by the article&#x27;s voice, not attributed to any source.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">That relief proved short-lived</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">emotionalizing</span>
+  <div class="bias-explanation">Calling the price drop &#x27;relief&#x27; frames lower oil prices as an emotionally positive outcome from the article&#x27;s editorial voice rather than neutrally describing the price movement; &#x27;short-lived&#x27; adds narrative drama that characterizes events evaluatively.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">language that positions Iran as the party disrupting an agreed arrangement</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">This meta-commentary on KSAT&#x27;s framing uses &#x27;positions Iran as the party disrupting&#x27; — which itself is an editorial judgment about the rhetorical effect of another outlet&#x27;s language, presented as the article&#x27;s own analytical voice rather than attributed to a media critic or analyst.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">despite their acute vulnerability to oil price spikes</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Acute vulnerability&#x27; characterizes the severity of developing nations&#x27; exposure to oil prices as an editorial assertion; while likely accurate, it is not attributed to any source or backed by specific data in this sentence.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Analysts had already cautioned that the coalition risked becoming a theoretical concept if security conditions did not stabilize</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">hedging</span>
+  <div class="bias-explanation">&#x27;Analysts&#x27; is unspecified — no individual, institution, or publication is named, making this a vague attribution that lends authority to a characterization (&#x27;theoretical concept&#x27;) without accountability for who actually said it.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Iran&#x27;s no to American greed</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">While this is presented as a translation of Tabnak&#x27;s headline, the English rendering &#x27;greed&#x27; for &#x27;زیاده خواهی&#x27; is a translation choice that carries strong moral judgment; &#x27;overreach&#x27; or &#x27;excessive demands&#x27; would be closer to neutral, and the article does not flag that &#x27;greed&#x27; is an interpretive translation rather than a literal one.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">5</span></div>
+<div class="bar-row"><span class="bar-label">fa</span><div class="bar-track"><div class="bar-fill" style="width:60%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">zh</span><div class="bar-track"><div class="bar-fill" style="width:60%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">tr</span><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><span class="bar-count">1</span></div>
+</div>
+</div>
+</details>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">No direct statements from the commercial shipping companies whose vessels (like the AUROURA or Athe Nova) were reportedly targeted or turned back.</div>
+<div class="coverage-gap">Limited reporting from Omani or Emirati official sources despite the incidents occurring near their territorial waters (Musandam/Fujairah).</div>
+<div class="coverage-gap">Lack of specific details on the &#x27;firing&#x27; incident mentioned in the assignment title; most snippets refer to &#x27;targeting&#x27; via drones/mines or &#x27;warnings&#x27; rather than direct naval gunfire in April.</div>
+<div class="coverage-gap">Source rsrc-005 (SDE) is from March 2026; it was retained to provide necessary context for the IRGC&#x27;s established pattern of targeting tankers which led to the April re-closure.</div>
+
+<h2>Sources</h2>
+<div class="sources-table-wrap">
+<table class="sources-table">
+<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>
+<tbody>
+<tr id="src-001"><td class="source-num">1</td><td>Euronews (Persian)</td><td><a href="https://parsi.euronews.com/2026/04/18/iran-war-live-18-avril" target="_blank" rel="noopener">خبر فوری. سپاه بار دیگر تنگه هرمز را مسدود کرد</a></td><td>fa</td><td>France</td></tr><tr id="src-002"><td class="source-num">2</td><td>El País</td><td><a href="https://english.elpais.com/international/2026-04-17/iran-announces-opening-of-the-strait-of-hormuz-until-the-end-of-ceasefire-with-the-us.html" target="_blank" rel="noopener">Iran announces opening of the Strait of Hormuz until the end of ceasefire with the US</a></td><td>en</td><td>Spain</td></tr><tr id="src-003"><td class="source-num">3</td><td>21st Century Business Herald</td><td><a href="https://www.21jingji.com/article/20260418/herald/00113f6a6332c06edcfc45d04cfd8b44.html" target="_blank" rel="noopener">美伊谈判日期待定 伊朗重开霍尔木兹海峡 美军继续监视伊朗港口</a></td><td>zh</td><td>China</td></tr><tr id="src-004"><td class="source-num">4</td><td>Fortune</td><td><a href="https://fortune.com/2026/04/11/iran-war-us-warships-strait-of-hormuz-transit-irgc-ceasefir-talks/" target="_blank" rel="noopener">Iran threatens U.S. warships after they throw down the gauntlet in the Strait of Hormuz</a></td><td>en</td><td>United States</td></tr><tr id="src-005"><td class="source-num">5</td><td>SDE</td><td><a href="https://www.sde.org.tr/haber/iran-hurmuz-bogazi-nda-10-petrol-tankerini-vurdugunu-acikladi-haberi-63437" target="_blank" rel="noopener">İran Hürmüz Boğazı&#x27;nda 10 Petrol Tankerini Vurduğunu Açıkladı</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-006"><td class="source-num">6</td><td>iFeng</td><td><a href="https://news.ifeng.com/c/8sOMvFG8cEK" target="_blank" rel="noopener">伊朗议长：绝不放弃控制霍尔木兹海峡</a></td><td>zh</td><td>China</td></tr><tr id="src-007"><td class="source-num">7</td><td>Didban Iran</td><td><a href="https://www.didbaniran.ir/%D8%A8%D8%AE%D8%B4-%D8%B3%DB%8C%D8%A7%D8%B3%DB%8C-3/278641-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%AA%D9%86%DA%AF%D9%87-%D9%87%D8%B1%D9%85%D8%B2-%D8%B1%D8%A7-%DA%A9%D8%A7%D9%85%D9%84%D8%A7-%D9%85%D8%B3%D8%AF%D9%88%D8%AF-%DA%A9%D8%B1%D8%AF-%D9%86%D9%81%D8%AA%DA%A9%D8%B4-%D9%87%D8%A7-%D8%A8%D8%B1%DA%AF%D8%B4%D8%AA%D9%86%D8%AF" target="_blank" rel="noopener">ایران تنگه هرمز را کاملا مسدود کرد؛ نفتکش‌ها برگشتند</a></td><td>fa</td><td>Iran</td></tr><tr id="src-008"><td class="source-num">8</td><td>Anadolu Agency</td><td><a href="https://www.aa.com.tr/en/energy/oil/us-raises-2026-oil-price-forecast-as-disruptions-in-strait-of-hormuz-tighten-supply-outlook/56218" target="_blank" rel="noopener">US raises 2026 oil price forecast as disruptions in Strait of Hormuz tighten supply outlook</a></td><td>en</td><td>Turkey</td></tr><tr id="src-009"><td class="source-num">9</td><td>VOA Chinese</td><td><a href="https://www.voachinese.com/a/france-britain-demand-permanent-freedom-of-navigation-in-strait-of-hormuz-20260417/8138863.html" target="_blank" rel="noopener">伊朗宣布开放霍尔木兹海峡之际， 法国、英国要求永久航行自由</a></td><td>zh</td><td>United States</td></tr><tr id="src-010"><td class="source-num">10</td><td>Tabnak</td><td><a href="https://www.tabnak.ir/fa/news/1366610/%DA%AF%D8%B1%D9%87-%D9%85%D8%B0%DA%A9%D8%B1%D8%A7%D8%AA-%D8%A8%D9%87-%D8%AA%D9%86%DA%AF%D9%87-%D9%87%D8%B1%D9%85%D8%B2-%D8%B1%D8%A7-%D8%B1%D8%B3%DB%8C%D8%AF-%D9%86%D9%87-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D8%A8%D9%87-%D8%B2%DB%8C%D8%A7%D8%AF%D9%87-%D8%AE%D9%88%D8%A7%D9%87%DB%8C-%D8%A2%D9%85%D8%B1%DB%8C%DA%A9%D8%A7" target="_blank" rel="noopener">گره مذکرات به تنگه هرمز رسید؛ نه ایران به زیاده خواهی آمریکا</a></td><td>fa</td><td>Iran</td></tr><tr id="src-011"><td class="source-num">11</td><td>KSAT</td><td><a href="https://www.ksat.com/news/world/2026/04/18/iran-reimposes-restrictions-on-strait-of-hormuz-accusing-us-of-violating-deal-to-reopen-it/" target="_blank" rel="noopener">Iran reimposes restrictions on Strait of Hormuz, accusing US of violating deal to reopen it</a></td><td>en</td><td>United States</td></tr><tr id="src-012"><td class="source-num">12</td><td>OilPrice.com</td><td><a href="https://oilprice.com/Latest-Energy-News/World-News/Goldman-Another-Month-of-Hormuz-Closure-Means-Over-100-Brent-Throughout-2026.html" target="_blank" rel="noopener">Goldman: Another Month of Hormuz Closure Means Over $100 Brent Throughout 2026</a></td><td>en</td><td>United States</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>Backed by 101 sources across 10 geographic regions and 10 languages, this is the most comprehensively sourced topic in the set. Source diversity is exceptional — spanning state-directed Iranian media (Press TV), state-influenced Turkish and Chinese outlets (Anadolu, SCMP), independent Western press (FT, Guardian, Le Monde), Russian independent media (Meduza), and African, Latin American, and South Asian outlets. The reported firing on a commercial tanker and re-closure after a brief reopening represent sharply contested facts ideal for multi-perspective treatment, with competing narratives between Iranian justification, Western condemnation, and Global South economic impact framing.</dd>
+<dt>QA Corrections Applied</dt><dd><ul><li>Removed unsupported &#x27;$120 per barrel by the third quarter of 2026&#x27; Goldman Sachs figure in the final paragraph; replaced with the source-supported &#x27;above $100 per barrel for the remainder of 2026&#x27; consistent with src-012 and the earlier paragraph.</li>
+<li>Corrected the parenthetical translation of the SDE Turkish headline from &#x27;struck 10 oil tankers&#x27; to &#x27;struck over 10 oil tankers&#x27; to match both the body text claim of &#x27;more than 10&#x27; and the rsrc-005 summary language of &#x27;over 10 tankers.&#x27;</li>
+<li>Removed the specific attribution of the Paris summit&#x27;s convening to &#x27;France and the United Kingdom&#x27; in the opening paragraph, replacing with neutral &#x27;a 40-nation summit convened in Paris&#x27; since no source in the pool directly confirms joint convening by those two nations.</li></ul></dd>
+<dt>Confidence</dt><dd>medium</dd>
+<dt>Pipeline Run</dt><dd>run-2026-04-18-8b06e6 &middot; 2026-04-18</dd>
+</dl>
+</div>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>
