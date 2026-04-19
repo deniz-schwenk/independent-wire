@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>US-Iran Ceasefire Set to Expire April 22 with No Extension Agreed Despite Reports of Progress</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "B6  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "BC  ";
+}
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Sources table */
+.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.sources-table th {
+  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 3px solid #000;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
+.sources-table a { color: var(--color-primary); text-decoration: none; }
+.sources-table a:hover { text-decoration: underline; }
+.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>US-Iran Ceasefire Set to Expire April 22 with No Extension Agreed Despite Reports of Progress</h1>
+<p class="subtitle">Both Washington and Tehran officially deny a preliminary deal to extend the truce, even as mediators intensify shuttle diplomacy and President Trump claims the US is &#x27;very close&#x27; to a broader agreement.</p>
+<p class="date">April 19, 2026</p>
+
+<div class="follow-up-ref" style="font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #444; padding: 12px 16px; border-left: 3px solid #000; margin: 16px 0; background: #f5f5f5;">
+Follow-up to: &ldquo;Iran Re-Closes Strait of Hormuz and Fires on Commercial Tanker, Reversing Brief Ceasefire Opening&rdquo; (April 18, 2026)
+<a href="tp-2026-04-18-001.html" style="font-family: 'Space Mono', monospace; color: #000;">&rarr; Read previous</a>
+</div>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">17</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Countries</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 840 840" class="source-network" role="img" aria-label="Source network: 17 sources from 9 countries">
+<path d="M622.5,240.0 A280,280 0 0 1 622.5,520.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="247.5" x2="635.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M622.5,520.0 A280,280 0 0 1 452.5,650.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="512.5" x2="635.5" y2="527.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M452.5,650.5 A280,280 0 0 1 240.0,622.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="448.6" y1="636.0" x2="456.4" y2="664.9" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M240.0,622.5 A280,280 0 0 1 109.5,452.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="247.5" y1="609.5" x2="232.5" y2="635.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M109.5,452.5 A280,280 0 0 1 137.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="124.0" y1="448.6" x2="95.1" y2="456.4" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M137.5,240.0 A280,280 0 0 1 307.5,109.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="150.5" y1="247.5" x2="124.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M307.5,109.5 A280,280 0 0 1 498.3,126.2" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="311.4" y1="124.0" x2="303.6" y2="95.1" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M498.3,126.2 A280,280 0 0 1 622.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="492.0" y1="139.8" x2="504.7" y2="112.6" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="362.1" x2="534.4" y2="311.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="304.8" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Iran (1 source)</title></circle>
+<text class="count-label" x="549.0" y="308.8" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="549.0" y="334.8" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Iran</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="424.0" y1="380.0" x2="589.0" y2="380.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="615.0" cy="380.0" r="26" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Turkey (4 sources)</title></circle>
+<text class="count-label" x="615.0" y="384.0" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">4</text>
+<text class="name-label" x="615.0" y="420.0" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Turkey</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="397.9" x2="534.4" y2="448.7" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="455.2" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Iraq (1 source)</title></circle>
+<text class="count-label" x="549.0" y="459.2" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="549.0" y="485.2" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Iraq</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="406.8" y1="414.9" x2="495.1" y2="529.9" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="507.8" cy="546.6" r="21" fill="#0891b2" stroke="#000" stroke-width="1.5"><title>China (2 sources)</title></circle>
+<text class="count-label" x="507.8" y="550.6" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="507.8" y="581.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">China</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="374.3" y1="423.6" x2="354.7" y2="572.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="352.6" cy="588.2" r="16" fill="#0d9488" stroke="#000" stroke-width="1.5"><title>Russia (1 source)</title></circle>
+<text class="count-label" x="352.6" y="592.2" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="352.6" y="618.2" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Russia</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="353.2" y1="345.1" x2="268.0" y2="234.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="252.2" cy="213.4" r="26" fill="#3b82f6" stroke="#000" stroke-width="1.5"><title>US (5 sources)</title></circle>
+<text class="count-label" x="252.2" y="217.4" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">5</text>
+<text class="name-label" x="252.2" y="253.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">US</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="409.7" y1="347.6" x2="511.1" y2="237.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="521.9" cy="225.2" r="16" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>France (1 source)</title></circle>
+<text class="count-label" x="521.9" y="229.2" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="521.9" y="255.2" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">France</text>
+</g>
+<circle cx="380" cy="380" r="44" fill="#000"/>
+<text x="380" y="374" font-size="22" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" dominant-baseline="middle">17</text>
+<text x="380" y="394" font-size="9" font-family="'Space Mono', 'Courier New', monospace" fill="white" letter-spacing="0.1em" text-anchor="middle">SOURCES</text>
+<text x="685.0" y="380.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">MIDDLE EAST &amp; N. AFRICA</text>
+<text x="565.7" y="622.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EAST ASIA</text>
+<text x="340.2" y="682.4" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">SOUTH &amp; CENTRAL ASIA</text>
+<text x="138.0" y="565.7" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SE ASIA &amp; OCEANIA</text>
+<text x="77.6" y="340.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SUB-SAHARAN AFRICA</text>
+<text x="194.3" y="138.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">AMERICAS</text>
+<text x="406.6" y="76.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">LATIN AMERICA</text>
+<text x="586.1" y="155.1" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EUROPE</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#3b82f612;color:#3b82f6;border:1px solid #3b82f630" title="United States: 5 sources">United States (5)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Turkey: 4 sources">Turkey (4)</span>
+<span class="country-badge" style="background:#0891b212;color:#0891b2;border:1px solid #0891b230" title="China: 2 sources">China (2)</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="Switzerland: 1 source">Switzerland</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="International: 1 source">International</span>
+<span class="country-badge" style="background:#0d948812;color:#0d9488;border:1px solid #0d948830" title="Russia: 1 source">Russia</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Iraq: 1 source">Iraq</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Iran: 1 source">Iran</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="France: 1 source">France</span>
+</div>
+
+<div class="reader-note">This article draws on 17 sources in 5 languages across 8 countries, though English-language and US-based sources account for roughly half the pool. Several critical perspectives are absent: neither Egypt nor Israel — both directly relevant to the ceasefire&#x27;s dynamics — provided statements, and no merchant seafarers, shipping companies, or Gulf state governments were heard from despite being directly affected by the Strait closure. One unresolved gap involves Japanese energy-security perspectives referenced in background research but absent from the final source pool; separately, Iranian state media&#x27;s claim that the US accepted 10 Iranian conditions including war reparations appears in no other language group and should be read as an unverified, single-source narrative.</div>
+
+<div class="article-body">
+<p>The two-week US-Iran ceasefire, brokered by Pakistan, Turkey, and Egypt on April 8, is set to expire around April 22 with no formal extension agreement in place, according to both American and Iranian officials <a href="#src-012" class="source-ref"><sup>[12]</sup></a><a href="#src-006" class="source-ref"><sup>[6]</sup></a><a href="#src-001" class="source-ref"><sup>[1]</sup></a>. The diplomatic endgame marks a shift from the immediate crisis of the Strait of Hormuz&#x27;s re-closure and attacks on commercial shipping, toward a test of whether mediation can prevent a return to open hostilities.</p>
+<p>President Donald Trump said on April 17 that the United States is &quot;very close&quot; to reaching a deal with Iran, telling reporters he has been &quot;getting along very well&quot; with new Iranian leaders <a href="#src-016" class="source-ref"><sup>[16]</sup></a>. Yet the same week, Trump refused to rule out renewed military action if Iran does not abandon its nuclear ambitions, maintaining his &quot;all options on the table&quot; posture <a href="#src-007" class="source-ref"><sup>[7]</sup></a>. White House Press Secretary Karine Jean-Pierre explicitly denied that a formal ceasefire extension had been reached, labeling such reports as inaccurate and indicating that future talks may take place in Islamabad <a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+<p>Bloomberg reported that internal deliberations on a possible two-week extension are underway, with technical talks on nuclear enrichment and maritime reopening as the core agenda <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. Fortune, citing regional officials, reported an &quot;in-principle agreement&quot; to extend the truce for further diplomacy <a href="#src-017" class="source-ref"><sup>[17]</sup></a>. The gap between official denials and reported behind-the-scenes activity is itself a point of divergence among sources: RT Arabic emphasized the denials from both capitals as the definitive story <a href="#src-006" class="source-ref"><sup>[6]</sup></a>, while Western financial media treated the denials as diplomatic posturing masking active negotiations <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-017" class="source-ref"><sup>[17]</sup></a>.</p>
+<p>Pakistan has emerged as the primary intermediary. Army Chief Asim Munir visited Tehran ahead of the deadline, meeting Iranian President Masoud Pezeshkian and Foreign Minister Abbas Araqchi to discuss ceasefire extension terms <a href="#src-005" class="source-ref"><sup>[5]</sup></a>. The Carnegie Endowment confirmed that the original ceasefire was mediated by Pakistan, Turkey, and Egypt <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. UN Secretary-General António Guterres urged both parties to preserve the truce, end violations, and continue negotiations, acknowledging the role of regional mediators <a href="#src-004" class="source-ref"><sup>[4]</sup></a>.</p>
+<p>The framing of the ceasefire itself varies sharply across language groups. Iranian state-aligned outlet Tabnak published a statement attributed to the Supreme National Security Council presenting the truce as a strategic victory: &#x27;<span lang="fa" dir="rtl">بیانیه شورای عالی امنیت ملی پیرامون آتش‌بس دو هفته‌ای</span>&#x27; (Statement of the Supreme National Security Council on the two-week ceasefire), claiming the US was compelled to accept 10 Iranian conditions including force withdrawal, sanctions relief, and war reparations <a href="#src-008" class="source-ref"><sup>[8]</sup></a>. This narrative is exclusive to Persian-language state media and entirely absent from English, Arabic, Chinese, and Turkish reporting. Chinese state outlet Xinhua highlighted Iran&#x27;s 10-point peace proposal and noted Trump&#x27;s initial assessment of it as &quot;feasible,&quot; presenting a more balanced diplomatic picture <a href="#src-011" class="source-ref"><sup>[11]</sup></a>. By contrast, Iraqi Arabic-language outlet Kalima News foregrounded the coercive US rhetoric, framing Washington&#x27;s posture as primarily threatening: &#x27;<span lang="fa" dir="rtl">واشنطن تلوح بـ</span>&quot;<span lang="fa" dir="rtl">كل الخيارات</span>&quot; <span lang="fa" dir="rtl">لإيران مع انتهاء مهلة الهدنة</span>&#x27; (Washington waves &#x27;all options&#x27; at Iran as the truce deadline expires) <a href="#src-007" class="source-ref"><sup>[7]</sup></a>.</p>
+<p>The Strait of Hormuz remains effectively closed, with Iran asserting control over passage rights. Iranian Deputy Foreign Minister Saeed Khatibzadeh stated that maritime traffic through the Strait must be managed in coordination with Iranian forces, permitting only &quot;non-hostile&quot; vessels under IRGC oversight <a href="#src-013" class="source-ref"><sup>[13]</sup></a>. Turkish Transport Minister Abdulkadir Uraloğlu confirmed that 14 Turkish-owned ships remain in the Strait: &#x27;14 Türk sahipli gemi Boğaz&#x27;da bulunmaktadır ve mürettebatla iletişimimiz devam etmektedir&#x27; (14 Turkish-owned ships are in the Strait and our communication with the crews continues) <a href="#src-009" class="source-ref"><sup>[9]</sup></a>. Bloomberg HT reported that the US Navy has turned back 13 ships bound for Iran as part of the ongoing blockade <a href="#src-010" class="source-ref"><sup>[10]</sup></a>.</p>
+<p>Turkish sources foregrounded these concrete maritime and logistical details — trapped vessels, turned-back ships, crew welfare — framing the crisis through national-interest impacts <a href="#src-009" class="source-ref"><sup>[9]</sup></a><a href="#src-010" class="source-ref"><sup>[10]</sup></a>. Western diplomatic coverage from Carnegie, Bloomberg, and NHPR emphasized negotiation dynamics and geopolitical positioning with less granular operational data <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-005" class="source-ref"><sup>[5]</sup></a>.</p>
+<p>The economic consequences of the Strait closure extend well beyond the immediate military standoff. Private maritime war-risk insurance has largely collapsed, with premiums surging to 5–10% of hull value <a href="#src-014" class="source-ref"><sup>[14]</sup></a>. The US government intervened through the Development Finance Corporation, partnering with Chubb, Travelers, and AIG to create a $40 billion reinsurance facility covering hull, cargo, and liability risks for eligible vessels transiting the Persian Gulf <a href="#src-003" class="source-ref"><sup>[3]</sup></a><a href="#src-015" class="source-ref"><sup>[15]</sup></a>. These economic and insurance dimensions are covered primarily by Western institutional sources and are largely absent from Iranian, Arabic, and Chinese reporting, which focus on diplomatic and military developments <a href="#src-003" class="source-ref"><sup>[3]</sup></a><a href="#src-014" class="source-ref"><sup>[14]</sup></a>.</p>
+<p>This report draws on 17 sources in 5 languages (English, Arabic, Persian, Turkish, and Chinese) from 8 countries. No direct perspectives from the Egyptian government were available despite Egypt&#x27;s cited role as one of three primary ceasefire mediators. No Israeli government or military voices were represented, despite multiple sources noting that Israel-Lebanon tensions directly influence the ceasefire&#x27;s stability. No testimony from merchant seafarers or ship crews trapped in the Strait was available, though Turkish sources confirm their presence. No voices from shipping companies, maritime insurers, or energy traders were included despite the documented collapse of private insurance markets. No perspectives from Iranian civilians, Gulf Cooperation Council states (Saudi Arabia, UAE, Qatar, Oman), or populations whose economies depend on Strait of Hormuz transit were represented. No statements from the US Congress, Iranian Majlis, IAEA, or International Maritime Organization were available. A Turkish-language Rudaw report on Iran&#x27;s threat to mine the Persian Gulf was identified in the research dossier but falls outside the sources available to this report.</p>
+<p>The ceasefire&#x27;s April 22 expiration remains the immediate inflection point. Bloomberg reports active internal deliberations on a two-week extension <a href="#src-002" class="source-ref"><sup>[2]</sup></a>, and Trump&#x27;s public claim that a deal is &quot;very close&quot; <a href="#src-016" class="source-ref"><sup>[16]</sup></a> contrasts with the official White House denial of any agreement <a href="#src-012" class="source-ref"><sup>[12]</sup></a>. Whether the truce holds, extends, or collapses into renewed hostilities may depend on unresolved sticking points including Iran&#x27;s nuclear program, the status of the Strait, and the sequencing of sanctions relief — issues on which no public consensus between the parties has been reported.</p>
+</div>
+<p class="word-count">972 words</p>
+
+<h2>Perspectives &mdash; Stakeholder Analysis</h2>
+<div class="card-grid">
+<div class="card">
+  <div class="card-header"><span class="card-actor">António Guterres</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; International</div>
+  <div class="card-position">Urges both the US and Iran to preserve the ceasefire, end violations, and continue negotiations amid stalled Islamabad talks. Acknowledges the role of regional mediators in brokering the truce.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Asim Munir</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">military</span> &middot; Pakistan</div>
+  <div class="card-position">Visited Tehran in a mediation capacity ahead of the ceasefire deadline, positioning Pakistan as a primary intermediary between the US and Iran.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Donald Trump</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; United States</div>
+  <div class="card-position">Refuses to rule out any option if Iran does not abandon its nuclear ambitions, maintaining &#x27;all options on the table&#x27; rhetoric as the ceasefire deadline approaches. Chinese sources note his initial assessment of Iran&#x27;s 10-point peace proposal as &#x27;feasible,&#x27; suggesting a more nuanced posture than the Iraqi Arabic-language framing of pure coercion.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Supreme National Security Council</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Iran</div>
+  <div class="card-position">Frames the ceasefire as a victory in which the US was compelled to accept 10 Iranian conditions, including force withdrawal, sanctions relief, and war reparations. This narrative is exclusive to Iranian state-aligned media and absent from all other language groups.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Abdulkadir Uraloğlu</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Turkey</div>
+  <div class="card-position">Confirms that 14 Turkish-owned ships remain in the Strait of Hormuz and that the Turkish government maintains active communication with their crews, framing the crisis primarily as a maritime safety and logistics issue for Turkish nationals and assets.</div>
+  <div class="card-quote">«14 Türk sahipli gemi Boğaz&#x27;da bulunmaktadır ve mürettebatla iletişimimiz devam etmektedir» (14 Turkish-owned ships are in the Strait and our communication with the crews continues)</div>
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Karine Jean-Pierre</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; United States</div>
+  <div class="card-position">Officially denies that a formal ceasefire extension has been reached, labeling reports of a preliminary agreement as inaccurate. Indicates that future talks may take place in Islamabad.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Saeed Khatibzadeh</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; Iran</div>
+  <div class="card-position">States that maritime traffic through the Strait of Hormuz must be managed in coordination with Iranian forces, effectively asserting Iranian control over passage rights for &#x27;non-hostile&#x27; vessels under IRGC oversight.</div>
+  
+</div>
+</div>
+
+<h2>Missing Voices</h2>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No direct perspectives from Egyptian government officials despite Egypt being cited as one of the three primary ceasefire mediators alongside Pakistan and Turkey. Cairo&#x27;s diplomatic calculus and its specific proposals or red lines are entirely absent.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No Israeli government or military voices, despite multiple sources noting that Israel-Lebanon tensions directly influence the ceasefire&#x27;s stability and that US-Israeli coordination on strikes is a factor in the conflict dynamics.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No perspectives from merchant seafarers, ship crews, or port workers trapped or displaced by the Strait of Hormuz closure. Turkish sources mention 14 ships with crews aboard, but the crews themselves are unheard. These are people directly endangered by the blockade.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">industry</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No voices from shipping companies, maritime insurers, or energy traders despite the dossier documenting the collapse of private war-risk insurance, a $40 billion US government reinsurance intervention, and premiums surging to 5-10% of hull value. These actors are making decisions that shape the economic fallout.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No perspectives from Iranian civilians affected by the conflict and sanctions, or from populations in Gulf states (UAE, Qatar, Oman, Bahrain) whose economies and daily life depend on Strait of Hormuz transit. The humanitarian dimension of the crisis is entirely absent.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No voices from Gulf Cooperation Council states (Saudi Arabia, UAE, Qatar, Oman) whose territorial waters, energy exports, and security are directly implicated by the Strait closure and potential mining of the Persian Gulf.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">legislature</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No perspectives from the US Congress or Iranian Majlis on the ceasefire terms, potential extension, or authorization of military action. Legislative oversight and domestic political constraints on both executives are unrepresented.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No Lebanese government or Hezbollah voices despite the dossier noting that Israel-Lebanon tensions influence the ceasefire&#x27;s viability.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">academia</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">While Carnegie Endowment provides analytical framing, no regional academic experts from Middle Eastern, South Asian, or East Asian institutions offer analysis. Local scholarly perspectives on international law, maritime rights, or nuclear nonproliferation are absent.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">international_org</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">Beyond the UN Secretary-General, no voices from the IAEA (directly relevant to nuclear enrichment talks), the International Maritime Organization (relevant to Strait closure), or OPEC (relevant to energy supply disruption).</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">military</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No US military officials (CENTCOM, Navy commanders enforcing the blockade) are quoted despite the dossier reporting the US Navy turning back 13 ships. The military&#x27;s operational perspective and rules of engagement are absent.</div>
+</div>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Iranian state-aligned Tabnak frames the ceasefire as a strategic victory where the US was compelled to accept 10 Iranian conditions including reparations and force withdrawal. This narrative is entirely absent from English, Arabic, Chinese, and Turkish reporting, which frame the ceasefire as a fragile mediated pause.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article explicitly identifies this framing divergence and notes it is exclusive to Persian-language state media.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The article&#x27;s opening sentence originally attributed the ceasefire brokering solely to Pakistan, contradicting src-001 (Carnegie Endowment), which names Pakistan, Turkey, and Egypt as co-mediators.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Corrected in the opening sentence and summary to name all three mediators: Pakistan, Turkey, and Egypt.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">The Researcher&#x27;s dossier rsrc-015 (Rudaw, Turkish-language) reports on Iran&#x27;s threat to mine the Persian Gulf — a significant escalatory development relevant to the maritime situation — that does not appear anywhere in the article. The article&#x27;s src-015 is a different document (DFC press release) with the same ID number, indicating a source ID mismatch between the Writer&#x27;s and Researcher&#x27;s pipelines.</div>
+  <div class="divergence-resolution"><strong>Partially resolved:</strong> The Rudaw mining-threat source cannot be incorporated into the article body without introducing unsupported claims, as it is not in the article&#x27;s source pool. Its existence has been acknowledged in the limitations paragraph. The source ID mismatch between rsrc-015 and src-015 is flagged for pipeline review.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">The Researcher&#x27;s preliminary_divergences reference Japanese sources focusing on energy security and a 254-day strategic reserve, but no Japanese sources appear in the article&#x27;s source pool (src-001 through src-017). This perspective is entirely absent from the article.</div>
+  <div class="divergence-resolution"><strong>Unresolved:</strong> No Japanese sources are available in either the article&#x27;s or researcher&#x27;s source pools to support inclusion of this perspective. The article&#x27;s limitations paragraph does not mention the absence of Japanese sources. Cannot be corrected without introducing unsupported claims.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></div>
+  <div class="divergence-desc">Turkish and Chinese sources provide specific logistical data (14 Turkish ships trapped, 13 ships turned back by US Navy) that Western diplomatic sources largely omit. The article captures this divergence in its comparative framing section.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article explicitly notes that Turkish sources foregrounded concrete maritime and logistical details while Western diplomatic coverage emphasized negotiation dynamics.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">RT Arabic (src-006) treats the official denials from both capitals as the definitive story, while Bloomberg (src-002) and Fortune (src-017) treat those same denials as diplomatic posturing masking active negotiations.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article explicitly identifies this framing divergence in the third paragraph.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">5 language bias findings &middot; Severity: <span class="badge" style="background:#0f766e15;color:#0f766e;border:1px solid #0f766e40">low</span></p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
+<div class="bias-finding">
+  <span class="bias-excerpt">The diplomatic endgame marks a shift</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Endgame&#x27; characterizes the diplomatic phase as final or decisive without attribution, embedding an editorial judgment about the stage of negotiations that no quoted source supports.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Private maritime war-risk insurance has largely collapsed</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Collapsed&#x27; characterizes the state of the insurance market with dramatic finality; while the subsequent data on premium surges supports severe disruption, the word &#x27;collapsed&#x27; goes beyond what the cited figures demonstrate and adds editorial severity.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">the coercive US rhetoric</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Coercive&#x27; is the article&#x27;s own characterization of US rhetoric rather than language attributed to a source, embedding a judgment that the US posture is illegitimately pressuring rather than legitimately warning.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">framing Washington&#x27;s posture as primarily threatening</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Threatening&#x27; is presented as the article&#x27;s description of how an outlet frames Washington, but the word itself carries a negative judgment about US intent that goes beyond neutral meta-description of another outlet&#x27;s framing.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">These are people directly endangered by the blockade.</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">emotionalizing</span>
+  <div class="bias-explanation">This sentence in the limitations section shifts from factual disclosure to an emotional appeal about the human stakes, adopting an advocacy tone (&#x27;These are people directly endangered&#x27;) that editorializes rather than reports.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">9</span></div>
+<div class="bar-row"><span class="bar-label">tr</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">ar</span><div class="bar-track"><div class="bar-fill" style="width:22%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">zh</span><div class="bar-track"><div class="bar-fill" style="width:22%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">fa</span><div class="bar-track"><div class="bar-fill" style="width:11%"></div></div><span class="bar-count">1</span></div>
+</div>
+</div>
+</details>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">Lack of direct reporting from Egyptian or Pakistani outlets despite their cited roles as primary mediators.</div>
+<div class="coverage-gap">No sources from Israel or Lebanon were included in the search results, despite mentions of their influence on the ceasefire&#x27;s stability.</div>
+<div class="coverage-gap">Limited information on the specific &#x27;15-point&#x27; US plan vs the &#x27;5-point&#x27; or &#x27;10-point&#x27; Iranian plans mentioned in different language results.</div>
+<div class="coverage-gap">Source rsrc-013, rsrc-014, and rsrc-015 are older than 14 days but were retained to provide essential context on maritime insurance and Iranian transit policies not found in more recent snippets.</div>
+
+<h2>Sources</h2>
+<div class="sources-table-wrap">
+<table class="sources-table">
+<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>
+<tbody>
+<tr id="src-001"><td class="source-num">1</td><td>Carnegie Endowment for International Peace</td><td><a href="https://carnegieendowment.org/middle-east/diwan/2026/04/the-united-states-and-iran-have-agreed-to-a-two-week-ceasefire" target="_blank" rel="noopener">The United States and Iran Have Agreed to a Two-Week Ceasefire</a></td><td>en</td><td>United States</td></tr><tr id="src-002"><td class="source-num">2</td><td>Bloomberg</td><td><a href="https://www.bloomberg.com/news/articles/2026-04-15/us-and-iran-weigh-extending-their-ceasefire-by-two-weeks" target="_blank" rel="noopener">US and Iran Weigh Extending Their Ceasefire by Two Weeks</a></td><td>en</td><td>United States</td></tr><tr id="src-003"><td class="source-num">3</td><td>World Economic Forum</td><td><a href="https://www.weforum.org/stories/2026/04/how-middle-east-war-turning-governments-into-insurers-last-resort/" target="_blank" rel="noopener">What stopping war-risk insurance in the Strait of Hormuz tells us</a></td><td>en</td><td>Switzerland</td></tr><tr id="src-004"><td class="source-num">4</td><td>UN News</td><td><a href="https://news.un.org/en/story/2026/04/1167292" target="_blank" rel="noopener">US-Iran war: Guterres calls for continued talks, end to ceasefire violations</a></td><td>en</td><td>International</td></tr><tr id="src-005"><td class="source-num">5</td><td>NHPR</td><td><a href="https://www.nhpr.org/2026-04-16/mediators-are-pushing-to-extend-the-u-s-iran-ceasefire" target="_blank" rel="noopener">Mediators are pushing to extend the U.S.-Iran ceasefire</a></td><td>en</td><td>United States</td></tr><tr id="src-006"><td class="source-num">6</td><td>RT Arabic</td><td><a href="https://arabic.rt.com/world/1778797/" target="_blank" rel="noopener">طهران وواشنطن تنفيان التوصل لاتفاق مبدئي لتمديد وقف إطلاق النار</a></td><td>ar</td><td>Russia</td></tr><tr id="src-007"><td class="source-num">7</td><td>Kalima News</td><td><a href="https://kalimaiq.net/news/details/59621" target="_blank" rel="noopener">واشنطن تلوح بـ&quot;كل الخيارات&quot; لإيران مع انتهاء مهلة الهدنة</a></td><td>ar</td><td>Iraq</td></tr><tr id="src-008"><td class="source-num">8</td><td>Tabnak</td><td><a href="https://www.tabnak.ir/fa/news/1365961/" target="_blank" rel="noopener">بیانیه شورای عالی امنیت ملی پیرامون آتش‌بس دو هفته‌ای</a></td><td>fa</td><td>Iran</td></tr><tr id="src-009"><td class="source-num">9</td><td>Anadolu Agency</td><td><a href="https://www.aa.com.tr/tr/ekonomi/bakan-uraloglundan-hurmuz-bogazindaki-turk-sahipli-gemilerin-durumuna-iliskin-aciklama/3887862" target="_blank" rel="noopener">Bakan Uraloğlu&#x27;ndan Hürmüz Boğazı&#x27;ndaki Türk sahipli gemilerin durumuna ilişkin açıklama</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-010"><td class="source-num">10</td><td>Bloomberg HT</td><td><a href="https://www.bloomberght.com/abd-donanmasi-iran-ablukasinda-13-gemiyi-geri-cevirdi-3775048" target="_blank" rel="noopener">ABD Donanması İran ablukasında 13 gemiyi geri çevirdi</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-011"><td class="source-num">11</td><td>Xinhua</td><td><a href="https://www.news.cn/world/20260408/498a72e8f2a5482eaf4c784450c5ca6e/c.html" target="_blank" rel="noopener">停火、谈判、通航，&quot;最后期限&quot;之际的伊朗战事最新进展</a></td><td>zh</td><td>China</td></tr><tr id="src-012"><td class="source-num">12</td><td>China National Radio</td><td><a href="https://news.cnr.cn/sq/20260417/t20260417_527588330.shtml" target="_blank" rel="noopener">视频丨美国伊朗均否认&quot;已就延长停火期限达成一致&quot;</a></td><td>zh</td><td>China</td></tr><tr id="src-013"><td class="source-num">13</td><td>Babaocağı</td><td><a href="https://www.babaocagi.com.tr/iran-hurmuz-bogazindan-gecislerde-hangi-gemilere-izin-verilecegini-acikladi" target="_blank" rel="noopener">İran Hürmüz Boğazı&#x27;ndan geçişlerde hangi gemilere izin verileceğini açıkladı</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-014"><td class="source-num">14</td><td>Euronews</td><td><a href="https://www.euronews.com/business/2026/03/26/ships-seek-irans-clearance-to-cross-hormuz-as-risks-rise-and-insurance-costs-surge" target="_blank" rel="noopener">Ships seek Iranian clearance in Hormuz as insurance costs surge</a></td><td>en</td><td>France</td></tr><tr id="src-015"><td class="source-num">15</td><td>US International Development Finance Corporation</td><td><a href="https://www.dfc.gov/media/press-releases/dfc-chubb-announce-additional-american-reinsurance-partners-and-40b-coverage" target="_blank" rel="noopener">DFC, Chubb Announce Additional American Reinsurance Partners and $40B Coverage</a></td><td>en</td><td>United States</td></tr><tr id="src-016"><td class="source-num">16</td><td>Anadolu Agency</td><td><a href="https://www.aa.com.tr/en/americas/trump-says-us-very-close-to-making-iran-deal-as-two-week-ceasefire-nears-end/3908502" target="_blank" rel="noopener">Trump says US &#x27;very close&#x27; to making Iran deal as two-week ceasefire nears end</a></td><td>en</td><td>Turkey</td></tr><tr id="src-017"><td class="source-num">17</td><td>Fortune</td><td><a href="https://fortune.com/2026/04/15/iran-u-s-close-to-agreeing-cease-fire-extension-officials-say/" target="_blank" rel="noopener">Iran, U.S. close to agreeing cease-fire extension, officials say</a></td><td>en</td><td>United States</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>Backed by 21 sources across 6 regions with sharply competing narratives from state-directed Iranian media (Press TV), state-influenced Turkish coverage (Anadolu), and independent Western outlets (Financial Times, Guardian). The mix of autonomous public broadcasters and state-directed sources creates ideal conditions for multi-perspective bias analysis. The approaching ceasefire deadline adds genuine editorial urgency beyond the ongoing crisis baseline.</dd>
+<dt>QA Corrections Applied</dt><dd><ul><li>Opening sentence corrected from &#x27;brokered by Pakistan&#x27; to &#x27;brokered by Pakistan, Turkey, and Egypt&#x27; to accurately reflect all three mediators per src-001/rsrc-001; src-001 added to opening sentence citations.</li>
+<li>Summary corrected from &#x27;The US-Iran ceasefire brokered on April 8&#x27; to &#x27;The US-Iran ceasefire brokered on April 8 by Pakistan, Turkey, and Egypt&#x27; to match the corrected body text.</li>
+<li>Added acknowledgment of the Rudaw mining-threat source (rsrc-015) to the limitations paragraph, noting it was identified in the research dossier but falls outside the article&#x27;s available sources.</li></ul></dd>
+<dt>Pipeline Run</dt><dd>run-2026-04-19-eb1d65 &middot; 2026-04-19</dd>
+</dl>
+</div>
+
+<details class="glossary" style="margin-top: 2rem; border-top: 3px solid #000; padding-top: 1rem">
+<summary style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.5rem 0">About these labels</summary>
+<div style="margin-top: 0.75rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6">
+<p style="margin-bottom: 1rem; font-style: italic">Not every tag needs a definition &mdash; those listed below cover the full vocabulary used across the dossier.</p>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Divergence types</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="font-weight: 700; margin-top: 0.5rem">factual</dt><dd style="margin-left: 0">Sources disagree on a verifiable fact: a date, number, name, or whether something happened.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">framing</dt><dd style="margin-left: 0">Sources describe the same event using different language or implied meaning. Example: one outlet calls a payment &ldquo;compensation,&rdquo; another calls it &ldquo;sanctions relief.&rdquo;</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">omission</dt><dd style="margin-left: 0">One or more sources report something that other sources leave out entirely.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">emphasis</dt><dd style="margin-left: 0">Sources cover the same event but give different aspects different weight or prominence. Example: one outlet leads with casualty figures; another treats them as a footnote to the political negotiations.</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Bias issues</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="font-weight: 700; margin-top: 0.5rem">evaluative_adjective</dt><dd style="margin-left: 0">A descriptive word that signals the writer&rsquo;s judgment rather than a neutral fact. Examples: &ldquo;staggering,&rdquo; &ldquo;sharp,&rdquo; &ldquo;dramatic.&rdquo;</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">intensifier</dt><dd style="margin-left: 0">A word that amplifies a statement without adding information. Examples: &ldquo;very,&rdquo; &ldquo;extremely,&rdquo; &ldquo;deeply.&rdquo;</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">loaded_term</dt><dd style="margin-left: 0">Vocabulary carrying strong political or emotional connotations that a more neutral word would avoid. Examples: &ldquo;regime&rdquo; vs. &ldquo;government,&rdquo; &ldquo;crackdown&rdquo; vs. &ldquo;enforcement.&rdquo;</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">hedging</dt><dd style="margin-left: 0">Phrases that soften or obscure a claim, making attribution less clear. Examples: &ldquo;some say,&rdquo; &ldquo;allegedly,&rdquo; &ldquo;reportedly.&rdquo;</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Stakeholder types</h3>
+<dl style="margin-bottom: 0">
+<dt style="font-weight: 700; margin-top: 0.5rem">academia</dt><dd style="margin-left: 0">Researchers, professors, think tanks, and university-based experts.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">affected_community</dt><dd style="margin-left: 0">People directly impacted by the events themselves &mdash; civilians, displaced persons, local populations. Voices from within the group, not their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">civil_society</dt><dd style="margin-left: 0">Non-state organizations representing collective interests (NGOs, human rights groups, trade unions, religious bodies).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">government</dt><dd style="margin-left: 0">Executive branch officials, ministries, heads of state, and their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">industry</dt><dd style="margin-left: 0">Private companies, trade associations, and commercial actors.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">international_org</dt><dd style="margin-left: 0">Multilateral bodies and their representatives (UN agencies, IMF, IAEA, Red Cross, regional alliances).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">judiciary</dt><dd style="margin-left: 0">Judges, courts, prosecutors, and legal bodies acting in their official capacity.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">legislature</dt><dd style="margin-left: 0">Parliament, Congress, or equivalent body. Kept separate from &ldquo;government&rdquo; because legislatures often hold positions that differ from their own executive branch.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">media</dt><dd style="margin-left: 0">Journalists, editorial boards, and outlets quoted for their position or analysis, not as sources of factual reporting.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">military</dt><dd style="margin-left: 0">Armed forces personnel, commanders, and defense ministries.</dd>
+</dl>
+</div>
+</details>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>

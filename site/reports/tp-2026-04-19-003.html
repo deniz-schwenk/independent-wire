@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>French UNIFIL Peacekeeper Killed in Southern Lebanon Ambush as Israel Enforces New Buffer Zone</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "B6  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "BC  ";
+}
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Sources table */
+.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.sources-table th {
+  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 3px solid #000;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
+.sources-table a { color: var(--color-primary); text-decoration: none; }
+.sources-table a:hover { text-decoration: underline; }
+.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>French UNIFIL Peacekeeper Killed in Southern Lebanon Ambush as Israel Enforces New Buffer Zone</h1>
+<p class="subtitle">Staff Sergeant Florian Montorio died in a small-arms attack attributed to Hezbollah-linked actors, while the IDF designated 55 Lebanese villages as off-limits military zones under a three-tier demarcation system.</p>
+<p class="date">April 19, 2026</p>
+
+<div class="follow-up-ref" style="font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #444; padding: 12px 16px; border-left: 3px solid #000; margin: 16px 0; background: #f5f5f5;">
+Follow-up to: &ldquo;Thousands of Displaced Lebanese Return to Devastated South as Trump Declares Israeli Strikes &#x27;Prohibited&#x27;&rdquo; (April 18, 2026)
+<a href="tp-2026-04-18-003.html" style="font-family: 'Space Mono', monospace; color: #000;">&rarr; Read previous</a>
+</div>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">18</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">4</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Countries</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 840 840" class="source-network" role="img" aria-label="Source network: 18 sources from 7 countries">
+<path d="M622.5,240.0 A280,280 0 0 1 622.5,520.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="247.5" x2="635.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M622.5,520.0 A280,280 0 0 1 452.5,650.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="512.5" x2="635.5" y2="527.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M452.5,650.5 A280,280 0 0 1 240.0,622.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="448.6" y1="636.0" x2="456.4" y2="664.9" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M240.0,622.5 A280,280 0 0 1 109.5,452.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="247.5" y1="609.5" x2="232.5" y2="635.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M109.5,452.5 A280,280 0 0 1 137.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="124.0" y1="448.6" x2="95.1" y2="456.4" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M137.5,240.0 A280,280 0 0 1 307.5,109.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="150.5" y1="247.5" x2="124.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M307.5,109.5 A280,280 0 0 1 498.3,126.2" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="311.4" y1="124.0" x2="303.6" y2="95.1" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M498.3,126.2 A280,280 0 0 1 622.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="492.0" y1="139.8" x2="504.7" y2="112.6" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="362.1" x2="525.3" y2="315.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="304.8" r="26" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Turkey (4 sources)</title></circle>
+<text class="count-label" x="549.0" y="308.8" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">4</text>
+<text class="name-label" x="549.0" y="344.8" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Turkey</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="424.0" y1="380.0" x2="599.0" y2="380.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="615.0" cy="380.0" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>UAE (1 source)</title></circle>
+<text class="count-label" x="615.0" y="384.0" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="615.0" y="410.0" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">UAE</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="397.9" x2="525.3" y2="444.7" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="455.2" r="26" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Israel (4 sources)</title></circle>
+<text class="count-label" x="549.0" y="459.2" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">4</text>
+<text class="name-label" x="549.0" y="495.2" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Israel</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="402.7" y1="342.3" x2="461.9" y2="243.7" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="475.3" cy="221.4" r="26" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>UK (3 sources)</title></circle>
+<text class="count-label" x="475.3" y="225.4" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">3</text>
+<text class="name-label" x="475.3" y="261.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">UK</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="415.6" y1="354.1" x2="549.1" y2="257.2" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="570.1" cy="241.9" r="26" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>France (3 sources)</title></circle>
+<text class="count-label" x="570.1" y="245.9" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">3</text>
+<text class="name-label" x="570.1" y="281.9" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">France</text>
+</g>
+<circle cx="380" cy="380" r="44" fill="#000"/>
+<text x="380" y="374" font-size="22" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" dominant-baseline="middle">18</text>
+<text x="380" y="394" font-size="9" font-family="'Space Mono', 'Courier New', monospace" fill="white" letter-spacing="0.1em" text-anchor="middle">SOURCES</text>
+<text x="685.0" y="380.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">MIDDLE EAST &amp; N. AFRICA</text>
+<text x="565.7" y="622.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EAST ASIA</text>
+<text x="340.2" y="682.4" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">SOUTH &amp; CENTRAL ASIA</text>
+<text x="138.0" y="565.7" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SE ASIA &amp; OCEANIA</text>
+<text x="77.6" y="340.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SUB-SAHARAN AFRICA</text>
+<text x="194.3" y="138.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">AMERICAS</text>
+<text x="406.6" y="76.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">LATIN AMERICA</text>
+<text x="586.1" y="155.1" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EUROPE</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Israel: 4 sources">Israel (4)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Turkey: 4 sources">Turkey (4)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="France: 3 sources">France (3)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="United Kingdom: 3 sources">United Kingdom (3)</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="International: 2 sources">International (2)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="United Arab Emirates: 1 source">United Arab Emirates</span>
+<span class="country-badge" style="background:#94a3b812;color:#94a3b8;border:1px solid #94a3b830" title="Malaysia: 1 source">Malaysia</span>
+</div>
+
+<div class="reader-note">This article draws on 18 sources across five languages and seven countries, giving it broad cross-regional reach, but several voices directly affected by the events are missing — most critically, residents of the 55 southern Lebanese villages facing displacement under the new military zones and the Lebanese Armed Forces tasked with investigating the attack. The way different regional media frame the Israeli buffer zone diverges dramatically, from a security necessity in Hebrew-language outlets to an illegal occupation in Turkish and Arabic ones, and one Turkish outlet attributed the peacekeeper&#x27;s death to Israel, contradicting the consensus across all other sources reviewed. The article&#x27;s own language occasionally editorializes — characterizing the situation as &#x27;volatile&#x27; or framing affected communities as appearing &#x27;only as statistics&#x27; — which readers should note as the writer&#x27;s interpretation layered on top of the sourced reporting.</div>
+
+<div class="article-body">
+<p>A French United Nations peacekeeper was killed and three others wounded on April 18 in an ambush in southern Lebanon, escalating a conflict that had already strained a 10-day ceasefire between Israel and Hezbollah. Staff Sergeant Florian Montorio of the 17th Parachute Engineer Regiment died after his UNIFIL patrol came under small-arms fire near the village of Ghandouriyeh. Sources differ on the nature of the mission: Le Monde reported it was a resupply mission <a href="#src-001" class="source-ref"><sup>[1]</sup></a>, while Walla News reported the patrol was conducting explosive-device clearance operations <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. UNIFIL attributed the attack to non-state actors operating in an area controlled by Hezbollah <a href="#src-007" class="source-ref"><sup>[7]</sup></a>, and French President Emmanuel Macron blamed Hezbollah directly, demanding that Lebanese authorities act against the perpetrators <a href="#src-001" class="source-ref"><sup>[1]</sup></a>.</p>
+<p>The killing marks the second UNIFIL fatality in the current conflict cycle. An Indonesian peacekeeper was killed in a separate incident on March 29, 2026 <a href="#src-011" class="source-ref"><sup>[11]</sup></a>. UN Secretary-General António Guterres condemned the April 18 attack, with his spokesperson&#x27;s statement describing the assailants as &quot;non-state actors presumed to be Hezbollah&quot; and calling for all parties to respect the cessation of hostilities <a href="#src-006" class="source-ref"><sup>[6]</sup></a><a href="#src-016" class="source-ref"><sup>[16]</sup></a>.</p>
+<p>Hezbollah denied any involvement. The group issued a statement calling for patience pending the Lebanese army&#x27;s investigation and expressed what it described as astonishment at France&#x27;s accusations <a href="#src-017" class="source-ref"><sup>[17]</sup></a>. Hezbollah also pointed to what it characterized as silence over previous Israeli attacks on UNIFIL positions <a href="#src-017" class="source-ref"><sup>[17]</sup></a>. Lebanese President Joseph Aoun and Prime Minister Nawaf Salam both condemned the attack and ordered an investigation <a href="#src-018" class="source-ref"><sup>[18]</sup></a>.</p>
+<p>The peacekeeper&#x27;s death occurred against the backdrop of a separate but concurrent escalation: the Israeli military&#x27;s formal establishment of a multi-tier demarcation system in southern Lebanon. Hebrew-language sources provided the most granular detail, reporting a three-tier structure — a &quot;Red Line&quot; closest to the Israeli border, a &quot;Yellow Line&quot; further north, and the Litani River as the outermost boundary — designating 55 Lebanese villages as off-limits military zones <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. The IDF stated that self-defense actions within these zones are not restricted by the ceasefire <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. i24 News confirmed that Israeli troops have been demolishing infrastructure within the designated area <a href="#src-009" class="source-ref"><sup>[9]</sup></a>.</p>
+<p>The framing of this buffer zone diverges sharply across regional media. Hebrew-language outlets such as Ynet described the system as a strategic security necessity to prevent anti-tank fire and militant infiltration into northern Israel, providing detailed maps and tactical parameters <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. Le Monde&#x27;s English-language reporting noted the IDF&#x27;s comparison to its own operations in Gaza <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. Euronews Arabic reported that the Yellow Line isolates 55 villages and highlighted Hezbollah&#x27;s rejection of direct negotiations with Israel, which the group characterized as &quot;a form of surrender&quot; — &#x27;<span lang="fa" dir="rtl">المفاوضات المباشرة مع إسرائيل هي شكل من أشكال الاستسلام</span>&#x27; (Direct negotiations with Israel are a form of surrender) <a href="#src-005" class="source-ref"><sup>[5]</sup></a>.</p>
+<p>Turkish and Arabic-language analytical sources framed the same demarcation in starkly different terms. Independent Turkish described the buffer zone as the pursuit of a &quot;Gaza model&quot; — &#x27;İsrail, Lübnan&#x27;da &quot;Gazze modelinin&quot; peşinde&#x27; (Israel is pursuing the &quot;Gaza model&quot; in Lebanon) — and emphasized a resulting humanitarian disaster <a href="#src-015" class="source-ref"><sup>[15]</sup></a>. A Turkish research institute analysis characterized the Israeli operation as targeting long-term demographic change south of the Litani River <a href="#src-013" class="source-ref"><sup>[13]</sup></a>. Arab48, an Arabic-language outlet based in Israel, placed the peacekeeper&#x27;s death within a broader narrative of Israeli ceasefire violations and the ongoing recovery of bodies from rubble in the city of Tyre <a href="#src-012" class="source-ref"><sup>[12]</sup></a>. Middle East Eye had reported as early as April 3 that the buffer zone plan involved razing frontline villages, noting that disarming Hezbollah was seen as unrealistic <a href="#src-010" class="source-ref"><sup>[10]</sup></a>.</p>
+<p>One notable attribution discrepancy emerged in the coverage of the peacekeeper&#x27;s death. Türk Haber, a Turkish outlet, ran a headline explicitly blaming Israel for the killing — &#x27;İsrail, Lübnan&#x27;da Fransız askerini öldürdü&#x27; (Israel killed a French soldier in Lebanon) <a href="#src-008" class="source-ref"><sup>[8]</sup></a>. This directly contradicts the consensus across French, English, Hebrew, and even other Turkish sources, including Turkey&#x27;s state-run Anadolu Agency, which reported UNIFIL&#x27;s attribution to Hezbollah-linked non-state actors <a href="#src-007" class="source-ref"><sup>[7]</sup></a><a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-006" class="source-ref"><sup>[6]</sup></a>.</p>
+<p>The ceasefire itself, which entered into force in mid-April, includes a 10-kilometer security zone and conditions for Hezbollah&#x27;s disarmament <a href="#src-014" class="source-ref"><sup>[14]</sup></a>. Independent Arabia linked the broader conflict to Iranian involvement, a dimension absent from French and Hebrew coverage <a href="#src-014" class="source-ref"><sup>[14]</sup></a>.</p>
+<p>This report draws on 18 sources in 4 languages (English, French, Hebrew, Arabic, and Turkish) across 7 countries. Several perspectives of direct relevance remain absent. No statements from the Lebanese Armed Forces regarding their role in investigating the attack or operating within the new demarcation zones were available in the dossier, though subsequent reporting indicated Lebanese officials condemned the attack and ordered a probe <a href="#src-018" class="source-ref"><sup>[18]</sup></a>. No perspectives from residents of the 55 southern Lebanese villages designated as off-limits military zones were found; these communities face displacement and demolition of their homes, yet appear only as statistics. No statements from the Israeli political leadership — the Prime Minister or Defense Minister — explaining the political authorization for the Yellow Line policy were available; only the military&#x27;s operational framing is represented. No statements from Iran, the United States, or UNIFIL troop-contributing countries beyond France — particularly Indonesia, which lost a peacekeeper weeks earlier — were found. No humanitarian organizations operating in southern Lebanon were quoted on the impact of the buffer zone on civilian access or aid delivery.</p>
+<p>The situation remains volatile. The ceasefire&#x27;s 10-day window continues, but the IDF has stated it retains the right to act in self-defense within the buffer zone <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. UNIFIL has launched an investigation into the attack on its patrol <a href="#src-016" class="source-ref"><sup>[16]</sup></a>, and the Lebanese army is conducting a parallel probe <a href="#src-018" class="source-ref"><sup>[18]</sup></a>. Whether the killing of a NATO-member nation&#x27;s soldier will alter the diplomatic calculus around the ceasefire — or accelerate calls for UNIFIL&#x27;s mandate to be reconsidered — remains an open question across the sources reviewed.</p>
+</div>
+<p class="word-count">942 words</p>
+
+<h2>Perspectives &mdash; Stakeholder Analysis</h2>
+<div class="card-grid">
+<div class="card">
+  <div class="card-header"><span class="card-actor">Emmanuel Macron</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; France</div>
+  <div class="card-position">Blames Hezbollah for the ambush that killed Staff Sergeant Florian Montorio and demands the Lebanese government take action against the perpetrators.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Israeli Defense Forces (IDF)</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">military</span> &middot; Israel</div>
+  <div class="card-position">Established a multi-tier demarcation system (Red, Yellow, and Litani lines) in southern Lebanon designating 55 villages as off-limits military zones, framing the buffer zone as a security necessity to prevent anti-tank fire and militant infiltration into northern Israel. States that self-defense actions are not restricted by the 10-day ceasefire.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Hezbollah</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">civil_society</span> &middot; Lebanon</div>
+  <div class="card-position">Rejects direct negotiations with Israel, characterizing them as a form of surrender. Identified by UNIFIL, France, and multiple sources as the suspected perpetrator of the attack on the UNIFIL patrol.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">António Guterres</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; International</div>
+  <div class="card-position">Condemns the attack on the UNIFIL patrol and calls for accountability, with initial assessment pointing to non-state actors linked to Hezbollah.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">UNIFIL</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">international_org</span> &middot; International</div>
+  <div class="card-position">Attributes the attack that killed the French peacekeeper to non-state actors operating in an area controlled by Hezbollah. The mission has suffered multiple casualties in the current conflict cycle, including a previous Indonesian peacekeeper fatality in March 2026.</div>
+  
+</div>
+</div>
+
+<h2>Missing Voices</h2>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No statements from the Lebanese government or Lebanese Armed Forces (LAF), despite Macron&#x27;s direct demand that Lebanese authorities act against the perpetrators and the LAF&#x27;s role in investigating the attack and operating within the new demarcation zones. Their position on the &#x27;Yellow Line,&#x27; the ceasefire enforcement, and the peacekeeper killing is entirely absent.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No perspectives from residents of the 55 southern Lebanese villages designated as off-limits military zones under the &#x27;Yellow Line&#x27; system. These communities face displacement and the demolition of their homes and infrastructure, yet their voices appear only as demographic statistics in the coverage.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No statements from the Israeli political leadership (Prime Minister, Defense Minister, or cabinet officials) providing the political rationale or authorization for the &#x27;Yellow Line&#x27; policy. Only the military&#x27;s operational framing is present, leaving the political decision-making layer unrepresented.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">military</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No direct statements from UNIFIL troop-contributing countries beyond France — particularly Indonesia, which lost a peacekeeper in March 2026 — regarding the safety of their personnel or their assessment of mission viability under current conditions.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No statements from Iran, despite Arabic-language sources explicitly linking Hezbollah&#x27;s actions and the broader conflict to Iranian involvement. Iran&#x27;s position on the ceasefire, the peacekeeper killing, and the buffer zone is absent.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">civil_society</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No perspectives from Lebanese or international humanitarian organizations operating in southern Lebanon who could speak to the impact of the &#x27;Yellow Line&#x27; on civilian access, aid delivery, and displacement conditions.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No statements from the United States, which typically plays a central mediating role in Israel-Lebanon ceasefire arrangements and whose position on the &#x27;Yellow Line&#x27; and UNIFIL safety would be significant.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">minor</span></div>
+  <div class="missing-voice-desc">No perspectives from residents of northern Israel whose security the IDF cites as the justification for the buffer zone. Their experience of the threat and views on the demarcation policy are absent.</div>
+</div>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">Le Monde (src-001 / rsrc-001) describes the UNIFIL patrol&#x27;s mission as a resupply mission, while Walla News (src-003 / rsrc-003) describes it as an explosive-device clearance operation. The original article cited both sources but presented only the clearance version.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article now explicitly attributes each mission description to its respective source, presenting both versions to the reader.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The article&#x27;s methodology line stated &#x27;4 languages&#x27; while listing five (English, French, Hebrew, Arabic, Turkish), an internal inconsistency.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Corrected to &#x27;5 languages&#x27; to match the enumerated list.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">French and Hebrew sources focus on the specific identity of the French peacekeeper and the technical nature of the ambush, while Arabic sources (src-012) frame the incident as part of a broader pattern of Israeli ceasefire violations.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The original article already acknowledged this framing divergence in the paragraph referencing Arab48; no additional correction was needed.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Israeli sources (src-004, src-009) describe the Yellow Line as a security necessity, while Arabic and Turkish sources (src-005, src-013, src-015) frame it as illegal occupation and demographic engineering.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The original article adequately presented both framings; no correction was needed.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Türk Haber (src-008) explicitly blames Israel for the peacekeeper&#x27;s death in its headline, contradicting the consensus in French, English, Hebrew, and other Turkish sources that attribute the attack to Hezbollah-linked non-state actors.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The original article already flagged this discrepancy explicitly; no correction was needed.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">Hebrew sources (src-004) provide granular three-tier defense plan detail (Red, Yellow, and Litani lines) that is largely absent or simplified in Western English-language coverage.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The original article already noted this disparity in sourcing depth; no correction was needed.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">6 language bias findings &middot; Severity: <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
+<div class="bias-finding">
+  <span class="bias-excerpt">escalating a conflict that had already strained a 10-day ceasefire</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Escalating&#x27; and &#x27;strained&#x27; are editorial characterizations of the conflict&#x27;s trajectory and the ceasefire&#x27;s condition; the article does not attribute these assessments to any source, embedding a judgment about severity into the narrative voice.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">framed the same demarcation in starkly different terms</span> <span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">intensifier</span>
+  <div class="bias-explanation">&#x27;Starkly&#x27; amplifies the degree of divergence between media framings without adding informational content; the contrasting framings that follow already demonstrate the difference without the intensifier.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">a resulting humanitarian disaster</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">While attributed to Independent Turkish&#x27;s framing, the phrase &#x27;humanitarian disaster&#x27; is presented in the article&#x27;s own paraphrase rather than as a direct quote, allowing an evaluative characterization of conditions to read as the article&#x27;s own description rather than a clearly attributed claim.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">The situation remains volatile</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Volatile&#x27; is an editorial judgment about the current state of affairs that is not attributed to any source or supported by a specific metric; it characterizes instability as a given rather than letting the reported facts speak for themselves.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Whether the killing of a NATO-member nation&#x27;s soldier will alter the diplomatic calculus around the ceasefire — or accelerate calls for UNIFIL&#x27;s mandate to be reconsidered — remains an open question</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">The phrase &#x27;NATO-member nation&#x27;s soldier&#x27; reframes the victim&#x27;s identity to emphasize alliance membership, implicitly elevating the geopolitical stakes beyond what sources stated; combined with &#x27;diplomatic calculus,&#x27; the sentence steers the reader toward a specific interpretation of the event&#x27;s significance rather than neutrally reporting what sources assessed.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">these communities face displacement and demolition of their homes, yet appear only as statistics</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">emotionalizing</span>
+  <div class="bias-explanation">The contrast between &#x27;displacement and demolition&#x27; and &#x27;appear only as statistics&#x27; is a rhetorical construction designed to evoke sympathy and implicitly criticize the coverage, functioning as editorial commentary rather than neutral disclosure of a gap.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">8</span></div>
+<div class="bar-row"><span class="bar-label">ar</span><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div><span class="bar-count">4</span></div>
+<div class="bar-row"><span class="bar-label">tr</span><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div><span class="bar-count">4</span></div>
+<div class="bar-row"><span class="bar-label">he</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="bar-count">2</span></div>
+</div>
+</div>
+</details>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">Lack of direct statements from the Lebanese Armed Forces (LAF) regarding their role in investigating the attack or their presence in the new &#x27;Yellow Line&#x27; zones.</div>
+<div class="coverage-gap">No direct quotes from residents of the 55 villages affected by the new demarcation lines; their perspective is only mentioned as a demographic statistic.</div>
+<div class="coverage-gap">Limited information on the specific &#x27;non-state actors&#x27; mentioned by UNIFIL beyond the general attribution to Hezbollah.</div>
+<div class="coverage-gap">Source rsrc-010 (Middle East Eye) and rsrc-013 (Türkiye Araştırmaları Merkezi) are older than 14 days but were retained to provide essential strategic context on the &#x27;Yellow Line&#x27; planning and demographic goals.</div>
+<div class="coverage-gap">Source rsrc-011 (UN Peacekeeping) is from March 2026 but was retained to establish the precedent of UNIFIL casualties in the current conflict cycle.</div>
+
+<h2>Sources</h2>
+<div class="sources-table-wrap">
+<table class="sources-table">
+<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>
+<tbody>
+<tr id="src-001"><td class="source-num">1</td><td>Le Monde</td><td><a href="https://www.lemonde.fr/en/international/article/2026/04/18/france-blames-hezbollah-for-french-peacekeeper-s-death-in-lebanon_6752565_4.html" target="_blank" rel="noopener">France blames Hezbollah for French peacekeeper&#x27;s death in Lebanon</a></td><td>en</td><td>France</td></tr><tr id="src-002"><td class="source-num">2</td><td>Le Monde</td><td><a href="https://www.lemonde.fr/en/international/article/2026/04/18/israel-army-says-it-established-yellow-line-in-lebanon-as-in-gaza_6752564_4.html" target="_blank" rel="noopener">Israel army says it established &#x27;Yellow Line&#x27; in Lebanon, as in Gaza</a></td><td>en</td><td>France</td></tr><tr id="src-003"><td class="source-num">3</td><td>Walla News</td><td><a href="https://news.walla.co.il/item/3831586" target="_blank" rel="noopener">חייל צרפתי נהרג ושלושה נפצעו בדרום לבנון מאש חיזבאללה</a></td><td>he</td><td>Israel</td></tr><tr id="src-004"><td class="source-num">4</td><td>Ynet</td><td><a href="https://www.ynet.co.il/news/article/r1goi11btbx" target="_blank" rel="noopener">הועתק מעזה ללבנון: הקו הצהוב החדש - והמפה</a></td><td>he</td><td>Israel</td></tr><tr id="src-005"><td class="source-num">5</td><td>Euronews Arabic</td><td><a href="https://arabic.euronews.com/2026/04/18/israels-yellow-line-in-southern-lebanon-hezbollah-beiruts-negotiations-with-tel-av" target="_blank" rel="noopener">&quot;خطّ أصفر&quot; إسرائيلي في جنوب لبنون.. وحزب الله: مفاوضات بيروت مع ...</a></td><td>ar</td><td>France</td></tr><tr id="src-006"><td class="source-num">6</td><td>Sky News Arabia</td><td><a href="https://www.skynewsarabia.com/middle-east/1864961" target="_blank" rel="noopener">غوتيريش يدين هجوما أدى إلى مقتل جندي فرنسي في لبنان</a></td><td>ar</td><td>United Arab Emirates</td></tr><tr id="src-007"><td class="source-num">7</td><td>Anadolu Agency</td><td><a href="https://www.aa.com.tr/tr/dunya/unifil-hizbullah-tarafindan-duzenlendigi-dusunulen-saldirida-fransiz-baris-gucu-askerinin-oldugunu-acikladi/3910656" target="_blank" rel="noopener">UNIFIL, Hizbullah tarafından düzenlendiği düşünülen saldırıda Fransız barış gücü askerinin öldüğünü açıkladı</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-008"><td class="source-num">8</td><td>Türk Haber</td><td><a href="https://www.turkhaber.com/haber/israil-lubnan-da-fransiz-askerini-oldurdu-4140087.html" target="_blank" rel="noopener">İsrail, Lübnan&#x27;da Fransız askerini öldürdü</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-009"><td class="source-num">9</td><td>i24 News</td><td><a href="https://www.i24news.tv/en/news/israel/defense/artc-idf-implements-gaza-style-yellow-line-in-south-lebanon-report" target="_blank" rel="noopener">IDF Implements Gaza-style &#x27;yellow Line&#x27; In South Lebanon - Report</a></td><td>en</td><td>Israel</td></tr><tr id="src-010"><td class="source-num">10</td><td>Middle East Eye</td><td><a href="https://www.middleeasteye.net/news/israel-plans-yellow-line-model-lebanon-razing-southern-villages" target="_blank" rel="noopener">Israel plans &#x27;Yellow Line&#x27; model in Lebanon by razing southern villages</a></td><td>en</td><td>United Kingdom</td></tr><tr id="src-011"><td class="source-num">11</td><td>UN Peacekeeping</td><td><a href="https://peacekeeping.un.org/en/un-peacekeeping/news/un-peacekeeper-killed-another-seriously-injured-in-southern-lebanon" target="_blank" rel="noopener">UN peacekeeper killed, another seriously injured, in southern Lebanon</a></td><td>en</td><td>International</td></tr><tr id="src-012"><td class="source-num">12</td><td>Arab48</td><td><a href="https://www.arab48.com/%D8%A3%D8%AE%D8%A8%D8%A7%D8%B1-%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9-%D9%88%D8%AF%D9%88%D9%84%D9%8A%D8%A9/2026/04/18/" target="_blank" rel="noopener">شهداء بخروقات في جنوب لبنان ومقتل جندي إسرائيلي وإصابة آخرين ...</a></td><td>ar</td><td>Israel</td></tr><tr id="src-013"><td class="source-num">13</td><td>Türkiye Araştırmaları Merkezi</td><td><a href="https://www.turkiyearastirmalari.org/2026/03/26/yayinlar/yorum/lubnan-israile-ne-kadar-dayanabilir-sinirlar-ve-kirilma-noktalari/" target="_blank" rel="noopener">Lübnan İsrail&#x27;e Ne Kadar Dayanabilir? Sınırlar ve Kırılma Noktaları</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-014"><td class="source-num">14</td><td>Independent Arabia</td><td><a href="https://www.independentarabia.com/node/646788/" target="_blank" rel="noopener">وقف النار بين &quot;حزب الله&quot; وإسرائيل في لبنان يدخل حيز التنفيذ</a></td><td>ar</td><td>United Kingdom</td></tr><tr id="src-015"><td class="source-num">15</td><td>Independent Turkish</td><td><a href="https://www.indyturk.com/node/774903" target="_blank" rel="noopener">İsrail, Lübnan&#x27;da &quot;Gazze modelinin&quot; peşinde: &quot;İnsani felaket yaşanıyor&quot;</a></td><td>tr</td><td>Turkey</td></tr><tr id="src-016"><td class="source-num">16</td><td>UN News</td><td><a href="https://news.un.org/en/story/2026/04/1167332" target="_blank" rel="noopener">UN chief strongly condemns killing of another peacekeeper in southern Lebanon</a></td><td>en</td><td>International</td></tr><tr id="src-017"><td class="source-num">17</td><td>Middle East Eye</td><td><a href="https://www.middleeasteye.net/live-blog/live-blog-update/hezbollah-denies-involvement-deadly-attack-un-peacekeepers" target="_blank" rel="noopener">Hezbollah denies involvement in deadly attack on UN peacekeepers</a></td><td>en</td><td>United Kingdom</td></tr><tr id="src-018"><td class="source-num">18</td><td>The Star (Malaysia)</td><td><a href="https://www.thestar.com.my/news/world/2026/04/18/lebanon-pm-condemns-attack-on-french-unifil-troops-on-saturday" target="_blank" rel="noopener">UN peacekeeper killed, three wounded in south Lebanon shooting, UNIFIL says</a></td><td>en</td><td>Malaysia</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>Fifteen sources across 4 regions and 4 languages, including Tier 1 outlets (UN News, BBC World) alongside state-influenced Turkish coverage and French public media with direct national stakes in the UNIFIL fatality. France blaming Hezbollah while Israel establishes new demarcation lines creates competing accountability narratives. The killing of a UN peacekeeper is a qualitatively different event from ceasefire violations.</dd>
+<dt>QA Corrections Applied</dt><dd><ul><li>Replaced single-version mission description (&#x27;explosive-device clearance mission&#x27;) with a sourced divergence noting Le Monde (src-001) reported a resupply mission while Walla News (src-003) reported explosive-device clearance, and restructured the sentence to attribute each version to its source.</li>
+<li>Changed &#x27;4 languages&#x27; to &#x27;5 languages&#x27; in the methodology paragraph to match the five languages actually listed (English, French, Hebrew, Arabic, and Turkish).</li>
+<li>Updated the summary to reflect the mission-type divergence between src-001 and src-003.</li></ul></dd>
+<dt>Pipeline Run</dt><dd>run-2026-04-19-eb1d65 &middot; 2026-04-19</dd>
+</dl>
+</div>
+
+<details class="glossary" style="margin-top: 2rem; border-top: 3px solid #000; padding-top: 1rem">
+<summary style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.5rem 0">About these labels</summary>
+<div style="margin-top: 0.75rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6">
+<p style="margin-bottom: 1rem; font-style: italic">Not every tag needs a definition &mdash; those listed below cover the full vocabulary used across the dossier.</p>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Divergence types</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="font-weight: 700; margin-top: 0.5rem">factual</dt><dd style="margin-left: 0">Sources disagree on a verifiable fact: a date, number, name, or whether something happened.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">framing</dt><dd style="margin-left: 0">Sources describe the same event using different language or implied meaning. Example: one outlet calls a payment &ldquo;compensation,&rdquo; another calls it &ldquo;sanctions relief.&rdquo;</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">omission</dt><dd style="margin-left: 0">One or more sources report something that other sources leave out entirely.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">emphasis</dt><dd style="margin-left: 0">Sources cover the same event but give different aspects different weight or prominence. Example: one outlet leads with casualty figures; another treats them as a footnote to the political negotiations.</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Bias issues</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="font-weight: 700; margin-top: 0.5rem">evaluative_adjective</dt><dd style="margin-left: 0">A descriptive word that signals the writer&rsquo;s judgment rather than a neutral fact. Examples: &ldquo;staggering,&rdquo; &ldquo;sharp,&rdquo; &ldquo;dramatic.&rdquo;</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">intensifier</dt><dd style="margin-left: 0">A word that amplifies a statement without adding information. Examples: &ldquo;very,&rdquo; &ldquo;extremely,&rdquo; &ldquo;deeply.&rdquo;</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">loaded_term</dt><dd style="margin-left: 0">Vocabulary carrying strong political or emotional connotations that a more neutral word would avoid. Examples: &ldquo;regime&rdquo; vs. &ldquo;government,&rdquo; &ldquo;crackdown&rdquo; vs. &ldquo;enforcement.&rdquo;</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">hedging</dt><dd style="margin-left: 0">Phrases that soften or obscure a claim, making attribution less clear. Examples: &ldquo;some say,&rdquo; &ldquo;allegedly,&rdquo; &ldquo;reportedly.&rdquo;</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Stakeholder types</h3>
+<dl style="margin-bottom: 0">
+<dt style="font-weight: 700; margin-top: 0.5rem">academia</dt><dd style="margin-left: 0">Researchers, professors, think tanks, and university-based experts.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">affected_community</dt><dd style="margin-left: 0">People directly impacted by the events themselves &mdash; civilians, displaced persons, local populations. Voices from within the group, not their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">civil_society</dt><dd style="margin-left: 0">Non-state organizations representing collective interests (NGOs, human rights groups, trade unions, religious bodies).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">government</dt><dd style="margin-left: 0">Executive branch officials, ministries, heads of state, and their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">industry</dt><dd style="margin-left: 0">Private companies, trade associations, and commercial actors.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">international_org</dt><dd style="margin-left: 0">Multilateral bodies and their representatives (UN agencies, IMF, IAEA, Red Cross, regional alliances).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">judiciary</dt><dd style="margin-left: 0">Judges, courts, prosecutors, and legal bodies acting in their official capacity.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">legislature</dt><dd style="margin-left: 0">Parliament, Congress, or equivalent body. Kept separate from &ldquo;government&rdquo; because legislatures often hold positions that differ from their own executive branch.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">media</dt><dd style="margin-left: 0">Journalists, editorial boards, and outlets quoted for their position or analysis, not as sources of factual reporting.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">military</dt><dd style="margin-left: 0">Armed forces personnel, commanders, and defense ministries.</dd>
+</dl>
+</div>
+</details>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>

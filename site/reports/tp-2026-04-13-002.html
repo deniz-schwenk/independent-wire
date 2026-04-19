@@ -142,6 +142,22 @@ h2 {
 .divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
 .divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
 
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "B6  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "BC  ";
+}
+
 /* Bias findings */
 .bias-finding {
   border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
@@ -420,7 +436,10 @@ footer a { color: #000; text-decoration: underline; }
 </div>
 
 <h2>Bias Analysis</h2>
-<p>Overall language bias severity: <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></p>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">8 language bias findings &middot; Severity: <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
 <div class="bias-finding">
   <span class="bias-excerpt">ending Viktor Orbán&#x27;s 16-year tenure as prime minister</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
   <div class="bias-explanation">&#x27;Ending&#x27; combined with &#x27;16-year tenure&#x27; carries a connotation of overdue conclusion; a neutral construction such as &#x27;concluding&#x27; or simply stating the duration of his time in office would avoid the implicit judgment that the tenure was something to be ended.</div>
@@ -463,6 +482,8 @@ footer a { color: #000; text-decoration: underline; }
 <div class="bar-row"><span class="bar-label">zh</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">1</span></div>
 <div class="bar-row"><span class="bar-label">ar</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">1</span></div>
 </div>
+</div>
+</details>
 
 <h2>Coverage Gaps</h2>
 <div class="coverage-gap">Complete absence of perspectives from the Global South (Africa, Latin America, and Southeast Asia) regarding the impact on global right-wing populist movements.</div>
@@ -487,10 +508,43 @@ footer a { color: #000; text-decoration: underline; }
 <dt>QA Corrections Applied</dt><dd><ul><li>Removed unsupported claim that the previous turnout record was &#x27;70.5% set in 2002&#x27; — no source in either pool provides this figure; sentence now states only that 77.8% was a record.</li>
 <li>Removed unsupported detail that Orbán conceded &#x27;by phone&#x27; — rsrc-002 confirms only that he conceded defeat; the method is not attested in any source.</li>
 <li>Removed unsupported &#x27;90% of its crude oil imports in 2025&#x27; statistic for the Druzhba pipeline — rsrc-013 mentions the pipeline but provides no such figure; replaced with the neutral phrase &#x27;a key conduit for Hungarian crude oil imports&#x27;.</li></ul></dd>
-<dt>Confidence</dt><dd>medium</dd>
 <dt>Pipeline Run</dt><dd>run-2026-04-13-26a820 &middot; 2026-04-13</dd>
 </dl>
 </div>
+
+<details class="glossary" style="margin-top: 2rem; border-top: 3px solid #000; padding-top: 1rem">
+<summary style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.5rem 0">About these labels</summary>
+<div style="margin-top: 0.75rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6">
+<p style="margin-bottom: 1rem; font-style: italic">Not every tag needs a definition &mdash; those listed below cover the full vocabulary used across the dossier.</p>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Divergence types</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="font-weight: 700; margin-top: 0.5rem">factual</dt><dd style="margin-left: 0">Sources disagree on a verifiable fact: a date, number, name, or whether something happened.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">framing</dt><dd style="margin-left: 0">Sources describe the same event using different language or implied meaning. Example: one outlet calls a payment &ldquo;compensation,&rdquo; another calls it &ldquo;sanctions relief.&rdquo;</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">omission</dt><dd style="margin-left: 0">One or more sources report something that other sources leave out entirely.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">emphasis</dt><dd style="margin-left: 0">Sources cover the same event but give different aspects different weight or prominence. Example: one outlet leads with casualty figures; another treats them as a footnote to the political negotiations.</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Bias issues</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="font-weight: 700; margin-top: 0.5rem">evaluative_adjective</dt><dd style="margin-left: 0">A descriptive word that signals the writer&rsquo;s judgment rather than a neutral fact. Examples: &ldquo;staggering,&rdquo; &ldquo;sharp,&rdquo; &ldquo;dramatic.&rdquo;</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">intensifier</dt><dd style="margin-left: 0">A word that amplifies a statement without adding information. Examples: &ldquo;very,&rdquo; &ldquo;extremely,&rdquo; &ldquo;deeply.&rdquo;</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">loaded_term</dt><dd style="margin-left: 0">Vocabulary carrying strong political or emotional connotations that a more neutral word would avoid. Examples: &ldquo;regime&rdquo; vs. &ldquo;government,&rdquo; &ldquo;crackdown&rdquo; vs. &ldquo;enforcement.&rdquo;</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">hedging</dt><dd style="margin-left: 0">Phrases that soften or obscure a claim, making attribution less clear. Examples: &ldquo;some say,&rdquo; &ldquo;allegedly,&rdquo; &ldquo;reportedly.&rdquo;</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Stakeholder types</h3>
+<dl style="margin-bottom: 0">
+<dt style="font-weight: 700; margin-top: 0.5rem">academia</dt><dd style="margin-left: 0">Researchers, professors, think tanks, and university-based experts.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">affected_community</dt><dd style="margin-left: 0">People directly impacted by the events themselves &mdash; civilians, displaced persons, local populations. Voices from within the group, not their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">civil_society</dt><dd style="margin-left: 0">Non-state organizations representing collective interests (NGOs, human rights groups, trade unions, religious bodies).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">government</dt><dd style="margin-left: 0">Executive branch officials, ministries, heads of state, and their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">industry</dt><dd style="margin-left: 0">Private companies, trade associations, and commercial actors.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">international_org</dt><dd style="margin-left: 0">Multilateral bodies and their representatives (UN agencies, IMF, IAEA, Red Cross, regional alliances).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">judiciary</dt><dd style="margin-left: 0">Judges, courts, prosecutors, and legal bodies acting in their official capacity.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">legislature</dt><dd style="margin-left: 0">Parliament, Congress, or equivalent body. Kept separate from &ldquo;government&rdquo; because legislatures often hold positions that differ from their own executive branch.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">media</dt><dd style="margin-left: 0">Journalists, editorial boards, and outlets quoted for their position or analysis, not as sources of factual reporting.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">military</dt><dd style="margin-left: 0">Armed forces personnel, commanders, and defense ministries.</dd>
+</dl>
+</div>
+</details>
 
 <nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
 
