@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>US Marines Seize Iranian Cargo Ship M/V Touska Near Strait of Hormuz, Iran Withdraws from Islamabad Peace Talks</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "+  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "2  ";
+}
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Sources table */
+.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.sources-table th {
+  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
+  border-bottom: 3px solid #000;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--color-text-subtle);
+}
+.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
+.sources-table a { color: var(--color-primary); text-decoration: none; }
+.sources-table a:hover { text-decoration: underline; }
+.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>US Marines Seize Iranian Cargo Ship M/V Touska Near Strait of Hormuz, Iran Withdraws from Islamabad Peace Talks</h1>
+<p class="subtitle">The forcible boarding of a sanctioned vessel three days before the ceasefire&#x27;s April 22 expiration has triggered oil price spikes, a diplomatic rupture, and competing legal claims over the blockade&#x27;s legitimacy.</p>
+<p class="date">April 20, 2026</p>
+
+<div class="follow-up-ref" style="font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #444; padding: 12px 16px; border-left: 3px solid #000; margin: 16px 0; background: #f5f5f5;">
+Follow-up to: &ldquo;US-Iran Ceasefire Set to Expire April 22 with No Extension Agreed Despite Reports of Progress&rdquo; (April 19, 2026)
+<a href="tp-2026-04-19-001.html" style="font-family: 'Space Mono', monospace; color: #000;">&rarr; Read previous</a>
+</div>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">15</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">3</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Countries</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 840 840" class="source-network" role="img" aria-label="Source network: 15 sources from 9 countries">
+<path d="M622.5,240.0 A280,280 0 0 1 622.5,520.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="247.5" x2="635.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M622.5,520.0 A280,280 0 0 1 452.5,650.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="609.5" y1="512.5" x2="635.5" y2="527.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M452.5,650.5 A280,280 0 0 1 240.0,622.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="448.6" y1="636.0" x2="456.4" y2="664.9" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M240.0,622.5 A280,280 0 0 1 109.5,452.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="247.5" y1="609.5" x2="232.5" y2="635.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M109.5,452.5 A280,280 0 0 1 137.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="124.0" y1="448.6" x2="95.1" y2="456.4" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M137.5,240.0 A280,280 0 0 1 307.5,109.5" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="150.5" y1="247.5" x2="124.5" y2="232.5" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M307.5,109.5 A280,280 0 0 1 498.3,126.2" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="311.4" y1="124.0" x2="303.6" y2="95.1" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<path d="M498.3,126.2 A280,280 0 0 1 622.5,240.0" fill="none" stroke="#e0e0e0" stroke-width="0.75" opacity="0.6"/>
+<line x1="492.0" y1="139.8" x2="504.7" y2="112.6" stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="362.1" x2="534.4" y2="311.3" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="304.8" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Iran (1 source)</title></circle>
+<text class="count-label" x="549.0" y="308.8" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="549.0" y="334.8" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Iran</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="423.0" y1="370.9" x2="594.2" y2="334.5" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="609.9" cy="331.1" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Turkey (1 source)</title></circle>
+<text class="count-label" x="609.9" y="335.1" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="609.9" y="361.1" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Turkey</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="424.0" y1="380.0" x2="549.0" y2="380.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="565.0" cy="380.0" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>S. Arabia (1 source)</title></circle>
+<text class="count-label" x="565.0" y="384.0" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="565.0" y="410.0" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">S. Arabia</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="423.0" y1="389.1" x2="594.2" y2="425.5" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="609.9" cy="428.9" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Israel (1 source)</title></circle>
+<text class="count-label" x="609.9" y="432.9" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="609.9" y="458.9" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Israel</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="420.2" y1="397.9" x2="534.4" y2="448.7" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="549.0" cy="455.2" r="16" fill="#8b5cf6" stroke="#000" stroke-width="1.5"><title>Iraq (1 source)</title></circle>
+<text class="count-label" x="549.0" y="459.2" font-size="11" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">1</text>
+<text class="name-label" x="549.0" y="485.2" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Iraq</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="406.8" y1="414.9" x2="495.1" y2="529.9" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="507.8" cy="546.6" r="21" fill="#0891b2" stroke="#000" stroke-width="1.5"><title>China (2 sources)</title></circle>
+<text class="count-label" x="507.8" y="550.6" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="507.8" y="581.6" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">China</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="353.2" y1="345.1" x2="268.0" y2="234.0" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="252.2" cy="213.4" r="26" fill="#3b82f6" stroke="#000" stroke-width="1.5"><title>US (4 sources)</title></circle>
+<text class="count-label" x="252.2" y="217.4" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">4</text>
+<text class="name-label" x="252.2" y="253.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">US</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="402.7" y1="342.3" x2="464.5" y2="239.4" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="475.3" cy="221.4" r="21" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>UK (2 sources)</title></circle>
+<text class="count-label" x="475.3" y="225.4" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="475.3" y="256.4" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">UK</text>
+</g>
+<g class="source-node">
+<line class="conn-line" x1="415.6" y1="354.1" x2="553.1" y2="254.2" stroke="#000" stroke-width="1" opacity="0.12"/>
+<circle cx="570.1" cy="241.9" r="21" fill="#6366f1" stroke="#000" stroke-width="1.5"><title>France (2 sources)</title></circle>
+<text class="count-label" x="570.1" y="245.9" font-size="13" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" pointer-events="none">2</text>
+<text class="name-label" x="570.1" y="276.9" font-family="'Space Mono', 'Courier New', monospace" text-anchor="middle" font-size="10" font-weight="700" fill="#000">France</text>
+</g>
+<circle cx="380" cy="380" r="44" fill="#000"/>
+<text x="380" y="374" font-size="22" font-family="'Space Mono', 'Courier New', monospace" fill="white" font-weight="700" text-anchor="middle" dominant-baseline="middle">15</text>
+<text x="380" y="394" font-size="9" font-family="'Space Mono', 'Courier New', monospace" fill="white" letter-spacing="0.1em" text-anchor="middle">SOURCES</text>
+<text x="685.0" y="380.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">MIDDLE EAST &amp; N. AFRICA</text>
+<text x="565.7" y="622.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EAST ASIA</text>
+<text x="340.2" y="682.4" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">SOUTH &amp; CENTRAL ASIA</text>
+<text x="138.0" y="565.7" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SE ASIA &amp; OCEANIA</text>
+<text x="77.6" y="340.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">SUB-SAHARAN AFRICA</text>
+<text x="194.3" y="138.0" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="end" dominant-baseline="middle">AMERICAS</text>
+<text x="406.6" y="76.2" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#cbd5e1" font-weight="600" letter-spacing="0.1em" text-anchor="middle" dominant-baseline="middle">LATIN AMERICA</text>
+<text x="586.1" y="155.1" font-size="8.5" font-family="'Space Mono', 'Courier New', monospace" fill="#64748b" font-weight="600" letter-spacing="0.1em" text-anchor="start" dominant-baseline="middle">EUROPE</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#3b82f612;color:#3b82f6;border:1px solid #3b82f630" title="United States: 4 sources">United States (4)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="France: 2 sources">France (2)</span>
+<span class="country-badge" style="background:#0891b212;color:#0891b2;border:1px solid #0891b230" title="China: 2 sources">China (2)</span>
+<span class="country-badge" style="background:#6366f112;color:#6366f1;border:1px solid #6366f130" title="United Kingdom: 2 sources">United Kingdom (2)</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Iraq: 1 source">Iraq</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Iran: 1 source">Iran</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Israel: 1 source">Israel</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Saudi Arabia: 1 source">Saudi Arabia</span>
+<span class="country-badge" style="background:#8b5cf612;color:#8b5cf6;border:1px solid #8b5cf630" title="Turkey: 1 source">Turkey</span>
+</div>
+
+<div class="reader-note">This article draws on 15 sources in six languages across nine countries, and it handles competing claims carefully — presenting US, Iranian, Chinese, and Turkish framings side by side rather than privileging one. However, several critical voices are missing: no Pakistani officials explain why the Islamabad talks collapsed despite Pakistan being the mediator, no Iranian civilian government officials speak (all Iranian perspectives come from military command), and no shipping companies or energy traders describe the commercial disruption despite 35 vessels reportedly turning back. The article&#x27;s own language is largely restrained, though its opening and closing paragraphs editorialize slightly by characterizing the seizure as a &#x27;material escalation&#x27; and framing the next 72 hours as a binary between diplomatic survival and collapse.</div>
+
+<div class="article-body">
+<p>US Marines boarded and seized the Iranian-flagged cargo ship M/V Touska on April 19 after the USS Spruance disabled the vessel&#x27;s engine room with gunfire, according to a US Central Command statement <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. Iran&#x27;s Khatam al-Anbiya Central Headquarters called the seizure &quot;piracy&quot; and a violation of the standing ceasefire <a href="#src-002" class="source-ref"><sup>[2]</sup></a><a href="#src-007" class="source-ref"><sup>[7]</sup></a>, while Tehran subsequently refused to attend the second round of US-Iran peace talks scheduled in Islamabad <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. The seizure represents a material military escalation in the US-Iran confrontation, occurring just three days before the two-week ceasefire — brokered by Pakistan on April 8 — is set to expire on April 22 with no extension agreed.</p>
+<p>The M/V Touska was intercepted in the northern Arabian Sea while attempting to reach the Iranian port of Bandar Abbas in defiance of the US naval blockade <a href="#src-008" class="source-ref"><sup>[8]</sup></a>. CENTCOM stated the vessel had been under US Treasury sanctions and was given a six-hour warning period before force was used <a href="#src-014" class="source-ref"><sup>[14]</sup></a>. Marines from the 31st Marine Expeditionary Unit rappelled from the amphibious assault ship USS Tripoli to take custody of the ship after its propulsion was disabled <a href="#src-008" class="source-ref"><sup>[8]</sup></a><a href="#src-001" class="source-ref"><sup>[1]</sup></a>. The Jerusalem Post provided detailed tactical reporting on the high-seas chase, framing the event primarily as a military operation <a href="#src-008" class="source-ref"><sup>[8]</sup></a>.</p>
+<p>The seizure&#x27;s diplomatic consequences were immediate. Xinhua reported that Iran explicitly linked its refusal to attend the second round of peace talks to the ship seizure: &#x27;<span lang="zh">伊朗拒绝参加第二轮谈判</span>&#x27; (Iran refuses to attend the second round of talks) <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. Vice President JD Vance had been scheduled to lead the US delegation in Islamabad alongside envoy Steve Witkoff <a href="#src-004" class="source-ref"><sup>[4]</sup></a><a href="#src-009" class="source-ref"><sup>[9]</sup></a>. President Donald Trump accused Iran of a &quot;total violation&quot; of agreed terms and threatened to destroy Iranian infrastructure, stating that &quot;every power plant and every single bridge in Iran&quot; could be targeted <a href="#src-004" class="source-ref"><sup>[4]</sup></a><a href="#src-009" class="source-ref"><sup>[9]</sup></a>.</p>
+<p>Turkish reporting from GZT introduced a detail largely absent from other coverage: a secret 21-hour negotiation session in Islamabad had already collapsed before the blockade enforcement and seizure took place <a href="#src-015" class="source-ref"><sup>[15]</sup></a>. This framing suggests the military action followed, rather than caused, the diplomatic breakdown — a sequencing that contradicts the causal chain presented by Chinese sources, which treat the seizure as the direct trigger for Iran&#x27;s withdrawal from talks <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. US sources present the seizure and the talk collapse as parallel developments rather than drawing a tight causal link <a href="#src-004" class="source-ref"><sup>[4]</sup></a>.</p>
+<p>The legal basis for the seizure is contested along distinct lines. Lloyd&#x27;s List reported that CENTCOM guidance now claims the right to seize Iran-linked vessels anywhere beyond neutral waters, invoking the law of naval warfare as a self-contained legal framework that operates regardless of UNCLOS status <a href="#src-005" class="source-ref"><sup>[5]</sup></a>. KUNC cited an international maritime law expert who argued the blockade is legal under the law of naval warfare even without a formal declaration of war <a href="#src-012" class="source-ref"><sup>[12]</sup></a>. French legal analysis via AFP, however, frames the core dispute differently: as a conflict between UNCLOS &quot;transit passage&quot; rights through international straits and Iran&#x27;s claim to regulate &quot;innocent passage&quot; through the Strait of Hormuz — &#x27;le passage &quot;sûr&quot; proposé par l&#x27;Iran est-il juridiquement valable?&#x27; (Is the &#x27;safe passage&#x27; proposed by Iran legally valid?) <a href="#src-010" class="source-ref"><sup>[10]</sup></a>. Iran, which has not ratified UNCLOS, argues that transit passage is treaty law rather than customary international law and therefore not binding on non-parties <a href="#src-010" class="source-ref"><sup>[10]</sup></a>.</p>
+<p>Iranian military sources framed the seizure not merely as an isolated incident but as justification for counter-measures. Euronews Persian reported the Khatam al-Anbiya Central Headquarters characterized the boarding as &#x27;<span lang="fa" dir="rtl">دزدی دریایی</span>&#x27; (maritime piracy) and a ceasefire violation <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. Tabnak quoted a military spokesperson describing the physical deployment of Marines as an act of aggression: the boarding constituted a direct violation of the ceasefire framework <a href="#src-007" class="source-ref"><sup>[7]</sup></a>. English-language sources focused almost exclusively on the US Navy&#x27;s actions and treated the Iranian military response — including the IRGC&#x27;s operational closure of the Strait — as background context rather than a deliberate strategic decision <a href="#src-008" class="source-ref"><sup>[8]</sup></a><a href="#src-014" class="source-ref"><sup>[14]</sup></a>.</p>
+<p>The economic fallout dominated Chinese and Arabic-language reporting. Securities Times reported that 35 commercial vessels turned back from the Strait of Hormuz following the incident, with Iran declaring readiness for renewed warfare: &#x27;35<span lang="zh">艘船只掉头</span>&#x27; (35 ships turned around) <a href="#src-011" class="source-ref"><sup>[11]</sup></a>. Al Rasheed Media reported a jump in oil and gas prices following the seizure and the partial closure of the Strait <a href="#src-006" class="source-ref"><sup>[6]</sup></a>. Argaam, a Saudi financial outlet, highlighted Trump&#x27;s infrastructure threats alongside the suspension of peace talks <a href="#src-009" class="source-ref"><sup>[9]</sup></a>. These economic dimensions received minimal attention in US military and English-language tactical reporting <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-008" class="source-ref"><sup>[8]</sup></a>.</p>
+<p>Middle East Online reported growing international anxiety over the ceasefire&#x27;s Wednesday expiration, describing a state of &#x27;<span lang="fa" dir="rtl">ترقب دولي لمصير الهدنة</span>&#x27; (international anticipation over the fate of the truce) <a href="#src-013" class="source-ref"><sup>[13]</sup></a>. The fragility of the ceasefire framework, already strained before the seizure, now faces what multiple sources describe as its most severe test.</p>
+<p>This report draws on 15 sources in six languages (English, Persian, Chinese, Arabic, French, and Turkish) across nine countries. Several perspectives of direct relevance remain absent. No Pakistani government officials or diplomats are quoted despite Pakistan hosting the Islamabad talks whose collapse is central to the story. No Iranian civilian government officials — from the Foreign Ministry or presidency — appear; all Iranian perspectives come exclusively from military command. No statements from the United Nations, the International Maritime Organization, or the International Court of Justice address the competing legal claims. No shipping companies, oil traders, or energy industry executives are quoted despite the reported disruption to 35 vessels and oil price spikes. No crew members of the M/V Touska or their families are represented. No Indian government officials appear despite reports of Indian tankers being warned off by the IRGC. No members of the US Congress or Iranian parliament have commented on the seizure&#x27;s authorization or proportionality.</p>
+<p>The ceasefire is set to expire on April 22 with no extension agreed and no second round of talks scheduled <a href="#src-013" class="source-ref"><sup>[13]</sup></a><a href="#src-004" class="source-ref"><sup>[4]</sup></a>. Iran has stated it will not return to negotiations while the US blockade remains in place <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. The next 72 hours will determine whether the diplomatic framework survives or whether the seizure of the M/V Touska marks the end of the Islamabad peace track <a href="#src-013" class="source-ref"><sup>[13]</sup></a><a href="#src-009" class="source-ref"><sup>[9]</sup></a>.</p>
+</div>
+<p class="word-count">999 words</p>
+
+<h2>Perspectives &mdash; Stakeholder Analysis</h2>
+<div class="card-grid">
+<div class="card">
+  <div class="card-header"><span class="card-actor">Khatam al-Anbiya Central Headquarters</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">military</span> &middot; Iran</div>
+  <div class="card-position">Characterizes the US boarding and seizure of the M/V Touska as an act of piracy, aggression, and a direct violation of the standing ceasefire. The military command frames the incident as justifying Iran&#x27;s counter-measures including closure of the Strait.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">Donald Trump</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">moderate</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; United States</div>
+  <div class="card-position">Accuses Iran of a &#x27;total violation&#x27; of agreed terms while the Strait of Hormuz remains shut, and has threatened to destroy Iranian infrastructure following the seizure. Framed the ship seizure as justified enforcement against Iranian non-compliance.</div>
+  
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-actor">JD Vance</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">weak</span></div>
+  <div class="card-meta"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">government</span> &middot; United States</div>
+  <div class="card-position">Was scheduled to lead the second round of US-Iran peace talks in Islamabad before the negotiations were derailed by the ship seizure and its diplomatic fallout.</div>
+  
+</div>
+</div>
+
+<h2>Missing Voices</h2>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No Pakistani government officials or diplomats are quoted despite Pakistan hosting the Islamabad peace talks whose collapse is central to the story. The mediator&#x27;s account of why negotiations failed and whether they can be revived is absent.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No Iranian civilian government officials (e.g., Foreign Ministry spokesperson, President) are quoted. All Iranian perspectives come exclusively from military command, leaving the diplomatic and political framing from Tehran&#x27;s civilian leadership unrepresented.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">international_org</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No statements from the United Nations, the International Maritime Organization (IMO), or the International Court of Justice on the legality of the seizure or the blockade&#x27;s compliance with international law. Given the competing legal claims (UNCLOS transit passage vs. law of naval warfare), an authoritative international legal voice is conspicuously absent.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">industry</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No shipping companies, oil traders, or energy industry executives are quoted despite reports of 35 vessels turning back, oil price spikes, and direct disruption to global maritime commerce through the Strait of Hormuz. The commercial actors bearing the immediate economic cost are unheard.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">affected_community</span><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">critical</span></div>
+  <div class="missing-voice-desc">No crew members of the M/V Touska or their families are represented, nor are Iranian civilians affected by the blockade&#x27;s economic consequences (shortages, price increases). The human cost on the Iranian side is entirely absent.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">academia</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">The KUNC source (rsrc-012) references an international maritime law expert but does not include a named quote. No named legal scholars, international relations academics, or conflict analysts provide on-record analysis of the seizure&#x27;s legality or its implications for the ceasefire framework.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">government</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No Indian government officials or Indian shipping industry representatives are quoted, despite coverage gaps noting Indian tankers were caught in the crossfire or warned off by the IRGC. India is a major oil importer through the Strait and a significant affected party.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">legislature</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No members of the US Congress or Iranian parliament (Majlis) are quoted on the seizure&#x27;s authorization, proportionality, or implications for war powers and ceasefire commitments. Legislative oversight perspectives on both sides are missing.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">military</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No named US military commanders or CENTCOM spokespersons are directly quoted. The CENTCOM press release (rsrc-001) is an institutional statement, but no individual military voice explains the tactical decision-making or rules of engagement that led to firing on the engine room.</div>
+</div>
+<div class="missing-voice">
+  <div class="missing-voice-header"><span class="missing-voice-type">civil_society</span><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">notable</span></div>
+  <div class="missing-voice-desc">No anti-war organizations, humanitarian groups, or peace advocacy organizations are quoted on the escalation&#x27;s threat to the ceasefire or its humanitarian implications for civilian populations in the region.</div>
+</div>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">US and Western sources (src-001, src-005, src-012, src-014) frame the seizure as lawful enforcement of a naval blockade against a sanctioned vessel. Iranian and some Middle Eastern sources (src-002, src-007) frame it as &#x27;piracy&#x27; and a ceasefire violation.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article presents both framings explicitly, attributing each to its respective source, without privileging either characterization.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></div>
+  <div class="divergence-desc">Chinese (src-003, src-011) and Arabic (src-006, src-009) sources foreground economic consequences — oil price spikes and 35 vessels turning back — while US military-focused sources (src-001, src-008) treat these as peripheral or omit them.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article dedicates a full paragraph to economic fallout and explicitly notes that US military reporting gave these dimensions minimal attention.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Chinese source (src-003) treats the ship seizure as the direct trigger for Iran&#x27;s withdrawal from talks. Turkish source (src-015) reports a secret 21-hour negotiation collapse preceded the seizure, suggesting the diplomatic breakdown was already underway. US sources (src-004) present the two as parallel rather than causally linked.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article explicitly surfaces all three framings and flags the sequencing contradiction between the Turkish and Chinese accounts.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">French legal analysis (src-010) frames the dispute as UNCLOS transit passage vs. Iran&#x27;s innocent passage claim. US-based legal expert (src-012) relies on the law of naval warfare as a self-contained framework independent of UNCLOS.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article presents both legal frameworks in the same paragraph, attributing each to its respective source tradition.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">Persian-language sources (src-002, src-007) emphasize the Khatam al-Anbiya Central Headquarters&#x27; role and the IRGC&#x27;s closure of the Strait as a deliberate strategic counter-measure. English-language sources treat the Strait closure as background context.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article explicitly notes that English-language sources treated the Iranian military response as background rather than a deliberate strategic decision, surfacing the omission.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">No source in either pool names Jared Kushner as part of the US delegation. The original article included him alongside Vance and Witkoff without evidentiary basis.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> Kushner&#x27;s name was removed from the corrected article. Only Vance and Witkoff, who are named in the sources, are cited.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">5 language bias findings &middot; Severity: <span class="badge" style="background:#0f766e15;color:#0f766e;border:1px solid #0f766e40">low</span></p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
+<div class="bias-finding">
+  <span class="bias-excerpt">The seizure represents a material military escalation in the US-Iran confrontation</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Material military escalation&#x27; is an editorial characterization of significance — the article presents this as established fact rather than attributing the assessment to any source or defining what threshold distinguishes &#x27;material&#x27; from other escalation.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">The fragility of the ceasefire framework, already strained before the seizure, now faces what multiple sources describe as its most severe test.</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Fragility&#x27; and &#x27;strained&#x27; characterize the ceasefire&#x27;s condition editorially without attribution; while &#x27;most severe test&#x27; is attributed to sources, the preceding descriptors embed the article&#x27;s own judgment about the ceasefire&#x27;s weakness.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">The next 72 hours will determine whether the diplomatic framework survives or whether the seizure of the M/V Touska marks the end of the Islamabad peace track</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">emotionalizing</span>
+  <div class="bias-explanation">This binary framing — survival or death of diplomacy — dramatizes the situation into a stark either/or that heightens urgency beyond what the sourced facts establish, functioning as a rhetorical closing rather than a factual claim.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">growing international anxiety over the ceasefire&#x27;s Wednesday expiration</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Growing international anxiety&#x27; characterizes the emotional state of the international community editorially; while the article attributes the underlying phrase to Middle East Online, &#x27;growing&#x27; adds an unattributed intensification of the trend.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">an authoritative international legal voice is conspicuously absent</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Conspicuously&#x27; embeds editorial judgment about how noticeable the absence is, characterizing the gap as remarkable rather than simply noting it exists.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">6</span></div>
+<div class="bar-row"><span class="bar-label">ar</span><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">fa</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">zh</span><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">fr</span><div class="bar-track"><div class="bar-fill" style="width:17%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">tr</span><div class="bar-track"><div class="bar-fill" style="width:17%"></div></div><span class="bar-count">1</span></div>
+</div>
+</div>
+</details>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">No direct sources from Pakistan (the host of the peace talks) were included to provide the mediator&#x27;s perspective on the collapse of the negotiations.</div>
+<div class="coverage-gap">Missing perspectives from the Indian government or shipping industry, despite reports of Indian tankers being caught in the crossfire or warned off by the IRGC.</div>
+<div class="coverage-gap">Lack of technical details regarding the cargo of the M/V Touska beyond the general label of &#x27;sanctioned&#x27; or &#x27;contraband&#x27;.</div>
+<div class="coverage-gap">Source rsrc-010 (Connaissance des Énergies) is dated 2026-03-25, which is more than 14 days before the current date; it was retained to provide essential legal context on the Strait&#x27;s status that was not present in more recent snippets.</div>
+
+<h2>Sources</h2>
+<div class="sources-table-wrap">
+<table class="sources-table">
+<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>
+<tbody>
+<tr id="src-001"><td class="source-num">1</td><td>US Central Command (CENTCOM)</td><td><a href="https://www.centcom.mil/MEDIA/PRESS-RELEASES/Press-Release-View/Article/4464037/us-forces-disable-vessel-attempting-to-enter-iranian-port-violate-blockade/" target="_blank" rel="noopener">U.S. Forces Disable Vessel Attempting to Enter Iranian Port, Violate Blockade</a></td><td>en</td><td>United States</td></tr><tr id="src-002"><td class="source-num">2</td><td>Euronews Persian</td><td><a href="https://parsi.euronews.com/2026/04/19/iran-war-live-19-avril" target="_blank" rel="noopener">آمریکا یک کشتی ایرانی را در نزدیکی تنگه هرمز توقیف کرد</a></td><td>fa</td><td>France</td></tr><tr id="src-003"><td class="source-num">3</td><td>Xinhua</td><td><a href="http://www.news.cn/20260420/903989e5c27c47d3a1253a28d34de504/c.html" target="_blank" rel="noopener">综合消息丨伊朗拒绝参加第二轮谈判美国武力拦扣一艘伊朗船</a></td><td>zh</td><td>China</td></tr><tr id="src-004"><td class="source-num">4</td><td>Time</td><td><a href="https://time.com/article/2026/04/19/trump-accuses-iran-of-total-violation-as-strait-of-hormuz-remains-shut/" target="_blank" rel="noopener">Iran Rejects New Peace Talks as Trump Sends Negotiators</a></td><td>en</td><td>United States</td></tr><tr id="src-005"><td class="source-num">5</td><td>Lloyd&#x27;s List</td><td><a href="https://www.lloydslist.com/LL1156929/US-claims-right-to-seize-Iran-linked-vessels-anywhere-beyond-neutral-waters" target="_blank" rel="noopener">US claims right to seize Iran-linked vessels anywhere beyond neutral waters</a></td><td>en</td><td>United Kingdom</td></tr><tr id="src-006"><td class="source-num">6</td><td>Al Rasheed Media</td><td><a href="https://www.alrasheedmedia.com/2026/04/20/680080/" target="_blank" rel="noopener">قفزة بأسعار النفط والغاز بعد استيلاء البحرية الأميركية على سفينة</a></td><td>ar</td><td>Iraq</td></tr><tr id="src-007"><td class="source-num">7</td><td>Tabnak</td><td><a href="https://www.tabnak.ir/fa/news/1368083/" target="_blank" rel="noopener">ادعای نیویورک‌تایمز درباره بازرسی آمریکا از کشتی ایرانی</a></td><td>fa</td><td>Iran</td></tr><tr id="src-008"><td class="source-num">8</td><td>Jerusalem Post</td><td><a href="https://www.jpost.com/middle-east/iran-news/article-893549" target="_blank" rel="noopener">Marines storm Iranian-flagged vessel Touska after high-seas chase</a></td><td>en</td><td>Israel</td></tr><tr id="src-009"><td class="source-num">9</td><td>Argaam</td><td><a href="https://www.argaam.com/ar/article/articledetail/id/1897745" target="_blank" rel="noopener">ترامب يعلن احتجاز سفينة إيرانية ويتوعد بتدمير البنية التحتية لطهران</a></td><td>ar</td><td>Saudi Arabia</td></tr><tr id="src-010"><td class="source-num">10</td><td>Connaissance des Énergies (AFP)</td><td><a href="https://www.connaissancedesenergies.org/afp/detroit-dormuz-le-passage-sur-propose-par-liran-est-il-juridiquement-valable-260325" target="_blank" rel="noopener">Détroit d&#x27;Ormuz: le passage &quot;sûr&quot; proposé par l&#x27;Iran est-il juridiquement valable ?</a></td><td>fr</td><td>France</td></tr><tr id="src-011"><td class="source-num">11</td><td>Securities Times</td><td><a href="https://www.stcn.com/article/detail/3765288.html" target="_blank" rel="noopener">霍尔木兹海峡，突变！35艘船只掉头！美军，曝出新动作！</a></td><td>zh</td><td>China</td></tr><tr id="src-012"><td class="source-num">12</td><td>KUNC</td><td><a href="https://kunc.org/2026-04-18/international-maritime-law-expert-explains-legality-of-u-s-blockade-of-iranian-ports" target="_blank" rel="noopener">International maritime law expert explains legality of U.S. blockade of Iranian ports</a></td><td>en</td><td>United States</td></tr><tr id="src-013"><td class="source-num">13</td><td>Middle East Online</td><td><a href="https://www.middle-east-online.com/ترقب-دولي-لمصير-الهدنة-بعد-احتجاز-سفينة-ايرانية" target="_blank" rel="noopener">ترقب دولي لمصير الهدنة بعد احتجاز سفينة ايرانية</a></td><td>ar</td><td>United Kingdom</td></tr><tr id="src-014"><td class="source-num">14</td><td>WYPR (NPR)</td><td><a href="https://www.wypr.org/2026-04-19/u-s-seizes-iranian-cargo-ship-in-strait-of-hormuz" target="_blank" rel="noopener">U.S. seizes Iranian cargo ship in Strait of Hormuz</a></td><td>en</td><td>United States</td></tr><tr id="src-015"><td class="source-num">15</td><td>GZT</td><td><a href="https://www.gzt.com/dunya/abd-iran-gizli-muzakereleri-coktu-21-saatlik-islamabad-gorusmesi-sonrasi-abluka-karari-alindi-dunya-haberleri-4208548" target="_blank" rel="noopener">ABD-İran gizli müzakereleri çöktü: 21 saatlik İslamabad görüşmesi sonrası abluka kararı alındı</a></td><td>tr</td><td>Turkey</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>Backed by 14 sources across three regions (Europe, Middle East, North America) with a critical mix of state-directed (Press TV, RT), state-influenced (Anadolu), publicly funded (Al Jazeera, Tagesschau, BBC Russian), and independent (Axios) outlets — guaranteeing sharply competing narratives on legality, provocation, and proportionality. The seizure of a flagged vessel represents a qualitative escalation beyond blockade enforcement, with direct consequences for oil prices, ceasefire viability, and the Islamabad peace track. Rich material for multi-perspective treatment despite gaps in Asian, African, and Latin American sourcing.</dd>
+<dt>QA Corrections Applied</dt><dd><ul><li>Removed &#x27;and Jared Kushner&#x27; from the US delegation description — Kushner is not named in any source in either pool; only Vance and Witkoff are identified (src-004, src-009).</li>
+<li>Removed the word &#x27;unnamed&#x27; from the description of the KUNC maritime law expert — the source summary does not characterize the expert as unnamed, and the article&#x27;s addition of that qualifier was unsupported.</li></ul></dd>
+<dt>Pipeline Run</dt><dd>run-2026-04-20-b33fbe &middot; 2026-04-20</dd>
+</dl>
+</div>
+
+<details class="glossary" style="margin-top: 2rem; border-top: 3px solid #000; padding-top: 1rem">
+<summary style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.5rem 0">About these labels</summary>
+<div style="margin-top: 0.75rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6">
+<p style="margin-bottom: 1rem; font-style: italic">Not every tag needs a definition &mdash; those listed below cover the full vocabulary used across the dossier.</p>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Divergence types</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></dt><dd style="margin-left: 0">Sources disagree on a verifiable fact: a date, number, name, or whether something happened.</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></dt><dd style="margin-left: 0">Sources describe the same event using different language or implied meaning. Example: one outlet calls a payment &ldquo;compensation,&rdquo; another calls it &ldquo;sanctions relief.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></dt><dd style="margin-left: 0">One or more sources report something that other sources leave out entirely.</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></dt><dd style="margin-left: 0">Sources cover the same event but give different aspects different weight or prominence. Example: one outlet leads with casualty figures; another treats them as a footnote to the political negotiations.</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Bias issues</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span></dt><dd style="margin-left: 0">A descriptive word that signals the writer&rsquo;s judgment rather than a neutral fact. Examples: &ldquo;staggering,&rdquo; &ldquo;sharp,&rdquo; &ldquo;dramatic.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">intensifier</span></dt><dd style="margin-left: 0">A word that amplifies a statement without adding information. Examples: &ldquo;very,&rdquo; &ldquo;extremely,&rdquo; &ldquo;deeply.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span></dt><dd style="margin-left: 0">Vocabulary carrying strong political or emotional connotations that a more neutral word would avoid. Examples: &ldquo;regime&rdquo; vs. &ldquo;government,&rdquo; &ldquo;crackdown&rdquo; vs. &ldquo;enforcement.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">hedging</span></dt><dd style="margin-left: 0">Phrases that soften or obscure a claim, making attribution less clear. Examples: &ldquo;some say,&rdquo; &ldquo;allegedly,&rdquo; &ldquo;reportedly.&rdquo;</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Stakeholder types</h3>
+<dl style="margin-bottom: 0">
+<dt style="font-weight: 700; margin-top: 0.5rem">academia</dt><dd style="margin-left: 0">Researchers, professors, think tanks, and university-based experts.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">affected_community</dt><dd style="margin-left: 0">People directly impacted by the events themselves &mdash; civilians, displaced persons, local populations. Voices from within the group, not their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">civil_society</dt><dd style="margin-left: 0">Non-state organizations representing collective interests (NGOs, human rights groups, trade unions, religious bodies).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">government</dt><dd style="margin-left: 0">Executive branch officials, ministries, heads of state, and their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">industry</dt><dd style="margin-left: 0">Private companies, trade associations, and commercial actors.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">international_org</dt><dd style="margin-left: 0">Multilateral bodies and their representatives (UN agencies, IMF, IAEA, Red Cross, regional alliances).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">judiciary</dt><dd style="margin-left: 0">Judges, courts, prosecutors, and legal bodies acting in their official capacity.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">legislature</dt><dd style="margin-left: 0">Parliament, Congress, or equivalent body. Kept separate from &ldquo;government&rdquo; because legislatures often hold positions that differ from their own executive branch.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">media</dt><dd style="margin-left: 0">Journalists, editorial boards, and outlets quoted for their position or analysis, not as sources of factual reporting.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">military</dt><dd style="margin-left: 0">Armed forces personnel, commanders, and defense ministries.</dd>
+</dl>
+</div>
+</details>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>
