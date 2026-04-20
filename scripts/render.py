@@ -321,12 +321,12 @@ details summary::-webkit-details-marker {
   display: none;
 }
 details summary::before {
-  content: "\25B6  ";
+  content: "+  ";
   font-size: 0.7rem;
   margin-right: 0.25rem;
 }
 details[open] summary::before {
-  content: "\25BC  ";
+  content: "\2212  ";
 }
 
 /* Bias findings */
@@ -424,7 +424,7 @@ def build_follow_up_ref(tp: dict) -> str:
         '<div class="follow-up-ref" style="font-family: \'Space Mono\', monospace; font-size: 0.85rem; '
         'color: #444; padding: 12px 16px; border-left: 3px solid #000; margin: 16px 0; '
         f'background: #f5f5f5;">\n'
-        f'FOLLOW-UP &mdash; Previous coverage: &ldquo;{prev_headline}&rdquo; ({formatted_date})\n'
+        f'Follow-up to: &ldquo;{prev_headline}&rdquo; ({formatted_date})\n'
         f'<!-- FOLLOW_UP_LINK:{prev_tp_id} -->\n'
         '</div>\n'
     )
@@ -974,9 +974,6 @@ def build_transparency(tp: dict) -> str:
         items = "\n".join(f"<li>{_esc(c)}</li>" for c in corrections)
         parts.append(f'<dt>QA Corrections Applied</dt><dd><ul>{items}</ul></dd>\n')
 
-    if t.get("confidence"):
-        parts.append(f'<dt>Confidence</dt><dd>{_esc(t["confidence"])}</dd>\n')
-
     run = t.get("pipeline_run", {})
     if run:
         parts.append(
@@ -985,6 +982,112 @@ def build_transparency(tp: dict) -> str:
 
     parts.append('</dl>\n</div>\n')
     return "".join(parts)
+
+
+def build_glossary() -> str:
+    """Build a static tag reference glossary. Same content for every TP."""
+    def _gb(tag: str, color: str) -> str:
+        return (
+            f'<span class="badge" style="background:{color}15;color:{color};'
+            f'border:1px solid {color}40">{tag}</span>'
+        )
+
+    return (
+        '<details class="glossary" style="margin-top: 2rem; border-top: 3px solid #000; '
+        'padding-top: 1rem">\n'
+        '<summary style="font-family: var(--font-mono); font-size: 0.8rem; '
+        'color: var(--color-text-subtle); cursor: pointer; letter-spacing: 0.05em; '
+        'text-transform: uppercase; padding: 0.5rem 0">'
+        'About these labels</summary>\n'
+        '<div style="margin-top: 0.75rem; font-family: var(--font-mono); '
+        'font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6">\n'
+        '<p style="margin-bottom: 1rem; font-style: italic">'
+        'Not every tag needs a definition &mdash; those listed below cover the full '
+        'vocabulary used across the dossier.</p>\n'
+
+        '<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; '
+        'margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; '
+        'letter-spacing: 0.05em">Divergence types</h3>\n'
+        '<dl style="margin-bottom: 1rem">\n'
+        f'<dt style="margin-top: 0.5rem">{_gb("factual", "#9f1239")}</dt>'
+        '<dd style="margin-left: 0">Sources disagree on a verifiable fact: a date, number, '
+        'name, or whether something happened.</dd>\n'
+        f'<dt style="margin-top: 0.5rem">{_gb("framing", "#7c3aed")}</dt>'
+        '<dd style="margin-left: 0">Sources describe the same event using different language '
+        'or implied meaning. Example: one outlet calls a payment &ldquo;compensation,&rdquo; '
+        'another calls it &ldquo;sanctions relief.&rdquo;</dd>\n'
+        f'<dt style="margin-top: 0.5rem">{_gb("omission", "#ca8a04")}</dt>'
+        '<dd style="margin-left: 0">One or more sources report something that other sources '
+        'leave out entirely.</dd>\n'
+        f'<dt style="margin-top: 0.5rem">{_gb("emphasis", "#0369a1")}</dt>'
+        '<dd style="margin-left: 0">Sources cover the same event but give different aspects '
+        'different weight or prominence. Example: one outlet leads with casualty figures; '
+        'another treats them as a footnote to the political negotiations.</dd>\n'
+        '</dl>\n'
+
+        '<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; '
+        'margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; '
+        'letter-spacing: 0.05em">Bias issues</h3>\n'
+        '<dl style="margin-bottom: 1rem">\n'
+        f'<dt style="margin-top: 0.5rem">{_gb("evaluative_adjective", "#ca8a04")}</dt>'
+        '<dd style="margin-left: 0">A descriptive word that signals the writer&rsquo;s '
+        'judgment rather than a neutral fact. Examples: &ldquo;staggering,&rdquo; '
+        '&ldquo;sharp,&rdquo; &ldquo;dramatic.&rdquo;</dd>\n'
+        f'<dt style="margin-top: 0.5rem">{_gb("intensifier", "#0369a1")}</dt>'
+        '<dd style="margin-left: 0">A word that amplifies a statement without adding '
+        'information. Examples: &ldquo;very,&rdquo; &ldquo;extremely,&rdquo; '
+        '&ldquo;deeply.&rdquo;</dd>\n'
+        f'<dt style="margin-top: 0.5rem">{_gb("loaded_term", "#9f1239")}</dt>'
+        '<dd style="margin-left: 0">Vocabulary carrying strong political or emotional '
+        'connotations that a more neutral word would avoid. Examples: &ldquo;regime&rdquo; '
+        'vs. &ldquo;government,&rdquo; &ldquo;crackdown&rdquo; vs. '
+        '&ldquo;enforcement.&rdquo;</dd>\n'
+        f'<dt style="margin-top: 0.5rem">{_gb("hedging", "#64748b")}</dt>'
+        '<dd style="margin-left: 0">Phrases that soften or obscure a claim, making '
+        'attribution less clear. Examples: &ldquo;some say,&rdquo; &ldquo;allegedly,&rdquo; '
+        '&ldquo;reportedly.&rdquo;</dd>\n'
+        '</dl>\n'
+
+        '<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; '
+        'margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; '
+        'letter-spacing: 0.05em">Stakeholder types</h3>\n'
+        '<dl style="margin-bottom: 0">\n'
+        '<dt style="font-weight: 700; margin-top: 0.5rem">academia</dt>'
+        '<dd style="margin-left: 0">Researchers, professors, think tanks, and '
+        'university-based experts.</dd>\n'
+        '<dt style="font-weight: 700; margin-top: 0.5rem">affected_community</dt>'
+        '<dd style="margin-left: 0">People directly impacted by the events themselves '
+        '&mdash; civilians, displaced persons, local populations. Voices from within the '
+        'group, not their spokespersons.</dd>\n'
+        '<dt style="font-weight: 700; margin-top: 0.5rem">civil_society</dt>'
+        '<dd style="margin-left: 0">Non-state organizations representing collective '
+        'interests (NGOs, human rights groups, trade unions, religious bodies).</dd>\n'
+        '<dt style="font-weight: 700; margin-top: 0.5rem">government</dt>'
+        '<dd style="margin-left: 0">Executive branch officials, ministries, heads of state, '
+        'and their spokespersons.</dd>\n'
+        '<dt style="font-weight: 700; margin-top: 0.5rem">industry</dt>'
+        '<dd style="margin-left: 0">Private companies, trade associations, and commercial '
+        'actors.</dd>\n'
+        '<dt style="font-weight: 700; margin-top: 0.5rem">international_org</dt>'
+        '<dd style="margin-left: 0">Multilateral bodies and their representatives '
+        '(UN agencies, IMF, IAEA, Red Cross, regional alliances).</dd>\n'
+        '<dt style="font-weight: 700; margin-top: 0.5rem">judiciary</dt>'
+        '<dd style="margin-left: 0">Judges, courts, prosecutors, and legal bodies acting in '
+        'their official capacity.</dd>\n'
+        '<dt style="font-weight: 700; margin-top: 0.5rem">legislature</dt>'
+        '<dd style="margin-left: 0">Parliament, Congress, or equivalent body. Kept separate '
+        'from &ldquo;government&rdquo; because legislatures often hold positions that differ '
+        'from their own executive branch.</dd>\n'
+        '<dt style="font-weight: 700; margin-top: 0.5rem">media</dt>'
+        '<dd style="margin-left: 0">Journalists, editorial boards, and outlets quoted for '
+        'their position or analysis, not as sources of factual reporting.</dd>\n'
+        '<dt style="font-weight: 700; margin-top: 0.5rem">military</dt>'
+        '<dd style="margin-left: 0">Armed forces personnel, commanders, and defense '
+        'ministries.</dd>\n'
+        '</dl>\n'
+        '</div>\n'
+        '</details>\n'
+    )
 
 
 def build_footer() -> str:
@@ -1025,6 +1128,7 @@ def render(tp: dict) -> str:
         build_coverage_gaps(tp),
         build_sources_table(tp),
         build_transparency(tp),
+        build_glossary(),
         back_nav_bottom,
         build_footer(),
     ]

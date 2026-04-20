@@ -688,7 +688,11 @@ class Pipeline:
         sources_path = Path("config") / "sources.json"
         source_meta: dict[str, dict] = {}
         if sources_path.exists():
-            data = json.loads(sources_path.read_text(encoding="utf-8"))
+            try:
+                data = json.loads(sources_path.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, ValueError) as e:
+                logger.warning("Could not load sources.json: %s", e)
+                data = {"feeds": []}
             source_meta = {s["name"]: s for s in data.get("feeds", [])}
 
         # Build index: finding-N → original finding dict
@@ -893,8 +897,11 @@ class Pipeline:
             date_str = f"{parts[1]}-{parts[2]}-{parts[3]}"
             tp_path = Path(self.output_dir) / date_str / f"{tp_id}.json"
             if tp_path.exists():
-                data = json.loads(tp_path.read_text(encoding="utf-8"))
-                return data.get("article", {}).get("headline", "")
+                try:
+                    data = json.loads(tp_path.read_text(encoding="utf-8"))
+                    return data.get("article", {}).get("headline", "")
+                except (json.JSONDecodeError, ValueError) as e:
+                    logger.warning("Could not read previous TP %s: %s", tp_id, e)
         return ""
 
     async def editorial_conference(
@@ -972,7 +979,7 @@ class Pipeline:
                     f"05-writer-{slug}.json", pkg.to_dict()
                 )
             except Exception as e:
-                logger.error(
+                logger.exception(
                     "Failed to produce topic '%s': %s", assignment.id, e
                 )
                 pkg = TopicPackage(
@@ -1291,8 +1298,11 @@ class Pipeline:
             }
             tp_path = Path(self.output_dir) / prev_date / f"{assignment.follow_up_to}.json"
             if tp_path.exists():
-                prev_data = json.loads(tp_path.read_text(encoding="utf-8"))
-                follow_up_data["previous_slug"] = prev_data.get("metadata", {}).get("topic_slug", "")
+                try:
+                    prev_data = json.loads(tp_path.read_text(encoding="utf-8"))
+                    follow_up_data["previous_slug"] = prev_data.get("metadata", {}).get("topic_slug", "")
+                except (json.JSONDecodeError, ValueError) as e:
+                    logger.warning("Could not read follow-up TP %s: %s", assignment.follow_up_to, e)
 
         # Restore estimated_date from research dossier onto Writer's sources.
         # The Writer re-indexes rsrc-NNN → src-NNN but drops estimated_date.
@@ -1331,7 +1341,6 @@ class Pipeline:
             bias_analysis=bias_analysis,
             transparency={
                 "selection_reason": assignment.selection_reason,
-                "confidence": "medium",
                 "pipeline_run": {
                     "run_id": self.state.run_id if self.state else "",
                     "date": self.state.date if self.state else "",
@@ -1517,7 +1526,11 @@ class Pipeline:
         if not path.exists():
             logger.error("Debug file not found: %s", path)
             return None
-        return json.loads(path.read_text(encoding="utf-8"))
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, ValueError) as e:
+            logger.error("Could not parse debug file %s: %s", path, e)
+            return None
 
     def _find_latest_output_date(self) -> str | None:
         """Find the most recent date directory in output/."""
@@ -1741,7 +1754,7 @@ class Pipeline:
                     packages.append(pkg)
                     self._write_debug_output(f"05-writer-{slug}.json", pkg.to_dict())
                 except Exception as e:
-                    logger.error("Failed to produce topic '%s': %s", assignment.id, e)
+                    logger.exception("Failed to produce topic '%s': %s", assignment.id, e)
                     packages.append(TopicPackage(
                         id=assignment.id,
                         metadata={
@@ -1866,7 +1879,11 @@ class Pipeline:
         if not state_path.exists():
             return None
         for f in state_path.glob(f"run-{date}-*.json"):
-            data = json.loads(f.read_text())
+            try:
+                data = json.loads(f.read_text())
+            except (json.JSONDecodeError, ValueError) as e:
+                logger.warning("Could not parse state file %s: %s", f, e)
+                continue
             state = PipelineState(**data)
             if state.current_step != "done":
                 return state

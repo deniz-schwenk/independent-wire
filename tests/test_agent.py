@@ -249,3 +249,57 @@ async def test_agent_structured_output(prompt_file: str) -> None:
     assert result.structured is not None
     assert "greeting" in result.structured
     assert "language" in result.structured
+
+
+# ---------------------------------------------------------------------------
+# JSONDecodeError retry tests (no API key needed)
+# ---------------------------------------------------------------------------
+
+import json
+from unittest.mock import AsyncMock, MagicMock
+
+
+@pytest.mark.asyncio
+async def test_agent_retries_on_json_decode_error(prompt_file: str) -> None:
+    """Agent retries transient JSONDecodeError from the OpenAI client."""
+    agent = Agent(
+        name="test",
+        model=MODEL,
+        prompt_path=prompt_file,
+        api_key="fake-key-for-unit-test",
+    )
+
+    mock_response = MagicMock()
+    mock_response.choices = [MagicMock()]
+    mock_response.choices[0].message.content = "ok"
+    mock_response.choices[0].message.tool_calls = None
+    mock_response.usage.total_tokens = 10
+    mock_response.model = MODEL
+
+    json_err = json.JSONDecodeError("Expecting value", doc="", pos=0)
+    agent._client.chat.completions.create = AsyncMock(
+        side_effect=[json_err, json_err, mock_response]
+    )
+
+    result = await agent.run("test message")
+    assert result.content == "ok"
+    assert agent._client.chat.completions.create.call_count == 3
+
+
+@pytest.mark.asyncio
+async def test_agent_raises_after_max_json_decode_retries(prompt_file: str) -> None:
+    """Agent raises AgentAPIError after MAX_RETRIES JSONDecodeErrors."""
+    from src.agent import AgentAPIError
+
+    agent = Agent(
+        name="test",
+        model=MODEL,
+        prompt_path=prompt_file,
+        api_key="fake-key-for-unit-test",
+    )
+
+    json_err = json.JSONDecodeError("Expecting value", doc="", pos=0)
+    agent._client.chat.completions.create = AsyncMock(side_effect=json_err)
+
+    with pytest.raises(AgentAPIError, match="Malformed API response"):
+        await agent.run("test message")

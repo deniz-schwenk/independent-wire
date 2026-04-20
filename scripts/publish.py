@@ -123,7 +123,7 @@ def build_card(meta: dict, index: int) -> str:
         prev_href = f"reports/{prev_tp_id}.html" if prev_tp_id else "#"
         follow_up_hint = (
             f'  <div class="follow-up-hint">'
-            f'<span class="follow-up-label">&#8627; Follow-up:</span> '
+            f'<span class="follow-up-label">Follow-up to:</span> '
             f'<a href="{_esc(prev_href)}" class="follow-up-link">&ldquo;{prev_headline}&rdquo;</a> '
             f'<span class="follow-up-date">({formatted_date})</span>'
             f'</div>\n'

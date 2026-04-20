@@ -226,6 +226,19 @@ class Agent:
                 import asyncio
 
                 await asyncio.sleep(delay)
+            except json.JSONDecodeError as e:
+                if attempt == MAX_RETRIES:
+                    raise AgentAPIError(
+                        f"Agent '{self.name}': Malformed API response after {MAX_RETRIES} retries: {e}",
+                    ) from e
+                delay = BASE_DELAY * (2**attempt) + random.uniform(0, 1)
+                logger.warning(
+                    "Agent '%s': Malformed API response, retry %d/%d in %.1fs: %s",
+                    self.name, attempt + 1, MAX_RETRIES, delay, str(e)[:100],
+                )
+                import asyncio
+
+                await asyncio.sleep(delay)
 
         # Unreachable, but satisfies type checker
         raise AgentAPIError(f"Agent '{self.name}': Retries exhausted")
