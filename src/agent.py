@@ -373,22 +373,45 @@ class Agent:
 
         return None
 
+    @staticmethod
+    def _extract_cost_usd(response: object) -> float | None:
+        """Return OpenRouter's reported cost for this response, or None if absent.
+
+        OpenRouter surfaces cost under ``response.usage.cost`` as a Pydantic
+        ``model_extra`` field (accessible by attribute). Returning ``None``
+        (rather than ``0.0``) lets the caller distinguish "provider omitted
+        the field" from "provider reported zero cost".
+        """
+        usage = getattr(response, "usage", None)
+        if usage is None:
+            return None
+        cost = getattr(usage, "cost", None)
+        if cost is None:
+            return None
+        try:
+            return float(cost)
+        except (TypeError, ValueError):
+            return None
+
     async def _parse_or_retry_structured(
         self,
         messages: list[dict],
         content: str,
         output_schema: dict,
         tool_defs: list[dict] | None,
-    ) -> tuple[str, dict | None, int]:
+    ) -> tuple[str, dict | None, int, float, bool]:
         """Try to parse content as JSON. If it fails, retry with corrective prompt.
 
-        Returns: (final_content, structured_or_none, additional_tokens_used)
+        Returns: (final_content, structured_or_none, additional_tokens_used,
+                  additional_cost_usd, cost_reported_any)
         """
         additional_tokens = 0
+        additional_cost = 0.0
+        cost_reported = False
 
         parsed = self._parse_json(content)
         if parsed is not None:
-            return content, parsed, 0
+            return content, parsed, 0, 0.0, False
 
         corrective_message = (
             "Your previous response could not be parsed as valid JSON. "
@@ -411,17 +434,21 @@ class Agent:
             choice = response.choices[0]
             content = choice.message.content or ""
             additional_tokens += response.usage.total_tokens if response.usage else 0
+            cost = self._extract_cost_usd(response)
+            if cost is not None:
+                additional_cost += cost
+                cost_reported = True
 
             parsed = self._parse_json(content)
             if parsed is not None:
-                return content, parsed, additional_tokens
+                return content, parsed, additional_tokens, additional_cost, cost_reported
 
         logger.warning(
             "Agent '%s': structured output parsing failed after %d retries",
             self.name,
             MAX_STRUCTURED_RETRIES,
         )
-        return content, None, additional_tokens
+        return content, None, additional_tokens, additional_cost, cost_reported
 
     async def run(
         self,
@@ -443,6 +470,8 @@ class Agent:
         ]
 
         total_tokens = 0
+        total_cost_usd = 0.0
+        cost_reported = False
         all_tool_calls: list[dict] = []
 
         # Tool-call loop
@@ -452,6 +481,10 @@ class Agent:
             resp_message = choice.message
 
             total_tokens += response.usage.total_tokens if response.usage else 0
+            cost = self._extract_cost_usd(response)
+            if cost is not None:
+                total_cost_usd += cost
+                cost_reported = True
 
             # No tool calls — we're done
             if not resp_message.tool_calls:
@@ -489,10 +522,26 @@ class Agent:
         # Parse structured output if schema was requested, with retry
         structured = None
         if output_schema and content:
-            content, structured, extra_tokens = await self._parse_or_retry_structured(
+            (
+                content,
+                structured,
+                extra_tokens,
+                extra_cost,
+                extra_cost_reported,
+            ) = await self._parse_or_retry_structured(
                 messages, content, output_schema, tool_defs,
             )
             total_tokens += extra_tokens
+            total_cost_usd += extra_cost
+            cost_reported = cost_reported or extra_cost_reported
+
+        if not cost_reported:
+            logger.warning(
+                "Agent '%s': provider did not report cost for model %s; "
+                "cost_usd=0.0",
+                self.name,
+                model_used,
+            )
 
         logger.info(
             "Agent '%s': completed in %.1fs, %d tokens, %d tool calls",
@@ -507,7 +556,7 @@ class Agent:
             structured=structured,
             tool_calls=all_tool_calls,
             tokens_used=total_tokens,
-            cost_usd=0.0,  # cost estimation deferred to config/pricing layer
+            cost_usd=total_cost_usd,
             model=model_used,
             duration_seconds=round(duration, 2),
         )
