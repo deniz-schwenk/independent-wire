@@ -55,3 +55,6 @@ docs/handoffs/
 docs/archive/
 docs/TASKS.md
 docs/COST-OPTIMIZATION-ANALYSIS.md
+# Internal session artifacts (not published)
+docs/handoffs/
+TASK-*.md
