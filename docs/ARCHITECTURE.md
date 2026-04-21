@@ -105,13 +105,13 @@ class Pipeline:
     async def run(self, date: str = None) -> list[TopicPackage]: ...
     async def curate(self, raw: list[dict]) -> list[dict]: ...
     async def editorial_conference(self, topics: list[dict]) -> list[dict]: ...
-    async def research(self, assignment: dict) -> dict: ...
-    async def perspektiv(self, assignment: dict, research: dict) -> dict: ...
-    async def write(self, assignment: dict, research: dict, perspectives: dict) -> dict: ...
-    async def qa_fix(self, article: dict, dossier_sources: list, divergences: list) -> dict: ...
-    async def build_bias_card(self, package: dict) -> dict: ...
+    async def _research_two_phase(self, assignment: dict, slug: str) -> dict: ...
+    async def _produce_single(self, assignment: TopicAssignment) -> TopicPackage: ...
+    # Per-topic flow inside _produce_single:
+    #   Researcher Plan → Python search → Researcher Assemble →
+    #   Perspektiv → Writer → QA+Fix → Python build_bias_card → Bias Language
+    async def verify(self, packages: list[TopicPackage]) -> list[TopicPackage]: ...
     async def gate(self, step_name: str, data: any) -> bool: ...
-    async def produce_topic_package(self, assignment: dict) -> TopicPackage: ...
 ```
 
 **Key design decisions:**
@@ -147,6 +147,76 @@ class ToolRegistry:
 
 ---
 
+## Architectural Principles
+
+Two non-negotiable principles govern how work is divided between Python and LLM agents. They have **direct, measurable impact on both output quality and operating cost** and must be applied without exception.
+
+Violations of these principles are architectural debt, not stylistic preference. Every LLM token spent on work Python could do deterministically is waste — both in money and in the noise it introduces into the model's reasoning. Every piece of data an agent must pass through instead of originate is a risk: the model may reformat it, drop it, or transform it silently. Python-routed data flow eliminates that entire class of failure.
+
+**These principles apply to every agent in the pipeline, without exception.** They apply equally to the agents already in production (which were built before these principles were formalized) and to future agents (including the Hydration Aggregator). The current production agents have not been systematically audited against these principles yet — this is a known open work item, documented as an audit commitment below.
+
+### Principle 1 — Deterministic before LLM
+
+**If a piece of work can be solved deterministically in Python, it must be solved in Python.** LLM calls are reserved for genuinely non-deterministic work (summarization, cross-language comparison, stakeholder identification, bias analysis). Normalization, ID assignment, schema compliance, counting, indexing, language-code formatting — these are Python's job.
+
+Applied in the current pipeline:
+- Curator enrichment (`_enrich_curator_output`): computes `geographic_coverage`, `languages`, `source_diversity`, `missing_regions`, `missing_languages` deterministically from raw finding metadata. The Curator LLM only clusters and scores.
+- Source URL deduplication (before Curator).
+- Word count computation (never trust LLM counting).
+- Meta-transparency fixup (language and source counts in article body).
+- Date extraction from URLs (`_extract_date_from_url`).
+- Bias Card aggregation (`_build_bias_card`): counts sources by language and country, identifies geographic gaps — all Python. Bias Language LLM analyzes only the prose itself.
+- Source ID reindexing between pipeline stages (rsrc-NNN → src-NNN).
+
+This principle extends to the Hydration pipeline (Etappe 2, see below): language codes, country lookup, and article titles are normalized in Python before the Aggregator LLM sees them. The Aggregator never faces raw, inconsistent input.
+
+### Principle 2 — Agents produce only originary output
+
+**An agent must only output what it genuinely creates through its own work.** Fields that are simply passed through — URLs, outlet names, language codes, dates, titles — should not appear in the agent's output schema. Python handles the pass-through and merges originary agent output with reference data.
+
+The cost of violating this principle is both tokens (input + output paid twice for no value) and architecture (agents become brittle format-translators instead of reasoning modules).
+
+Applied in the current pipeline:
+- Bias Language agent outputs only `language_bias` findings and `reader_note` — it does not re-emit the source list or divergences, which Python aggregates separately.
+- QA+Fix returns corrections plus the corrected article body — not the full Topic Package, which Python assembles.
+
+Applied in the Hydration Aggregator (Etappe 2): the agent returns `article_analyses[]` with only `article_index`, `summary`, and `actors_quoted` per article. URL, outlet, language, country, title, estimated_date are pass-through via Python merge, keyed by `article_index`.
+
+### Audit Commitment
+
+The two principles above were formalized during Session 10 (April 2026), after several pipeline iterations. Most production agents were built before that formalization and have not yet been systematically reviewed against the principles. Some obvious applications have been retrofitted (Bias Language, QA+Fix), but a complete audit has not happened.
+
+**A pipeline-wide audit is an open work item.** Every production agent prompt and its input/output contract must be reviewed against these two principles. The audit procedure:
+
+1. For each agent, identify every field in its output schema.
+2. Classify each field as either **originary** (the agent genuinely created it through reasoning) or **pass-through** (the field was in the input and the agent just reproduced it).
+3. Every pass-through field is a candidate for removal — Python should merge it back in after the LLM call.
+4. For each input the agent receives, identify every normalization, enrichment, or pre-processing step.
+5. Any normalization currently done by the LLM (language codes, country lookups, date formatting, ID assignment, deduplication) should move to Python before the call.
+6. Measure token savings per agent before and after the change. Record in a follow-up session handoff.
+
+Agents to be audited, in priority order by current token volume:
+
+- **Writer** — the largest cost center (40-120K tokens/topic). Highest-value audit target. Specifically: does the Writer re-emit source metadata that Python already has? Does it rewrite the source list schema or pass it through? Each redundant field costs real money at Opus rates.
+- **Curator** — processes ~1,400 findings, cheapest model but largest input. Verify that its output contains only cluster decisions (groupings + scores), not repeated finding metadata. Current enrichment (`_enrich_curator_output`) already removed some fields — check if more is possible.
+- **Researcher Assembler** — the dossier it produces is consumed by Writer and Perspektiv. Every pass-through field multiplies downstream.
+- **Perspektiv** — stakeholder extraction is genuinely originary, but check whether region/country lookups could move to Python using the source metadata already known.
+- **QA+Fix** — returns the corrected article. The article body is originary (post-correction) but the sources list in its output may be redundant with what Python has from the Writer.
+- **Editor** — smallest input and output, audit for completeness but likely low yield.
+- **Bias Language** — already redesigned in Session 9 to output only originary content (`language_bias` + `reader_note`). Confirm baseline.
+
+This audit is not blocking Etappe 2 implementation, but it should happen before any future pipeline extension. The cost and quality gains compound: every token saved at the Writer or Curator is a token we don't pay for, and every pass-through we remove is a class of inconsistency eliminated from the data flow.
+
+### Contract discipline
+
+**Agent output schemas in task briefs are complete specifications.** Unlisted fields are not added silently by implementation; useful telemetry is surfaced as questions for architect review. This rule was formalized after a Session 11 incident where a Claude Code implementation added a `fetch_started_at` field to the hydration output without it being in the brief. The same discipline applies to pipeline helper functions and Topic Package schema: additions are decisions, not drift.
+
+### Field-absence vs null value (Perspektiv-Sync pattern)
+
+**When an agent emits delta output, field absence and null value carry different semantics.** Absence means "do not touch this field"; null means "set this field to null" (e.g. remove a quote). Python checks must use `"field" in delta`, never `delta.get("field") is None`. This applies to any delta-emitting agent added in the future — the convention prevents silent data corruption where a genuinely-removed value is preserved because the absent-field case was conflated with the null-value case.
+
+---
+
 ## Error Handling and Retries
 
 Agent-level exponential backoff with jitter for transient API errors (429, 5xx). Auth errors (401/403) and invalid requests (400) are raised immediately. Pipeline continues after individual topic failures — failed topics are logged and reported. State is persisted after each major step for crash recovery.
@@ -162,10 +232,13 @@ dependencies = [
     "openai>=1.0",          # OpenAI-compatible API client (works with OpenRouter)
     "httpx",                # async HTTP for tool implementations
     "feedparser",           # RSS feed parsing
+    "json-repair",          # recovery of malformed LLM JSON output
+    "trafilatura",          # article full-text extraction (Hydration pipeline)
+    "aiohttp",              # parser-tolerant async HTTP (Hydration pipeline)
 ]
 ```
 
-No numpy. No pandas. No langchain. No pytorch. Three core dependencies.
+No numpy. No pandas. No langchain. No pytorch. Six dependencies total, all single-purpose. The last two (`trafilatura`, `aiohttp`) serve the Hydration pipeline — see Etappe 2 below. They are not used by the Production pipeline.
 
 ---
 
@@ -196,6 +269,66 @@ All assignments validated through 90+ eval calls across 14 models. Three product
 | QA+Fix | anthropic/claude-sonnet-4.6 | OpenRouter | Find errors, apply corrections, return corrected article |
 | Bias Language | anthropic/claude-opus-4.6 | OpenRouter | Analyze language bias in finished article |
 
+## Hydration Pipeline (Etappe 2 — Decided, Not Yet Integrated)
+
+The Production pipeline described above treats the Curator's clustered RSS findings as a ranking signal only: after the Editor selects the top 3 topics, the Researcher begins from zero, querying the web independently via search snippets. The RSS-cluster content — 15-25 articles per topic across 5-8 languages — is discarded. The Writer never sees the actual RSS source texts, only Web-Search snippets.
+
+**Etappe 2 adds a parallel pipeline that uses the cluster content.** After the Editor and before the Researcher, a new step fetches the cluster URLs directly via HTTP, extracts article full-text, and passes it through an Aggregator LLM that produces a pre-dossier in the same shape as the Researcher Assembler output. The Researcher Assembler then extends this pre-dossier with web-search results covering gaps that the cluster did not. Python merges both dossiers by reindexing `rsrc-NNN` source IDs.
+
+### Why it was decided
+
+Two feasibility spikes established the empirical base:
+
+**Spike 1 — Fetch viability (httpx + trafilatura):** 30/51 URLs from Lauf 19's produced topics extracted to full-text (58.8%). Failures concentrated in two categories: 10 URLs in `connection_error` caused by httpx's strict HTTP parser rejecting Anadolu Agency's non-conformant Transfer-Encoding headers; 11 URLs in `bot_blocked` or `partial` from real outlet policy (FT, Axios, SCMP, Dawn, Meduza, Le Monde paywalls).
+
+**Spike B — Parser tolerance (aiohttp):** Swapping httpx for aiohttp recovered all 6 Anadolu URLs. Success rate rose to 70.6% (36/51). Remaining failures are structural, not tooling: Press TV unreachable from this network (tls_error subtype, likely sanctions-routing), and the bot-protected / paywalled outlets are not recoverable by any respectful-scraping approach.
+
+**Spike C — Aggregator quality (two Gemini models):** The Hydration Aggregator prompt was tested on the 36 Spike-B successes across `google/gemini-3-flash-preview` and `google/gemini-3.1-flash-lite-preview`. Flash-preview: 100% structural compliance (12/12 articles analyzed per topic), avg 36-55 word summaries, 4-5 divergences and 4 gaps per topic. Flash-lite: 11/12 on one topic (Rule 1 violation — a disqualification for production), shallower summaries, fewer divergences. Decision: **`google/gemini-3-flash-preview` as the production Aggregator model.** Cost per topic: ~$0.015, ~17 seconds per call on 10K-17K input tokens. Full-text quality of recovered articles (300-900 words per article with lead, body, and attribution) substantially exceeds what Perplexity snippets provide.
+
+### Scraping ethics position
+
+The Hydration pipeline fetches article full-text from public RSS-listed URLs. This is text-and-data mining for editorial analysis, not content republication. Independent Wire's operating principles for this pipeline:
+
+1. **Only top-3 produced topics are fetched**, not the 1,400+ full feed findings.
+2. **Identifiable bot user-agent**: `Independent-Wire-Bot/1.0 +https://independentwire.org` — outlets can see us and contact us.
+3. **Per-domain rate limit**: 1 request per second maximum.
+4. **Robots.txt respected** — any `Disallow` on the target path means no fetch.
+5. **No circumvention** of Cloudflare, CAPTCHA, or paywalls. When an outlet blocks, we skip.
+6. **Full-text used only as LLM-context** for paraphrased journalism. Never reproduced verbatim in the published article.
+7. **Public documentation** in the repo README: the list of outlets regularly fetched, the user-agent string, purpose, and the Remove-My-Outlet contact.
+
+Under this discipline, Hydration is indistinguishable in moral weight from the Production pipeline's existing reliance on Perplexity (which itself scrapes and caches outlet content). The difference is ownership: we take the responsibility and the transparency burden directly rather than pay a third party to do it with less visibility.
+
+### Pipeline shape
+
+```
+Production (unchanged):
+  fetch_feeds → Curator → Editor → Researcher Plan → Python Web-Search →
+    Researcher Assemble → Perspektiv → Writer → QA+Fix → Python Bias Card →
+    Bias Language → Topic Package
+
+Hydrated (Etappe 2, parallel):
+  fetch_feeds → Curator → Editor →
+    [NEW: Python Feed-Hydration (aiohttp fetch + trafilatura extract, respectful)]
+    [NEW: Hydration Aggregator LLM → pre-dossier in Researcher-Assembler shape]
+    Researcher Plan (seeded with pre-dossier coverage map) →
+    Python Web-Search →
+    Researcher Assemble (web-search-only input, unchanged prompt) →
+    [NEW: Python merge pre-dossier + web-search dossier → combined dossier]
+    Perspektiv → Writer → QA+Fix → Python Bias Card → Bias Language →
+    Topic Package (same schema)
+```
+
+The downstream agents (Perspektiv, Writer, QA+Fix, Bias Language) see a richer dossier but operate on the same schema. Their prompts require no changes. The only prompt that changes is the Researcher Planner, which must know about the pre-dossier to plan gap-filling queries rather than redundant coverage.
+
+### Files introduced by Etappe 2
+
+- `src/pipeline_hydrated.py` — copy of `pipeline.py` with Feed-Hydration and Aggregator steps inserted. Independent file; no production-code modification.
+- `agents/hydration_aggregator/AGENTS.md` — the Aggregator prompt (written, stored, pending integration).
+- `agents/researcher_hydrated/PLAN.md` — a modified planner prompt that uses the pre-dossier as context. The Assembler prompt is unchanged (still processes web-search results only; pre-dossier merging happens in Python after assembly).
+
+The existing `src/pipeline.py`, `agents/researcher/PLAN.md`, and `agents/researcher/ASSEMBLE.md` are not modified. Production runs continue to use the unchanged flow. The Hydration pipeline is invoked via a separate test script (`scripts/test_hydration_pipeline.py`) that writes to `output/{date}/test_hydration/`. A/B comparison against the same day's production run is the validation path before any promotion to production.
+
 ## File Structure
 
 ```
@@ -216,7 +349,8 @@ independent-wire/
 │   ├── perspektiv/AGENTS.md
 │   ├── writer/AGENTS.md
 │   ├── qa_analyze/AGENTS.md
-│   └── bias_detector/AGENTS.md
+│   ├── bias_language/AGENTS.md
+│   └── hydration_aggregator/AGENTS.md   # Etappe 2 (prepared, not yet integrated)
 ├── config/
 │   ├── style-guide.md
 │   ├── sources.json          # 72 RSS feeds, v0.3

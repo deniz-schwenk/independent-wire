@@ -1,7 +1,7 @@
 # Independent Wire — Task Tracker
 
 **Created:** 2026-03-30
-**Updated:** 2026-04-15 (Session 9 — Curator capacity, priority filter, null sanitizing, source recency, bias card collapse, writer prompt, auto-deploy)
+**Updated:** 2026-04-21 (Session 11 — Etappe 2 delivered: Hydration T1/T2/T3, Writer-sources refactor, Perspektiv-Sync V3, AgentResult cost tracking, Pipeline-Hygiene fixes)
 **Purpose:** Living document — updated after each session
 
 ---
@@ -34,6 +34,15 @@
 | WP-WEBSITE | ✅ | Publication site: publish.py generates index.html + feed.xml from rendered TPs. Brutalist design system (Space Mono + Space Grotesk). GitHub Actions deployment workflow. |
 | WP-CURATOR-CAPACITY | ✅ | Curator targets 10-20 topics. max_topics=10 (Editor sees), max_produce=3 (pipeline produces). Debug: 02-curator-topics-unsliced.json written before slice. Dead prompts deleted (CLUSTER.md, SCORE.md). |
 | WP-SOURCE-RECENCY | ✅ | URL date extraction (_extract_date_from_url). Search results enriched with url_dates. Pipeline date passed to Assembler context. Assembler prompt updated: estimated_date field, recency-aware selection, age notes in coverage_gaps. Pipeline logs warnings for sources >30 days old. Dead prompt deleted (researcher/AGENTS.md). |
+| WP-HYDRATION-T1 | ✅ | `src/hydration.py`: async fetch-and-extract module. aiohttp + trafilatura, user-agent `Independent-Wire-Bot/1.0`, per-domain rate limit 1 req/s, robots.txt respected, 7 status classifications (success, partial, bot_blocked, robots_disallowed, http_error, connection_error, timeout). Smoke test on Lauf-19 URLs: 68.6% success rate, matches Spike B within tolerance. All 6 Anadolu Agency URLs recovered via aiohttp. |
+| WP-HYDRATION-T2 | ✅ | `src/hydration_aggregator.py`: four public functions — Aggregator LLM call, build_prepared_dossier, build_coverage_summary, merge_dossiers. Hydration-Aggregator model: google/gemini-3-flash-preview (Spike C winner). Pre-dossier in Researcher-Assembler shape. Coverage summary is 5 fields (total_sources, languages_covered, countries_covered, stakeholder_types_present, coverage_gaps). Merge dedupes Web-Search URLs against Pre-Dossier URL blocklist, concatenates Pre first then Web, reindexes rsrc-NNN. Smoke test: 3 topics × 11-12 articles, ~46K tokens, ~$0.04. |
+| WP-HYDRATION-T2-FOLLOWUP | ✅ | Preserved `verbatim_quote` across pipeline instead of dropping. Canonical five-field actor shape {name, role, type, position, verbatim_quote} applied in `build_prepared_dossier` (pass-through from Aggregator) and `merge_dossiers` (Web-Search-side normalization to null). No changes to Researcher Assembler prompt — normalization happens in Python. Verified: 11 of 15 pre-dossier actors on test topic carry real verbatim quotes, all 4 web-search actors carry null. |
+| WP-HYDRATION-T3 | ✅ | `src/pipeline_hydrated.py` subclass: overrides `_research_two_phase` to chain T1 fetch → T2 Aggregator → pre-dossier → coverage summary → hydrated planner → web search → JSON/plaintext blocklist filter → Assembler → T2 merge. Debug output routed under `output/{date}/test_hydration/`. Orchestrator `scripts/test_hydration_pipeline.py`. Lauf-19 run: 3/3 TPs, 24–29 sources/topic, 36 verbatim quotes preserved. |
+| WP-HYDRATION-T3-FU | ✅ | Retroactive Principle-1 fixes: Writer placeholder `[[COVERAGE_STATEMENT]]` substituted by Python after final source array is known; Editor `selection_reason` forbidden from numeric/outlet-brand claims; country-name normalization (USA→United States, UK→United Kingdom, etc.) + None-filter on `missing_from_dossier`. Module-level `LANGUAGE_NAMES` + `COUNTRY_ALIASES` in `src/pipeline.py`. |
+| WP-AGENTRESULT-COST | ✅ | Extended `AgentResult` with `cost_usd` populated from OpenRouter `usage.cost`. `Agent.run()` accumulates per-call cost across the tool loop, emits a single warning when the provider does not report cost, and exposes the total on the result. Unblocks Hydration A/B compare and future budget controls. |
+| WP-WRITER-SOURCES | ✅ | Writer emits minimal source references `{id, rsrc_id}`. `_merge_writer_sources` in `src/pipeline.py` resolves each `rsrc_id` against the Researcher dossier and produces the full source object (url, outlet, language, country, estimated_date, actors_quoted incl. verbatim_quote). QA+Fix receives the merged full objects; Writer debug file preserves the minimal refs. |
+| WP-PERSPEKTIV-SYNC | ✅ | New Perspektiv-Sync agent runs between QA+Fix and coverage-statement substitution in the hydrated pipeline. V3 prompt emits delta-only output `{stakeholder_updates[]}`; `merge_perspektiv_deltas` in `src/pipeline_hydrated.py` deep-copies the original map and applies deltas via field-presence semantics (null removes, absence leaves untouched). Smoke script `scripts/test_perspektiv_sync.py` reruns against Lauf-19 cached inputs. |
+| WP-PIPELINE-HYGIENE | ✅ | Three retroactive Principle-1 fixes in `src/pipeline.py` (mirrored into the hydrated override): Fix 1 — sequential `src-NNN` renumbering with unreferenced-source pruning and atomic citation rewrite; Fix 2 — top-level `gaps[]` and `transparency.framing_divergences` no longer populated (canonical fields live under `bias_analysis`); Fix 3 — `stakeholders[*].source_ids` converted from `rsrc-NNN` to final `src-NNN` via internal `rsrc_id` stash, orphaned entries dropped, stakeholders retained even when source_ids becomes empty. Smoke `scripts/test_pipeline_hygiene.py`. |
 
 ## Completed Fixes
 
@@ -95,6 +104,8 @@ Key cross-cutting findings:
 | WP-CURATOR-CAPACITY | ✅ Done | Curator 10-20 topics, Editor sees 10, max_produce=3, priority filter | **Done** (Lauf 14) |
 | WP-SOURCE-RECENCY | ✅ Done | URL date extraction, estimated_date, pipeline warnings | **Done** (Lauf 14) |
 | WP-SEO | 🔴 High | Meta-Tags, OpenGraph, Sitemap — required before LinkedIn launch | Open |
+| WP-HYDRATION | ✅ Done | Parallel Hydrated pipeline (Etappe 2). T1 fetch+extract, T2 aggregator+merge, T3 integration all shipped. Lauf-19 end-to-end green (3/3 TPs). A/B compare report deferred to follow-up WP. | **Done** (Session 11) |
+| WP-AGENTRESULT-COST | ✅ Done | `cost_usd` sourced from OpenRouter `usage.cost`, accumulated across tool loop, exposed on `AgentResult`. Unblocks Hydration A/B compare and future budget controls. | **Done** (Session 11) |
 | WP-FEED-EXPAND | 🟡 Medium | Scale from 72 to 100+ feeds. At 200+, reactivate Collector as pre-filter. | Open |
 | WP-CACHING | 🟢 Low | Prompt Caching via OpenRouter | Open |
 ## Future Work Packages
@@ -124,10 +135,7 @@ Key cross-cutting findings:
 
 ### Known Bugs
 
-| Bug | Description | Status |
-|-----|-------------|--------|
-| FIX-RSRC-MAPPING | Perspektiv `source_ids` use `rsrc-*` IDs from Researcher dossier, but Topic Package uses `src-*` IDs. Mapping lost during assembly → Stakeholder Cards can't link to sources. | Open |
-| FIX-GAPS-DUPLICATE | `gaps[]` (top-level) and `bias_analysis.perspectives.missing_voices[]` contain identical data (both from Perspektiv Agent). Remove one during TP assembly. | Open |
+No open production bugs as of Session 11.
 
 ## Eval Infrastructure
 
@@ -197,6 +205,12 @@ Pipeline warnings: 2 old sources flagged (Le Monde 86 days, Bank of Israel 45 da
 Null sanitizing: 0 string-"null" across 18 perspectives — fix confirmed working.
 Topics: Iran Reparations + Blockade (17 src, 6 lang), Israel-Lebanon Talks (13 src, 5 lang),
 IMF Growth Downgrade (15 src, 8 lang).
+
+### Session 11 (2026-04-21) — Perspektiv-Sync V3 calibration
+Perspektiv-Sync V3 operated conservatively on Lauf-19 cached inputs: 1 `position_summary`
+delta across 3 topics vs V1's 4. Independent eval agent confirmed Hypothesis A — V3 is
+correctly calibrated, V1 was over-eager. Cost: ~$0.14 for 3 topics under V3 (delta-only)
+vs ~$0.40 under V1 (full map rewrite). No prompt adjustment required.
 
 ## Known Issue: LLM JSON Output with Multilingual Quotes
 

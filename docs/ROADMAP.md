@@ -1,7 +1,7 @@
 # Independent Wire — Open Source Roadmap
 
 **Created:** 2026-03-26
-**Updated:** 2026-04-16 (Session 10 — Sustainability principles, output format clarification, eval workflow planned)
+**Updated:** 2026-04-21 (Session 11 — Etappe 2 delivered: Hydration pipeline integrated, Writer-sources pass-through eliminated, Perspektiv-Sync V3 agent, three long-standing post-processing bugs fixed)
 **Status:** Living document — strategic overview.
 **Basis:** Vision paper (March 2026) + PoC experience (Sessions 1–12) + Model Evals (Sessions 4–5) + Cost Optimization (Session 6) + Rendering + Website (Session 7)
 
@@ -55,6 +55,7 @@ Core framework operational. Pipeline produces Topic Packages with multilingual r
 | WP-MEMORY | Agent Memory (Editor coverage continuity) | ✅ Done |
 | WP-CURATOR-CAPACITY | Curator 10-20 topics, Editor sees 10, max_produce=3 | ✅ Done |
 | WP-SOURCE-RECENCY | URL date extraction, estimated_date on sources, age warnings | ✅ Done |
+| WP-HYDRATION | Parallel Hydrated pipeline (Etappe 2): fetch cluster URLs, extract full-text, aggregate via LLM, merge with web-search dossier. T1 fetch+extract, T2 aggregator+merge, T3 integration all shipped. A/B compare report deferred. | ✅ Done |
 | WP-SEO | Meta-Tags, OpenGraph, Sitemap (pre-launch) | ⬜ Planned |
 | WP-CACHING | Prompt caching via OpenRouter | ⬜ Planned |
 
@@ -213,3 +214,20 @@ Vision, architecture diagram, quick-start, contribution guide.
 | Writer prompt tightened | Pipeline conditionals removed (perspective_analysis always present). Redundancies deduplicated. Prose structure guidance added. 99→77 lines, ~30% reduction. | 2026-04-15 |
 | Dead prompts cleaned | curator/CLUSTER.md, curator/SCORE.md (Two-Stage), researcher/AGENTS.md (monolithic) deleted. Only active prompts remain in agents/. | 2026-04-15 |
 | Auto-deploy | run.py --publish now git add + commit + push site/ after publish.py. GitHub Actions triggers automatically. | 2026-04-15 |
+| Hydration pipeline (Etappe 2) architecture | Parallel pipeline, not modification of production. `src/pipeline_hydrated.py` will be a copy with Hydration steps inserted between Editor and Researcher. Production pipeline stays untouched; A/B comparison becomes the validation path. | 2026-04-20 |
+| Hydration fetch client: aiohttp over httpx | Empirically chosen in Spike B. aiohttp tolerates Anadolu Agency's non-conformant Transfer-Encoding headers that httpx rejects. Recovered +6 URLs (+11.8pp success rate) on the Lauf-19 URL set. | 2026-04-20 |
+| Hydration scraping ethics | Identifiable user-agent (`Independent-Wire-Bot/1.0 +https://independentwire.org`), 1 req/s per domain, robots.txt respected, no Cloudflare/CAPTCHA/paywall circumvention. Full-text used only as LLM context, never reproduced verbatim in published article. Equivalent moral weight to existing Perplexity reliance; ownership and transparency shifted to us. | 2026-04-20 |
+| Hydration Aggregator model | `google/gemini-3-flash-preview`. 100% structural compliance in Spike C vs flash-lite's 11/12 (Rule-1 disqualification). ~$0.015 per topic. | 2026-04-20 |
+| Hydration Aggregator fetch filter | Only records with T1 `status == "success"` are passed to the Aggregator. Partial/bot_blocked/error records excluded. Aggregator prompt was tuned on full-text inputs and partial stubs would degrade analysis quality. | 2026-04-20 |
+| Hydration Planner input: coverage_summary | Hydrated Research Planner receives a 5-field Python-computed coverage summary (`total_sources`, `languages_covered`, `countries_covered`, `stakeholder_types_present`, `coverage_gaps`) instead of the full pre-dossier. Agent gets only what it needs; Python does the aggregation. Applies Principles 1 and 2 at the prompt boundary. | 2026-04-20 |
+| Merge URL blocklist | Web-search results are filtered in Python against the set of pre-dossier URLs (with status=success) before entering the Assembler. Blocked URLs that failed T1 fetch (paywalls, Cloudflare) are NOT in the blocklist — web-search may still surface them via syndication or caching. | 2026-04-20 |
+| Merge source order | Pre-dossier sources first (rsrc-001..N, full-text based), web-search sources after (rsrc-N+1..M, snippet based). Writer can infer source quality from position. | 2026-04-20 |
+| Canonical actor shape: five fields | All actor objects across the Hydration pipeline carry {name, role, type, position, verbatim_quote}. verbatim_quote is populated from hydrated full-text via the Aggregator; it is null for web-search-derived actors (snippets cannot produce trustworthy verbatim quotes). Python normalizes the web-search side before merge. Researcher Assembler prompt remains unchanged (four-field output); normalization is a Python concern. | 2026-04-20 |
+| Contract discipline as project-wide rule | Output schemas from task briefs are complete specifications, not starting points. Unlisted fields are not added silently; useful telemetry is surfaced as a question. Established after T1 `fetch_started_at` drift and applied from T2 forward. | 2026-04-20 |
+| Principle 2 extended to Perspektiv-Sync | Perspektiv-Sync emits delta-only output (`stakeholder_updates[]`), not full map rewrite. Python merges deltas into a deep-copied original map. Field-absence vs null carries semantic weight: absence = do not touch, null = remove. Checks use `"field" in delta`, never `delta.get(...) is None`. | 2026-04-21 |
+| Writer-Sources contract | Writer emits only `{id, rsrc_id}` references. Python (`_merge_writer_sources`) merges full metadata (url, outlet, language, country, estimated_date, actors_quoted incl. verbatim_quote) from the Researcher dossier. QA+Fix receives merged full source objects; the Writer never handles pass-through source metadata. | 2026-04-21 |
+| Source-ID invariant strengthened | Final Topic Package guarantees: (a) sequential `src-NNN` starting at src-001 with no gaps; (b) every `[src-NNN]` in body/headline/subheadline/summary has a matching entry in `sources[]`; (c) every `sources[]` entry is cited at least once. Unreferenced sources are dropped (not preserved as orphans); an empty-result collapse falls back to the pre-fix state with a warning. | 2026-04-21 |
+| Perspectives source_ids use src-NNN | `stakeholders[*].source_ids` use `src-NNN` (matching the rest of the TP), not `rsrc-NNN`. Stakeholders whose only backing source dropped out of the final array are retained with empty `source_ids` — they remain stakeholders in the landscape even without a currently-cited article. | 2026-04-21 |
+| TP schema duplicate removal | Canonical locations: `bias_analysis.framing_divergences` and `bias_analysis.perspectives.missing_voices`. Previously-duplicated `transparency.framing_divergences` and top-level `gaps[]` are no longer populated. Renderer reads from canonical locations only. | 2026-04-21 |
+| Writer Rule 8: single JSON output | Writer explicitly forbidden from emitting revision attempts, chain-of-thought commentary, or second JSON blocks. Mitigation against parser fragility observed after the Writer-sources refactor (Writer occasionally emitted two JSON objects with "Wait, I need to fix…" interludes). | 2026-04-21 |
+| Editor selection_reason qualitative only | Editor does not emit numeric source counts, language counts, or specific outlet brand names in `selection_reason`. Numeric discipline lives in Python — counting is Python's job per Principle 1. Regional attribution ("French outlets", "Russian state media") remains permitted. | 2026-04-21 |
