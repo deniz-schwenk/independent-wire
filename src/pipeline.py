@@ -277,6 +277,380 @@ def _deduplicate_search_results(search_results: list[dict]) -> list[dict]:
     return deduped
 
 
+# ISO language code → English name. Used for the Python-rendered
+# meta-transparency sentence that replaces the Writer's [[COVERAGE_STATEMENT]]
+# placeholder. Unknown codes fall back to "[code]".
+LANGUAGE_NAMES: dict[str, str] = {
+    "en": "English", "de": "German", "fr": "French", "es": "Spanish",
+    "it": "Italian", "pt": "Portuguese", "nl": "Dutch", "sv": "Swedish",
+    "no": "Norwegian", "da": "Danish", "fi": "Finnish", "el": "Greek",
+    "tr": "Turkish", "ru": "Russian", "uk": "Ukrainian", "pl": "Polish",
+    "cs": "Czech", "hu": "Hungarian", "ro": "Romanian", "bg": "Bulgarian",
+    "sr": "Serbian", "hr": "Croatian", "ar": "Arabic", "fa": "Persian",
+    "he": "Hebrew", "ur": "Urdu", "hi": "Hindi", "bn": "Bengali",
+    "zh": "Chinese", "ja": "Japanese", "ko": "Korean", "vi": "Vietnamese",
+    "th": "Thai", "id": "Indonesian", "ms": "Malay", "sw": "Swahili",
+}
+
+# Canonical country-name lookup. RSS feeds and agent outputs mix short and
+# long forms ("USA" vs "United States"). All downstream deduplication and
+# missing-country detection runs on the normalised key so "US" and
+# "United States" aggregate into one bucket.
+COUNTRY_ALIASES: dict[str, str] = {
+    "us": "United States", "usa": "United States",
+    "u.s.": "United States", "u.s.a.": "United States",
+    "united states of america": "United States",
+    "uk": "United Kingdom", "u.k.": "United Kingdom",
+    "great britain": "United Kingdom", "britain": "United Kingdom",
+    "uae": "United Arab Emirates", "u.a.e.": "United Arab Emirates",
+    "prc": "China", "people's republic of china": "China",
+    "roc": "Taiwan", "rok": "South Korea",
+    "dprk": "North Korea",
+    "russia": "Russia", "russian federation": "Russia",
+    "drc": "Democratic Republic of the Congo",
+    "dr congo": "Democratic Republic of the Congo",
+    "czechia": "Czech Republic",
+}
+
+
+def _normalise_country(name: str | None) -> str:
+    """Normalise a country name to its canonical long form.
+
+    Returns an empty string for None / empty input. Unknown names are
+    returned stripped but otherwise unchanged so custom labels from feed
+    metadata survive. Tries multiple lookup keys to absorb common
+    punctuation variants ("U.S.", "US", "US.", "u.s").
+    """
+    if not name or not isinstance(name, str):
+        return ""
+    stripped = name.strip()
+    if not stripped:
+        return ""
+    lower = stripped.lower()
+    for candidate in (lower, lower.rstrip("."), lower.replace(".", "")):
+        if candidate in COUNTRY_ALIASES:
+            return COUNTRY_ALIASES[candidate]
+    return stripped
+
+
+def _language_name(code: str | None) -> str:
+    """ISO code → English name; unknown codes echo as '[code]'."""
+    if not code or not isinstance(code, str):
+        return "[unknown]"
+    key = code.strip().lower()
+    if not key:
+        return "[unknown]"
+    return LANGUAGE_NAMES.get(key, f"[{key}]")
+
+
+def _render_coverage_statement(sources: list[dict]) -> str:
+    """Generate the meta-transparency sentence from the final source array.
+
+    Shape: "This report draws on {N} sources in {M} languages:
+    {language_list}." Language list is English names in frequency order
+    (most sources first), comma-separated with "and" before the last.
+    """
+    n = len(sources)
+    counts: dict[str, int] = {}
+    for source in sources:
+        code = (source.get("language") or "").strip().lower()
+        if not code:
+            continue
+        counts[code] = counts.get(code, 0) + 1
+    # Frequency order (desc), alphabetical for ties.
+    ordered_codes = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+    names = [_language_name(code) for code, _ in ordered_codes]
+    m = len(names)
+    if m == 0:
+        lang_phrase = "an unspecified language"
+        return f"This report draws on {n} sources in {lang_phrase}."
+    if m == 1:
+        lang_list = names[0]
+    elif m == 2:
+        lang_list = f"{names[0]} and {names[1]}"
+    else:
+        lang_list = ", ".join(names[:-1]) + f", and {names[-1]}"
+    return f"This report draws on {n} sources in {m} languages: {lang_list}."
+
+
+def _substitute_coverage_statement(article: dict) -> None:
+    """Replace the Writer's ``[[COVERAGE_STATEMENT]]`` placeholder with a
+    Python-rendered sentence based on the final source array. Mutates
+    ``article['body']`` in place. Idempotent when the placeholder is absent.
+    """
+    body = article.get("body")
+    if not isinstance(body, str) or "[[COVERAGE_STATEMENT]]" not in body:
+        return
+    statement = _render_coverage_statement(article.get("sources", []))
+    article["body"] = body.replace("[[COVERAGE_STATEMENT]]", statement)
+
+
+_WRITER_SOURCE_METADATA_FIELDS = (
+    "url", "title", "outlet", "language", "country", "estimated_date",
+    "actors_quoted",
+)
+
+# Internal-only key carried on merged source objects to support the
+# Fix-3 rsrc→src conversion in stakeholder source_ids. Stripped before
+# TP serialization — never appears in the final Topic Package JSON.
+_INTERNAL_RSRC_ID_KEY = "rsrc_id"
+
+
+def _merge_writer_sources(
+    writer_refs: list, research_dossier: dict,
+) -> list[dict]:
+    """Build full source objects from Writer ``{id, rsrc_id}`` refs + dossier.
+
+    The Writer emits minimal source references (id, rsrc_id). Python
+    resolves each rsrc_id against the research dossier and produces the
+    full source object downstream code expects.
+
+    Behaviour:
+
+    * ``rsrc_id`` present and found in dossier → full metadata from the
+      dossier entry, carrying the Writer's ``id``.
+    * ``rsrc_id`` present but unknown → warn and skip (likely
+      hallucination).
+    * ``rsrc_id`` absent but the entry carries url/outlet/etc. → treat as
+      a Writer-originated source (e.g. added via web_search tool call)
+      and pass through as-is.
+    """
+    dossier_by_id: dict[str, dict] = {}
+    for src in research_dossier.get("sources", []) or []:
+        if not isinstance(src, dict):
+            continue
+        sid = src.get("id")
+        if isinstance(sid, str) and sid:
+            dossier_by_id[sid] = src
+
+    merged: list[dict] = []
+    for ref in writer_refs or []:
+        if not isinstance(ref, dict):
+            continue
+        src_id = ref.get("id")
+        rsrc_id = ref.get("rsrc_id")
+
+        if rsrc_id:
+            dossier_src = dossier_by_id.get(rsrc_id)
+            if not dossier_src:
+                logger.warning(
+                    "Writer references unknown rsrc_id=%s (src_id=%s); skipping",
+                    rsrc_id, src_id,
+                )
+                continue
+            merged_src: dict = {"id": src_id}
+            for field in _WRITER_SOURCE_METADATA_FIELDS:
+                if field in dossier_src:
+                    merged_src[field] = dossier_src[field]
+            # Internal-only: stash the originating rsrc-NNN so later
+            # stages can convert stakeholder source_ids from rsrc-NNN to
+            # the final src-NNN. Stripped before TP assembly.
+            merged_src[_INTERNAL_RSRC_ID_KEY] = rsrc_id
+            merged.append(merged_src)
+            continue
+
+        # No rsrc_id — fallback for Writer-originated sources (web_search).
+        if ref.get("url") or ref.get("outlet"):
+            merged.append(dict(ref))
+        else:
+            logger.warning(
+                "Writer source entry has no rsrc_id and no metadata "
+                "(id=%s); skipping",
+                src_id,
+            )
+    return merged
+
+
+_SRC_CITATION_RE = re.compile(r"\[src-(\d+)\]")
+
+_ARTICLE_TEXT_FIELDS = ("headline", "subheadline", "body", "summary")
+
+
+def _collect_cited_src_ids(article: dict) -> set[str]:
+    """Return every ``src-NNN`` id referenced across the article text."""
+    cited: set[str] = set()
+    for field in _ARTICLE_TEXT_FIELDS:
+        text = article.get(field) or ""
+        if not isinstance(text, str):
+            continue
+        for match in _SRC_CITATION_RE.finditer(text):
+            cited.add(f"src-{match.group(1).zfill(3)}")
+    return cited
+
+
+def _renumber_and_prune_sources(
+    article: dict, sources: list[dict], slug: str = "",
+) -> tuple[dict, list[dict], dict[str, str]]:
+    """Drop unreferenced sources and renumber the rest sequentially.
+
+    Pure function: deep-copies ``article`` and ``sources``, returns
+    ``(new_article, new_sources, rename_map)``. Callers replace the
+    originals only on success — a partial update that desyncs citations
+    from the array is worse than leaving the pre-fix state intact.
+
+    Behaviour:
+
+    * Sources that survive are renumbered ``src-001``, ``src-002``, …
+      in their current array order.
+    * Sources with zero citations anywhere in the article are dropped
+      (INFO log per drop).
+    * If the resulting array would be empty (no source is cited),
+      ``WARNING`` is logged and the inputs are returned unchanged with
+      an empty rename map — emptying the array masks upstream breakage.
+    * Citation rewriting is applied to headline, subheadline, body, and
+      summary. Rewriting uses a two-pass approach (collect matches,
+      then rebuild the string) so overlapping old/new numbers cannot
+      collide mid-rewrite.
+    """
+    import copy
+
+    if not isinstance(sources, list) or not sources:
+        return article, sources, {}
+
+    cited_ids = _collect_cited_src_ids(article)
+
+    surviving_old_ids: list[str] = []
+    surviving_sources: list[dict] = []
+    dropped_count = 0
+    for src in sources:
+        if not isinstance(src, dict):
+            continue
+        src_id = src.get("id")
+        if not isinstance(src_id, str) or not src_id:
+            continue
+        if src_id in cited_ids:
+            surviving_old_ids.append(src_id)
+            surviving_sources.append(src)
+        else:
+            dropped_count += 1
+            logger.info(
+                "Fix-1[%s]: dropping unreferenced source %s (%s)",
+                slug, src_id, src.get("outlet", "?"),
+            )
+
+    if not surviving_sources:
+        logger.warning(
+            "Fix-1[%s]: every source is unreferenced — keeping pre-fix "
+            "state rather than emptying the array",
+            slug,
+        )
+        return article, sources, {}
+
+    rename_map: dict[str, str] = {}
+    new_sources: list[dict] = []
+    for new_index, src in enumerate(surviving_sources, start=1):
+        new_id = f"src-{new_index:03d}"
+        old_id = surviving_old_ids[new_index - 1]
+        rename_map[old_id] = new_id
+        new_src = copy.deepcopy(src)
+        new_src["id"] = new_id
+        new_sources.append(new_src)
+
+    new_article = copy.deepcopy(article)
+    if rename_map:
+        def _rewrite(text: str) -> str:
+            def sub(match: re.Match) -> str:
+                old = f"src-{match.group(1).zfill(3)}"
+                return f"[{rename_map.get(old, old)}]"
+            return _SRC_CITATION_RE.sub(sub, text)
+
+        for field in _ARTICLE_TEXT_FIELDS:
+            value = new_article.get(field)
+            if isinstance(value, str) and value:
+                new_article[field] = _rewrite(value)
+
+    if dropped_count or any(old != new for old, new in rename_map.items()):
+        logger.info(
+            "Fix-1[%s]: dropped %d unreferenced source(s); "
+            "renumbered %d survivor(s)",
+            slug, dropped_count, len(new_sources),
+        )
+    return new_article, new_sources, rename_map
+
+
+def _convert_rsrc_to_src_in_perspectives(
+    perspective_analysis: dict,
+    final_sources: list[dict],
+    slug: str = "",
+) -> dict:
+    """Rewrite ``stakeholders[*].source_ids`` from ``rsrc-NNN`` to the
+    matching final ``src-NNN``.
+
+    Uses the internal ``rsrc_id`` stashed on each merged source by
+    :func:`_merge_writer_sources`. Unmapped entries (stakeholder
+    references a source that did not survive to the final array) are
+    dropped. Stakeholders whose ``source_ids`` become empty are kept —
+    they remain stakeholders in the landscape even without a
+    currently-cited article backing them.
+    """
+    import copy
+
+    if not perspective_analysis or not isinstance(perspective_analysis, dict):
+        return perspective_analysis
+
+    rsrc_to_src: dict[str, str] = {}
+    for src in final_sources or []:
+        if not isinstance(src, dict):
+            continue
+        rsrc = src.get(_INTERNAL_RSRC_ID_KEY)
+        final_id = src.get("id")
+        if isinstance(rsrc, str) and isinstance(final_id, str) and rsrc and final_id:
+            rsrc_to_src[rsrc] = final_id
+
+    if not rsrc_to_src:
+        return perspective_analysis
+
+    synced = copy.deepcopy(perspective_analysis)
+    for stakeholder in synced.get("stakeholders", []) or []:
+        if not isinstance(stakeholder, dict):
+            continue
+        source_ids = stakeholder.get("source_ids") or []
+        if not isinstance(source_ids, list):
+            continue
+        converted: list[str] = []
+        orphaned: list[str] = []
+        for sid in source_ids:
+            if not isinstance(sid, str):
+                continue
+            if sid in rsrc_to_src:
+                converted.append(rsrc_to_src[sid])
+            elif sid.startswith("rsrc-"):
+                orphaned.append(sid)
+            else:
+                converted.append(sid)  # already src-NNN or custom — pass through
+        stakeholder["source_ids"] = converted
+        if orphaned:
+            logger.info(
+                "Fix-3[%s]: stakeholder %s had %d orphaned rsrc-id(s) "
+                "(%s) with no match in final sources; dropping",
+                slug, stakeholder.get("id", "?"),
+                len(orphaned), ", ".join(orphaned),
+            )
+        if not converted and orphaned:
+            logger.info(
+                "Fix-3[%s]: stakeholder %s source_ids is now empty; "
+                "keeping stakeholder",
+                slug, stakeholder.get("id", "?"),
+            )
+    return synced
+
+
+def _strip_internal_fields_from_sources(sources: list[dict]) -> list[dict]:
+    """Drop the internal ``rsrc_id`` stash from each source object.
+
+    Called on the final sources array immediately before TP assembly so
+    the internal key never leaks into the published Topic Package.
+    Returns a new list with new dicts — never mutates the input.
+    """
+    cleaned: list[dict] = []
+    for src in sources or []:
+        if not isinstance(src, dict):
+            continue
+        clean = {k: v for k, v in src.items() if k != _INTERNAL_RSRC_ID_KEY}
+        cleaned.append(clean)
+    return cleaned
+
+
 def _build_bias_card(
     article: dict,
     perspective_analysis: dict,
@@ -286,24 +660,35 @@ def _build_bias_card(
     """Build the deterministic portion of the Bias Transparency Card.
 
     Pure data aggregation from existing pipeline outputs — no LLM calls.
+    Country names are normalised via :func:`_normalise_country` so short
+    forms (USA, UK) aggregate with their long forms.
     """
     writer_sources = article.get("sources", [])
     researcher_sources = research_dossier.get("sources", [])
     stakeholders = perspective_analysis.get("stakeholders", [])
 
-    # Source balance — count by language and country
+    # Source balance — count by language and normalised country
     by_language: dict[str, int] = {}
     by_country: dict[str, int] = {}
     for s in writer_sources:
-        lang = s.get("language", "unknown")
+        lang = s.get("language") or "unknown"
         by_language[lang] = by_language.get(lang, 0) + 1
-        country = s.get("country", "unknown")
+        country = _normalise_country(s.get("country")) or "unknown"
         by_country[country] = by_country.get(country, 0) + 1
 
-    # Geographic coverage — compare writer vs researcher sources
-    writer_countries = {s.get("country", "") for s in writer_sources}
-    researcher_countries = {s.get("country", "") for s in researcher_sources}
-    missing_countries = sorted(researcher_countries - writer_countries - {""})
+    # Geographic coverage — compare on normalised country sets; drop any
+    # empty / None values defensively.
+    writer_countries = {
+        _normalise_country(s.get("country")) for s in writer_sources
+    }
+    writer_countries.discard("")
+    researcher_countries = {
+        _normalise_country(s.get("country")) for s in researcher_sources
+    }
+    researcher_countries.discard("")
+    missing_countries = sorted(
+        c for c in (researcher_countries - writer_countries) if c
+    )
 
     return {
         "source_balance": {
@@ -312,7 +697,7 @@ def _build_bias_card(
             "by_country": by_country,
         },
         "geographic_coverage": {
-            "represented": sorted(writer_countries - {""}),
+            "represented": sorted(writer_countries),
             "missing_from_dossier": missing_countries,
         },
         "perspectives": {
@@ -974,10 +1359,6 @@ class Pipeline:
             try:
                 pkg = await self._produce_single(assignment, to_step=to_step)
                 packages.append(pkg)
-                slug = assignment.topic_slug or assignment.id
-                self._write_debug_output(
-                    f"05-writer-{slug}.json", pkg.to_dict()
-                )
             except Exception as e:
                 logger.exception(
                     "Failed to produce topic '%s': %s", assignment.id, e
@@ -1146,33 +1527,23 @@ class Pipeline:
                     "headline": assignment.title,
                     "body": result.content,
                 }
+            # Debug snapshot of the raw Writer output (minimal source refs,
+            # pre-merge). Downstream code reads this file via
+            # ``writer_data.get("article", writer_data)`` which falls back to
+            # the article dict when the file isn't a full TopicPackage.
+            self._write_debug_output(f"05-writer-{slug}.json", article)
 
         # Compute word_count in Python (never trust LLM counting)
         body_text = article.get("body", "")
         article["word_count"] = len(body_text.split())
 
-        # Fix meta-transparency source/language counts (Writer miscounts systematically)
-        body = article.get("body", "")
-        writer_sources = article.get("sources", [])
-        if body and writer_sources:
-            actual_count = len(writer_sources)
-            langs = {s.get("language", "") for s in writer_sources if s.get("language")}
-            actual_langs = len(langs)
-            meta_pattern = re.compile(
-                r"(This (?:report|article|analysis) draws on )\d+( sources in )\d+( languages?)"
-            )
-            new_body = meta_pattern.sub(
-                rf"\g<1>{actual_count}\g<2>{actual_langs}\3",
-                body,
-            )
-            if new_body != body:
-                article["body"] = new_body
-                logger.info(
-                    "Fixed meta-transparency: %d sources in %d languages for '%s'",
-                    actual_count,
-                    actual_langs,
-                    assignment.title,
-                )
+        # Resolve Writer source refs ({id, rsrc_id}) against the research
+        # dossier. After this step ``article["sources"]`` carries full
+        # metadata (url, outlet, language, country, estimated_date, ...)
+        # that downstream stages (QA+Fix, bias card, render) rely on.
+        article["sources"] = _merge_writer_sources(
+            article.get("sources", []) or [], research_dossier,
+        )
 
         if to_step == "writer":
             return TopicPackage(
@@ -1240,28 +1611,40 @@ class Pipeline:
         # Compute word_count in Python (never trust LLM counting)
         article["word_count"] = len(article.get("body", "").split())
 
-        # Fix meta-transparency after QA+Fix (may re-introduce wrong counts)
-        body = article.get("body", "")
-        writer_sources = article.get("sources", [])
-        if body and writer_sources:
-            actual_count = len(writer_sources)
-            langs = {s.get("language", "") for s in writer_sources if s.get("language")}
-            actual_langs = len(langs)
-            meta_pattern = re.compile(
-                r"(This (?:report|article|analysis) draws on )\d+( sources in )\d+( languages?)"
+        # Replace the Writer's [[COVERAGE_STATEMENT]] placeholder with a
+        # Python-rendered sentence. Runs once, after QA+Fix and any other
+        # Python post-processing that might add or remove sources — the
+        # final source array is authoritative at this point.
+        if article.get("body") and "[[COVERAGE_STATEMENT]]" in article["body"]:
+            _substitute_coverage_statement(article)
+            article["word_count"] = len(article.get("body", "").split())
+            logger.info(
+                "Coverage statement: rendered for '%s' (%d sources)",
+                assignment.title, len(article.get("sources", [])),
             )
-            new_body = meta_pattern.sub(
-                rf"\g<1>{actual_count}\g<2>{actual_langs}\3",
-                body,
+        elif article.get("body"):
+            logger.warning(
+                "Coverage statement: [[COVERAGE_STATEMENT]] missing in article "
+                "body for '%s' (Writer omitted it, or QA+Fix dropped it)",
+                assignment.title,
             )
-            if new_body != body:
-                article["body"] = new_body
-                logger.info(
-                    "Fixed meta-transparency: %d sources in %d languages for '%s'",
-                    actual_count,
-                    actual_langs,
-                    assignment.title,
-                )
+
+        # Fix 1 — Source-ID renumbering. Drops any sources never cited in
+        # the article and renames the survivors to a gapless src-001,
+        # src-002, … sequence. Rewrites citations atomically.
+        new_article, new_sources, _rename_map = _renumber_and_prune_sources(
+            article, article.get("sources", []) or [], slug=slug,
+        )
+        article = new_article
+        article["sources"] = new_sources
+        article["word_count"] = len(article.get("body", "").split())
+
+        # Fix 3 — stakeholder source_ids use rsrc-NNN; rewrite to the
+        # final src-NNN via the internal rsrc_id stash. Runs after Fix 1
+        # so the mapping reflects the post-renumber state.
+        perspective_analysis = _convert_rsrc_to_src_in_perspectives(
+            perspective_analysis, article.get("sources", []), slug=slug,
+        )
 
         # 7. Bias Transparency Card (hybrid: Python aggregation + LLM language analysis)
         bias_card = _build_bias_card(article, perspective_analysis, qa_analysis, research_dossier)
@@ -1322,7 +1705,17 @@ class Pipeline:
                 if est:
                     src["estimated_date"] = est
 
-        # Assemble TopicPackage
+        # Strip internal rsrc_id before TP assembly so it never leaks
+        # into the published Topic Package JSON.
+        article["sources"] = _strip_internal_fields_from_sources(
+            article.get("sources", [])
+        )
+
+        # Assemble TopicPackage. Fix 2 — the top-level ``gaps`` and
+        # ``transparency.framing_divergences`` duplicates of data that
+        # already lives under ``bias_analysis`` are not populated.
+        # ``gaps=[]`` is the empty-list equivalent of removal; the
+        # dataclass field is out of scope for this task.
         return TopicPackage(
             id=assignment.id,
             metadata={
@@ -1336,7 +1729,7 @@ class Pipeline:
             sources=article.get("sources", []),
             perspectives=perspective_analysis.get("stakeholders", []),
             divergences=qa_analysis.get("divergences", []),
-            gaps=perspective_analysis.get("missing_voices", []),
+            gaps=[],
             article=article,
             bias_analysis=bias_analysis,
             transparency={
@@ -1348,7 +1741,6 @@ class Pipeline:
                 "article_original": article_original if qa_analysis.get("corrections_applied") else None,
                 "qa_problems_found": qa_analysis.get("problems_found", []),
                 "qa_corrections_applied": qa_analysis.get("corrections_applied", []),
-                "framing_divergences": perspective_analysis.get("framing_divergences", []),
             },
             status="review",
         )
@@ -1752,7 +2144,6 @@ class Pipeline:
                         preloaded_perspectives=perspektiv_outputs.get(slug),
                     )
                     packages.append(pkg)
-                    self._write_debug_output(f"05-writer-{slug}.json", pkg.to_dict())
                 except Exception as e:
                     logger.exception("Failed to produce topic '%s': %s", assignment.id, e)
                     packages.append(TopicPackage(
