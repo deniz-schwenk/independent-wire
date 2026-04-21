@@ -756,6 +756,7 @@ class Pipeline:
             "topic": topic_slug,
             "tokens_used": result.tokens_used,
             "duration_seconds": result.duration_seconds,
+            "cost_usd": result.cost_usd,
             "model": result.model,
         })
 
@@ -2305,5 +2306,6 @@ class Pipeline:
                 "agents": self._agent_stats,
                 "total_tokens": sum(s["tokens_used"] for s in self._agent_stats),
                 "total_duration_seconds": sum(s["duration_seconds"] for s in self._agent_stats),
+                "total_cost_usd": sum(s.get("cost_usd") or 0.0 for s in self._agent_stats),
             }
             stats_path.write_text(json.dumps(stats, indent=2))

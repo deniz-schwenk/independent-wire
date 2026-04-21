@@ -14,6 +14,7 @@ import random
 import time
 from pathlib import Path
 
+import httpx
 from openai import AsyncOpenAI, APIStatusError
 
 from src.models import AgentResult
@@ -111,6 +112,7 @@ class Agent:
         self._client = AsyncOpenAI(
             api_key=resolved_key,
             base_url=self.base_url,
+            timeout=httpx.Timeout(connect=30.0, read=300.0, write=30.0, pool=30.0),
         )
 
         # Build tool lookup for fast access during tool-call loop
