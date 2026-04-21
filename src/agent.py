@@ -72,7 +72,7 @@ class Agent:
         tools: list[Tool] | None = None,
         memory_path: str | None = None,
         temperature: float = 0.3,
-        max_tokens: int = 65536,
+        max_tokens: int = 32000,
         provider: str = "openrouter",
         base_url: str | None = None,
         api_key: str | None = None,

@@ -309,7 +309,6 @@ class PipelineHydrated(Pipeline):
                 prompt_path=str(agents_dir / "perspektiv_sync" / "AGENTS.md"),
                 tools=[],
                 temperature=0.1,
-                max_tokens=16384,
                 provider="openrouter",
                 reasoning="none",
             )

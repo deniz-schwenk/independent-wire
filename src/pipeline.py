@@ -1187,11 +1187,6 @@ class Pipeline:
             "For each topic provide: title, relevance_score, summary, source_ids."
         )
 
-        # Curator output is a small JSON array (~2-5K tokens).
-        # Reduce max_tokens to fit within context window with large input.
-        saved_max_tokens = agent.max_tokens
-        agent.max_tokens = min(agent.max_tokens, 16384)
-
         try:
             result = await agent.run(
                 message, context={"findings": prepared}
@@ -1218,8 +1213,6 @@ class Pipeline:
         except Exception as e:
             logger.error("Curator failed: %s", e)
             return []
-        finally:
-            agent.max_tokens = saved_max_tokens
 
     def _scan_previous_coverage(self, days: int = 7) -> list[dict]:
         """Scan output directory for Topic Packages from the last N days.
