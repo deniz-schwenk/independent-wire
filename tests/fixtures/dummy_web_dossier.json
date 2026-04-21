@@ -1,0 +1,130 @@
+{
+  "sources": [
+    {
+      "id": "rsrc-001",
+      "url": "https://www.aljazeera.com/news/2026/4/19/iran-war-what-is-happening-on-day-51-of-the-us-iran-conflict?traffic_source=rss",
+      "title": "Iran war: What is happening on day 51 of the US-Iran conflict?",
+      "outlet": "Al Jazeera",
+      "language": "en",
+      "country": "Qatar",
+      "estimated_date": "2026-04-19",
+      "summary": "Overlaps with a hydrated Topic 001 URL; exercises the blocklist filter.",
+      "actors_quoted": []
+    },
+    {
+      "id": "rsrc-002",
+      "url": "https://www.ukrinform.net/rubric-ato/4114111-sbu-classifies-kyiv-mass-shooting-as-terrorist-attack.html",
+      "title": "SBU classifies Kyiv mass shooting as terrorist attack",
+      "outlet": "Ukrinform",
+      "language": "en",
+      "country": "Ukraine",
+      "estimated_date": "2026-04-18",
+      "summary": "Overlaps with a hydrated Topic 002 URL; exercises the blocklist filter.",
+      "actors_quoted": []
+    },
+    {
+      "id": "rsrc-003",
+      "url": "https://news.un.org/feed/view/en/story/2026/04/1167332",
+      "title": "UN News coverage of UNIFIL peacekeeper incident",
+      "outlet": "UN News",
+      "language": "en",
+      "country": "International",
+      "estimated_date": "2026-04-18",
+      "summary": "Overlaps with a hydrated Topic 003 URL; exercises the blocklist filter.",
+      "actors_quoted": []
+    },
+    {
+      "id": "rsrc-004",
+      "url": "https://www.reuters.com/world/middle-east/hormuz-shipping-disruption-economic-impact-2026-04-19/",
+      "title": "Hormuz shipping disruption: projected economic impact",
+      "outlet": "Reuters",
+      "language": "en",
+      "country": "United Kingdom",
+      "estimated_date": "2026-04-19",
+      "summary": "Fresh fixture URL covering the economic dimension of the Hormuz closure.",
+      "actors_quoted": [
+        {
+          "name": "International Energy Agency",
+          "role": "Intergovernmental energy-policy body",
+          "type": "international_org",
+          "position": "Warns that sustained Hormuz closure threatens global oil supply stability."
+        }
+      ]
+    },
+    {
+      "id": "rsrc-005",
+      "url": "https://apnews.com/article/ukraine-kyiv-shooting-hostages-aftermath-2026041901",
+      "title": "Kyiv shooting aftermath: witnesses recount hostage standoff",
+      "outlet": "Associated Press",
+      "language": "en",
+      "country": "United States",
+      "estimated_date": "2026-04-19",
+      "summary": "Fresh fixture URL with witness interviews from the Kyiv supermarket standoff.",
+      "actors_quoted": [
+        {
+          "name": "Olena Koval",
+          "role": "Witness",
+          "type": "affected_community",
+          "position": "Describes hiding in a back aisle during the standoff."
+        }
+      ]
+    },
+    {
+      "id": "rsrc-006",
+      "url": "https://www.france24.com/fr/proche-orient/20260419-unifil-reaction-gouvernement-francais",
+      "title": "UNIFIL : réaction du gouvernement français après la mort d'un soldat",
+      "outlet": "France 24",
+      "language": "fr",
+      "country": "France",
+      "estimated_date": "2026-04-19",
+      "summary": "Fresh fixture URL with the French government response to the UNIFIL casualty.",
+      "actors_quoted": [
+        {
+          "name": "Élysée Palace",
+          "role": "French presidential office",
+          "type": "government",
+          "position": "Demands accountability for the attack on French peacekeepers."
+        }
+      ]
+    },
+    {
+      "id": "rsrc-007",
+      "url": "https://www.haaretz.com/israel-news/2026-04-19/yellow-line-doctrine-analysis",
+      "title": "Analysis: the 'yellow line' doctrine and its regional implications",
+      "outlet": "Haaretz",
+      "language": "en",
+      "country": "Israel",
+      "estimated_date": "2026-04-19",
+      "summary": "Fresh fixture URL with Israeli-domestic analysis of the yellow-line framing.",
+      "actors_quoted": []
+    },
+    {
+      "id": "rsrc-008",
+      "url": "https://www.scmp.com/news/china/diplomacy/article/hormuz-beijing-response-2026-04-19",
+      "title": "Beijing calls for de-escalation as Hormuz closure bites Chinese shippers",
+      "outlet": "South China Morning Post",
+      "language": "en",
+      "country": "Hong Kong",
+      "estimated_date": "2026-04-19",
+      "summary": "Fresh fixture URL adding the Chinese-industry perspective on Hormuz.",
+      "actors_quoted": [
+        {
+          "name": "Ministry of Foreign Affairs of the People's Republic of China",
+          "role": "Chinese foreign ministry",
+          "type": "government",
+          "position": "Calls for all parties to prioritise de-escalation and resume dialogue."
+        }
+      ]
+    }
+  ],
+  "preliminary_divergences": [
+    "English-language coverage foregrounds the military and diplomatic angles, while French sources emphasise casualties among European peacekeepers.",
+    "Western outlets frame the Strait of Hormuz closure as coercive blackmail, while Iranian state media frames it as a legitimate defensive response.",
+    "Chinese and South Asian coverage centres the economic downstream impact (shipping costs, fuel prices) rather than the bilateral US-Iran dimension."
+  ],
+  "coverage_gaps": [
+    "No direct reporting from Gulf Arab states despite their exposure to a sustained Hormuz closure.",
+    "Limited perspective from the international shipping industry on insurance and route-diversion costs.",
+    "Absence of humanitarian reporting on civilian conditions inside Iran beyond aggregated casualty figures."
+  ]
+}
