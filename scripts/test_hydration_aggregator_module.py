@@ -33,8 +33,8 @@ from src.hydration_aggregator import (
 from src.agent import Agent
 from src.hydration_aggregator import (
     AGGREGATOR_MODEL,
-    AGGREGATOR_PROMPT_PATH,
     AGGREGATOR_TEMPERATURE,
+    PHASE1_PROMPT_PATH,
 )
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -158,7 +158,7 @@ async def run_all() -> int:
     agent = Agent(
         name="hydration_aggregator",
         model=AGGREGATOR_MODEL,
-        prompt_path=str(REPO_ROOT / AGGREGATOR_PROMPT_PATH),
+        prompt_path=str(REPO_ROOT / PHASE1_PROMPT_PATH),
         temperature=AGGREGATOR_TEMPERATURE,
     )
 

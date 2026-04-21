@@ -13,6 +13,18 @@ Only records with ``status == "success"`` from ``src.hydration`` participate
 in the Aggregator call and the prepared-dossier shape. Partial/bot-blocked/
 error records are filtered at the input boundary.
 
+**Two-phase chunked execution.** ``run_aggregator`` splits the work:
+
+    Phase 1 — per-chunk article analysis. Chunks of 5–10 articles run in
+    parallel (asyncio.gather). Each chunk call returns only
+    ``article_analyses[]``. Each chunk has up to 2 intelligent retries that
+    re-request only the missing article indices. Fresh chunk failures
+    (structural, or still missing after 2 retries) raise
+    ``AggregatorValidationError``.
+
+    Phase 2 — single cross-corpus reducer over the merged analyses.
+    Produces ``preliminary_divergences[]`` + ``coverage_gaps[]``. No retry.
+
 **Canonical actor shape across the Hydration pipeline.** Actor objects carry
 exactly five fields, in this order:
 
@@ -29,7 +41,9 @@ uniformly.
 
 from __future__ import annotations
 
+import asyncio
 import logging
+import math
 from collections import Counter
 from typing import Any
 
@@ -39,10 +53,11 @@ logger = logging.getLogger(__name__)
 
 
 AGGREGATOR_MODEL = "google/gemini-3-flash-preview"
-AGGREGATOR_PROMPT_PATH = "agents/hydration_aggregator/AGENTS.md"
+PHASE1_PROMPT_PATH = "agents/hydration_aggregator/PHASE1.md"
+PHASE2_PROMPT_PATH = "agents/hydration_aggregator/PHASE2.md"
 AGGREGATOR_TEMPERATURE = 0.3
 
-# Rule-6 enum from agents/hydration_aggregator/AGENTS.md.
+# Rule-6 enum from PHASE1.md.
 ACTOR_TYPE_ENUM: frozenset[str] = frozenset({
     "government",
     "legislature",
@@ -56,11 +71,18 @@ ACTOR_TYPE_ENUM: frozenset[str] = frozenset({
     "affected_community",
 })
 
-_AGGREGATOR_USER_MESSAGE = (
-    "Analyze the hydrated articles in the provided context per the STEPS and "
-    "RULES in your system prompt. Return a single JSON object with "
-    "article_analyses, preliminary_divergences, and coverage_gaps."
+_PHASE1_USER_MESSAGE = (
+    "Analyze the articles in the provided context per the STEPS and RULES in "
+    "your system prompt. Return a single JSON object with one field: "
+    "article_analyses."
 )
+_PHASE2_USER_MESSAGE = (
+    "Synthesize cross-article observations from the provided article_analyses "
+    "and article_metadata. Return a single JSON object with "
+    "preliminary_divergences and coverage_gaps."
+)
+
+_PHASE1_MAX_RETRIES = 2
 
 
 class AggregatorValidationError(ValueError):
@@ -75,7 +97,7 @@ async def run_aggregator(
     *,
     agent: Agent | None = None,
 ) -> dict[str, Any]:
-    """Call the Hydration Aggregator LLM on the successful fetch records.
+    """Call the Hydration Aggregator (two-phase chunked) on the successful fetch records.
 
     Args:
         assignment: The Editor's topic assignment dict. The ``title`` and
@@ -83,23 +105,24 @@ async def run_aggregator(
             are ignored.
         hydration_results: The full T1 output for one topic. Entries with
             ``status != "success"`` are filtered out before calling the LLM
-            — the Aggregator prompt was tuned on full-text inputs and partial
-            stubs would degrade quality.
-        agent: Optional injected Agent instance, used for testing or to avoid
-            re-instantiating on repeated calls. When ``None`` a fresh Agent
-            is constructed with the default model and prompt path.
+            — the Aggregator prompts are tuned on full-text inputs and
+            partial stubs would degrade quality.
+        agent: Optional template Agent. When provided, its model /
+            temperature / provider / reasoning config is used for both
+            phases, but the prompt_path is swapped per phase. When ``None``
+            a default Gemini 3 Flash agent is constructed.
 
     Returns:
         A dict with exactly three keys: ``article_analyses`` (list of
         per-article dicts with ``article_index``, ``summary``, and
         ``actors_quoted``), ``preliminary_divergences`` (list of strings),
-        ``coverage_gaps`` (list of strings). Matches the Aggregator prompt's
-        output schema.
+        ``coverage_gaps`` (list of strings). Matches the previous single-call
+        schema so downstream code is unchanged.
 
     Raises:
-        AggregatorValidationError: The LLM response could not be parsed as
-            JSON, omitted an input article's analysis (Rule 1), or included
-            an actor with ``type`` outside the ten-value enum (Rule 6).
+        AggregatorValidationError: A Phase 1 chunk could not be completed
+            after retries, Phase 2 returned unparseable JSON, or actor type
+            enum was violated.
     """
     successful = [r for r in hydration_results if r.get("status") == "success"]
     if not successful:
@@ -114,18 +137,135 @@ async def run_aggregator(
             "coverage_gaps": [],
         }
 
-    articles = [
-        {
-            "url": r.get("url"),
-            "title": r.get("title"),
-            "outlet": r.get("outlet"),
-            "language": r.get("language"),
-            "country": r.get("country"),
-            "extracted_text": r.get("extracted_text"),
-            "estimated_date": None,
-        }
-        for r in successful
-    ]
+    articles = [_prepare_article(r) for r in successful]
+    chunks = _distribute_chunks(articles)
+
+    for i, chunk in enumerate(chunks):
+        logger.info(
+            "Phase 1 chunk %d/%d: %d articles",
+            i + 1, len(chunks), len(chunk),
+        )
+
+    phase1_results = await asyncio.gather(*[
+        _run_phase1_chunk(assignment, chunk, chunk_idx=i + 1, agent=agent)
+        for i, chunk in enumerate(chunks)
+    ])
+    all_analyses = _merge_phase1_results(phase1_results, chunks)
+
+    metadata = _build_article_metadata(successful)
+    phase2 = await _run_phase2_reducer(
+        assignment, all_analyses, metadata, agent=agent,
+    )
+
+    return {
+        "article_analyses": all_analyses,
+        "preliminary_divergences": phase2["preliminary_divergences"],
+        "coverage_gaps": phase2["coverage_gaps"],
+    }
+
+
+# ---------- Phase 1 internals ----------
+
+def _prepare_article(record: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "url": record.get("url"),
+        "title": record.get("title"),
+        "outlet": record.get("outlet"),
+        "language": record.get("language"),
+        "country": record.get("country"),
+        "extracted_text": record.get("extracted_text"),
+        "estimated_date": None,
+    }
+
+
+def _distribute_chunks(articles: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
+    """Split articles into chunks of 5–10 items (1 chunk of N when N<5).
+
+    Formula: ``num_chunks = max(1, ceil(N / 10))``. Remainder (``extras``)
+    placed on the trailing chunks so chunks grow monotonically: e.g. N=11
+    → [5, 6]; N=25 → [8, 8, 9].
+    """
+    n = len(articles)
+    if n == 0:
+        return []
+    num_chunks = max(1, math.ceil(n / 10))
+    base_size = n // num_chunks
+    extras = n % num_chunks
+    chunks: list[list[dict[str, Any]]] = []
+    start = 0
+    for i in range(num_chunks):
+        size = base_size + (1 if i >= num_chunks - extras else 0)
+        chunks.append(articles[start:start + size])
+        start += size
+    return chunks
+
+
+async def _run_phase1_chunk(
+    assignment: dict[str, Any],
+    chunk_articles: list[dict[str, Any]],
+    *,
+    chunk_idx: int,
+    agent: Agent | None = None,
+) -> list[dict[str, Any]]:
+    """Run one Phase-1 call with up to two intelligent-retry follow-ups.
+
+    Retries re-request only the missing article indices (re-indexed from 0
+    in the retry call). Returns per-chunk analyses sorted by chunk-local
+    article_index (0..len(chunk_articles)-1).
+    """
+    analyses: list[dict[str, Any]] = []
+    remaining_articles = list(chunk_articles)
+    remaining_original_positions = list(range(len(chunk_articles)))
+
+    for attempt in range(_PHASE1_MAX_RETRIES + 1):
+        output = await _call_phase1(assignment, remaining_articles, agent=agent)
+        returned, missing_local = _validate_phase1_output(
+            output, expected_count=len(remaining_articles),
+        )
+
+        for a in returned:
+            local_idx = a["article_index"]
+            chunk_local_idx = remaining_original_positions[local_idx]
+            a["article_index"] = chunk_local_idx
+            analyses.append(a)
+
+        if not missing_local:
+            break
+
+        if attempt < _PHASE1_MAX_RETRIES:
+            missing_global = sorted(
+                remaining_original_positions[i] for i in missing_local
+            )
+            logger.warning(
+                "Phase 1 chunk %d retry %d: missing chunk-local indices %s",
+                chunk_idx, attempt + 1, missing_global,
+            )
+            missing_sorted = sorted(missing_local)
+            remaining_articles = [remaining_articles[i] for i in missing_sorted]
+            remaining_original_positions = [
+                remaining_original_positions[i] for i in missing_sorted
+            ]
+
+    if len(analyses) != len(chunk_articles):
+        got = sorted(a["article_index"] for a in analyses)
+        missing = sorted(set(range(len(chunk_articles))) - set(got))
+        raise AggregatorValidationError(
+            f"Rule 1 violation: chunk {chunk_idx} of {len(chunk_articles)} "
+            f"articles got only {len(analyses)} analyses after "
+            f"{_PHASE1_MAX_RETRIES} retries; still missing {missing}"
+        )
+
+    analyses.sort(key=lambda a: a["article_index"])
+    return analyses
+
+
+async def _call_phase1(
+    assignment: dict[str, Any],
+    articles: list[dict[str, Any]],
+    *,
+    agent: Agent | None = None,
+) -> dict[str, Any]:
+    phase1_agent = _make_phase_agent(agent, PHASE1_PROMPT_PATH)
     payload = {
         "assignment": {
             "title": assignment.get("title"),
@@ -133,66 +273,45 @@ async def run_aggregator(
         },
         "articles": articles,
     }
-
-    if agent is None:
-        agent = Agent(
-            name="hydration_aggregator",
-            model=AGGREGATOR_MODEL,
-            prompt_path=AGGREGATOR_PROMPT_PATH,
-            temperature=AGGREGATOR_TEMPERATURE,
-        )
-
-    result = await agent.run(
-        _AGGREGATOR_USER_MESSAGE,
+    result = await phase1_agent.run(
+        _PHASE1_USER_MESSAGE,
         context=payload,
         output_schema={"type": "object"},
     )
-
     structured = result.structured
     if not isinstance(structured, dict):
         raise AggregatorValidationError(
-            f"Aggregator returned no parseable JSON object for assignment "
+            f"Phase 1 chunk returned no parseable JSON object for assignment "
             f"{assignment.get('title')!r}"
         )
-
-    _validate_aggregator_output(structured, expected_count=len(articles))
-
-    return {
-        "article_analyses": structured["article_analyses"],
-        "preliminary_divergences": list(
-            structured.get("preliminary_divergences") or []
-        ),
-        "coverage_gaps": list(structured.get("coverage_gaps") or []),
-    }
+    return structured
 
 
-def _validate_aggregator_output(
+def _validate_phase1_output(
     output: dict[str, Any],
     *,
     expected_count: int,
-) -> None:
-    analyses = output.get("article_analyses")
-    if not isinstance(analyses, list):
+) -> tuple[list[dict[str, Any]], set[int]]:
+    """Extract valid analyses and report missing chunk-local indices.
+
+    Returns ``(analyses, missing_indices)``. Rule 6 (actor type enum) still
+    raises — it is a structural content error that retry cannot fix.
+    """
+    analyses_raw = output.get("article_analyses")
+    if not isinstance(analyses_raw, list):
         raise AggregatorValidationError(
             "article_analyses missing or not a list"
         )
-    if len(analyses) != expected_count:
-        raise AggregatorValidationError(
-            f"Rule 1 violation: expected {expected_count} article_analyses, "
-            f"got {len(analyses)}"
-        )
-    seen_indices: set[int] = set()
-    for entry in analyses:
+    valid: list[dict[str, Any]] = []
+    seen: set[int] = set()
+    for entry in analyses_raw:
         if not isinstance(entry, dict):
-            raise AggregatorValidationError(
-                f"article_analyses entry is not an object: {entry!r}"
-            )
+            continue
         idx = entry.get("article_index")
-        if not isinstance(idx, int):
-            raise AggregatorValidationError(
-                f"article_analyses entry missing integer article_index: {entry!r}"
-            )
-        seen_indices.add(idx)
+        if not isinstance(idx, int) or not (0 <= idx < expected_count):
+            continue
+        if idx in seen:
+            continue
         for actor in entry.get("actors_quoted") or []:
             if not isinstance(actor, dict):
                 continue
@@ -202,12 +321,112 @@ def _validate_aggregator_output(
                     f"Rule 6 violation: invalid actor type {actor_type!r} "
                     f"(article_index={idx}, actor={actor.get('name')!r})"
                 )
-    if seen_indices != set(range(expected_count)):
-        missing = sorted(set(range(expected_count)) - seen_indices)
+        seen.add(idx)
+        valid.append(entry)
+    missing = set(range(expected_count)) - seen
+    return valid, missing
+
+
+def _merge_phase1_results(
+    phase1_results: list[list[dict[str, Any]]],
+    chunks: list[list[dict[str, Any]]],
+) -> list[dict[str, Any]]:
+    """Flatten chunk outputs to a single globally-indexed analyses array.
+
+    Each chunk's per-article ``article_index`` is in [0..chunk_size-1]; the
+    merged output rewrites to [0..N-1] across the full input corpus,
+    preserving chunk order as provided by ``_distribute_chunks``.
+    """
+    merged: list[dict[str, Any]] = []
+    global_offset = 0
+    for chunk_analyses, chunk_articles in zip(phase1_results, chunks):
+        for a in chunk_analyses:
+            rewritten = dict(a)
+            rewritten["article_index"] = a["article_index"] + global_offset
+            merged.append(rewritten)
+        global_offset += len(chunk_articles)
+    merged.sort(key=lambda a: a["article_index"])
+    return merged
+
+
+# ---------- Phase 2 internals ----------
+
+def _build_article_metadata(
+    successful: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    return [
+        {
+            "article_index": i,
+            "language": r.get("language"),
+            "country": r.get("country"),
+            "outlet": r.get("outlet"),
+        }
+        for i, r in enumerate(successful)
+    ]
+
+
+async def _run_phase2_reducer(
+    assignment: dict[str, Any],
+    all_analyses: list[dict[str, Any]],
+    article_metadata: list[dict[str, Any]],
+    *,
+    agent: Agent | None = None,
+) -> dict[str, Any]:
+    if not all_analyses:
+        return {"preliminary_divergences": [], "coverage_gaps": []}
+    phase2_agent = _make_phase_agent(agent, PHASE2_PROMPT_PATH)
+    payload = {
+        "assignment": {
+            "title": assignment.get("title"),
+            "selection_reason": assignment.get("selection_reason"),
+        },
+        "article_analyses": all_analyses,
+        "article_metadata": article_metadata,
+    }
+    logger.info("Phase 2 reducer: %d analyses input", len(all_analyses))
+    result = await phase2_agent.run(
+        _PHASE2_USER_MESSAGE,
+        context=payload,
+        output_schema={"type": "object"},
+    )
+    structured = result.structured
+    if not isinstance(structured, dict):
         raise AggregatorValidationError(
-            f"Rule 1 violation: article_index values do not cover "
-            f"[0..{expected_count - 1}]; missing {missing}"
+            f"Phase 2 reducer returned no parseable JSON object for assignment "
+            f"{assignment.get('title')!r}"
         )
+    return {
+        "preliminary_divergences": list(
+            structured.get("preliminary_divergences") or []
+        ),
+        "coverage_gaps": list(structured.get("coverage_gaps") or []),
+    }
+
+
+# ---------- Agent-template helper ----------
+
+def _make_phase_agent(template: Agent | None, prompt_path: str) -> Agent:
+    """Build a per-phase Agent. If a template is supplied, reuse its model
+    and runtime configuration but swap the prompt path."""
+    if template is None:
+        return Agent(
+            name="hydration_aggregator",
+            model=AGGREGATOR_MODEL,
+            prompt_path=prompt_path,
+            temperature=AGGREGATOR_TEMPERATURE,
+        )
+    return Agent(
+        name=template.name,
+        model=template.model,
+        prompt_path=prompt_path,
+        tools=list(template.tools),
+        memory_path=template.memory_path,
+        temperature=template.temperature,
+        max_tokens=template.max_tokens,
+        provider=template.provider,
+        reasoning=template.reasoning,
+        extra_body_override=dict(template._extra_body_override),
+    )
 
 
 # ---------- Function 2 — Build prepared dossier ----------
