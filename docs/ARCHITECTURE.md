@@ -238,7 +238,7 @@ dependencies = [
 ]
 ```
 
-No numpy. No pandas. No langchain. No pytorch. Six dependencies total, all single-purpose. The last two (`trafilatura`, `aiohttp`) serve the Hydration pipeline — see Etappe 2 below. They are not used by the Production pipeline.
+No numpy. No pandas. No langchain. No pytorch. Six dependencies total, all single-purpose. `trafilatura` and `aiohttp` serve the Hydration pipeline (full-text extraction + parser-tolerant async HTTP). Production pipeline uses only the first four.
 
 ---
 
@@ -256,7 +256,7 @@ No numpy. No pandas. No langchain. No pytorch. Six dependencies total, all singl
 
 ## Current Model Assignments (April 2026)
 
-All assignments validated through 90+ eval calls across 14 models. Three production models, reasoning=none everywhere.
+All assignments validated through 90+ eval calls across 14 models, plus the Session-12 Phase-2 blind eval over 5 additional variants. Reasoning=none everywhere. Synthesis agents all run at temperature 0.1; extraction agents at 0.2-0.3.
 
 | Agent | Model | Provider | Role |
 |-------|-------|----------|------|
@@ -268,12 +268,18 @@ All assignments validated through 90+ eval calls across 14 models. Three product
 | Writer | anthropic/claude-opus-4.6 | OpenRouter | Write article with web_search tool access |
 | QA+Fix | anthropic/claude-sonnet-4.6 | OpenRouter | Find errors, apply corrections, return corrected article |
 | Bias Language | anthropic/claude-opus-4.6 | OpenRouter | Analyze language bias in finished article |
+| Hydration Aggregator Phase 1 | google/gemini-3-flash-preview | OpenRouter | Per-chunk article extraction (parallel, chunked). Returns `article_analyses[]` only. |
+| Hydration Aggregator Phase 2 | anthropic/claude-opus-4.6 | OpenRouter | Cross-corpus reducer (single call, temp 0.1). Returns `preliminary_divergences[]` + `coverage_gaps[]`. |
 
-## Hydration Pipeline (Etappe 2 — Decided, Not Yet Integrated)
+**Migration pending:** All `anthropic/claude-opus-4.6` agents above are staged for simultaneous migration to `anthropic/claude-opus-4.7` as a single workstream (WP-OPUS-4.7-MIGRATION). Opus 4.7 removes `temperature`, `top_p`, `top_k` as supported parameters (returns 400 on any non-default value) and replaces discrete reasoning levels with `output_config.effort` (low/medium/high/xhigh/max, always active). This requires `src/agent.py` refactor plus per-agent effort-level evaluation before cutover — not a drop-in swap.
+
+## Hydration Pipeline (Etappe 2 — Integrated, Production-Ready)
 
 The Production pipeline described above treats the Curator's clustered RSS findings as a ranking signal only: after the Editor selects the top 3 topics, the Researcher begins from zero, querying the web independently via search snippets. The RSS-cluster content — 15-25 articles per topic across 5-8 languages — is discarded. The Writer never sees the actual RSS source texts, only Web-Search snippets.
 
-**Etappe 2 adds a parallel pipeline that uses the cluster content.** After the Editor and before the Researcher, a new step fetches the cluster URLs directly via HTTP, extracts article full-text, and passes it through an Aggregator LLM that produces a pre-dossier in the same shape as the Researcher Assembler output. The Researcher Assembler then extends this pre-dossier with web-search results covering gaps that the cluster did not. Python merges both dossiers by reindexing `rsrc-NNN` source IDs.
+**Etappe 2 adds a parallel pipeline that uses the cluster content.** After the Editor and before the Researcher, a new step fetches the cluster URLs directly via HTTP, extracts article full-text, and passes it through a two-phase chunked Aggregator LLM pipeline that produces a pre-dossier in the same shape as the Researcher Assembler output. The Researcher Assembler then extends this pre-dossier with web-search results covering gaps that the cluster did not. Python merges both dossiers by reindexing `rsrc-NNN` source IDs.
+
+The Hydrated pipeline (`src/pipeline_hydrated.py`) is feature-complete as of Session 11 and operates in parallel to production. Both pipelines share Curator, Editor, Perspektiv, Writer, QA+Fix, and Bias Language. Only the research step differs. T4 compare orchestrator (`scripts/compare_pipelines.py`, Session 12) runs both on shared assignments and produces side-by-side metric reports for qualitative review.
 
 ### Why it was decided
 
@@ -298,6 +304,28 @@ The Hydration pipeline fetches article full-text from public RSS-listed URLs. Th
 7. **Public documentation** in the repo README: the list of outlets regularly fetched, the user-agent string, purpose, and the Remove-My-Outlet contact.
 
 Under this discipline, Hydration is indistinguishable in moral weight from the Production pipeline's existing reliance on Perplexity (which itself scrapes and caches outlet content). The difference is ownership: we take the responsibility and the transparency burden directly rather than pay a third party to do it with less visibility.
+
+### Aggregator Chunking Architecture (Session 12)
+
+The original Aggregator was a single monolithic call: all N successfully-fetched articles entered one LLM prompt, and the model produced both per-article analyses and cross-corpus divergences/gaps in one response. This worked on small inputs (≤15 articles) but failed systematically on larger inputs: Gemini 3 Flash dropped exactly one article's analysis when N ≥ 17, triggering a Rule 1 validation crash in `_validate_aggregator_output`.
+
+The diagnosis was not that Gemini 3 Flash is unsuitable — it is excellent at per-article extraction — but that attention load on the extraction task grew with N faster than attention budget. The architectural response was to split the Aggregator into two phases and chunk the first phase:
+
+**Phase 1 — Per-article extraction (parallel, chunked):**
+- Chunk sizing: `ceil(N / 10)` chunks, distributed evenly so every chunk has between 5 and 10 articles.
+- Chunks fire in parallel via `asyncio.gather`. Each chunk's LLM call runs `agents/hydration_aggregator/PHASE1.md` and returns `article_analyses[]` for only its chunk's articles.
+- Intelligent retry per chunk, max 2 attempts. If the response is missing some `article_index` values, the retry sends only the missing articles back as a smaller input. This both reduces the attention load on the retry and eliminates re-work for already-successful extractions in the same chunk.
+- Hard crash after 2 retries of a chunk. Silent data loss is worse than pipeline failure.
+
+**Phase 2 — Cross-corpus reducer (single call):**
+- After all Phase 1 chunks complete, Python merges `article_analyses[]` into a flat sorted list by `article_index`.
+- A single LLM call runs `agents/hydration_aggregator/PHASE2.md` with the merged analyses plus per-article metadata (language, country, outlet). This produces `preliminary_divergences[]` and `coverage_gaps[]` in one shot.
+- Cross-linguistic and cross-regional observations require a global view of the corpus, which Phase 1's chunked extraction cannot produce. The Phase 2 input is compact (summaries, not full-text), so attention load is low regardless of N.
+- Phase 2 model is selected for synthesis quality, independent of the extraction model. Phase 1 uses Gemini 3 Flash (excellent structured extraction, cheap); Phase 2 uses Opus 4.6 @ temp 0.1 reasoning=none (selected after 5-variant blind eval — see ROADMAP.md, section H2.2).
+
+**Counting is deterministic in Python, never delegated to LLM.** Prompt engineer correction during PHASE1.md review: the prompt does not ask the LLM to verify its output length, count its array entries, or enforce an `expected_count`. The validation happens in `src/hydration_aggregator.py` after each response; missing indices trigger retry. This generalizes Principle 1 ("deterministic before LLM") into prompt-design discipline — the LLM should never be asked to perform a task Python can perform deterministically, even as a self-check.
+
+The chunking architecture scales to arbitrary N without code changes. Lauf evidence: 32-article topic chunks cleanly into [8,8,8,8], 15-article into [7,8], 5-article into [5]; all observed runs since integration have completed Phase 1 with zero retries.
 
 ### Pipeline shape
 
@@ -324,10 +352,14 @@ The downstream agents (Perspektiv, Writer, QA+Fix, Bias Language) see a richer d
 ### Files introduced by Etappe 2
 
 - `src/pipeline_hydrated.py` — copy of `pipeline.py` with Feed-Hydration and Aggregator steps inserted. Independent file; no production-code modification.
-- `agents/hydration_aggregator/AGENTS.md` — the Aggregator prompt (written, stored, pending integration).
+- `src/hydration_aggregator.py` — chunked two-phase Aggregator implementation. Module-level constants at top: `AGGREGATOR_MODEL` (Phase 1), `PHASE2_MODEL`, `PHASE2_PROMPT_PATH`, `PHASE2_TEMPERATURE`.
+- `agents/hydration_aggregator/PHASE1.md` — per-article extraction prompt. Each LLM call processes 5-10 articles and returns `article_analyses[]` only.
+- `agents/hydration_aggregator/PHASE2.md` — cross-corpus reducer prompt. Single LLM call over all merged analyses produces `preliminary_divergences[]` + `coverage_gaps[]`.
+- `agents/hydration_aggregator/AGENTS.md` — deprecated monolithic prompt. Retained as revert target only; not invoked.
 - `agents/researcher_hydrated/PLAN.md` — a modified planner prompt that uses the pre-dossier as context. The Assembler prompt is unchanged (still processes web-search results only; pre-dossier merging happens in Python after assembly).
+- `scripts/compare_pipelines.py` — T4 A/B orchestrator. Shared Curator+Editor run once; Production and Hydrated pipelines both run in parallel on identical assignments; deterministic metric extraction + markdown report.
 
-The existing `src/pipeline.py`, `agents/researcher/PLAN.md`, and `agents/researcher/ASSEMBLE.md` are not modified. Production runs continue to use the unchanged flow. The Hydration pipeline is invoked via a separate test script (`scripts/test_hydration_pipeline.py`) that writes to `output/{date}/test_hydration/`. A/B comparison against the same day's production run is the validation path before any promotion to production.
+The existing `src/pipeline.py`, `agents/researcher/PLAN.md`, and `agents/researcher/ASSEMBLE.md` are not modified. Production runs continue to use the unchanged flow. The Hydration pipeline is invoked via a separate test script (`scripts/test_hydration_pipeline.py`) that writes to `output/{date}/test_hydration/`, or via `scripts/compare_pipelines.py` for side-by-side evaluation.
 
 ## File Structure
 
@@ -335,7 +367,9 @@ The existing `src/pipeline.py`, `agents/researcher/PLAN.md`, and `agents/researc
 independent-wire/
 ├── src/
 │   ├── agent.py              # Agent class + AgentResult
-│   ├── pipeline.py           # Pipeline class (sequential orchestration)
+│   ├── pipeline.py           # Production Pipeline class (sequential orchestration)
+│   ├── pipeline_hydrated.py  # Hydrated Pipeline class (Etappe 2, with feed hydration)
+│   ├── hydration_aggregator.py # Chunked two-phase Aggregator (Phase 1 parallel + Phase 2 reducer)
 │   ├── models.py             # TopicPackage dataclass, AgentResult
 │   ├── config.py             # Configuration loader
 │   └── tools/
@@ -343,14 +377,19 @@ independent-wire/
 │       ├── web_search.py     # web_search tool (Perplexity, Brave, DuckDuckGo)
 │       └── file_ops.py       # read_file, write_file tools
 ├── agents/                   # Agent prompts (public, in repo)
-│   ├── curator/AGENTS.md, CLUSTER.md, SCORE.md
+│   ├── curator/AGENTS.md
 │   ├── editor/AGENTS.md
 │   ├── researcher/PLAN.md, ASSEMBLE.md
+│   ├── researcher_hydrated/PLAN.md            # Etappe 2 planner variant
 │   ├── perspektiv/AGENTS.md
+│   ├── perspektiv_sync/AGENTS.md              # Delta-sync variant (Etappe 2)
 │   ├── writer/AGENTS.md
 │   ├── qa_analyze/AGENTS.md
 │   ├── bias_language/AGENTS.md
-│   └── hydration_aggregator/AGENTS.md   # Etappe 2 (prepared, not yet integrated)
+│   └── hydration_aggregator/
+│       ├── PHASE1.md         # Per-article extraction (active)
+│       ├── PHASE2.md         # Cross-corpus reducer (active)
+│       └── AGENTS.md         # Deprecated monolithic prompt (retained as revert target)
 ├── config/
 │   ├── style-guide.md
 │   ├── sources.json          # 72 RSS feeds, v0.3

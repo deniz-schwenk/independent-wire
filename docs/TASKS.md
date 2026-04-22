@@ -43,6 +43,11 @@
 | WP-WRITER-SOURCES | ✅ | Writer emits minimal source references `{id, rsrc_id}`. `_merge_writer_sources` in `src/pipeline.py` resolves each `rsrc_id` against the Researcher dossier and produces the full source object (url, outlet, language, country, estimated_date, actors_quoted incl. verbatim_quote). QA+Fix receives the merged full objects; Writer debug file preserves the minimal refs. |
 | WP-PERSPEKTIV-SYNC | ✅ | New Perspektiv-Sync agent runs between QA+Fix and coverage-statement substitution in the hydrated pipeline. V3 prompt emits delta-only output `{stakeholder_updates[]}`; `merge_perspektiv_deltas` in `src/pipeline_hydrated.py` deep-copies the original map and applies deltas via field-presence semantics (null removes, absence leaves untouched). Smoke script `scripts/test_perspektiv_sync.py` reruns against Lauf-19 cached inputs. |
 | WP-PIPELINE-HYGIENE | ✅ | Three retroactive Principle-1 fixes in `src/pipeline.py` (mirrored into the hydrated override): Fix 1 — sequential `src-NNN` renumbering with unreferenced-source pruning and atomic citation rewrite; Fix 2 — top-level `gaps[]` and `transparency.framing_divergences` no longer populated (canonical fields live under `bias_analysis`); Fix 3 — `stakeholders[*].source_ids` converted from `rsrc-NNN` to final `src-NNN` via internal `rsrc_id` stash, orphaned entries dropped, stakeholders retained even when source_ids becomes empty. Smoke `scripts/test_pipeline_hygiene.py`. |
+| WP-MAX-TOKENS-UNIFORM | ✅ | Uniform max_tokens=32000 default in src/agent.py. All per-agent overrides removed (scripts/run.py, src/pipeline.py curator override, src/pipeline_hydrated.py perspektiv_sync). Max observed QA output across 28 production runs was ~10K tokens — 32K carries ~3x headroom. Prevents context-window overflow without per-agent config complexity. |
+| WP-T4-COMPARE | ✅ | A/B compare orchestrator `scripts/compare_pipelines.py`. Runs shared Curator+Editor once, then Production and Hydrated pipelines in parallel on identical assignments. Extracts deterministic metrics per topic (source count, unique outlets, languages, countries, stakeholders, verbatim quotes, word count, cost via `cost_usd`, fetch success rate for Hydrated). Writes markdown report for qualitative review in separate Claude Project. Also fixes `Pipeline._track_agent` to record `cost_usd`. |
+| WP-HTTP-TIMEOUT | ✅ | Explicit httpx.Timeout(connect=30, read=300, write=30, pool=30) on AsyncOpenAI client in src/agent.py. First T4 smoke hung 25+ min on a streaming-stalled QA response before SIGTERM; bounded read timeout makes the failure mode deterministic. |
+| WP-AGGREGATOR-CHUNKING | ✅ | Two-phase chunked Hydration Aggregator. Phase 1 (per-article extraction, Gemini 3 Flash, `agents/hydration_aggregator/PHASE1.md`) parallel chunks ceil(N/10), each 5-10 articles. Intelligent retry per chunk (max 2) sends only missing indices back as smaller call. Phase 2 (cross-corpus reducer, `agents/hydration_aggregator/PHASE2.md`) single call over merged analyses produces `preliminary_divergences[]` + `coverage_gaps[]`. Counting is deterministic in Python, never delegated to LLM. Eliminates Rule 1 violations on ≥17-article inputs. Old `AGENTS.md` retained as deprecated revert target. |
+| WP-PHASE2-REDUCER | ✅ | Phase 2 reducer promoted to `anthropic/claude-opus-4.6` @ temperature 0.1, reasoning=none. 5-variant blind eval (Opus 4.7, Opus 4.6, Sonnet 4.6, Gemini 3.1 Pro low, Gemini 3.1 Pro high) scored Opus 4.6 at 114/120 — second only to Opus 4.7 reference (117/120). Temperature sub-eval on cheaper candidates (Sonnet @ 0.1, Gemini low/high @ 0.1/0.5) confirmed no cheaper option closes the gap. Temp 0.1 aligns Phase 2 with production synthesis agents. Opus 4.7 deferred — see WP-OPUS-4.7-MIGRATION. |
 | WP-PHASE2-REDUCER | ✅ | Phase 2 reducer of chunked Hydration Aggregator promoted to anthropic/claude-opus-4.6 @ temperature 0.1, reasoning=none. Eval evidence: variant B scored 114/120 in blind 3-topic eval (Opus 4.7 @ 0.3 reference: 117/120). Temperature 0.1 aligns with production synthesis agents (Perspektiv, QA+Fix, Bias Language). Opus 4.7 migration deferred to dedicated workstream (removes temperature parameter, replaces reasoning levels with output_config.effort). |
 
 ## Completed Fixes
@@ -107,6 +112,11 @@ Key cross-cutting findings:
 | WP-SEO | 🔴 High | Meta-Tags, OpenGraph, Sitemap — required before LinkedIn launch | Open |
 | WP-HYDRATION | ✅ Done | Parallel Hydrated pipeline (Etappe 2). T1 fetch+extract, T2 aggregator+merge, T3 integration all shipped. Lauf-19 end-to-end green (3/3 TPs). A/B compare report deferred to follow-up WP. | **Done** (Session 11) |
 | WP-AGENTRESULT-COST | ✅ Done | `cost_usd` sourced from OpenRouter `usage.cost`, accumulated across tool loop, exposed on `AgentResult`. Unblocks Hydration A/B compare and future budget controls. | **Done** (Session 11) |
+| WP-T4-COMPARE | ✅ Done | Production vs Hydrated A/B compare orchestrator with deterministic metrics + markdown report. Fixed Pipeline._track_agent to record cost_usd. | **Done** (Session 12) |
+| WP-MAX-TOKENS-UNIFORM | ✅ Done | Uniform max_tokens=32000 default across all agents. | **Done** (Session 12) |
+| WP-AGGREGATOR-CHUNKING | ✅ Done | Two-phase chunked Hydration Aggregator with intelligent retry. Phase 1 per-article extraction (Gemini 3 Flash, parallel chunks). Phase 2 cross-corpus reducer. | **Done** (Session 12) |
+| WP-PHASE2-REDUCER | ✅ Done | Phase 2 reducer on Opus 4.6 @ temp 0.1 reasoning=none after 5-variant blind eval + temperature sub-eval. | **Done** (Session 12) |
+| WP-OPUS-4.7-MIGRATION | 🟡 Medium | Migrate all Opus 4.6 agents (Editor, Perspektiv, Writer, Bias Language, Phase 2 reducer) to Opus 4.7 simultaneously. Requires src/agent.py refactor: drop temperature/top_p/top_k on 4.7 calls (400 error on non-default), replace reasoning-level mapping with output_config.effort (low/medium/high/xhigh/max), verify OpenRouter pass-through semantics. Per-agent effort-level eval needed before cutover. | Open |
 | WP-FEED-EXPAND | 🟡 Medium | Scale from 72 to 100+ feeds. At 200+, reactivate Collector as pre-filter. | Open |
 | WP-CACHING | 🟢 Low | Prompt Caching via OpenRouter | Open |
 ## Future Work Packages
@@ -212,6 +222,21 @@ Perspektiv-Sync V3 operated conservatively on Lauf-19 cached inputs: 1 `position
 delta across 3 topics vs V1's 4. Independent eval agent confirmed Hypothesis A — V3 is
 correctly calibrated, V1 was over-eager. Cost: ~$0.14 for 3 topics under V3 (delta-only)
 vs ~$0.40 under V1 (full map rewrite). No prompt adjustment required.
+
+### Session 12 (2026-04-22) — Infrastructure hardening + Aggregator chunking + Phase 2 model
+Five deliverables in one session. (1) `max_tokens` uniform at 32000 in `src/agent.py` —
+per-agent overrides removed, based on empirical measurement across 28 QA output files
+(max observed ~10K tokens). (2) T4 A/B compare orchestrator `scripts/compare_pipelines.py`
+with deterministic metric extraction and markdown report. Fixed `Pipeline._track_agent` to
+record `cost_usd`. (3) Explicit `httpx.Timeout(read=300)` on AsyncOpenAI client after first
+T4 smoke hung 25+ min on a streaming-stalled QA call. (4) Two-phase chunked Hydration
+Aggregator: Phase 1 parallel chunks of ceil(N/10), intelligent retry per chunk (max 2),
+Phase 2 single reducer call for divergences+gaps. Counting is deterministic in Python.
+Eliminated Rule 1 violations on ≥17-article inputs. (5) Phase 2 reducer on Opus 4.6 @
+temp 0.1 after 5-variant blind eval (114/120 vs Opus 4.7 reference 117/120) + temperature
+sub-eval confirming no cheaper candidate closes the gap. Opus 4.7 migration deferred to
+dedicated workstream due to breaking API changes (temperature removed, reasoning levels
+replaced by output_config.effort).
 
 ## Known Issue: LLM JSON Output with Multilingual Quotes
 
