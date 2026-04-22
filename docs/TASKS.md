@@ -1,7 +1,7 @@
 # Independent Wire — Task Tracker
 
 **Created:** 2026-03-30
-**Updated:** 2026-04-21 (Session 11 — Etappe 2 delivered: Hydration T1/T2/T3, Writer-sources refactor, Perspektiv-Sync V3, AgentResult cost tracking, Pipeline-Hygiene fixes)
+**Updated:** 2026-04-22 (Session 12 — max_tokens uniform 32000, T4 A/B compare orchestrator, chunked two-phase Aggregator, Phase 2 promoted to Opus 4.6 @ temp 0.1)
 **Purpose:** Living document — updated after each session
 
 ---
@@ -43,6 +43,7 @@
 | WP-WRITER-SOURCES | ✅ | Writer emits minimal source references `{id, rsrc_id}`. `_merge_writer_sources` in `src/pipeline.py` resolves each `rsrc_id` against the Researcher dossier and produces the full source object (url, outlet, language, country, estimated_date, actors_quoted incl. verbatim_quote). QA+Fix receives the merged full objects; Writer debug file preserves the minimal refs. |
 | WP-PERSPEKTIV-SYNC | ✅ | New Perspektiv-Sync agent runs between QA+Fix and coverage-statement substitution in the hydrated pipeline. V3 prompt emits delta-only output `{stakeholder_updates[]}`; `merge_perspektiv_deltas` in `src/pipeline_hydrated.py` deep-copies the original map and applies deltas via field-presence semantics (null removes, absence leaves untouched). Smoke script `scripts/test_perspektiv_sync.py` reruns against Lauf-19 cached inputs. |
 | WP-PIPELINE-HYGIENE | ✅ | Three retroactive Principle-1 fixes in `src/pipeline.py` (mirrored into the hydrated override): Fix 1 — sequential `src-NNN` renumbering with unreferenced-source pruning and atomic citation rewrite; Fix 2 — top-level `gaps[]` and `transparency.framing_divergences` no longer populated (canonical fields live under `bias_analysis`); Fix 3 — `stakeholders[*].source_ids` converted from `rsrc-NNN` to final `src-NNN` via internal `rsrc_id` stash, orphaned entries dropped, stakeholders retained even when source_ids becomes empty. Smoke `scripts/test_pipeline_hygiene.py`. |
+| WP-PHASE2-REDUCER | ✅ | Phase 2 reducer of chunked Hydration Aggregator promoted to anthropic/claude-opus-4.6 @ temperature 0.1, reasoning=none. Eval evidence: variant B scored 114/120 in blind 3-topic eval (Opus 4.7 @ 0.3 reference: 117/120). Temperature 0.1 aligns with production synthesis agents (Perspektiv, QA+Fix, Bias Language). Opus 4.7 migration deferred to dedicated workstream (removes temperature parameter, replaces reasoning levels with output_config.effort). |
 
 ## Completed Fixes
 

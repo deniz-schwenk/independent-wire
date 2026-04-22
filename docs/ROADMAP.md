@@ -1,7 +1,7 @@
 # Independent Wire — Open Source Roadmap
 
 **Created:** 2026-03-26
-**Updated:** 2026-04-21 (Session 11 — Etappe 2 delivered: Hydration pipeline integrated, Writer-sources pass-through eliminated, Perspektiv-Sync V3 agent, three long-standing post-processing bugs fixed)
+**Updated:** 2026-04-22 (Session 12 — max_tokens uniform 32000, Aggregator chunking with two-phase reducer, Phase 2 promoted to Opus 4.6 @ temp 0.1)
 **Status:** Living document — strategic overview.
 **Basis:** Vision paper (March 2026) + PoC experience (Sessions 1–12) + Model Evals (Sessions 4–5) + Cost Optimization (Session 6) + Rendering + Website (Session 7)
 
@@ -56,8 +56,12 @@ Core framework operational. Pipeline produces Topic Packages with multilingual r
 | WP-CURATOR-CAPACITY | Curator 10-20 topics, Editor sees 10, max_produce=3 | ✅ Done |
 | WP-SOURCE-RECENCY | URL date extraction, estimated_date on sources, age warnings | ✅ Done |
 | WP-HYDRATION | Parallel Hydrated pipeline (Etappe 2): fetch cluster URLs, extract full-text, aggregate via LLM, merge with web-search dossier. T1 fetch+extract, T2 aggregator+merge, T3 integration all shipped. A/B compare report deferred. | ✅ Done |
+| WP-AGGREGATOR-CHUNKING | Chunked two-phase aggregation. Phase 1 (per-article extraction, Gemini 3 Flash) parallel chunks ceil(N/10) with intelligent retry. Phase 2 (cross-corpus reducer, Opus 4.6 @ temp 0.1 reasoning=none) single call over all analyses. Eliminates Rule 1 violations on ≥17-article inputs. | ✅ Done |
+| WP-T4-COMPARE | Production vs Hydrated A/B compare orchestrator. scripts/compare_pipelines.py runs both pipelines on shared editor assignments, extracts deterministic metrics per topic, produces markdown report for qualitative review. Also bounds HTTP read timeout at 300s to prevent streaming stalls. | ✅ Done |
+| WP-MAX-TOKENS-UNIFORM | Uniform max_tokens=32000 default across all agents in src/agent.py. Removes per-agent overrides (curator, writer, qa_analyze, perspektiv_sync). Prevents context-window overflow; max observed QA output across 28 production runs was ~10K tokens. | ✅ Done |
 | WP-SEO | Meta-Tags, OpenGraph, Sitemap (pre-launch) | ⬜ Planned |
 | WP-CACHING | Prompt caching via OpenRouter | ⬜ Planned |
+| WP-OPUS-4.7-MIGRATION | Migrate all current Opus 4.6 agents (Editor, Perspektiv, Writer, Bias Language, Phase 2 reducer) to Opus 4.7 simultaneously. Requires src/agent.py refactor: drop temperature/top_p/top_k for 4.7 calls, add output_config.effort mapping to replace current reasoning-level logic, verify OpenRouter pass-through. Per-agent effort-level eval needed before cutover. | ⬜ Planned |
 
 ### H2.2b — Rendering ✅ Complete
 
@@ -84,6 +88,10 @@ All pipeline agent slots are filled. Model assignments validated through 90+ eva
 | **Writer** | **Opus 4.6** | **none** | ✅ 5 models, A-Tier. Best journalism quality, 80K tokens (many web_search calls) | **A** |
 | **QA+Fix** | **Sonnet 4.6** | **none** | ✅ 4 models, 2 reasoning levels. Now combined analyze+fix role | **8/10** |
 | **Bias Language** | **Opus 4.6** | **none** | ✅ 4 models, 2 reasoning levels | **9/10** |
+| **Hydration Aggregator Phase 1** | **Gemini 3 Flash** | **none** | Per-article extraction; chunks ceil(N/10); production since Session 12 | — |
+| **Hydration Aggregator Phase 2** | **Opus 4.6** | **none** | Cross-corpus reducer; 5-variant blind eval scored 114/120 (A Opus 4.7 ref=117, C Sonnet 4.6=108, D Gemini Pro=75-90); temp 0.1 aligns with other synthesis agents | **114/120** |
+
+**Phase 2 Reducer Eval (April 22 2026):** Five models tested blindly on 3 topics × 4 dimensions (Divergence Specificity, Groundedness, Gap Substance, Bias-card Utility). Opus 4.7 @ temp 0.3 ref = 117/120. Opus 4.6 @ temp 0.3 = 114/120. Sonnet 4.6 @ temp 0.3 = 108/120 (two factual errors on large corpora). Gemini 3.1 Pro low/high = 75-90/120 (structural divergence-output ceiling, unaffected by temperature 0.1/0.3/0.5 in sub-eval). Temperature sub-eval confirmed: Sonnet @ 0.1 shifts error pattern without eliminating it; Gemini has a model-in-role ceiling. Integrated Opus 4.6 @ temp 0.1 (aligns with other synthesis agents). Opus 4.7 deferred to dedicated migration workstream.
 
 **WP-EVAL-GAP Results (April 2026):** Direct evaluation overturned the Assembler-proxy assumption. GLM 5 failed 3 of 4 roles — bias_language (copies input verbatim, 2-3/10), editor (misses critical issues), qa_analyze (too conservative). Opus 4.6 is the quality leader for editorial/analytical tasks. Sonnet 4.6 r-none wins qa_analyze. Sonnet r-medium crashes 50% of the time — never use. Gemini r-medium is the budget alternative across all roles but requires reasoning=medium (r-none catastrophically fails on editor).
 
@@ -231,3 +239,10 @@ Vision, architecture diagram, quick-start, contribution guide.
 | TP schema duplicate removal | Canonical locations: `bias_analysis.framing_divergences` and `bias_analysis.perspectives.missing_voices`. Previously-duplicated `transparency.framing_divergences` and top-level `gaps[]` are no longer populated. Renderer reads from canonical locations only. | 2026-04-21 |
 | Writer Rule 8: single JSON output | Writer explicitly forbidden from emitting revision attempts, chain-of-thought commentary, or second JSON blocks. Mitigation against parser fragility observed after the Writer-sources refactor (Writer occasionally emitted two JSON objects with "Wait, I need to fix…" interludes). | 2026-04-21 |
 | Editor selection_reason qualitative only | Editor does not emit numeric source counts, language counts, or specific outlet brand names in `selection_reason`. Numeric discipline lives in Python — counting is Python's job per Principle 1. Regional attribution ("French outlets", "Russian state media") remains permitted. | 2026-04-21 |
+| max_tokens uniform at 32000 | Single module-level default in src/agent.py. All per-agent overrides in scripts/run.py, src/pipeline.py, src/pipeline_hydrated.py removed. Prior 65536 default risked context-window overflow on large inputs; 32K carries ~3x headroom on the empirically measured ~10K max QA output across 28 production runs. | 2026-04-22 |
+| HTTP read timeout 300s | AsyncOpenAI client in src/agent.py uses explicit httpx.Timeout(connect=30, read=300, write=30, pool=30). Default 10-minute read timeout allowed streaming stalls to hang pipeline indefinitely; 300s read bound makes stalled responses fail deterministically. Surfaced by a T4 smoke hang on a Sonnet QA streaming response. | 2026-04-22 |
+| Aggregator chunking | ceil(N/10) chunks, distributed evenly, each chunk 5-10 articles. Phase 1 chunk calls run in parallel via asyncio.gather. Intelligent retry per chunk (max 2) sends only the missing article indices back as a smaller new input. Hard crash if chunk still incomplete after 2 retries — silent data loss is worse than failure. Eliminates the off-by-one Rule 1 violations Gemini 3 Flash exhibited on ≥17-article inputs. Scales to arbitrary N without architectural change. | 2026-04-22 |
+| Aggregator two-phase reducer | Phase 1 (per-chunk, parallel) produces only `article_analyses[]`. Phase 2 (single call, sequential after Phase 1) takes the merged analyses plus per-article metadata and produces `preliminary_divergences[]` + `coverage_gaps[]`. Cross-linguistic divergences require seeing the full corpus, which chunked extraction cannot. Phase 2 input is compact (summaries, not full-text) so attention load is low regardless of N. | 2026-04-22 |
+| Counting is Python's job, always | Prompt engineer correction during Phase 1 prompt review. Aggregator prompts never ask the LLM to count its output, self-verify array length, or enforce expected_count. Deterministic validation happens in src/hydration_aggregator.py after each LLM response; missing indices trigger retry. Generalizes Principle 1 ("deterministic before LLM") into prompt-design discipline. | 2026-04-22 |
+| Phase 2 model: Opus 4.6 @ temp 0.1 | Selected after 5-variant blind eval (Opus 4.7, Opus 4.6, Sonnet 4.6, Gemini Pro low, Gemini Pro high) and a temperature sub-eval on cheaper candidates. Score: 114/120 (A Opus 4.7 ref=117). Temp 0.1 matches all other synthesis agents (Perspektiv, QA+Fix, Perspektiv-Sync, Bias Language). Opus 4.7 deferred — breaking API changes require dedicated migration workstream. | 2026-04-22 |
+| Gemini 3.1 Pro disqualified for synthesis | Eval evidence: structural divergence-output ceiling ~3-4 per topic regardless of temperature or reasoning level. OpenRouter rejects reasoning=none (400 error), silently remaps reasoning=medium (officially unsupported on Pro). High-reasoning intermittently returns empty streamed responses on small inputs. Not suitable for reducer/synthesis roles. | 2026-04-22 |

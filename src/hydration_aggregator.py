@@ -57,6 +57,9 @@ PHASE1_PROMPT_PATH = "agents/hydration_aggregator/PHASE1.md"
 PHASE2_PROMPT_PATH = "agents/hydration_aggregator/PHASE2.md"
 AGGREGATOR_TEMPERATURE = 0.3
 
+PHASE2_MODEL = "anthropic/claude-opus-4.6"
+PHASE2_TEMPERATURE = 0.1
+
 # Rule-6 enum from PHASE1.md.
 ACTOR_TYPE_ENUM: frozenset[str] = frozenset({
     "government",
@@ -153,9 +156,7 @@ async def run_aggregator(
     all_analyses = _merge_phase1_results(phase1_results, chunks)
 
     metadata = _build_article_metadata(successful)
-    phase2 = await _run_phase2_reducer(
-        assignment, all_analyses, metadata, agent=agent,
-    )
+    phase2 = await _run_phase2_reducer(assignment, all_analyses, metadata)
 
     return {
         "article_analyses": all_analyses,
@@ -369,12 +370,22 @@ async def _run_phase2_reducer(
     assignment: dict[str, Any],
     all_analyses: list[dict[str, Any]],
     article_metadata: list[dict[str, Any]],
-    *,
-    agent: Agent | None = None,
 ) -> dict[str, Any]:
     if not all_analyses:
         return {"preliminary_divergences": [], "coverage_gaps": []}
-    phase2_agent = _make_phase_agent(agent, PHASE2_PROMPT_PATH)
+    # Phase 2 is a synthesis task (cross-corpus divergences + gaps), pinned
+    # to Opus 4.6 @ 0.1 per the Session-12 model eval (variant B, 114/120).
+    # Independent of the Phase 1 template to stop Phase 2 from silently
+    # inheriting the extractor's Gemini Flash config.
+    phase2_agent = Agent(
+        name="hydration_aggregator_phase2",
+        model=PHASE2_MODEL,
+        prompt_path=PHASE2_PROMPT_PATH,
+        temperature=PHASE2_TEMPERATURE,
+        max_tokens=32000,
+        provider="openrouter",
+        reasoning="none",
+    )
     payload = {
         "assignment": {
             "title": assignment.get("title"),
