@@ -326,11 +326,38 @@ def _normalise_country(name: str | None) -> str:
     stripped = name.strip()
     if not stripped:
         return ""
+    # Reject multi-country markers — guessing is worse than missing.
+    if re.search(r"[/,&]|\band\b|\bund\b", stripped, re.IGNORECASE):
+        return ""
     lower = stripped.lower()
     for candidate in (lower, lower.rstrip("."), lower.replace(".", "")):
         if candidate in COUNTRY_ALIASES:
             return COUNTRY_ALIASES[candidate]
     return stripped
+
+
+_LANGUAGE_NAME_TO_CODE: dict[str, str] = {
+    name.lower(): code for code, name in LANGUAGE_NAMES.items()
+}
+
+
+def _normalise_language(value: str | None) -> str:
+    """Return the ISO 639-1 lowercase code for a language value.
+
+    Accepts either an ISO code ("en") or an English language name
+    ("English"). Unknown inputs are returned stripped and lowercased
+    so downstream string comparisons remain stable; they are not
+    blanked, because custom language tags (e.g. "zh-Hant") are
+    legitimate even when not in the canonical table.
+    """
+    if not value or not isinstance(value, str):
+        return ""
+    v = value.strip().lower()
+    if not v:
+        return ""
+    if v in LANGUAGE_NAMES:
+        return v
+    return _LANGUAGE_NAME_TO_CODE.get(v, v)
 
 
 def _language_name(code: str | None) -> str:
@@ -387,7 +414,6 @@ def _substitute_coverage_statement(article: dict) -> None:
 
 _WRITER_SOURCE_METADATA_FIELDS = (
     "url", "title", "outlet", "language", "country", "estimated_date",
-    "actors_quoted",
 )
 
 # Internal-only key carried on merged source objects to support the
@@ -1681,6 +1707,23 @@ class Pipeline:
                 except (json.JSONDecodeError, ValueError) as e:
                     logger.warning("Could not read follow-up TP %s: %s", assignment.follow_up_to, e)
 
+        # Restore actors_quoted from the research dossier onto the final
+        # sources. The Writer doesn't need actors_quoted in its source-ref
+        # contract (it reads them from the dossier context directly), and
+        # QA+Fix's sources[] replacement drops them. The final TP is the
+        # only place they need to be present.
+        dossier_actors = {
+            s["url"]: s.get("actors_quoted", [])
+            for s in research_dossier.get("sources", []) or []
+            if s.get("url")
+        }
+        for src in article.get("sources", []):
+            url = src.get("url")
+            if url and url in dossier_actors:
+                src["actors_quoted"] = dossier_actors[url]
+            src["country"] = _normalise_country(src.get("country"))
+            src["language"] = _normalise_language(src.get("language"))
+
         # Restore estimated_date from research dossier onto Writer's sources.
         # The Writer re-indexes rsrc-NNN → src-NNN but drops estimated_date.
         # Python copies it back via URL lookup — no prompt change needed.
@@ -1705,11 +1748,11 @@ class Pipeline:
             article.get("sources", [])
         )
 
-        # Assemble TopicPackage. Fix 2 — the top-level ``gaps`` and
-        # ``transparency.framing_divergences`` duplicates of data that
-        # already lives under ``bias_analysis`` are not populated.
-        # ``gaps=[]`` is the empty-list equivalent of removal; the
-        # dataclass field is out of scope for this task.
+        # Assemble TopicPackage. ``gaps`` carries the Phase 2 reducer's
+        # ``coverage_gaps`` from the Hydrated path (empty list on
+        # Production, which has no Phase 2). Perspektiv's ``missing_voices``
+        # remains under ``bias_analysis.perspectives`` — different
+        # semantic, different field.
         return TopicPackage(
             id=assignment.id,
             metadata={
@@ -1723,7 +1766,7 @@ class Pipeline:
             sources=article.get("sources", []),
             perspectives=perspective_analysis.get("stakeholders", []),
             divergences=qa_analysis.get("divergences", []),
-            gaps=[],
+            gaps=research_dossier.get("coverage_gaps", []) or [],
             article=article,
             bias_analysis=bias_analysis,
             transparency={

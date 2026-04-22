@@ -58,6 +58,8 @@ from src.pipeline import (
     _extract_dict,
     _extract_list,
     _merge_writer_sources,
+    _normalise_country,
+    _normalise_language,
     _renumber_and_prune_sources,
     _sanitize_null_strings,
     _strip_internal_fields_from_sources,
@@ -1077,6 +1079,23 @@ class PipelineHydrated(Pipeline):
                         assignment.follow_up_to, exc,
                     )
 
+        # Restore actors_quoted from the research dossier onto the final
+        # sources. The Writer doesn't need actors_quoted in its source-ref
+        # contract (it reads them from the dossier context directly), and
+        # QA+Fix's sources[] replacement drops them. The final TP is the
+        # only place they need to be present.
+        dossier_actors = {
+            s["url"]: s.get("actors_quoted", [])
+            for s in research_dossier.get("sources", []) or []
+            if s.get("url")
+        }
+        for src in article.get("sources", []):
+            url = src.get("url")
+            if url and url in dossier_actors:
+                src["actors_quoted"] = dossier_actors[url]
+            src["country"] = _normalise_country(src.get("country"))
+            src["language"] = _normalise_language(src.get("language"))
+
         # Restore estimated_date from research dossier onto sources.
         dossier_dates = {
             s["url"]: s.get("estimated_date")
@@ -1097,9 +1116,6 @@ class PipelineHydrated(Pipeline):
             article.get("sources", [])
         )
 
-        # Fix 2 — do not populate the top-level ``gaps`` or
-        # ``transparency.framing_divergences`` duplicates; their
-        # canonical homes live under ``bias_analysis``.
         return TopicPackage(
             id=assignment.id,
             metadata={
@@ -1113,7 +1129,7 @@ class PipelineHydrated(Pipeline):
             sources=article.get("sources", []),
             perspectives=perspective_analysis.get("stakeholders", []),
             divergences=qa_analysis.get("divergences", []),
-            gaps=[],
+            gaps=research_dossier.get("coverage_gaps", []) or [],
             article=article,
             bias_analysis=bias_analysis,
             transparency={
