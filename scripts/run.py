@@ -42,7 +42,8 @@ def create_agents() -> dict[str, Agent]:
         # "collector_plan": Agent(
         #     name="collector_plan",
         #     model="z-ai/glm-5",
-        #     prompt_path=str(agents_dir / "collector" / "PLAN.md"),
+        #     system_prompt_path=str(agents_dir / "collector" / "PLAN-SYSTEM.md"),
+        #     instructions_path=str(agents_dir / "collector" / "PLAN-INSTRUCTIONS.md"),
         #     tools=[],
         #     temperature=0.5,
         #     provider="openrouter",
@@ -50,7 +51,8 @@ def create_agents() -> dict[str, Agent]:
         # "collector_assemble": Agent(
         #     name="collector_assemble",
         #     model="minimax/minimax-m2.7",
-        #     prompt_path=str(agents_dir / "collector" / "ASSEMBLE.md"),
+        #     system_prompt_path=str(agents_dir / "collector" / "ASSEMBLE-SYSTEM.md"),
+        #     instructions_path=str(agents_dir / "collector" / "ASSEMBLE-INSTRUCTIONS.md"),
         #     tools=[],
         #     temperature=0.2,
         #     provider="openrouter",
@@ -58,16 +60,25 @@ def create_agents() -> dict[str, Agent]:
         "curator": Agent(
             name="curator",
             model="google/gemini-3-flash-preview",
-            prompt_path=str(agents_dir / "curator" / "AGENTS.md"),
+            system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
             tools=[],
             temperature=0.2,
             provider="openrouter",
             reasoning="none",
+            # The S13 envelope {topics, cluster_assignments} pushes the array to
+            # the end of the JSON. With ~1400 findings, the flat cluster_assignments
+            # alone needs ~5–10k tokens; topics + envelope add another ~5k. The
+            # 32k default truncates mid-array, and _extract_dict's prose-extraction
+            # discards everything after the last `}`, dropping cluster_assignments
+            # entirely. 64k gives steady-state headroom.
+            max_tokens=64000,
         ),
         "editor": Agent(
             name="editor",
             model="anthropic/claude-opus-4.6",
-            prompt_path=str(agents_dir / "editor" / "AGENTS.md"),
+            system_prompt_path=str(agents_dir / "editor" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "editor" / "INSTRUCTIONS.md"),
             tools=[],
             temperature=0.3,
             provider="openrouter",
@@ -76,7 +87,8 @@ def create_agents() -> dict[str, Agent]:
         "researcher_plan": Agent(
             name="researcher_plan",
             model="google/gemini-3-flash-preview",
-            prompt_path=str(agents_dir / "researcher" / "PLAN.md"),
+            system_prompt_path=str(agents_dir / "researcher" / "PLAN-SYSTEM.md"),
+            instructions_path=str(agents_dir / "researcher" / "PLAN-INSTRUCTIONS.md"),
             tools=[],
             temperature=0.5,
             provider="openrouter",
@@ -85,7 +97,8 @@ def create_agents() -> dict[str, Agent]:
         "researcher_assemble": Agent(
             name="researcher_assemble",
             model="google/gemini-3-flash-preview",
-            prompt_path=str(agents_dir / "researcher" / "ASSEMBLE.md"),
+            system_prompt_path=str(agents_dir / "researcher" / "ASSEMBLE-SYSTEM.md"),
+            instructions_path=str(agents_dir / "researcher" / "ASSEMBLE-INSTRUCTIONS.md"),
             tools=[],
             temperature=0.2,
             provider="openrouter",
@@ -94,7 +107,8 @@ def create_agents() -> dict[str, Agent]:
         "perspektiv": Agent(
             name="perspektiv",
             model="anthropic/claude-opus-4.6",
-            prompt_path=str(agents_dir / "perspektiv" / "AGENTS.md"),
+            system_prompt_path=str(agents_dir / "perspektiv" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "perspektiv" / "INSTRUCTIONS.md"),
             tools=[],
             temperature=0.1,
             provider="openrouter",
@@ -103,7 +117,8 @@ def create_agents() -> dict[str, Agent]:
         "writer": Agent(
             name="writer",
             model="anthropic/claude-opus-4.6",
-            prompt_path=str(agents_dir / "writer" / "AGENTS.md"),
+            system_prompt_path=str(agents_dir / "writer" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "writer" / "INSTRUCTIONS.md"),
             tools=[web_search_tool],
             temperature=0.3,
             provider="openrouter",
@@ -112,7 +127,8 @@ def create_agents() -> dict[str, Agent]:
         "qa_analyze": Agent(
             name="qa_analyze",
             model="anthropic/claude-sonnet-4.6",
-            prompt_path=str(agents_dir / "qa_analyze" / "AGENTS.md"),
+            system_prompt_path=str(agents_dir / "qa_analyze" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "qa_analyze" / "INSTRUCTIONS.md"),
             tools=[],
             temperature=0.1,
             provider="openrouter",
@@ -121,7 +137,8 @@ def create_agents() -> dict[str, Agent]:
         "bias_language": Agent(
             name="bias_language",
             model="anthropic/claude-opus-4.6",
-            prompt_path=str(agents_dir / "bias_detector" / "AGENTS.md"),
+            system_prompt_path=str(agents_dir / "bias_detector" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "bias_detector" / "INSTRUCTIONS.md"),
             tools=[],
             temperature=0.1,
             provider="openrouter",

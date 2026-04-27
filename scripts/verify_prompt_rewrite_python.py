@@ -82,25 +82,29 @@ new_shape = {
     "topics": [
         {"title": "Topic A", "relevance_score": 7, "summary": "..."},
         {"title": "Topic B", "relevance_score": 5, "summary": "..."},
+        {"title": "Topic C", "relevance_score": 3, "summary": "..."},
     ],
-    "cluster_assignments": [
-        {"finding_index": 0, "topic_index": 0},
-        {"finding_index": 2, "topic_index": 0},
-        {"finding_index": 1, "topic_index": 1},
-    ],
+    # Flat array: position = finding_index, value = topic_index (or null).
+    # finding-0 → A, finding-1 → B, finding-2 → A, finding-3 → none, finding-4 → A.
+    "cluster_assignments": [0, 1, 0, None, 0],
 }
 import json as _json
 result = _StubResult(_json.dumps(new_shape), structured=new_shape)
 topics = pipeline._rebuild_curator_source_ids(result, raw_findings)
 check(
     "curator rebuild: topic 0 source_ids",
-    topics[0]["source_ids"] == ["finding-0", "finding-2"],
+    topics[0]["source_ids"] == ["finding-0", "finding-2", "finding-4"],
     f"got {topics[0]['source_ids']}",
 )
 check(
     "curator rebuild: topic 1 source_ids",
     topics[1]["source_ids"] == ["finding-1"],
     f"got {topics[1]['source_ids']}",
+)
+check(
+    "curator rebuild: topic 2 source_ids (no findings assigned)",
+    topics[2]["source_ids"] == [],
+    f"got {topics[2]['source_ids']}",
 )
 
 # Legacy (list) shape passes through
@@ -110,6 +114,38 @@ topics_legacy = pipeline._rebuild_curator_source_ids(result_legacy, raw_findings
 check(
     "curator rebuild: legacy list shape passes through",
     topics_legacy and topics_legacy[0]["source_ids"] == ["finding-0"],
+)
+
+# Truncation recovery: brace-extraction repair drops cluster_assignments
+# (the actual failure mode observed in production with Gemini Flash). The
+# pipeline must regex-recover the array from the raw content. Simulate by
+# pairing a structured dict with only ``topics`` and a content string that
+# still carries the (truncated) ``cluster_assignments`` key.
+truncated_content = (
+    '{"topics": [{"title": "Topic A"}, {"title": "Topic B"}, {"title": "Topic C"}], '
+    '"cluster_assignments": [\n    0,\n    1,\n    0,\n    null,\n    0,\n    null,'
+)
+truncated_struct = {"topics": [
+    {"title": "Topic A", "relevance_score": 7, "summary": "..."},
+    {"title": "Topic B", "relevance_score": 5, "summary": "..."},
+    {"title": "Topic C", "relevance_score": 3, "summary": "..."},
+]}
+result_truncated = _StubResult(truncated_content, structured=truncated_struct)
+topics_truncated = pipeline._rebuild_curator_source_ids(result_truncated, raw_findings)
+check(
+    "curator rebuild: truncation recovery — topic 0 source_ids",
+    topics_truncated[0]["source_ids"] == ["finding-0", "finding-2", "finding-4"],
+    f"got {topics_truncated[0]['source_ids']}",
+)
+check(
+    "curator rebuild: truncation recovery — topic 1 source_ids",
+    topics_truncated[1]["source_ids"] == ["finding-1"],
+    f"got {topics_truncated[1]['source_ids']}",
+)
+check(
+    "curator rebuild: truncation recovery — topic 2 (null/short)",
+    topics_truncated[2]["source_ids"] == [],
+    f"got {topics_truncated[2]['source_ids']}",
 )
 
 

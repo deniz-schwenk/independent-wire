@@ -1297,26 +1297,101 @@ class Pipeline:
 
         return compressed
 
+    @staticmethod
+    def _recover_truncated_cluster_assignments(
+        content: str, n_findings: int
+    ) -> list | None:
+        """Recover ``cluster_assignments`` from a raw Curator response.
+
+        Triggered when ``_extract_dict`` returns a dict carrying ``topics``
+        but no ``cluster_assignments``. With the S13 envelope
+        ``{topics, cluster_assignments}`` the array sits at the end of the
+        JSON. Gemini Flash occasionally truncates mid-array (sometimes
+        emitting a long all-``null`` tail). The bracket-balance repair in
+        ``Agent._parse_json`` then closes the dict at the last topic's
+        ``}``, dropping the partial array entirely.
+
+        This recovery scans the raw content for ``"cluster_assignments": [``
+        and parses entries (integers or ``null``) up to ``n_findings`` or the
+        first non-entry token. Returns the list or ``None`` if the key is
+        absent.
+        """
+        if not content:
+            return None
+        m = re.search(r'"cluster_assignments"\s*:\s*\[', content)
+        if not m:
+            return None
+        pos = m.end()
+        n = len(content)
+        entries: list = []
+        while pos < n and len(entries) < n_findings:
+            while pos < n and content[pos] in " \n\t\r":
+                pos += 1
+            if pos >= n:
+                break
+            ch = content[pos]
+            if ch == "]":
+                break
+            if ch == ",":
+                pos += 1
+                continue
+            if content.startswith("null", pos):
+                entries.append(None)
+                pos += 4
+                continue
+            m2 = re.match(r"-?\d+", content[pos:])
+            if m2:
+                entries.append(int(m2.group()))
+                pos += m2.end()
+                continue
+            break
+        return entries
+
     def _rebuild_curator_source_ids(
         self, agent_result: object, raw_findings: list[dict]
     ) -> list[dict]:
         """Extract Curator topics and rebuild ``source_ids`` deterministically.
 
         The S13 Curator emits ``{"topics": [...], "cluster_assignments":
-        [{"finding_index": N, "topic_index": M}, ...]}``. Python pairs each
-        cluster_assignment with its target topic and emits the resulting
-        ``finding-N`` strings as ``topics[].source_ids``.
+        [int|null, ...]}`` where ``cluster_assignments`` is a flat array
+        with exactly one entry per finding in input order. Each integer is
+        a 0-based topic index; ``null`` means the finding belongs to no
+        topic.
 
         Falls back to the legacy shape (a top-level JSON array of topics
         each carrying ``source_ids: ["finding-N", ...]``) when the new
         envelope is absent — older prompts on disk still produce that
-        shape and the pipeline must keep working through the migration.
+        shape and the pipeline must keep working through any future
+        migration.
 
-        Out-of-range ``finding_index`` / ``topic_index`` are skipped with
-        a WARNING. Topics with zero matching cluster_assignments get an
-        empty ``source_ids`` list and an INFO log.
+        Length mismatch (``len(cluster_assignments) != len(raw_findings)``)
+        logs a WARNING and processes whatever overlap exists. Out-of-range
+        ``topic_index`` values are skipped with a WARNING. Topics with
+        zero matching cluster_assignments get an empty ``source_ids`` list
+        and an INFO log.
         """
         parsed = _extract_dict(agent_result)
+
+        # Truncation recovery: if the parsed dict carries ``topics`` but no
+        # ``cluster_assignments`` (Gemini Flash sometimes truncates mid-array,
+        # and the bracket-balance repair then drops the array entirely), pull
+        # the cluster_assignments back out of the raw response by regex.
+        if (
+            isinstance(parsed, dict)
+            and isinstance(parsed.get("topics"), list)
+            and parsed.get("cluster_assignments") is None
+        ):
+            recovered = self._recover_truncated_cluster_assignments(
+                getattr(agent_result, "content", "") or "", len(raw_findings)
+            )
+            if recovered is not None:
+                logger.warning(
+                    "Curator cluster_assignments dropped by JSON repair; "
+                    "recovered %d entries via regex (expected %d)",
+                    len(recovered), len(raw_findings),
+                )
+                parsed["cluster_assignments"] = recovered
+
         new_shape = (
             isinstance(parsed, dict)
             and isinstance(parsed.get("topics"), list)
@@ -1333,24 +1408,35 @@ class Pipeline:
 
         n_findings = len(raw_findings)
         n_topics = len(topics)
-        for ca in parsed.get("cluster_assignments") or []:
-            if not isinstance(ca, dict):
+        assignments: list = parsed.get("cluster_assignments") or []
+        n_assignments = len(assignments)
+
+        if n_assignments != n_findings:
+            logger.warning(
+                "Curator cluster_assignments length=%d does not match findings "
+                "length=%d; processing the overlap only",
+                n_assignments, n_findings,
+            )
+
+        overlap = min(n_assignments, n_findings)
+        for finding_index in range(overlap):
+            topic_index = assignments[finding_index]
+            if topic_index is None:
                 continue
-            ti = ca.get("topic_index")
-            fi = ca.get("finding_index")
-            if not isinstance(ti, int) or not (0 <= ti < n_topics):
+            if not isinstance(topic_index, int):
                 logger.warning(
-                    "Curator cluster_assignment topic_index=%r out of range "
-                    "(have %d topics); skipping", ti, n_topics,
+                    "Curator cluster_assignments[%d]=%r is not an int|null; skipping",
+                    finding_index, topic_index,
                 )
                 continue
-            if not isinstance(fi, int) or not (0 <= fi < n_findings):
+            if not (0 <= topic_index < n_topics):
                 logger.warning(
-                    "Curator cluster_assignment finding_index=%r out of range "
-                    "(have %d findings); skipping", fi, n_findings,
+                    "Curator cluster_assignments[%d]=%d is out of range "
+                    "(have %d topics); skipping",
+                    finding_index, topic_index, n_topics,
                 )
                 continue
-            topics[ti]["source_ids"].append(f"finding-{fi}")
+            topics[topic_index]["source_ids"].append(f"finding-{finding_index}")
 
         for ti, t in enumerate(topics):
             if not t["source_ids"]:
