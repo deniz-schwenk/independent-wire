@@ -23,6 +23,7 @@ from src.schemas import (
     QA_ANALYZE_SCHEMA,
     RESEARCHER_ASSEMBLE_SCHEMA,
     RESEARCHER_PLAN_SCHEMA,
+    WRITER_SCHEMA,
 )
 from src.tools import web_search_tool
 
@@ -137,6 +138,7 @@ def create_agents() -> dict[str, Agent]:
             temperature=0.3,
             provider="openrouter",
             reasoning="none",
+            output_schema=WRITER_SCHEMA,
         ),
         "qa_analyze": Agent(
             name="qa_analyze",
