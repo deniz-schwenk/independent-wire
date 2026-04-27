@@ -1711,7 +1711,17 @@ class Pipeline:
                 }
             )
             self._track_agent(result, "editor")
-            raw_assignments = _extract_list(result) or []
+
+            # Strict schema wraps the assignments list as ``{"assignments": [...]}``.
+            # Unwrap before consuming. Fall back to raw extraction if a provider
+            # didn't apply the schema.
+            structured = result.structured
+            if isinstance(structured, dict):
+                raw_assignments = structured.get("assignments")
+            else:
+                raw_assignments = structured
+            if not raw_assignments or not isinstance(raw_assignments, list):
+                raw_assignments = _extract_list(result) or []
 
             survivors: list[dict] = []
             rejected: list[dict] = []
