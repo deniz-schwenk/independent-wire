@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import unicodedata
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
@@ -19,6 +20,31 @@ from src.agent import Agent
 from src.models import PipelineState, TopicAssignment, TopicPackage
 
 logger = logging.getLogger(__name__)
+
+
+def _slugify(title: str) -> str:
+    """Deterministic ASCII-fold slug for topic_slug generation.
+
+    Lowercase, NFKD-fold to drop accents, replace any non-``\\w`` run with
+    ``-``, collapse repeats, strip edges, then truncate to 60 chars at the
+    nearest hyphen-delimited word boundary. Returns ``""`` when the title
+    is empty or yields no slug-safe characters.
+    """
+    if not title:
+        return ""
+    normalized = unicodedata.normalize("NFKD", title)
+    ascii_only = normalized.encode("ascii", "ignore").decode("ascii")
+    s = ascii_only.lower()
+    s = re.sub(r"[^\w]+", "-", s, flags=re.ASCII)
+    s = re.sub(r"-{2,}", "-", s)
+    s = s.strip("-_")
+    if len(s) > 60:
+        s = s[:60]
+        last_hyphen = s.rfind("-")
+        if last_hyphen >= 30:
+            s = s[:last_hyphen]
+        s = s.strip("-_")
+    return s
 
 
 def _strip_code_fences(text: str) -> str:
@@ -416,30 +442,36 @@ _WRITER_SOURCE_METADATA_FIELDS = (
     "url", "title", "outlet", "language", "country", "estimated_date",
 )
 
-# Internal-only key carried on merged source objects to support the
-# Fix-3 rsrc→src conversion in stakeholder source_ids. Stripped before
-# TP serialization — never appears in the final Topic Package JSON.
+# Internal-only keys carried on merged source objects through the
+# renumber/QA chain. ``rsrc_id`` survives renumbering so Fix-3 can
+# rewrite ``rsrc-NNN`` → ``src-NNN`` in Perspektiv source_ids;
+# ``web_id`` is dropped at renumber time. Both are stripped before TP
+# serialization — never appear in the final Topic Package JSON.
 _INTERNAL_RSRC_ID_KEY = "rsrc_id"
+_INTERNAL_WEB_ID_KEY = "web_id"
 
 
 def _merge_writer_sources(
     writer_refs: list, research_dossier: dict,
 ) -> list[dict]:
-    """Build full source objects from Writer ``{id, rsrc_id}`` refs + dossier.
+    """Build full source objects from Writer references + research dossier.
 
-    The Writer emits minimal source references (id, rsrc_id). Python
-    resolves each rsrc_id against the research dossier and produces the
-    full source object downstream code expects.
+    The Writer emits two source-entry shapes:
 
-    Behaviour:
+    * Dossier reference: ``{"rsrc_id": "rsrc-NNN"}`` — exactly one field.
+      Resolved against ``research_dossier.sources[]`` by id; the merged
+      object carries the dossier metadata plus the internal ``rsrc_id``
+      stash so Fix-3 (perspective source_ids rewrite) can map back.
+    * Web-search source: ``{"web_id": "web-N", "url", "outlet",
+      "title", "language", "country"}`` — exactly six fields. Passed
+      through with the ``web_id`` stash for renumber-time citation
+      rewriting.
 
-    * ``rsrc_id`` present and found in dossier → full metadata from the
-      dossier entry, carrying the Writer's ``id``.
-    * ``rsrc_id`` present but unknown → warn and skip (likely
-      hallucination).
-    * ``rsrc_id`` absent but the entry carries url/outlet/etc. → treat as
-      a Writer-originated source (e.g. added via web_search tool call)
-      and pass through as-is.
+    The ``id`` field is **not** set by this function — renumbering owns
+    the final ``src-NNN`` assignment.
+
+    Unknown ``rsrc_id`` references and entries missing both stash keys
+    log WARNING and are skipped.
     """
     dossier_by_id: dict[str, dict] = {}
     for src in research_dossier.get("sources", []) or []:
@@ -453,47 +485,59 @@ def _merge_writer_sources(
     for ref in writer_refs or []:
         if not isinstance(ref, dict):
             continue
-        src_id = ref.get("id")
         rsrc_id = ref.get("rsrc_id")
+        web_id = ref.get("web_id")
 
         if rsrc_id:
             dossier_src = dossier_by_id.get(rsrc_id)
             if not dossier_src:
                 logger.warning(
-                    "Writer references unknown rsrc_id=%s (src_id=%s); skipping",
-                    rsrc_id, src_id,
+                    "Writer references unknown rsrc_id=%s; skipping",
+                    rsrc_id,
                 )
                 continue
-            merged_src: dict = {"id": src_id}
+            merged_src: dict = {}
             for field in _WRITER_SOURCE_METADATA_FIELDS:
                 if field in dossier_src:
                     merged_src[field] = dossier_src[field]
-            # Internal-only: stash the originating rsrc-NNN so later
-            # stages can convert stakeholder source_ids from rsrc-NNN to
-            # the final src-NNN. Stripped before TP assembly.
             merged_src[_INTERNAL_RSRC_ID_KEY] = rsrc_id
             merged.append(merged_src)
             continue
 
-        # No rsrc_id — fallback for Writer-originated sources (web_search).
-        if ref.get("url") or ref.get("outlet"):
-            merged.append(dict(ref))
-        else:
-            logger.warning(
-                "Writer source entry has no rsrc_id and no metadata "
-                "(id=%s); skipping",
-                src_id,
-            )
+        if web_id:
+            web_src: dict = {}
+            for field in _WRITER_SOURCE_METADATA_FIELDS:
+                if field in ref:
+                    web_src[field] = ref[field]
+            web_src[_INTERNAL_WEB_ID_KEY] = web_id
+            merged.append(web_src)
+            continue
+
+        logger.warning(
+            "Writer source entry has neither rsrc_id nor web_id; skipping: %r",
+            ref,
+        )
     return merged
 
 
+_RSRC_CITATION_RE = re.compile(r"\[rsrc-(\d+)\]")
+_WEB_CITATION_RE = re.compile(r"\[web-(\d+)\]")
+# Kept for post-finalisation tooling (e.g. ``scripts/test_pipeline_hygiene.py``)
+# that walks finalized Topic Packages where citations are already in
+# ``src-NNN`` form.
 _SRC_CITATION_RE = re.compile(r"\[src-(\d+)\]")
 
 _ARTICLE_TEXT_FIELDS = ("headline", "subheadline", "body", "summary")
 
 
 def _collect_cited_src_ids(article: dict) -> set[str]:
-    """Return every ``src-NNN`` id referenced across the article text."""
+    """Return every ``src-NNN`` token cited across the article text fields.
+
+    Use this on **finalized** Topic Packages where renumbering has
+    already produced ``src-NNN`` citations. For Writer-stage outputs
+    (``[rsrc-NNN]`` / ``[web-N]`` tokens), use
+    :func:`_collect_cited_writer_refs` instead.
+    """
     cited: set[str] = set()
     for field in _ARTICLE_TEXT_FIELDS:
         text = article.get(field) or ""
@@ -504,54 +548,87 @@ def _collect_cited_src_ids(article: dict) -> set[str]:
     return cited
 
 
+def _collect_cited_writer_refs(article: dict) -> set[str]:
+    """Return every ``rsrc-NNN`` and ``web-N`` token cited in article text.
+
+    Tokens are returned in their stash-canonical form: ``rsrc-NNN``
+    zero-padded to three digits (matching the dossier's ``rsrc-001``
+    convention); ``web-N`` left un-padded (matching the Writer's
+    ``web-1``/``web-2`` style).
+    """
+    cited: set[str] = set()
+    for field in _ARTICLE_TEXT_FIELDS:
+        text = article.get(field) or ""
+        if not isinstance(text, str):
+            continue
+        for match in _RSRC_CITATION_RE.finditer(text):
+            cited.add(f"rsrc-{match.group(1).zfill(3)}")
+        for match in _WEB_CITATION_RE.finditer(text):
+            cited.add(f"web-{int(match.group(1))}")
+    return cited
+
+
 def _renumber_and_prune_sources(
     article: dict, sources: list[dict], slug: str = "",
 ) -> tuple[dict, list[dict], dict[str, str]]:
-    """Drop unreferenced sources and renumber the rest sequentially.
+    """Drop unreferenced sources and renumber survivors to ``src-NNN``.
 
-    Pure function: deep-copies ``article`` and ``sources``, returns
-    ``(new_article, new_sources, rename_map)``. Callers replace the
-    originals only on success — a partial update that desyncs citations
-    from the array is worse than leaving the pre-fix state intact.
+    Consumes the merged sources from :func:`_merge_writer_sources`
+    (each carrying an internal ``rsrc_id`` xor ``web_id`` stash) and
+    the article body's ``[rsrc-NNN]`` / ``[web-N]`` citations.
 
-    Behaviour:
+    Sources whose stash token does not appear in the body are dropped
+    (INFO log per drop). Survivors are renumbered to ``src-001``,
+    ``src-002``, … in their **current array order** (Writer's editorial
+    decision, not body-citation order). All four text fields
+    (``headline``, ``subheadline``, ``body``, ``summary``) get both
+    ``[rsrc-N]`` and ``[web-N]`` tokens rewritten to their final
+    ``[src-NNN]`` form atomically.
 
-    * Sources that survive are renumbered ``src-001``, ``src-002``, …
-      in their current array order.
-    * Sources with zero citations anywhere in the article are dropped
-      (INFO log per drop).
-    * If the resulting array would be empty (no source is cited),
-      ``WARNING`` is logged and the inputs are returned unchanged with
-      an empty rename map — emptying the array masks upstream breakage.
-    * Citation rewriting is applied to headline, subheadline, body, and
-      summary. Rewriting uses a two-pass approach (collect matches,
-      then rebuild the string) so overlapping old/new numbers cannot
-      collide mid-rewrite.
+    Returns ``(new_article, new_sources, rename_map)`` where
+    ``rename_map`` is keyed by the original stash token (``rsrc-001``
+    or ``web-1``) and valued by the final ``src-NNN`` id.
+
+    Each survivor receives ``id = "src-NNN"``. The ``rsrc_id`` stash is
+    **kept** on dossier survivors (Fix-3 needs it); the ``web_id``
+    stash is dropped here since no downstream code references it.
+
+    If every source would be dropped, the inputs are returned unchanged
+    with an empty rename map and a WARNING — emptying the array masks
+    upstream breakage worse than orphan citations.
     """
     import copy
 
     if not isinstance(sources, list) or not sources:
         return article, sources, {}
 
-    cited_ids = _collect_cited_src_ids(article)
+    cited_tokens = _collect_cited_writer_refs(article)
 
-    surviving_old_ids: list[str] = []
+    surviving_stashes: list[str] = []
     surviving_sources: list[dict] = []
     dropped_count = 0
     for src in sources:
         if not isinstance(src, dict):
             continue
-        src_id = src.get("id")
-        if not isinstance(src_id, str) or not src_id:
+        if rsrc := src.get(_INTERNAL_RSRC_ID_KEY):
+            stash = rsrc
+        elif web := src.get(_INTERNAL_WEB_ID_KEY):
+            stash = web
+        else:
+            dropped_count += 1
+            logger.info(
+                "Fix-1[%s]: dropping source with no stash token (%s)",
+                slug, src.get("outlet", "?"),
+            )
             continue
-        if src_id in cited_ids:
-            surviving_old_ids.append(src_id)
+        if stash in cited_tokens:
+            surviving_stashes.append(stash)
             surviving_sources.append(src)
         else:
             dropped_count += 1
             logger.info(
                 "Fix-1[%s]: dropping unreferenced source %s (%s)",
-                slug, src_id, src.get("outlet", "?"),
+                slug, stash, src.get("outlet", "?"),
             )
 
     if not surviving_sources:
@@ -566,26 +643,30 @@ def _renumber_and_prune_sources(
     new_sources: list[dict] = []
     for new_index, src in enumerate(surviving_sources, start=1):
         new_id = f"src-{new_index:03d}"
-        old_id = surviving_old_ids[new_index - 1]
-        rename_map[old_id] = new_id
+        rename_map[surviving_stashes[new_index - 1]] = new_id
         new_src = copy.deepcopy(src)
         new_src["id"] = new_id
+        new_src.pop(_INTERNAL_WEB_ID_KEY, None)
         new_sources.append(new_src)
 
     new_article = copy.deepcopy(article)
     if rename_map:
-        def _rewrite(text: str) -> str:
-            def sub(match: re.Match) -> str:
-                old = f"src-{match.group(1).zfill(3)}"
-                return f"[{rename_map.get(old, old)}]"
-            return _SRC_CITATION_RE.sub(sub, text)
+        def _rewrite_rsrc(match: re.Match) -> str:
+            stash = f"rsrc-{match.group(1).zfill(3)}"
+            return f"[{rename_map.get(stash, stash)}]"
+
+        def _rewrite_web(match: re.Match) -> str:
+            stash = f"web-{int(match.group(1))}"
+            return f"[{rename_map.get(stash, stash)}]"
 
         for field in _ARTICLE_TEXT_FIELDS:
             value = new_article.get(field)
             if isinstance(value, str) and value:
-                new_article[field] = _rewrite(value)
+                value = _RSRC_CITATION_RE.sub(_rewrite_rsrc, value)
+                value = _WEB_CITATION_RE.sub(_rewrite_web, value)
+                new_article[field] = value
 
-    if dropped_count or any(old != new for old, new in rename_map.items()):
+    if dropped_count or rename_map:
         logger.info(
             "Fix-1[%s]: dropped %d unreferenced source(s); "
             "renumbered %d survivor(s)",
@@ -599,15 +680,20 @@ def _convert_rsrc_to_src_in_perspectives(
     final_sources: list[dict],
     slug: str = "",
 ) -> dict:
-    """Rewrite ``stakeholders[*].source_ids`` from ``rsrc-NNN`` to the
-    matching final ``src-NNN``.
+    """Rewrite ``rsrc-NNN`` references in the enriched Perspektiv V2 output
+    to the matching final ``src-NNN``.
 
-    Uses the internal ``rsrc_id`` stashed on each merged source by
-    :func:`_merge_writer_sources`. Unmapped entries (stakeholder
+    Walks ``position_clusters[*].source_ids`` and each
+    ``position_clusters[*].actors[*].source_ids`` (and
+    ``position_clusters[*].source_ids_aggregate`` if present). Uses the
+    internal ``rsrc_id`` stashed on each merged source by
+    :func:`_merge_writer_sources`. Unmapped entries (a cluster or actor
     references a source that did not survive to the final array) are
-    dropped. Stakeholders whose ``source_ids`` become empty are kept —
-    they remain stakeholders in the landscape even without a
-    currently-cited article backing them.
+    dropped. A cluster whose ``source_ids`` become empty after rewriting
+    is dropped from the output entirely — once the backing sources are
+    gone, the position has no evidence in the final TP. Actors whose
+    own ``source_ids`` are empty after rewriting are kept (the cluster's
+    position still stands).
     """
     import copy
 
@@ -627,52 +713,157 @@ def _convert_rsrc_to_src_in_perspectives(
         return perspective_analysis
 
     synced = copy.deepcopy(perspective_analysis)
-    for stakeholder in synced.get("stakeholders", []) or []:
-        if not isinstance(stakeholder, dict):
-            continue
-        source_ids = stakeholder.get("source_ids") or []
-        if not isinstance(source_ids, list):
-            continue
-        converted: list[str] = []
-        orphaned: list[str] = []
-        for sid in source_ids:
+
+    def _rewrite(ids: list) -> list[str]:
+        out: list[str] = []
+        for sid in ids or []:
             if not isinstance(sid, str):
                 continue
             if sid in rsrc_to_src:
-                converted.append(rsrc_to_src[sid])
+                out.append(rsrc_to_src[sid])
             elif sid.startswith("rsrc-"):
-                orphaned.append(sid)
+                continue  # orphaned — drop
             else:
-                converted.append(sid)  # already src-NNN or custom — pass through
-        stakeholder["source_ids"] = converted
-        if orphaned:
-            logger.info(
-                "Fix-3[%s]: stakeholder %s had %d orphaned rsrc-id(s) "
-                "(%s) with no match in final sources; dropping",
-                slug, stakeholder.get("id", "?"),
-                len(orphaned), ", ".join(orphaned),
+                out.append(sid)  # already src-NNN or custom — pass through
+        return out
+
+    surviving: list[dict] = []
+    for cluster in synced.get("position_clusters", []) or []:
+        if not isinstance(cluster, dict):
+            continue
+        cluster["source_ids"] = _rewrite(cluster.get("source_ids") or [])
+        if "source_ids_aggregate" in cluster:
+            cluster["source_ids_aggregate"] = _rewrite(
+                cluster.get("source_ids_aggregate") or []
             )
-        if not converted and orphaned:
+        for actor in cluster.get("actors", []) or []:
+            if isinstance(actor, dict):
+                actor["source_ids"] = _rewrite(actor.get("source_ids") or [])
+        if not cluster["source_ids"]:
             logger.info(
-                "Fix-3[%s]: stakeholder %s source_ids is now empty; "
-                "keeping stakeholder",
-                slug, stakeholder.get("id", "?"),
+                "Perspektiv[%s]: cluster %s dropped — no surviving sources",
+                slug, cluster.get("id", "?"),
             )
+            continue
+        surviving.append(cluster)
+
+    synced["position_clusters"] = surviving
     return synced
 
 
-def _strip_internal_fields_from_sources(sources: list[dict]) -> list[dict]:
-    """Drop the internal ``rsrc_id`` stash from each source object.
+def _enrich_position_clusters(
+    perspective_analysis: dict,
+    research_dossier: dict,
+) -> dict:
+    """Attach deterministic fields to the agent's raw cluster output.
 
-    Called on the final sources array immediately before TP assembly so
-    the internal key never leaks into the published Topic Package.
-    Returns a new list with new dicts — never mutates the input.
+    The Perspektiv V2 agent emits only
+    ``{position_clusters: [{id, position_label, position_summary, source_ids}],
+    missing_positions: [...]}``. This pass computes the remaining fields
+    from ``source_ids`` against the research dossier:
+
+    - ``actors`` — one entry per ``actors_quoted[]`` entry on each cited
+      source, carrying its own single-item ``source_ids`` and a ``quote``
+      mirrored from ``verbatim_quote``.
+    - ``regions`` — sorted, deduplicated, normalized country values from
+      the cited sources.
+    - ``languages`` — sorted, deduplicated, normalized language values
+      from the cited sources.
+    - ``representation`` — computed as ``len(source_ids) /
+      len(dossier.sources)``: ≥0.40 → ``dominant``; ≥0.15 → ``substantial``;
+      else ``marginal``. Empty dossier → ``marginal`` with a WARNING log.
+
+    The input is not mutated — callers get a deep-copied result.
     """
+    import copy
+
+    if not perspective_analysis or not isinstance(perspective_analysis, dict):
+        return perspective_analysis
+
+    dossier_sources = research_dossier.get("sources", []) if research_dossier else []
+    total_sources = len(dossier_sources)
+    by_id: dict[str, dict] = {}
+    for src in dossier_sources:
+        if isinstance(src, dict):
+            sid = src.get("id")
+            if isinstance(sid, str) and sid:
+                by_id[sid] = src
+
+    if total_sources == 0:
+        logger.warning(
+            "Perspektiv enrichment: research dossier has no sources; "
+            "all clusters default to representation='marginal'"
+        )
+
+    enriched = copy.deepcopy(perspective_analysis)
+    for cluster_idx, cluster in enumerate(
+        enriched.get("position_clusters", []) or [], start=1,
+    ):
+        if not isinstance(cluster, dict):
+            continue
+        cluster["id"] = f"pc-{cluster_idx:03d}"
+        source_ids = [
+            s for s in (cluster.get("source_ids") or []) if isinstance(s, str)
+        ]
+
+        actors: list[dict] = []
+        regions_seen: set[str] = set()
+        languages_seen: set[str] = set()
+        for sid in source_ids:
+            src = by_id.get(sid)
+            if not src:
+                continue
+            country = _normalise_country(src.get("country"))
+            language = _normalise_language(src.get("language"))
+            if country:
+                regions_seen.add(country)
+            if language:
+                languages_seen.add(language)
+            for entry in src.get("actors_quoted", []) or []:
+                if not isinstance(entry, dict):
+                    continue
+                actors.append({
+                    "name": entry.get("name", ""),
+                    "role": entry.get("role", ""),
+                    "type": entry.get("type", ""),
+                    "region": country,
+                    "source_ids": [sid],
+                    "quote": entry.get("verbatim_quote"),
+                })
+
+        if total_sources == 0:
+            representation = "marginal"
+        else:
+            ratio = len(source_ids) / total_sources
+            if ratio >= 0.40:
+                representation = "dominant"
+            elif ratio >= 0.15:
+                representation = "substantial"
+            else:
+                representation = "marginal"
+
+        cluster["actors"] = actors
+        cluster["regions"] = sorted(regions_seen)
+        cluster["languages"] = sorted(languages_seen)
+        cluster["representation"] = representation
+
+    return enriched
+
+
+def _strip_internal_fields_from_sources(sources: list[dict]) -> list[dict]:
+    """Drop internal stash keys from each source object before TP assembly.
+
+    Strips both ``rsrc_id`` (kept through QA+Fix to map Perspektiv
+    source_ids) and ``web_id`` (defensive — should already be dropped
+    at renumber time, but if anything leaks it's caught here). Returns
+    a new list with new dicts — never mutates the input.
+    """
+    internal_keys = {_INTERNAL_RSRC_ID_KEY, _INTERNAL_WEB_ID_KEY}
     cleaned: list[dict] = []
     for src in sources or []:
         if not isinstance(src, dict):
             continue
-        clean = {k: v for k, v in src.items() if k != _INTERNAL_RSRC_ID_KEY}
+        clean = {k: v for k, v in src.items() if k not in internal_keys}
         cleaned.append(clean)
     return cleaned
 
@@ -691,7 +882,8 @@ def _build_bias_card(
     """
     writer_sources = article.get("sources", [])
     researcher_sources = research_dossier.get("sources", [])
-    stakeholders = perspective_analysis.get("stakeholders", [])
+    clusters = perspective_analysis.get("position_clusters", []) or []
+    missing_positions = perspective_analysis.get("missing_positions", []) or []
 
     # Source balance — count by language and normalised country
     by_language: dict[str, int] = {}
@@ -716,6 +908,23 @@ def _build_bias_card(
         c for c in (researcher_countries - writer_countries) if c
     )
 
+    distinct_actors: set[tuple] = set()
+    representation_distribution: dict[str, int] = {
+        "dominant": 0, "substantial": 0, "marginal": 0,
+    }
+    for cluster in clusters:
+        if not isinstance(cluster, dict):
+            continue
+        rep = cluster.get("representation", "marginal")
+        if rep in representation_distribution:
+            representation_distribution[rep] += 1
+        for actor in cluster.get("actors", []) or []:
+            if not isinstance(actor, dict):
+                continue
+            key = (actor.get("name", ""), actor.get("role", ""))
+            if any(key):
+                distinct_actors.add(key)
+
     return {
         "source_balance": {
             "total": len(writer_sources),
@@ -727,10 +936,11 @@ def _build_bias_card(
             "missing_from_dossier": missing_countries,
         },
         "perspectives": {
-            "total_identified": len(stakeholders),
-            "missing_voices": perspective_analysis.get("missing_voices", []),
+            "cluster_count": len(clusters),
+            "distinct_actor_count": len(distinct_actors),
+            "representation_distribution": representation_distribution,
+            "missing_positions": missing_positions,
         },
-        "framing_divergences": perspective_analysis.get("framing_divergences", []),
         "factual_divergences": qa_analysis.get("divergences", []),
         "coverage_gaps": research_dossier.get("coverage_gaps", []),
     }
@@ -1087,6 +1297,70 @@ class Pipeline:
 
         return compressed
 
+    def _rebuild_curator_source_ids(
+        self, agent_result: object, raw_findings: list[dict]
+    ) -> list[dict]:
+        """Extract Curator topics and rebuild ``source_ids`` deterministically.
+
+        The S13 Curator emits ``{"topics": [...], "cluster_assignments":
+        [{"finding_index": N, "topic_index": M}, ...]}``. Python pairs each
+        cluster_assignment with its target topic and emits the resulting
+        ``finding-N`` strings as ``topics[].source_ids``.
+
+        Falls back to the legacy shape (a top-level JSON array of topics
+        each carrying ``source_ids: ["finding-N", ...]``) when the new
+        envelope is absent — older prompts on disk still produce that
+        shape and the pipeline must keep working through the migration.
+
+        Out-of-range ``finding_index`` / ``topic_index`` are skipped with
+        a WARNING. Topics with zero matching cluster_assignments get an
+        empty ``source_ids`` list and an INFO log.
+        """
+        parsed = _extract_dict(agent_result)
+        new_shape = (
+            isinstance(parsed, dict)
+            and isinstance(parsed.get("topics"), list)
+            and isinstance(parsed.get("cluster_assignments"), list)
+        )
+        if not new_shape:
+            # Legacy: top-level list of topics with source_ids already attached.
+            return _extract_list(agent_result) or []
+
+        topics_in: list = parsed.get("topics") or []
+        topics: list[dict] = [t for t in topics_in if isinstance(t, dict)]
+        for t in topics:
+            t["source_ids"] = []
+
+        n_findings = len(raw_findings)
+        n_topics = len(topics)
+        for ca in parsed.get("cluster_assignments") or []:
+            if not isinstance(ca, dict):
+                continue
+            ti = ca.get("topic_index")
+            fi = ca.get("finding_index")
+            if not isinstance(ti, int) or not (0 <= ti < n_topics):
+                logger.warning(
+                    "Curator cluster_assignment topic_index=%r out of range "
+                    "(have %d topics); skipping", ti, n_topics,
+                )
+                continue
+            if not isinstance(fi, int) or not (0 <= fi < n_findings):
+                logger.warning(
+                    "Curator cluster_assignment finding_index=%r out of range "
+                    "(have %d findings); skipping", fi, n_findings,
+                )
+                continue
+            topics[ti]["source_ids"].append(f"finding-{fi}")
+
+        for ti, t in enumerate(topics):
+            if not t["source_ids"]:
+                logger.info(
+                    "Curator topic %d ('%s') has no cluster_assignments — "
+                    "empty source_ids; unlikely to survive Editor",
+                    ti, t.get("title", "?"),
+                )
+        return topics
+
     def _enrich_curator_output(
         self, topics: list[dict], raw_findings: list[dict]
     ) -> list[dict]:
@@ -1210,8 +1484,7 @@ class Pipeline:
 
         message = (
             "Review these findings. Cluster related findings into topics. "
-            "Score each topic's newsworthiness on a 1-10 scale. "
-            "For each topic provide: title, relevance_score, summary, source_ids."
+            "Score each topic's newsworthiness on a 1-10 scale."
         )
 
         try:
@@ -1219,7 +1492,10 @@ class Pipeline:
                 message, context={"findings": prepared}
             )
             self._track_agent(result, "curator")
-            topics = _extract_list(result) or []
+
+            # Rebuild source_ids from cluster_assignments (S13 shape) or
+            # pass through topics-with-source_ids (legacy shape).
+            topics = self._rebuild_curator_source_ids(result, raw_findings)
 
             # Deterministic enrichment (geographic_coverage, missing_perspectives, etc.)
             topics = self._enrich_curator_output(topics, raw_findings)
@@ -1312,7 +1588,22 @@ class Pipeline:
     async def editorial_conference(
         self, curated_topics: list[dict]
     ) -> list[TopicAssignment]:
-        """Prioritize topics and create assignments."""
+        """Prioritize topics and create assignments.
+
+        Editor emits one entry per topic with ``title``, ``priority``,
+        ``selection_reason``, and optional ``follow_up_to`` /
+        ``follow_up_reason``. Python owns the deterministic fields
+        (``id``, ``topic_slug``):
+
+        1. Parse the raw output, preserving original input order.
+        2. Filter rejected topics (priority ≤ 0). Rejected topics never
+           receive an ``id`` — they appear at the tail of the returned
+           list with ``id=""`` so the debug snapshot still records them.
+        3. Sort survivors by priority desc, source_count desc, position asc.
+        4. Assign ``id = f"tp-{date}-{seq:03d}"`` (1-based seq) and
+           ``topic_slug`` (deterministic ASCII-fold of ``title``).
+        5. Construct ``TopicAssignment`` instances.
+        """
         agent = self.agents.get("editor")
         if not agent:
             logger.error("No 'editor' agent configured")
@@ -1321,10 +1612,9 @@ class Pipeline:
         previous_coverage = self._scan_previous_coverage()
 
         message = (
-            "Prioritize these topics for today's report. For each: assign "
-            "priority (1-10), provide selection_reason, assign topic_id. "
-            f"Today's date is {self.state.date}. Use this date in topic_id "
-            "format: tp-YYYY-MM-DD-NNN (e.g. tp-" + self.state.date + "-001)."
+            "Prioritize these topics for today's report. For each, assign a "
+            "priority (1-10) and a selection_reason. Today's date is "
+            f"{self.state.date}."
         )
 
         try:
@@ -1337,14 +1627,59 @@ class Pipeline:
             self._track_agent(result, "editor")
             raw_assignments = _extract_list(result) or []
 
-            assignments = []
-            for a in raw_assignments:
+            survivors: list[dict] = []
+            rejected: list[dict] = []
+            for position, a in enumerate(raw_assignments):
+                if not isinstance(a, dict):
+                    continue
+                priority_raw = a.get("priority", 5)
+                try:
+                    priority = int(priority_raw)
+                except (TypeError, ValueError):
+                    priority = 5
+                source_count = len(a.get("raw_data", {}).get("source_ids", []))
+                entry = {
+                    "raw": a,
+                    "priority": priority,
+                    "source_count": source_count,
+                    "position": position,
+                }
+                if priority <= 0:
+                    rejected.append(entry)
+                else:
+                    survivors.append(entry)
+
+            survivors.sort(
+                key=lambda e: (-e["priority"], -e["source_count"], e["position"])
+            )
+
+            date = self.state.date if self.state else ""
+            assignments: list[TopicAssignment] = []
+            for seq, entry in enumerate(survivors, start=1):
+                a = entry["raw"]
+                title = a.get("title", "") or ""
+                slug = _slugify(title) or "topic"
                 assignments.append(
                     TopicAssignment(
-                        id=a.get("id", a.get("topic_id", "")),
-                        title=a.get("title", ""),
-                        priority=a.get("priority", 5),
-                        topic_slug=a.get("topic_slug", ""),
+                        id=f"tp-{date}-{seq:03d}",
+                        title=title,
+                        priority=entry["priority"],
+                        topic_slug=slug,
+                        selection_reason=a.get("selection_reason", ""),
+                        raw_data=a.get("raw_data", {}),
+                        follow_up_to=a.get("follow_up_to"),
+                        follow_up_reason=a.get("follow_up_reason"),
+                    )
+                )
+
+            for entry in rejected:
+                a = entry["raw"]
+                assignments.append(
+                    TopicAssignment(
+                        id="",
+                        title=a.get("title", "") or "",
+                        priority=entry["priority"],
+                        topic_slug="",
                         selection_reason=a.get("selection_reason", ""),
                         raw_data=a.get("raw_data", {}),
                         follow_up_to=a.get("follow_up_to"),
@@ -1473,6 +1808,9 @@ class Pipeline:
                 self._track_agent(result, "perspektiv", slug)
                 if not perspective_analysis and result.content:
                     self._log_raw_on_parse_failure(result, "Perspektiv", slug, "04b-perspektiv")
+                perspective_analysis = _enrich_position_clusters(
+                    perspective_analysis, research_dossier,
+                )
                 self._write_debug_output(f"04b-perspektiv-{slug}.json", perspective_analysis)
 
                 # 5s delay before writer
@@ -1488,8 +1826,7 @@ class Pipeline:
                     "topic_slug": assignment.topic_slug,
                     "stopped_at": "perspektiv",
                 },
-                perspectives=perspective_analysis.get("stakeholders", []),
-                gaps=perspective_analysis.get("missing_voices", []),
+                perspectives=perspective_analysis.get("position_clusters", []),
                 status="partial",
             )
 
@@ -1508,6 +1845,8 @@ class Pipeline:
                 "title": assignment.title,
                 "selection_reason": assignment.selection_reason,
                 "perspective_analysis": perspective_analysis,
+                "position_clusters": perspective_analysis.get("position_clusters", []),
+                "missing_positions": perspective_analysis.get("missing_positions", []),
                 "sources": research_dossier.get("sources", []),
                 "coverage_gaps": research_dossier.get("coverage_gaps", []),
             }
@@ -1537,7 +1876,7 @@ class Pipeline:
             result = await writer.run(
                 "Write a multi-perspective article on this topic.",
                 context=writer_context,
-                system_addendum=writer_addendum,
+                instructions_addendum=writer_addendum,
             )
             self._track_agent(result, "writer", slug)
             article = _extract_dict(result)
@@ -1576,11 +1915,25 @@ class Pipeline:
                     "stopped_at": "writer",
                 },
                 sources=article.get("sources", []),
-                perspectives=perspective_analysis.get("stakeholders", []),
-                gaps=perspective_analysis.get("missing_voices", []),
+                perspectives=perspective_analysis.get("position_clusters", []),
                 article=article,
                 status="partial",
             )
+
+        # Fix 1 — Source-ID renumbering (now BEFORE QA+Fix). Drops any
+        # sources never cited in the article and renames the survivors to
+        # a gapless src-001, src-002, … sequence. Rewrites [rsrc-NNN] /
+        # [web-N] citations atomically across headline/subheadline/body/
+        # summary so QA+Fix sees one consistent ID scheme everywhere.
+        new_article, new_sources, _rename_map = _renumber_and_prune_sources(
+            article, article.get("sources", []) or [], slug=slug,
+        )
+        article = new_article
+        article["sources"] = new_sources
+        article["word_count"] = len(article.get("body", "").split())
+
+        # Debug snapshot of the QA input — verifiable at smoke time.
+        self._write_debug_output(f"06-qa-input-{slug}.json", article)
 
         # 4. QA+Fix (single call: find errors + apply corrections + return corrected article)
         qa_analysis: dict = {}
@@ -1590,6 +1943,8 @@ class Pipeline:
                 "article": article,
                 "sources": research_dossier.get("sources", []),
                 "preliminary_divergences": research_dossier.get("preliminary_divergences", []),
+                "position_clusters": perspective_analysis.get("position_clusters", []),
+                "missing_positions": perspective_analysis.get("missing_positions", []),
             }
             result = await qa_analyze.run(
                 "Check this article against the source material. Find errors and divergences. "
@@ -1602,7 +1957,12 @@ class Pipeline:
                 self._log_raw_on_parse_failure(result, "QA+Fix", slug, "06-qa-analyze")
             self._write_debug_output(f"06-qa-analyze-{slug}.json", qa_analysis)
 
-            # Take corrected article from QA+Fix output
+            # Take corrected article from QA+Fix. Note: we deliberately do
+            # NOT replace article["sources"] from qa_article["sources"] —
+            # the pre-QA renumbered sources carry the internal ``rsrc_id``
+            # stash that Fix-3 needs. QA+Fix's prompt promises sources are
+            # passed through unchanged, so dropping its sources field is
+            # safe.
             qa_article = qa_analysis.get("article")
             if qa_article and isinstance(qa_article, dict) and qa_article.get("body"):
                 article["body"] = qa_article["body"]
@@ -1612,15 +1972,13 @@ class Pipeline:
                     article["subheadline"] = qa_article["subheadline"]
                 if qa_article.get("summary"):
                     article["summary"] = qa_article["summary"]
-                if qa_article.get("sources"):
-                    article["sources"] = qa_article["sources"]
 
-                corrections_applied = qa_analysis.get("corrections_applied", [])
+                proposed_corrections = qa_analysis.get("proposed_corrections", [])
                 logger.info(
-                    "QA+Fix for '%s': %d problems found, %d corrections applied",
+                    "QA+Fix for '%s': %d problems found, %d proposed corrections",
                     assignment.title,
                     len(qa_analysis.get("problems_found", [])),
-                    len(corrections_applied),
+                    len(proposed_corrections),
                 )
             else:
                 logger.warning(
@@ -1632,9 +1990,8 @@ class Pipeline:
         article["word_count"] = len(article.get("body", "").split())
 
         # Replace the Writer's [[COVERAGE_STATEMENT]] placeholder with a
-        # Python-rendered sentence. Runs once, after QA+Fix and any other
-        # Python post-processing that might add or remove sources — the
-        # final source array is authoritative at this point.
+        # Python-rendered sentence. Runs after QA+Fix; the final source
+        # array is authoritative at this point.
         if article.get("body") and "[[COVERAGE_STATEMENT]]" in article["body"]:
             _substitute_coverage_statement(article)
             article["word_count"] = len(article.get("body", "").split())
@@ -1649,19 +2006,11 @@ class Pipeline:
                 assignment.title,
             )
 
-        # Fix 1 — Source-ID renumbering. Drops any sources never cited in
-        # the article and renames the survivors to a gapless src-001,
-        # src-002, … sequence. Rewrites citations atomically.
-        new_article, new_sources, _rename_map = _renumber_and_prune_sources(
-            article, article.get("sources", []) or [], slug=slug,
-        )
-        article = new_article
-        article["sources"] = new_sources
-        article["word_count"] = len(article.get("body", "").split())
-
-        # Fix 3 — stakeholder source_ids use rsrc-NNN; rewrite to the
-        # final src-NNN via the internal rsrc_id stash. Runs after Fix 1
-        # so the mapping reflects the post-renumber state.
+        # Fix 3 — Perspektiv source_ids use rsrc-NNN; rewrite to the
+        # final src-NNN via the internal rsrc_id stash on each surviving
+        # source. Renumbering ran before QA+Fix; the rsrc_id stash
+        # survived because we did not replace article["sources"] from
+        # QA+Fix's article output.
         perspective_analysis = _convert_rsrc_to_src_in_perspectives(
             perspective_analysis, article.get("sources", []), slug=slug,
         )
@@ -1748,10 +2097,12 @@ class Pipeline:
             article.get("sources", [])
         )
 
-        # Assemble TopicPackage. ``gaps`` carries the Phase 2 reducer's
-        # ``coverage_gaps`` from the Hydrated path (empty list on
-        # Production, which has no Phase 2). Perspektiv's ``missing_voices``
-        # remains under ``bias_analysis.perspectives`` — different
+        # Assemble TopicPackage. ``perspectives`` carries the enriched
+        # ``position_clusters`` from Perspektiv V2. ``gaps`` carries the
+        # Phase 2 reducer's ``coverage_gaps`` from the Hydrated path
+        # (empty list on Production, which has no Phase 2). Perspektiv's
+        # ``missing_positions`` lives under
+        # ``bias_analysis.perspectives.missing_positions`` — different
         # semantic, different field.
         return TopicPackage(
             id=assignment.id,
@@ -1764,7 +2115,7 @@ class Pipeline:
                 "follow_up": follow_up_data,
             },
             sources=article.get("sources", []),
-            perspectives=perspective_analysis.get("stakeholders", []),
+            perspectives=perspective_analysis.get("position_clusters", []),
             divergences=qa_analysis.get("divergences", []),
             gaps=research_dossier.get("coverage_gaps", []) or [],
             article=article,
@@ -1775,9 +2126,9 @@ class Pipeline:
                     "run_id": self.state.run_id if self.state else "",
                     "date": self.state.date if self.state else "",
                 },
-                "article_original": article_original if qa_analysis.get("corrections_applied") else None,
+                "article_original": article_original if qa_analysis.get("proposed_corrections") else None,
                 "qa_problems_found": qa_analysis.get("problems_found", []),
-                "qa_corrections_applied": qa_analysis.get("corrections_applied", []),
+                "qa_proposed_corrections": qa_analysis.get("proposed_corrections", []),
             },
             status="review",
         )
@@ -1877,25 +2228,37 @@ class Pipeline:
 
         dossier = _extract_dict(assemble_result) or {}
 
+        # Assembler emits sources without `id` or `estimated_date`; Python
+        # owns both. Array order is the assembler's editorial decision —
+        # do not reorder.
+        sources = dossier.get("sources") or []
+        for idx, source in enumerate(sources):
+            if not isinstance(source, dict):
+                continue
+            source["id"] = f"rsrc-{idx + 1:03d}"
+            if not source.get("estimated_date"):
+                url = source.get("url", "") or ""
+                est = _extract_date_from_url(url)
+                if est:
+                    source["estimated_date"] = est
+
         # Check for old sources and log warnings
         if dossier and self.state:
             run_date = datetime.strptime(self.state.date, "%Y-%m-%d")
             for source in dossier.get("sources", []):
-                url = source.get("url", "")
-                est_date_str = source.get("estimated_date") or _extract_date_from_url(url)
-                if est_date_str:
-                    try:
-                        est_date = datetime.strptime(est_date_str, "%Y-%m-%d")
-                        age_days = (run_date - est_date).days
-                        if age_days > 30:
-                            logger.warning(
-                                "Old source in '%s': %s (%s, %d days old)",
-                                slug, source.get("outlet", ""), est_date_str, age_days,
-                            )
-                        if not source.get("estimated_date"):
-                            source["estimated_date"] = est_date_str
-                    except ValueError:
-                        pass
+                est_date_str = source.get("estimated_date")
+                if not est_date_str:
+                    continue
+                try:
+                    est_date = datetime.strptime(est_date_str, "%Y-%m-%d")
+                except ValueError:
+                    continue
+                age_days = (run_date - est_date).days
+                if age_days > 30:
+                    logger.warning(
+                        "Old source in '%s': %s (%s, %d days old)",
+                        slug, source.get("outlet", ""), est_date_str, age_days,
+                    )
 
         # Write debug output (raw content if parsing failed)
         if dossier:

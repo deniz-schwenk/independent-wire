@@ -54,6 +54,7 @@ from src.pipeline import (
     _build_bias_card,
     _convert_rsrc_to_src_in_perspectives,
     _deduplicate_search_results,
+    _enrich_position_clusters,
     _extract_date_from_url,
     _extract_dict,
     _extract_list,
@@ -231,32 +232,37 @@ def merge_perspektiv_deltas(
     sync_output: dict,
     slug: str = "",
 ) -> dict:
-    """Apply ``stakeholder_updates`` deltas into a deep copy of the map.
+    """Apply ``position_cluster_updates`` deltas into a deep copy of the map.
 
-    Perspektiv-Sync V3 emits only deltas. Python owns the merge so
-    ``missing_voices`` and ``framing_divergences`` pass through from
+    Perspektiv-Sync V2 emits only deltas keyed by ``position_clusters[].id``.
+    Python owns the merge so ``missing_positions`` and all pass-through
+    cluster fields (``actors``, ``regions``, ``languages``,
+    ``representation``, ``source_ids``, ``id``) come through from
     ``original_perspectives`` untouched.
 
-    Delta semantics, per the Perspektiv-Sync V3 prompt:
+    Delta semantics, per the V2 prompt:
 
-    * Field **present** in a delta entry (even with value ``None``) →
-      overwrite on the matched stakeholder. ``position_quote: null``
-      removes the quote.
-    * Field **absent** → leave the stakeholder field unchanged. Presence
-      is tested with ``in``, not ``.get() is None``.
-    * Delta ``id`` with no match in the original map → log a warning and
+    * Field **present** with a string value → overwrite on the matched
+      cluster.
+    * Field **absent** → leave unchanged.
+    * Field **present with ``None``** → log WARNING and skip that field.
+      Unlike V1, V2 has no semantic interpretation for null on either
+      ``position_label`` or ``position_summary``; never write null into
+      a cluster.
+    * Delta ``id`` with no match in the original map → log WARNING and
       skip that entry. Do not raise.
     """
     synced = copy.deepcopy(original_perspectives)
-    updates = sync_output.get("stakeholder_updates") or []
+    updates = sync_output.get("position_cluster_updates") or []
 
-    stakeholders_by_id: dict[str, dict] = {}
-    for sh in synced.get("stakeholders", []) or []:
-        if isinstance(sh, dict):
-            sid = sh.get("id")
-            if isinstance(sid, str) and sid:
-                stakeholders_by_id[sid] = sh
+    clusters_by_id: dict[str, dict] = {}
+    for cluster in synced.get("position_clusters", []) or []:
+        if isinstance(cluster, dict):
+            cid = cluster.get("id")
+            if isinstance(cid, str) and cid:
+                clusters_by_id[cid] = cluster
 
+    mergeable_fields = ("position_label", "position_summary")
     for entry in updates:
         if not isinstance(entry, dict):
             logger.warning(
@@ -271,18 +277,27 @@ def merge_perspektiv_deltas(
                 slug, entry,
             )
             continue
-        target = stakeholders_by_id.get(entry_id)
+        target = clusters_by_id.get(entry_id)
         if target is None:
             logger.warning(
                 "PipelineHydrated[%s]: delta id=%s not found in original "
-                "stakeholder map; skipping",
+                "position_clusters map; skipping",
                 slug, entry_id,
             )
             continue
-        if "position_quote" in entry:
-            target["position_quote"] = entry["position_quote"]
-        if "position_summary" in entry:
-            target["position_summary"] = entry["position_summary"]
+        for field in mergeable_fields:
+            if field not in entry:
+                continue
+            value = entry[field]
+            if value is None:
+                logger.warning(
+                    "PipelineHydrated[%s]: delta id=%s has %s=null; "
+                    "treating as absent (V2 forbids null overrides)",
+                    slug, entry_id, field,
+                )
+                continue
+            if isinstance(value, str):
+                target[field] = value
 
     return synced
 
@@ -308,7 +323,8 @@ class PipelineHydrated(Pipeline):
             self.agents["perspektiv_sync"] = Agent(
                 name="perspektiv_sync",
                 model="anthropic/claude-opus-4.6",
-                prompt_path=str(agents_dir / "perspektiv_sync" / "AGENTS.md"),
+                system_prompt_path=str(agents_dir / "perspektiv_sync" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "perspektiv_sync" / "INSTRUCTIONS.md"),
                 tools=[],
                 temperature=0.1,
                 provider="openrouter",
@@ -364,14 +380,16 @@ class PipelineHydrated(Pipeline):
         )
 
         # --- 2. T2: aggregator → prepared dossier → coverage ----------
-        aggregator_agent = self.agents.get("hydration_aggregator")
+        phase1_agent = self.agents.get("hydration_aggregator_phase1")
+        phase2_agent = self.agents.get("hydration_aggregator_phase2")
         aggregator_output = await run_aggregator(
             {
                 "title": assignment_data.get("title", ""),
                 "selection_reason": assignment_data.get("selection_reason", ""),
             },
             hydration_results,
-            agent=aggregator_agent,
+            phase1_agent=phase1_agent,
+            phase2_agent=phase2_agent,
         )
         # run_aggregator encapsulates the Agent.run() call, so token usage is
         # logged by the Agent itself but not surfaced to _agent_stats here.
@@ -542,6 +560,23 @@ class PipelineHydrated(Pipeline):
         self._track_agent(assemble_result, "researcher_assemble", slug)
         web_dossier = _extract_dict(assemble_result) or {}
 
+        # Assembler emits sources without `id` or `estimated_date`; Python
+        # owns both. Array order is preserved. ``merge_dossiers`` re-runs
+        # the rsrc-NNN assignment across the concatenated source list, so
+        # these per-dossier ids are intermediate — but we still need them
+        # to keep the warning log meaningful and to ensure the web dossier
+        # is internally consistent before the merge.
+        web_sources = web_dossier.get("sources") or []
+        for idx, source in enumerate(web_sources):
+            if not isinstance(source, dict):
+                continue
+            source["id"] = f"rsrc-{idx + 1:03d}"
+            if not source.get("estimated_date"):
+                url = source.get("url", "") or ""
+                est = _extract_date_from_url(url)
+                if est:
+                    source["estimated_date"] = est
+
         # Old-source check (mirrors production's warning behavior).
         if web_dossier and self.state:
             try:
@@ -550,11 +585,7 @@ class PipelineHydrated(Pipeline):
                 run_date = None
             if run_date is not None:
                 for source in web_dossier.get("sources", []):
-                    url = source.get("url", "")
-                    est_date_str = (
-                        source.get("estimated_date")
-                        or _extract_date_from_url(url)
-                    )
+                    est_date_str = source.get("estimated_date")
                     if not est_date_str:
                         continue
                     try:
@@ -568,8 +599,6 @@ class PipelineHydrated(Pipeline):
                             slug, source.get("outlet", ""),
                             est_date_str, age_days,
                         )
-                    if not source.get("estimated_date"):
-                        source["estimated_date"] = est_date_str
 
         logger.info(
             "PipelineHydrated[%s]: web-search dossier has %d sources",
@@ -613,18 +642,18 @@ class PipelineHydrated(Pipeline):
         qa_analysis: dict,
         slug: str,
     ) -> dict:
-        """Re-align the stakeholder map with the QA-corrected article body.
+        """Re-align the position-cluster map with the QA-corrected article.
 
-        Eligibility gate: skipped when ``qa_analysis.corrections_applied``
+        Eligibility gate: skipped when ``qa_analysis.proposed_corrections``
         is empty — the map is already in sync with the article. Any
         agent-call failure, parse failure, or schema-violation falls back
         to the original ``perspective_analysis`` so TP assembly continues.
         """
-        corrections = qa_analysis.get("corrections_applied") or []
+        corrections = qa_analysis.get("proposed_corrections") or []
         if not corrections:
             logger.info(
                 "PipelineHydrated[%s]: perspektiv-sync skipped — "
-                "QA applied no corrections",
+                "QA reported no problems",
                 slug,
             )
             return perspective_analysis
@@ -648,16 +677,16 @@ class PipelineHydrated(Pipeline):
             },
             "qa_corrections": {
                 "problems_found": qa_analysis.get("problems_found", []),
-                "corrections_applied": corrections,
+                "proposed_corrections": corrections,
             },
         }
 
         try:
             result = await sync_agent.run(
-                "Synchronize the stakeholder map with the QA-corrected article. "
-                "Update position_quote and position_summary for stakeholders "
-                "affected by QA corrections; pass every other field through "
-                "unchanged.",
+                "Synchronize the position-cluster map with the QA-corrected "
+                "article. Emit position_cluster_updates for clusters whose "
+                "position_label or position_summary no longer matches the "
+                "corrected article body.",
                 context=sync_context,
             )
         except Exception as exc:
@@ -682,19 +711,20 @@ class PipelineHydrated(Pipeline):
             )
             return perspective_analysis
 
-        if "stakeholder_updates" not in delta:
+        if "position_cluster_updates" not in delta:
             logger.warning(
                 "PipelineHydrated[%s]: perspektiv-sync output missing "
-                "'stakeholder_updates'; keeping original perspectives map",
+                "'position_cluster_updates'; keeping original perspectives map",
                 slug,
             )
             return perspective_analysis
 
-        updates = delta.get("stakeholder_updates")
+        updates = delta.get("position_cluster_updates")
         if not isinstance(updates, list):
             logger.warning(
-                "PipelineHydrated[%s]: perspektiv-sync 'stakeholder_updates' "
-                "is %s, not a list; keeping original perspectives map",
+                "PipelineHydrated[%s]: perspektiv-sync "
+                "'position_cluster_updates' is %s, not a list; keeping "
+                "original perspectives map",
                 slug, type(updates).__name__,
             )
             return perspective_analysis
@@ -702,21 +732,20 @@ class PipelineHydrated(Pipeline):
         if not updates:
             logger.info(
                 "PipelineHydrated[%s]: perspektiv-sync ran but reported "
-                "no stakeholder changes (%d corrections considered)",
+                "no position cluster updates (%d corrections considered)",
                 slug, len(corrections),
             )
             return perspective_analysis
 
-        delta = _sanitize_null_strings(delta)
         synced = merge_perspektiv_deltas(
             perspective_analysis, delta, slug=slug,
         )
         self._write_debug_output(f"04c-perspektiv-sync-{slug}.json", synced)
         logger.info(
             "PipelineHydrated[%s]: perspektiv-sync applied "
-            "(%d stakeholder updates merged, %d corrections considered)",
+            "(%d position cluster updates merged, %d corrections considered)",
             slug,
-            len(delta.get("stakeholder_updates") or []),
+            len(updates),
             len(corrections),
         )
         return synced
@@ -819,6 +848,9 @@ class PipelineHydrated(Pipeline):
                     self._log_raw_on_parse_failure(
                         result, "Perspektiv", slug, "04b-perspektiv",
                     )
+                perspective_analysis = _enrich_position_clusters(
+                    perspective_analysis, research_dossier,
+                )
                 self._write_debug_output(
                     f"04b-perspektiv-{slug}.json", perspective_analysis,
                 )
@@ -835,8 +867,7 @@ class PipelineHydrated(Pipeline):
                     "topic_slug": assignment.topic_slug,
                     "stopped_at": "perspektiv",
                 },
-                perspectives=perspective_analysis.get("stakeholders", []),
-                gaps=perspective_analysis.get("missing_voices", []),
+                perspectives=perspective_analysis.get("position_clusters", []),
                 status="partial",
             )
 
@@ -857,6 +888,8 @@ class PipelineHydrated(Pipeline):
                 "title": assignment.title,
                 "selection_reason": assignment.selection_reason,
                 "perspective_analysis": perspective_analysis,
+                "position_clusters": perspective_analysis.get("position_clusters", []),
+                "missing_positions": perspective_analysis.get("missing_positions", []),
                 "sources": research_dossier.get("sources", []),
                 "coverage_gaps": research_dossier.get("coverage_gaps", []),
             }
@@ -886,7 +919,7 @@ class PipelineHydrated(Pipeline):
             result = await writer.run(
                 "Write a multi-perspective article on this topic.",
                 context=writer_context,
-                system_addendum=writer_addendum,
+                instructions_addendum=writer_addendum,
             )
             self._track_agent(result, "writer", slug)
             article = _extract_dict(result)
@@ -918,11 +951,24 @@ class PipelineHydrated(Pipeline):
                     "stopped_at": "writer",
                 },
                 sources=article.get("sources", []),
-                perspectives=perspective_analysis.get("stakeholders", []),
-                gaps=perspective_analysis.get("missing_voices", []),
+                perspectives=perspective_analysis.get("position_clusters", []),
                 article=article,
                 status="partial",
             )
+
+        # Fix 1 — Source-ID renumbering (now BEFORE QA+Fix). Drops any
+        # sources never cited in the article and renames the survivors
+        # to a gapless src-001, src-002, … sequence. Rewrites
+        # [rsrc-NNN] / [web-N] citations to [src-NNN] across all four
+        # text fields so QA+Fix sees one consistent ID scheme.
+        new_article, new_sources, _rename_map = _renumber_and_prune_sources(
+            article, article.get("sources", []) or [], slug=slug,
+        )
+        article = new_article
+        article["sources"] = new_sources
+        article["word_count"] = len(article.get("body", "").split())
+
+        self._write_debug_output(f"06-qa-input-{slug}.json", article)
 
         # 4. QA+Fix (single call: find errors + apply corrections)
         qa_analysis: dict = {}
@@ -934,6 +980,8 @@ class PipelineHydrated(Pipeline):
                 "preliminary_divergences": research_dossier.get(
                     "preliminary_divergences", []
                 ),
+                "position_clusters": perspective_analysis.get("position_clusters", []),
+                "missing_positions": perspective_analysis.get("missing_positions", []),
             }
             result = await qa_analyze.run(
                 "Check this article against the source material. Find "
@@ -951,6 +999,10 @@ class PipelineHydrated(Pipeline):
                 f"06-qa-analyze-{slug}.json", qa_analysis,
             )
 
+            # Take corrected article from QA+Fix. We deliberately do NOT
+            # replace article["sources"] from qa_article["sources"] —
+            # the pre-QA renumbered sources carry the internal
+            # ``rsrc_id`` stash that Fix-3 needs.
             qa_article = qa_analysis.get("article")
             if qa_article and isinstance(qa_article, dict) and qa_article.get("body"):
                 article["body"] = qa_article["body"]
@@ -960,15 +1012,13 @@ class PipelineHydrated(Pipeline):
                     article["subheadline"] = qa_article["subheadline"]
                 if qa_article.get("summary"):
                     article["summary"] = qa_article["summary"]
-                if qa_article.get("sources"):
-                    article["sources"] = qa_article["sources"]
 
-                corrections_applied = qa_analysis.get("corrections_applied", [])
+                proposed_corrections = qa_analysis.get("proposed_corrections", [])
                 logger.info(
-                    "QA+Fix for '%s': %d problems found, %d corrections applied",
+                    "QA+Fix for '%s': %d problems found, %d proposed corrections",
                     assignment.title,
                     len(qa_analysis.get("problems_found", [])),
-                    len(corrections_applied),
+                    len(proposed_corrections),
                 )
             else:
                 logger.warning(
@@ -976,10 +1026,10 @@ class PipelineHydrated(Pipeline):
                     assignment.title,
                 )
 
-        # 4b. Perspektiv-Sync — re-align stakeholder map with QA-corrected
-        # article body. Skipped when QA made no corrections; non-fatal on
-        # failure (falls back to the unsynced map). This step is specific
-        # to the hydrated pipeline; production uses the unsynced map.
+        # 4b. Perspektiv-Sync — re-align position cluster map with the
+        # QA-corrected article body. Skipped when QA reported no
+        # problems; non-fatal on failure. Specific to the hydrated
+        # pipeline; production uses the unsynced map.
         perspective_analysis = await self._run_perspektiv_sync(
             perspective_analysis, article, qa_analysis, slug,
         )
@@ -1001,17 +1051,11 @@ class PipelineHydrated(Pipeline):
                 assignment.title,
             )
 
-        # Fix 1 — Source-ID renumbering. Drops unreferenced sources and
-        # renames survivors to a gapless src-001, src-002, … sequence.
-        new_article, new_sources, _rename_map = _renumber_and_prune_sources(
-            article, article.get("sources", []) or [], slug=slug,
-        )
-        article = new_article
-        article["sources"] = new_sources
-        article["word_count"] = len(article.get("body", "").split())
-
-        # Fix 3 — rewrite stakeholder source_ids from rsrc-NNN to
-        # post-Fix-1 src-NNN via the internal rsrc_id stash.
+        # Fix 3 — rewrite Perspektiv source_ids from rsrc-NNN to
+        # post-Fix-1 src-NNN via the internal rsrc_id stash on each
+        # surviving source. Renumbering ran before QA+Fix; the rsrc_id
+        # stash survived because we did not replace article["sources"]
+        # from QA+Fix's article output.
         perspective_analysis = _convert_rsrc_to_src_in_perspectives(
             perspective_analysis, article.get("sources", []), slug=slug,
         )
@@ -1127,7 +1171,7 @@ class PipelineHydrated(Pipeline):
                 "follow_up": follow_up_data,
             },
             sources=article.get("sources", []),
-            perspectives=perspective_analysis.get("stakeholders", []),
+            perspectives=perspective_analysis.get("position_clusters", []),
             divergences=qa_analysis.get("divergences", []),
             gaps=research_dossier.get("coverage_gaps", []) or [],
             article=article,
@@ -1140,11 +1184,11 @@ class PipelineHydrated(Pipeline):
                 },
                 "article_original": (
                     article_original
-                    if qa_analysis.get("corrections_applied") else None
+                    if qa_analysis.get("proposed_corrections") else None
                 ),
                 "qa_problems_found": qa_analysis.get("problems_found", []),
-                "qa_corrections_applied": qa_analysis.get(
-                    "corrections_applied", []
+                "qa_proposed_corrections": qa_analysis.get(
+                    "proposed_corrections", []
                 ),
             },
             status="review",

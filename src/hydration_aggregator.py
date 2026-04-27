@@ -4,7 +4,10 @@ Four public functions that compose the Hydration path between T1
 (``src.hydration``) and the Researcher Assembler output. Each has a stable
 contract; downstream code (T3 pipeline wiring) calls them in sequence:
 
-    aggregator_output = await run_aggregator(assignment, hydration_results)
+    aggregator_output = await run_aggregator(
+        assignment, hydration_results,
+        phase1_agent=..., phase2_agent=...,
+    )
     pre_dossier = build_prepared_dossier(hydration_results, aggregator_output)
     coverage = build_coverage_summary(pre_dossier)
     merged = merge_dossiers(pre_dossier, web_search_dossier)
@@ -24,6 +27,11 @@ error records are filtered at the input boundary.
 
     Phase 2 — single cross-corpus reducer over the merged analyses.
     Produces ``preliminary_divergences[]`` + ``coverage_gaps[]``. No retry.
+
+Phase 1 and Phase 2 are passed in as proper, separately-registered
+``Agent`` instances so each phase carries its own model / temperature
+/ provider configuration. When neither agent is supplied, defaults
+that match the production registration are constructed inline.
 
 **Canonical actor shape across the Hydration pipeline.** Actor objects carry
 exactly five fields, in this order:
@@ -53,9 +61,21 @@ logger = logging.getLogger(__name__)
 
 
 AGGREGATOR_MODEL = "google/gemini-3-flash-preview"
-PHASE1_PROMPT_PATH = "agents/hydration_aggregator/PHASE1.md"
-PHASE2_PROMPT_PATH = "agents/hydration_aggregator/PHASE2.md"
 AGGREGATOR_TEMPERATURE = 0.3
+
+# Per-phase prompt paths under the two-file layout. Each phase
+# resolves to its own (SYSTEM, INSTRUCTIONS) pair, used by callers
+# that construct phase agents inline (e.g. eval scripts).
+PHASE_PROMPT_PATHS: dict[str, tuple[str, str]] = {
+    "phase1": (
+        "agents/hydration_aggregator/PHASE1-SYSTEM.md",
+        "agents/hydration_aggregator/PHASE1-INSTRUCTIONS.md",
+    ),
+    "phase2": (
+        "agents/hydration_aggregator/PHASE2-SYSTEM.md",
+        "agents/hydration_aggregator/PHASE2-INSTRUCTIONS.md",
+    ),
+}
 
 PHASE2_MODEL = "anthropic/claude-opus-4.6"
 PHASE2_TEMPERATURE = 0.1
@@ -98,7 +118,8 @@ async def run_aggregator(
     assignment: dict[str, Any],
     hydration_results: list[dict[str, Any]],
     *,
-    agent: Agent | None = None,
+    phase1_agent: Agent | None = None,
+    phase2_agent: Agent | None = None,
 ) -> dict[str, Any]:
     """Call the Hydration Aggregator (two-phase chunked) on the successful fetch records.
 
@@ -110,10 +131,10 @@ async def run_aggregator(
             ``status != "success"`` are filtered out before calling the LLM
             — the Aggregator prompts are tuned on full-text inputs and
             partial stubs would degrade quality.
-        agent: Optional template Agent. When provided, its model /
-            temperature / provider / reasoning config is used for both
-            phases, but the prompt_path is swapped per phase. When ``None``
-            a default Gemini 3 Flash agent is constructed.
+        phase1_agent: Pre-registered Phase 1 agent. When ``None`` a default
+            (Gemini 3 Flash @ 0.3) is constructed inline.
+        phase2_agent: Pre-registered Phase 2 agent. When ``None`` a default
+            (Opus 4.6 @ 0.1) is constructed inline.
 
     Returns:
         A dict with exactly three keys: ``article_analyses`` (list of
@@ -140,6 +161,11 @@ async def run_aggregator(
             "coverage_gaps": [],
         }
 
+    if phase1_agent is None:
+        phase1_agent = _build_default_phase_agent("phase1")
+    if phase2_agent is None:
+        phase2_agent = _build_default_phase_agent("phase2")
+
     articles = [_prepare_article(r) for r in successful]
     chunks = _distribute_chunks(articles)
 
@@ -150,13 +176,17 @@ async def run_aggregator(
         )
 
     phase1_results = await asyncio.gather(*[
-        _run_phase1_chunk(assignment, chunk, chunk_idx=i + 1, agent=agent)
+        _run_phase1_chunk(
+            assignment, chunk, chunk_idx=i + 1, agent=phase1_agent,
+        )
         for i, chunk in enumerate(chunks)
     ])
     all_analyses = _merge_phase1_results(phase1_results, chunks)
 
     metadata = _build_article_metadata(successful)
-    phase2 = await _run_phase2_reducer(assignment, all_analyses, metadata)
+    phase2 = await _run_phase2_reducer(
+        assignment, all_analyses, metadata, agent=phase2_agent,
+    )
 
     return {
         "article_analyses": all_analyses,
@@ -206,7 +236,7 @@ async def _run_phase1_chunk(
     chunk_articles: list[dict[str, Any]],
     *,
     chunk_idx: int,
-    agent: Agent | None = None,
+    agent: Agent,
 ) -> list[dict[str, Any]]:
     """Run one Phase-1 call with up to two intelligent-retry follow-ups.
 
@@ -264,9 +294,8 @@ async def _call_phase1(
     assignment: dict[str, Any],
     articles: list[dict[str, Any]],
     *,
-    agent: Agent | None = None,
+    agent: Agent,
 ) -> dict[str, Any]:
-    phase1_agent = _make_phase_agent(agent, PHASE1_PROMPT_PATH)
     payload = {
         "assignment": {
             "title": assignment.get("title"),
@@ -274,7 +303,7 @@ async def _call_phase1(
         },
         "articles": articles,
     }
-    result = await phase1_agent.run(
+    result = await agent.run(
         _PHASE1_USER_MESSAGE,
         context=payload,
         output_schema={"type": "object"},
@@ -370,22 +399,11 @@ async def _run_phase2_reducer(
     assignment: dict[str, Any],
     all_analyses: list[dict[str, Any]],
     article_metadata: list[dict[str, Any]],
+    *,
+    agent: Agent,
 ) -> dict[str, Any]:
     if not all_analyses:
         return {"preliminary_divergences": [], "coverage_gaps": []}
-    # Phase 2 is a synthesis task (cross-corpus divergences + gaps), pinned
-    # to Opus 4.6 @ 0.1 per the Session-12 model eval (variant B, 114/120).
-    # Independent of the Phase 1 template to stop Phase 2 from silently
-    # inheriting the extractor's Gemini Flash config.
-    phase2_agent = Agent(
-        name="hydration_aggregator_phase2",
-        model=PHASE2_MODEL,
-        prompt_path=PHASE2_PROMPT_PATH,
-        temperature=PHASE2_TEMPERATURE,
-        max_tokens=32000,
-        provider="openrouter",
-        reasoning="none",
-    )
     payload = {
         "assignment": {
             "title": assignment.get("title"),
@@ -395,7 +413,7 @@ async def _run_phase2_reducer(
         "article_metadata": article_metadata,
     }
     logger.info("Phase 2 reducer: %d analyses input", len(all_analyses))
-    result = await phase2_agent.run(
+    result = await agent.run(
         _PHASE2_USER_MESSAGE,
         context=payload,
         output_schema={"type": "object"},
@@ -414,29 +432,44 @@ async def _run_phase2_reducer(
     }
 
 
-# ---------- Agent-template helper ----------
+# ---------- Default agent constructors ----------
 
-def _make_phase_agent(template: Agent | None, prompt_path: str) -> Agent:
-    """Build a per-phase Agent. If a template is supplied, reuse its model
-    and runtime configuration but swap the prompt path."""
-    if template is None:
+def _build_default_phase_agent(phase: str) -> Agent:
+    """Construct a default per-phase Agent when the caller omits one.
+
+    Phase 1 defaults to Gemini 3 Flash @ 0.3 (per Session-12 eval); Phase 2
+    defaults to Opus 4.6 @ 0.1 (variant B, 114/120). Use a registered Agent
+    instance from the agents dict in production — these defaults exist for
+    test scripts and other callers that don't carry a Pipeline context.
+    """
+    try:
+        system_path, instructions_path = PHASE_PROMPT_PATHS[phase]
+    except KeyError as exc:
+        raise ValueError(
+            f"_build_default_phase_agent: unknown phase {phase!r}; "
+            f"expected one of {sorted(PHASE_PROMPT_PATHS)}"
+        ) from exc
+
+    if phase == "phase1":
         return Agent(
-            name="hydration_aggregator",
+            name="hydration_aggregator_phase1",
             model=AGGREGATOR_MODEL,
-            prompt_path=prompt_path,
+            system_prompt_path=system_path,
+            instructions_path=instructions_path,
             temperature=AGGREGATOR_TEMPERATURE,
+            max_tokens=32000,
+            provider="openrouter",
+            reasoning="none",
         )
     return Agent(
-        name=template.name,
-        model=template.model,
-        prompt_path=prompt_path,
-        tools=list(template.tools),
-        memory_path=template.memory_path,
-        temperature=template.temperature,
-        max_tokens=template.max_tokens,
-        provider=template.provider,
-        reasoning=template.reasoning,
-        extra_body_override=dict(template._extra_body_override),
+        name="hydration_aggregator_phase2",
+        model=PHASE2_MODEL,
+        system_prompt_path=system_path,
+        instructions_path=instructions_path,
+        temperature=PHASE2_TEMPERATURE,
+        max_tokens=32000,
+        provider="openrouter",
+        reasoning="none",
     )
 
 

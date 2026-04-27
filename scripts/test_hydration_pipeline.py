@@ -175,15 +175,16 @@ def load_assignments_with_urls(
 
 def create_hydrated_agents() -> dict[str, Agent]:
     """Agents used by the hydrated pipeline. Mirrors scripts/run.py for the
-    downstream agents and adds ``researcher_hydrated_plan`` and
-    ``hydration_aggregator``."""
+    downstream agents and adds ``researcher_hydrated_plan`` plus the two
+    Hydration Aggregator phase agents."""
     agents_dir = ROOT / "agents"
     return {
         # Hydrated planner (sees the pre-dossier coverage summary).
         "researcher_hydrated_plan": Agent(
             name="researcher_hydrated_plan",
             model="google/gemini-3-flash-preview",
-            prompt_path=str(agents_dir / "researcher_hydrated" / "PLAN.md"),
+            system_prompt_path=str(agents_dir / "researcher_hydrated" / "PLAN-SYSTEM.md"),
+            instructions_path=str(agents_dir / "researcher_hydrated" / "PLAN-INSTRUCTIONS.md"),
             tools=[],
             temperature=0.5,
             max_tokens=16384,
@@ -194,21 +195,37 @@ def create_hydrated_agents() -> dict[str, Agent]:
         "researcher_assemble": Agent(
             name="researcher_assemble",
             model="google/gemini-3-flash-preview",
-            prompt_path=str(agents_dir / "researcher" / "ASSEMBLE.md"),
+            system_prompt_path=str(agents_dir / "researcher" / "ASSEMBLE-SYSTEM.md"),
+            instructions_path=str(agents_dir / "researcher" / "ASSEMBLE-INSTRUCTIONS.md"),
             tools=[],
             temperature=0.2,
             max_tokens=16384,
             provider="openrouter",
             reasoning="none",
         ),
-        # Hydration Aggregator (Spike C decision).
-        "hydration_aggregator": Agent(
-            name="hydration_aggregator",
+        # Hydration Aggregator Phase 1 — per-chunk article analysis on
+        # Gemini 3 Flash. Pinned per Session-12 eval.
+        "hydration_aggregator_phase1": Agent(
+            name="hydration_aggregator_phase1",
             model="google/gemini-3-flash-preview",
-            prompt_path=str(agents_dir / "hydration_aggregator" / "AGENTS.md"),
+            system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
+            instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
             tools=[],
             temperature=0.3,
-            max_tokens=16384,
+            max_tokens=32000,
+            provider="openrouter",
+            reasoning="none",
+        ),
+        # Hydration Aggregator Phase 2 — cross-corpus reducer on Opus 4.6
+        # @ 0.1 (variant B, 114/120 in Session-12 eval).
+        "hydration_aggregator_phase2": Agent(
+            name="hydration_aggregator_phase2",
+            model="anthropic/claude-opus-4.6",
+            system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE2-SYSTEM.md"),
+            instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE2-INSTRUCTIONS.md"),
+            tools=[],
+            temperature=0.1,
+            max_tokens=32000,
             provider="openrouter",
             reasoning="none",
         ),
@@ -216,7 +233,8 @@ def create_hydrated_agents() -> dict[str, Agent]:
         "perspektiv": Agent(
             name="perspektiv",
             model="anthropic/claude-opus-4.6",
-            prompt_path=str(agents_dir / "perspektiv" / "AGENTS.md"),
+            system_prompt_path=str(agents_dir / "perspektiv" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "perspektiv" / "INSTRUCTIONS.md"),
             tools=[],
             temperature=0.1,
             max_tokens=16384,
@@ -226,7 +244,8 @@ def create_hydrated_agents() -> dict[str, Agent]:
         "writer": Agent(
             name="writer",
             model="anthropic/claude-opus-4.6",
-            prompt_path=str(agents_dir / "writer" / "AGENTS.md"),
+            system_prompt_path=str(agents_dir / "writer" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "writer" / "INSTRUCTIONS.md"),
             tools=[web_search_tool],
             temperature=0.3,
             max_tokens=65536,
@@ -236,7 +255,8 @@ def create_hydrated_agents() -> dict[str, Agent]:
         "qa_analyze": Agent(
             name="qa_analyze",
             model="anthropic/claude-sonnet-4.6",
-            prompt_path=str(agents_dir / "qa_analyze" / "AGENTS.md"),
+            system_prompt_path=str(agents_dir / "qa_analyze" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "qa_analyze" / "INSTRUCTIONS.md"),
             tools=[],
             temperature=0.1,
             max_tokens=32768,
@@ -246,7 +266,8 @@ def create_hydrated_agents() -> dict[str, Agent]:
         "bias_language": Agent(
             name="bias_language",
             model="anthropic/claude-opus-4.6",
-            prompt_path=str(agents_dir / "bias_detector" / "AGENTS.md"),
+            system_prompt_path=str(agents_dir / "bias_detector" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "bias_detector" / "INSTRUCTIONS.md"),
             tools=[],
             temperature=0.1,
             max_tokens=16384,

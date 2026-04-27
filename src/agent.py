@@ -69,7 +69,8 @@ class Agent:
         self,
         name: str,
         model: str,
-        prompt_path: str,
+        system_prompt_path: str,
+        instructions_path: str,
         tools: list[Tool] | None = None,
         memory_path: str | None = None,
         temperature: float = 0.3,
@@ -82,7 +83,8 @@ class Agent:
     ) -> None:
         self.name = name
         self.model = model
-        self.prompt_path = prompt_path
+        self.system_prompt_path = system_prompt_path
+        self.instructions_path = instructions_path
         self.tools = tools or []
         self.memory_path = memory_path
         self.temperature = temperature
@@ -90,6 +92,15 @@ class Agent:
         self.provider = provider
         self.reasoning = reasoning
         self._extra_body_override = extra_body_override or {}
+
+        for label, path in (
+            ("system_prompt_path", system_prompt_path),
+            ("instructions_path", instructions_path),
+        ):
+            if not Path(path).exists():
+                raise AgentError(
+                    f"Agent '{name}': {label} file not found: {path}"
+                )
 
         # Resolve provider defaults
         defaults = PROVIDER_DEFAULTS.get(provider, PROVIDER_DEFAULTS["openrouter"])
@@ -118,12 +129,27 @@ class Agent:
         # Build tool lookup for fast access during tool-call loop
         self._tool_map: dict[str, Tool] = {t.name: t for t in self.tools}
 
-    def _load_system_prompt(self) -> str:
-        """Load system prompt from prompt_path file."""
-        path = Path(self.prompt_path)
+    def _load_system_content(self) -> str:
+        """Load the SYSTEM.md (role-only) content for this agent."""
+        path = Path(self.system_prompt_path)
         if not path.exists():
             raise AgentError(
-                f"Agent '{self.name}': Prompt file not found: {self.prompt_path}"
+                f"Agent '{self.name}': system_prompt_path not found: "
+                f"{self.system_prompt_path}"
+            )
+        return path.read_text(encoding="utf-8")
+
+    def _load_instructions_content(self) -> str:
+        """Load the INSTRUCTIONS.md (task description) content for this agent.
+
+        Empty file is allowed (returns empty string) so a transitional
+        empty INSTRUCTIONS.md does not crash the pipeline.
+        """
+        path = Path(self.instructions_path)
+        if not path.exists():
+            raise AgentError(
+                f"Agent '{self.name}': instructions_path not found: "
+                f"{self.instructions_path}"
             )
         return path.read_text(encoding="utf-8")
 
@@ -137,35 +163,63 @@ class Agent:
         content = path.read_text(encoding="utf-8").strip()
         return content if content else None
 
-    def _build_system_prompt(
-        self, output_schema: dict | None = None, system_addendum: str | None = None,
+    def _build_system_prompt(self) -> str:
+        """Return ``<system_prompt>{SYSTEM.md}</system_prompt>`` — nothing else.
+
+        Memory, addendums, and output schemas live in the User turn.
+        """
+        body = self._load_system_content().rstrip()
+        return f"<system_prompt>\n{body}\n</system_prompt>"
+
+    def _build_user_message(
+        self,
+        message: str,
+        context: dict | None = None,
+        memory: str | None = None,
+        instructions_addendum: str | None = None,
     ) -> str:
-        """Build the full system prompt with optional memory and schema instructions."""
-        prompt = self._load_system_prompt()
+        """Build the User turn as three sequential blocks.
 
-        memory = self._load_memory()
-        if memory:
-            prompt += f"\n\n---\n\n## Memory\n\n{memory}"
+        Layout, in order, separated by blank lines:
 
-        if system_addendum:
-            prompt += f"\n\n---\n\n{system_addendum}"
+        1. ``<context>{message + JSON-formatted context}</context>`` —
+           omitted entirely when both ``message`` and ``context`` are
+           empty. Inside, ``message`` (legacy run() parameter) is
+           appended to the JSON-encoded ``context`` with a blank-line
+           separator.
+        2. ``<memory>{memory}</memory>`` — omitted entirely when memory
+           is None or empty.
+        3. ``<instructions>{INSTRUCTIONS.md}\\n\\n{instructions_addendum}</instructions>``
+           — always present. The addendum (when provided) is appended
+           inside the closing tag, separated by exactly one blank line.
+        """
+        blocks: list[str] = []
 
-        if output_schema:
-            schema_str = json.dumps(output_schema, indent=2, ensure_ascii=False)
-            prompt += (
-                f"\n\n---\n\n## Output Format\n\n"
-                f"Respond with JSON matching this schema:\n\n```json\n{schema_str}\n```\n\n"
-                f"Return ONLY the JSON object, no additional text."
+        context_payload: list[str] = []
+        if context:
+            context_payload.append(
+                json.dumps(context, indent=2, ensure_ascii=False)
+            )
+        if message:
+            context_payload.append(message)
+        if context_payload:
+            blocks.append(
+                "<context>\n" + "\n\n".join(context_payload) + "\n</context>"
             )
 
-        return prompt
+        if memory:
+            blocks.append(f"<memory>\n{memory.rstrip()}\n</memory>")
 
-    def _build_user_message(self, message: str, context: dict | None = None) -> str:
-        """Build the user message, optionally embedding context."""
-        if not context:
-            return message
-        context_str = json.dumps(context, indent=2, ensure_ascii=False)
-        return f"{message}\n\n---\n\nContext:\n```json\n{context_str}\n```"
+        instructions_body = self._load_instructions_content().rstrip("\n")
+        if instructions_addendum:
+            addendum = instructions_addendum.rstrip("\n")
+            if instructions_body:
+                instructions_body = f"{instructions_body}\n\n{addendum}"
+            else:
+                instructions_body = addendum
+        blocks.append(f"<instructions>\n{instructions_body}\n</instructions>")
+
+        return "\n\n".join(blocks)
 
     def _get_tool_definitions(self) -> list[dict] | None:
         """Get OpenAI-format tool definitions, or None if no tools."""
@@ -174,7 +228,10 @@ class Agent:
         return [t.to_openai_format() for t in self.tools]
 
     async def _call_with_retry(
-        self, messages: list[dict], tools: list[dict] | None
+        self,
+        messages: list[dict],
+        tools: list[dict] | None,
+        output_schema: dict | None = None,
     ) -> object:
         """Call the LLM API with exponential backoff retry for transient errors."""
         kwargs: dict = {
@@ -185,6 +242,16 @@ class Agent:
         }
         if tools:
             kwargs["tools"] = tools
+        # Note: ``output_schema`` is intentionally NOT wired to the API as
+        # ``response_format``. Each agent's INSTRUCTIONS.md describes its
+        # output shape directly; ``response_format=json_object`` requires
+        # the word "json" in the messages (some providers reject calls
+        # otherwise) and ``json_schema`` strict mode rejects array-typed
+        # top-level schemas. Callers parse the raw output via
+        # ``_parse_json`` / ``_parse_or_retry_structured`` instead.
+        # ``output_schema`` is currently unused by the API path; kept on
+        # the call signature for backward compatibility with
+        # ``_parse_or_retry_structured`` which threads it through.
 
         # Map reasoning parameter to provider-specific extra_body
         extra_body: dict = {}
@@ -432,7 +499,9 @@ class Agent:
             messages.append({"role": "assistant", "content": content})
             messages.append({"role": "user", "content": corrective_message})
 
-            response = await self._call_with_retry(messages, tools=None)
+            response = await self._call_with_retry(
+                messages, tools=None, output_schema=output_schema,
+            )
             choice = response.choices[0]
             content = choice.message.content or ""
             additional_tokens += response.usage.total_tokens if response.usage else 0
@@ -454,16 +523,22 @@ class Agent:
 
     async def run(
         self,
-        message: str,
+        message: str = "",
         context: dict | None = None,
         output_schema: dict | None = None,
-        system_addendum: str | None = None,
+        instructions_addendum: str | None = None,
     ) -> AgentResult:
         """Run the agent: send message to LLM, handle tool calls, return result."""
         start_time = time.monotonic()
 
-        system_prompt = self._build_system_prompt(output_schema, system_addendum)
-        user_message = self._build_user_message(message, context)
+        system_prompt = self._build_system_prompt()
+        memory = self._load_memory()
+        user_message = self._build_user_message(
+            message=message,
+            context=context,
+            memory=memory,
+            instructions_addendum=instructions_addendum,
+        )
         tool_defs = self._get_tool_definitions()
 
         messages: list[dict] = [
@@ -478,7 +553,9 @@ class Agent:
 
         # Tool-call loop
         for iteration in range(MAX_TOOL_ITERATIONS):
-            response = await self._call_with_retry(messages, tool_defs)
+            response = await self._call_with_retry(
+                messages, tool_defs, output_schema=output_schema,
+            )
             choice = response.choices[0]
             resp_message = choice.message
 

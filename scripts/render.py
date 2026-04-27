@@ -164,7 +164,10 @@ def _badge(text: str, color: str) -> str:
 
 
 # Color maps
-REPRESENTATION_COLORS = {"strong": "#0f766e", "moderate": "#ca8a04", "weak": "#9f1239"}
+REPRESENTATION_COLORS = {
+    "strong": "#0f766e", "moderate": "#ca8a04", "weak": "#9f1239",
+    "dominant": "#0f766e", "substantial": "#ca8a04", "marginal": "#9f1239",
+}
 SIGNIFICANCE_COLORS = {"critical": "#9f1239", "notable": "#ca8a04", "minor": "#64748b"}
 DIVERGENCE_COLORS = {"factual": "#9f1239", "framing": "#7c3aed", "omission": "#ca8a04", "emphasis": "#0369a1"}
 SEVERITY_COLORS = {"low": "#0f766e", "moderate": "#ca8a04", "high": "#9f1239"}
@@ -757,54 +760,72 @@ def _wrap_non_latin_in_html(text: str) -> str:
 
 
 def build_perspectives(tp: dict) -> str:
-    perspectives = tp.get("perspectives", [])
-    if not perspectives:
+    """Render Perspektiv V2 position_clusters. One cluster = one card,
+    with representation badge, summary, and a flat list of quoted actors.
+    """
+    clusters = tp.get("perspectives", [])
+    if not clusters:
         return ""
     cards = []
-    for p in perspectives:
-        rep = p.get("representation", "moderate")
+    for c in clusters:
+        if not isinstance(c, dict):
+            continue
+        rep = c.get("representation", "marginal")
         rep_color = REPRESENTATION_COLORS.get(rep, "#64748b")
         rep_badge = _badge(rep, rep_color)
-        type_badge = _badge(p.get("type", ""), "#64748b")
+        label = c.get("position_label", "")
+        summary = c.get("position_summary", "")
 
-        quote_html = ""
-        pq = p.get("position_quote")
-        if pq and str(pq).strip().lower() not in ("null", "none", "n/a"):
-            quote_html = f'<div class="card-quote">{_esc(pq)}</div>'
+        actor_items: list[str] = []
+        for a in c.get("actors", []) or []:
+            if not isinstance(a, dict):
+                continue
+            name = _esc(a.get("name", ""))
+            role = _esc(a.get("role", ""))
+            quote = a.get("quote")
+            quote_html = ""
+            if quote and str(quote).strip().lower() not in ("null", "none", "n/a"):
+                quote_html = (
+                    f'<div class="card-quote">{_esc(str(quote))}</div>'
+                )
+            actor_items.append(
+                f'<li><strong>{name}</strong> — {role}{quote_html}</li>'
+            )
+
+        actors_block = (
+            f'<ul class="cluster-actors">{"".join(actor_items)}</ul>'
+            if actor_items else ""
+        )
 
         cards.append(
             f'<div class="card">\n'
-            f'  <div class="card-header"><span class="card-actor">{_esc(p.get("actor", ""))}</span>{rep_badge}</div>\n'
-            f'  <div class="card-meta">{type_badge} &middot; {_esc(p.get("region", ""))}</div>\n'
-            f'  <div class="card-position">{_esc(p.get("position_summary", ""))}</div>\n'
-            f'  {quote_html}\n'
+            f'  <div class="card-header"><span class="card-actor">{_esc(label)}</span>{rep_badge}</div>\n'
+            f'  <div class="card-position">{_esc(summary)}</div>\n'
+            f'  {actors_block}\n'
             f'</div>\n'
         )
-    return f'<h2>Perspectives &mdash; Stakeholder Analysis</h2>\n<div class="card-grid">\n{"".join(cards)}</div>\n'
+    return f'<h2>Perspectives &mdash; Position Clusters</h2>\n<div class="card-grid">\n{"".join(cards)}</div>\n'
 
 
 def build_missing_voices(tp: dict) -> str:
-    voices = tp.get("bias_analysis", {}).get("perspectives", {}).get("missing_voices", [])
-    if not voices:
+    """Render Perspektiv V2 missing_positions as a simple bulleted list."""
+    missing = (
+        tp.get("bias_analysis", {})
+          .get("perspectives", {})
+          .get("missing_positions", [])
+    )
+    if not missing:
         return ""
-
-    # Group by significance: critical → notable → minor
-    order = {"critical": 0, "notable": 1, "minor": 2}
-    voices_sorted = sorted(voices, key=lambda v: order.get(v.get("significance", "minor"), 9))
-
     items = []
-    for v in voices_sorted:
-        sig = v.get("significance", "minor")
-        sig_color = SIGNIFICANCE_COLORS.get(sig, "#64748b")
-        items.append(
-            f'<div class="missing-voice">\n'
-            f'  <div class="missing-voice-header">'
-            f'<span class="missing-voice-type">{_esc(v.get("type", ""))}</span>'
-            f'{_badge(sig, sig_color)}</div>\n'
-            f'  <div class="missing-voice-desc">{_esc(v.get("description", ""))}</div>\n'
-            f'</div>\n'
-        )
-    return f'<h2>Missing Voices</h2>\n{"".join(items)}'
+    for m in missing:
+        if not isinstance(m, dict):
+            continue
+        mtype = _esc(m.get("type", ""))
+        desc = _esc(m.get("description", ""))
+        items.append(f'<li><strong>{mtype}</strong> — {desc}</li>')
+    if not items:
+        return ""
+    return f'<h2>What\'s missing</h2>\n<ul class="missing-positions">{"".join(items)}</ul>'
 
 
 def build_divergences(tp: dict) -> str:
@@ -969,10 +990,10 @@ def build_transparency(tp: dict) -> str:
     if t.get("selection_reason"):
         parts.append(f'<dt>Selection Reason</dt><dd>{_esc(t["selection_reason"])}</dd>\n')
 
-    corrections = t.get("qa_corrections_applied", [])
+    corrections = t.get("qa_proposed_corrections", [])
     if corrections:
         items = "\n".join(f"<li>{_esc(c)}</li>" for c in corrections)
-        parts.append(f'<dt>QA Corrections Applied</dt><dd><ul>{items}</ul></dd>\n')
+        parts.append(f'<dt>QA Proposed Corrections</dt><dd><ul>{items}</ul></dd>\n')
 
     run = t.get("pipeline_run", {})
     if run:

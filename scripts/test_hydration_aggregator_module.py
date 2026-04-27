@@ -24,18 +24,18 @@ from pathlib import Path
 from typing import Any
 
 from src.hydration_aggregator import (
+    AGGREGATOR_MODEL,
+    AGGREGATOR_TEMPERATURE,
     AggregatorValidationError,
+    PHASE2_MODEL,
+    PHASE2_TEMPERATURE,
+    PHASE_PROMPT_PATHS,
     build_coverage_summary,
     build_prepared_dossier,
     merge_dossiers,
     run_aggregator,
 )
 from src.agent import Agent
-from src.hydration_aggregator import (
-    AGGREGATOR_MODEL,
-    AGGREGATOR_TEMPERATURE,
-    PHASE1_PROMPT_PATH,
-)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 EDITOR_ASSIGNMENTS = REPO_ROOT / "output/2026-04-19/03-editor-assignments.json"
@@ -80,7 +80,8 @@ def write_json(path: Path, payload: Any) -> None:
 
 
 async def run_topic(
-    agent: Agent,
+    phase1_agent: Agent,
+    phase2_agent: Agent,
     topic_code: str,
     assignment: dict[str, Any],
     hydration_results: list[dict[str, Any]],
@@ -96,7 +97,8 @@ async def run_topic(
 
     try:
         aggregator_output = await run_aggregator(
-            assignment, hydration_results, agent=agent,
+            assignment, hydration_results,
+            phase1_agent=phase1_agent, phase2_agent=phase2_agent,
         )
     except AggregatorValidationError as exc:
         log.error("topic %s: aggregator validation failed: %s", topic_code, exc)
@@ -154,19 +156,38 @@ async def run_all() -> int:
     out_dir = REPO_ROOT / "output" / today / "test_hydration_aggregator"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # One Agent instance reused across topics.
-    agent = Agent(
-        name="hydration_aggregator",
+    # Two registered Agent instances — one per phase — built once and
+    # reused across all topics. Mirrors the production registration in
+    # scripts/test_hydration_pipeline.py:create_hydrated_agents().
+    phase1_system, phase1_instructions = PHASE_PROMPT_PATHS["phase1"]
+    phase2_system, phase2_instructions = PHASE_PROMPT_PATHS["phase2"]
+    phase1_agent = Agent(
+        name="hydration_aggregator_phase1",
         model=AGGREGATOR_MODEL,
-        prompt_path=str(REPO_ROOT / PHASE1_PROMPT_PATH),
+        system_prompt_path=str(REPO_ROOT / phase1_system),
+        instructions_path=str(REPO_ROOT / phase1_instructions),
         temperature=AGGREGATOR_TEMPERATURE,
+        max_tokens=32000,
+        provider="openrouter",
+        reasoning="none",
+    )
+    phase2_agent = Agent(
+        name="hydration_aggregator_phase2",
+        model=PHASE2_MODEL,
+        system_prompt_path=str(REPO_ROOT / phase2_system),
+        instructions_path=str(REPO_ROOT / phase2_instructions),
+        temperature=PHASE2_TEMPERATURE,
+        max_tokens=32000,
+        provider="openrouter",
+        reasoning="none",
     )
 
     start = time.monotonic()
     summaries: list[dict[str, Any]] = []
     for code in eligible:
         summary = await run_topic(
-            agent=agent,
+            phase1_agent=phase1_agent,
+            phase2_agent=phase2_agent,
             topic_code=code,
             assignment=assignments_by_code[code],
             hydration_results=by_topic[code],
