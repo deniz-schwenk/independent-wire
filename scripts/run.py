@@ -15,7 +15,15 @@ sys.path.insert(0, str(ROOT))
 
 from src.agent import Agent
 from src.pipeline import Pipeline
-from src.schemas import RESEARCHER_PLAN_SCHEMA
+from src.schemas import (
+    BIAS_DETECTOR_SCHEMA,
+    CURATOR_SCHEMA,
+    EDITOR_SCHEMA,
+    PERSPEKTIV_SCHEMA,
+    QA_ANALYZE_SCHEMA,
+    RESEARCHER_ASSEMBLE_SCHEMA,
+    RESEARCHER_PLAN_SCHEMA,
+)
 from src.tools import web_search_tool
 
 
@@ -74,6 +82,7 @@ def create_agents() -> dict[str, Agent]:
             # discards everything after the last `}`, dropping cluster_assignments
             # entirely. 64k gives steady-state headroom.
             max_tokens=64000,
+            output_schema=CURATOR_SCHEMA,
         ),
         "editor": Agent(
             name="editor",
@@ -84,6 +93,7 @@ def create_agents() -> dict[str, Agent]:
             temperature=0.3,
             provider="openrouter",
             reasoning="none",
+            output_schema=EDITOR_SCHEMA,
         ),
         "researcher_plan": Agent(
             name="researcher_plan",
@@ -105,6 +115,7 @@ def create_agents() -> dict[str, Agent]:
             temperature=0.2,
             provider="openrouter",
             reasoning="none",
+            output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
         ),
         "perspektiv": Agent(
             name="perspektiv",
@@ -115,6 +126,7 @@ def create_agents() -> dict[str, Agent]:
             temperature=0.1,
             provider="openrouter",
             reasoning="none",
+            output_schema=PERSPEKTIV_SCHEMA,
         ),
         "writer": Agent(
             name="writer",
@@ -135,6 +147,7 @@ def create_agents() -> dict[str, Agent]:
             temperature=0.1,
             provider="openrouter",
             reasoning="none",
+            output_schema=QA_ANALYZE_SCHEMA,
         ),
         "bias_language": Agent(
             name="bias_language",
@@ -145,6 +158,7 @@ def create_agents() -> dict[str, Agent]:
             temperature=0.1,
             provider="openrouter",
             reasoning="none",
+            output_schema=BIAS_DETECTOR_SCHEMA,
         ),
     }
 

@@ -258,6 +258,13 @@ QA_ANALYZE_SCHEMA = {
             "type": "array",
             "items": {"type": "string"},
         },
+        # Note: ``article.sources`` is intentionally NOT in the schema. The
+        # QA prompt asks for sources to be passed through, and Python's QA
+        # consumer (``_produce_single``) explicitly ignores the field
+        # ("we deliberately do NOT replace article['sources']"). Strict
+        # mode + ``additionalProperties: false`` forbids the model from
+        # emitting sources at all, which saves tokens with no functional
+        # effect.
         "article": {
             "type": "object",
             "properties": {
@@ -265,13 +272,9 @@ QA_ANALYZE_SCHEMA = {
                 "subheadline": {"type": "string"},
                 "body": {"type": "string"},
                 "summary": {"type": "string"},
-                "sources": {
-                    "type": "array",
-                    "items": {"type": "object"},
-                },
             },
             "required": [
-                "headline", "subheadline", "body", "summary", "sources",
+                "headline", "subheadline", "body", "summary",
             ],
             "additionalProperties": False,
         },
