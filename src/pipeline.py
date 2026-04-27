@@ -2238,11 +2238,17 @@ class Pipeline:
         plan_result = await planner.run(
             f"Plan multilingual research queries for this topic. Today is {self.state.date}.",
             context=plan_context,
-            output_schema={"type": "array", "items": {"type": "object"}},
         )
         self._track_agent(plan_result, "researcher_plan", slug)
 
-        queries = plan_result.structured
+        # Strict schema wraps the queries list as ``{"queries": [...]}``.
+        # Unwrap before consuming. Fall back to raw extraction if a
+        # provider didn't apply the schema.
+        queries_obj = plan_result.structured
+        if isinstance(queries_obj, dict):
+            queries = queries_obj.get("queries")
+        else:
+            queries = queries_obj
         if not queries or not isinstance(queries, list):
             queries = _extract_list(plan_result) or []
         if not queries:

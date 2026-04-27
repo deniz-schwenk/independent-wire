@@ -16,7 +16,7 @@ from src.tools.registry import Tool
 HAS_API_KEY = bool(os.environ.get("OPENROUTER_API_KEY"))
 skip_no_key = pytest.mark.skipif(not HAS_API_KEY, reason="No OPENROUTER_API_KEY")
 
-MODEL = "openai/gpt-4o-mini"
+MODEL = "google/gemini-3-flash-preview"
 
 
 @pytest.fixture
@@ -241,7 +241,15 @@ def test_parse_structured_handles_plain_json(prompt_file: str) -> None:
 @skip_no_key
 @pytest.mark.asyncio
 async def test_structured_retry_recovers(prompt_file: str) -> None:
-    """Agent retries structured output parsing and recovers."""
+    """Agent returns structured output under strict-mode schema.
+
+    With strict-mode response_format wired in ``_call_with_retry``, parse
+    failures are effectively impossible — constrained decoding cannot emit
+    non-conforming JSON. The ``_parse_or_retry_structured`` fallback
+    remains for providers that silently ignore the schema, but does not
+    fire on the happy path. This test verifies the happy path under
+    strict mode.
+    """
     schema = {
         "type": "object",
         "properties": {
@@ -249,7 +257,8 @@ async def test_structured_retry_recovers(prompt_file: str) -> None:
             "country": {"type": "string"},
             "population": {"type": "string"},
         },
-        "required": ["city", "country"],
+        "required": ["city", "country", "population"],
+        "additionalProperties": False,
     }
 
     agent = Agent(name="test-retry", model=MODEL, system_prompt_path=prompt_file, instructions_path=prompt_file)
@@ -259,7 +268,6 @@ async def test_structured_retry_recovers(prompt_file: str) -> None:
         output_schema=schema,
     )
 
-    # Retry should recover structured output
     assert result.structured is not None
     assert "city" in result.structured
 
@@ -275,6 +283,7 @@ async def test_agent_structured_output(prompt_file: str) -> None:
             "language": {"type": "string"},
         },
         "required": ["greeting", "language"],
+        "additionalProperties": False,
     }
 
     agent = Agent(name="test-structured", model=MODEL, system_prompt_path=prompt_file, instructions_path=prompt_file)

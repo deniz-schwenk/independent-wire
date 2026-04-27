@@ -80,6 +80,7 @@ class Agent:
         api_key: str | None = None,
         reasoning: str | bool | None = None,
         extra_body_override: dict | None = None,
+        output_schema: dict | None = None,
     ) -> None:
         self.name = name
         self.model = model
@@ -92,6 +93,7 @@ class Agent:
         self.provider = provider
         self.reasoning = reasoning
         self._extra_body_override = extra_body_override or {}
+        self.output_schema = output_schema
 
         for label, path in (
             ("system_prompt_path", system_prompt_path),
@@ -242,16 +244,6 @@ class Agent:
         }
         if tools:
             kwargs["tools"] = tools
-        # Note: ``output_schema`` is intentionally NOT wired to the API as
-        # ``response_format``. Each agent's INSTRUCTIONS.md describes its
-        # output shape directly; ``response_format=json_object`` requires
-        # the word "json" in the messages (some providers reject calls
-        # otherwise) and ``json_schema`` strict mode rejects array-typed
-        # top-level schemas. Callers parse the raw output via
-        # ``_parse_json`` / ``_parse_or_retry_structured`` instead.
-        # ``output_schema`` is currently unused by the API path; kept on
-        # the call signature for backward compatibility with
-        # ``_parse_or_retry_structured`` which threads it through.
 
         # Map reasoning parameter to provider-specific extra_body
         extra_body: dict = {}
@@ -271,6 +263,34 @@ class Agent:
                 elif isinstance(self.reasoning, str):
                     extra_body["think"] = self.reasoning
         extra_body.update(self._extra_body_override)
+
+        # Structured outputs: pass JSON schema as OpenAI-compatible
+        # ``response_format``. OpenRouter translates this to Anthropic's
+        # native output_format.format and applies the
+        # ``anthropic-beta: structured-outputs-2025-11-13`` header
+        # automatically. Strict mode constrains decoding so the model
+        # cannot emit tokens that violate the schema. The defensive
+        # parser chain (``_extract_dict``, ``_parse_json``,
+        # ``_parse_or_retry_structured``) stays in place as belt-and-
+        # suspenders for providers that fall back or schemas that fail
+        # to compile.
+        if output_schema:
+            kwargs["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": f"{self.name}_output",
+                    "strict": True,
+                    "schema": output_schema,
+                },
+            }
+            # Force OpenRouter to skip providers that don't support
+            # response_format. Without this, an unsupported provider
+            # would silently ignore the schema and return free-form
+            # output.
+            if self.provider == "openrouter":
+                provider_pref = extra_body.setdefault("provider", {})
+                provider_pref["require_parameters"] = True
+
         if extra_body:
             kwargs["extra_body"] = extra_body
 
@@ -471,6 +491,17 @@ class Agent:
     ) -> tuple[str, dict | None, int, float, bool]:
         """Try to parse content as JSON. If it fails, retry with corrective prompt.
 
+        With strict-mode ``response_format`` wired in ``_call_with_retry``,
+        constrained decoding makes parse failures effectively impossible
+        for agents that have a schema configured. This retry path is now
+        a defensive fallback — it triggers only when a provider falls
+        back, the schema fails to compile, or the agent has no schema.
+
+        On retry, the schema is suppressed (``output_schema=None``) so
+        the corrective prompt is not over-constrained: the model needs
+        to satisfy the corrective instruction first; the schema would
+        fight that.
+
         Returns: (final_content, structured_or_none, additional_tokens_used,
                   additional_cost_usd, cost_reported_any)
         """
@@ -500,7 +531,7 @@ class Agent:
             messages.append({"role": "user", "content": corrective_message})
 
             response = await self._call_with_retry(
-                messages, tools=None, output_schema=output_schema,
+                messages, tools=None, output_schema=None,
             )
             choice = response.choices[0]
             content = choice.message.content or ""
@@ -528,8 +559,16 @@ class Agent:
         output_schema: dict | None = None,
         instructions_addendum: str | None = None,
     ) -> AgentResult:
-        """Run the agent: send message to LLM, handle tool calls, return result."""
+        """Run the agent: send message to LLM, handle tool calls, return result.
+
+        Schema precedence: an explicit ``output_schema`` kwarg overrides the
+        constructor default ``self.output_schema``. Most call sites should
+        omit the kwarg and let the agent's configured schema apply.
+        """
         start_time = time.monotonic()
+
+        if output_schema is None:
+            output_schema = self.output_schema
 
         system_prompt = self._build_system_prompt()
         memory = self._load_memory()

@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT))
 
 from src.agent import Agent
 from src.pipeline import Pipeline
+from src.schemas import RESEARCHER_PLAN_SCHEMA
 from src.tools import web_search_tool
 
 
@@ -93,6 +94,7 @@ def create_agents() -> dict[str, Agent]:
             temperature=0.5,
             provider="openrouter",
             reasoning="none",
+            output_schema=RESEARCHER_PLAN_SCHEMA,
         ),
         "researcher_assemble": Agent(
             name="researcher_assemble",
