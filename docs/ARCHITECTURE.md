@@ -27,28 +27,32 @@ An Agent is a configured LLM caller. It has an identity (name, system prompt), a
 ```python
 class Agent:
     """A configured LLM caller with identity, model, tools, and memory."""
-    
+
     def __init__(
         self,
-        name: str,                    # e.g. "collector", "redakteur", "bias_detektor"
-        model: str,                   # e.g. "claude-opus-4.6", "kimi-k2.5", "glm-5"
-        prompt_path: str,             # path to AGENTS.md system prompt
-        tools: list[str] = None,      # e.g. ["web_search"] — None = no tools
+        name: str,                    # e.g. "curator", "writer", "bias_language"
+        model: str,                   # e.g. "anthropic/claude-opus-4.6"
+        system_prompt_path: str,      # path to SYSTEM.md (identity)
+        instructions_path: str,       # path to INSTRUCTIONS.md (per-run task spec)
+        tools: list[Tool] = None,     # e.g. [web_search_tool] — None = no tools
         memory_path: str = None,      # optional persistent memory file
         temperature: float = 0.3,     # model temperature
-        max_tokens: int = 8192,       # max response tokens
+        max_tokens: int = 32000,      # max response tokens
         provider: str = "openrouter", # API provider
+        reasoning: str | None = None, # 'none', 'minimal', 'high' (provider-specific)
     ):
         ...
 
     async def run(
         self,
-        message: str,                 # the task/instruction
-        context: dict = None,         # additional context (previous agent output, etc.)
-        output_schema: dict = None,   # optional JSON schema for structured output
+        message: str = "",
+        context: dict = None,                   # JSON-encoded into the User-turn <context> block
+        output_schema: dict = None,             # JSON shape hint (also described in INSTRUCTIONS.md)
+        instructions_addendum: str | None = None,  # appended inside the <instructions> block
     ) -> AgentResult:
         """
-        Call the LLM with system prompt + message + context.
+        Build the system message as <system_prompt>{SYSTEM.md}</system_prompt>.
+        Build the User turn from three blocks: <context>, <memory>, <instructions>.
         Handle tool calls in a loop until final response.
         Return structured result.
         """
@@ -71,8 +75,10 @@ class AgentResult:
 - Agents are **async** (`async def run`) — enables future parallelization via `asyncio.gather()`
 - Each agent has its **own model** — no global default
 - **Tool calls handled inside the agent loop** — same pattern as Nanobot's `loop.py`
-- **Structured output** via `output_schema`
-- **Memory is a file path**, not a framework feature
+- **Structured output** via `output_schema` (the agent's INSTRUCTIONS.md describes the JSON shape; the parameter is consumed by `_parse_or_retry_structured`)
+- **Memory is a file path**, not a framework feature; loaded into the User-turn `<memory>` block when set
+- **Two-file prompt convention** (S13): every agent has `agents/{name}/SYSTEM.md` (identity) + `agents/{name}/INSTRUCTIONS.md` (per-run task spec). Researcher and Hydration Aggregator use phase-named pairs (`PLAN-*`, `ASSEMBLE-*`, `PHASE1-*`, `PHASE2-*`)
+- **User-turn three-block layout**: `<context>` (JSON-encoded input + optional message), `<memory>` (when present), `<instructions>` (always present; addendum like Writer FOLLOWUP.md appended inside the closing tag). System message contains only `<system_prompt>{SYSTEM.md}</system_prompt>`
 
 ### 2. Pipeline
 
@@ -246,7 +252,7 @@ No numpy. No pandas. No langchain. No pytorch. Six dependencies total, all singl
 
 | Future Need | How It's Handled |
 |-------------|-----------------|
-| **Memory** | Agent loads `memory_path` into context |
+| **Memory** | `Agent.memory_path` loads memory into the User-turn `<memory>` block at runtime |
 | **Parallelization** | `asyncio.gather()` — agents are already async |
 | **New tools** | `registry.register(new_tool)` |
 | **Docker deployment** | All config via env vars or config file |
@@ -264,10 +270,11 @@ All assignments validated through 90+ eval calls across 14 models, plus the Sess
 | Editor | anthropic/claude-opus-4.6 | OpenRouter | Prioritize topics, assign selection_reason |
 | Researcher Plan | google/gemini-3-flash-preview | OpenRouter | Generate multilingual search queries |
 | Researcher Assemble | google/gemini-3-flash-preview | OpenRouter | Build research dossier from search results |
-| Perspektiv | anthropic/claude-opus-4.6 | OpenRouter | Stakeholder map, missing voices, framing divergences |
-| Writer | anthropic/claude-opus-4.6 | OpenRouter | Write article with web_search tool access |
-| QA+Fix | anthropic/claude-sonnet-4.6 | OpenRouter | Find errors, apply corrections, return corrected article |
-| Bias Language | anthropic/claude-opus-4.6 | OpenRouter | Analyze language bias in finished article |
+| Perspektiv | anthropic/claude-opus-4.6 | OpenRouter | Position-cluster map (V2): `position_clusters[]` + `missing_positions[]`. Python adds `pc-NNN`, `actors[]`, `regions[]`, `languages[]`, `representation` |
+| Writer | anthropic/claude-opus-4.6 | OpenRouter | Write article with web_search tool access; emits `[rsrc-NNN]` / `[web-N]` citations (Python renumbers to `[src-NNN]` before QA+Fix) |
+| QA+Fix | anthropic/claude-sonnet-4.6 | OpenRouter | Find problems, propose corrections, return corrected article. Output: `problems_found[]`, `proposed_corrections[]`, `article`, `divergences[]` |
+| Perspektiv-Sync | anthropic/claude-opus-4.6 | OpenRouter | (Hydrated only) Re-align position-cluster map after QA+Fix. V2 emits `position_cluster_updates[]` with optional `position_label` / `position_summary` deltas |
+| Bias Language | anthropic/claude-opus-4.6 | OpenRouter | Analyze language bias; reads pre-aggregated `bias_card` (Python) and emits `language_bias` + `reader_note` |
 | Hydration Aggregator Phase 1 | google/gemini-3-flash-preview | OpenRouter | Per-chunk article extraction (parallel, chunked). Returns `article_analyses[]` only. |
 | Hydration Aggregator Phase 2 | anthropic/claude-opus-4.6 | OpenRouter | Cross-corpus reducer (single call, temp 0.1). Returns `preliminary_divergences[]` + `coverage_gaps[]`. |
 
@@ -313,17 +320,17 @@ The diagnosis was not that Gemini 3 Flash is unsuitable — it is excellent at p
 
 **Phase 1 — Per-article extraction (parallel, chunked):**
 - Chunk sizing: `ceil(N / 10)` chunks, distributed evenly so every chunk has between 5 and 10 articles.
-- Chunks fire in parallel via `asyncio.gather`. Each chunk's LLM call runs `agents/hydration_aggregator/PHASE1.md` and returns `article_analyses[]` for only its chunk's articles.
+- Chunks fire in parallel via `asyncio.gather`. Each chunk's LLM call runs the registered `hydration_aggregator_phase1` agent (loading `agents/hydration_aggregator/PHASE1-SYSTEM.md` + `PHASE1-INSTRUCTIONS.md`) and returns `article_analyses[]` for only its chunk's articles.
 - Intelligent retry per chunk, max 2 attempts. If the response is missing some `article_index` values, the retry sends only the missing articles back as a smaller input. This both reduces the attention load on the retry and eliminates re-work for already-successful extractions in the same chunk.
 - Hard crash after 2 retries of a chunk. Silent data loss is worse than pipeline failure.
 
 **Phase 2 — Cross-corpus reducer (single call):**
 - After all Phase 1 chunks complete, Python merges `article_analyses[]` into a flat sorted list by `article_index`.
-- A single LLM call runs `agents/hydration_aggregator/PHASE2.md` with the merged analyses plus per-article metadata (language, country, outlet). This produces `preliminary_divergences[]` and `coverage_gaps[]` in one shot.
+- A single LLM call runs the registered `hydration_aggregator_phase2` agent (loading `agents/hydration_aggregator/PHASE2-SYSTEM.md` + `PHASE2-INSTRUCTIONS.md`) with the merged analyses plus per-article metadata (language, country, outlet). This produces `preliminary_divergences[]` and `coverage_gaps[]` in one shot.
 - Cross-linguistic and cross-regional observations require a global view of the corpus, which Phase 1's chunked extraction cannot produce. The Phase 2 input is compact (summaries, not full-text), so attention load is low regardless of N.
 - Phase 2 model is selected for synthesis quality, independent of the extraction model. Phase 1 uses Gemini 3 Flash (excellent structured extraction, cheap); Phase 2 uses Opus 4.6 @ temp 0.1 reasoning=none (selected after 5-variant blind eval — see ROADMAP.md, section H2.2).
 
-**Counting is deterministic in Python, never delegated to LLM.** Prompt engineer correction during PHASE1.md review: the prompt does not ask the LLM to verify its output length, count its array entries, or enforce an `expected_count`. The validation happens in `src/hydration_aggregator.py` after each response; missing indices trigger retry. This generalizes Principle 1 ("deterministic before LLM") into prompt-design discipline — the LLM should never be asked to perform a task Python can perform deterministically, even as a self-check.
+**Counting is deterministic in Python, never delegated to LLM.** Prompt engineer correction during PHASE1-INSTRUCTIONS.md review: the prompt does not ask the LLM to verify its output length, count its array entries, or enforce an `expected_count`. The validation happens in `src/hydration_aggregator.py` after each response; missing indices trigger retry. This generalizes Principle 1 ("deterministic before LLM") into prompt-design discipline — the LLM should never be asked to perform a task Python can perform deterministically, even as a self-check.
 
 The chunking architecture scales to arbitrary N without code changes. Lauf evidence: 32-article topic chunks cleanly into [8,8,8,8], 15-article into [7,8], 5-article into [5]; all observed runs since integration have completed Phase 1 with zero retries.
 
@@ -353,13 +360,13 @@ The downstream agents (Perspektiv, Writer, QA+Fix, Bias Language) see a richer d
 
 - `src/pipeline_hydrated.py` — copy of `pipeline.py` with Feed-Hydration and Aggregator steps inserted. Independent file; no production-code modification.
 - `src/hydration_aggregator.py` — chunked two-phase Aggregator implementation. Module-level constants at top: `AGGREGATOR_MODEL` (Phase 1), `PHASE2_MODEL`, `PHASE2_PROMPT_PATH`, `PHASE2_TEMPERATURE`.
-- `agents/hydration_aggregator/PHASE1.md` — per-article extraction prompt. Each LLM call processes 5-10 articles and returns `article_analyses[]` only.
-- `agents/hydration_aggregator/PHASE2.md` — cross-corpus reducer prompt. Single LLM call over all merged analyses produces `preliminary_divergences[]` + `coverage_gaps[]`.
-- `agents/hydration_aggregator/AGENTS.md` — deprecated monolithic prompt. Retained as revert target only; not invoked.
-- `agents/researcher_hydrated/PLAN.md` — a modified planner prompt that uses the pre-dossier as context. The Assembler prompt is unchanged (still processes web-search results only; pre-dossier merging happens in Python after assembly).
+- `agents/hydration_aggregator/PHASE1-SYSTEM.md` + `PHASE1-INSTRUCTIONS.md` — per-article extraction prompt. Each LLM call processes 5-10 articles and returns `article_analyses[]` only.
+- `agents/hydration_aggregator/PHASE2-SYSTEM.md` + `PHASE2-INSTRUCTIONS.md` — cross-corpus reducer prompt. Single LLM call over all merged analyses produces `preliminary_divergences[]` + `coverage_gaps[]`.
+- `agents/_archive/hydration_aggregator-AGENTS-2026-04-23.md` — deprecated monolithic prompt, archived 2026-04-23 after multiple green hydrated runs through S13.
+- `agents/researcher_hydrated/PLAN-SYSTEM.md` + `PLAN-INSTRUCTIONS.md` — a modified planner prompt that uses the pre-dossier as context. The Assembler prompt is unchanged (still processes web-search results only; pre-dossier merging happens in Python after assembly).
 - `scripts/compare_pipelines.py` — T4 A/B orchestrator. Shared Curator+Editor run once; Production and Hydrated pipelines both run in parallel on identical assignments; deterministic metric extraction + markdown report.
 
-The existing `src/pipeline.py`, `agents/researcher/PLAN.md`, and `agents/researcher/ASSEMBLE.md` are not modified. Production runs continue to use the unchanged flow. The Hydration pipeline is invoked via a separate test script (`scripts/test_hydration_pipeline.py`) that writes to `output/{date}/test_hydration/`, or via `scripts/compare_pipelines.py` for side-by-side evaluation.
+Production runs continue to use the unchanged flow with `agents/researcher/PLAN-{SYSTEM,INSTRUCTIONS}.md` and `ASSEMBLE-{SYSTEM,INSTRUCTIONS}.md`. The Hydration pipeline is invoked via a separate test script (`scripts/test_hydration_pipeline.py`) that writes to `output/{date}/test_hydration/`, or via `scripts/compare_pipelines.py` for side-by-side evaluation.
 
 ## File Structure
 
@@ -377,19 +384,19 @@ independent-wire/
 │       ├── web_search.py     # web_search tool (Perplexity, Brave, DuckDuckGo)
 │       └── file_ops.py       # read_file, write_file tools
 ├── agents/                   # Agent prompts (public, in repo)
-│   ├── curator/AGENTS.md
-│   ├── editor/AGENTS.md
-│   ├── researcher/PLAN.md, ASSEMBLE.md
-│   ├── researcher_hydrated/PLAN.md            # Etappe 2 planner variant
-│   ├── perspektiv/AGENTS.md
-│   ├── perspektiv_sync/AGENTS.md              # Delta-sync variant (Etappe 2)
-│   ├── writer/AGENTS.md
-│   ├── qa_analyze/AGENTS.md
-│   ├── bias_language/AGENTS.md
+│   ├── curator/{SYSTEM,INSTRUCTIONS}.md
+│   ├── editor/{SYSTEM,INSTRUCTIONS}.md
+│   ├── researcher/{PLAN,ASSEMBLE}-{SYSTEM,INSTRUCTIONS}.md
+│   ├── researcher_hydrated/PLAN-{SYSTEM,INSTRUCTIONS}.md   # Etappe 2 planner variant
+│   ├── perspektiv/{SYSTEM,INSTRUCTIONS}.md
+│   ├── perspektiv_sync/{SYSTEM,INSTRUCTIONS}.md            # V2 delta-sync (Etappe 2)
+│   ├── writer/{SYSTEM,INSTRUCTIONS}.md
+│   ├── writer/FOLLOWUP.md                                  # addendum (loaded conditionally)
+│   ├── qa_analyze/{SYSTEM,INSTRUCTIONS}.md
+│   ├── bias_detector/{SYSTEM,INSTRUCTIONS}.md              # registered as `bias_language`
 │   └── hydration_aggregator/
-│       ├── PHASE1.md         # Per-article extraction (active)
-│       ├── PHASE2.md         # Cross-corpus reducer (active)
-│       └── AGENTS.md         # Deprecated monolithic prompt (retained as revert target)
+│       ├── PHASE1-{SYSTEM,INSTRUCTIONS}.md    # Per-article extraction (active)
+│       └── PHASE2-{SYSTEM,INSTRUCTIONS}.md    # Cross-corpus reducer (active)
 ├── config/
 │   ├── style-guide.md
 │   ├── sources.json          # 72 RSS feeds, v0.3
