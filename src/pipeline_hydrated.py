@@ -364,6 +364,40 @@ class PipelineHydrated(Pipeline):
             encoding="utf-8",
         )
 
+    async def _write_output(self, packages: list[TopicPackage]) -> None:
+        """Route final TP writes under ``output/{date}/test_hydration/``.
+
+        The parent ``Pipeline._write_output`` writes to
+        ``output/{date}/{pkg.id}.json``, which would clobber the
+        production TP at the same path. Hydrated runs share the date
+        but never the artefact tree, so the override moves the TP
+        write (and the run-summary) into the same ``test_hydration/``
+        sub-tree the debug writes use.
+        """
+        if self.state is None:
+            return
+        out = Path(self.output_dir) / self.state.date / "test_hydration"
+        out.mkdir(parents=True, exist_ok=True)
+        for pkg in packages:
+            if pkg.status == "failed":
+                continue
+            (out / f"{pkg.id}.json").write_text(
+                json.dumps(pkg.to_dict(), indent=2, ensure_ascii=False),
+                encoding="utf-8",
+            )
+        summary = {
+            "run_id": self.state.run_id,
+            "date": self.state.date,
+            "total_topics": len(packages),
+            "completed": len([p for p in packages if p.status != "failed"]),
+            "failed": len([p for p in packages if p.status == "failed"]),
+            "packages": [p.id for p in packages],
+        }
+        (out / f"{self.state.run_id}-summary.json").write_text(
+            json.dumps(summary, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+
     # ---- overridden research step ------------------------------------
 
     async def _research_two_phase(
@@ -453,10 +487,13 @@ class PipelineHydrated(Pipeline):
             f"Plan multilingual research queries for this topic. "
             f"Today is {self.state.date}.",
             context=plan_context,
-            output_schema={"type": "array", "items": {"type": "object"}},
         )
         self._track_agent(plan_result, "researcher_hydrated_plan", slug)
-        queries = plan_result.structured
+        structured = plan_result.structured
+        if isinstance(structured, dict):
+            queries = structured.get("queries")
+        else:
+            queries = structured
         if not queries or not isinstance(queries, list):
             queries = _extract_list(plan_result) or []
         if not queries:

@@ -306,7 +306,6 @@ async def _call_phase1(
     result = await agent.run(
         _PHASE1_USER_MESSAGE,
         context=payload,
-        output_schema={"type": "object"},
     )
     structured = result.structured
     if not isinstance(structured, dict):
@@ -416,7 +415,6 @@ async def _run_phase2_reducer(
     result = await agent.run(
         _PHASE2_USER_MESSAGE,
         context=payload,
-        output_schema={"type": "object"},
     )
     structured = result.structured
     if not isinstance(structured, dict):
