@@ -363,9 +363,67 @@ BIAS_DETECTOR_SCHEMA = {
     "additionalProperties": False,
 }
 
-# Hydration aggregator phases — schemas are defined as empty placeholders
-# and rolled out last (Phase 5, optional). Phase 1 in particular has a
-# complex article_analyses[] shape; the aggregator's existing recovery
-# logic is working, so this is future polish.
-HYDRATION_PHASE1_SCHEMA: dict = {}  # TODO Phase 5
-HYDRATION_PHASE2_SCHEMA: dict = {}  # TODO Phase 5
+# ---------------------------------------------------------------- Hydration Aggregator Phase 1
+# Per-chunk article analysis. Each entry corresponds to one input article
+# and carries its index, a one-paragraph summary, and the actor-quoted list.
+# The actors_quoted shape mirrors RESEARCHER_ASSEMBLE_SCHEMA.sources[].actors_quoted[]
+# so Perspektiv reads both shapes interchangeably. verbatim_quote is
+# nullable per the prompt's "When the article only paraphrases, the field
+# is null" rule.
+HYDRATION_PHASE1_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "article_analyses": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "article_index": {"type": "integer"},
+                    "summary": {"type": "string"},
+                    "actors_quoted": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {"type": "string"},
+                                "role": {"type": "string"},
+                                "type": {"type": "string"},
+                                "position": {"type": "string"},
+                                "verbatim_quote": {"type": ["string", "null"]},
+                            },
+                            "required": [
+                                "name", "role", "type", "position",
+                                "verbatim_quote",
+                            ],
+                            "additionalProperties": False,
+                        },
+                    },
+                },
+                "required": ["article_index", "summary", "actors_quoted"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    "required": ["article_analyses"],
+    "additionalProperties": False,
+}
+
+# ---------------------------------------------------------------- Hydration Aggregator Phase 2
+# Cross-corpus reducer. Both arrays may legitimately be empty when no
+# divergence / gap is observed; strict mode requires the keys present
+# but does not enforce non-empty content.
+HYDRATION_PHASE2_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "preliminary_divergences": {
+            "type": "array",
+            "items": {"type": "string"},
+        },
+        "coverage_gaps": {
+            "type": "array",
+            "items": {"type": "string"},
+        },
+    },
+    "required": ["preliminary_divergences", "coverage_gaps"],
+    "additionalProperties": False,
+}
