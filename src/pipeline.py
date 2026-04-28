@@ -1671,6 +1671,74 @@ class Pipeline:
                     logger.warning("Could not read previous TP %s: %s", tp_id, e)
         return ""
 
+    _CURATOR_RAW_DATA_FIELDS = (
+        "source_ids", "summary", "geographic_coverage", "languages",
+        "missing_perspectives", "source_count", "missing_regions",
+        "missing_languages", "source_diversity", "relevance_score",
+    )
+
+    @classmethod
+    def _attach_raw_data_from_curated(
+        cls, raw_assignments: list[dict], curated_topics: list[dict],
+    ) -> None:
+        """Re-attach Curator's enrichment to Editor's assignments in place.
+
+        Editor's strict-mode schema cannot emit ``raw_data``. Match each
+        Editor entry to a curated topic by exact title first, then by slug
+        as a fallback when the Editor refined the title. ``raw_data`` is
+        assembled from a fixed set of curator-enrichment fields so the
+        downstream tiebreaker (``source_ids``) and Researcher PLAN prompt
+        (``summary``, ``geographic_coverage``, ``languages``,
+        ``missing_perspectives``, ``source_count``) see populated context.
+        """
+        def _extract(t: dict) -> dict:
+            return {k: t[k] for k in cls._CURATOR_RAW_DATA_FIELDS if k in t}
+
+        title_lookup: dict[str, dict] = {}
+        slug_buckets: dict[str, list[dict]] = {}
+        for t in curated_topics:
+            if not isinstance(t, dict):
+                continue
+            title = t.get("title") or ""
+            raw_data = _extract(t)
+            if title and title not in title_lookup:
+                title_lookup[title] = raw_data
+            slug = _slugify(title)
+            if slug:
+                slug_buckets.setdefault(slug, []).append(raw_data)
+
+        for a in raw_assignments:
+            if not isinstance(a, dict):
+                continue
+            if a.get("raw_data"):
+                continue
+            title = a.get("title") or ""
+            if title in title_lookup:
+                a["raw_data"] = title_lookup[title]
+                continue
+            slug = _slugify(title)
+            if slug and slug in slug_buckets:
+                bucket = slug_buckets[slug]
+                if len(bucket) == 1:
+                    a["raw_data"] = bucket[0]
+                    logger.info(
+                        "editor refined title; matched by slug: '%s' (slug=%s)",
+                        title, slug,
+                    )
+                    continue
+                logger.warning(
+                    "editor topic '%s' has %d slug-level matches; raw_data left empty",
+                    title, len(bucket),
+                )
+                a["raw_data"] = {}
+                continue
+            logger.warning(
+                "editor topic '%s' did not match any curated topic; "
+                "raw_data unavailable for tiebreaker and researcher_plan",
+                title,
+            )
+            a["raw_data"] = {}
+
     async def editorial_conference(
         self, curated_topics: list[dict]
     ) -> list[TopicAssignment]:
@@ -1722,6 +1790,8 @@ class Pipeline:
                 raw_assignments = structured
             if not raw_assignments or not isinstance(raw_assignments, list):
                 raw_assignments = _extract_list(result) or []
+
+            self._attach_raw_data_from_curated(raw_assignments, curated_topics)
 
             survivors: list[dict] = []
             rejected: list[dict] = []
@@ -1894,8 +1964,7 @@ class Pipeline:
                     "coverage_gaps": research_dossier.get("coverage_gaps", []),
                 }
                 result = await perspektiv.run(
-                    "Analyze the research dossier. Map all stakeholders, identify missing voices, "
-                    "and surface framing divergences between regions and language groups.",
+                    "",
                     context=perspektiv_context,
                 )
                 perspective_analysis = _extract_dict(result) or {}
@@ -1941,8 +2010,6 @@ class Pipeline:
                 "title": assignment.title,
                 "selection_reason": assignment.selection_reason,
                 "perspective_analysis": perspective_analysis,
-                "position_clusters": perspective_analysis.get("position_clusters", []),
-                "missing_positions": perspective_analysis.get("missing_positions", []),
                 "sources": research_dossier.get("sources", []),
                 "coverage_gaps": research_dossier.get("coverage_gaps", []),
             }

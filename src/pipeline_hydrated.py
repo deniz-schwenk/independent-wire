@@ -833,9 +833,7 @@ class PipelineHydrated(Pipeline):
                     "coverage_gaps": research_dossier.get("coverage_gaps", []),
                 }
                 result = await perspektiv.run(
-                    "Analyze the research dossier. Map all stakeholders, "
-                    "identify missing voices, and surface framing "
-                    "divergences between regions and language groups.",
+                    "",
                     context=perspektiv_context,
                 )
                 perspective_analysis = _extract_dict(result) or {}
@@ -888,8 +886,6 @@ class PipelineHydrated(Pipeline):
                 "title": assignment.title,
                 "selection_reason": assignment.selection_reason,
                 "perspective_analysis": perspective_analysis,
-                "position_clusters": perspective_analysis.get("position_clusters", []),
-                "missing_positions": perspective_analysis.get("missing_positions", []),
                 "sources": research_dossier.get("sources", []),
                 "coverage_gaps": research_dossier.get("coverage_gaps", []),
             }

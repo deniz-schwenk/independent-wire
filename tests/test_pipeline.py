@@ -209,11 +209,65 @@ async def test_produce_single_error_isolation() -> None:
 
 
 def test_agent_prompt_files_exist() -> None:
-    """All core agent prompt files exist."""
+    """All core agent prompt files exist (two-file layout)."""
     repo_root = Path(__file__).parent.parent
-    for agent_name in ["collector", "curator", "editor", "writer"]:
-        path = repo_root / "agents" / agent_name / "AGENTS.md"
-        assert path.exists(), f"Missing prompt file: {path}"
+    # Collector remains a single-file (disabled) prompt — its AGENTS.md is
+    # used by tests/test_tools.py as a fixture, not loaded by any pipeline.
+    assert (repo_root / "agents" / "collector" / "AGENTS.md").exists()
+    for agent_name in ["curator", "editor", "writer"]:
+        for fname in ("SYSTEM.md", "INSTRUCTIONS.md"):
+            path = repo_root / "agents" / agent_name / fname
+            assert path.exists(), f"Missing prompt file: {path}"
+
+
+def test_attach_raw_data_exact_title_match() -> None:
+    """Editor preserves the curated title verbatim — exact-match attaches raw_data."""
+    curated_topics = [
+        {
+            "title": "ECB Holds Interest Rates",
+            "source_ids": ["a", "b", "c"],
+            "languages": ["en", "de"],
+            "summary": "ECB held rates at 4%.",
+        },
+    ]
+    raw_assignments = [
+        {"title": "ECB Holds Interest Rates", "priority": 5, "selection_reason": "..."},
+    ]
+    Pipeline._attach_raw_data_from_curated(raw_assignments, curated_topics)
+    assert raw_assignments[0]["raw_data"]["source_ids"] == ["a", "b", "c"]
+    assert raw_assignments[0]["raw_data"]["languages"] == ["en", "de"]
+    assert raw_assignments[0]["raw_data"]["summary"] == "ECB held rates at 4%."
+
+
+def test_attach_raw_data_slug_fallback(caplog) -> None:
+    """Editor refines the title — slug match attaches raw_data and logs INFO."""
+    curated_topics = [
+        {
+            "title": "ECB Holds Interest-Rates",
+            "source_ids": ["x", "y"],
+        },
+    ]
+    raw_assignments = [
+        {"title": "ECB holds interest rates", "priority": 5, "selection_reason": "..."},
+    ]
+    with caplog.at_level(logging.INFO, logger="src.pipeline"):
+        Pipeline._attach_raw_data_from_curated(raw_assignments, curated_topics)
+    assert raw_assignments[0]["raw_data"]["source_ids"] == ["x", "y"]
+    assert any("matched by slug" in r.message for r in caplog.records)
+
+
+def test_attach_raw_data_no_match_graceful(caplog) -> None:
+    """Editor returns a title with no curated counterpart — raw_data stays empty."""
+    curated_topics = [
+        {"title": "Topic A", "source_ids": ["a"]},
+    ]
+    raw_assignments = [
+        {"title": "Completely Unrelated", "priority": 5, "selection_reason": "..."},
+    ]
+    with caplog.at_level(logging.WARNING, logger="src.pipeline"):
+        Pipeline._attach_raw_data_from_curated(raw_assignments, curated_topics)
+    assert raw_assignments[0]["raw_data"] == {}
+    assert any("did not match any curated topic" in r.message for r in caplog.records)
 
 
 # --- Integration test (requires OPENROUTER_API_KEY) ---
@@ -241,12 +295,14 @@ async def test_pipeline_collect_curate(tmp_path) -> None:
     collector = Agent(
         name="collector",
         model=MODEL,
-        prompt_path=str(collector_prompt),
+        system_prompt_path=str(collector_prompt),
+        instructions_path=str(collector_prompt),
     )
     curator = Agent(
         name="curator",
         model=MODEL,
-        prompt_path=str(curator_prompt),
+        system_prompt_path=str(curator_prompt),
+        instructions_path=str(curator_prompt),
     )
 
     pipeline = Pipeline(
