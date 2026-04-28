@@ -2542,7 +2542,7 @@ class Pipeline:
         from_idx = step_order.index(from_step)
         to_idx = step_order.index(to_step) if to_step else len(step_order) - 1
 
-        # --- Load assignments (needed for researcher onward) ---
+        # --- Load assignments and apply post-load filters (needed for researcher onward) ---
         assignments: list[TopicAssignment] = []
         if from_idx >= step_order.index("researcher"):
             raw_assignments = self._load_debug_output(reuse, "03-editor-assignments.json")
@@ -2565,40 +2565,40 @@ class Pipeline:
                 )
             logger.info("Loaded %d assignments from %s", len(assignments), reuse)
 
-        # Apply topic filter (1-based index)
-        if topic_filter is not None:
-            if topic_filter < 1 or topic_filter > len(assignments):
-                raise PipelineError(
-                    f"--topic {topic_filter} out of range (have {len(assignments)} topics)"
+            # Apply topic filter (1-based index)
+            if topic_filter is not None:
+                if topic_filter < 1 or topic_filter > len(assignments):
+                    raise PipelineError(
+                        f"--topic {topic_filter} out of range (have {len(assignments)} topics)"
+                    )
+                assignments = [assignments[topic_filter - 1]]
+                logger.info("Filtered to topic %d: %s", topic_filter, assignments[0].title)
+
+            # Filter out rejected topics (priority 0)
+            pre_filter_count = len(assignments)
+            assignments = [a for a in assignments if a.priority > 0]
+            filtered_count = pre_filter_count - len(assignments)
+            if filtered_count:
+                logger.info("Filtered %d rejected topic(s) (priority 0)", filtered_count)
+            if not assignments:
+                logger.warning("All selected assignments have priority 0 — nothing to produce")
+                self.state.current_step = "done"
+                await self._save_state()
+                return packages
+
+            # Sort + slice to production budget (same logic as run())
+            assignments.sort(
+                key=lambda a: (
+                    -a.priority,
+                    -len(a.raw_data.get("source_ids", [])),
                 )
-            assignments = [assignments[topic_filter - 1]]
-            logger.info("Filtered to topic %d: %s", topic_filter, assignments[0].title)
-
-        # Filter out rejected topics (priority 0)
-        pre_filter_count = len(assignments)
-        assignments = [a for a in assignments if a.priority > 0]
-        filtered_count = pre_filter_count - len(assignments)
-        if filtered_count:
-            logger.info("Filtered %d rejected topic(s) (priority 0)", filtered_count)
-        if not assignments:
-            logger.warning("All selected assignments have priority 0 — nothing to produce")
-            self.state.current_step = "done"
-            await self._save_state()
-            return packages
-
-        # Sort + slice to production budget (same logic as run())
-        assignments.sort(
-            key=lambda a: (
-                -a.priority,
-                -len(a.raw_data.get("source_ids", [])),
             )
-        )
-        if len(assignments) > self.max_produce:
-            logger.info(
-                "Production budget: %d accepted topics, producing top %d",
-                len(assignments), self.max_produce,
-            )
-            assignments = assignments[: self.max_produce]
+            if len(assignments) > self.max_produce:
+                logger.info(
+                    "Production budget: %d accepted topics, producing top %d",
+                    len(assignments), self.max_produce,
+                )
+                assignments = assignments[: self.max_produce]
 
         # --- Load per-topic data for later steps ---
         dossiers: dict[str, dict] = {}

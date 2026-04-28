@@ -14,7 +14,7 @@ import pytest
 
 from src.agent import Agent
 from src.models import AgentResult, PipelineState, TopicAssignment, TopicPackage
-from src.pipeline import Pipeline, PipelineGateRejected
+from src.pipeline import Pipeline, PipelineError, PipelineGateRejected
 
 HAS_API_KEY = bool(os.environ.get("OPENROUTER_API_KEY"))
 skip_no_key = pytest.mark.skipif(not HAS_API_KEY, reason="No OPENROUTER_API_KEY")
@@ -254,6 +254,104 @@ def test_attach_raw_data_slug_fallback(caplog) -> None:
         Pipeline._attach_raw_data_from_curated(raw_assignments, curated_topics)
     assert raw_assignments[0]["raw_data"]["source_ids"] == ["x", "y"]
     assert any("matched by slug" in r.message for r in caplog.records)
+
+
+@pytest.mark.asyncio
+async def test_run_partial_editor_from_with_topic_filter(tmp_path) -> None:
+    """`--from editor --topic 1` runs Editor first; topic_filter clips after.
+
+    Regression for the pre-fix bug where topic_filter / priority-0 / sort
+    blocks fired on the empty assignments list before Editor produced any.
+    """
+    reuse_date = "2026-04-28"
+    reuse_dir = tmp_path / "output" / reuse_date
+    reuse_dir.mkdir(parents=True)
+    # Editor needs curated_topics on disk
+    (reuse_dir / "02-curator-topics.json").write_text(json.dumps([
+        {"title": "Topic A"}, {"title": "Topic B"}, {"title": "Topic C"},
+    ]))
+
+    pipeline = Pipeline(
+        name="test", agents={}, mode="quick",
+        output_dir=str(tmp_path / "output"),
+        state_dir=str(tmp_path / "state"),
+    )
+    synthetic = [
+        TopicAssignment(id="tp-001", title="Topic A", priority=5,
+                        topic_slug="topic-a", selection_reason="r"),
+        TopicAssignment(id="tp-002", title="Topic B", priority=4,
+                        topic_slug="topic-b", selection_reason="r"),
+        TopicAssignment(id="tp-003", title="Topic C", priority=3,
+                        topic_slug="topic-c", selection_reason="r"),
+    ]
+    pipeline.editorial_conference = AsyncMock(return_value=synthetic)
+
+    # to_step="editor" → returns after the editor branch with no produce()
+    packages = await pipeline.run_partial(
+        from_step="editor", to_step="editor",
+        reuse_date=reuse_date, topic_filter=1,
+    )
+    pipeline.editorial_conference.assert_awaited_once()
+    # No exception raised → fix works. Editor branch returns empty packages
+    # at to_step="editor"; the topic_filter clip ran (assignments[0]).
+    assert packages == []
+
+
+@pytest.mark.asyncio
+async def test_run_partial_researcher_topic_filter_in_range(tmp_path) -> None:
+    """`--from researcher --topic 1` with valid index applies filter cleanly."""
+    reuse_date = "2026-04-28"
+    reuse_dir = tmp_path / "output" / reuse_date
+    reuse_dir.mkdir(parents=True)
+    (reuse_dir / "03-editor-assignments.json").write_text(json.dumps([
+        {"id": "tp-001", "title": "T1", "priority": 5, "topic_slug": "t1",
+         "selection_reason": "r", "raw_data": {}},
+        {"id": "tp-002", "title": "T2", "priority": 4, "topic_slug": "t2",
+         "selection_reason": "r", "raw_data": {}},
+    ]))
+
+    pipeline = Pipeline(
+        name="test", agents={}, mode="quick",
+        output_dir=str(tmp_path / "output"),
+        state_dir=str(tmp_path / "state"),
+    )
+    captured: dict = {}
+
+    async def fake_produce(assignments, to_step=None):
+        captured["assignments"] = list(assignments)
+        return []
+
+    pipeline.produce = fake_produce
+
+    packages = await pipeline.run_partial(
+        from_step="researcher", reuse_date=reuse_date, topic_filter=1,
+    )
+    assert packages == []
+    assert len(captured["assignments"]) == 1
+    assert captured["assignments"][0].id == "tp-001"
+
+
+@pytest.mark.asyncio
+async def test_run_partial_researcher_topic_filter_out_of_range(tmp_path) -> None:
+    """`--from researcher --topic 99` still raises PipelineError."""
+    reuse_date = "2026-04-28"
+    reuse_dir = tmp_path / "output" / reuse_date
+    reuse_dir.mkdir(parents=True)
+    (reuse_dir / "03-editor-assignments.json").write_text(json.dumps([
+        {"id": "tp-001", "title": "T1", "priority": 5, "topic_slug": "t1",
+         "selection_reason": "r", "raw_data": {}},
+    ]))
+
+    pipeline = Pipeline(
+        name="test", agents={}, mode="quick",
+        output_dir=str(tmp_path / "output"),
+        state_dir=str(tmp_path / "state"),
+    )
+
+    with pytest.raises(PipelineError, match="out of range"):
+        await pipeline.run_partial(
+            from_step="researcher", reuse_date=reuse_date, topic_filter=99,
+        )
 
 
 def test_attach_raw_data_no_match_graceful(caplog) -> None:
