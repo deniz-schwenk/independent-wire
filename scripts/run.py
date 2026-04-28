@@ -19,7 +19,10 @@ from src.schemas import (
     BIAS_DETECTOR_SCHEMA,
     CURATOR_SCHEMA,
     EDITOR_SCHEMA,
+    HYDRATION_PHASE1_SCHEMA,
+    HYDRATION_PHASE2_SCHEMA,
     PERSPEKTIV_SCHEMA,
+    PERSPEKTIV_SYNC_SCHEMA,
     QA_ANALYZE_SCHEMA,
     RESEARCHER_ASSEMBLE_SCHEMA,
     RESEARCHER_PLAN_SCHEMA,
@@ -165,6 +168,69 @@ def create_agents() -> dict[str, Agent]:
     }
 
 
+def create_agents_hydrated() -> dict[str, Agent]:
+    """Agents for the hydrated pipeline.
+
+    Mirrors :func:`create_agents` for the agents shared with production,
+    and adds the three hydrated-only agents (``researcher_hydrated_plan``,
+    ``hydration_aggregator_phase1``, ``hydration_aggregator_phase2``,
+    ``perspektiv_sync``). All eleven agents carry their ``output_schema``
+    so strict-mode JSON enforcement applies on every LLM call.
+    """
+    agents_dir = ROOT / "agents"
+    base = create_agents()
+    base.update({
+        "researcher_hydrated_plan": Agent(
+            name="researcher_hydrated_plan",
+            model="google/gemini-3-flash-preview",
+            system_prompt_path=str(agents_dir / "researcher_hydrated" / "PLAN-SYSTEM.md"),
+            instructions_path=str(agents_dir / "researcher_hydrated" / "PLAN-INSTRUCTIONS.md"),
+            tools=[],
+            temperature=0.5,
+            max_tokens=16384,
+            provider="openrouter",
+            reasoning="none",
+            output_schema=RESEARCHER_PLAN_SCHEMA,
+        ),
+        "hydration_aggregator_phase1": Agent(
+            name="hydration_aggregator_phase1",
+            model="google/gemini-3-flash-preview",
+            system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
+            instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
+            tools=[],
+            temperature=0.3,
+            max_tokens=32000,
+            provider="openrouter",
+            reasoning="none",
+            output_schema=HYDRATION_PHASE1_SCHEMA,
+        ),
+        "hydration_aggregator_phase2": Agent(
+            name="hydration_aggregator_phase2",
+            model="anthropic/claude-opus-4.6",
+            system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE2-SYSTEM.md"),
+            instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE2-INSTRUCTIONS.md"),
+            tools=[],
+            temperature=0.1,
+            max_tokens=32000,
+            provider="openrouter",
+            reasoning="none",
+            output_schema=HYDRATION_PHASE2_SCHEMA,
+        ),
+        "perspektiv_sync": Agent(
+            name="perspektiv_sync",
+            model="anthropic/claude-opus-4.6",
+            system_prompt_path=str(agents_dir / "perspektiv_sync" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "perspektiv_sync" / "INSTRUCTIONS.md"),
+            tools=[],
+            temperature=0.1,
+            provider="openrouter",
+            reasoning="none",
+            output_schema=PERSPEKTIV_SYNC_SCHEMA,
+        ),
+    })
+    return base
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Independent Wire pipeline")
     parser.add_argument(
@@ -193,6 +259,15 @@ def parse_args():
         "--publish", action="store_true",
         help="Run publish.py after the pipeline (if at least 1 topic succeeded)",
     )
+    parser.add_argument(
+        "--hydrated", action="store_true",
+        help=(
+            "Run the hydrated pipeline (T1 fetch + Phase 1/2 aggregator + "
+            "Perspektiv-Sync) instead of production. Output goes to "
+            "output/{date}/test_hydration/. Currently requires --from researcher "
+            "and --reuse to a date with completed Curator + Editor outputs."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -211,19 +286,39 @@ async def main():
             logger.error("fetch_feeds.py failed (exit %d)", result.returncode)
             sys.exit(1)
 
+    if args.hydrated and not (args.from_step == "researcher" and args.reuse):
+        raise RuntimeError(
+            "--hydrated currently requires --from researcher and --reuse {date}. "
+            "Full-run hydrated mode (Collector → Bias) is a follow-up."
+        )
+
     logger.info("Starting Independent Wire pipeline...")
     start = time.time()
 
-    agents = create_agents()
-    pipeline = Pipeline(
-        name="daily_report",
-        agents=agents,
-        output_dir=str(ROOT / "output"),
-        state_dir=str(ROOT / "state"),
-        max_topics=10,
-        max_produce=3,
-        mode="quick",
-    )
+    if args.hydrated:
+        from src.pipeline_hydrated import PipelineHydrated
+
+        agents = create_agents_hydrated()
+        pipeline = PipelineHydrated(
+            name="daily_report_hydrated",
+            agents=agents,
+            output_dir=str(ROOT / "output"),
+            state_dir=str(ROOT / "state"),
+            max_topics=10,
+            max_produce=3,
+            mode="quick",
+        )
+    else:
+        agents = create_agents()
+        pipeline = Pipeline(
+            name="daily_report",
+            agents=agents,
+            output_dir=str(ROOT / "output"),
+            state_dir=str(ROOT / "state"),
+            max_topics=10,
+            max_produce=3,
+            mode="quick",
+        )
 
     # Validate --from / --to ordering
     step_order = ["collector", "curator", "editor", "researcher", "perspektiv", "writer", "qa_analyze", "bias_detector"]

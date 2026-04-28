@@ -2493,6 +2493,19 @@ class Pipeline:
             logger.error("Could not parse debug file %s: %s", path, e)
             return None
 
+    def _post_load_assignments_hook(
+        self,
+        assignments: list[TopicAssignment],
+        reuse_date: str,
+    ) -> None:
+        """Subclass hook fired after run_partial loads + filters assignments.
+
+        Default no-op. PipelineHydrated overrides this to attach
+        ``raw_data["hydration_urls"]`` reconstructed from
+        ``02-curator-topics-unsliced.json``.
+        """
+        return None
+
     def _find_latest_output_date(self) -> str | None:
         """Find the most recent date directory in output/."""
         out = Path(self.output_dir)
@@ -2599,6 +2612,10 @@ class Pipeline:
                     len(assignments), self.max_produce,
                 )
                 assignments = assignments[: self.max_produce]
+
+            # Subclass hook (e.g. PipelineHydrated attaches hydration_urls
+            # reconstructed from 02-curator-topics-unsliced.json here).
+            self._post_load_assignments_hook(assignments, reuse)
 
         # --- Load per-topic data for later steps ---
         dossiers: dict[str, dict] = {}

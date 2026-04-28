@@ -331,6 +331,25 @@ class PipelineHydrated(Pipeline):
                 reasoning="none",
             )
 
+    # ---- run_partial assignment hook ---------------------------------
+
+    def _post_load_assignments_hook(
+        self,
+        assignments: list[TopicAssignment],
+        reuse_date: str,
+    ) -> None:
+        """Reconstruct ``hydration_urls`` for each assignment after load.
+
+        ``Pipeline.run_partial`` calls this after Editor assignments are
+        loaded, filtered, sorted, and sliced. The Editor strict-mode
+        schema does not preserve cluster URLs, so the hydrated path
+        rebuilds them from ``02-curator-topics-unsliced.json``.
+        """
+        from src.hydration_urls import attach_hydration_urls
+
+        repo_root = Path(self.output_dir).resolve().parent
+        attach_hydration_urls(assignments, reuse_date, repo_root)
+
     # ---- debug-output routing ----------------------------------------
 
     def _write_debug_output(self, filename: str, data: object) -> None:
