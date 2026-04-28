@@ -47,7 +47,7 @@ class Agent:
         self,
         message: str = "",
         context: dict = None,                   # JSON-encoded into the User-turn <context> block
-        output_schema: dict = None,             # JSON shape hint (also described in INSTRUCTIONS.md)
+        output_schema: dict = None,             # JSON Schema enforced as decoder constraint via OpenRouter response_format (strict mode). See src/schemas.py.
         instructions_addendum: str | None = None,  # appended inside the <instructions> block
     ) -> AgentResult:
         """
@@ -75,7 +75,7 @@ class AgentResult:
 - Agents are **async** (`async def run`) — enables future parallelization via `asyncio.gather()`
 - Each agent has its **own model** — no global default
 - **Tool calls handled inside the agent loop** — same pattern as Nanobot's `loop.py`
-- **Structured output** via `output_schema` (the agent's INSTRUCTIONS.md describes the JSON shape; the parameter is consumed by `_parse_or_retry_structured`)
+- **Structured output** via `output_schema`. The schema is wired as `response_format: {type: "json_schema", strict: true, schema: ...}` on the OpenRouter API call. For Anthropic models, OpenRouter applies the `anthropic-beta: structured-outputs-2025-11-13` header automatically. Decoder masks tokens that would violate the schema before sampling — agents are mechanically incapable of emitting fields outside their schema. All eight production agent schemas live in `src/schemas.py` as a single source of truth. Defense-in-depth (`_extract_dict`, `_extract_list`, `_parse_json`, `json_repair`, `_parse_or_retry_structured`) preserved as fallback when the schema fails to compile or a provider falls back.
 - **Memory is a file path**, not a framework feature; loaded into the User-turn `<memory>` block when set
 - **Two-file prompt convention** (S13): every agent has `agents/{name}/SYSTEM.md` (identity) + `agents/{name}/INSTRUCTIONS.md` (per-run task spec). Researcher and Hydration Aggregator use phase-named pairs (`PLAN-*`, `ASSEMBLE-*`, `PHASE1-*`, `PHASE2-*`)
 - **User-turn three-block layout**: `<context>` (JSON-encoded input + optional message), `<memory>` (when present), `<instructions>` (always present; addendum like Writer FOLLOWUP.md appended inside the closing tag). System message contains only `<system_prompt>{SYSTEM.md}</system_prompt>`
@@ -257,7 +257,7 @@ No numpy. No pandas. No langchain. No pytorch. Six dependencies total, all singl
 | **New tools** | `registry.register(new_tool)` |
 | **Docker deployment** | All config via env vars or config file |
 | **Different providers** | Agent's `provider` field |
-| **Structured output** | Agent's `output_schema` parameter |
+| **Structured output** | Agent's `output_schema` parameter; schema enforced at decode time via OpenRouter response_format |
 | **Error recovery** | Pipeline resumes from last checkpoint |
 
 ## Current Model Assignments (April 2026)

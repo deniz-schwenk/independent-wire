@@ -238,6 +238,18 @@ sub-eval confirming no cheaper candidate closes the gap. Opus 4.7 migration defe
 dedicated workstream due to breaking API changes (temperature removed, reasoning levels
 replaced by output_config.effort).
 
+### Session 13 (2026-04-23 → 2026-04-27) — S13 prompt rewrite + pipeline audit
+
+WP-PROMPT-REWRITE-PYTHON-FOLLOWUPS shipped (commit 9acddf7). All thirteen production agents migrated to the two-file SYSTEM.md + INSTRUCTIONS.md convention. agent.py three-block User layout (`<context>` / `<memory>` / `<instructions>`) live. Perspektiv V2 active end-to-end: `pc-NNN` ids, `position_clusters[]`, `src-NNN` body citations, `qa_proposed_corrections`, no V1 stubs. Pipeline refactor complete: rsrc-NNN/pc-NNN assignment in Python, renumbering moved before QA+Fix, source_id invariant strengthened (sequential, gapless, every citation backed, every source cited). Three deterministic pipeline bugfixes shipped (commit 3e81468): verbatim quotes restored to TPs, Phase 2 coverage_gaps wired through, country/language normalization hardened. Curator schema fix shipped (commit 37f0ec0): `cluster_assignments` is a flat array of `int|null`, length matches input findings; `_recover_truncated_cluster_assignments` added as defensive recovery for Gemini Flash mid-array truncation. End-to-end pipeline audit produced (`docs/AUDIT-PIPELINE-S13-2026-04-27.md`, 693 lines): per-agent input/output verification, prompt-quality assessment, ten ranked recommendations.
+
+### Session 14 (2026-04-28) — WP-STRUCTURED-OUTPUTS shipped + drift resolution
+
+Strict-mode JSON schemas via OpenRouter `response_format` shipped end-to-end across all eight active production agents. Five commits: 13cc76a (Phases 0+1+2 — agent.py wiring, src/schemas.py created, researcher_plan pilot), d56ff32 (Phase 3 — Curator, Editor, Researcher Assemble, Perspektiv, QA+Fix, Bias), 15ebc81 (Phase 4 — Writer with anyOf source shapes), 71b1138 (research-note status marked shipped), 091a7b2 (Editor explicit-unwrap refactor for consistency with Researcher PLAN call site). Three live smokes confirmed 9/9 TPs with zero parse failures. Defense-in-depth (`_extract_dict`, `_extract_list`, `_parse_json`, `json_repair`, `_parse_or_retry_structured`) preserved as fallback per spec.
+
+Three prompt-vs-schema drift points surfaced during review and resolved on disk: (1) Editor INSTRUCTIONS.md rewritten by the Engineer to the V2 two-file convention — the legacy single-file format with IDENTITY-AND-PURPOSE block and verbose target-audience prose is gone; only `id` and `topic_slug` references removed per Originary-Output-Prinzip. (2) QA+Fix INSTRUCTIONS.md trimmed: `article.sources` removed from OUTPUT FORMAT (Python owns the field); input-side references retained because sources remain input cross-check material. (3) Perspektiv-Sync prompt-vs-schema drift (omit-vs-null) parked — hydrated-only, not currently wired in `scripts/run.py`, no production conflict; resolution deferred to whichever workstream activates the hydrated pipeline next.
+
+Pipeline cost: live runs in S14 confirmed €1-3 per topic with strict mode active. No measured regression in article quality across the three smokes. Schema-as-code now enforces the Originary-Output-Prinzip structurally — agents are mechanically incapable of emitting Python-owned fields (`id`, `topic_slug`, `rsrc_id`, `pc_id`), where previously the principle relied on prompt discipline only.
+
 ## Known Issue: LLM JSON Output with Multilingual Quotes
 
 **Status:** Mitigated — `json-repair` fallback active since Lauf 13

@@ -4,7 +4,7 @@
 **Researcher:** Architect (S13)
 **Sources:** OpenRouter docs, Anthropic Claude API docs
 
-**Status:** ✅ Shipped 2026-04-28 (commits 13cc76a, d56ff32, 15ebc81). Strict-mode `response_format` is now wired for: Curator, Editor, Researcher PLAN, Researcher Assemble, Perspektiv, Writer, QA+Fix, Bias Detector. Perspektiv-Sync (hydrated-only) and Hydration Aggregator phases (Phase 5) remain unwired.
+**Status:** ✅ Shipped 2026-04-28 (commits 13cc76a, d56ff32, 15ebc81, 71b1138, 091a7b2). Strict-mode `response_format` is now wired for all eight active production agents: Curator, Editor, Researcher PLAN, Researcher Assemble, Perspektiv, Writer, QA+Fix, Bias Detector. Three live smokes confirmed 9/9 TPs with zero parse failures. Three prompt-vs-schema drift points were surfaced during review and resolved: Editor INSTRUCTIONS.md rewritten to V2 convention (Engineer); QA+Fix INSTRUCTIONS.md trimmed to remove `article.sources` from OUTPUT FORMAT (input-side references retained); Perspektiv-Sync drift (omit-vs-null) parked because the agent is hydrated-only and not currently wired in `scripts/run.py`. Hydration Aggregator phases (Phase 5) remain unwired by design.
 
 ---
 
