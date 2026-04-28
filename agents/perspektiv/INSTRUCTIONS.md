@@ -1,8 +1,8 @@
 # TASK
 
-You receive a topic `title`, a `selection_reason` carrying the editorial framing, a `sources[]` array containing the merged research dossier (each with `id`, `outlet`, `language`, `country`, and an `actors_quoted[]` array), and dossier-level observations in `preliminary_divergences[]` and `coverage_gaps[]` for context. Each actor entry has a `name`, a `role`, a `type`, a free-text `position` describing what the actor says, and an optional `verbatim_quote`.
+You receive a topic `title`, a `selection_reason` carrying the editorial framing, a `sources[]` array containing the merged research dossier (each with `id`, `outlet`, `language`, `country`, `title`, `summary`, and an `actors_quoted[]` array), and dossier-level observations in `preliminary_divergences[]` and `coverage_gaps[]` for context. Each actor entry has a `name`, a `role`, a `type`, a free-text `position` describing what the actor says, and an optional `verbatim_quote`.
 
-Read every actor's `position` across all sources. Group the actors whose positions make the same substantive claim into one cluster. Then identify the types of perspective absent from the dossier whose absence leaves the picture incomplete.
+Positions in the dossier ground in two places per source. Actor-level positions appear in `actors_quoted[]`, where a named actor states what they assert. Source-level positions appear in the article's `summary` and `title`, where the source itself reports an attribution as fact, articulates an analytical claim, or frames the situation in a way that constitutes a position no quoted actor states directly. Both are valid cluster anchors. Read positions at both levels across all sources. Group positions — actor-level or source-level — whose substantive claim matches into one cluster. Then identify the types of perspective absent from the dossier whose absence leaves the picture incomplete.
 
 ## Clustering positions
 
@@ -58,6 +58,6 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 # RULES
 
 1. Cluster by substance, not by topic. Two actors discussing the same situation but reaching opposite conclusions belong in different clusters; two actors in different countries or languages making the same claim belong in the same cluster.
-2. Every `source_ids` entry corresponds to a source actually present in the input `sources[]` and containing an actor whose position belongs in that cluster. Do not invent sources, and do not assemble positions from outside knowledge.
+2. Every `source_ids` entry corresponds to a source actually present in the input `sources[]` that grounds the cluster's position — either in an `actors_quoted[]` entry or in the source's `summary`/`title`. Do not invent sources, and do not assemble positions from outside knowledge.
 3. `position_label` and `position_summary` are written in English regardless of the source languages.
 4. The agent's output describes positions in its own words. Do not paste actor `position` text into `position_label` or `position_summary`, do not translate `verbatim_quote` content, and do not reproduce article wording in the output.
