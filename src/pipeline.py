@@ -2538,11 +2538,12 @@ class Pipeline:
         bias_analysis_payload = _normalize_all_source_ids(
             bias_analysis, _rename_map,
         )
+        cleaned_selection_reason = _strip_stale_quantifiers(
+            assignment.selection_reason or ""
+        )
         transparency_payload = _normalize_all_source_ids(
             {
-                "selection_reason": _strip_stale_quantifiers(
-                    assignment.selection_reason or ""
-                ),
+                "selection_reason": cleaned_selection_reason,
                 "pipeline_run": {
                     "run_id": self.state.run_id if self.state else "",
                     "date": self.state.date if self.state else "",
@@ -2574,6 +2575,7 @@ class Pipeline:
                 "topic_slug": assignment.topic_slug,
                 "priority": assignment.priority,
                 "follow_up": follow_up_data,
+                "selection_reason": cleaned_selection_reason,
             },
             sources=article.get("sources", []),
             perspectives=perspectives_payload,

@@ -346,20 +346,41 @@ class PipelineHydrated(Pipeline):
         ``Pipeline.run_partial`` calls this after Editor assignments are
         loaded, filtered, sorted, and sliced. The Editor strict-mode
         schema does not preserve cluster URLs, so the hydrated path
-        rebuilds them from ``02-curator-topics-unsliced.json``.
+        rebuilds them from ``02-curator-topics-unsliced.json``. The
+        reuse date is also stashed on ``self`` so all hydrated artefacts
+        (debug files plus the final TP) land under
+        ``output/{reuse_date}/test_hydration/`` — adjacent to the
+        production TP for the same day, enabling 1:1 comparison.
         """
         from src.hydration_urls import attach_hydration_urls
 
         repo_root = Path(self.output_dir).resolve().parent
         attach_hydration_urls(assignments, reuse_date, repo_root)
+        self._hydrated_artefact_date = reuse_date
+
+    def _hydrated_dir(self) -> Path | None:
+        """Resolve the directory hydrated artefacts should live in.
+
+        Returns ``output/{reuse_date}/test_hydration`` when the partial
+        run set a reuse date (the 1:1 comparison case). Falls back to
+        ``output/{state.date}/test_hydration`` for full-run hydrated
+        invocations that never call ``_post_load_assignments_hook``.
+        Returns ``None`` when no state is available.
+        """
+        if self.state is None:
+            return None
+        artefact_date = (
+            getattr(self, "_hydrated_artefact_date", None) or self.state.date
+        )
+        return Path(self.output_dir) / artefact_date / "test_hydration"
 
     # ---- debug-output routing ----------------------------------------
 
     def _write_debug_output(self, filename: str, data: object) -> None:
-        """Route all debug writes under ``output/{date}/test_hydration/``."""
-        if self.state is None:
+        """Route all debug writes under the hydrated artefacts dir."""
+        out = self._hydrated_dir()
+        if out is None:
             return
-        out = Path(self.output_dir) / self.state.date / "test_hydration"
         out.mkdir(parents=True, exist_ok=True)
         path = out / filename
         path.write_text(
@@ -368,23 +389,25 @@ class PipelineHydrated(Pipeline):
         )
 
     async def _write_output(self, packages: list[TopicPackage]) -> None:
-        """Route final TP writes under ``output/{date}/test_hydration/``.
+        """Route final TP writes under the hydrated artefacts dir.
 
         The parent ``Pipeline._write_output`` writes to
         ``output/{date}/{pkg.id}.json``, which would clobber the
         production TP at the same path. Hydrated runs share the date
-        but never the artefact tree, so the override moves the TP
-        write (and the run-summary) into the same ``test_hydration/``
-        sub-tree the debug writes use.
+        but never the artefact tree, so the override writes both the
+        TP and the run-summary into ``output/{reuse_date}/test_hydration/``,
+        with a ``_test`` suffix on the TP filename so it sits next to
+        ``output/{reuse_date}/{pkg.id}.json`` (production) without
+        colliding.
         """
-        if self.state is None:
+        out = self._hydrated_dir()
+        if out is None:
             return
-        out = Path(self.output_dir) / self.state.date / "test_hydration"
         out.mkdir(parents=True, exist_ok=True)
         for pkg in packages:
             if pkg.status == "failed":
                 continue
-            (out / f"{pkg.id}.json").write_text(
+            (out / f"{pkg.id}_test.json").write_text(
                 json.dumps(pkg.to_dict(), indent=2, ensure_ascii=False),
                 encoding="utf-8",
             )
@@ -1245,11 +1268,12 @@ class PipelineHydrated(Pipeline):
         bias_analysis_payload = _normalize_all_source_ids(
             bias_analysis, _rename_map,
         )
+        cleaned_selection_reason = _strip_stale_quantifiers(
+            assignment.selection_reason or ""
+        )
         transparency_payload = _normalize_all_source_ids(
             {
-                "selection_reason": _strip_stale_quantifiers(
-                    assignment.selection_reason or ""
-                ),
+                "selection_reason": cleaned_selection_reason,
                 "pipeline_run": {
                     "run_id": self.state.run_id if self.state else "",
                     "date": self.state.date if self.state else "",
@@ -1275,6 +1299,7 @@ class PipelineHydrated(Pipeline):
                 "topic_slug": assignment.topic_slug,
                 "priority": assignment.priority,
                 "follow_up": follow_up_data,
+                "selection_reason": cleaned_selection_reason,
             },
             sources=article.get("sources", []),
             perspectives=perspectives_payload,
