@@ -826,7 +826,6 @@ def _enrich_position_clusters(
                     "name": entry.get("name", ""),
                     "role": entry.get("role", ""),
                     "type": entry.get("type", ""),
-                    "region": country,
                     "source_ids": [sid],
                     "quote": entry.get("verbatim_quote"),
                 })
@@ -941,9 +940,258 @@ def _build_bias_card(
             "representation_distribution": representation_distribution,
             "missing_positions": missing_positions,
         },
-        "factual_divergences": qa_analysis.get("divergences", []),
         "coverage_gaps": research_dossier.get("coverage_gaps", []),
     }
+
+
+_RSRC_ID_PATTERN = re.compile(r"rsrc-\d+")
+
+
+def _normalize_all_source_ids(node, rename_map: dict[str, str]):
+    """Rewrite every ``rsrc-NNN`` reference in a TP-shaped structure.
+
+    Walks ``node`` recursively. For each string, replaces tokens matching
+    ``rsrc-NNN`` using ``rename_map``. For each list/dict, recurses.
+    Other scalars pass through. Unknown ``rsrc-`` ids (not in the map)
+    are left as-is and surfaced as a single WARNING listing the unknown
+    tokens.
+
+    The caller passes the same ``rename_map`` produced by
+    :func:`_renumber_and_prune_sources`. Today only the hydrated path
+    uses this sweep on top of :func:`_convert_rsrc_to_src_in_perspectives`,
+    but the helper is universal — applying it to any TP-shaped structure
+    leaves it source-id-clean.
+    """
+    unknown_ids: set[str] = set()
+
+    def _walk(item):
+        if isinstance(item, str):
+            def _replace(match: re.Match) -> str:
+                token = match.group(0)
+                if token in rename_map:
+                    return rename_map[token]
+                unknown_ids.add(token)
+                return token
+            return _RSRC_ID_PATTERN.sub(_replace, item)
+        if isinstance(item, list):
+            return [_walk(x) for x in item]
+        if isinstance(item, dict):
+            return {k: _walk(v) for k, v in item.items()}
+        return item
+
+    result = _walk(node)
+    if unknown_ids:
+        logger.warning(
+            "Unknown rsrc-NNN ids encountered during final normalization: %s",
+            sorted(unknown_ids),
+        )
+    return result
+
+
+_LANGUAGE_ALIASES: dict[str, str] = {
+    "english": "en", "french": "fr", "german": "de", "spanish": "es",
+    "persian": "fa", "farsi": "fa", "russian": "ru", "turkish": "tr",
+    "italian": "it", "arabic": "ar", "chinese": "zh", "hebrew": "he",
+    "ukrainian": "uk", "portuguese": "pt", "japanese": "ja", "korean": "ko",
+}
+
+_COUNTRY_ALIASES: dict[str, str] = {
+    "uk": "United Kingdom", "u.k.": "United Kingdom",
+    "us": "United States", "u.s.": "United States",
+    "usa": "United States", "u.s.a.": "United States",
+}
+
+_GAP_STOPWORDS = frozenset({
+    "the", "a", "an", "of", "in", "on", "no", "and", "or", "to", "for",
+    "as", "is", "by", "at", "with", "from", "are", "was", "were", "be",
+    "but", "not", "this", "that", "any", "all", "its", "it", "has",
+    "have", "had", "been", "being", "will", "shall", "do", "does", "did",
+    "than", "then", "so", "such", "more", "most", "less", "least",
+    "some", "many", "few",
+})
+
+
+def _gap_tokens(text: str) -> set[str]:
+    words = re.findall(r"[a-zA-Z]+", text.lower())
+    return {w for w in words if len(w) >= 3 and w not in _GAP_STOPWORDS}
+
+
+def _validate_coverage_gaps(
+    gaps: list[str],
+    source_balance: dict,
+) -> tuple[list[str], list[str]]:
+    """Drop coverage-gap statements falsified by the final source balance.
+
+    Returns ``(kept, dropped)``. Rules:
+
+    1. Gaps that mention a language as missing are dropped if that
+       language is present in ``source_balance["by_language"]`` with a
+       non-zero count. Aliases (English↔en, French↔fr, …) are matched
+       case-insensitively.
+    2. Gaps that mention a country as having no coverage / no domestic
+       outlets / no perspective are dropped if that country is present
+       in ``source_balance["by_country"]`` with a non-zero count.
+       Common aliases (UK↔United Kingdom, US↔United States) are
+       resolved.
+    3. Near-duplicate gaps (Jaccard similarity > 0.7 on tokenised
+       lowercase content with stopwords removed) are deduped — the
+       first occurrence is kept, later duplicates are dropped.
+
+    Gaps that match no falsifiable pattern are kept verbatim — these
+    are the genuinely qualitative gaps the helper has no business
+    second-guessing.
+    """
+    by_language = {
+        (k or "").lower(): v
+        for k, v in (source_balance or {}).get("by_language", {}).items()
+        if v
+    }
+    by_country = {
+        (k or "").lower(): v
+        for k, v in (source_balance or {}).get("by_country", {}).items()
+        if v
+    }
+
+    kept: list[str] = []
+    dropped: list[str] = []
+    kept_token_sets: list[set[str]] = []
+
+    no_pattern = re.compile(
+        r"\b(no|missing|lack(?:ing)?|absence of|absent|without)\b",
+        re.IGNORECASE,
+    )
+
+    for gap in gaps or []:
+        if not isinstance(gap, str) or not gap.strip():
+            continue
+        gap_lower = gap.lower()
+
+        falsified = False
+
+        if no_pattern.search(gap):
+            for alias, code in _LANGUAGE_ALIASES.items():
+                if re.search(rf"\b{alias}\b", gap_lower):
+                    if by_language.get(code, 0) > 0 or by_language.get(alias, 0) > 0:
+                        falsified = True
+                        break
+            if not falsified:
+                for alias, canonical in _COUNTRY_ALIASES.items():
+                    if re.search(rf"\b{re.escape(alias)}\b", gap_lower):
+                        if by_country.get(canonical.lower(), 0) > 0:
+                            falsified = True
+                            break
+            if not falsified:
+                for country, count in by_country.items():
+                    if count > 0 and re.search(rf"\b{re.escape(country)}\b", gap_lower):
+                        falsified = True
+                        break
+
+        if falsified:
+            dropped.append(gap)
+            continue
+
+        tokens = _gap_tokens(gap)
+        is_dup = False
+        for prev in kept_token_sets:
+            if not tokens or not prev:
+                continue
+            jaccard = len(tokens & prev) / len(tokens | prev)
+            if jaccard > 0.7:
+                is_dup = True
+                break
+        if is_dup:
+            dropped.append(gap)
+            continue
+
+        kept.append(gap)
+        kept_token_sets.append(tokens)
+
+    return kept, dropped
+
+
+_STALE_QUANTIFIER_PATTERNS = [
+    re.compile(
+        r"\bonly\s+\w+\s+(outlet|outlets|source|sources|region|regions|country|countries)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\bfew\s+(outlet|outlets|source|sources|region|regions)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\blimited\s+(coverage|reach|outlets|sources|reporting)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(two|three|four|five|six)\s+(outlet|outlets|source|sources|region|regions|country|countries)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b\d+\s+(outlet|outlets|source|sources|region|regions|country|countries)\b",
+    ),
+    re.compile(r"\bsingle[-\s]source\b", re.IGNORECASE),
+    re.compile(r"\bnarrow\s+(coverage|geography|reach)\b", re.IGNORECASE),
+]
+
+
+def _strip_stale_quantifiers(selection_reason: str) -> str:
+    """Remove sentences quantifying source coverage from selection_reason.
+
+    Editor-time quantifiers (e.g. "Only two outlets covered it") become
+    stale after Researcher adds web-search sources to the dossier. The
+    cleanup walks sentences:
+
+    - If a sentence contains any quantifier pattern, the matched span is
+      removed in place. If the cleaned sentence still has at least three
+      content words (>= 3 chars each), the cleaned sentence is kept.
+      Otherwise the entire sentence is dropped.
+    - Sentences with no pattern match pass through unchanged.
+
+    If every sentence ended up dropped, the original ``selection_reason``
+    is returned — better stale than empty, downstream readers expect a
+    string. Logs a WARNING when stripping occurs.
+    """
+    if not selection_reason or not isinstance(selection_reason, str):
+        return selection_reason or ""
+
+    sentence_split = re.split(r"(?<=[.!?])\s+", selection_reason.strip())
+    if not sentence_split:
+        return selection_reason
+
+    kept_sentences: list[str] = []
+    stripped_any = False
+    for sentence in sentence_split:
+        if not sentence.strip():
+            continue
+        cleaned = sentence
+        matched = False
+        for pat in _STALE_QUANTIFIER_PATTERNS:
+            if pat.search(cleaned):
+                matched = True
+                cleaned = pat.sub("", cleaned)
+        if not matched:
+            kept_sentences.append(sentence)
+            continue
+
+        stripped_any = True
+        residual = re.sub(r"\s{2,}", " ", cleaned).strip(" ,.;:")
+        words = [w for w in re.findall(r"[A-Za-z]+", residual) if len(w) >= 3]
+        if len(words) >= 3:
+            kept_sentences.append(re.sub(r"\s+", " ", cleaned).strip())
+
+    if stripped_any:
+        if not kept_sentences:
+            logger.warning(
+                "Selection-reason fully stale; keeping original: %r",
+                selection_reason,
+            )
+            return selection_reason
+        logger.warning(
+            "Selection-reason stale-quantifier strip: %r -> %r",
+            selection_reason, " ".join(kept_sentences),
+        )
+        return " ".join(kept_sentences)
+    return selection_reason
 
 
 class PipelineError(Exception):
@@ -2181,6 +2429,21 @@ class Pipeline:
         # 7. Bias Transparency Card (hybrid: Python aggregation + LLM language analysis)
         bias_card = _build_bias_card(article, perspective_analysis, qa_analysis, research_dossier)
 
+        # Validate research-time coverage_gaps against the post-research
+        # source balance: drops gap statements that the final dossier
+        # has empirically falsified (e.g. "no UK outlets" when UK is
+        # present in by_country). Genuinely qualitative gaps survive.
+        validated_gaps, dropped_gaps = _validate_coverage_gaps(
+            research_dossier.get("coverage_gaps", []) or [],
+            bias_card.get("source_balance", {}),
+        )
+        if dropped_gaps:
+            logger.warning(
+                "Dropped %d stale coverage-gap(s) falsified by final source balance: %s",
+                len(dropped_gaps), dropped_gaps,
+            )
+        bias_card["coverage_gaps"] = validated_gaps
+
         if bias_language := self.agents.get("bias_language"):
             result = await bias_language.run(
                 "Analyze this article text for linguistic bias patterns. "
@@ -2260,13 +2523,48 @@ class Pipeline:
             article.get("sources", [])
         )
 
+        # Final rsrc-NNN sweep. Fix-3 normalises perspectives only;
+        # divergences, qa_problems_found, qa_proposed_corrections, and
+        # bias_analysis fields can still carry rsrc references. The
+        # universal sweep walks each TP-bound structure and rewrites
+        # remaining tokens via the Fix-1 rename_map.
+        perspectives_payload = _normalize_all_source_ids(
+            perspective_analysis.get("position_clusters", []), _rename_map,
+        )
+        divergences_payload = _normalize_all_source_ids(
+            qa_analysis.get("divergences", []) or [], _rename_map,
+        )
+        gaps_payload = _normalize_all_source_ids(validated_gaps, _rename_map)
+        bias_analysis_payload = _normalize_all_source_ids(
+            bias_analysis, _rename_map,
+        )
+        transparency_payload = _normalize_all_source_ids(
+            {
+                "selection_reason": _strip_stale_quantifiers(
+                    assignment.selection_reason or ""
+                ),
+                "pipeline_run": {
+                    "run_id": self.state.run_id if self.state else "",
+                    "date": self.state.date if self.state else "",
+                },
+                "article_original": (
+                    article_original
+                    if qa_analysis.get("proposed_corrections") else None
+                ),
+                "qa_problems_found": qa_analysis.get("problems_found", []),
+                "qa_proposed_corrections": qa_analysis.get(
+                    "proposed_corrections", []
+                ),
+            },
+            _rename_map,
+        )
+
         # Assemble TopicPackage. ``perspectives`` carries the enriched
         # ``position_clusters`` from Perspektiv V2. ``gaps`` carries the
-        # Phase 2 reducer's ``coverage_gaps`` from the Hydrated path
-        # (empty list on Production, which has no Phase 2). Perspektiv's
-        # ``missing_positions`` lives under
-        # ``bias_analysis.perspectives.missing_positions`` — different
-        # semantic, different field.
+        # validated coverage_gaps (post Phase 2 reducer / post research,
+        # falsified gaps dropped). Perspektiv's ``missing_positions``
+        # lives under ``bias_analysis.perspectives.missing_positions`` —
+        # different semantic, different field.
         return TopicPackage(
             id=assignment.id,
             metadata={
@@ -2278,21 +2576,12 @@ class Pipeline:
                 "follow_up": follow_up_data,
             },
             sources=article.get("sources", []),
-            perspectives=perspective_analysis.get("position_clusters", []),
-            divergences=qa_analysis.get("divergences", []),
-            gaps=research_dossier.get("coverage_gaps", []) or [],
+            perspectives=perspectives_payload,
+            divergences=divergences_payload,
+            gaps=gaps_payload,
             article=article,
-            bias_analysis=bias_analysis,
-            transparency={
-                "selection_reason": assignment.selection_reason,
-                "pipeline_run": {
-                    "run_id": self.state.run_id if self.state else "",
-                    "date": self.state.date if self.state else "",
-                },
-                "article_original": article_original if qa_analysis.get("proposed_corrections") else None,
-                "qa_problems_found": qa_analysis.get("problems_found", []),
-                "qa_proposed_corrections": qa_analysis.get("proposed_corrections", []),
-            },
+            bias_analysis=bias_analysis_payload,
+            transparency=transparency_payload,
             status="review",
         )
 

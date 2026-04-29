@@ -14,7 +14,14 @@ import pytest
 
 from src.agent import Agent
 from src.models import AgentResult, PipelineState, TopicAssignment, TopicPackage
-from src.pipeline import Pipeline, PipelineError, PipelineGateRejected
+from src.pipeline import (
+    Pipeline,
+    PipelineError,
+    PipelineGateRejected,
+    _normalize_all_source_ids,
+    _strip_stale_quantifiers,
+    _validate_coverage_gaps,
+)
 
 HAS_API_KEY = bool(os.environ.get("OPENROUTER_API_KEY"))
 skip_no_key = pytest.mark.skipif(not HAS_API_KEY, reason="No OPENROUTER_API_KEY")
@@ -422,3 +429,82 @@ async def test_pipeline_collect_curate(tmp_path) -> None:
     # Test curate
     curated = await pipeline.curate(raw)
     assert isinstance(curated, list)
+
+
+# --- Audit-recs-2 helpers (unit, no API key) ---
+
+
+def test_normalize_all_source_ids_recursive():
+    tp = {
+        "divergences": [{"source_ids": ["rsrc-001", "rsrc-002"]}],
+        "transparency": {
+            "qa_proposed_corrections": ["Replace rsrc-001 wording per source."],
+        },
+        "bias_analysis": {
+            "findings": [{"evidence_source_ids": ["rsrc-002"]}],
+        },
+        "metadata": {"audit": {"refs": ["see rsrc-001 and rsrc-002 together"]}},
+    }
+    rename_map = {"rsrc-001": "src-007", "rsrc-002": "src-009"}
+    out = _normalize_all_source_ids(tp, rename_map)
+
+    assert out["divergences"][0]["source_ids"] == ["src-007", "src-009"]
+    assert "src-007" in out["transparency"]["qa_proposed_corrections"][0]
+    assert out["bias_analysis"]["findings"][0]["evidence_source_ids"] == ["src-009"]
+    assert "src-007" in out["metadata"]["audit"]["refs"][0]
+    assert "src-009" in out["metadata"]["audit"]["refs"][0]
+    assert "rsrc-" not in json.dumps(out)
+
+
+def test_normalize_all_source_ids_unknown_ids_logged(caplog):
+    tp = {"divergences": [{"description": "see rsrc-099"}]}
+    rename_map = {"rsrc-001": "src-001"}
+    with caplog.at_level(logging.WARNING):
+        out = _normalize_all_source_ids(tp, rename_map)
+    assert "rsrc-099" in out["divergences"][0]["description"]
+    assert any("rsrc-099" in rec.message for rec in caplog.records)
+
+
+def test_validate_coverage_gaps_drops_falsified():
+    gaps = [
+        "No coverage from UK domestic outlets",
+        "No Iranian voices in the dossier",
+    ]
+    source_balance = {"by_country": {"United Kingdom": 2}, "by_language": {"en": 5}}
+    kept, dropped = _validate_coverage_gaps(gaps, source_balance)
+    assert dropped == ["No coverage from UK domestic outlets"]
+    assert kept == ["No Iranian voices in the dossier"]
+
+
+def test_validate_coverage_gaps_drops_duplicates():
+    gaps = [
+        "No civilian voices from affected coastal communities",
+        "Coastal communities affected provide no civilian voices",
+        "Civilian voices from the affected coastal communities are absent",
+        "Distinct gap about Iranian state-media response",
+    ]
+    kept, dropped = _validate_coverage_gaps(gaps, {})
+    assert len(kept) == 2
+    assert len(dropped) == 2
+    assert "Distinct gap about Iranian state-media response" in kept
+
+
+def test_validate_coverage_gaps_keeps_qualitative():
+    gaps = ["Iranian state-media response is absent"]
+    source_balance = {"by_country": {}, "by_language": {"en": 3}}
+    kept, dropped = _validate_coverage_gaps(gaps, source_balance)
+    assert kept == ["Iranian state-media response is absent"]
+    assert dropped == []
+
+
+def test_strip_stale_quantifiers_drops_sentence():
+    sr = "Only two outlets covered it. Cross-regional divergence is sharp."
+    out = _strip_stale_quantifiers(sr)
+    assert "only two outlets" not in out.lower()
+    assert "cross-regional divergence is sharp" in out.lower()
+
+
+def test_strip_stale_quantifiers_preserves_when_all_stale():
+    sr = "Only two outlets from two regions covered it."
+    out = _strip_stale_quantifiers(sr)
+    assert out == sr

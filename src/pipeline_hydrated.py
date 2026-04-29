@@ -61,10 +61,13 @@ from src.pipeline import (
     _merge_writer_sources,
     _normalise_country,
     _normalise_language,
+    _normalize_all_source_ids,
     _renumber_and_prune_sources,
     _sanitize_null_strings,
     _strip_internal_fields_from_sources,
+    _strip_stale_quantifiers,
     _substitute_coverage_statement,
+    _validate_coverage_gaps,
 )
 from dataclasses import asdict
 
@@ -1117,6 +1120,22 @@ class PipelineHydrated(Pipeline):
             article, perspective_analysis, qa_analysis, research_dossier,
         )
 
+        # Validate research-time coverage_gaps against the post-research
+        # source balance. Phase 2 emits gaps from a 1–2 article hydrated
+        # input; the merged dossier may contradict them ("no UK outlets"
+        # while The Independent UK is in by_country). Drops falsified
+        # statements; near-duplicates collapsed.
+        validated_gaps, dropped_gaps = _validate_coverage_gaps(
+            research_dossier.get("coverage_gaps", []) or [],
+            bias_card.get("source_balance", {}),
+        )
+        if dropped_gaps:
+            logger.warning(
+                "Dropped %d stale coverage-gap(s) falsified by final source balance: %s",
+                len(dropped_gaps), dropped_gaps,
+            )
+        bias_card["coverage_gaps"] = validated_gaps
+
         if bias_language := self.agents.get("bias_language"):
             result = await bias_language.run(
                 "Analyze this article text for linguistic bias patterns. "
@@ -1212,24 +1231,25 @@ class PipelineHydrated(Pipeline):
             article.get("sources", [])
         )
 
-        return TopicPackage(
-            id=assignment.id,
-            metadata={
-                "title": assignment.title,
-                "date": self.state.date if self.state else "",
-                "status": "review",
-                "topic_slug": assignment.topic_slug,
-                "priority": assignment.priority,
-                "follow_up": follow_up_data,
-            },
-            sources=article.get("sources", []),
-            perspectives=perspective_analysis.get("position_clusters", []),
-            divergences=qa_analysis.get("divergences", []),
-            gaps=research_dossier.get("coverage_gaps", []) or [],
-            article=article,
-            bias_analysis=bias_analysis,
-            transparency={
-                "selection_reason": assignment.selection_reason,
+        # Final rsrc-NNN sweep on every TP-bound structure. Fix-3
+        # already normalised perspectives; this universal walk catches
+        # any remaining tokens in divergences, gaps, bias_analysis, or
+        # the transparency payload via the Fix-1 rename_map.
+        perspectives_payload = _normalize_all_source_ids(
+            perspective_analysis.get("position_clusters", []), _rename_map,
+        )
+        divergences_payload = _normalize_all_source_ids(
+            qa_analysis.get("divergences", []) or [], _rename_map,
+        )
+        gaps_payload = _normalize_all_source_ids(validated_gaps, _rename_map)
+        bias_analysis_payload = _normalize_all_source_ids(
+            bias_analysis, _rename_map,
+        )
+        transparency_payload = _normalize_all_source_ids(
+            {
+                "selection_reason": _strip_stale_quantifiers(
+                    assignment.selection_reason or ""
+                ),
                 "pipeline_run": {
                     "run_id": self.state.run_id if self.state else "",
                     "date": self.state.date if self.state else "",
@@ -1243,5 +1263,25 @@ class PipelineHydrated(Pipeline):
                     "proposed_corrections", []
                 ),
             },
+            _rename_map,
+        )
+
+        return TopicPackage(
+            id=assignment.id,
+            metadata={
+                "title": assignment.title,
+                "date": self.state.date if self.state else "",
+                "status": "review",
+                "topic_slug": assignment.topic_slug,
+                "priority": assignment.priority,
+                "follow_up": follow_up_data,
+            },
+            sources=article.get("sources", []),
+            perspectives=perspectives_payload,
+            divergences=divergences_payload,
+            gaps=gaps_payload,
+            article=article,
+            bias_analysis=bias_analysis_payload,
+            transparency=transparency_payload,
             status="review",
         )
