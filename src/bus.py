@@ -294,8 +294,16 @@ class TopicBus(BaseModel):
     merged_sources_pre_renumber: list = Slot(default_factory=list, visibility="internal")
     final_sources: list = Slot(default_factory=list, visibility=["tp", "mcp"])
     id_rename_map: dict = Slot(default_factory=dict, visibility="internal")
-    merged_preliminary_divergences: list = Slot(default_factory=list, visibility="internal")
-    merged_coverage_gaps: list = Slot(default_factory=list, visibility="internal")
+    merged_preliminary_divergences: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
+    merged_coverage_gaps: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
 
     # 4B.5 Perspective phase (2 slots)
     perspective_clusters: list = Slot(default_factory=list, visibility="internal")

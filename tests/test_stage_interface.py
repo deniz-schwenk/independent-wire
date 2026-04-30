@@ -78,6 +78,21 @@ async def silent_optional_write_run_stage(run_bus: RunBus) -> RunBus:
     return run_bus
 
 
+@topic_stage_def(
+    reads=(),
+    writes=("merged_preliminary_divergences", "merged_coverage_gaps"),
+)
+async def silent_normalize_topic_stage(
+    topic_bus: TopicBus, run_bus: RunBusReadOnly
+) -> TopicBus:
+    """Declares writing the two merged_* slots but leaves them at typed
+    empty defaults. Must pass post-validation because both slots have
+    optional_write=True metadata (legitimately empty in low-coverage
+    runs — normalize_pre_research is a pure transformation, so empty
+    inputs yield empty outputs)."""
+    return topic_bus
+
+
 @run_stage_def(reads=("nonexistent_slot",), writes=())
 async def stage_with_typo_in_reads(run_bus: RunBus) -> RunBus:
     return run_bus
@@ -220,6 +235,25 @@ def test_validate_postconditions_allows_empty_optional_write_slot():
     # previous_coverage is still [] on rb_after — and that is fine.
     validate_postconditions(
         silent_optional_write_run_stage, rb_before, rb_after
+    )
+
+
+def test_validate_postconditions_allows_empty_optional_write_topic_slots():
+    """merged_preliminary_divergences and merged_coverage_gaps carry
+    optional_write=True. A topic-stage (e.g. normalize_pre_research as a
+    pure transformation) that declares writing them but leaves them at
+    typed empty defaults must pass post-validation — low-coverage runs
+    legitimately produce no divergences and no gaps."""
+    tb_before = TopicBus()
+    tb_after = tb_before.model_copy(deep=True)
+    rb_before = RunBus().as_readonly()
+    rb_after = RunBus().as_readonly()
+    validate_postconditions(
+        silent_normalize_topic_stage,
+        tb_before,
+        tb_after,
+        run_bus_before=rb_before,
+        run_bus_after=rb_after,
     )
 
 
