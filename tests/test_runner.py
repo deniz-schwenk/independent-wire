@@ -525,6 +525,59 @@ def test_runner_failed_topic_excluded_from_render(tmp_path: Path):
 # ---------------------------------------------------------------------------
 
 
+def test_run_stage_log_bus_slot_mirrors_disk_jsonl(tmp_path: Path):
+    """Bug-2 regression: after a run completes, run_bus.run_stage_log holds
+    the same entries as the on-disk run_stage_log.jsonl (in the same order).
+
+    V2-08 only wrote to disk; the in-memory Bus slot stayed empty. This
+    test asserts the post-V2-09c parity.
+    """
+    runner = PipelineRunner(
+        run_stages=[_fake_init, _fake_curator, _fake_select],
+        topic_stages=[_fake_writer],
+        output_dir=tmp_path,
+    )
+    rb = asyncio.run(runner.run())
+
+    # Disk JSONL
+    state_dir = tmp_path / rb.run_date / "_state" / rb.run_id
+    jsonl_path = state_dir / "run_stage_log.jsonl"
+    assert jsonl_path.exists(), "disk JSONL must exist after a successful run"
+    disk_entries = [
+        json.loads(line)
+        for line in jsonl_path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+
+    # Bus slot mirror
+    bus_entries = list(rb.run_stage_log)
+
+    assert bus_entries, "run_bus.run_stage_log must not be empty after a run"
+    assert len(bus_entries) == len(disk_entries), (
+        f"slot count {len(bus_entries)} != disk count {len(disk_entries)}"
+    )
+    for d, b in zip(disk_entries, bus_entries):
+        assert d["stage"] == b["stage"], f"stage mismatch: disk={d}, bus={b}"
+        assert d["status"] == b["status"], f"status mismatch: disk={d}, bus={b}"
+        assert d["kind"] == b["kind"]
+
+
+def test_run_stage_log_bus_slot_records_topic_stage_entries(tmp_path: Path):
+    """Topic-stage success entries also land in the Bus slot, not just disk."""
+    runner = PipelineRunner(
+        run_stages=[_fake_init, _fake_curator, _fake_select],
+        topic_stages=[_fake_writer],
+        output_dir=tmp_path,
+    )
+    rb = asyncio.run(runner.run())
+
+    topic_entries = [e for e in rb.run_stage_log if e.get("kind") == "topic"]
+    # 2 topics × 1 topic-stage each = 2 topic entries
+    assert len(topic_entries) == 2
+    assert {e.get("topic_index") for e in topic_entries} == {0, 1}
+    assert all(e["stage"] == "_fake_writer" for e in topic_entries)
+
+
 def test_stage_label_function():
     assert _stage_label(_fake_init) == "_fake_init"
 

@@ -221,7 +221,7 @@ class PipelineRunner:
         self._topic_status = ["pending"] * len(topic_buses)
         self._topic_stages_completed = [[] for _ in topic_buses]
 
-        await self._phase_c_topic_stages(run_bus)
+        run_bus = await self._phase_c_topic_stages(run_bus)
 
         for i in range(len(self._topic_status)):
             if self._topic_status[i] == "pending":
@@ -283,7 +283,7 @@ class PipelineRunner:
         try:
             run_bus = await self._call_run_stage(stage, run_bus)
         except Exception as exc:
-            self._log_stage(name, "run", "failed", error=str(exc))
+            self._log_stage(run_bus, name, "run", "failed", error=str(exc))
             raise
         validate_postconditions(
             stage,
@@ -292,8 +292,8 @@ class PipelineRunner:
         )
         self._current_run_id = run_bus.run_id or self._current_run_id
         self._current_run_date = run_bus.run_date or self._current_run_date
+        run_bus = self._log_stage(run_bus, name, "run", "success")
         save_run_bus_snapshot(run_bus, self.output_dir, name)
-        self._log_stage(name, "run", "success")
         return run_bus
 
     @staticmethod
@@ -331,7 +331,7 @@ class PipelineRunner:
 
     # -- Phase C -------------------------------------------------------------
 
-    async def _phase_c_topic_stages(self, run_bus: RunBus) -> None:
+    async def _phase_c_topic_stages(self, run_bus: RunBus) -> RunBus:
         from_index_topic = (
             _index_of(self.topic_stages, self.from_stage) if self.from_stage else -1
         )
@@ -344,15 +344,16 @@ class PipelineRunner:
                 self._topic_status[topic_index] = "skipped"
                 continue
             try:
-                await self._run_one_topic(
+                run_bus = await self._run_one_topic(
                     topic_index, topic_bus, run_bus, start_index
                 )
             except _TopicSkipStop:
                 self._stop_requested = True
-                return
+                return run_bus
             except Exception as exc:
                 self._topic_status[topic_index] = "failed"
-                self._log_stage(
+                run_bus = self._log_stage(
+                    run_bus,
                     f"topic-{topic_index}",
                     "topic",
                     "failed",
@@ -363,6 +364,7 @@ class PipelineRunner:
                     "Runner: topic %d failed at stage; continuing with next topic",
                     topic_index,
                 )
+        return run_bus
 
     async def _run_one_topic(
         self,
@@ -370,7 +372,7 @@ class PipelineRunner:
         topic_bus: TopicBus,
         run_bus: RunBus,
         start_index: int,
-    ) -> None:
+    ) -> RunBus:
         for stage_index in range(start_index, len(self.topic_stages)):
             stage = self.topic_stages[stage_index]
             name = _stage_label(stage)
@@ -405,7 +407,8 @@ class PipelineRunner:
                 run_bus.run_date,
                 run_bus.run_id,
             )
-            self._log_stage(
+            run_bus = self._log_stage(
+                run_bus,
                 name,
                 "topic",
                 "success",
@@ -415,7 +418,8 @@ class PipelineRunner:
             if self.to_stage and self.to_stage == name:
                 if topic_index == len(self.topic_buses) - 1:
                     raise _TopicSkipStop()
-                return
+                return run_bus
+        return run_bus
 
     @staticmethod
     async def _call_topic_stage(
@@ -441,7 +445,7 @@ class PipelineRunner:
         if not self.skip_render:
             render_stage = RenderStage(self.output_dir)
             await render_stage(run_bus, self.topic_buses, self._topic_status)
-            self._log_stage("render", "post_run", "success")
+            run_bus = self._log_stage(run_bus, "render", "post_run", "success")
 
         if not self.skip_finalize:
             finalize_stage = FinalizeRunStage()
@@ -451,9 +455,9 @@ class PipelineRunner:
                 self._topic_status,
                 self._topic_stages_completed,
             )
+            run_bus = self._log_stage(run_bus, "finalize_run", "post_run", "success")
             if run_bus.run_id and run_bus.run_date:
                 save_run_bus_snapshot(run_bus, self.output_dir, "finalize_run")
-            self._log_stage("finalize_run", "post_run", "success")
 
         return run_bus
 
@@ -461,15 +465,22 @@ class PipelineRunner:
 
     def _log_stage(
         self,
+        run_bus: Optional[RunBus],
         name: str,
         kind: str,
         status: str,
         **extra: Any,
-    ) -> None:
-        run_id = self.reuse_run_id or self._current_run_id
-        run_date = self.reuse_run_date or self._current_run_date
-        if not run_id or not run_date:
-            return
+    ) -> Optional[RunBus]:
+        """Append a stage entry to disk JSONL and the in-memory Bus slot.
+
+        Returns the updated ``run_bus`` (with the entry appended to
+        ``run_stage_log``) so callers can thread the new state forward.
+        Returns ``None`` if ``run_bus`` was ``None``. When ``run_id`` or
+        ``run_date`` cannot be resolved (very early in a fresh run before
+        ``init_run``), the disk write is skipped but the Bus-slot mirror
+        is still applied so a valid ``run_bus`` always carries an
+        observable in-memory log.
+        """
         entry = {
             "stage": name,
             "kind": kind,
@@ -477,10 +488,18 @@ class PipelineRunner:
             "ts": datetime.now(timezone.utc).isoformat(),
             **extra,
         }
-        try:
-            append_stage_log(self.output_dir, run_date, run_id, entry)
-        except Exception as exc:  # state-log is advisory — never crash the runner
-            logger.debug("stage-log append failed: %s", exc)
+        run_id = (run_bus.run_id if run_bus else None) or self.reuse_run_id or self._current_run_id
+        run_date = (run_bus.run_date if run_bus else None) or self.reuse_run_date or self._current_run_date
+        if run_id and run_date:
+            try:
+                append_stage_log(self.output_dir, run_date, run_id, entry)
+            except Exception as exc:  # state-log is advisory — never crash the runner
+                logger.debug("stage-log append failed: %s", exc)
+        if run_bus is None:
+            return None
+        return run_bus.model_copy(
+            update={"run_stage_log": [*run_bus.run_stage_log, entry]}
+        )
 
 
 class _TopicSkipStop(Exception):
