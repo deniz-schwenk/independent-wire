@@ -37,6 +37,9 @@ class TopicPackage:
     id: str
     metadata: dict
     sources: list[dict] = field(default_factory=list)
+    # Enriched position_clusters[] from Perspektiv V2: each cluster carries
+    # id, position_label, position_summary, source_ids, plus Python-computed
+    # actors[], regions[], languages[], and representation.
     perspectives: list[dict] = field(default_factory=list)
     divergences: list[dict] = field(default_factory=list)
     gaps: list[dict] = field(default_factory=list)
