@@ -152,8 +152,8 @@ RESEARCHER_ASSEMBLE_SCHEMA = {
     "additionalProperties": False,
 }
 
-# ---------------------------------------------------------------- Perspektiv (V2)
-PERSPEKTIV_SCHEMA = {
+# ---------------------------------------------------------------- Perspective (V2)
+PERSPECTIVE_SCHEMA = {
     "type": "object",
     "properties": {
         "position_clusters": {
@@ -306,12 +306,12 @@ QA_ANALYZE_SCHEMA = {
     "additionalProperties": False,
 }
 
-# ---------------------------------------------------------------- Perspektiv-Sync
+# ---------------------------------------------------------------- Perspective-Sync
 # Strict mode forces all properties present. The prompt says "omit when
 # unchanged"; with the schema, the model must emit ``null`` for unchanged
-# fields. ``merge_perspektiv_deltas`` already treats ``null`` as
+# fields. ``merge_perspective_deltas`` already treats ``null`` as
 # "no change" (V2 forbids null overrides), so the semantics are preserved.
-PERSPEKTIV_SYNC_SCHEMA = {
+PERSPECTIVE_SYNC_SCHEMA = {
     "type": "object",
     "properties": {
         "position_cluster_updates": {
@@ -367,7 +367,7 @@ BIAS_DETECTOR_SCHEMA = {
 # Per-chunk article analysis. Each entry corresponds to one input article
 # and carries its index, a one-paragraph summary, and the actor-quoted list.
 # The actors_quoted shape mirrors RESEARCHER_ASSEMBLE_SCHEMA.sources[].actors_quoted[]
-# so Perspektiv reads both shapes interchangeably. verbatim_quote is
+# so Perspective reads both shapes interchangeably. verbatim_quote is
 # nullable per the prompt's "When the article only paraphrases, the field
 # is null" rule.
 HYDRATION_PHASE1_SCHEMA = {

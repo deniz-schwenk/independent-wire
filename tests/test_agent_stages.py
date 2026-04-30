@@ -721,7 +721,7 @@ from src.agent_stages import (  # noqa: E402
     WriterStage,
     _build_bias_card_for_agent_input,
     _extract_date_from_url,
-    _merge_perspektiv_deltas,
+    _merge_perspective_deltas,
 )
 from src.bus import (  # noqa: E402
     HydrationPhase2Corpus,
@@ -1199,25 +1199,25 @@ def test_perspective_sync_runs_when_qa_corrections_present():
     assert synced[1]["position_label"] == "Anti"
 
 
-def test_merge_perspektiv_deltas_unknown_id_skipped():
+def test_merge_perspective_deltas_unknown_id_skipped():
     original = {"position_clusters": [{"id": "pc-001", "position_label": "A"}]}
     updates = {
         "position_cluster_updates": [
             {"id": "pc-999", "position_label": "Ghost"}  # not in original
         ]
     }
-    out = _merge_perspektiv_deltas(original, updates)
+    out = _merge_perspective_deltas(original, updates)
     assert out["position_clusters"][0]["position_label"] == "A"
 
 
-def test_merge_perspektiv_deltas_null_value_skipped():
+def test_merge_perspective_deltas_null_value_skipped():
     original = {"position_clusters": [{"id": "pc-001", "position_label": "A"}]}
     updates = {
         "position_cluster_updates": [
             {"id": "pc-001", "position_label": None}  # null → no-op
         ]
     }
-    out = _merge_perspektiv_deltas(original, updates)
+    out = _merge_perspective_deltas(original, updates)
     assert out["position_clusters"][0]["position_label"] == "A"
 
 

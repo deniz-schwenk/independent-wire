@@ -822,7 +822,7 @@ def _build_bias_card_for_agent_input(topic_bus: TopicBus) -> dict:
     }
 
 
-def _merge_perspektiv_deltas(
+def _merge_perspective_deltas(
     original_perspectives: dict, sync_output: dict, slug: str = ""
 ) -> dict:
     """Apply position_cluster_updates deltas into a deep copy of the map.
@@ -971,7 +971,7 @@ class PerspectiveStage(_AgentStageBase):
         "merged_coverage_gaps",
     )
     writes = ("perspective_clusters", "perspective_missing_positions")
-    agent_role = "perspektiv"  # V1 folder name; V2-07 anglicises
+    agent_role = "perspective"  # V1 folder name; V2-07 anglicises
 
     def __init__(self, agent: Agent) -> None:
         self.agent = agent
@@ -1485,7 +1485,7 @@ class PerspectiveSyncStage(_AgentStageBase):
     untouched when the gate skipped the call).
 
     V1 reference: pipeline_hydrated.py `_run_perspektiv_sync` lines 720-836,
-    `merge_perspektiv_deltas` line 233 (ported as `_merge_perspektiv_deltas`).
+    `merge_perspektiv_deltas` line 233 (ported as `_merge_perspective_deltas`).
 
     Stage-order in the hydrated runner (V2-10): `mirror_perspective_synced`
     runs **twice** — first immediately after `enrich_perspective_clusters`
@@ -1507,7 +1507,7 @@ class PerspectiveSyncStage(_AgentStageBase):
         "qa_proposed_corrections",
     )
     writes = ("perspective_clusters_synced",)
-    agent_role = "perspektiv_sync"  # V1 folder name; V2-07 anglicises
+    agent_role = "perspective_sync"  # V1 folder name; V2-07 anglicises
 
     def __init__(self, agent: Agent) -> None:
         self.agent = agent
@@ -1536,7 +1536,7 @@ class PerspectiveSyncStage(_AgentStageBase):
         if not isinstance(parsed, dict):
             parsed = {}
 
-        synced = _merge_perspektiv_deltas(
+        synced = _merge_perspective_deltas(
             {"position_clusters": list(topic_bus.perspective_clusters)},
             parsed,
         )

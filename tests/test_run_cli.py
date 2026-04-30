@@ -49,8 +49,8 @@ def test_create_agents_hydrated_returns_all_required_agents():
         "researcher_plan", "researcher_assemble",
         "researcher_hydrated_plan",
         "hydration_aggregator_phase1", "hydration_aggregator_phase2",
-        "perspektiv", "writer", "qa_analyze", "bias_language",
-        "perspektiv_sync",
+        "perspective", "writer", "qa_analyze", "bias_language",
+        "perspective_sync",
     }
     assert expected.issubset(agents.keys()), (
         f"missing agents: {expected - agents.keys()}"
@@ -64,8 +64,8 @@ def test_create_agents_hydrated_wires_all_schemas():
         "curator", "editor", "researcher_plan", "researcher_assemble",
         "researcher_hydrated_plan",
         "hydration_aggregator_phase1", "hydration_aggregator_phase2",
-        "perspektiv", "writer", "qa_analyze", "bias_language",
-        "perspektiv_sync",
+        "perspective", "writer", "qa_analyze", "bias_language",
+        "perspective_sync",
     ]
     for name in schema_required:
         agent = agents[name]
@@ -182,12 +182,12 @@ def test_run_cli_rejects_hydrated_with_wrong_from_step():
     run = _load_run_module()
 
     args = argparse.Namespace(
-        from_step="perspektiv", to_step=None, topic=None, reuse="2026-04-28",
+        from_step="perspective", to_step=None, topic=None, reuse="2026-04-28",
         fetch=False, publish=False, hydrated=True,
     )
 
     async def _go():
-        sys.argv = ["run.py", "--hydrated", "--from", "perspektiv", "--reuse", "2026-04-28"]
+        sys.argv = ["run.py", "--hydrated", "--from", "perspective", "--reuse", "2026-04-28"]
         import scripts_run as run_module  # type: ignore
         original = run_module.parse_args
         run_module.parse_args = lambda: args

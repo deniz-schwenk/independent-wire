@@ -21,8 +21,8 @@ from src.schemas import (
     EDITOR_SCHEMA,
     HYDRATION_PHASE1_SCHEMA,
     HYDRATION_PHASE2_SCHEMA,
-    PERSPEKTIV_SCHEMA,
-    PERSPEKTIV_SYNC_SCHEMA,
+    PERSPECTIVE_SCHEMA,
+    PERSPECTIVE_SYNC_SCHEMA,
     QA_ANALYZE_SCHEMA,
     RESEARCHER_ASSEMBLE_SCHEMA,
     RESEARCHER_PLAN_SCHEMA,
@@ -44,7 +44,7 @@ def create_agents() -> dict[str, Agent]:
 
     Models via OpenRouter (eval-validated, April 2026):
     - google/gemini-3-flash-preview: Curator, Researcher Plan, Researcher Assemble (reasoning=none)
-    - anthropic/claude-opus-4.6: Editor, Perspektiv, Writer, Bias Language (reasoning=none)
+    - anthropic/claude-opus-4.6: Editor, Perspective, Writer, Bias Language (reasoning=none)
     - anthropic/claude-sonnet-4.6: QA-Analyze (reasoning=none, NEVER use r-medium)
     """
     agents_dir = ROOT / "agents"
@@ -121,16 +121,16 @@ def create_agents() -> dict[str, Agent]:
             reasoning="none",
             output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
         ),
-        "perspektiv": Agent(
-            name="perspektiv",
+        "perspective": Agent(
+            name="perspective",
             model="anthropic/claude-opus-4.6",
-            system_prompt_path=str(agents_dir / "perspektiv" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "perspektiv" / "INSTRUCTIONS.md"),
+            system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
             tools=[],
             temperature=0.1,
             provider="openrouter",
             reasoning="none",
-            output_schema=PERSPEKTIV_SCHEMA,
+            output_schema=PERSPECTIVE_SCHEMA,
         ),
         "writer": Agent(
             name="writer",
@@ -174,7 +174,7 @@ def create_agents_hydrated() -> dict[str, Agent]:
     Mirrors :func:`create_agents` for the agents shared with production,
     and adds the three hydrated-only agents (``researcher_hydrated_plan``,
     ``hydration_aggregator_phase1``, ``hydration_aggregator_phase2``,
-    ``perspektiv_sync``). All eleven agents carry their ``output_schema``
+    ``perspective_sync``). All eleven agents carry their ``output_schema``
     so strict-mode JSON enforcement applies on every LLM call.
     """
     agents_dir = ROOT / "agents"
@@ -216,16 +216,16 @@ def create_agents_hydrated() -> dict[str, Agent]:
             reasoning="none",
             output_schema=HYDRATION_PHASE2_SCHEMA,
         ),
-        "perspektiv_sync": Agent(
-            name="perspektiv_sync",
+        "perspective_sync": Agent(
+            name="perspective_sync",
             model="anthropic/claude-opus-4.6",
-            system_prompt_path=str(agents_dir / "perspektiv_sync" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "perspektiv_sync" / "INSTRUCTIONS.md"),
+            system_prompt_path=str(agents_dir / "perspective_sync" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "perspective_sync" / "INSTRUCTIONS.md"),
             tools=[],
             temperature=0.1,
             provider="openrouter",
             reasoning="none",
-            output_schema=PERSPEKTIV_SYNC_SCHEMA,
+            output_schema=PERSPECTIVE_SYNC_SCHEMA,
         ),
     })
     return base
@@ -235,12 +235,12 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Independent Wire pipeline")
     parser.add_argument(
         "--from", dest="from_step", default=None,
-        choices=["collector", "curator", "editor", "researcher", "perspektiv", "writer", "qa_analyze", "bias_detector"],
+        choices=["collector", "curator", "editor", "researcher", "perspective", "writer", "qa_analyze", "bias_detector"],
         help="Start from this step, loading earlier steps from debug output",
     )
     parser.add_argument(
         "--to", dest="to_step", default=None,
-        choices=["collector", "curator", "editor", "researcher", "perspektiv", "writer", "qa_analyze", "bias_detector"],
+        choices=["collector", "curator", "editor", "researcher", "perspective", "writer", "qa_analyze", "bias_detector"],
         help="Stop after this step (inclusive). Default: run to the end.",
     )
     parser.add_argument(
@@ -263,7 +263,7 @@ def parse_args():
         "--hydrated", action="store_true",
         help=(
             "Run the hydrated pipeline (T1 fetch + Phase 1/2 aggregator + "
-            "Perspektiv-Sync) instead of production. Output goes to "
+            "Perspective-Sync) instead of production. Output goes to "
             "output/{date}/test_hydration/. Currently requires --from researcher "
             "and --reuse to a date with completed Curator + Editor outputs."
         ),
@@ -321,7 +321,7 @@ async def main():
         )
 
     # Validate --from / --to ordering
-    step_order = ["collector", "curator", "editor", "researcher", "perspektiv", "writer", "qa_analyze", "bias_detector"]
+    step_order = ["collector", "curator", "editor", "researcher", "perspective", "writer", "qa_analyze", "bias_detector"]
     if args.from_step and args.to_step:
         if step_order.index(args.to_step) < step_order.index(args.from_step):
             logger.error(

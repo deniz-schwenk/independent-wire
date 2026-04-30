@@ -3,7 +3,7 @@
 Covers the three Phase-5 schemas wired up in TASK-HYDRATED-ACTIVATION:
 - HYDRATION_PHASE1_SCHEMA
 - HYDRATION_PHASE2_SCHEMA
-- PERSPEKTIV_SYNC_SCHEMA (sanity check; was correct pre-task)
+- PERSPECTIVE_SYNC_SCHEMA (sanity check; was correct pre-task)
 
 The project does not depend on the ``jsonschema`` package (no new
 dependencies are added by this task), so a minimal recursive validator
@@ -20,7 +20,7 @@ import pytest
 from src.schemas import (
     HYDRATION_PHASE1_SCHEMA,
     HYDRATION_PHASE2_SCHEMA,
-    PERSPEKTIV_SYNC_SCHEMA,
+    PERSPECTIVE_SYNC_SCHEMA,
 )
 
 
@@ -144,9 +144,9 @@ def test_hydration_phase2_schema_rejects_missing_key():
         _validate({"preliminary_divergences": []}, HYDRATION_PHASE2_SCHEMA)
 
 
-# -- PERSPEKTIV_SYNC_SCHEMA --------------------------------------------------
+# -- PERSPECTIVE_SYNC_SCHEMA --------------------------------------------------
 
-def test_perspektiv_sync_schema_already_correct():
+def test_perspective_sync_schema_already_correct():
     output = {
         "position_cluster_updates": [
             {
@@ -156,4 +156,4 @@ def test_perspektiv_sync_schema_already_correct():
             },
         ],
     }
-    _validate(output, PERSPEKTIV_SYNC_SCHEMA)
+    _validate(output, PERSPECTIVE_SYNC_SCHEMA)
