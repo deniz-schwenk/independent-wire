@@ -36,11 +36,13 @@ from src.stages import (
     RunInitConfig,
     assemble_hydration_dossier,
     attach_hydration_urls,
+    attach_hydration_urls_to_assignments,
     compose_transparency_card,
     compute_source_balance,
     enrich_perspective_clusters,
     fetch_findings,
     init_run,
+    make_attach_hydration_urls_to_assignments,
     make_hydration_fetch,
     make_init_run,
     make_researcher_search,
@@ -175,12 +177,20 @@ def build_hydrated_stages(
         production defaults to ``src.hydration.hydrate_urls``.
     :param max_produce: See :func:`build_production_stages`.
     :param output_dir: See :func:`build_production_stages`.
+
+    Hydrated variant runs an extra run-stage,
+    ``attach_hydration_urls_to_assignments``, between EditorStage and
+    select_topics. It walks the editor assignments, matches each to a
+    Curator cluster by token overlap, and writes the cluster's URL list
+    to ``assignment.raw_data['hydration_urls']`` so the topic-stage
+    ``attach_hydration_urls`` can lift them to the TopicBus slot.
     """
     run_stages = [
         _init_run_for("hydrated", max_produce, output_dir),
         fetch_findings,
         CuratorStage(agents["curator"]),
         EditorStage(agents["editor"]),
+        attach_hydration_urls_to_assignments,
         select_topics,
     ]
 
@@ -225,6 +235,15 @@ _PRODUCTION_RUN_NAMES = (
     "fetch_findings",
     "CuratorStage",
     "EditorStage",
+    "select_topics",
+)
+
+_HYDRATED_RUN_NAMES = (
+    "init_run",
+    "fetch_findings",
+    "CuratorStage",
+    "EditorStage",
+    "attach_hydration_urls_to_assignments",
     "select_topics",
 )
 
@@ -288,7 +307,7 @@ def production_stage_names() -> list[str]:
 
 def hydrated_stage_names() -> list[str]:
     """Return the canonical stage-name list for the hydrated variant."""
-    return list(_PRODUCTION_RUN_NAMES + _HYDRATED_TOPIC_NAMES)
+    return list(_HYDRATED_RUN_NAMES + _HYDRATED_TOPIC_NAMES)
 
 
 __all__ = [

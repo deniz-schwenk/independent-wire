@@ -1,21 +1,23 @@
 """Tests for src/stages/run_stages.py — init_run, fetch_findings,
-finalize_run, mirror_stage helper.
+finalize_run, mirror_stage helper, attach_hydration_urls_to_assignments.
 """
 
 from __future__ import annotations
 
 import asyncio
 import json
+import logging
 from pathlib import Path
 
 import pytest
 
 from src.bus import RunBus, TopicBus, WriterArticle
-from src.stage import StageInputError, get_stage_meta
+from src.stage import StageError, StageInputError, get_stage_meta
 from src.stages.run_stages import (
     MirrorMismatchError,
     RunInitConfig,
     TopicManifestEntry,
+    make_attach_hydration_urls_to_assignments,
     make_fetch_findings,
     make_finalize_run,
     make_init_run,
@@ -394,3 +396,221 @@ def test_finalize_run_metadata():
     assert meta.kind == "run"
     assert meta.reads == ("run_id", "run_date", "run_variant")
     assert meta.writes == ("run_topic_manifest",)
+
+
+# ---------------------------------------------------------------------------
+# attach_hydration_urls_to_assignments
+# ---------------------------------------------------------------------------
+
+
+def _hyd_layout(tmp_path: Path):
+    """Return ``(raw_dir, sources_path)`` rooted under ``tmp_path``."""
+    raw_dir = tmp_path / "raw"
+    sources_path = tmp_path / "config" / "sources.json"
+    return raw_dir, sources_path
+
+
+def _seed_feeds_and_sources(
+    tmp_path: Path,
+    run_date: str,
+    feeds: list[dict],
+    countries: dict[str, str | None] | None = None,
+) -> None:
+    raw_dir = tmp_path / "raw" / run_date
+    raw_dir.mkdir(parents=True)
+    (raw_dir / "feeds.json").write_text(json.dumps(feeds), encoding="utf-8")
+    cfg_dir = tmp_path / "config"
+    cfg_dir.mkdir(parents=True, exist_ok=True)
+    feed_entries = [
+        {"name": name, "country": country}
+        for name, country in (countries or {}).items()
+    ]
+    (cfg_dir / "sources.json").write_text(
+        json.dumps({"feeds": feed_entries}), encoding="utf-8"
+    )
+
+
+def _hydrated_run_bus(run_date: str = "2026-04-30") -> RunBus:
+    rb = RunBus()
+    rb.run_id = "run-2026-04-30-test"
+    rb.run_date = run_date
+    rb.run_variant = "hydrated"
+    return rb
+
+
+def test_attach_hydration_urls_to_assignments_happy_path(tmp_path: Path):
+    """3 assignments, raw findings cover 2/3 → first two get URLs, third
+    falls through to empty list (no token overlap with any cluster)."""
+    feeds = [
+        {"source_name": "Reuters", "source_url": "https://reuters.example/india", "language": "en", "title": "Reuters India"},
+        {"source_name": "BBC", "source_url": "https://bbc.example/india", "language": "en", "title": "BBC India"},
+        {"source_name": "AFP", "source_url": "https://afp.example/storm", "language": "en", "title": "AFP storm"},
+    ]
+    _seed_feeds_and_sources(
+        tmp_path, "2026-04-30", feeds,
+        countries={"Reuters": "GB", "BBC": "GB", "AFP": "FR"},
+    )
+    raw_dir, sources_path = _hyd_layout(tmp_path)
+    stage = make_attach_hydration_urls_to_assignments(
+        raw_dir=raw_dir, sources_path=sources_path
+    )
+
+    rb = _hydrated_run_bus()
+    rb.curator_topics_unsliced = [
+        {"title": "India and New Zealand sign comprehensive free trade agreement",
+         "source_ids": ["finding-0", "finding-1"]},
+        {"title": "Tropical storm hits Philippines coast",
+         "source_ids": ["finding-2"]},
+    ]
+    rb.editor_assignments = [
+        {"id": "tp-1", "title": "India New Zealand Free Trade Agreement Signed",
+         "topic_slug": "ind-nz", "priority": 5, "selection_reason": "r"},
+        {"id": "tp-2", "title": "Philippines tropical storm casualties",
+         "topic_slug": "ph-storm", "priority": 4, "selection_reason": "r"},
+        {"id": "tp-3", "title": "Completely unrelated lemur migration update",
+         "topic_slug": "lemur", "priority": 3, "selection_reason": "r"},
+    ]
+
+    out = asyncio.run(stage(rb))
+    a1, a2, a3 = out.editor_assignments
+    urls1 = a1["raw_data"]["hydration_urls"]
+    assert {u["outlet"] for u in urls1} == {"Reuters", "BBC"}
+    assert {u["country"] for u in urls1} == {"GB"}
+    urls2 = a2["raw_data"]["hydration_urls"]
+    assert len(urls2) == 1 and urls2[0]["outlet"] == "AFP"
+    # Third assignment had no token-overlap match → empty URLs (web-search only)
+    assert a3["raw_data"]["hydration_urls"] == []
+
+
+def test_attach_hydration_urls_to_assignments_missing_feeds_raises(tmp_path: Path):
+    """No feeds.json on disk → StageInputError, mirroring fetch_findings."""
+    raw_dir, sources_path = _hyd_layout(tmp_path)
+    stage = make_attach_hydration_urls_to_assignments(
+        raw_dir=raw_dir, sources_path=sources_path
+    )
+    rb = _hydrated_run_bus()
+    rb.editor_assignments = [
+        {"id": "tp-1", "title": "x", "topic_slug": "x", "priority": 1, "selection_reason": "r"},
+    ]
+    rb.curator_topics_unsliced = [{"title": "x x x x", "source_ids": []}]
+    with pytest.raises(StageInputError):
+        asyncio.run(stage(rb))
+
+
+def test_attach_hydration_urls_to_assignments_empty_assignments_passes_through(
+    tmp_path: Path,
+):
+    """Empty editor_assignments → stage returns RunBus with empty list
+    unchanged. The runner-level post-validator decides whether that's
+    a pipeline error; this stage is empty-safe."""
+    feeds: list[dict] = []
+    _seed_feeds_and_sources(tmp_path, "2026-04-30", feeds, countries={})
+    raw_dir, sources_path = _hyd_layout(tmp_path)
+    stage = make_attach_hydration_urls_to_assignments(
+        raw_dir=raw_dir, sources_path=sources_path
+    )
+    rb = _hydrated_run_bus()
+    rb.editor_assignments = []
+    rb.curator_topics_unsliced = []
+
+    out = asyncio.run(stage(rb))
+    assert out.editor_assignments == []
+
+
+def test_attach_hydration_urls_to_assignments_logs_tied_clusters(
+    tmp_path: Path, caplog
+):
+    """When two clusters tie at the highest token-overlap score, the
+    first-occurrence wins and a WARNING is logged."""
+    feeds = [
+        {"source_name": "Reuters", "source_url": "https://reuters.example/x", "language": "en"},
+        {"source_name": "BBC", "source_url": "https://bbc.example/x", "language": "en"},
+    ]
+    _seed_feeds_and_sources(
+        tmp_path, "2026-04-30", feeds,
+        countries={"Reuters": "GB", "BBC": "GB"},
+    )
+    raw_dir, sources_path = _hyd_layout(tmp_path)
+    stage = make_attach_hydration_urls_to_assignments(
+        raw_dir=raw_dir, sources_path=sources_path
+    )
+    rb = _hydrated_run_bus()
+    # Two clusters tie on token-overlap with the assignment title.
+    rb.curator_topics_unsliced = [
+        {"title": "India trade deal signed", "source_ids": ["finding-0"]},
+        {"title": "India trade deal signed", "source_ids": ["finding-1"]},
+    ]
+    rb.editor_assignments = [
+        {"id": "tp-1", "title": "India trade deal signed",
+         "topic_slug": "x", "priority": 5, "selection_reason": "r"},
+    ]
+
+    with caplog.at_level(logging.WARNING):
+        out = asyncio.run(stage(rb))
+    # First match wins → cluster 0 → finding-0 → Reuters
+    urls = out.editor_assignments[0]["raw_data"]["hydration_urls"]
+    assert len(urls) == 1
+    assert urls[0]["outlet"] == "Reuters"
+    assert any("tied for best match" in m for m in caplog.messages)
+
+
+def test_attach_hydration_urls_to_assignments_overwrites_existing_urls(
+    tmp_path: Path,
+):
+    """Re-running over assignments that already carry hydration_urls in
+    raw_data overwrites cleanly (idempotent)."""
+    feeds = [
+        {"source_name": "Reuters", "source_url": "https://reuters.example/india", "language": "en"},
+    ]
+    _seed_feeds_and_sources(
+        tmp_path, "2026-04-30", feeds, countries={"Reuters": "GB"},
+    )
+    raw_dir, sources_path = _hyd_layout(tmp_path)
+    stage = make_attach_hydration_urls_to_assignments(
+        raw_dir=raw_dir, sources_path=sources_path
+    )
+    rb = _hydrated_run_bus()
+    rb.curator_topics_unsliced = [
+        {"title": "India trade deal", "source_ids": ["finding-0"]},
+    ]
+    rb.editor_assignments = [
+        {
+            "id": "tp-1",
+            "title": "India trade deal",
+            "topic_slug": "x",
+            "priority": 5,
+            "selection_reason": "r",
+            "raw_data": {"hydration_urls": [{"url": "stale.example", "outlet": "Stale"}]},
+        },
+    ]
+
+    out = asyncio.run(stage(rb))
+    urls = out.editor_assignments[0]["raw_data"]["hydration_urls"]
+    assert len(urls) == 1
+    assert urls[0]["outlet"] == "Reuters"
+    assert urls[0]["url"] == "https://reuters.example/india"
+
+
+def test_attach_hydration_urls_to_assignments_no_run_date_raises(tmp_path: Path):
+    """Stage requires run_date — refuses to guess; runner runs init_run first."""
+    raw_dir, sources_path = _hyd_layout(tmp_path)
+    stage = make_attach_hydration_urls_to_assignments(
+        raw_dir=raw_dir, sources_path=sources_path
+    )
+    rb = RunBus()  # no run_date
+    rb.editor_assignments = [{"id": "tp-1", "title": "x", "topic_slug": "x",
+                              "priority": 1, "selection_reason": "r"}]
+    rb.curator_topics_unsliced = [{"title": "x x x x", "source_ids": []}]
+    with pytest.raises(StageError, match="run_date"):
+        asyncio.run(stage(rb))
+
+
+def test_attach_hydration_urls_to_assignments_metadata():
+    stage = make_attach_hydration_urls_to_assignments()
+    meta = get_stage_meta(stage)
+    assert meta.kind == "run"
+    assert meta.name == "attach_hydration_urls_to_assignments"
+    assert meta.reads == (
+        "editor_assignments", "run_date", "curator_topics_unsliced"
+    )
+    assert meta.writes == ("editor_assignments",)

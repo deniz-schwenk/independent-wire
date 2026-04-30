@@ -374,6 +374,204 @@ finalize_run = make_finalize_run()
 
 
 # ---------------------------------------------------------------------------
+# attach_hydration_urls_to_assignments (hydrated-only, runs after Editor)
+# ---------------------------------------------------------------------------
+
+
+_HYDRATION_STOPWORDS = frozenset({
+    "the", "a", "an", "of", "in", "on", "and", "or", "to", "for", "as", "is",
+    "by", "at", "with", "from", "after", "into", "that", "which", "it", "its",
+    "be", "are", "was", "were", "this", "over", "amid", "against", "about",
+    "near", "upon", "has", "have", "had", "been", "being", "will", "shall",
+})
+
+
+def _hydration_tokens(text: str) -> set[str]:
+    import re as _re
+    words = _re.findall(r"[a-zA-Z]+", text.lower())
+    return {w for w in words if len(w) >= 3 and w not in _HYDRATION_STOPWORDS}
+
+
+def _match_cluster(
+    assignment_title: str, clusters: list[dict]
+) -> tuple[Optional[dict], int]:
+    """Return (best_cluster, tied_count) for the highest token-overlap match.
+
+    Returns ``(None, 0)`` when no cluster shares at least two non-stopword
+    terms with the assignment title (a low score indicates noise rather
+    than a real match). When multiple clusters tie at best_score, the
+    first one in input order wins; ``tied_count`` reflects the tie depth
+    so the caller can log a WARNING.
+    """
+    a_tokens = _hydration_tokens(assignment_title)
+    best: Optional[dict] = None
+    best_score = 0
+    tied = 0
+    for cluster in clusters:
+        score = len(a_tokens & _hydration_tokens(cluster.get("title", "")))
+        if score > best_score:
+            best_score = score
+            best = cluster
+            tied = 1
+        elif score == best_score and best_score > 0:
+            tied += 1
+    if best_score < 2:
+        return None, 0
+    return best, tied
+
+
+def _load_country_lookup(sources_path: Path) -> dict[str, Optional[str]]:
+    try:
+        data = json.loads(sources_path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+    feeds = data.get("feeds", []) if isinstance(data, dict) else []
+    return {entry["name"]: entry.get("country") for entry in feeds}
+
+
+def _build_hydration_urls_for_cluster(
+    cluster: dict,
+    feeds: list[dict],
+    country_by_outlet: dict[str, Optional[str]],
+) -> list[dict]:
+    urls: list[dict] = []
+    for sid in cluster.get("source_ids", []):
+        try:
+            idx = int(str(sid).split("finding-")[-1])
+        except (ValueError, IndexError):
+            continue
+        if not 0 <= idx < len(feeds):
+            continue
+        entry = feeds[idx]
+        outlet = entry.get("source_name", "unknown")
+        urls.append(
+            {
+                "url": entry.get("source_url", ""),
+                "outlet": outlet,
+                "language": entry.get("language", "en"),
+                "country": country_by_outlet.get(outlet),
+                "title": entry.get("title"),
+            }
+        )
+    return urls
+
+
+def make_attach_hydration_urls_to_assignments(
+    raw_dir: Optional[Path] = None,
+    sources_path: Optional[Path] = None,
+) -> Callable:
+    """Build the hydration-URL attachment stage with optional path overrides.
+
+    Tests inject ``raw_dir`` / ``sources_path``; production uses the repo
+    defaults (``raw/{run_date}/feeds.json`` and ``config/sources.json``).
+    """
+    rd = raw_dir or Path("raw")
+    sp = sources_path or Path("config") / "sources.json"
+
+    @run_stage_def(
+        reads=("editor_assignments", "run_date", "curator_topics_unsliced"),
+        writes=("editor_assignments",),
+    )
+    async def attach_hydration_urls_to_assignments(run_bus: RunBus) -> RunBus:
+        """Attach ``raw_data['hydration_urls']`` to each editor assignment.
+
+        Hydrated-only run-stage that runs after EditorStage and before
+        select_topics. Matches each assignment's title to a Curator cluster
+        (by token overlap), looks up the cluster's source_ids in
+        ``raw/{run_date}/feeds.json``, and writes the resulting URL list
+        plus per-outlet country to the assignment's raw_data.
+
+        V1 reference: src/hydration_urls.py:attach_hydration_urls. Same
+        token-overlap matching, same URL extraction, same fail-soft
+        behaviour for unmatched assignments (empty list, hydrated
+        researcher then runs web-search-only). V2 reads cluster data from
+        ``run_bus.curator_topics_unsliced`` instead of V1's
+        ``output/{date}/02-curator-topics-unsliced.json`` disk file —
+        Bus is the single source of truth for the cluster data the
+        Curator just produced.
+        """
+        if not run_bus.run_date:
+            raise StageError(
+                "attach_hydration_urls_to_assignments: run_bus.run_date is "
+                "empty. Run init_run first."
+            )
+
+        feeds_path = rd / run_bus.run_date / "feeds.json"
+        if not feeds_path.exists():
+            raise StageInputError(
+                f"attach_hydration_urls_to_assignments: no feeds file at "
+                f"{feeds_path}. Run `scripts/fetch_feeds.py` for "
+                f"{run_bus.run_date} first."
+            )
+        try:
+            feeds = json.loads(feeds_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, ValueError, OSError) as e:
+            raise StageInputError(
+                f"attach_hydration_urls_to_assignments: could not read "
+                f"{feeds_path}: {e}"
+            ) from e
+        if not isinstance(feeds, list):
+            raise StageInputError(
+                f"attach_hydration_urls_to_assignments: {feeds_path} must "
+                f"contain a JSON array, got {type(feeds).__name__}"
+            )
+
+        clusters = list(run_bus.curator_topics_unsliced or [])
+        country_by_outlet = _load_country_lookup(sp)
+
+        updated: list[dict] = []
+        for assignment in run_bus.editor_assignments or []:
+            if not isinstance(assignment, dict):
+                updated.append(assignment)
+                continue
+            updated_assignment = copy.deepcopy(assignment)
+            title = updated_assignment.get("title", "")
+            cluster, tied_count = _match_cluster(title, clusters)
+            if cluster is None:
+                logger.warning(
+                    "attach_hydration_urls_to_assignments: no cluster "
+                    "match for assignment %r (title=%r); hydrated research "
+                    "will run web-search-only",
+                    updated_assignment.get("id"),
+                    title,
+                )
+                urls: list[dict] = []
+            else:
+                urls = _build_hydration_urls_for_cluster(
+                    cluster, feeds, country_by_outlet
+                )
+                if tied_count > 1:
+                    logger.warning(
+                        "attach_hydration_urls_to_assignments: %d clusters "
+                        "tied for best match on assignment %r (title=%r); "
+                        "first match wins (cluster title=%r)",
+                        tied_count,
+                        updated_assignment.get("id"),
+                        title,
+                        cluster.get("title"),
+                    )
+                logger.info(
+                    "attach_hydration_urls_to_assignments: %s → cluster "
+                    "%r: %d URLs",
+                    updated_assignment.get("id"),
+                    cluster.get("title"),
+                    len(urls),
+                )
+            raw_data = dict(updated_assignment.get("raw_data") or {})
+            raw_data["hydration_urls"] = urls
+            raw_data.setdefault("source_count", len(urls))
+            updated_assignment["raw_data"] = raw_data
+            updated.append(updated_assignment)
+
+        return run_bus.model_copy(update={"editor_assignments": updated})
+
+    return attach_hydration_urls_to_assignments
+
+
+attach_hydration_urls_to_assignments = make_attach_hydration_urls_to_assignments()
+
+
+# ---------------------------------------------------------------------------
 # select_topics (run/topic boundary)
 # ---------------------------------------------------------------------------
 
@@ -453,9 +651,11 @@ __all__ = [
     "MirrorMismatchError",
     "RunInitConfig",
     "TopicManifestEntry",
+    "attach_hydration_urls_to_assignments",
     "fetch_findings",
     "finalize_run",
     "init_run",
+    "make_attach_hydration_urls_to_assignments",
     "make_fetch_findings",
     "make_finalize_run",
     "make_init_run",

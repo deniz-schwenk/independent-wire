@@ -131,12 +131,23 @@ def test_hydrated_stage_names_repeat_only_for_double_mirror():
     )
 
 
-def test_both_variants_share_run_stages():
+def test_hydrated_run_stages_extends_production_with_hydration_attach():
+    """The hydrated variant runs an extra ``attach_hydration_urls_to_assignments``
+    run-stage between Editor and select_topics."""
     prod_agents = _fake_agent_dict(_PRODUCTION_AGENTS)
     hyd_agents = _fake_agent_dict(_HYDRATED_AGENTS)
     prod_run, _, _ = build_production_stages(prod_agents)
     hyd_run, _, _ = build_hydrated_stages(hyd_agents)
-    assert [_stage_label(s) for s in prod_run] == [_stage_label(s) for s in hyd_run]
+    prod_names = [_stage_label(s) for s in prod_run]
+    hyd_names = [_stage_label(s) for s in hyd_run]
+    assert prod_names == [
+        "init_run", "fetch_findings", "CuratorStage", "EditorStage",
+        "select_topics",
+    ]
+    assert hyd_names == [
+        "init_run", "fetch_findings", "CuratorStage", "EditorStage",
+        "attach_hydration_urls_to_assignments", "select_topics",
+    ]
 
 
 def test_hydrated_mirror_appears_exactly_twice():
