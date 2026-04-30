@@ -315,16 +315,32 @@ class TopicBus(BaseModel):
         visibility="internal",
     )
 
-    # 4B.7 QA+Fix phase (4 slots; qa_corrected_article is a slot-level mirror)
-    qa_problems_found: list = Slot(default_factory=list, visibility=["tp", "mcp"])
-    qa_proposed_corrections: list = Slot(default_factory=list, visibility=["tp", "mcp"])
+    # 4B.7 QA+Fix phase (4 slots; qa_corrected_article is a slot-level mirror).
+    # The three list slots carry optional_write=True — on clean runs the V2 QA
+    # prompt produces empty arrays for all three (no problems → no corrections,
+    # and divergences are scoped to cross-source disagreements which can also
+    # be absent). qa_corrected_article uses the mirror exception instead.
+    qa_problems_found: list = Slot(
+        default_factory=list,
+        visibility=["tp", "mcp"],
+        optional_write=True,
+    )
+    qa_proposed_corrections: list = Slot(
+        default_factory=list,
+        visibility=["tp", "mcp"],
+        optional_write=True,
+    )
     qa_corrected_article: WriterArticle = Slot(
         default_factory=WriterArticle,
         visibility=["tp", "mcp", "rss"],
         mirrors_from="writer_article",
         mirror_granularity="slot",
     )
-    qa_divergences: list = Slot(default_factory=list, visibility=["tp", "mcp"])
+    qa_divergences: list = Slot(
+        default_factory=list,
+        visibility=["tp", "mcp"],
+        optional_write=True,
+    )
 
     # 4B.8 Perspective-Sync phase — per-element mirror (1 slot)
     perspective_clusters_synced: list = Slot(

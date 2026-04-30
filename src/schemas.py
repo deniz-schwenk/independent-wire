@@ -301,7 +301,7 @@ QA_ANALYZE_SCHEMA = {
         },
     },
     "required": [
-        "problems_found", "proposed_corrections", "article", "divergences",
+        "problems_found", "proposed_corrections", "divergences",
     ],
     "additionalProperties": False,
 }

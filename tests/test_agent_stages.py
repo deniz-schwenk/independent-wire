@@ -1227,3 +1227,221 @@ def test_merge_perspektiv_deltas_null_value_skipped():
     }
     out = _merge_perspektiv_deltas(original, updates)
     assert out["position_clusters"][0]["position_label"] == "A"
+
+
+# ===========================================================================
+# V2-06: QaAnalyzeStage  +  schema change in src/schemas.py
+# ===========================================================================
+
+
+from src.agent_stages import QaAnalyzeStage  # noqa: E402
+from src.stages.run_stages import mirror_stage  # noqa: E402
+
+
+def test_qa_analyze_metadata():
+    s = QaAnalyzeStage(FakeAgent())
+    m = get_stage_meta(s)
+    assert m.kind == "topic"
+    assert m.reads == (
+        "writer_article",
+        "final_sources",
+        "perspective_clusters_synced",
+        "merged_preliminary_divergences",
+    )
+    assert m.writes == (
+        "qa_problems_found",
+        "qa_proposed_corrections",
+        "qa_corrected_article",
+        "qa_divergences",
+    )
+
+
+def _make_qa_topicbus() -> TopicBus:
+    """Fixture TopicBus populated for QA: writer_article + final_sources +
+    perspective_clusters_synced + merged_preliminary_divergences."""
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.writer_article = WriterArticle(
+        headline="Original headline",
+        subheadline="Original sub",
+        body="Original body [src-001].",
+        summary="Original summary",
+    )
+    tb.final_sources = [
+        {"id": "src-001", "outlet": "Reuters", "language": "en"},
+        {"id": "src-002", "outlet": "AFP", "language": "fr"},
+    ]
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "position_label": "A", "source_ids": ["src-001"]}
+    ]
+    tb.merged_preliminary_divergences = [
+        {"description": "casualty figures differ", "source_ids": ["src-001"]}
+    ]
+    return tb
+
+
+def test_qa_analyze_problems_found_path():
+    """QA found problems and emitted a corrected article. Wrapper writes
+    all four slots; qa_corrected_article carries the corrected version."""
+    fake = FakeAgent(
+        structured={
+            "problems_found": [
+                {
+                    "article_excerpt": "Original body [src-001].",
+                    "problem": "factually_incorrect",
+                    "explanation": "Source rsrc-001 reports differently.",
+                }
+            ],
+            "proposed_corrections": ["Replace X with Y."],
+            "article": {
+                "headline": "Corrected headline",
+                "subheadline": "Corrected sub",
+                "body": "Corrected body [src-001].",
+                "summary": "Corrected summary",
+            },
+            "divergences": [
+                {
+                    "type": "factual",
+                    "description": "deadline differs",
+                    "source_ids": ["src-001"],
+                    "resolution": "partially_resolved",
+                    "resolution_note": "both attributed",
+                }
+            ],
+        }
+    )
+    tb = _make_qa_topicbus()
+    stage = QaAnalyzeStage(fake)
+    tb_after = _run(stage, tb, _ro())
+
+    assert len(tb_after.qa_problems_found) == 1
+    assert tb_after.qa_proposed_corrections == ["Replace X with Y."]
+    assert tb_after.qa_corrected_article.headline == "Corrected headline"
+    assert tb_after.qa_corrected_article.body == "Corrected body [src-001]."
+    assert len(tb_after.qa_divergences) == 1
+    # Writer article remains the original (not mutated)
+    assert tb_after.writer_article.headline == "Original headline"
+
+
+def test_qa_analyze_clean_run_omits_article_leaves_slot_empty():
+    """QA finds no problems and the V2 prompt omits `article` entirely.
+    Wrapper writes empty arrays and leaves qa_corrected_article at its
+    typed empty default — the V2-03b mirror_qa_corrected stage fills
+    it downstream from writer_article."""
+    fake = FakeAgent(
+        structured={
+            "problems_found": [],
+            "proposed_corrections": [],
+            # `article` field absent — V2 prompt omits it on clean runs
+            "divergences": [],
+        }
+    )
+    tb = _make_qa_topicbus()
+    stage = QaAnalyzeStage(fake)
+    tb_after = _run(stage, tb, _ro())
+
+    assert tb_after.qa_problems_found == []
+    assert tb_after.qa_proposed_corrections == []
+    assert tb_after.qa_divergences == []
+    # Slot stays at empty WriterArticle default
+    assert tb_after.qa_corrected_article == WriterArticle()
+
+
+def test_qa_analyze_clean_run_passes_post_validation():
+    """The slot has mirrors_from="writer_article" so post-validation skips
+    the non-empty check on qa_corrected_article. Without that exception,
+    leaving the slot empty would trip StagePostconditionError."""
+    fake = FakeAgent(
+        structured={
+            "problems_found": [],
+            "proposed_corrections": [],
+            "divergences": [],
+        }
+    )
+    tb = _make_qa_topicbus()
+    stage = QaAnalyzeStage(fake)
+    tb_after = _run(stage, tb, _ro())
+
+    rb_before_proxy = _ro()
+    rb_after_proxy = _ro()
+    # Must NOT raise
+    validate_postconditions(
+        stage,
+        tb,
+        tb_after,
+        run_bus_before=rb_before_proxy,
+        run_bus_after=rb_after_proxy,
+    )
+
+
+def test_qa_analyze_then_mirror_fills_corrected_article_from_writer():
+    """End-to-end QA-clean-run: wrapper leaves qa_corrected_article empty,
+    mirror_stage from V2-03a fills it from writer_article. After both
+    stages run, qa_corrected_article equals writer_article."""
+    fake = FakeAgent(
+        structured={
+            "problems_found": [],
+            "proposed_corrections": [],
+            "divergences": [],
+        }
+    )
+    tb = _make_qa_topicbus()
+    stage = QaAnalyzeStage(fake)
+    tb_after_qa = _run(stage, tb, _ro())
+
+    # qa_corrected_article is empty WriterArticle()
+    assert tb_after_qa.qa_corrected_article == WriterArticle()
+
+    # Run the V2-03b mirror logic directly
+    mirror_stage(
+        "qa_corrected_article",
+        "writer_article",
+        tb_after_qa,
+        granularity="slot",
+    )
+
+    # After mirror: equal to writer_article
+    assert tb_after_qa.qa_corrected_article == tb_after_qa.writer_article
+    assert tb_after_qa.qa_corrected_article.headline == "Original headline"
+
+
+def test_qa_analyze_problems_found_path_passes_post_validation():
+    """Sanity: when the agent emits a corrected article, post-validation
+    also passes (slot is non-empty)."""
+    fake = FakeAgent(
+        structured={
+            "problems_found": [{"article_excerpt": "x", "problem": "p", "explanation": "e"}],
+            "proposed_corrections": ["fix"],
+            "article": {"headline": "C", "subheadline": "S", "body": "B", "summary": "Sm"},
+            "divergences": [],
+        }
+    )
+    tb = _make_qa_topicbus()
+    stage = QaAnalyzeStage(fake)
+    tb_after = _run(stage, tb, _ro())
+
+    rb_before_proxy = _ro()
+    rb_after_proxy = _ro()
+    validate_postconditions(
+        stage,
+        tb,
+        tb_after,
+        run_bus_before=rb_before_proxy,
+        run_bus_after=rb_after_proxy,
+    )
+
+
+def test_qa_analyze_schema_does_not_require_article():
+    """Regression guard: the schema change ships atomic with this wrapper.
+    QA_ANALYZE_SCHEMA's top-level required list must NOT include 'article'."""
+    from src.schemas import QA_ANALYZE_SCHEMA
+
+    assert "article" not in QA_ANALYZE_SCHEMA["required"], (
+        "QA_ANALYZE_SCHEMA still requires 'article' — V2 prompt omits it on "
+        "clean runs and the schema must allow that."
+    )
+    # Sanity: the other three are still required
+    assert "problems_found" in QA_ANALYZE_SCHEMA["required"]
+    assert "proposed_corrections" in QA_ANALYZE_SCHEMA["required"]
+    assert "divergences" in QA_ANALYZE_SCHEMA["required"]
+    # Sanity: article still defined as a property (just optional)
+    assert "article" in QA_ANALYZE_SCHEMA["properties"]

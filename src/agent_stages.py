@@ -1202,6 +1202,112 @@ class WriterStage(_AgentStageBase):
 
 
 # ---------------------------------------------------------------------------
+# Wrapper: QaAnalyzeStage  (topic, production + hydrated) — CRITICAL
+# ---------------------------------------------------------------------------
+
+
+class QaAnalyzeStage(_AgentStageBase):
+    """QA-Analyze agent wrapper. Ships atomic with the schema change in
+    src/schemas.py (`article` removed from QA_ANALYZE_SCHEMA's required
+    list) and the V2-03b mirror_qa_corrected stage.
+
+    Reads `writer_article`, `final_sources`, `perspective_clusters_synced`,
+    `merged_preliminary_divergences`. Writes `qa_problems_found`,
+    `qa_proposed_corrections`, `qa_corrected_article`, `qa_divergences`.
+
+    Mirror integration: when QA finds no problems and the agent omits the
+    `article` field per the V2 prompt, the wrapper leaves
+    `qa_corrected_article` at its empty WriterArticle default. The slot
+    has `mirrors_from="writer_article"` annotated in `bus.py`, so V2-02
+    post-validation accepts the empty state. The downstream
+    `mirror_qa_corrected` stage (V2-03b) then fills the slot from
+    `writer_article`. This is the complete realisation of the V2 mirror
+    pattern — schema + prompt + wrapper + mirror all aligned.
+
+    V1 reference: src/pipeline.py:2349-2398 (the QA call + post-QA
+    article-field merge in `_produce_single`).
+    """
+
+    stage_kind = "topic"
+    reads = (
+        "writer_article",
+        "final_sources",
+        "perspective_clusters_synced",
+        "merged_preliminary_divergences",
+    )
+    writes = (
+        "qa_problems_found",
+        "qa_proposed_corrections",
+        "qa_corrected_article",
+        "qa_divergences",
+    )
+    agent_role = "qa_analyze"
+
+    def __init__(self, agent: Agent) -> None:
+        self.agent = agent
+
+    async def __call__(
+        self, topic_bus: TopicBus, run_bus: RunBusReadOnly
+    ) -> TopicBus:
+        # Build the article context the agent expects (V1 shape).
+        writer_article = topic_bus.writer_article
+        article_for_qa = {
+            "headline": writer_article.headline,
+            "subheadline": writer_article.subheadline,
+            "body": writer_article.body,
+            "summary": writer_article.summary,
+            "sources": list(topic_bus.final_sources),
+        }
+
+        message = (
+            "Check this article against the source material. Find errors and "
+            "divergences. Apply corrections directly in the article when "
+            "needed. Return only the keys per the schema."
+        )
+        result = await self.agent.run(
+            message,
+            context={
+                "article": article_for_qa,
+                "sources": list(topic_bus.final_sources),
+                "preliminary_divergences": list(
+                    topic_bus.merged_preliminary_divergences
+                ),
+                "position_clusters": list(topic_bus.perspective_clusters_synced),
+                "missing_positions": list(topic_bus.perspective_missing_positions),
+            },
+        )
+        parsed = _parse_agent_output(result) or {}
+        if not isinstance(parsed, dict):
+            parsed = {}
+
+        problems = list(parsed.get("problems_found") or [])
+        corrections = list(parsed.get("proposed_corrections") or [])
+        divergences = list(parsed.get("divergences") or [])
+
+        update: dict[str, Any] = {
+            "qa_problems_found": problems,
+            "qa_proposed_corrections": corrections,
+            "qa_divergences": divergences,
+        }
+
+        # Mirror-pattern semantics: only write qa_corrected_article when the
+        # agent actually emitted an `article` object. When the field is
+        # absent (V2 schema makes it optional; QA omits when no corrections),
+        # leave the slot at its empty default and let mirror_qa_corrected
+        # fill it from writer_article downstream.
+        article = parsed.get("article")
+        if isinstance(article, dict) and article:
+            update["qa_corrected_article"] = WriterArticle(
+                headline=article.get("headline", "") or "",
+                subheadline=article.get("subheadline", "") or "",
+                body=article.get("body", "") or "",
+                summary=article.get("summary", "") or "",
+            )
+
+        return topic_bus.model_copy(update=update)
+
+
+# ---------------------------------------------------------------------------
 # Wrapper: BiasLanguageStage  (topic, production + hydrated)
 # ---------------------------------------------------------------------------
 
@@ -1527,6 +1633,7 @@ __all__ = [
     "HydrationPhase2Stage",
     "PerspectiveStage",
     "PerspectiveSyncStage",
+    "QaAnalyzeStage",
     "ResearcherAssembleStage",
     "ResearcherHydratedPlanStage",
     "ResearcherPlanStage",
