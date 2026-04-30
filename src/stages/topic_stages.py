@@ -551,6 +551,52 @@ async def attach_hydration_urls(
 
 
 # ---------------------------------------------------------------------------
+# 7 (hydrated). hydration_fetch — make_hydration_fetch factory
+# ---------------------------------------------------------------------------
+
+
+def make_hydration_fetch(fetcher: Optional[Callable] = None) -> Callable:
+    """Build a `hydration_fetch` topic-stage closing over a fetcher callable.
+
+    Reads:  hydration_urls (populated by attach_hydration_urls).
+    Writes: hydration_fetch_results.
+
+    The fetcher signature is `async (entries: list[dict]) -> list[dict]`.
+    Default fetcher is :func:`src.hydration.hydrate_urls` (aiohttp +
+    trafilatura). Tests inject a fake to avoid network I/O.
+
+    Per ARCH §5.2 stage 7. The post-validator enforces non-empty
+    `hydration_fetch_results`; runs with no URLs will fail loud at
+    `attach_hydration_urls` upstream.
+    """
+
+    async def _default_fetcher(entries: list[dict]) -> list[dict]:
+        from src.hydration import hydrate_urls
+
+        return await hydrate_urls(entries)
+
+    fn = fetcher or _default_fetcher
+
+    @topic_stage_def(
+        reads=("hydration_urls",),
+        writes=("hydration_fetch_results",),
+    )
+    async def hydration_fetch(
+        topic_bus: TopicBus, run_bus: RunBusReadOnly
+    ) -> TopicBus:
+        urls = list(topic_bus.hydration_urls or [])
+        results = await fn(urls)
+        return topic_bus.model_copy(
+            update={"hydration_fetch_results": list(results or [])}
+        )
+
+    return hydration_fetch
+
+
+hydration_fetch = make_hydration_fetch()
+
+
+# ---------------------------------------------------------------------------
 # 10 (hydrated). assemble_hydration_dossier
 # ---------------------------------------------------------------------------
 
