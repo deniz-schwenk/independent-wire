@@ -143,7 +143,7 @@ def create_agents() -> dict[str, Agent]:
             model="anthropic/claude-opus-4.6",
             system_prompt_path=str(agents_dir / "writer" / "SYSTEM.md"),
             instructions_path=str(agents_dir / "writer" / "INSTRUCTIONS.md"),
-            tools=[web_search_tool],
+            tools=[],
             temperature=0.3,
             provider="openrouter",
             reasoning="none",

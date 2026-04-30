@@ -200,32 +200,12 @@ WRITER_SCHEMA = {
         "sources": {
             "type": "array",
             "items": {
-                "anyOf": [
-                    {  # Dossier reference
-                        "type": "object",
-                        "properties": {
-                            "rsrc_id": {"type": "string"},
-                        },
-                        "required": ["rsrc_id"],
-                        "additionalProperties": False,
-                    },
-                    {  # Web-search source
-                        "type": "object",
-                        "properties": {
-                            "web_id": {"type": "string"},
-                            "url": {"type": "string"},
-                            "outlet": {"type": "string"},
-                            "title": {"type": "string"},
-                            "language": {"type": "string"},
-                            "country": {"type": "string"},
-                        },
-                        "required": [
-                            "web_id", "url", "outlet", "title",
-                            "language", "country",
-                        ],
-                        "additionalProperties": False,
-                    },
-                ],
+                "type": "object",
+                "properties": {
+                    "rsrc_id": {"type": "string"},
+                },
+                "required": ["rsrc_id"],
+                "additionalProperties": False,
             },
         },
     },
