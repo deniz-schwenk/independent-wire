@@ -250,6 +250,36 @@ Three prompt-vs-schema drift points surfaced during review and resolved on disk:
 
 Pipeline cost: live runs in S14 confirmed €1-3 per topic with strict mode active. No measured regression in article quality across the three smokes. Schema-as-code now enforces the Originary-Output-Prinzip structurally — agents are mechanically incapable of emitting Python-owned fields (`id`, `topic_slug`, `rsrc_id`, `pc_id`), where previously the principle relied on prompt discipline only.
 
+### Session 15 (2026-04-29) — Audit-recs closed, Hydrated activated, V2 architected
+
+Three workstreams shipped, one architecture decision taken.
+
+**Audit-recommendations closed.** All seven open recommendations from `docs/AUDIT-PIPELINE-S13-2026-04-27.md` shipped via deterministic Python:
+- rsrc-/src- universal sweep over the entire final TP (replacing the partial Fix-3-on-perspectives-only)
+- coverage_gaps validated against final source_balance (drops Pre-research statements falsified by web-search expansion)
+- actor.region field removed (was source-country, semantically meaningless per-actor)
+- bias_analysis.factual_divergences removed (Python copy of qa_analysis.divergences — duplication eliminated)
+- selection_reason stale-quantifier strip (Editor-time "only two outlets" no longer survives downstream research)
+Plus three structural cleanups uncovered during eval review. Five commits across S15: ac13fd2, be2382b, f6a4c14, 92fb5ef.
+
+**Hydrated pipeline activated.** `scripts/run.py --hydrated` flag added. Eleven hydrated agents wired with strict-mode JSON schemas. Output isolation: production stays at `output/{date}/`, hydrated at `output/{date}/test_hydration/`. Three legacy permissive `output_schema={"type":"object"}` overrides removed (Phase 1 aggregator, Phase 2 reducer, hydrated planner) — HYDRATION_PHASE1_SCHEMA, HYDRATION_PHASE2_SCHEMA, RESEARCHER_PLAN_SCHEMA now reach the LLM at every call site. Commits 4b8cf94, eb43727→d786d8c, 69fb8b8.
+
+**Hydrated-vs-Production 1:1 eval.** King Charles III State Visit topic produced on both pipelines with all S15 fixes applied. Side-by-side comparison from on-disk TPs:
+
+| Signal | Production | Hydrated |
+|---|---|---|
+| Body words | ~890 | ~846 |
+| Sources | 16 | 16 |
+| Perspectives | 6 | 7 |
+| Divergences | 3 | 4 |
+| Gaps | 2 | 9 |
+
+Hydrated outperforms Production at multi-perspective depth despite 50% T1 fetch loss on this topic (SCMP bot-blocked). Eval feedback flagged five aggregation bugs which were closed in subsequent commits.
+
+**V2 Bus-architecture decided.** `docs/ARCH-V2-BUS-SCHEMA.md` captures the structural answer to the recurring S14/S15 aggregation bugs. Architecture: RunBus + N TopicBuses, hierarchical separation of run-scoped and topic-scoped state. Granular slots with empty-then-fill mirror pattern as the universal modification convention. Render layer is selection from the Bus driven by visibility schema-metadata. Bias card surfaces all five Vision dimensions (language, source, geographical, selection, framing) as a multi-slot derived view. Big-bang migration with `v1-final` git tag as rollback baseline. Anglicises `perspektiv` → `perspective` consistently across code, prompts, and folders. Implementation begins in a subsequent session.
+
+**Three INSTRUCTIONS.md restorations.** S14 surgical edits had silently truncated `agents/qa_analyze/INSTRUCTIONS.md` (71 → 10 lines) and `agents/editor/INSTRUCTIONS.md` (also corrupted). Restored from V2 baselines via Engineer round-trip + CC pre-commit verification. Memory-edit added: no more architect-side surgical prompt edits — all prompt/code edits go through CC's stricter pre-commit verification (git status, diff --cached --numstat, line-count delta sanity).
+
 ## Known Issue: LLM JSON Output with Multilingual Quotes
 
 **Status:** Mitigated — `json-repair` fallback active since Lauf 13

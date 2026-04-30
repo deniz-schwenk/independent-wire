@@ -16,6 +16,14 @@ Nanobot's codebase (`agent/loop.py`, `agent/context.py`, `agent/tools/`) serves 
 
 ---
 
+## V2 transition (planned)
+
+This document describes the V1 pipeline architecture as it stands at the end of S15 (commit tagged `v1-final`). A full V2 architectural redesign is documented in `docs/ARCH-V2-BUS-SCHEMA.md` — RunBus + TopicBus, mirror-and-modify pattern, visibility-driven render layer. V2 implementation begins in a subsequent session and replaces the aggregation-based construction this document describes. V1 remains accessible via the `v1-final` git tag as a rollback baseline.
+
+Read `docs/ARCH-V2-BUS-SCHEMA.md` for the V2 architectural contract. The remainder of this document describes V1.
+
+---
+
 ## Three Core Abstractions
 
 Everything in the framework is built on three abstractions. If these are right, everything else — memory, parallelization, new tools, Docker deployment — can be added without rewriting.
