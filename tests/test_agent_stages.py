@@ -703,3 +703,527 @@ def test_unwrap_list_returns_empty_for_none_or_other():
     assert _unwrap_list(None, "queries") == []
     assert _unwrap_list({"other": [1]}, "queries") == []
     assert _unwrap_list("not a list", "queries") == []
+
+
+# ===========================================================================
+# V2-06: ResearcherAssembleStage
+# ===========================================================================
+
+
+from src.agent_stages import (  # noqa: E402
+    BiasLanguageStage,
+    HydrationPhase1Stage,
+    HydrationPhase2Stage,
+    PerspectiveStage,
+    PerspectiveSyncStage,
+    ResearcherAssembleStage,
+    ResearcherHydratedPlanStage,
+    WriterStage,
+    _build_bias_card_for_agent_input,
+    _enrich_position_clusters,
+    _extract_date_from_url,
+    _merge_perspektiv_deltas,
+)
+from src.bus import (  # noqa: E402
+    HydrationPhase2Corpus,
+    HydrationPreDossier,
+    ResearcherAssembleDossier,
+    SourceBalance,
+    WriterArticle,
+)
+
+
+def test_researcher_assemble_metadata():
+    s = ResearcherAssembleStage(FakeAgent())
+    m = get_stage_meta(s)
+    assert m.kind == "topic"
+    assert m.reads == ("editor_selected_topic", "researcher_search_results")
+    assert m.writes == ("researcher_assemble_dossier",)
+
+
+def test_researcher_assemble_assigns_research_rsrc_ids_and_dates():
+    """V2 deviation: emits `research-rsrc-NNN` per ARCH §4B.3 (V1 used bare
+    rsrc-NNN). estimated_date filled from URL when missing."""
+    fake = FakeAgent(
+        structured={
+            "sources": [
+                {
+                    "url": "https://reuters.example/2026/04/30/story",
+                    "outlet": "Reuters",
+                    "language": "en",
+                    "country": "United States",
+                    "summary": "x",
+                    "actors_quoted": [],
+                },
+                {
+                    "url": "https://lemonde.example/no-date-here",
+                    "outlet": "Le Monde",
+                    "language": "fr",
+                    "country": "France",
+                    "summary": "y",
+                    "actors_quoted": [],
+                },
+            ],
+            "preliminary_divergences": [{"description": "div"}],
+            "coverage_gaps": ["gap"],
+        }
+    )
+    tb = TopicBus(
+        editor_selected_topic=EditorAssignment(title="t", selection_reason="r")
+    )
+    tb.researcher_search_results = [{"query": "x", "results": "..."}]
+    rb = RunBus()
+    rb.run_date = "2026-04-30"
+    stage = ResearcherAssembleStage(fake)
+    tb_after = _run(stage, tb, rb.as_readonly())
+
+    dossier = tb_after.researcher_assemble_dossier
+    assert dossier.sources[0]["id"] == "research-rsrc-001"
+    assert dossier.sources[0]["estimated_date"] == "2026-04-30"
+    assert dossier.sources[1]["id"] == "research-rsrc-002"
+    # No date in URL → estimated_date stays absent
+    assert "estimated_date" not in dossier.sources[1] or dossier.sources[1].get("estimated_date") is None
+    assert dossier.preliminary_divergences == [{"description": "div"}]
+    assert dossier.coverage_gaps == ["gap"]
+
+
+def test_researcher_assemble_empty_output():
+    fake = FakeAgent(structured={"sources": [], "preliminary_divergences": [], "coverage_gaps": []})
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    stage = ResearcherAssembleStage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert tb_after.researcher_assemble_dossier.sources == []
+
+
+def test_extract_date_from_url():
+    assert _extract_date_from_url("https://x.example/2026/04/30/story") == "2026-04-30"
+    assert _extract_date_from_url("https://x.example/2026-04-30/story") == "2026-04-30"
+    assert _extract_date_from_url("https://x.example/20260430/story") == "2026-04-30"
+    assert _extract_date_from_url("https://x.example/2026/04/story") == "2026-04-01"
+    assert _extract_date_from_url("https://x.example/no-date") is None
+    assert _extract_date_from_url("") is None
+
+
+# ===========================================================================
+# V2-06: PerspectiveStage
+# ===========================================================================
+
+
+def test_perspective_metadata():
+    s = PerspectiveStage(FakeAgent())
+    m = get_stage_meta(s)
+    assert m.kind == "topic"
+    assert "final_sources" in m.reads
+    assert m.writes == ("perspective_clusters", "perspective_missing_positions")
+
+
+def test_perspective_stage_folds_in_enrichment():
+    """V2-03b deferred _enrich_position_clusters; V2-06 PerspectiveStage
+    folds it in. Wrapper output carries pc-NNN ids, actors with quotes,
+    regions, languages, representation."""
+    fake = FakeAgent(
+        structured={
+            "position_clusters": [
+                {
+                    "position_label": "Pro",
+                    "position_summary": "supports",
+                    "source_ids": ["src-001", "src-002"],
+                },
+                {
+                    "position_label": "Anti",
+                    "position_summary": "opposes",
+                    "source_ids": ["src-003"],
+                },
+            ],
+            "missing_positions": [{"label": "civilians"}],
+        }
+    )
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.final_sources = [
+        {
+            "id": "src-001",
+            "country": "United States",
+            "language": "en",
+            "actors_quoted": [
+                {
+                    "name": "PM",
+                    "role": "Minister",
+                    "type": "official",
+                    "verbatim_quote": "We will act.",
+                }
+            ],
+        },
+        {
+            "id": "src-002",
+            "country": "United States",
+            "language": "en",
+            "actors_quoted": [],
+        },
+        {
+            "id": "src-003",
+            "country": "Iran",
+            "language": "fa",
+            "actors_quoted": [],
+        },
+    ]
+    stage = PerspectiveStage(fake)
+    tb_after = _run(stage, tb, _ro())
+    clusters = tb_after.perspective_clusters
+    assert len(clusters) == 2
+    assert clusters[0]["id"] == "pc-001"
+    assert clusters[0]["regions"] == ["United States"]
+    assert clusters[0]["languages"] == ["en"]
+    # 2/3 sources → ratio 0.67 ≥ 0.40 → dominant
+    assert clusters[0]["representation"] == "dominant"
+    assert clusters[0]["actors"][0]["name"] == "PM"
+    assert clusters[0]["actors"][0]["quote"] == "We will act."
+    # 1/3 sources → ratio 0.33 ≥ 0.15 → substantial
+    assert clusters[1]["representation"] == "substantial"
+    assert tb_after.perspective_missing_positions == [{"label": "civilians"}]
+
+
+def test_enrich_position_clusters_empty_dossier_marks_marginal():
+    enriched = _enrich_position_clusters(
+        {
+            "position_clusters": [
+                {"position_label": "A", "source_ids": ["src-001"]}
+            ],
+            "missing_positions": [],
+        },
+        {"sources": []},
+    )
+    assert enriched["position_clusters"][0]["representation"] == "marginal"
+
+
+# ===========================================================================
+# V2-06: WriterStage
+# ===========================================================================
+
+
+def test_writer_metadata():
+    s = WriterStage(FakeAgent())
+    m = get_stage_meta(s)
+    assert m.kind == "topic"
+    assert "perspective_clusters_synced" in m.reads
+    assert m.writes == ("writer_article",)
+
+
+def test_writer_happy_path_no_followup():
+    fake = FakeAgent(
+        structured={
+            "headline": "Headline H",
+            "subheadline": "Subhead",
+            "body": "Body [src-001]. [[COVERAGE_STATEMENT]]",
+            "summary": "Summary",
+        }
+    )
+    tb = TopicBus(
+        editor_selected_topic=EditorAssignment(
+            title="t", selection_reason="r", follow_up_to=None
+        )
+    )
+    tb.final_sources = [{"id": "src-001"}]
+    tb.perspective_clusters_synced = [{"id": "pc-001"}]
+    stage = WriterStage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert tb_after.writer_article.headline == "Headline H"
+    assert tb_after.writer_article.body == "Body [src-001]. [[COVERAGE_STATEMENT]]"
+    # No follow_up in context
+    assert "follow_up" not in fake.calls[0]["context"]
+
+
+def test_writer_loads_followup_addendum_when_follow_up_to_set(tmp_path: Path):
+    followup_path = tmp_path / "FOLLOWUP.md"
+    followup_path.write_text("Follow-up extra instructions.", encoding="utf-8")
+
+    fake = FakeAgent(
+        structured={"headline": "H", "subheadline": "S", "body": "B", "summary": "Sm"}
+    )
+    tb = TopicBus(
+        editor_selected_topic=EditorAssignment(
+            title="t",
+            follow_up_to="tp-2026-04-29-001",
+            follow_up_reason="enforcement deadline",
+        )
+    )
+    rb = RunBus()
+    rb.run_date = "2026-04-30"
+    rb.previous_coverage = [
+        {"tp_id": "tp-2026-04-29-001", "headline": "Prior coverage headline"}
+    ]
+    stage = WriterStage(fake, followup_path=followup_path)
+    tb_after = _run(stage, tb, rb.as_readonly())
+    # Addendum was passed
+    assert fake.calls[0].get("instructions_addendum") == "Follow-up extra instructions."
+    # Previous headline pulled from RunBus, not disk
+    fu = fake.calls[0]["context"]["follow_up"]
+    assert fu["previous_headline"] == "Prior coverage headline"
+    assert fu["reason"] == "enforcement deadline"
+    assert tb_after.writer_article.headline == "H"
+
+
+def test_writer_followup_missing_addendum_file_is_logged_but_not_fatal(tmp_path: Path):
+    """FOLLOWUP.md not yet on disk → wrapper logs WARNING but proceeds."""
+    fake = FakeAgent(
+        structured={"headline": "H", "subheadline": "S", "body": "B", "summary": "Sm"}
+    )
+    tb = TopicBus(
+        editor_selected_topic=EditorAssignment(
+            title="t",
+            follow_up_to="tp-2026-04-29-001",
+        )
+    )
+    nonexistent = tmp_path / "missing.md"
+    stage = WriterStage(fake, followup_path=nonexistent)
+    tb_after = _run(stage, tb, _ro())
+    # Addendum is None when file missing
+    assert fake.calls[0].get("instructions_addendum") is None
+    assert tb_after.writer_article.headline == "H"
+
+
+# ===========================================================================
+# V2-06: BiasLanguageStage
+# ===========================================================================
+
+
+def test_bias_language_metadata():
+    s = BiasLanguageStage(FakeAgent())
+    m = get_stage_meta(s)
+    assert m.kind == "topic"
+    assert "qa_corrected_article" in m.reads
+    assert m.writes == ("bias_language_findings", "bias_reader_note")
+
+
+def test_bias_language_happy_path():
+    fake = FakeAgent(
+        structured={
+            "language_bias": [
+                {"excerpt": "x", "issue": "loaded", "explanation": "y"}
+            ],
+            "reader_note": "Three sources across three languages.",
+        }
+    )
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.qa_corrected_article = WriterArticle(
+        headline="H", body="B", summary="Sm"
+    )
+    tb.final_sources = [
+        {"id": "src-001", "country": "United States", "language": "en"},
+    ]
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "representation": "dominant", "actors": [{"name": "A", "role": "r"}]}
+    ]
+    stage = BiasLanguageStage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert len(tb_after.bias_language_findings) == 1
+    assert tb_after.bias_reader_note == "Three sources across three languages."
+
+    # bias_card was passed in context
+    bias_card_ctx = fake.calls[0]["context"]["bias_card"]
+    assert bias_card_ctx["source_balance"]["total"] == 1
+    assert bias_card_ctx["perspectives"]["cluster_count"] == 1
+
+
+def test_build_bias_card_for_agent_input_aggregates():
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.qa_corrected_article = WriterArticle(summary="my summary")
+    tb.final_sources = [
+        {"id": "src-001", "country": "US", "language": "en"},
+        {"id": "src-002", "country": "France", "language": "fr"},
+    ]
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "representation": "dominant", "actors": [{"name": "A", "role": "r"}]},
+        {"id": "pc-002", "representation": "marginal", "actors": []},
+    ]
+    tb.qa_divergences = [{"type": "factual"}]
+    tb.coverage_gaps_validated = ["a gap"]
+    bc = _build_bias_card_for_agent_input(tb)
+    assert bc["article_summary"] == "my summary"
+    assert bc["source_balance"]["total"] == 2
+    assert bc["perspectives"]["cluster_count"] == 2
+    assert bc["perspectives"]["distinct_actor_count"] == 1
+    assert bc["perspectives"]["representation_distribution"] == {
+        "dominant": 1, "substantial": 0, "marginal": 1
+    }
+    assert bc["factual_divergences"] == [{"type": "factual"}]
+    assert bc["coverage_gaps"] == ["a gap"]
+
+
+# ===========================================================================
+# V2-06: ResearcherHydratedPlanStage
+# ===========================================================================
+
+
+def test_researcher_hydrated_plan_metadata():
+    s = ResearcherHydratedPlanStage(FakeAgent())
+    m = get_stage_meta(s)
+    assert m.kind == "topic"
+    assert m.reads == ("editor_selected_topic", "hydration_pre_dossier")
+    assert m.writes == ("researcher_plan_queries",)
+
+
+def test_researcher_hydrated_plan_includes_coverage_summary():
+    fake = FakeAgent(structured={"queries": [{"query": "q1", "language": "en"}]})
+    tb = TopicBus(
+        editor_selected_topic=EditorAssignment(
+            title="t", selection_reason="r", raw_data={"x": 1}
+        )
+    )
+    tb.hydration_pre_dossier = HydrationPreDossier(
+        sources=[
+            {"id": "hydrate-rsrc-001", "language": "en", "country": "US", "outlet": "BBC",
+             "actors_quoted": [{"name": "A", "type": "official"}]},
+        ],
+        preliminary_divergences=[],
+        coverage_gaps=[],
+    )
+    rb = RunBus()
+    rb.run_date = "2026-04-30"
+    stage = ResearcherHydratedPlanStage(fake)
+    tb_after = _run(stage, tb, rb.as_readonly())
+    assert len(tb_after.researcher_plan_queries) == 1
+    # coverage_summary was added to context
+    assert "coverage_summary" in fake.calls[0]["context"]
+
+
+# ===========================================================================
+# V2-06: HydrationPhase1Stage
+# ===========================================================================
+
+
+def test_hydration_phase1_metadata():
+    s = HydrationPhase1Stage(FakeAgent())
+    m = get_stage_meta(s)
+    assert m.kind == "topic"
+    assert m.reads == ("editor_selected_topic", "hydration_fetch_results")
+    assert m.writes == ("hydration_phase1_analyses",)
+
+
+def test_hydration_phase1_skips_when_no_successful_fetches():
+    """Zero success records → skip the LLM call and write []."""
+    fake = FakeAgent(structured={"article_analyses": []})
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.hydration_fetch_results = [
+        {"url": "x", "status": "bot_blocked"},
+        {"url": "y", "status": "error"},
+    ]
+    stage = HydrationPhase1Stage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert tb_after.hydration_phase1_analyses == []
+    # Agent should NOT have been called
+    assert len(fake.calls) == 0
+
+
+# ===========================================================================
+# V2-06: HydrationPhase2Stage
+# ===========================================================================
+
+
+def test_hydration_phase2_metadata():
+    s = HydrationPhase2Stage(FakeAgent())
+    m = get_stage_meta(s)
+    assert m.kind == "topic"
+    assert "hydration_phase1_analyses" in m.reads
+    assert m.writes == ("hydration_phase2_corpus",)
+
+
+def test_hydration_phase2_skips_when_no_analyses():
+    fake = FakeAgent(structured={})
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.hydration_phase1_analyses = []
+    stage = HydrationPhase2Stage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert tb_after.hydration_phase2_corpus == HydrationPhase2Corpus()
+    assert len(fake.calls) == 0
+
+
+def test_hydration_phase2_calls_reducer():
+    fake = FakeAgent(
+        structured={
+            "preliminary_divergences": [{"description": "d"}],
+            "coverage_gaps": ["g"],
+        }
+    )
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.hydration_phase1_analyses = [
+        {"article_index": 0, "summary": "s", "actors_quoted": []},
+    ]
+    tb.hydration_fetch_results = [
+        {"url": "x", "status": "success", "language": "en", "country": "US", "outlet": "BBC"},
+    ]
+    stage = HydrationPhase2Stage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert tb_after.hydration_phase2_corpus.preliminary_divergences == [{"description": "d"}]
+    assert tb_after.hydration_phase2_corpus.coverage_gaps == ["g"]
+
+
+# ===========================================================================
+# V2-06: PerspectiveSyncStage  (eligibility-gate logic)
+# ===========================================================================
+
+
+def test_perspective_sync_metadata():
+    s = PerspectiveSyncStage(FakeAgent())
+    m = get_stage_meta(s)
+    assert m.kind == "topic"
+    assert "qa_corrected_article" in m.reads
+    assert m.writes == ("perspective_clusters_synced",)
+
+
+def test_perspective_sync_eligibility_gate_skips_when_no_corrections():
+    """qa_proposed_corrections empty → wrapper skips agent call, leaves
+    perspective_clusters_synced empty so the V2-03b mirror produces 1:1."""
+    fake = FakeAgent(structured={"position_cluster_updates": []})
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.perspective_clusters = [{"id": "pc-001", "position_label": "A"}]
+    tb.qa_proposed_corrections = []  # gate fires → skip
+    stage = PerspectiveSyncStage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert tb_after.perspective_clusters_synced == []  # mirror handles it
+    assert len(fake.calls) == 0
+
+
+def test_perspective_sync_runs_when_qa_corrections_present():
+    fake = FakeAgent(
+        structured={
+            "position_cluster_updates": [
+                {"id": "pc-001", "position_label": "Strongly Pro"}
+            ]
+        }
+    )
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.perspective_clusters = [
+        {"id": "pc-001", "position_label": "Pro", "position_summary": "supports"},
+        {"id": "pc-002", "position_label": "Anti", "position_summary": "opposes"},
+    ]
+    tb.qa_corrected_article = WriterArticle(body="corrected body")
+    tb.qa_proposed_corrections = ["replace X with Y"]
+    stage = PerspectiveSyncStage(fake)
+    tb_after = _run(stage, tb, _ro())
+    synced = tb_after.perspective_clusters_synced
+    # Delta applied to pc-001, pc-002 unchanged
+    assert synced[0]["position_label"] == "Strongly Pro"
+    assert synced[0]["position_summary"] == "supports"
+    assert synced[1]["position_label"] == "Anti"
+
+
+def test_merge_perspektiv_deltas_unknown_id_skipped():
+    original = {"position_clusters": [{"id": "pc-001", "position_label": "A"}]}
+    updates = {
+        "position_cluster_updates": [
+            {"id": "pc-999", "position_label": "Ghost"}  # not in original
+        ]
+    }
+    out = _merge_perspektiv_deltas(original, updates)
+    assert out["position_clusters"][0]["position_label"] == "A"
+
+
+def test_merge_perspektiv_deltas_null_value_skipped():
+    original = {"position_clusters": [{"id": "pc-001", "position_label": "A"}]}
+    updates = {
+        "position_cluster_updates": [
+            {"id": "pc-001", "position_label": None}  # null → no-op
+        ]
+    }
+    out = _merge_perspektiv_deltas(original, updates)
+    assert out["position_clusters"][0]["position_label"] == "A"

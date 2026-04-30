@@ -34,8 +34,18 @@ from pathlib import Path
 from typing import Any, Optional
 
 from src.agent import Agent
-from src.bus import EditorAssignment, RunBus, RunBusReadOnly, TopicBus
+from src.bus import (
+    EditorAssignment,
+    HydrationPhase2Corpus,
+    HydrationPreDossier,
+    ResearcherAssembleDossier,
+    RunBus,
+    RunBusReadOnly,
+    TopicBus,
+    WriterArticle,
+)
 from src.stage import StageMeta
+from src.stages._helpers import normalise_country, normalise_language
 
 logger = logging.getLogger(__name__)
 
@@ -717,8 +727,808 @@ class ResearcherPlanStage(_AgentStageBase):
         )
 
 
+# ---------------------------------------------------------------------------
+# Helpers reused by V2-06 wrappers
+# ---------------------------------------------------------------------------
+
+
+def _extract_date_from_url(url: str) -> Optional[str]:
+    """Extract publication date from common news URL patterns. V1:
+    src/pipeline.py:71-103."""
+    if not url:
+        return None
+    m = re.search(r"/(\d{4})[/-](\d{2})[/-](\d{2})(?:/|[^0-9])", url)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12 and 1 <= d <= 31:
+            return f"{y:04d}-{mo:02d}-{d:02d}"
+    m = re.search(r"/(\d{4})(\d{2})(\d{2})(?:/|[^0-9]|$)", url)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12 and 1 <= d <= 31:
+            return f"{y:04d}-{mo:02d}-{d:02d}"
+    m = re.search(r"/(\d{4})[/-](\d{2})(?:/|[^0-9])", url)
+    if m:
+        y, mo = int(m.group(1)), int(m.group(2))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12:
+            return f"{y:04d}-{mo:02d}-01"
+    return None
+
+
+def _enrich_position_clusters(
+    perspective_analysis: dict, research_dossier: dict
+) -> dict:
+    """Attach deterministic fields to the agent's raw cluster output: pc-NNN
+    ids, actors with verbatim quotes, regions, languages, representation.
+    V1: src/pipeline.py:754-849.
+
+    Folded into PerspectiveStage's __call__ rather than a separate stage —
+    V2-03b deferred this helper. Surfaced in CC Report.
+    """
+    import copy as _copy
+
+    if not perspective_analysis or not isinstance(perspective_analysis, dict):
+        return perspective_analysis
+
+    dossier_sources = (
+        research_dossier.get("sources", []) if research_dossier else []
+    )
+    total_sources = len(dossier_sources)
+    by_id: dict[str, dict] = {}
+    for src in dossier_sources:
+        if isinstance(src, dict):
+            sid = src.get("id")
+            if isinstance(sid, str) and sid:
+                by_id[sid] = src
+
+    if total_sources == 0:
+        logger.warning(
+            "Perspektiv enrichment: research dossier has no sources; "
+            "all clusters default to representation='marginal'"
+        )
+
+    enriched = _copy.deepcopy(perspective_analysis)
+    for cluster_idx, cluster in enumerate(
+        enriched.get("position_clusters", []) or [], start=1
+    ):
+        if not isinstance(cluster, dict):
+            continue
+        cluster["id"] = f"pc-{cluster_idx:03d}"
+        source_ids = [
+            s for s in (cluster.get("source_ids") or []) if isinstance(s, str)
+        ]
+        actors: list[dict] = []
+        regions_seen: set[str] = set()
+        languages_seen: set[str] = set()
+        for sid in source_ids:
+            src = by_id.get(sid)
+            if not src:
+                continue
+            country = normalise_country(src.get("country"))
+            language = normalise_language(src.get("language"))
+            if country:
+                regions_seen.add(country)
+            if language:
+                languages_seen.add(language)
+            for entry in src.get("actors_quoted", []) or []:
+                if not isinstance(entry, dict):
+                    continue
+                actors.append(
+                    {
+                        "name": entry.get("name", ""),
+                        "role": entry.get("role", ""),
+                        "type": entry.get("type", ""),
+                        "source_ids": [sid],
+                        "quote": entry.get("verbatim_quote"),
+                    }
+                )
+        if total_sources == 0:
+            representation = "marginal"
+        else:
+            ratio = len(source_ids) / total_sources
+            if ratio >= 0.40:
+                representation = "dominant"
+            elif ratio >= 0.15:
+                representation = "substantial"
+            else:
+                representation = "marginal"
+        cluster["actors"] = actors
+        cluster["regions"] = sorted(regions_seen)
+        cluster["languages"] = sorted(languages_seen)
+        cluster["representation"] = representation
+    return enriched
+
+
+def _build_bias_card_for_agent_input(topic_bus: TopicBus) -> dict:
+    """Compute the deterministic bias_card data structure that the
+    bias_language LLM consumes as context. V1: src/pipeline.py:870-944
+    `_build_bias_card` (the perspectives + coverage_gaps subsections; the
+    source/geographic blocks come from source_balance which is computed
+    by V2-03b's compute_source_balance stage).
+    """
+    article = topic_bus.qa_corrected_article
+    sources = list(topic_bus.final_sources or [])
+    clusters = list(topic_bus.perspective_clusters_synced or [])
+    missing_positions = list(topic_bus.perspective_missing_positions or [])
+
+    by_language: dict[str, int] = {}
+    by_country: dict[str, int] = {}
+    for s in sources:
+        if not isinstance(s, dict):
+            continue
+        lang = s.get("language") or "unknown"
+        by_language[lang] = by_language.get(lang, 0) + 1
+        country = normalise_country(s.get("country")) or "unknown"
+        by_country[country] = by_country.get(country, 0) + 1
+
+    article_countries = {
+        normalise_country(s.get("country")) for s in sources if isinstance(s, dict)
+    }
+    article_countries.discard("")
+
+    distinct_actors: set[tuple] = set()
+    representation_distribution: dict[str, int] = {
+        "dominant": 0,
+        "substantial": 0,
+        "marginal": 0,
+    }
+    for cluster in clusters:
+        if not isinstance(cluster, dict):
+            continue
+        rep = cluster.get("representation", "marginal")
+        if rep in representation_distribution:
+            representation_distribution[rep] += 1
+        for actor in cluster.get("actors") or []:
+            if not isinstance(actor, dict):
+                continue
+            key = (actor.get("name", ""), actor.get("role", ""))
+            if any(key):
+                distinct_actors.add(key)
+
+    return {
+        "article_summary": article.summary,
+        "source_balance": {
+            "total": len(sources),
+            "by_language": by_language,
+            "by_country": by_country,
+        },
+        "geographic_coverage": {
+            "represented": sorted(article_countries),
+        },
+        "perspectives": {
+            "cluster_count": len(clusters),
+            "distinct_actor_count": len(distinct_actors),
+            "representation_distribution": representation_distribution,
+            "missing_positions": missing_positions,
+        },
+        "factual_divergences": list(topic_bus.qa_divergences or []),
+        "coverage_gaps": list(topic_bus.coverage_gaps_validated or []),
+    }
+
+
+def _merge_perspektiv_deltas(
+    original_perspectives: dict, sync_output: dict, slug: str = ""
+) -> dict:
+    """Apply position_cluster_updates deltas into a deep copy of the map.
+    V1 reference: src/pipeline_hydrated.py:233-305 `merge_perspektiv_deltas`.
+    Ported here to avoid coupling V2 agent_stages to V1 pipeline_hydrated.
+    """
+    import copy as _copy
+
+    synced = _copy.deepcopy(original_perspectives)
+    updates = sync_output.get("position_cluster_updates") or []
+    clusters_by_id: dict[str, dict] = {}
+    for cluster in synced.get("position_clusters", []) or []:
+        if isinstance(cluster, dict):
+            cid = cluster.get("id")
+            if isinstance(cid, str) and cid:
+                clusters_by_id[cid] = cluster
+
+    mergeable_fields = ("position_label", "position_summary")
+    for entry in updates:
+        if not isinstance(entry, dict):
+            logger.warning(
+                "perspective_sync[%s]: skipping non-dict delta entry %r",
+                slug, entry,
+            )
+            continue
+        entry_id = entry.get("id")
+        if not isinstance(entry_id, str) or not entry_id:
+            logger.warning(
+                "perspective_sync[%s]: skipping delta entry with no id: %r",
+                slug, entry,
+            )
+            continue
+        target = clusters_by_id.get(entry_id)
+        if target is None:
+            logger.warning(
+                "perspective_sync[%s]: delta id=%s not found; skipping",
+                slug, entry_id,
+            )
+            continue
+        for field in mergeable_fields:
+            if field not in entry:
+                continue
+            value = entry[field]
+            if value is None:
+                logger.warning(
+                    "perspective_sync[%s]: delta id=%s has %s=null; "
+                    "treating as absent (V2 forbids null overrides)",
+                    slug, entry_id, field,
+                )
+                continue
+            if isinstance(value, str):
+                target[field] = value
+    return synced
+
+
+# ---------------------------------------------------------------------------
+# Wrapper: ResearcherAssembleStage  (topic, production + hydrated)
+# ---------------------------------------------------------------------------
+
+
+class ResearcherAssembleStage(_AgentStageBase):
+    """Researcher Assemble agent wrapper.
+
+    Reads `editor_selected_topic`, `researcher_search_results`. Calls agent
+    to build a research dossier. Writes `researcher_assemble_dossier` with
+    sources carrying `research-rsrc-NNN` ids per ARCH §4B.3 (V1 used bare
+    `rsrc-NNN`; V2 uses the prefixed form so merge_sources can disambiguate
+    from `hydrate-rsrc-NNN` when both dossiers exist in the hydrated variant).
+    """
+
+    stage_kind = "topic"
+    reads = ("editor_selected_topic", "researcher_search_results")
+    writes = ("researcher_assemble_dossier",)
+    agent_role = "researcher_assemble"
+
+    def __init__(self, agent: Agent) -> None:
+        self.agent = agent
+
+    async def __call__(
+        self, topic_bus: TopicBus, run_bus: RunBusReadOnly
+    ) -> TopicBus:
+        assignment = topic_bus.editor_selected_topic
+        message = (
+            "Build a research dossier from these search results. "
+            "Extract sources, actors, divergences, and coverage gaps."
+        )
+        result = await self.agent.run(
+            message,
+            context={
+                "assignment": {
+                    "title": assignment.title,
+                    "selection_reason": assignment.selection_reason,
+                },
+                "date": run_bus.run_date,
+                "search_results": list(topic_bus.researcher_search_results),
+            },
+        )
+        parsed = _parse_agent_output(result) or {}
+        if not isinstance(parsed, dict):
+            parsed = {}
+
+        sources = parsed.get("sources") or []
+        for idx, source in enumerate(sources):
+            if not isinstance(source, dict):
+                continue
+            source["id"] = f"research-rsrc-{idx + 1:03d}"
+            if not source.get("estimated_date"):
+                est = _extract_date_from_url(source.get("url", "") or "")
+                if est:
+                    source["estimated_date"] = est
+
+        dossier = ResearcherAssembleDossier(
+            sources=sources,
+            preliminary_divergences=list(parsed.get("preliminary_divergences") or []),
+            coverage_gaps=list(parsed.get("coverage_gaps") or []),
+        )
+        return topic_bus.model_copy(update={"researcher_assemble_dossier": dossier})
+
+
+# ---------------------------------------------------------------------------
+# Wrapper: PerspectiveStage  (topic, production + hydrated)
+# ---------------------------------------------------------------------------
+
+
+class PerspectiveStage(_AgentStageBase):
+    """Perspective agent wrapper.
+
+    Reads `editor_selected_topic`, `final_sources`, `merged_preliminary_
+    divergences`, `merged_coverage_gaps`. Calls agent. Folds in V1's
+    `_enrich_position_clusters` (V2-03b deferred this helper to V2-06; see
+    CC Report). Writes `perspective_clusters` (with pc-NNN, actors,
+    regions, languages, representation) and `perspective_missing_positions`.
+    """
+
+    stage_kind = "topic"
+    reads = (
+        "editor_selected_topic",
+        "final_sources",
+        "merged_preliminary_divergences",
+        "merged_coverage_gaps",
+    )
+    writes = ("perspective_clusters", "perspective_missing_positions")
+    agent_role = "perspektiv"  # V1 folder name; V2-07 anglicises
+
+    def __init__(self, agent: Agent) -> None:
+        self.agent = agent
+
+    async def __call__(
+        self, topic_bus: TopicBus, run_bus: RunBusReadOnly
+    ) -> TopicBus:
+        assignment = topic_bus.editor_selected_topic
+        message = (
+            "Identify the position clusters in this dossier. Map missing "
+            "voices the dossier could not source."
+        )
+        result = await self.agent.run(
+            message,
+            context={
+                "title": assignment.title,
+                "selection_reason": assignment.selection_reason,
+                "sources": list(topic_bus.final_sources),
+                "preliminary_divergences": list(
+                    topic_bus.merged_preliminary_divergences
+                ),
+                "coverage_gaps": list(topic_bus.merged_coverage_gaps),
+            },
+        )
+        parsed = _parse_agent_output(result) or {}
+        if not isinstance(parsed, dict):
+            parsed = {}
+
+        # Enrichment expects a dossier-like dict with sources keyed by id.
+        # Use final_sources here — Perspective post-renumbering reads src-NNN.
+        enriched = _enrich_position_clusters(
+            parsed, {"sources": list(topic_bus.final_sources)}
+        )
+
+        return topic_bus.model_copy(
+            update={
+                "perspective_clusters": list(enriched.get("position_clusters") or []),
+                "perspective_missing_positions": list(
+                    enriched.get("missing_positions") or []
+                ),
+            }
+        )
+
+
+# ---------------------------------------------------------------------------
+# Wrapper: WriterStage  (topic, production + hydrated)
+# ---------------------------------------------------------------------------
+
+
+class WriterStage(_AgentStageBase):
+    """Writer agent wrapper.
+
+    Reads `editor_selected_topic`, `final_sources`, `perspective_clusters_
+    synced`, `perspective_missing_positions`, `merged_coverage_gaps`. Plus
+    optional follow-up addendum loaded from `agents/writer/FOLLOWUP.md` when
+    `editor_selected_topic.follow_up_to` is truthy.
+
+    Writes `writer_article`. The Writer agent has `tools=[web_search_tool]`
+    configured at construction; the agent's tool-call loop handles invocation
+    transparently. Per V2-03b stage order, final_sources already carries
+    `src-NNN` ids, so the Writer emits `[src-NNN]` citations directly — V1's
+    post-Writer `_merge_writer_sources` is structurally redundant in V2.
+    """
+
+    stage_kind = "topic"
+    reads = (
+        "editor_selected_topic",
+        "final_sources",
+        "perspective_clusters_synced",
+        "perspective_missing_positions",
+        "merged_coverage_gaps",
+    )
+    writes = ("writer_article",)
+    agent_role = "writer"
+
+    DEFAULT_FOLLOWUP_PATH = Path("agents/writer/FOLLOWUP.md")
+
+    def __init__(
+        self, agent: Agent, *, followup_path: Path | None = None
+    ) -> None:
+        self.agent = agent
+        self.followup_path = followup_path or self.DEFAULT_FOLLOWUP_PATH
+
+    async def __call__(
+        self, topic_bus: TopicBus, run_bus: RunBusReadOnly
+    ) -> TopicBus:
+        assignment = topic_bus.editor_selected_topic
+
+        # Re-shape perspective_clusters_synced as the V1 perspective_analysis
+        # dict the Writer prompt expects.
+        perspective_analysis = {
+            "position_clusters": list(topic_bus.perspective_clusters_synced),
+            "missing_positions": list(topic_bus.perspective_missing_positions),
+        }
+
+        writer_context: dict[str, Any] = {
+            "title": assignment.title,
+            "selection_reason": assignment.selection_reason,
+            "perspective_analysis": perspective_analysis,
+            "sources": list(topic_bus.final_sources),
+            "coverage_gaps": list(topic_bus.merged_coverage_gaps),
+        }
+
+        writer_addendum: Optional[str] = None
+        if assignment.follow_up_to:
+            if self.followup_path.exists():
+                writer_addendum = self.followup_path.read_text(encoding="utf-8")
+                logger.info(
+                    "Loaded follow-up addendum for '%s' (follows %s)",
+                    assignment.title,
+                    assignment.follow_up_to,
+                )
+            else:
+                logger.warning(
+                    "Follow-up topic '%s' but FOLLOWUP.md not found at %s",
+                    assignment.title,
+                    self.followup_path,
+                )
+            previous_headline = ""
+            for entry in run_bus.previous_coverage or []:
+                if isinstance(entry, dict) and entry.get("tp_id") == assignment.follow_up_to:
+                    previous_headline = entry.get("headline", "") or ""
+                    break
+            if not previous_headline:
+                logger.warning(
+                    "Follow-up: no previous_coverage match for tp_id=%s",
+                    assignment.follow_up_to,
+                )
+            writer_context["follow_up"] = {
+                "previous_headline": previous_headline,
+                "reason": assignment.follow_up_reason or "",
+            }
+
+        result = await self.agent.run(
+            "Write a multi-perspective article on this topic.",
+            context=writer_context,
+            instructions_addendum=writer_addendum,
+        )
+        parsed = _parse_agent_output(result) or {}
+        if not isinstance(parsed, dict):
+            parsed = {}
+
+        article = WriterArticle(
+            headline=parsed.get("headline", "") or "",
+            subheadline=parsed.get("subheadline", "") or "",
+            body=parsed.get("body", "") or "",
+            summary=parsed.get("summary", "") or "",
+        )
+        return topic_bus.model_copy(update={"writer_article": article})
+
+
+# ---------------------------------------------------------------------------
+# Wrapper: BiasLanguageStage  (topic, production + hydrated)
+# ---------------------------------------------------------------------------
+
+
+class BiasLanguageStage(_AgentStageBase):
+    """Bias Language agent wrapper.
+
+    Reads the post-mirror `qa_corrected_article` plus the slots that compose
+    the deterministic bias_card context. Writes `bias_language_findings` and
+    `bias_reader_note`. The bias_card context is built per V1 §870-944 via
+    `_build_bias_card_for_agent_input`.
+    """
+
+    stage_kind = "topic"
+    reads = (
+        "qa_corrected_article",
+        "final_sources",
+        "perspective_clusters_synced",
+        "perspective_missing_positions",
+        "qa_problems_found",
+        "qa_proposed_corrections",
+        "qa_divergences",
+        "coverage_gaps_validated",
+    )
+    writes = ("bias_language_findings", "bias_reader_note")
+    agent_role = "bias_language"
+
+    def __init__(self, agent: Agent) -> None:
+        self.agent = agent
+
+    async def __call__(
+        self, topic_bus: TopicBus, run_bus: RunBusReadOnly
+    ) -> TopicBus:
+        bias_card = _build_bias_card_for_agent_input(topic_bus)
+        message = (
+            "Analyze this article for linguistic bias. Identify loaded "
+            "language and produce a brief reader-note."
+        )
+        result = await self.agent.run(
+            message,
+            context={
+                "article_body": topic_bus.qa_corrected_article.body,
+                "bias_card": bias_card,
+            },
+        )
+        parsed = _parse_agent_output(result) or {}
+        if not isinstance(parsed, dict):
+            parsed = {}
+
+        return topic_bus.model_copy(
+            update={
+                "bias_language_findings": list(
+                    parsed.get("language_bias") or parsed.get("findings") or []
+                ),
+                "bias_reader_note": parsed.get("reader_note", "") or "",
+            }
+        )
+
+
+# ---------------------------------------------------------------------------
+# Wrapper: ResearcherHydratedPlanStage  (topic, hydrated only)
+# ---------------------------------------------------------------------------
+
+
+class ResearcherHydratedPlanStage(_AgentStageBase):
+    """Researcher-Plan-Hydrated agent wrapper. Identical to ResearcherPlan
+    except the context includes a coverage_summary computed from
+    `hydration_pre_dossier` so the planner can target gaps.
+
+    V1 reference: pipeline_hydrated.py `_research_two_phase` planner half.
+    """
+
+    stage_kind = "topic"
+    reads = ("editor_selected_topic", "hydration_pre_dossier")
+    writes = ("researcher_plan_queries",)
+    agent_role = "researcher_hydrated_plan"
+
+    def __init__(self, agent: Agent) -> None:
+        self.agent = agent
+
+    async def __call__(
+        self, topic_bus: TopicBus, run_bus: RunBusReadOnly
+    ) -> TopicBus:
+        from src.hydration_aggregator import build_coverage_summary
+
+        assignment = topic_bus.editor_selected_topic
+        coverage_summary = build_coverage_summary(
+            topic_bus.hydration_pre_dossier.model_dump()
+        )
+        message = (
+            "Plan multilingual queries to gap-fill the existing pre-dossier. "
+            f"Today is {run_bus.run_date}."
+        )
+        result = await self.agent.run(
+            message,
+            context={
+                "title": assignment.title,
+                "selection_reason": assignment.selection_reason,
+                "raw_data": dict(assignment.raw_data or {}),
+                "coverage_summary": coverage_summary,
+            },
+        )
+        parsed = _parse_agent_output(result)
+        queries = _unwrap_list(parsed, "queries")
+        return topic_bus.model_copy(update={"researcher_plan_queries": queries})
+
+
+# ---------------------------------------------------------------------------
+# Wrapper: HydrationPhase1Stage  (topic, hydrated only)
+# ---------------------------------------------------------------------------
+
+
+class HydrationPhase1Stage(_AgentStageBase):
+    """Hydration Phase 1 wrapper — runs the chunked + parallel +
+    intelligent-retry orchestration from `src/hydration_aggregator.py`.
+
+    Reads `editor_selected_topic`, `hydration_fetch_results` (filtered to
+    success-only). Writes `hydration_phase1_analyses` (per-article extraction
+    sorted by article_index 0..N-1).
+
+    The agent is dependency-injected; the chunking / parallel-call /
+    retry logic is reused from the existing module-level helpers
+    (`_distribute_chunks`, `_run_phase1_chunk`, `_prepare_article`) so this
+    wrapper does NOT reimplement them.
+    """
+
+    stage_kind = "topic"
+    reads = ("editor_selected_topic", "hydration_fetch_results")
+    writes = ("hydration_phase1_analyses",)
+    agent_role = "hydration_aggregator_phase1"
+
+    def __init__(self, agent: Agent) -> None:
+        self.agent = agent
+
+    async def __call__(
+        self, topic_bus: TopicBus, run_bus: RunBusReadOnly
+    ) -> TopicBus:
+        import asyncio
+
+        from src.hydration_aggregator import (
+            _distribute_chunks,
+            _prepare_article,
+            _run_phase1_chunk,
+        )
+
+        assignment = topic_bus.editor_selected_topic
+        fetch_results = list(topic_bus.hydration_fetch_results or [])
+        successful = [
+            r for r in fetch_results if isinstance(r, dict) and r.get("status") == "success"
+        ]
+        if not successful:
+            return topic_bus.model_copy(update={"hydration_phase1_analyses": []})
+
+        articles = [_prepare_article(r) for r in successful]
+        chunks = _distribute_chunks(articles)
+
+        assignment_dict = {
+            "title": assignment.title,
+            "selection_reason": assignment.selection_reason,
+        }
+        chunk_results = await asyncio.gather(
+            *[
+                _run_phase1_chunk(
+                    assignment_dict, chunk, chunk_idx=i + 1, agent=self.agent
+                )
+                for i, chunk in enumerate(chunks)
+            ]
+        )
+        # Merge chunk results — adapted from src/hydration_aggregator._merge_phase1_results
+        # which expects (chunk_results, chunks) and re-indexes globally.
+        from src.hydration_aggregator import _merge_phase1_results
+        all_analyses = _merge_phase1_results(chunk_results, chunks)
+        return topic_bus.model_copy(update={"hydration_phase1_analyses": all_analyses})
+
+
+# ---------------------------------------------------------------------------
+# Wrapper: HydrationPhase2Stage  (topic, hydrated only)
+# ---------------------------------------------------------------------------
+
+
+class HydrationPhase2Stage(_AgentStageBase):
+    """Hydration Phase 2 reducer wrapper — single agent call over the merged
+    Phase 1 corpus + per-article metadata, producing preliminary_divergences
+    and coverage_gaps.
+
+    Reads `editor_selected_topic`, `hydration_phase1_analyses`,
+    `hydration_fetch_results` (for metadata: language, country, outlet of
+    successful fetches). Writes `hydration_phase2_corpus`.
+
+    V1 reference: `src/hydration_aggregator._run_phase2_reducer` (lines
+    397-430). The wrapper builds the article_metadata list from
+    success-only fetches and delegates to the existing helper.
+    """
+
+    stage_kind = "topic"
+    reads = (
+        "editor_selected_topic",
+        "hydration_phase1_analyses",
+        "hydration_fetch_results",
+    )
+    writes = ("hydration_phase2_corpus",)
+    agent_role = "hydration_aggregator_phase2"
+
+    def __init__(self, agent: Agent) -> None:
+        self.agent = agent
+
+    async def __call__(
+        self, topic_bus: TopicBus, run_bus: RunBusReadOnly
+    ) -> TopicBus:
+        from src.hydration_aggregator import (
+            _build_article_metadata,
+            _run_phase2_reducer,
+        )
+
+        assignment = topic_bus.editor_selected_topic
+        successful = [
+            r
+            for r in (topic_bus.hydration_fetch_results or [])
+            if isinstance(r, dict) and r.get("status") == "success"
+        ]
+        all_analyses = list(topic_bus.hydration_phase1_analyses or [])
+        if not all_analyses:
+            return topic_bus.model_copy(
+                update={"hydration_phase2_corpus": HydrationPhase2Corpus()}
+            )
+
+        metadata = _build_article_metadata(successful)
+        out = await _run_phase2_reducer(
+            {
+                "title": assignment.title,
+                "selection_reason": assignment.selection_reason,
+            },
+            all_analyses,
+            metadata,
+            agent=self.agent,
+        )
+        corpus = HydrationPhase2Corpus(
+            preliminary_divergences=list(out.get("preliminary_divergences") or []),
+            coverage_gaps=list(out.get("coverage_gaps") or []),
+        )
+        return topic_bus.model_copy(update={"hydration_phase2_corpus": corpus})
+
+
+# ---------------------------------------------------------------------------
+# Wrapper: PerspectiveSyncStage  (topic, hydrated only)
+# ---------------------------------------------------------------------------
+
+
+class PerspectiveSyncStage(_AgentStageBase):
+    """Perspective-Sync agent wrapper. Eligibility-gated on QA having
+    proposed corrections; if not, the agent is not called and the slot is
+    left empty so the downstream `mirror_perspective_synced` stage produces
+    a 1:1 copy of `perspective_clusters`.
+
+    Reads `perspective_clusters`, `qa_corrected_article`, `qa_problems_found`,
+    `qa_proposed_corrections`. Writes `perspective_clusters_synced` (the
+    fully merged per-element list when corrections triggered the run; empty
+    otherwise so the mirror takes over).
+
+    V1 reference: pipeline_hydrated.py `_run_perspektiv_sync` lines 720-836,
+    `merge_perspektiv_deltas` line 233 (ported as `_merge_perspektiv_deltas`).
+
+    Slot has `mirrors_from="perspective_clusters"` annotation in bus.py, so
+    leaving the slot empty here is structurally legal — the mirror stage
+    handles per-element completion downstream.
+    """
+
+    stage_kind = "topic"
+    reads = (
+        "perspective_clusters",
+        "qa_corrected_article",
+        "qa_problems_found",
+        "qa_proposed_corrections",
+    )
+    writes = ("perspective_clusters_synced",)
+    agent_role = "perspektiv_sync"  # V1 folder name; V2-07 anglicises
+
+    def __init__(self, agent: Agent) -> None:
+        self.agent = agent
+
+    async def __call__(
+        self, topic_bus: TopicBus, run_bus: RunBusReadOnly
+    ) -> TopicBus:
+        # Eligibility gate: skip the call when QA had no corrections.
+        if not topic_bus.qa_proposed_corrections:
+            return topic_bus  # mirror stage downstream produces 1:1 copy
+
+        message = (
+            "Re-align the position clusters with the QA-corrected article. "
+            "Emit only deltas — id plus changed fields."
+        )
+        result = await self.agent.run(
+            message,
+            context={
+                "position_clusters": list(topic_bus.perspective_clusters),
+                "article_body": topic_bus.qa_corrected_article.body,
+                "qa_problems_found": list(topic_bus.qa_problems_found),
+                "qa_proposed_corrections": list(topic_bus.qa_proposed_corrections),
+            },
+        )
+        parsed = _parse_agent_output(result) or {}
+        if not isinstance(parsed, dict):
+            parsed = {}
+
+        synced = _merge_perspektiv_deltas(
+            {"position_clusters": list(topic_bus.perspective_clusters)},
+            parsed,
+        )
+        return topic_bus.model_copy(
+            update={
+                "perspective_clusters_synced": list(
+                    synced.get("position_clusters") or []
+                )
+            }
+        )
+
+
 __all__ = [
+    "BiasLanguageStage",
     "CuratorStage",
     "EditorStage",
+    "HydrationPhase1Stage",
+    "HydrationPhase2Stage",
+    "PerspectiveStage",
+    "PerspectiveSyncStage",
+    "ResearcherAssembleStage",
+    "ResearcherHydratedPlanStage",
     "ResearcherPlanStage",
+    "WriterStage",
 ]

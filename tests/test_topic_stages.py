@@ -686,3 +686,117 @@ def test_renumber_sources_does_not_mutate_input():
     _ = _run(renumber_sources, tb, _ro())
     assert tb.final_sources == []  # input bus unchanged
     assert tb.merged_sources_pre_renumber[0]["id"] == "x-001"
+
+
+# ---------------------------------------------------------------------------
+# V2-06: researcher_search topic-stage
+# ---------------------------------------------------------------------------
+
+
+from src.stages.topic_stages import make_researcher_search  # noqa: E402
+
+
+class FakeWebSearchTool:
+    def __init__(self, responses: dict[str, str], fail_query: str | None = None):
+        self.responses = responses
+        self.fail_query = fail_query
+        self.calls: list[str] = []
+
+    async def execute(self, query: str) -> str:
+        self.calls.append(query)
+        if query == self.fail_query:
+            raise RuntimeError("simulated search failure")
+        return self.responses.get(query, "No results")
+
+
+def test_researcher_search_metadata():
+    stage = make_researcher_search(FakeWebSearchTool({}))
+    from src.stage import get_stage_meta as _gm
+
+    m = _gm(stage)
+    assert m.kind == "topic"
+    assert m.reads == ("researcher_plan_queries",)
+    assert m.writes == ("researcher_search_results",)
+
+
+def test_researcher_search_happy_path():
+    """Three queries, web_search returns canned text, deduplication and
+    url_dates enrichment work."""
+    canned = {
+        "Strait of Hormuz transit fees": (
+            "1. Strait fees imposed\n"
+            "   https://reuters.example/2026/04/30/strait-fees\n"
+            "   Reuters reports US imposing transit fees.\n\n"
+            "2. Tehran condemns\n"
+            "   https://tasnim.example/2026/04/30/tehran-condemns\n"
+            "   Tasnim covers the Iranian response."
+        ),
+        "Détroit d'Ormuz frais de transit": (
+            "1. La France réagit\n"
+            "   https://lemonde.example/2026/04/30/strait-fees-france\n"
+            "   Le Monde sur les frais.\n\n"
+            "2. Strait fees imposed\n"
+            "   https://reuters.example/2026/04/30/strait-fees\n"
+            "   The Reuters report."  # Dup URL → dedup
+        ),
+    }
+    fake_tool = FakeWebSearchTool(canned)
+    stage = make_researcher_search(fake_tool)
+
+    tb = TopicBus()
+    tb.researcher_plan_queries = [
+        {"query": "Strait of Hormuz transit fees", "language": "en"},
+        {"query": "Détroit d'Ormuz frais de transit", "language": "fr"},
+    ]
+    tb_after = _run(stage, tb, _ro())
+
+    results = tb_after.researcher_search_results
+    assert len(results) == 2
+    # Tool was called for each query
+    assert len(fake_tool.calls) == 2
+    # url_dates attached
+    assert any("url_dates" in r for r in results)
+    en_result = next(r for r in results if r["language"] == "en")
+    assert en_result["url_dates"][0]["estimated_date"] == "2026-04-30"
+
+
+def test_researcher_search_handles_query_failure():
+    """One query fails; the rest succeed; failure logged as Error: ..."""
+    canned = {"good query": "1. Title\n   https://x.example/1\n   snippet"}
+    fake_tool = FakeWebSearchTool(canned, fail_query="bad query")
+    stage = make_researcher_search(fake_tool)
+
+    tb = TopicBus()
+    tb.researcher_plan_queries = [
+        {"query": "good query", "language": "en"},
+        {"query": "bad query", "language": "fr"},
+    ]
+    tb_after = _run(stage, tb, _ro())
+    results = tb_after.researcher_search_results
+    assert len(results) == 2
+    error_entry = next(r for r in results if r["language"] == "fr")
+    assert error_entry["results"].startswith("Error:")
+
+
+def test_researcher_search_no_queries_is_no_op():
+    fake_tool = FakeWebSearchTool({})
+    stage = make_researcher_search(fake_tool)
+    tb = TopicBus()
+    tb.researcher_plan_queries = []
+    tb_after = _run(stage, tb, _ro())
+    # No tool calls; bus unchanged
+    assert fake_tool.calls == []
+    assert tb_after.researcher_search_results == []
+
+
+def test_researcher_search_skips_empty_query_strings():
+    fake_tool = FakeWebSearchTool({"good": "1. T\n   https://x.example/1\n   s"})
+    stage = make_researcher_search(fake_tool)
+    tb = TopicBus()
+    tb.researcher_plan_queries = [
+        {"query": "", "language": "en"},  # skipped
+        {"query": "good", "language": "en"},
+    ]
+    tb_after = _run(stage, tb, _ro())
+    assert fake_tool.calls == ["good"]
+    assert len(tb_after.researcher_search_results) == 1

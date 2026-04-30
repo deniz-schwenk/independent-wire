@@ -41,7 +41,7 @@ from __future__ import annotations
 
 import copy
 import logging
-from typing import Any
+from typing import Any, Callable, Optional
 
 from src.bus import (
     RunBusReadOnly,
@@ -490,11 +490,194 @@ async def assemble_hydration_dossier(
     return topic_bus.model_copy(update={"hydration_pre_dossier": pre_dossier})
 
 
+# ---------------------------------------------------------------------------
+# researcher_search — pure-Python topic-stage (V2-06)
+# ---------------------------------------------------------------------------
+
+
+import re as _re
+
+_URL_PATTERN = _re.compile(r"^\s{3}(https?://\S+)", _re.MULTILINE)
+_ENTRY_PATTERN = _re.compile(
+    r"^\d+\.\s+(.+)\n\s{3}(https?://\S+)\n\s{3}(.+?)(?=\n\d+\.\s|\nResults for:|\Z)",
+    _re.MULTILINE | _re.DOTALL,
+)
+
+
+def _extract_date_from_url_local(url: str) -> Optional[str]:
+    """Local copy of date extraction — duplicate of the helper in
+    src/agent_stages.py to keep topic_stages.py independent of agent_stages.
+    Both come from V1 src/pipeline.py:71-103."""
+    if not url:
+        return None
+    m = _re.search(r"/(\d{4})[/-](\d{2})[/-](\d{2})(?:/|[^0-9])", url)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12 and 1 <= d <= 31:
+            return f"{y:04d}-{mo:02d}-{d:02d}"
+    m = _re.search(r"/(\d{4})(\d{2})(\d{2})(?:/|[^0-9]|$)", url)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12 and 1 <= d <= 31:
+            return f"{y:04d}-{mo:02d}-{d:02d}"
+    m = _re.search(r"/(\d{4})[/-](\d{2})(?:/|[^0-9])", url)
+    if m:
+        y, mo = int(m.group(1)), int(m.group(2))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12:
+            return f"{y:04d}-{mo:02d}-01"
+    return None
+
+
+def _deduplicate_search_results(search_results: list[dict]) -> list[dict]:
+    """Deduplicate search results by URL, merging found_by query annotations.
+    V1 reference: src/pipeline.py:222-303."""
+    url_map: dict[str, dict] = {}
+    for sr in search_results:
+        raw = sr.get("results", "")
+        query_str = sr.get("query", "")
+        for match in _ENTRY_PATTERN.finditer(raw):
+            title = match.group(1).strip()
+            url = match.group(2).strip()
+            snippet = match.group(3).strip()
+            if url in url_map:
+                url_map[url]["found_by"].append(query_str)
+                if len(snippet) > len(url_map[url]["snippet"]):
+                    url_map[url]["snippet"] = snippet
+                    url_map[url]["title"] = title
+            else:
+                url_map[url] = {
+                    "title": title,
+                    "url": url,
+                    "snippet": snippet,
+                    "found_by": [query_str],
+                }
+
+    deduped: list[dict] = []
+    seen_urls: set[str] = set()
+    for sr in search_results:
+        raw = sr.get("results", "")
+        query_str = sr.get("query", "")
+        new_lines: list[str] = []
+        entry_num = 1
+        for match in _ENTRY_PATTERN.finditer(raw):
+            url = match.group(2).strip()
+            if url in seen_urls:
+                continue
+            seen_urls.add(url)
+            info = url_map.get(url, {})
+            title = info.get("title", match.group(1).strip())
+            snippet = info.get("snippet", match.group(3).strip())
+            found_by = info.get("found_by", [query_str])
+            found_by_note = ""
+            if len(found_by) > 1:
+                other_queries = [q for q in found_by if q != query_str]
+                found_by_note = f"\n   [Also found by: {'; '.join(other_queries)}]"
+            new_lines.append(
+                f"{entry_num}. {title}\n   {url}\n   {snippet}{found_by_note}"
+            )
+            entry_num += 1
+        if new_lines:
+            header = f"Results for: {query_str}"
+            new_entry = dict(sr)
+            new_entry["results"] = header + "\n\n" + "\n\n".join(new_lines)
+            deduped.append(new_entry)
+        elif not _ENTRY_PATTERN.search(raw):
+            deduped.append(sr)
+
+    duplicates = sum(
+        len(v["found_by"]) - 1 for v in url_map.values() if len(v["found_by"]) > 1
+    )
+    if duplicates:
+        logger.info(
+            "researcher_search: deduplicated %d cross-query URL duplicates",
+            duplicates,
+        )
+    return deduped
+
+
+def _enrich_url_dates(search_results: list[dict]) -> None:
+    """Attach url_dates to each search result entry, in-place."""
+    for sr in search_results:
+        raw = sr.get("results", "")
+        urls_with_dates: list[dict] = []
+        for url_match in _URL_PATTERN.finditer(raw):
+            url = url_match.group(1)
+            est_date = _extract_date_from_url_local(url)
+            if est_date:
+                urls_with_dates.append({"url": url, "estimated_date": est_date})
+        if urls_with_dates:
+            sr["url_dates"] = urls_with_dates
+
+
+def make_researcher_search(web_search_tool: Any) -> Callable:
+    """Build a researcher_search topic-stage closing over an injected
+    `web_search_tool`. The tool object must expose
+    `async def execute(query: str) -> str` returning a plain-text result
+    block in V1's `N. title\\n   url\\n   snippet` shape.
+    """
+
+    @topic_stage_def(
+        reads=("researcher_plan_queries",),
+        writes=("researcher_search_results",),
+    )
+    async def researcher_search(
+        topic_bus: TopicBus, run_bus: RunBusReadOnly
+    ) -> TopicBus:
+        queries = list(topic_bus.researcher_plan_queries or [])
+        if not queries:
+            return topic_bus
+
+        search_results: list[dict] = []
+        for q in queries:
+            if not isinstance(q, dict):
+                continue
+            query_str = q.get("query", "")
+            if not query_str:
+                continue
+            try:
+                result_text = await web_search_tool.execute(query=query_str)
+                search_results.append(
+                    {
+                        "query": query_str,
+                        "language": q.get("language", "en"),
+                        "results": result_text,
+                    }
+                )
+            except Exception as e:
+                logger.warning(
+                    "researcher_search: query %r failed: %s", query_str, e
+                )
+                search_results.append(
+                    {
+                        "query": query_str,
+                        "language": q.get("language", "en"),
+                        "results": f"Error: {e}",
+                    }
+                )
+
+        successful = sum(
+            1 for r in search_results if not r["results"].startswith("Error")
+        )
+        logger.info(
+            "researcher_search: %d/%d queries returned results",
+            successful,
+            len(search_results),
+        )
+
+        deduped = _deduplicate_search_results(search_results)
+        _enrich_url_dates(deduped)
+
+        return topic_bus.model_copy(update={"researcher_search_results": deduped})
+
+    return researcher_search
+
+
 __all__ = [
     "assemble_hydration_dossier",
     "attach_hydration_urls",
     "compose_transparency_card",
     "compute_source_balance",
+    "make_researcher_search",
     "merge_sources",
     "mirror_qa_corrected",
     "mirror_perspective_synced",
