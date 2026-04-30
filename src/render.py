@@ -271,13 +271,18 @@ def compose_bias_card(topic_bus: TopicBus) -> dict:
     - selection: coverage_gaps_validated + perspective_missing_positions +
                  qa_problems_found
     - framing: position_clusters_summary (high-level projection of
-               perspective_clusters_synced) + qa_divergences
+               perspective_clusters_synced) + qa_divergences plus three
+               deterministic aggregates (cluster_count, distinct_actor_count,
+               representation_distribution) — V1 reference
+               src/pipeline.py:870-949.
 
     Plus the LLM-supplied reader_note from the bias_language agent.
 
     Operates entirely on TopicBus state — no run_bus, no other inputs.
     """
     sb = topic_bus.source_balance
+    clusters = topic_bus.perspective_clusters_synced
+    aggregates = _cluster_aggregates(clusters)
 
     return {
         "language": list(topic_bus.bias_language_findings),
@@ -298,12 +303,50 @@ def compose_bias_card(topic_bus: TopicBus) -> dict:
             "qa_findings": list(topic_bus.qa_problems_found),
         },
         "framing": {
-            "position_clusters_summary": _summarise_clusters(
-                topic_bus.perspective_clusters_synced
-            ),
+            "position_clusters_summary": _summarise_clusters(clusters),
             "cross_source_divergences": list(topic_bus.qa_divergences),
+            "cluster_count": aggregates["cluster_count"],
+            "distinct_actor_count": aggregates["distinct_actor_count"],
+            "representation_distribution": aggregates["representation_distribution"],
         },
         "reader_note": topic_bus.bias_reader_note,
+    }
+
+
+def _cluster_aggregates(clusters: list[dict]) -> dict:
+    """Compute the three deterministic aggregates V1 surfaced in its
+    bias-card perspectives block (src/pipeline.py:870-949):
+
+    - cluster_count: len(clusters)
+    - distinct_actor_count: count of unique (name, role) tuples across
+      every cluster's actors[]; tuples where both fields are empty are
+      ignored.
+    - representation_distribution: counts of the `representation` field
+      on each cluster, bucketed into {dominant, substantial, marginal}.
+      Unrecognised representations are dropped (V1 behaviour); missing
+      representation defaults to "marginal" before bucketing.
+    """
+    distribution = {"dominant": 0, "substantial": 0, "marginal": 0}
+    distinct_actors: set[tuple] = set()
+    cluster_count = 0
+    for cluster in clusters or []:
+        if not isinstance(cluster, dict):
+            continue
+        cluster_count += 1
+        rep = cluster.get("representation", "marginal")
+        if rep in distribution:
+            distribution[rep] += 1
+        for actor in cluster.get("actors") or []:
+            if not isinstance(actor, dict):
+                continue
+            key = (actor.get("name", ""), actor.get("role", ""))
+            if any(key):
+                distinct_actors.add(key)
+
+    return {
+        "cluster_count": cluster_count,
+        "distinct_actor_count": len(distinct_actors),
+        "representation_distribution": distribution,
     }
 
 
