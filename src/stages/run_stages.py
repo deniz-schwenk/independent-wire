@@ -326,7 +326,7 @@ class TopicManifestEntry(BaseModel):
 
     topic_id: str
     topic_slug: str
-    status: Literal["success", "partial", "failed"]
+    status: Literal["success", "partial", "failed", "skipped"]
     stages_completed: list[str] = Field(default_factory=list)
 
 

@@ -14,6 +14,8 @@ from src.runner.runner import (
 from src.runner.stage_lists import (
     build_hydrated_stages,
     build_production_stages,
+    hydrated_stage_names,
+    production_stage_names,
 )
 
 __all__ = [
@@ -22,4 +24,6 @@ __all__ = [
     "RenderStage",
     "build_hydrated_stages",
     "build_production_stages",
+    "hydrated_stage_names",
+    "production_stage_names",
 ]

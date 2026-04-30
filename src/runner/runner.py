@@ -112,7 +112,7 @@ class RenderStage:
         public_dir.mkdir(parents=True, exist_ok=True)
         debug_dir.mkdir(parents=True, exist_ok=True)
         for tb, status in zip(topic_buses, statuses):
-            if status == "failed":
+            if status in ("failed", "skipped"):
                 continue
             slug = tb.editor_selected_topic.topic_slug or tb.editor_selected_topic.id
             public_path = public_dir / f"{slug}.json"
@@ -171,6 +171,7 @@ class PipelineRunner:
         to_stage: Optional[str] = None,
         reuse_run_id: Optional[str] = None,
         reuse_run_date: Optional[str] = None,
+        topic_filter: Optional[int] = None,
         skip_render: bool = False,
         skip_finalize: bool = False,
     ) -> None:
@@ -182,6 +183,7 @@ class PipelineRunner:
         self.to_stage = to_stage
         self.reuse_run_id = reuse_run_id
         self.reuse_run_date = reuse_run_date
+        self.topic_filter = topic_filter  # 1-based index; None = all topics
         self.skip_render = skip_render
         self.skip_finalize = skip_finalize
 
@@ -336,6 +338,11 @@ class PipelineRunner:
         start_index = max(from_index_topic, 0)
 
         for topic_index, topic_bus in enumerate(self.topic_buses):
+            if self.topic_filter is not None and topic_index != self.topic_filter - 1:
+                # --topic N (1-based) — every TopicBus other than the Nth is
+                # marked "skipped" and excluded from render + finalize.
+                self._topic_status[topic_index] = "skipped"
+                continue
             try:
                 await self._run_one_topic(
                     topic_index, topic_bus, run_bus, start_index

@@ -16,7 +16,7 @@ interface used by each wrapper.
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
 from src.agent_stages import (
     BiasLanguageStage,
@@ -33,6 +33,7 @@ from src.agent_stages import (
     WriterStage,
 )
 from src.stages import (
+    RunInitConfig,
     assemble_hydration_dossier,
     attach_hydration_urls,
     compose_transparency_card,
@@ -41,6 +42,7 @@ from src.stages import (
     fetch_findings,
     init_run,
     make_hydration_fetch,
+    make_init_run,
     make_researcher_search,
     merge_sources,
     mirror_perspective_synced,
@@ -58,11 +60,34 @@ def _wrap_researcher_search(web_search_tool: Any) -> Callable:
     return make_researcher_search(web_search_tool)
 
 
+def _init_run_for(
+    variant: str,
+    max_produce: Optional[int],
+    output_dir: Optional[Any],
+) -> Callable:
+    """Build an init_run closure tuned to the requested variant + max_produce.
+
+    Falls back to the module-level ``init_run`` (production defaults) when no
+    overrides are needed, keeping equality-by-identity stable for tests that
+    introspect the stage list without overrides.
+    """
+    if max_produce is None and variant == "production" and output_dir is None:
+        return init_run
+    cfg = RunInitConfig(run_variant=variant)
+    if max_produce is not None:
+        cfg = cfg.model_copy(update={"max_produce": max_produce})
+    if output_dir is not None:
+        cfg = cfg.model_copy(update={"output_dir": output_dir})
+    return make_init_run(cfg)
+
+
 def build_production_stages(
     agents: dict[str, Any],
     *,
     web_search_tool: Any = None,
     hydration_fetcher: Any = None,
+    max_produce: Optional[int] = None,
+    output_dir: Optional[Any] = None,
 ) -> tuple[list, list, list]:
     """Build the production variant's three stage lists.
 
@@ -77,9 +102,14 @@ def build_production_stages(
         Brave-search tool.
     :param hydration_fetcher: Unused in production (no hydration). Kept
         for API symmetry.
+    :param max_produce: Optional override for the ``max_produce`` RunBus
+        slot. When provided, swaps the default ``init_run`` for a closure
+        over ``RunInitConfig(max_produce=max_produce)``.
+    :param output_dir: Optional override for the ``init_run`` config's
+        ``output_dir`` (drives previous-coverage scanning).
     """
     run_stages = [
-        init_run,
+        _init_run_for("production", max_produce, output_dir),
         fetch_findings,
         CuratorStage(agents["curator"]),
         EditorStage(agents["editor"]),
@@ -115,6 +145,8 @@ def build_hydrated_stages(
     *,
     web_search_tool: Any = None,
     hydration_fetcher: Any = None,
+    max_produce: Optional[int] = None,
+    output_dir: Optional[Any] = None,
 ) -> tuple[list, list, list]:
     """Build the hydrated variant's three stage lists.
 
@@ -141,9 +173,11 @@ def build_hydrated_stages(
     :param hydration_fetcher: Async ``(list[dict]) -> list[dict]`` fetcher
         injected into ``make_hydration_fetch``. Tests pass a fake;
         production defaults to ``src.hydration.hydrate_urls``.
+    :param max_produce: See :func:`build_production_stages`.
+    :param output_dir: See :func:`build_production_stages`.
     """
     run_stages = [
-        init_run,
+        _init_run_for("hydrated", max_produce, output_dir),
         fetch_findings,
         CuratorStage(agents["curator"]),
         EditorStage(agents["editor"]),
@@ -181,7 +215,85 @@ def build_hydrated_stages(
     return run_stages, topic_stages, post_run_stages
 
 
+# ---------------------------------------------------------------------------
+# Static stage-name lists (CLI-side validation; no agent instantiation)
+# ---------------------------------------------------------------------------
+
+
+_PRODUCTION_RUN_NAMES = (
+    "init_run",
+    "fetch_findings",
+    "CuratorStage",
+    "EditorStage",
+    "select_topics",
+)
+
+_PRODUCTION_TOPIC_NAMES = (
+    "ResearcherPlanStage",
+    "researcher_search",
+    "ResearcherAssembleStage",
+    "merge_sources",
+    "renumber_sources",
+    "normalize_pre_research",
+    "PerspectiveStage",
+    "enrich_perspective_clusters",
+    "mirror_perspective_synced",
+    "WriterStage",
+    "QaAnalyzeStage",
+    "mirror_qa_corrected",
+    "compute_source_balance",
+    "validate_coverage_gaps_stage",
+    "BiasLanguageStage",
+    "compose_transparency_card",
+)
+
+_HYDRATED_TOPIC_NAMES = (
+    "attach_hydration_urls",
+    "hydration_fetch",
+    "HydrationPhase1Stage",
+    "HydrationPhase2Stage",
+    "assemble_hydration_dossier",
+    "ResearcherHydratedPlanStage",
+    "researcher_search",
+    "ResearcherAssembleStage",
+    "merge_sources",
+    "renumber_sources",
+    "normalize_pre_research",
+    "PerspectiveStage",
+    "enrich_perspective_clusters",
+    "mirror_perspective_synced",
+    "WriterStage",
+    "QaAnalyzeStage",
+    "mirror_qa_corrected",
+    "PerspectiveSyncStage",
+    # mirror_perspective_synced runs a SECOND time after PerspectiveSyncStage
+    # (V2-06b stage-order fix) — but for `--from`/`--to` matching the first
+    # occurrence is what matters, so the name is not duplicated in this list.
+    "compute_source_balance",
+    "validate_coverage_gaps_stage",
+    "BiasLanguageStage",
+    "compose_transparency_card",
+)
+
+
+def production_stage_names() -> list[str]:
+    """Return the canonical stage-name list for the production variant.
+
+    Used by ``scripts/run.py`` to validate ``--from``/``--to`` choices
+    without instantiating agents. Order matches the dispatch order of
+    :func:`build_production_stages`.
+    """
+    return list(_PRODUCTION_RUN_NAMES + _PRODUCTION_TOPIC_NAMES)
+
+
+def hydrated_stage_names() -> list[str]:
+    """Return the canonical stage-name list for the hydrated variant."""
+    return list(_PRODUCTION_RUN_NAMES + _HYDRATED_TOPIC_NAMES)
+
+
 __all__ = [
     "build_hydrated_stages",
     "build_production_stages",
+    "hydrated_stage_names",
+    "production_stage_names",
 ]

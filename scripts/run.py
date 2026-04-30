@@ -14,7 +14,13 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from src.agent import Agent
-from src.pipeline import Pipeline
+from src.runner.runner import PipelineRunner
+from src.runner.stage_lists import (
+    build_hydrated_stages,
+    build_production_stages,
+    hydrated_stage_names,
+    production_stage_names,
+)
 from src.schemas import (
     BIAS_DETECTOR_SCHEMA,
     CURATOR_SCHEMA,
@@ -235,21 +241,34 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Independent Wire pipeline")
     parser.add_argument(
         "--from", dest="from_step", default=None,
-        choices=["collector", "curator", "editor", "researcher", "perspective", "writer", "qa_analyze", "bias_detector"],
-        help="Start from this step, loading earlier steps from debug output",
+        help=(
+            "Start from this V2 stage (resume from on-disk snapshot). Stage "
+            "names match the V2 stage list — see --help-stages for the full "
+            "set per variant. Requires --reuse."
+        ),
     )
     parser.add_argument(
         "--to", dest="to_step", default=None,
-        choices=["collector", "curator", "editor", "researcher", "perspective", "writer", "qa_analyze", "bias_detector"],
-        help="Stop after this step (inclusive). Default: run to the end.",
+        help="Stop after this V2 stage (inclusive). Default: run to the end.",
     )
     parser.add_argument(
         "--topic", type=int, default=None,
-        help="Only process this topic number (1-based index)",
+        help=(
+            "Only process the Nth selected topic (1-based index). "
+            "Other topics are marked 'skipped' and excluded from render."
+        ),
     )
     parser.add_argument(
         "--reuse", type=str, default=None,
-        help="Date to load debug output from (YYYY-MM-DD). Default: latest available",
+        help=(
+            "Reuse a prior run's snapshots. Accepts 'YYYY-MM-DD' (auto-resolves "
+            "to the latest run_id under output/{date}/_state/) or "
+            "'YYYY-MM-DD/run-YYYY-MM-DD-xxxxxxxx' for an exact run_id."
+        ),
+    )
+    parser.add_argument(
+        "--max-produce", dest="max_produce", type=int, default=3,
+        help="Maximum number of topics to produce per run (default: 3).",
     )
     parser.add_argument(
         "--fetch", action="store_true",
@@ -263,18 +282,70 @@ def parse_args():
         "--hydrated", action="store_true",
         help=(
             "Run the hydrated pipeline (T1 fetch + Phase 1/2 aggregator + "
-            "Perspective-Sync) instead of production. Output goes to "
-            "output/{date}/test_hydration/. Currently requires --from researcher "
-            "and --reuse to a date with completed Curator + Editor outputs."
+            "Perspective-Sync) instead of production. From-scratch hydrated "
+            "runs are supported (V2 stage list is complete)."
         ),
     )
+    parser.add_argument(
+        "--help-stages", action="store_true",
+        help="Print the production and hydrated stage names, then exit.",
+    )
     return parser.parse_args()
+
+
+def _resolve_reuse(reuse_arg: str, output_dir: Path) -> tuple[str, str]:
+    """Resolve --reuse argument to (run_date, run_id).
+
+    Accepts:
+    - "2026-04-30" → latest run_id under output_dir/{date}/_state/
+    - "2026-04-30/run-2026-04-30-abc12345" → exact run_id
+    """
+    parts = reuse_arg.strip("/").split("/")
+    run_date = parts[0]
+    state_dir = output_dir / run_date / "_state"
+
+    if len(parts) == 2:
+        run_id = parts[1]
+        if not (state_dir / run_id).is_dir():
+            raise RuntimeError(
+                f"--reuse: run_id {run_id!r} not found under {state_dir}"
+            )
+        return run_date, run_id
+
+    if not state_dir.is_dir():
+        raise RuntimeError(
+            f"--reuse: no state directory at {state_dir}. Was a prior run "
+            f"completed for this date?"
+        )
+
+    candidates = sorted(
+        [d for d in state_dir.iterdir() if d.is_dir()],
+        key=lambda d: d.stat().st_mtime,
+        reverse=True,
+    )
+    if not candidates:
+        raise RuntimeError(f"--reuse: no runs found under {state_dir}")
+    return run_date, candidates[0].name
+
+
+def _print_stage_help() -> None:
+    print("V2 stage names (--from / --to choices)\n")
+    print("  Production variant:")
+    for n in production_stage_names():
+        print(f"    {n}")
+    print("\n  Hydrated variant:")
+    for n in hydrated_stage_names():
+        print(f"    {n}")
 
 
 async def main():
     args = parse_args()
     setup_logging()
     logger = logging.getLogger("independent_wire")
+
+    if args.help_stages:
+        _print_stage_help()
+        return
 
     # Pre-pipeline: fetch feeds if requested
     if args.fetch:
@@ -286,77 +357,108 @@ async def main():
             logger.error("fetch_feeds.py failed (exit %d)", result.returncode)
             sys.exit(1)
 
-    if args.hydrated and not (args.from_step == "researcher" and args.reuse):
-        raise RuntimeError(
-            "--hydrated currently requires --from researcher and --reuse {date}. "
-            "Full-run hydrated mode (Collector → Bias) is a follow-up."
-        )
-
     logger.info("Starting Independent Wire pipeline...")
     start = time.time()
 
+    output_dir = ROOT / "output"
     if args.hydrated:
-        from src.pipeline_hydrated import PipelineHydrated
-
         agents = create_agents_hydrated()
-        pipeline = PipelineHydrated(
-            name="daily_report_hydrated",
-            agents=agents,
-            output_dir=str(ROOT / "output"),
-            state_dir=str(ROOT / "state"),
-            max_topics=10,
-            max_produce=3,
-            mode="quick",
+        run_stages, topic_stages, post_run_stages = build_hydrated_stages(
+            agents,
+            web_search_tool=web_search_tool,
+            max_produce=args.max_produce,
+            output_dir=output_dir,
         )
+        valid_names = hydrated_stage_names()
     else:
         agents = create_agents()
-        pipeline = Pipeline(
-            name="daily_report",
-            agents=agents,
-            output_dir=str(ROOT / "output"),
-            state_dir=str(ROOT / "state"),
-            max_topics=10,
-            max_produce=3,
-            mode="quick",
+        run_stages, topic_stages, post_run_stages = build_production_stages(
+            agents,
+            web_search_tool=web_search_tool,
+            max_produce=args.max_produce,
+            output_dir=output_dir,
         )
+        valid_names = production_stage_names()
 
-    # Validate --from / --to ordering
-    step_order = ["collector", "curator", "editor", "researcher", "perspective", "writer", "qa_analyze", "bias_detector"]
+    # Validate --from / --to against the active variant's stage names
+    if args.from_step and args.from_step not in valid_names:
+        logger.error(
+            "--from %r is not a valid stage. Run with --help-stages for the "
+            "%s stage list.",
+            args.from_step,
+            "hydrated" if args.hydrated else "production",
+        )
+        sys.exit(1)
+    if args.to_step and args.to_step not in valid_names:
+        logger.error(
+            "--to %r is not a valid stage. Run with --help-stages for the "
+            "%s stage list.",
+            args.to_step,
+            "hydrated" if args.hydrated else "production",
+        )
+        sys.exit(1)
     if args.from_step and args.to_step:
-        if step_order.index(args.to_step) < step_order.index(args.from_step):
+        if valid_names.index(args.to_step) < valid_names.index(args.from_step):
             logger.error(
-                "--to '%s' is before --from '%s' in the pipeline order. "
-                "Order: %s", args.to_step, args.from_step, " → ".join(step_order),
+                "--to %r is before --from %r in the stage order.",
+                args.to_step, args.from_step,
             )
             sys.exit(1)
 
+    # Resolve --reuse
+    reuse_run_id = None
+    reuse_run_date = None
+    if args.reuse:
+        try:
+            reuse_run_date, reuse_run_id = _resolve_reuse(args.reuse, output_dir)
+        except RuntimeError as e:
+            logger.error("%s", e)
+            sys.exit(1)
+
+    if args.from_step and not reuse_run_id:
+        logger.error("--from requires --reuse so prior snapshots can be loaded.")
+        sys.exit(1)
+
+    runner = PipelineRunner(
+        run_stages=run_stages,
+        topic_stages=topic_stages,
+        post_run_stages=post_run_stages,
+        output_dir=output_dir,
+        from_stage=args.from_step,
+        to_stage=args.to_step,
+        reuse_run_id=reuse_run_id,
+        reuse_run_date=reuse_run_date,
+        topic_filter=args.topic,
+    )
+
+    if args.from_step or args.to_step or args.topic or args.reuse:
+        logger.info(
+            "Partial run:%s%s%s%s",
+            f" --from {args.from_step}" if args.from_step else "",
+            f" --to {args.to_step}" if args.to_step else "",
+            f" --topic {args.topic}" if args.topic else "",
+            f" --reuse {args.reuse}" if args.reuse else "",
+        )
+
     try:
-        if args.from_step:
-            logger.info(
-                "Partial run: --from %s%s%s%s",
-                args.from_step,
-                f" --to {args.to_step}" if args.to_step else "",
-                f" --topic {args.topic}" if args.topic else "",
-                f" --reuse {args.reuse}" if args.reuse else "",
-            )
-            packages = await pipeline.run_partial(
-                from_step=args.from_step,
-                topic_filter=args.topic,
-                reuse_date=args.reuse,
-                to_step=args.to_step,
-            )
-        else:
-            packages = await pipeline.run(to_step=args.to_step)
+        run_bus = await runner.run()
         elapsed = time.time() - start
 
-        completed = [p for p in packages if p.status != "failed"]
-        failed = [p for p in packages if p.status == "failed"]
+        manifest = run_bus.run_topic_manifest or []
+        completed = [m for m in manifest if m["status"] == "success"]
+        skipped = [m for m in manifest if m["status"] == "skipped"]
+        failed = [m for m in manifest if m["status"] == "failed"]
         logger.info("Pipeline finished in %.1f seconds", elapsed)
-        logger.info("  Topics: %d completed, %d failed", len(completed), len(failed))
-        for p in completed:
-            logger.info("  completed %s: %s", p.id, p.metadata.get("title", ""))
-        for p in failed:
-            logger.info("  failed %s: %s", p.id, p.error or "unknown error")
+        logger.info(
+            "  Topics: %d completed, %d skipped, %d failed",
+            len(completed), len(skipped), len(failed),
+        )
+        for m in completed:
+            logger.info("  completed %s: %s", m["topic_id"], m.get("topic_slug", ""))
+        for m in skipped:
+            logger.info("  skipped %s: %s", m["topic_id"], m.get("topic_slug", ""))
+        for m in failed:
+            logger.info("  failed %s: %s", m["topic_id"], m.get("topic_slug", ""))
 
         # Post-pipeline: publish if requested and at least 1 topic succeeded
         if args.publish and completed:
@@ -370,7 +472,7 @@ async def main():
                     ["git", "add", "site/"],
                     cwd=str(ROOT),
                 )
-                date_str = packages[0].metadata.get("date", "unknown")
+                date_str = run_bus.run_date or "unknown"
                 commit_msg = f"Publish {date_str}: {len(completed)} dossier{'s' if len(completed) != 1 else ''}"
                 commit_result = subprocess.run(
                     ["git", "commit", "-m", commit_msg],

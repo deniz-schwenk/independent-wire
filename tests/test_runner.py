@@ -37,6 +37,8 @@ from src.runner.runner import (
 from src.runner.stage_lists import (
     build_hydrated_stages,
     build_production_stages,
+    hydrated_stage_names,
+    production_stage_names,
 )
 from src.runner.state import (
     load_run_bus_latest,
@@ -522,3 +524,88 @@ def test_stage_label_class_instance():
             return run_bus
 
     assert _stage_label(_Pseudo()) == "_Pseudo"
+
+
+# ---------------------------------------------------------------------------
+# Extensions: topic_filter, max_produce, name helpers (V2-09 prereqs)
+# ---------------------------------------------------------------------------
+
+
+def test_runner_topic_filter_skips_other_topics(tmp_path: Path):
+    """--topic 2 → only TopicBus index 1 runs through topic-stages."""
+    runner = PipelineRunner(
+        run_stages=[_fake_init, _fake_curator, _fake_select],
+        topic_stages=[_fake_writer],
+        output_dir=tmp_path,
+        topic_filter=2,
+    )
+    rb = asyncio.run(runner.run())
+    statuses = {m["topic_id"]: m["status"] for m in rb.run_topic_manifest}
+    assert statuses == {"topic-001": "skipped", "topic-002": "success"}
+    # Only the selected topic gets rendered to disk
+    assert not (tmp_path / rb.run_date / "slug-001.json").exists()
+    assert (tmp_path / rb.run_date / "slug-002.json").exists()
+
+
+def test_runner_topic_filter_writer_runs_only_for_selected_topic(tmp_path: Path):
+    runner = PipelineRunner(
+        run_stages=[_fake_init, _fake_curator, _fake_select],
+        topic_stages=[_fake_writer],
+        output_dir=tmp_path,
+        topic_filter=1,
+        skip_render=True,
+        skip_finalize=True,
+    )
+    asyncio.run(runner.run())
+    # topic 0 ran, topic 1 was skipped → its writer_article stays empty default
+    assert runner.topic_buses[0].writer_article.headline == "H topic-001"
+    assert runner.topic_buses[1].writer_article.headline == ""
+    assert runner._topic_status == ["success", "skipped"]
+
+
+def test_build_production_stages_max_produce_threads_to_init_run(tmp_path: Path):
+    """build_production_stages(max_produce=N) produces an init_run that
+    sets RunBus.max_produce to N."""
+    agents = _fake_agent_dict(_PRODUCTION_AGENTS)
+    run_stages, _, _ = build_production_stages(
+        agents, max_produce=7, output_dir=tmp_path
+    )
+    init_stage = run_stages[0]
+    rb = asyncio.run(init_stage(RunBus()))
+    assert rb.max_produce == 7
+    assert rb.run_variant == "production"
+
+
+def test_build_hydrated_stages_max_produce_threads_to_init_run(tmp_path: Path):
+    agents = _fake_agent_dict(_HYDRATED_AGENTS)
+    run_stages, _, _ = build_hydrated_stages(
+        agents, max_produce=2, output_dir=tmp_path
+    )
+    init_stage = run_stages[0]
+    rb = asyncio.run(init_stage(RunBus()))
+    assert rb.max_produce == 2
+    assert rb.run_variant == "hydrated"
+
+
+def test_production_stage_names_matches_builder_output():
+    agents = _fake_agent_dict(_PRODUCTION_AGENTS)
+    runs, topics, _ = build_production_stages(agents)
+    expected = [_stage_label(s) for s in runs + topics]
+    assert production_stage_names() == expected
+
+
+def test_hydrated_stage_names_matches_builder_first_occurrence():
+    """Static name list dedupes mirror_perspective_synced (which appears
+    twice in the hydrated stage list)."""
+    agents = _fake_agent_dict(_HYDRATED_AGENTS)
+    runs, topics, _ = build_hydrated_stages(agents)
+    full = [_stage_label(s) for s in runs + topics]
+    # Static list is the deduped order-preserving first-occurrence sequence
+    seen: set = set()
+    expected: list = []
+    for name in full:
+        if name == "mirror_perspective_synced" and name in seen:
+            continue
+        expected.append(name)
+        seen.add(name)
+    assert hydrated_stage_names() == expected
