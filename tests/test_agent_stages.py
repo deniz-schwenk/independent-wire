@@ -720,7 +720,6 @@ from src.agent_stages import (  # noqa: E402
     ResearcherHydratedPlanStage,
     WriterStage,
     _build_bias_card_for_agent_input,
-    _enrich_position_clusters,
     _extract_date_from_url,
     _merge_perspektiv_deltas,
 )
@@ -817,10 +816,11 @@ def test_perspective_metadata():
     assert m.writes == ("perspective_clusters", "perspective_missing_positions")
 
 
-def test_perspective_stage_folds_in_enrichment():
-    """V2-03b deferred _enrich_position_clusters; V2-06 PerspectiveStage
-    folds it in. Wrapper output carries pc-NNN ids, actors with quotes,
-    regions, languages, representation."""
+def test_perspective_stage_writes_raw_clusters_only():
+    """PerspectiveStage writes the agent's raw output verbatim. Deterministic
+    enrichment (pc-NNN, actors, regions, languages, representation) is the
+    `enrich_perspective_clusters` topic-stage's job and runs immediately
+    after this wrapper. Wrapper output must NOT carry those fields."""
     fake = FakeAgent(
         structured={
             "position_clusters": [
@@ -840,59 +840,51 @@ def test_perspective_stage_folds_in_enrichment():
     )
     tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
     tb.final_sources = [
-        {
-            "id": "src-001",
-            "country": "United States",
-            "language": "en",
-            "actors_quoted": [
-                {
-                    "name": "PM",
-                    "role": "Minister",
-                    "type": "official",
-                    "verbatim_quote": "We will act.",
-                }
-            ],
-        },
-        {
-            "id": "src-002",
-            "country": "United States",
-            "language": "en",
-            "actors_quoted": [],
-        },
-        {
-            "id": "src-003",
-            "country": "Iran",
-            "language": "fa",
-            "actors_quoted": [],
-        },
+        {"id": "src-001", "country": "United States", "language": "en"},
+        {"id": "src-002", "country": "United States", "language": "en"},
+        {"id": "src-003", "country": "Iran", "language": "fa"},
     ]
     stage = PerspectiveStage(fake)
     tb_after = _run(stage, tb, _ro())
     clusters = tb_after.perspective_clusters
     assert len(clusters) == 2
-    assert clusters[0]["id"] == "pc-001"
-    assert clusters[0]["regions"] == ["United States"]
-    assert clusters[0]["languages"] == ["en"]
-    # 2/3 sources → ratio 0.67 ≥ 0.40 → dominant
-    assert clusters[0]["representation"] == "dominant"
-    assert clusters[0]["actors"][0]["name"] == "PM"
-    assert clusters[0]["actors"][0]["quote"] == "We will act."
-    # 1/3 sources → ratio 0.33 ≥ 0.15 → substantial
-    assert clusters[1]["representation"] == "substantial"
+    # Raw shape only — agent emits position_label, position_summary, source_ids
+    assert clusters[0] == {
+        "position_label": "Pro",
+        "position_summary": "supports",
+        "source_ids": ["src-001", "src-002"],
+    }
+    # No enrichment fields on the wrapper output
+    assert "id" not in clusters[0]
+    assert "actors" not in clusters[0]
+    assert "regions" not in clusters[0]
+    assert "languages" not in clusters[0]
+    assert "representation" not in clusters[0]
     assert tb_after.perspective_missing_positions == [{"label": "civilians"}]
 
 
-def test_enrich_position_clusters_empty_dossier_marks_marginal():
-    enriched = _enrich_position_clusters(
-        {
-            "position_clusters": [
-                {"position_label": "A", "source_ids": ["src-001"]}
-            ],
-            "missing_positions": [],
-        },
-        {"sources": []},
+def test_perspective_stage_empty_clusters_safe_via_optional_write():
+    """Agent emits no clusters → wrapper writes empty list. The slot has
+    optional_write=True so post-validation accepts the empty case for
+    perspective_clusters specifically. (perspective_missing_positions is
+    populated here so post-validation doesn't trip on the other write.)"""
+    fake = FakeAgent(
+        structured={
+            "position_clusters": [],
+            "missing_positions": [{"label": "civilians"}],
+        }
     )
-    assert enriched["position_clusters"][0]["representation"] == "marginal"
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    stage = PerspectiveStage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert tb_after.perspective_clusters == []
+    assert tb_after.perspective_missing_positions == [{"label": "civilians"}]
+    # Post-validation accepts empty perspective_clusters via optional_write.
+    rb_before = _ro()
+    rb_after = _ro()
+    validate_postconditions(
+        stage, tb, tb_after, run_bus_before=rb_before, run_bus_after=rb_after
+    )
 
 
 # ===========================================================================

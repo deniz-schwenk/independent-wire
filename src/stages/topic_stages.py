@@ -215,6 +215,142 @@ async def normalize_pre_research(
 
 
 # ---------------------------------------------------------------------------
+# 12b. enrich_perspective_clusters  (deterministic, runs after PerspectiveStage)
+# ---------------------------------------------------------------------------
+
+
+def _build_source_index(sources: list) -> dict[str, dict]:
+    """Map source id → source dict for O(1) lookup during enrichment."""
+    out: dict[str, dict] = {}
+    for src in sources or []:
+        if isinstance(src, dict):
+            sid = src.get("id")
+            if isinstance(sid, str) and sid:
+                out[sid] = src
+    return out
+
+
+def _enrich_position_clusters_logic(
+    perspective_analysis: dict, final_sources: list
+) -> dict:
+    """Attach deterministic fields to the agent's raw cluster output.
+
+    V1 reference: src/pipeline.py:_enrich_position_clusters (lines 754-849).
+    Same semantics: pc-NNN ids, actors with verbatim quotes, regions and
+    languages from cited sources, representation bucketed from source-id
+    ratio (≥0.40 dominant, ≥0.15 substantial, else marginal).
+
+    Empty source pool → all clusters default to representation='marginal'
+    with a single WARNING. The input dict is not mutated — callers get a
+    deep-copied result.
+    """
+    import copy as _copy
+
+    if not perspective_analysis or not isinstance(perspective_analysis, dict):
+        return perspective_analysis
+
+    by_id = _build_source_index(final_sources)
+    total_sources = len([s for s in (final_sources or []) if isinstance(s, dict)])
+
+    if total_sources == 0:
+        logger.warning(
+            "enrich_perspective_clusters: final_sources is empty; all "
+            "clusters default to representation='marginal'"
+        )
+
+    enriched = _copy.deepcopy(perspective_analysis)
+    for cluster_idx, cluster in enumerate(
+        enriched.get("position_clusters", []) or [], start=1
+    ):
+        if not isinstance(cluster, dict):
+            continue
+        cluster["id"] = f"pc-{cluster_idx:03d}"
+        source_ids = [
+            s for s in (cluster.get("source_ids") or []) if isinstance(s, str)
+        ]
+
+        actors: list[dict] = []
+        regions_seen: set[str] = set()
+        languages_seen: set[str] = set()
+        for sid in source_ids:
+            src = by_id.get(sid)
+            if not src:
+                continue
+            country = normalise_country(src.get("country"))
+            language = normalise_language(src.get("language"))
+            if country:
+                regions_seen.add(country)
+            if language:
+                languages_seen.add(language)
+            for entry in src.get("actors_quoted", []) or []:
+                if not isinstance(entry, dict):
+                    continue
+                actors.append(
+                    {
+                        "name": entry.get("name", ""),
+                        "role": entry.get("role", ""),
+                        "type": entry.get("type", ""),
+                        "source_ids": [sid],
+                        "quote": entry.get("verbatim_quote"),
+                    }
+                )
+
+        if total_sources == 0:
+            representation = "marginal"
+        else:
+            ratio = len(source_ids) / total_sources
+            if ratio >= 0.40:
+                representation = "dominant"
+            elif ratio >= 0.15:
+                representation = "substantial"
+            else:
+                representation = "marginal"
+
+        cluster["actors"] = actors
+        cluster["regions"] = sorted(regions_seen)
+        cluster["languages"] = sorted(languages_seen)
+        cluster["representation"] = representation
+
+    return enriched
+
+
+@topic_stage_def(
+    reads=("perspective_clusters", "final_sources"),
+    writes=("perspective_clusters",),
+)
+async def enrich_perspective_clusters(
+    topic_bus: TopicBus, run_bus: RunBusReadOnly
+) -> TopicBus:
+    """Attach deterministic enrichment fields to the raw cluster output
+    written by PerspectiveStage. Runs immediately after the agent stage
+    in both production and hydrated variants.
+
+    Reads `perspective_clusters` (raw shape from PerspectiveStage:
+    `[{position_label, position_summary, source_ids}]`) and `final_sources`.
+    Writes `perspective_clusters` enriched with `pc-NNN`, actors (with
+    verbatim quotes), regions, languages, representation.
+
+    No-op when `perspective_clusters` is empty (PerspectiveStage may have
+    failed or emitted nothing). The post-validator accepts the empty case
+    via the slot's optional_write annotation.
+    """
+    raw = list(topic_bus.perspective_clusters or [])
+    if not raw:
+        return topic_bus
+
+    enriched = _enrich_position_clusters_logic(
+        {"position_clusters": raw}, list(topic_bus.final_sources or [])
+    )
+    return topic_bus.model_copy(
+        update={
+            "perspective_clusters": list(
+                enriched.get("position_clusters") or []
+            )
+        }
+    )
+
+
+# ---------------------------------------------------------------------------
 # 13. mirror_perspective_synced  (universal — production runs as 1:1 copy)
 # ---------------------------------------------------------------------------
 
@@ -677,6 +813,7 @@ __all__ = [
     "attach_hydration_urls",
     "compose_transparency_card",
     "compute_source_balance",
+    "enrich_perspective_clusters",
     "make_researcher_search",
     "merge_sources",
     "mirror_qa_corrected",

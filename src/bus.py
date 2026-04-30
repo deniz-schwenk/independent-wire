@@ -305,8 +305,16 @@ class TopicBus(BaseModel):
         optional_write=True,
     )
 
-    # 4B.5 Perspective phase (2 slots)
-    perspective_clusters: list = Slot(default_factory=list, visibility="internal")
+    # 4B.5 Perspective phase (2 slots). perspective_clusters is written
+    # twice: PerspectiveStage emits raw clusters, then enrich_perspective_
+    # clusters (deterministic) attaches pc-NNN, actors, regions, languages,
+    # representation. optional_write=True covers the case where the agent
+    # produced no clusters (empty list passes both writes through).
+    perspective_clusters: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
     perspective_missing_positions: list = Slot(default_factory=list, visibility="internal")
 
     # 4B.6 Writer phase (1 slot)

@@ -45,7 +45,7 @@ from src.bus import (
     WriterArticle,
 )
 from src.stage import StageMeta
-from src.stages._helpers import normalise_country, normalise_language
+from src.stages._helpers import normalise_country
 
 logger = logging.getLogger(__name__)
 
@@ -755,90 +755,6 @@ def _extract_date_from_url(url: str) -> Optional[str]:
     return None
 
 
-def _enrich_position_clusters(
-    perspective_analysis: dict, research_dossier: dict
-) -> dict:
-    """Attach deterministic fields to the agent's raw cluster output: pc-NNN
-    ids, actors with verbatim quotes, regions, languages, representation.
-    V1: src/pipeline.py:754-849.
-
-    Folded into PerspectiveStage's __call__ rather than a separate stage —
-    V2-03b deferred this helper. Surfaced in CC Report.
-    """
-    import copy as _copy
-
-    if not perspective_analysis or not isinstance(perspective_analysis, dict):
-        return perspective_analysis
-
-    dossier_sources = (
-        research_dossier.get("sources", []) if research_dossier else []
-    )
-    total_sources = len(dossier_sources)
-    by_id: dict[str, dict] = {}
-    for src in dossier_sources:
-        if isinstance(src, dict):
-            sid = src.get("id")
-            if isinstance(sid, str) and sid:
-                by_id[sid] = src
-
-    if total_sources == 0:
-        logger.warning(
-            "Perspektiv enrichment: research dossier has no sources; "
-            "all clusters default to representation='marginal'"
-        )
-
-    enriched = _copy.deepcopy(perspective_analysis)
-    for cluster_idx, cluster in enumerate(
-        enriched.get("position_clusters", []) or [], start=1
-    ):
-        if not isinstance(cluster, dict):
-            continue
-        cluster["id"] = f"pc-{cluster_idx:03d}"
-        source_ids = [
-            s for s in (cluster.get("source_ids") or []) if isinstance(s, str)
-        ]
-        actors: list[dict] = []
-        regions_seen: set[str] = set()
-        languages_seen: set[str] = set()
-        for sid in source_ids:
-            src = by_id.get(sid)
-            if not src:
-                continue
-            country = normalise_country(src.get("country"))
-            language = normalise_language(src.get("language"))
-            if country:
-                regions_seen.add(country)
-            if language:
-                languages_seen.add(language)
-            for entry in src.get("actors_quoted", []) or []:
-                if not isinstance(entry, dict):
-                    continue
-                actors.append(
-                    {
-                        "name": entry.get("name", ""),
-                        "role": entry.get("role", ""),
-                        "type": entry.get("type", ""),
-                        "source_ids": [sid],
-                        "quote": entry.get("verbatim_quote"),
-                    }
-                )
-        if total_sources == 0:
-            representation = "marginal"
-        else:
-            ratio = len(source_ids) / total_sources
-            if ratio >= 0.40:
-                representation = "dominant"
-            elif ratio >= 0.15:
-                representation = "substantial"
-            else:
-                representation = "marginal"
-        cluster["actors"] = actors
-        cluster["regions"] = sorted(regions_seen)
-        cluster["languages"] = sorted(languages_seen)
-        cluster["representation"] = representation
-    return enriched
-
-
 def _build_bias_card_for_agent_input(topic_bus: TopicBus) -> dict:
     """Compute the deterministic bias_card data structure that the
     bias_language LLM consumes as context. V1: src/pipeline.py:870-944
@@ -1035,10 +951,16 @@ class PerspectiveStage(_AgentStageBase):
     """Perspective agent wrapper.
 
     Reads `editor_selected_topic`, `final_sources`, `merged_preliminary_
-    divergences`, `merged_coverage_gaps`. Calls agent. Folds in V1's
-    `_enrich_position_clusters` (V2-03b deferred this helper to V2-06; see
-    CC Report). Writes `perspective_clusters` (with pc-NNN, actors,
-    regions, languages, representation) and `perspective_missing_positions`.
+    divergences`, `merged_coverage_gaps`. Calls agent. Writes the **raw**
+    cluster output `[{position_label, position_summary, source_ids}]` to
+    `perspective_clusters` plus `perspective_missing_positions` verbatim.
+
+    The deterministic enrichment that attaches `pc-NNN`, actors, regions,
+    languages, and representation lives in the
+    `enrich_perspective_clusters` topic-stage (in
+    `src/stages/topic_stages.py`), which runs immediately after this
+    wrapper. Keeping the wrapper raw matches V2's pattern of separating
+    LLM output from deterministic post-processing.
     """
 
     stage_kind = "topic"
@@ -1078,17 +1000,13 @@ class PerspectiveStage(_AgentStageBase):
         if not isinstance(parsed, dict):
             parsed = {}
 
-        # Enrichment expects a dossier-like dict with sources keyed by id.
-        # Use final_sources here — Perspective post-renumbering reads src-NNN.
-        enriched = _enrich_position_clusters(
-            parsed, {"sources": list(topic_bus.final_sources)}
-        )
-
         return topic_bus.model_copy(
             update={
-                "perspective_clusters": list(enriched.get("position_clusters") or []),
+                "perspective_clusters": list(
+                    parsed.get("position_clusters") or []
+                ),
                 "perspective_missing_positions": list(
-                    enriched.get("missing_positions") or []
+                    parsed.get("missing_positions") or []
                 ),
             }
         )
@@ -1559,20 +1477,26 @@ class HydrationPhase2Stage(_AgentStageBase):
 class PerspectiveSyncStage(_AgentStageBase):
     """Perspective-Sync agent wrapper. Eligibility-gated on QA having
     proposed corrections; if not, the agent is not called and the slot is
-    left empty so the downstream `mirror_perspective_synced` stage produces
-    a 1:1 copy of `perspective_clusters`.
+    left as-is.
 
     Reads `perspective_clusters`, `qa_corrected_article`, `qa_problems_found`,
     `qa_proposed_corrections`. Writes `perspective_clusters_synced` (the
-    fully merged per-element list when corrections triggered the run; empty
-    otherwise so the mirror takes over).
+    fully merged per-element list when corrections triggered the run; left
+    untouched when the gate skipped the call).
 
     V1 reference: pipeline_hydrated.py `_run_perspektiv_sync` lines 720-836,
     `merge_perspektiv_deltas` line 233 (ported as `_merge_perspektiv_deltas`).
 
-    Slot has `mirrors_from="perspective_clusters"` annotation in bus.py, so
-    leaving the slot empty here is structurally legal — the mirror stage
-    handles per-element completion downstream.
+    Stage-order in the hydrated runner (V2-10): `mirror_perspective_synced`
+    runs **twice** — first immediately after `enrich_perspective_clusters`
+    (the slot is empty there; mirror produces a 1:1 copy of
+    `perspective_clusters`), then again after this stage (element-delta
+    merge over the now-modified slot). `mirror_stage` is idempotent for
+    both granularities, so the double dispatch is safe — when this wrapper
+    skips via the eligibility gate, the second mirror pass is a no-op.
+
+    Slot has `mirrors_from="perspective_clusters"` annotation in bus.py
+    plus `optional_write` on the upstream slot — both writes are safe.
     """
 
     stage_kind = "topic"
