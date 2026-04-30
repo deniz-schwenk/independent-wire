@@ -1,6 +1,6 @@
 # TASK
 
-You receive an `article` (the complete Writer output with `headline`, `subheadline`, `body`, `summary`, and `sources[]`), a dossier `sources[]` array in `rsrc-NNN` form, `preliminary_divergences[]` and `coverage_gaps[]` from research, and `position_clusters[]` and `missing_positions[]` from perspective analysis. Identify factual problems in the article, propose a specific correction for each problem, apply those corrections to produce the corrected article, and report source disagreements separately. Apply corrections surgically — preserve the Writer's voice, structure, headline, and overall focus unless a problem genuinely requires changing them, and preserve the literal `[[COVERAGE_STATEMENT]]` placeholder exactly.
+You receive an `article` (the complete Writer output with `headline`, `subheadline`, `body`, `summary`, and `sources[]`), a dossier `sources[]` array in `rsrc-NNN` form, `preliminary_divergences[]` and `coverage_gaps[]` from research, and `position_clusters[]` and `missing_positions[]` from perspective analysis. Identify factual problems in the article, propose a specific correction for each problem, apply those corrections to produce the corrected article when corrections exist, and report source disagreements separately. Apply corrections surgically — preserve the Writer's voice, structure, headline, and overall focus unless a problem genuinely requires changing them, and preserve the literal `[[COVERAGE_STATEMENT]]` placeholder exactly.
 
 ## Problem types
 
@@ -29,12 +29,12 @@ Each entry in `problems_found[]` carries a `problem` value drawn from these four
 
 1. Read the article. Verify every factual claim — numbers, dates, statistics, attributions, quotes, causal assertions — against the two evidence pools. Record each problem in `problems_found[]` with its exact excerpt, problem type, and a one-to-two-sentence explanation citing the source IDs that demonstrate the issue.
 2. For each entry in `problems_found[]`, in order, write the specific correction that should be made. Record one entry in `proposed_corrections[]` per problem, in the same order — a one-liner naming what the fix changes and which source supports it.
-3. Apply the proposed corrections to the article body and emit the complete corrected article in `article`. Preserve the Writer's voice, structure, headline, the `[src-NNN]` citation form, and the `[[COVERAGE_STATEMENT]]` placeholder.
-4. Identify source disagreements relevant to the topic and record them in `divergences[]` with their type, description, the involved source IDs, the resolution status, and a note describing whether and how the corrected article addresses each one.
+3. When `proposed_corrections[]` is non-empty, apply the corrections to the article body and emit the complete corrected article in `article` with the four fields `headline`, `subheadline`, `body`, `summary`. Preserve the Writer's voice, structure, headline, the `[src-NNN]` citation form, and the `[[COVERAGE_STATEMENT]]` placeholder. When `proposed_corrections[]` is empty, omit the `article` field entirely from the output — the pipeline reuses the input article unchanged.
+4. Identify source disagreements relevant to the topic and record them in `divergences[]` with their type, description, the involved source IDs, the resolution status, and a note describing whether and how the corrected article (or the input article, when no corrections were applied) addresses each one.
 
 # OUTPUT FORMAT
 
-A single JSON object with exactly four top-level fields. Example:
+A single JSON object. The fields `problems_found`, `proposed_corrections`, and `divergences` are always present. The `article` field is present only when corrections were applied; it is omitted when `proposed_corrections[]` is empty. Example with corrections applied:
 
 ```json
 {
@@ -66,12 +66,30 @@ A single JSON object with exactly four top-level fields. Example:
 }
 ```
 
+Example with no corrections (`article` omitted):
+
+```json
+{
+  "problems_found": [],
+  "proposed_corrections": [],
+  "divergences": [
+    {
+      "type": "framing",
+      "description": "Russian and Western sources disagree on whether the action constitutes escalation or routine enforcement.",
+      "source_ids": ["src-002", "src-005"],
+      "resolution": "unresolved",
+      "resolution_note": "The article presents both framings with attribution; the underlying disagreement is named but not resolved."
+    }
+  ]
+}
+```
+
 Field notes:
 
 - `problems_found[]` — one entry per identified problem. Each carries `article_excerpt` (the exact verbatim text from the article), `problem` (one of `factually_incorrect`, `unsupported_claim`, `missing_divergence`, `misleading_framing`), and `explanation` (one to two sentences referencing source IDs). Empty array when no problems are found.
 - `proposed_corrections[]` — one one-liner per problem, in the same order as `problems_found[]`. Empty array when no problems are found.
-- `article` — the complete corrected article. All four fields are present (`headline`, `subheadline`, `body`, `summary`). The article's sources array is owned by the pipeline and is not emitted by the agent; the input `article.sources[]` remains the citation target. When no problems were found, the article is returned unchanged.
-- `divergences[]` — source disagreements. Each carries `type` (one of `factual`, `framing`, `omission`, `emphasis`), `description`, `source_ids[]`, `resolution` (one of `resolved`, `unresolved`, `partially_resolved`), and `resolution_note` describing how or whether the corrected article addresses the disagreement.
+- `article` — emitted only when `proposed_corrections[]` is non-empty. When present, it carries all four fields (`headline`, `subheadline`, `body`, `summary`) — the complete corrected article, never a partial one. When absent, the pipeline reuses the input article unchanged. The article's sources array is owned by the pipeline and is not emitted by the agent; the input `article.sources[]` remains the citation target.
+- `divergences[]` — source disagreements. Each carries `type` (one of `factual`, `framing`, `omission`, `emphasis`), `description`, `source_ids[]`, `resolution` (one of `resolved`, `unresolved`, `partially_resolved`), and `resolution_note` describing how or whether the article addresses the disagreement. Empty array when no disagreements are present.
 
 Output only the JSON object. No commentary, no markdown fences, no preamble.
 
@@ -81,4 +99,4 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 2. All analysis and all corrections rest on the two source pools (`article.sources` and `sources`). Outside knowledge is not added; new sources are not introduced; existing sources are not removed.
 3. Corrections are surgical. Fix problems where they appear; preserve the rest. The article's organization, focus, headline, and voice are unchanged unless a problem genuinely requires a structural change.
 4. Wikipedia citations for current events, statistics, or analysis are flagged as `unsupported_claim`. Wikipedia is acceptable only for verifiable background facts the source itself does not dispute.
-5. The `article` field carries the complete corrected article — never a partial article, never only the changed sections. When no problems are found, the article is returned unchanged.
+5. When `proposed_corrections[]` is non-empty, the `article` field carries the complete corrected article — never a partial article, never only the changed sections. When `proposed_corrections[]` is empty, the `article` field is omitted entirely from the output.
