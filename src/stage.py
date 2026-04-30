@@ -173,6 +173,16 @@ def _has_mirrors_from(model_cls: type[BaseModel], slot: str) -> bool:
     return False
 
 
+def _is_optional_write(model_cls: type[BaseModel], slot: str) -> bool:
+    field = model_cls.model_fields.get(slot)
+    if field is None:
+        return False
+    extra = field.json_schema_extra or {}
+    if isinstance(extra, dict):
+        return bool(extra.get("optional_write", False))
+    return False
+
+
 # ---------------------------------------------------------------------------
 # Pre-condition validator
 # ---------------------------------------------------------------------------
@@ -227,6 +237,12 @@ def validate_postconditions(
     The mirror-target exception (§3.4): a writes-slot may be empty after the
     stage iff its schema metadata declares `mirrors_from`. The corresponding
     `mirror_*` stage will fill it later.
+
+    The optional-write exception: a writes-slot may also be empty iff its
+    schema metadata declares `optional_write=True`. Such slots are
+    legitimately empty in some pipeline runs (e.g. previous_coverage on
+    the first-ever run, curator_findings if RSS produced nothing,
+    run_topic_manifest before finalize_run runs).
     """
     meta = get_stage_meta(stage)
     expected_cls = _bus_class_for(meta.kind)
@@ -249,6 +265,8 @@ def validate_postconditions(
                 f"not a field on {expected_cls.__name__}"
             )
         if _has_mirrors_from(expected_cls, slot):
+            continue
+        if _is_optional_write(expected_cls, slot):
             continue
         if is_empty(getattr(bus_after, slot)):
             raise StagePostconditionError(

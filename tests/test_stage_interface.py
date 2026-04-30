@@ -70,6 +70,14 @@ async def silent_qa_topic_stage(
     return topic_bus
 
 
+@run_stage_def(reads=(), writes=("previous_coverage",))
+async def silent_optional_write_run_stage(run_bus: RunBus) -> RunBus:
+    """Declares writing previous_coverage but leaves it at the empty default.
+    Must pass post-validation because previous_coverage has
+    optional_write=True metadata (legitimately empty on first-ever run)."""
+    return run_bus
+
+
 @run_stage_def(reads=("nonexistent_slot",), writes=())
 async def stage_with_typo_in_reads(run_bus: RunBus) -> RunBus:
     return run_bus
@@ -196,6 +204,22 @@ def test_validate_postconditions_allows_empty_mirror_target_slot():
         tb_after,
         run_bus_before=rb_before,
         run_bus_after=rb_after,
+    )
+
+
+def test_validate_postconditions_allows_empty_optional_write_slot():
+    """previous_coverage carries optional_write=True; a stage that declares
+    writing it but leaves it at the empty default is legitimate (no prior
+    runs in the last N days). No exception expected.
+
+    Contrast with the mirror-target exception: the mirror exception relies
+    on a downstream mirror_* stage filling the slot; the optional_write
+    exception accepts that the slot may stay empty for the entire run."""
+    rb_before = RunBus()
+    rb_after = rb_before.model_copy(deep=True)
+    # previous_coverage is still [] on rb_after — and that is fine.
+    validate_postconditions(
+        silent_optional_write_run_stage, rb_before, rb_after
     )
 
 

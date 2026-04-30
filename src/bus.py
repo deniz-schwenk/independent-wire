@@ -28,6 +28,7 @@ def Slot(
     visibility: list[VisibilityTag] | VisibilityTag,
     mirrors_from: Optional[str] = None,
     mirror_granularity: Optional[MirrorGranularity] = None,
+    optional_write: bool = False,
     default_factory: Optional[Callable[[], Any]] = None,
     description: Optional[str] = None,
 ) -> FieldInfo:
@@ -35,6 +36,13 @@ def Slot(
 
     The metadata lives in `json_schema_extra` so it is discoverable at runtime
     via `Model.model_fields[name].json_schema_extra`.
+
+    `optional_write=True` marks a slot whose owning stage may legitimately
+    leave it at its typed empty default. The post-condition validator in
+    `src/stage.py` skips the non-empty check for such slots — analogous to
+    the mirror-target exception, but the rationale is "this slot can have
+    no content yet" (e.g. previous_coverage on the first-ever run) rather
+    than "a later mirror stage will fill it".
     """
     if isinstance(visibility, str):
         viz_list: list[str] = [visibility]
@@ -52,6 +60,8 @@ def Slot(
     if mirrors_from is not None:
         extra["mirrors_from"] = mirrors_from
         extra["mirror_granularity"] = mirror_granularity
+    if optional_write:
+        extra["optional_write"] = True
 
     field_kwargs: dict[str, Any] = {"json_schema_extra": extra}
     if description is not None:
@@ -191,15 +201,27 @@ class _RunBusFields(BaseModel):
         ),
     )
     run_stage_log: list = Slot(default_factory=list, visibility="internal")
-    run_topic_manifest: list = Slot(default_factory=list, visibility="internal")
+    run_topic_manifest: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
 
     # 4A.2 Curator phase (3 slots)
-    curator_findings: list = Slot(default_factory=list, visibility="internal")
+    curator_findings: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
     curator_topics_unsliced: list = Slot(default_factory=list, visibility="internal")
     curator_topics: list = Slot(default_factory=list, visibility="internal")
 
     # 4A.3 Editor phase (2 slots — including previous_coverage as the 11th run-scoped slot)
-    previous_coverage: list = Slot(default_factory=list, visibility="internal")
+    previous_coverage: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
     editor_assignments: list = Slot(default_factory=list, visibility="internal")
 
 
