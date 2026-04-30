@@ -55,6 +55,7 @@ def test_runbus_constructs_with_all_typed_empty_defaults():
         "curator_topics": [],
         "previous_coverage": [],
         "editor_assignments": [],
+        "selected_assignments": [],
     }
     assert set(expected) == set(RunBus.model_fields), "RunBus fields drifted from expectation"
     for name, default in expected.items():
@@ -311,9 +312,11 @@ def test_runbus_slot_count_regression_guard():
     """Hard-coded expectation. Any change in slot count without architect approval
     fails this test and forces review. Source of truth: ARCH-V2-BUS-SCHEMA §4A.
 
-    Expected: 11 slots across 3 phases (4A.1 metadata=6, 4A.2 curator=3, 4A.3 editor=2).
+    Expected: 12 slots across 3 phases plus selection (4A.1 metadata=6,
+    4A.2 curator=3, 4A.3 editor=2, selection=1 — selected_assignments
+    written by select_topics per ARCH §5.1 stage 4).
     """
-    assert len(RunBus.model_fields) == 11
+    assert len(RunBus.model_fields) == 12
 
 
 def test_topicbus_slot_count_regression_guard():

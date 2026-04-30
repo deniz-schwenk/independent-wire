@@ -22,7 +22,7 @@ from typing import Any, Callable, Literal, Optional, Sequence
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from src.bus import RunBus, is_empty
+from src.bus import EditorAssignment, RunBus, RunBusReadOnly, TopicBus, is_empty
 from src.stage import StageError, StageInputError, run_stage_def
 
 logger = logging.getLogger(__name__)
@@ -373,6 +373,82 @@ def make_finalize_run(
 finalize_run = make_finalize_run()
 
 
+# ---------------------------------------------------------------------------
+# select_topics (run/topic boundary)
+# ---------------------------------------------------------------------------
+
+
+@run_stage_def(
+    reads=("editor_assignments", "max_produce"),
+    writes=("selected_assignments",),
+)
+async def select_topics(run_bus: RunBus) -> RunBus:
+    """Filter, sort, and slice editor_assignments to produce the selected
+    subset that the runner will instantiate as TopicBuses.
+
+    V1 reference: src/pipeline.py around lines 1336-1366. Same rules:
+    - Drop entries with priority <= 0 (Editor's reject signal).
+    - Sort by (-priority, -len(raw_data.source_ids)) — priority first,
+      source-count tiebreaker descending, then array position.
+    - Slice to run_bus.max_produce.
+
+    Reads:  editor_assignments, max_produce.
+    Writes: selected_assignments (the trimmed/sorted list of dicts).
+
+    The runner reads selected_assignments, calls `make_topic_bus(assignment,
+    run_bus)` per entry, and dispatches the topic-stage chain on each.
+    """
+    accepted: list[dict] = []
+    for entry in run_bus.editor_assignments or []:
+        if not isinstance(entry, dict):
+            continue
+        priority = entry.get("priority")
+        if not isinstance(priority, (int, float)) or priority <= 0:
+            continue
+        accepted.append(entry)
+
+    accepted.sort(
+        key=lambda e: (
+            -int(e.get("priority", 0)),
+            -len((e.get("raw_data") or {}).get("source_ids", []) or []),
+        )
+    )
+
+    budget = run_bus.max_produce or 0
+    if budget > 0 and len(accepted) > budget:
+        logger.info(
+            "select_topics: %d accepted topics, producing top %d",
+            len(accepted),
+            budget,
+        )
+        accepted = accepted[:budget]
+
+    run_bus.selected_assignments = accepted
+    return run_bus
+
+
+def make_topic_bus(
+    assignment: dict | EditorAssignment, run_bus: RunBus | RunBusReadOnly
+) -> TopicBus:
+    """Construct a TopicBus from one selected assignment.
+
+    Not a stage — a plain factory the runner calls per entry in
+    `run_bus.selected_assignments`. The TopicBus's `editor_selected_topic`
+    is populated with an EditorAssignment instance; every other slot stays
+    at its typed empty default.
+    """
+    if isinstance(assignment, EditorAssignment):
+        ea = assignment.model_copy(deep=True)
+    elif isinstance(assignment, dict):
+        ea = EditorAssignment.model_validate(assignment)
+    else:
+        raise StageError(
+            f"make_topic_bus: assignment must be dict or EditorAssignment, "
+            f"got {type(assignment).__name__}"
+        )
+    return TopicBus(editor_selected_topic=ea)
+
+
 __all__ = [
     "MirrorMismatchError",
     "RunInitConfig",
@@ -383,5 +459,7 @@ __all__ = [
     "make_fetch_findings",
     "make_finalize_run",
     "make_init_run",
+    "make_topic_bus",
     "mirror_stage",
+    "select_topics",
 ]

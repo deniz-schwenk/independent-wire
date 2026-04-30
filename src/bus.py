@@ -224,6 +224,13 @@ class _RunBusFields(BaseModel):
     )
     editor_assignments: list = Slot(default_factory=list, visibility="internal")
 
+    # Selection phase (1 slot — written by select_topics, read by the runner
+    # to instantiate one TopicBus per entry). Not part of ARCH §4A's
+    # documented inventory but required by ARCH §5.1 stage 4 to communicate
+    # the trimmed/sorted subset to the runner without overwriting
+    # editor_assignments.
+    selected_assignments: list = Slot(default_factory=list, visibility="internal")
+
 
 class RunBus(_RunBusFields):
     """Mutable RunBus written by run-stages."""
