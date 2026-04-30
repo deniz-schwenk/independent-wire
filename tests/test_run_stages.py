@@ -1,0 +1,396 @@
+"""Tests for src/stages/run_stages.py — init_run, fetch_findings,
+finalize_run, mirror_stage helper.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import json
+from pathlib import Path
+
+import pytest
+
+from src.bus import RunBus, TopicBus, WriterArticle
+from src.stage import StageInputError, get_stage_meta
+from src.stages.run_stages import (
+    MirrorMismatchError,
+    RunInitConfig,
+    TopicManifestEntry,
+    make_fetch_findings,
+    make_finalize_run,
+    make_init_run,
+    mirror_stage,
+)
+
+
+# ---------------------------------------------------------------------------
+# init_run
+# ---------------------------------------------------------------------------
+
+
+def test_init_run_happy_path(tmp_path: Path):
+    """Default config, fresh tmp output dir → all five writes populated;
+    previous_coverage is an empty list."""
+    cfg = RunInitConfig(output_dir=tmp_path)
+    init_run = make_init_run(cfg)
+
+    rb = asyncio.run(init_run(RunBus()))
+
+    assert isinstance(rb.run_id, str) and rb.run_id.startswith("run-")
+    assert rb.run_date and len(rb.run_date) == 10
+    assert rb.run_variant == "production"
+    assert rb.max_produce == 3  # default; cfg.max_produce is None so no override
+    assert rb.previous_coverage == []
+
+    meta = get_stage_meta(init_run)
+    assert meta.kind == "run"
+    assert "run_id" in meta.writes
+    assert "previous_coverage" in meta.writes
+
+
+def test_init_run_with_overrides(tmp_path: Path):
+    cfg = RunInitConfig(
+        run_id_override="run-2026-04-30-deadbeef",
+        run_date_override="2026-04-30",
+        run_variant="hydrated",
+        max_produce=5,
+        output_dir=tmp_path,
+    )
+    init_run = make_init_run(cfg)
+
+    rb = asyncio.run(init_run(RunBus()))
+
+    assert rb.run_id == "run-2026-04-30-deadbeef"
+    assert rb.run_date == "2026-04-30"
+    assert rb.run_variant == "hydrated"
+    assert rb.max_produce == 5
+
+
+def test_init_run_loads_previous_coverage(tmp_path: Path):
+    """Set up a fake prior TP in `output_dir/2026-04-29/tp-001.json`; assert
+    init_run picks it up and projects to the documented coverage shape."""
+    prior_dir = tmp_path / "2026-04-29"
+    prior_dir.mkdir()
+    prior_tp = {
+        "id": "tp-2026-04-29-001",
+        "metadata": {"date": "2026-04-29", "topic_slug": "test-topic"},
+        "article": {
+            "headline": "Test headline",
+            "summary": "Test summary",
+        },
+    }
+    (prior_dir / "tp-001.json").write_text(json.dumps(prior_tp), encoding="utf-8")
+
+    # An entry without headline must be skipped.
+    (prior_dir / "tp-002.json").write_text(
+        json.dumps(
+            {
+                "id": "tp-2026-04-29-002",
+                "metadata": {"date": "2026-04-29"},
+                "article": {"headline": "", "summary": "no headline"},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    cfg = RunInitConfig(
+        run_date_override="2026-04-30",
+        output_dir=tmp_path,
+    )
+    init_run = make_init_run(cfg)
+
+    rb = asyncio.run(init_run(RunBus()))
+
+    assert len(rb.previous_coverage) == 1
+    record = rb.previous_coverage[0]
+    assert record == {
+        "tp_id": "tp-2026-04-29-001",
+        "date": "2026-04-29",
+        "headline": "Test headline",
+        "slug": "test-topic",
+        "summary": "Test summary",
+    }
+
+
+def test_init_run_skips_current_date_directory(tmp_path: Path):
+    """A TP in today's directory must not appear in previous_coverage."""
+    today = "2026-04-30"
+    today_dir = tmp_path / today
+    today_dir.mkdir()
+    (today_dir / "tp-001.json").write_text(
+        json.dumps(
+            {
+                "id": "tp-2026-04-30-001",
+                "metadata": {"date": today, "topic_slug": "today"},
+                "article": {"headline": "Today", "summary": "today"},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    cfg = RunInitConfig(run_date_override=today, output_dir=tmp_path)
+    init_run = make_init_run(cfg)
+
+    rb = asyncio.run(init_run(RunBus()))
+    assert rb.previous_coverage == []
+
+
+# ---------------------------------------------------------------------------
+# fetch_findings
+# ---------------------------------------------------------------------------
+
+
+def test_fetch_findings_happy_path(tmp_path: Path):
+    raw_dir = tmp_path
+    (raw_dir / "2026-04-30").mkdir()
+    findings = [
+        {"title": "Finding A", "source_url": "https://a.example/1"},
+        {"title": "Finding B", "source_url": "https://b.example/1"},
+    ]
+    (raw_dir / "2026-04-30" / "feeds.json").write_text(
+        json.dumps(findings), encoding="utf-8"
+    )
+
+    fetch = make_fetch_findings(raw_dir=raw_dir)
+
+    rb = RunBus()
+    rb.run_date = "2026-04-30"
+    rb = asyncio.run(fetch(rb))
+
+    assert rb.curator_findings == findings
+
+
+def test_fetch_findings_missing_file_raises(tmp_path: Path):
+    fetch = make_fetch_findings(raw_dir=tmp_path)
+    rb = RunBus()
+    rb.run_date = "2099-01-01"
+
+    with pytest.raises(StageInputError, match="no feeds file"):
+        asyncio.run(fetch(rb))
+
+
+def test_fetch_findings_malformed_json_raises(tmp_path: Path):
+    raw_dir = tmp_path
+    (raw_dir / "2026-04-30").mkdir()
+    (raw_dir / "2026-04-30" / "feeds.json").write_text(
+        "{not valid json", encoding="utf-8"
+    )
+
+    fetch = make_fetch_findings(raw_dir=raw_dir)
+    rb = RunBus()
+    rb.run_date = "2026-04-30"
+
+    with pytest.raises(StageInputError, match="could not read"):
+        asyncio.run(fetch(rb))
+
+
+def test_fetch_findings_non_list_raises(tmp_path: Path):
+    raw_dir = tmp_path
+    (raw_dir / "2026-04-30").mkdir()
+    (raw_dir / "2026-04-30" / "feeds.json").write_text(
+        json.dumps({"not": "a list"}), encoding="utf-8"
+    )
+
+    fetch = make_fetch_findings(raw_dir=raw_dir)
+    rb = RunBus()
+    rb.run_date = "2026-04-30"
+
+    with pytest.raises(StageInputError, match="must contain a JSON array"):
+        asyncio.run(fetch(rb))
+
+
+# ---------------------------------------------------------------------------
+# mirror_stage — slot granularity
+# ---------------------------------------------------------------------------
+
+
+def test_mirror_stage_slot_fills_empty_target():
+    tb = TopicBus()
+    tb.writer_article = WriterArticle(
+        headline="H", subheadline="S", body="B", summary="Sm"
+    )
+    # qa_corrected_article starts at WriterArticle() (empty)
+
+    mirror_stage("qa_corrected_article", "writer_article", tb, granularity="slot")
+
+    assert tb.qa_corrected_article == tb.writer_article
+    # Deep-copy: mutating the result must not aliase to writer_article
+    tb.qa_corrected_article.headline = "Tampered"
+    assert tb.writer_article.headline == "H"
+
+
+def test_mirror_stage_slot_no_op_when_target_populated():
+    tb = TopicBus()
+    tb.writer_article = WriterArticle(
+        headline="Writer's headline", body="Writer's body"
+    )
+    tb.qa_corrected_article = WriterArticle(
+        headline="QA-corrected headline", body="QA-corrected body"
+    )
+
+    mirror_stage("qa_corrected_article", "writer_article", tb, granularity="slot")
+
+    # Target preserved, not overwritten
+    assert tb.qa_corrected_article.headline == "QA-corrected headline"
+    assert tb.qa_corrected_article.body == "QA-corrected body"
+
+
+# ---------------------------------------------------------------------------
+# mirror_stage — element granularity
+# ---------------------------------------------------------------------------
+
+
+def test_mirror_stage_element_merges_deltas_with_source():
+    tb = TopicBus()
+    # Source: full cluster list (3 clusters)
+    tb.perspective_clusters = [
+        {"id": "pc-001", "position_label": "Pro-X", "position_summary": "supports X"},
+        {"id": "pc-002", "position_label": "Anti-X", "position_summary": "opposes X"},
+        {"id": "pc-003", "position_label": "Neutral", "position_summary": "no view"},
+    ]
+    # Target: deltas from perspective_sync — only pc-001 and pc-002 changed
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "position_label": "Strongly Pro-X"},
+        {"id": "pc-002", "position_summary": "actively opposes X"},
+    ]
+
+    mirror_stage(
+        "perspective_clusters_synced",
+        "perspective_clusters",
+        tb,
+        granularity="element",
+    )
+
+    result = tb.perspective_clusters_synced
+    assert len(result) == 3
+    # pc-001: delta's position_label wins, source's position_summary preserved
+    assert result[0] == {
+        "id": "pc-001",
+        "position_label": "Strongly Pro-X",
+        "position_summary": "supports X",
+    }
+    # pc-002: source's position_label preserved, delta's position_summary wins
+    assert result[1] == {
+        "id": "pc-002",
+        "position_label": "Anti-X",
+        "position_summary": "actively opposes X",
+    }
+    # pc-003: no delta, source verbatim
+    assert result[2] == {
+        "id": "pc-003",
+        "position_label": "Neutral",
+        "position_summary": "no view",
+    }
+
+
+def test_mirror_stage_element_handles_empty_target():
+    """No deltas at all → target becomes a 1:1 copy of source (production
+    variant where perspective_sync does not run)."""
+    tb = TopicBus()
+    tb.perspective_clusters = [
+        {"id": "pc-001", "position_label": "A"},
+        {"id": "pc-002", "position_label": "B"},
+    ]
+    # perspective_clusters_synced starts as []
+
+    mirror_stage(
+        "perspective_clusters_synced",
+        "perspective_clusters",
+        tb,
+        granularity="element",
+    )
+
+    assert tb.perspective_clusters_synced == [
+        {"id": "pc-001", "position_label": "A"},
+        {"id": "pc-002", "position_label": "B"},
+    ]
+
+
+# ---------------------------------------------------------------------------
+# mirror_stage — mismatch validation
+# ---------------------------------------------------------------------------
+
+
+def test_mirror_stage_rejects_undeclared_pair():
+    rb = RunBus()
+    with pytest.raises(MirrorMismatchError, match="not a field"):
+        mirror_stage("not_a_real_slot", "run_id", rb)
+
+
+def test_mirror_stage_rejects_unrelated_slots():
+    """run_id and writer_article are real slots but on different buses, and
+    run_id has no mirrors_from. Must raise."""
+    rb = RunBus()
+    with pytest.raises(MirrorMismatchError, match="not a field on RunBus"):
+        mirror_stage("run_id", "writer_article", rb)
+
+
+def test_mirror_stage_rejects_target_without_mirrors_from():
+    """run_id and run_date are both on RunBus but neither declares
+    mirrors_from → mismatch."""
+    rb = RunBus()
+    with pytest.raises(MirrorMismatchError, match="declares mirrors_from"):
+        mirror_stage("run_id", "run_date", rb)
+
+
+def test_mirror_stage_rejects_wrong_source_for_correct_target():
+    """qa_corrected_article declares mirrors_from=writer_article. Asking
+    it to mirror from perspective_clusters → mismatch."""
+    tb = TopicBus()
+    with pytest.raises(MirrorMismatchError, match="declares mirrors_from"):
+        mirror_stage("qa_corrected_article", "perspective_clusters", tb)
+
+
+# ---------------------------------------------------------------------------
+# finalize_run
+# ---------------------------------------------------------------------------
+
+
+def test_finalize_run_aggregates_manifest_entries():
+    entries = [
+        TopicManifestEntry(
+            topic_id="tp-2026-04-30-001",
+            topic_slug="topic-one",
+            status="success",
+            stages_completed=["init_run", "curator", "editor", "writer", "qa"],
+        ),
+        {
+            "topic_id": "tp-2026-04-30-002",
+            "topic_slug": "topic-two",
+            "status": "failed",
+            "stages_completed": ["init_run", "curator"],
+        },
+    ]
+    finalize = make_finalize_run(entries)
+
+    rb = RunBus()
+    rb.run_id = "run-2026-04-30-abc"
+    rb.run_date = "2026-04-30"
+    rb.run_variant = "production"
+
+    rb = asyncio.run(finalize(rb))
+
+    assert len(rb.run_topic_manifest) == 2
+    assert rb.run_topic_manifest[0]["topic_id"] == "tp-2026-04-30-001"
+    assert rb.run_topic_manifest[0]["status"] == "success"
+    assert rb.run_topic_manifest[1]["status"] == "failed"
+    # All entries are dicts (model_dump'd) for downstream consumption
+    assert all(isinstance(e, dict) for e in rb.run_topic_manifest)
+
+
+def test_finalize_run_validates_dict_entries():
+    """A dict that doesn't match TopicManifestEntry's shape must raise."""
+    finalize = make_finalize_run(
+        [{"topic_id": "x", "topic_slug": "y", "status": "bogus"}]
+    )
+    rb = RunBus()
+    with pytest.raises(Exception):  # pydantic.ValidationError
+        asyncio.run(finalize(rb))
+
+
+def test_finalize_run_metadata():
+    finalize = make_finalize_run(())
+    meta = get_stage_meta(finalize)
+    assert meta.kind == "run"
+    assert meta.reads == ("run_id", "run_date", "run_variant")
+    assert meta.writes == ("run_topic_manifest",)

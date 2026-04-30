@@ -50,6 +50,14 @@ class StageReadOnlyViolationError(StageError):
     """A topic-stage mutated its read-only RunBus proxy."""
 
 
+class StageInputError(StageError):
+    """A stage's external input (file on disk, etc.) is missing or unreadable.
+
+    Distinct from StagePreconditionError: pre-conditions check Bus-slot presence,
+    StageInputError flags external resources outside the Bus contract.
+    """
+
+
 # ---------------------------------------------------------------------------
 # Metadata
 # ---------------------------------------------------------------------------
@@ -273,6 +281,7 @@ def validate_postconditions(
 
 __all__ = [
     "StageError",
+    "StageInputError",
     "StageKind",
     "StageMeta",
     "StagePostconditionError",
