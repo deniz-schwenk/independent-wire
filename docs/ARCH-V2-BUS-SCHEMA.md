@@ -61,25 +61,37 @@ Where an agent semantically "modifies" data produced earlier (QA corrects the Wr
 
 **The pattern:**
 
-1. The modification target slot (e.g. `qa_corrected_article`) is initialised with an **empty default** — nested fields are empty strings, empty lists, empty dicts depending on type. The slot exists in the schema from TopicBus construction onward, but its content is empty until later.
-2. The modifying agent emits **only the fields it actually changes**. Fields it does not change are emitted as empty (empty string, empty list, `null` — the agent's prompt declares the convention).
-3. After the agent runs, a **deterministic mirror stage** walks the target slot and the source slot side-by-side. For every field that is empty in the target slot, it copies the value from the source slot.
+Two granularities exist depending on the data structure of the slot:
 
-**The result:**
+**(a) Slot-level empty-then-fill** — for slots whose content is monolithic (a single article object, a single string, etc.) where partial sub-field updates would not save meaningful tokens or where Python has no sub-structure to merge into. Used by `qa_corrected_article`.
+
+1. The slot is initialised empty (`{}` for a dict-typed slot).
+2. The agent emits the full slot content when modifications apply, or omits the slot entirely from its output when no modifications apply.
+3. After the agent runs, the deterministic mirror stage checks `is_empty(target_slot)`. If empty, the entire source slot is copied into the target slot. If non-empty, the target slot is preserved as-is.
+
+**(b) Per-element empty-then-fill** — for slots whose content is a structured collection (e.g. a list of cluster objects, each with an `id`) where the agent can deliver per-element deltas and Python can merge by element identity. Used by `perspective_clusters_synced`.
+
+1. The slot is initialised empty (`[]` for a list-typed slot).
+2. The agent emits only the elements it changed, each carrying the element identifier (`id`) plus only the changed fields. Unchanged elements are not in the agent's output.
+3. After the agent runs, the deterministic mirror stage walks the source slot. For each element: if a delta exists in the target slot (matched by `id`), the delta's fields are applied on top of the source-element values. If no delta exists, the source-element is copied verbatim into the target slot.
+
+The choice of granularity is a property of the slot, declared in the schema alongside the `mirrors_from` annotation. Granularity (a) is the default; granularity (b) is opt-in for slots where per-element merge is meaningful.
+
+**The result (both granularities):**
 
 - The target slot is always fully populated after the mirror stage runs.
 - Render layers read the target slot directly without conditional fallback logic.
-- Agents save tokens — they do not re-emit content they did not change.
-- The pipeline's data routing is deterministic: empty means unchanged, non-empty means modified. No agent has to decide whether to pass-through.
+- Agents save tokens — they do not re-emit content they did not change. For granularity (a) on clean runs (no modifications), the agent omits the slot entirely; the cost saving is the entire slot's worth of tokens. For granularity (b) on partially-clean runs, the cost saving is the unchanged elements' worth of tokens.
+- The pipeline's data routing is deterministic: empty target means "no changes from this agent", non-empty target means "these are the modifications". No agent has to decide whether to pass-through.
 
 **Schema metadata:**
 
 Each modification target slot is annotated with a `mirrors_from` schema attribute pointing at its source slot. The mirror stage is generic — it reads `mirrors_from` from the schema, locates the source slot, and runs the empty-then-fill walk. No hard-coded mirror logic per slot.
 
-| Modification target | Source slot | Set by `mirror_*` stage after which agent runs |
-|---|---|---|
-| `qa_corrected_article` | `writer_article` | after `qa_analyze` |
-| `perspective_clusters_synced` | `perspective_clusters` | after `perspective_sync` (hydrated) or unchanged (production — `perspective_sync` does not run) |
+| Modification target | Source slot | Mirror granularity | Set by `mirror_*` stage after which agent runs |
+|---|---|---|---|
+| `qa_corrected_article` | `writer_article` | slot-level (a) | after `qa_analyze` |
+| `perspective_clusters_synced` | `perspective_clusters` | per-element (b) | after `perspective_sync` (hydrated) or unchanged (production — `perspective_sync` does not run) |
 
 **Definition of "empty":**
 
@@ -95,7 +107,13 @@ Slots that genuinely should remain empty in the target (rare; not currently any)
 
 **Agent-prompt implication:**
 
-Agents that target mirror-pattern slots must have prompts that explicitly instruct empty-on-no-change emission. The QA prompt today emits the full corrected article unconditionally; this must be updated as part of V2 implementation to: *"emit only changed fields. When no correction applies to a field, leave it empty/null. The pipeline mirrors unchanged fields from the source slot after this stage."* Perspective-Sync today already follows this pattern correctly.
+Agents that target mirror-pattern slots must have prompts that match their granularity:
+
+- For slot-level (a) — the QA prompt instructs: "When `proposed_corrections[]` is non-empty, emit the complete `article` object with all four fields. When `proposed_corrections[]` is empty, omit the `article` field entirely from the output." This is the convention shipped in the QA INSTRUCTIONS.md update during V2 implementation; the current V1 prompt emits the full article unconditionally and changes when V2 lands.
+
+- For per-element (b) — the Perspective-Sync prompt instructs: "Emit only changed clusters, each carrying `id` plus only the changed fields. Unchanged clusters and unchanged fields are omitted." This convention is already shipped in the V1 Perspective-Sync prompt and continues unchanged in V2.
+
+The schema declares the granularity per slot; the prompt declares the emission convention. Both must align.
 
 ### 3.4 Granular slots, structured contents
 
@@ -246,10 +264,11 @@ The renumbering stage is the single point where IDs are finalised. Every later a
 |---|---|---|---|---|---|
 | `qa_problems_found` | qa_analyze | `[]` | List of factual problems QA identified | `tp`, `mcp` | — |
 | `qa_proposed_corrections` | qa_analyze | `[]` | One-liner correction per problem, in same order as `qa_problems_found` | `tp`, `mcp` | — |
-| `qa_corrected_article` | qa_analyze + `mirror_qa_corrected` stage | `{headline: "", subheadline: "", body: "", summary: ""}` | After QA emits: fields the agent corrected hold the corrected text; fields the agent did not change are empty. After the mirror stage: empty fields are filled from `writer_article`. Final state always has all four fields populated. | `tp`, `mcp`, `rss` | `writer_article` |
-| `qa_divergences` | qa_analyze | `[]` | Cross-source factual disagreements. References to source IDs are already in `src-NNN` form because QA reads from `final_sources`. | `tp`, `mcp` | — |
+| `qa_corrected_article` | qa_analyze + `mirror_qa_corrected` stage | `{}` (empty dict) | After QA emits: either fully populated with the corrected article (when QA found problems) or remains empty (when QA found no problems and omitted the `article` field). After the mirror stage: if empty, filled completely from `writer_article`; if populated, kept as-is. Final state always has all four article fields populated. | `tp`, `mcp`, `rss` | `writer_article` (slot-level) || `qa_divergences` | qa_analyze | `[]` | Cross-source factual disagreements. References to source IDs are already in `src-NNN` form because QA reads from `final_sources`. | `tp`, `mcp` | — |
 
-Mirror semantics: the QA agent is instructed to emit only changed fields and leave unchanged fields empty. The `mirror_qa_corrected` stage runs after `qa_analyze` and walks the four fields of `qa_corrected_article`. For each empty field, it copies the value from `writer_article`. Final result: a complete corrected article with QA's modifications where applicable and Writer's content elsewhere.
+Mirror semantics: this slot uses **slot-level** empty-then-fill (granularity (a) per Section 3.3). The QA agent is instructed to emit the full `article` object when corrections apply, and to omit the `article` field entirely when no corrections apply. The `mirror_qa_corrected` stage runs after `qa_analyze` and checks if `qa_corrected_article` is empty. If empty (no corrections were emitted), the entire `writer_article` is copied into `qa_corrected_article`. If non-empty (a corrected article was emitted), it is kept as-is.
+
+Schema implication: the QA agent's `article` output field is **optional** (not in the schema's `required` list at the top level), so strict-mode JSON-schema validation accepts outputs without an `article` field. In V1, `article` is `required` and the prompt emits it unconditionally — the V2 schema change and prompt change ship together.
 
 #### 4B.8 Perspective-Sync phase (hydrated variant)
 
@@ -513,7 +532,10 @@ The two pipelines are folded into one generic pipeline runner that takes a stage
 3. **Define the master Bus schemas.** Used for boundary validation, not for in-flight slot writes (those are typed Python).
 4. **Define stage interface.** Function signatures for `run_stage` and `topic_stage`, precondition/postcondition declaration mechanism, validation, read-only proxy enforcement.
 5. **Port deterministic stages.** `init_run`, `select_topics`, `instantiate_topic_buses`, `merge_sources`, `renumber_sources`, `normalize_pre_research`, `compute_source_balance`, `validate_coverage_gaps`, `compose_transparency_card`, `mirror_qa_corrected`, `mirror_perspective_synced`, `attach_hydration_urls`, `assemble_hydration_dossier`, `finalize_run`. Plus the generic `mirror_stage` helper that reads `mirrors_from` schema metadata. These are pure Python and the easiest to test offline.
-6. **Update agent prompts where required.** QA prompt today emits the full corrected article unconditionally; update to empty-then-fill convention ("emit only changed fields, leave unchanged empty/null"). Other agents already follow the V2 convention or do not need it. Update is a precondition for the V2 pipeline to work as designed.
+6. **Update QA-Analyze prompt + schema together.** Three coordinated changes that must ship as a unit:
+   - **Schema change** in `src/schemas.py` — `article` becomes optional in `QA_ANALYZE_SCHEMA` (removed from top-level `required`). Strict-mode validation will then accept outputs that omit the field.
+   - **Prompt change** in `agents/qa_analyze/INSTRUCTIONS.md` — emit `article` only when `proposed_corrections[]` is non-empty; omit otherwise. The Engineer-side prompt has been drafted ahead of V2 implementation; the V2-Architect retrieves it for application during this step.
+   - **Pipeline change** — the `mirror_qa_corrected` stage uses slot-level mirror granularity (Section 3.3 (a)): if `qa_corrected_article` is empty after QA runs, fill from `writer_article`; if non-empty, keep as-is. Other agents already follow the V2 convention or do not need it.
 7. **Anglicise agent and slot names.** Rename `agents/perspektiv/` → `agents/perspective/`, `agents/perspektiv_sync/` → `agents/perspective_sync/`. Update all references in code, schemas, prompts, and documentation. This is the moment.
 8. **Port agent stages.** Each agent gets a thin wrapper stage that knows how to map agent output to its declared TopicBus (or RunBus, for curator and editor) slots. Agent prompts have been updated in step 6 where needed.
 9. **Port render functions.** `render_tp_public`, `render_mcp_response`, `render_rss_entry`, `render_internal_debug`, `compose_bias_card`. All take `(topic_bus, run_bus)`. Visibility-based filtering is generic.
@@ -564,6 +586,7 @@ Not part of the V2 refactor — to be addressed in subsequent workstreams or eva
 ## 10. Decision log
 
 - **2026-04-29 S15:** Architecture decision taken. Granular slots (Variante B2 from internal discussion). Empty-then-fill mirror pattern as the universal modification pattern (Mirror-Stages run after the modifying agent, fill empty fields from the source slot). Maximum slot inventory regardless of variant. Big-bang migration with `v1-final` git tag as rollback. Hierarchical Bus separation (Variante C: RunBus + TopicBus) — the pipeline's natural shape is a single run dispatching N topic-productions, the architecture mirrors that shape directly. TopicBuses live in the Pipeline Runner during execution (not in the RunBus); RunBus learns about them only at the end via `run_topic_manifest`.
+- **2026-04-29 S15:** Mirror-pattern formalised in two granularities — slot-level (a) for monolithic slots like `qa_corrected_article` (omit-when-empty), and per-element (b) for structured collections like `perspective_clusters_synced` (delta-list). Granularity declared in the schema alongside `mirrors_from`. The QA agent prompt was drafted by the Engineer at end of S15 in anticipation of V2 — three coordinated changes (schema + prompt + pipeline) ship together during V2 Step 6.
 - **2026-04-29 S15:** `max_produce` modelled as a RunBus slot, populated by `init_run` from the `--max-produce` CLI flag (default 3). Future configuration-file support is additive and out of scope for V2.
 - **2026-04-29 S15:** Bias Card modelled as a multi-slot derived render output (Section 4B.12), not a single TopicBus slot. The five Vision dimensions (language, source, geographical, selection, framing) are explicitly mapped to existing slots and surfaced via `compose_bias_card`. This makes the Vision-promised five dimensions visible in the public TP without inventing new state.
 - **2026-04-29 S15:** Visibility modelled as Pydantic field-metadata on the schema. Render functions filter generically by visibility tag rather than hand-listing slot names. Documentation tables are explanatory; the schema is authoritative.

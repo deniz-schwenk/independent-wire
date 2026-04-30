@@ -54,3 +54,9 @@ CLAUDE.md
 docs/handoffs/
 docs/archive/
 docs/COST-OPTIMIZATION-ANALYSIS.md
+
+# Architect workspace — local only, never committed
+briefs/
+BRIEF-*.md
+PROMPT-ENGINEER-*.md
+_pre_v2_archive/
