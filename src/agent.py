@@ -13,6 +13,7 @@ import os
 import random
 import time
 from pathlib import Path
+from typing import Any
 
 import httpx
 from openai import AsyncOpenAI, APIStatusError
@@ -60,6 +61,41 @@ class AgentAPIError(AgentError):
 
 class AgentTimeoutError(AgentError):
     """Raised when the LLM API call times out."""
+
+
+def _format_tokens_for_log(total_tokens: int, usage_missing_count: int) -> str:
+    """Render a tokens-used display string for the agent's completion log.
+
+    OpenRouter occasionally returns responses with ``usage = None`` or with
+    ``usage.total_tokens`` absent — observed during the V2-10 smoke on a
+    long-running Curator call that produced valid output but logged
+    ``0 tokens``. Rather than silently report ``0`` we surface
+    ``"unknown"`` (when no usable usage was observed at all) or
+    ``"{N}+ (usage missing on K responses)"`` (when partial usage was
+    observed but K responses lacked it).
+    """
+    if usage_missing_count > 0 and total_tokens == 0:
+        return "unknown"
+    if usage_missing_count > 0:
+        return f"{total_tokens}+ (usage missing on {usage_missing_count} responses)"
+    return str(total_tokens)
+
+
+def _extract_response_tokens(response: Any) -> tuple[int, bool]:
+    """Return ``(tokens, observed)`` from an OpenAI-style chat-completion.
+
+    ``observed`` is True when the response carried a non-None ``usage``
+    object whose ``total_tokens`` field was a positive integer; False
+    otherwise (callers can count missing observations to surface the
+    log-display caveat).
+    """
+    usage = getattr(response, "usage", None)
+    if usage is None:
+        return 0, False
+    total = getattr(usage, "total_tokens", None)
+    if total is None or not isinstance(total, int) or total < 0:
+        return 0, False
+    return total, True
 
 
 class Agent:
@@ -503,15 +539,16 @@ class Agent:
         fight that.
 
         Returns: (final_content, structured_or_none, additional_tokens_used,
-                  additional_cost_usd, cost_reported_any)
+                  additional_cost_usd, cost_reported_any, additional_usage_missing_count)
         """
         additional_tokens = 0
         additional_cost = 0.0
         cost_reported = False
+        usage_missing_count = 0
 
         parsed = self._parse_json(content)
         if parsed is not None:
-            return content, parsed, 0, 0.0, False
+            return content, parsed, 0, 0.0, False, 0
 
         corrective_message = (
             "Your previous response could not be parsed as valid JSON. "
@@ -535,7 +572,10 @@ class Agent:
             )
             choice = response.choices[0]
             content = choice.message.content or ""
-            additional_tokens += response.usage.total_tokens if response.usage else 0
+            tokens, observed = _extract_response_tokens(response)
+            additional_tokens += tokens
+            if not observed:
+                usage_missing_count += 1
             cost = self._extract_cost_usd(response)
             if cost is not None:
                 additional_cost += cost
@@ -543,14 +583,14 @@ class Agent:
 
             parsed = self._parse_json(content)
             if parsed is not None:
-                return content, parsed, additional_tokens, additional_cost, cost_reported
+                return content, parsed, additional_tokens, additional_cost, cost_reported, usage_missing_count
 
         logger.warning(
             "Agent '%s': structured output parsing failed after %d retries",
             self.name,
             MAX_STRUCTURED_RETRIES,
         )
-        return content, None, additional_tokens, additional_cost, cost_reported
+        return content, None, additional_tokens, additional_cost, cost_reported, usage_missing_count
 
     async def run(
         self,
@@ -588,6 +628,7 @@ class Agent:
         total_tokens = 0
         total_cost_usd = 0.0
         cost_reported = False
+        usage_missing_count = 0
         all_tool_calls: list[dict] = []
 
         # Tool-call loop
@@ -598,7 +639,10 @@ class Agent:
             choice = response.choices[0]
             resp_message = choice.message
 
-            total_tokens += response.usage.total_tokens if response.usage else 0
+            tokens, observed = _extract_response_tokens(response)
+            total_tokens += tokens
+            if not observed:
+                usage_missing_count += 1
             cost = self._extract_cost_usd(response)
             if cost is not None:
                 total_cost_usd += cost
@@ -646,12 +690,14 @@ class Agent:
                 extra_tokens,
                 extra_cost,
                 extra_cost_reported,
+                extra_usage_missing,
             ) = await self._parse_or_retry_structured(
                 messages, content, output_schema, tool_defs,
             )
             total_tokens += extra_tokens
             total_cost_usd += extra_cost
             cost_reported = cost_reported or extra_cost_reported
+            usage_missing_count += extra_usage_missing
 
         if not cost_reported:
             logger.warning(
@@ -661,11 +707,22 @@ class Agent:
                 model_used,
             )
 
+        if usage_missing_count > 0 and duration > 30.0:
+            logger.warning(
+                "Agent '%s': provider did not report token usage on %d "
+                "response(s) over a %.1fs call; tokens_used reflects only "
+                "responses that did report usage. Likely an OpenRouter "
+                "response-shape variance — output is otherwise correct.",
+                self.name,
+                usage_missing_count,
+                duration,
+            )
+
         logger.info(
-            "Agent '%s': completed in %.1fs, %d tokens, %d tool calls",
+            "Agent '%s': completed in %.1fs, %s tokens, %d tool calls",
             self.name,
             duration,
-            total_tokens,
+            _format_tokens_for_log(total_tokens, usage_missing_count),
             len(all_tool_calls),
         )
 

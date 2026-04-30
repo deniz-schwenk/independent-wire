@@ -350,3 +350,93 @@ async def test_agent_raises_after_max_json_decode_retries(prompt_file: str) -> N
 
     with pytest.raises(AgentAPIError, match="Malformed API response"):
         await agent.run("test message")
+
+
+# ---------------------------------------------------------------------------
+# Bug-4 — token-usage logging when the provider omits `usage`
+# ---------------------------------------------------------------------------
+
+
+def test_format_tokens_for_log_unknown_when_zero_and_missing():
+    from src.agent import _format_tokens_for_log
+    assert _format_tokens_for_log(0, 1) == "unknown"
+    assert _format_tokens_for_log(0, 5) == "unknown"
+
+
+def test_format_tokens_for_log_partial_when_some_observed_some_missing():
+    from src.agent import _format_tokens_for_log
+    out = _format_tokens_for_log(1234, 2)
+    assert "1234+" in out
+    assert "missing on 2" in out
+
+
+def test_format_tokens_for_log_clean_count_when_all_observed():
+    from src.agent import _format_tokens_for_log
+    assert _format_tokens_for_log(1234, 0) == "1234"
+    assert _format_tokens_for_log(0, 0) == "0"
+
+
+def test_extract_response_tokens_counts_observed_usage():
+    from src.agent import _extract_response_tokens
+    response = MagicMock()
+    response.usage.total_tokens = 4321
+    tokens, observed = _extract_response_tokens(response)
+    assert tokens == 4321
+    assert observed is True
+
+
+def test_extract_response_tokens_handles_missing_usage_object():
+    from src.agent import _extract_response_tokens
+    response = MagicMock()
+    response.usage = None
+    tokens, observed = _extract_response_tokens(response)
+    assert tokens == 0
+    assert observed is False
+
+
+def test_extract_response_tokens_handles_missing_total_tokens_field():
+    from src.agent import _extract_response_tokens
+    response = MagicMock()
+    response.usage.total_tokens = None
+    tokens, observed = _extract_response_tokens(response)
+    assert tokens == 0
+    assert observed is False
+
+
+@pytest.mark.asyncio
+async def test_agent_run_logs_unknown_when_response_usage_is_none(
+    prompt_file: str, caplog
+) -> None:
+    """Bug-4 regression: provider returns response with usage=None.
+    Agent must log 'unknown' for tokens AND emit a WARNING when the call
+    duration is non-trivial. Output is otherwise correct."""
+    import logging
+    agent = Agent(
+        name="test",
+        model=MODEL,
+        system_prompt_path=prompt_file, instructions_path=prompt_file,
+        api_key="fake-key-for-unit-test",
+    )
+
+    mock_response = MagicMock()
+    mock_response.choices = [MagicMock()]
+    mock_response.choices[0].message.content = "ok"
+    mock_response.choices[0].message.tool_calls = None
+    mock_response.usage = None  # <-- the bug-4 case
+    mock_response.model = MODEL
+
+    agent._client.chat.completions.create = AsyncMock(return_value=mock_response)
+
+    with caplog.at_level(logging.INFO):
+        result = await agent.run("test message")
+
+    # Output is correct
+    assert result.content == "ok"
+    # tokens_used in AgentResult stays 0 (downstream API stable)
+    assert result.tokens_used == 0
+    # But the log line surfaces "unknown" rather than silently reporting 0
+    completed_lines = [r.message for r in caplog.records if "completed in" in r.message]
+    assert completed_lines, "agent must emit a 'completed in' log line"
+    assert "unknown" in completed_lines[-1], (
+        f"expected 'unknown' in log when usage=None; got {completed_lines[-1]!r}"
+    )
