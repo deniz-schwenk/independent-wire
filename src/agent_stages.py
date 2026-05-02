@@ -25,10 +25,13 @@ V1 references for the deterministic post-processing each wrapper folds in:
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
+import math
 import re
 import unicodedata
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
@@ -1286,6 +1289,326 @@ class BiasLanguageStage(_AgentStageBase):
 
 
 # ---------------------------------------------------------------------------
+# Hydration phase helpers (V2-11a — internalized from src/hydration_aggregator)
+# ---------------------------------------------------------------------------
+
+
+_PHASE1_USER_MESSAGE = (
+    "Analyze the articles in the provided context per the STEPS and RULES in "
+    "your system prompt. Return a single JSON object with one field: "
+    "article_analyses."
+)
+_PHASE2_USER_MESSAGE = (
+    "Synthesize cross-article observations from the provided article_analyses "
+    "and article_metadata. Return a single JSON object with "
+    "preliminary_divergences and coverage_gaps."
+)
+_PHASE1_MAX_RETRIES = 2
+
+# Rule-6 enum from PHASE1.md.
+_ACTOR_TYPE_ENUM: frozenset[str] = frozenset({
+    "government",
+    "legislature",
+    "judiciary",
+    "military",
+    "industry",
+    "civil_society",
+    "academia",
+    "media",
+    "international_org",
+    "affected_community",
+})
+
+
+class _AggregatorValidationError(ValueError):
+    """Raised when the Aggregator's response violates Rule 1 or Rule 6."""
+
+
+def _sorted_counter(counter: Counter[str]) -> dict[str, int]:
+    # Descending count, ascending key for ties. dict in Python 3.7+ preserves
+    # insertion order, so the returned dict iterates in the documented order.
+    items = sorted(counter.items(), key=lambda kv: (-kv[1], kv[0]))
+    return {key: count for key, count in items}
+
+
+def _prepare_article(record: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "url": record.get("url"),
+        "title": record.get("title"),
+        "outlet": record.get("outlet"),
+        "language": record.get("language"),
+        "country": record.get("country"),
+        "extracted_text": record.get("extracted_text"),
+        "estimated_date": None,
+    }
+
+
+def _distribute_chunks(articles: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
+    """Split articles into chunks of 5–10 items (1 chunk of N when N<5).
+
+    Formula: ``num_chunks = max(1, ceil(N / 10))``. Remainder (``extras``)
+    placed on the trailing chunks so chunks grow monotonically: e.g. N=11
+    → [5, 6]; N=25 → [8, 8, 9].
+    """
+    n = len(articles)
+    if n == 0:
+        return []
+    num_chunks = max(1, math.ceil(n / 10))
+    base_size = n // num_chunks
+    extras = n % num_chunks
+    chunks: list[list[dict[str, Any]]] = []
+    start = 0
+    for i in range(num_chunks):
+        size = base_size + (1 if i >= num_chunks - extras else 0)
+        chunks.append(articles[start:start + size])
+        start += size
+    return chunks
+
+
+def _build_article_metadata(
+    successful: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    return [
+        {
+            "article_index": i,
+            "language": r.get("language"),
+            "country": r.get("country"),
+            "outlet": r.get("outlet"),
+        }
+        for i, r in enumerate(successful)
+    ]
+
+
+def _validate_phase1_output(
+    output: dict[str, Any],
+    *,
+    expected_count: int,
+) -> tuple[list[dict[str, Any]], set[int]]:
+    """Extract valid analyses and report missing chunk-local indices.
+
+    Returns ``(analyses, missing_indices)``. Rule 6 (actor type enum) still
+    raises — it is a structural content error that retry cannot fix.
+    """
+    analyses_raw = output.get("article_analyses")
+    if not isinstance(analyses_raw, list):
+        raise _AggregatorValidationError(
+            "article_analyses missing or not a list"
+        )
+    valid: list[dict[str, Any]] = []
+    seen: set[int] = set()
+    for entry in analyses_raw:
+        if not isinstance(entry, dict):
+            continue
+        idx = entry.get("article_index")
+        if not isinstance(idx, int) or not (0 <= idx < expected_count):
+            continue
+        if idx in seen:
+            continue
+        for actor in entry.get("actors_quoted") or []:
+            if not isinstance(actor, dict):
+                continue
+            actor_type = actor.get("type")
+            if actor_type not in _ACTOR_TYPE_ENUM:
+                raise _AggregatorValidationError(
+                    f"Rule 6 violation: invalid actor type {actor_type!r} "
+                    f"(article_index={idx}, actor={actor.get('name')!r})"
+                )
+        seen.add(idx)
+        valid.append(entry)
+    missing = set(range(expected_count)) - seen
+    return valid, missing
+
+
+async def _call_phase1(
+    assignment: dict[str, Any],
+    articles: list[dict[str, Any]],
+    *,
+    agent: Agent,
+) -> dict[str, Any]:
+    payload = {
+        "assignment": {
+            "title": assignment.get("title"),
+            "selection_reason": assignment.get("selection_reason"),
+        },
+        "articles": articles,
+    }
+    result = await agent.run(
+        _PHASE1_USER_MESSAGE,
+        context=payload,
+    )
+    structured = result.structured
+    if not isinstance(structured, dict):
+        raise _AggregatorValidationError(
+            f"Phase 1 chunk returned no parseable JSON object for assignment "
+            f"{assignment.get('title')!r}"
+        )
+    return structured
+
+
+async def _run_phase1_chunk(
+    assignment: dict[str, Any],
+    chunk_articles: list[dict[str, Any]],
+    *,
+    chunk_idx: int,
+    agent: Agent,
+) -> list[dict[str, Any]]:
+    """Run one Phase-1 call with up to two intelligent-retry follow-ups.
+
+    Retries re-request only the missing article indices (re-indexed from 0
+    in the retry call). Returns per-chunk analyses sorted by chunk-local
+    article_index (0..len(chunk_articles)-1).
+    """
+    analyses: list[dict[str, Any]] = []
+    remaining_articles = list(chunk_articles)
+    remaining_original_positions = list(range(len(chunk_articles)))
+
+    for attempt in range(_PHASE1_MAX_RETRIES + 1):
+        output = await _call_phase1(assignment, remaining_articles, agent=agent)
+        returned, missing_local = _validate_phase1_output(
+            output, expected_count=len(remaining_articles),
+        )
+
+        for a in returned:
+            local_idx = a["article_index"]
+            chunk_local_idx = remaining_original_positions[local_idx]
+            a["article_index"] = chunk_local_idx
+            analyses.append(a)
+
+        if not missing_local:
+            break
+
+        if attempt < _PHASE1_MAX_RETRIES:
+            missing_global = sorted(
+                remaining_original_positions[i] for i in missing_local
+            )
+            logger.warning(
+                "Phase 1 chunk %d retry %d: missing chunk-local indices %s",
+                chunk_idx, attempt + 1, missing_global,
+            )
+            missing_sorted = sorted(missing_local)
+            remaining_articles = [remaining_articles[i] for i in missing_sorted]
+            remaining_original_positions = [
+                remaining_original_positions[i] for i in missing_sorted
+            ]
+
+    if len(analyses) != len(chunk_articles):
+        got = sorted(a["article_index"] for a in analyses)
+        missing = sorted(set(range(len(chunk_articles))) - set(got))
+        raise _AggregatorValidationError(
+            f"Rule 1 violation: chunk {chunk_idx} of {len(chunk_articles)} "
+            f"articles got only {len(analyses)} analyses after "
+            f"{_PHASE1_MAX_RETRIES} retries; still missing {missing}"
+        )
+
+    analyses.sort(key=lambda a: a["article_index"])
+    return analyses
+
+
+def _merge_phase1_results(
+    phase1_results: list[list[dict[str, Any]]],
+    chunks: list[list[dict[str, Any]]],
+) -> list[dict[str, Any]]:
+    """Flatten chunk outputs to a single globally-indexed analyses array.
+
+    Each chunk's per-article ``article_index`` is in [0..chunk_size-1]; the
+    merged output rewrites to [0..N-1] across the full input corpus,
+    preserving chunk order as provided by ``_distribute_chunks``.
+    """
+    merged: list[dict[str, Any]] = []
+    global_offset = 0
+    for chunk_analyses, chunk_articles in zip(phase1_results, chunks):
+        for a in chunk_analyses:
+            rewritten = dict(a)
+            rewritten["article_index"] = a["article_index"] + global_offset
+            merged.append(rewritten)
+        global_offset += len(chunk_articles)
+    merged.sort(key=lambda a: a["article_index"])
+    return merged
+
+
+async def _run_phase2_reducer(
+    assignment: dict[str, Any],
+    all_analyses: list[dict[str, Any]],
+    article_metadata: list[dict[str, Any]],
+    *,
+    agent: Agent,
+) -> dict[str, Any]:
+    if not all_analyses:
+        return {"preliminary_divergences": [], "coverage_gaps": []}
+    payload = {
+        "assignment": {
+            "title": assignment.get("title"),
+            "selection_reason": assignment.get("selection_reason"),
+        },
+        "article_analyses": all_analyses,
+        "article_metadata": article_metadata,
+    }
+    logger.info("Phase 2 reducer: %d analyses input", len(all_analyses))
+    result = await agent.run(
+        _PHASE2_USER_MESSAGE,
+        context=payload,
+    )
+    structured = result.structured
+    if not isinstance(structured, dict):
+        raise _AggregatorValidationError(
+            f"Phase 2 reducer returned no parseable JSON object for assignment "
+            f"{assignment.get('title')!r}"
+        )
+    return {
+        "preliminary_divergences": list(
+            structured.get("preliminary_divergences") or []
+        ),
+        "coverage_gaps": list(structured.get("coverage_gaps") or []),
+    }
+
+
+def _build_coverage_summary(prepared_dossier: dict[str, Any]) -> dict[str, Any]:
+    """Compute the compact coverage summary for the Hydrated Researcher Planner.
+
+    Args:
+        prepared_dossier: The return value of ``build_prepared_dossier``.
+
+    Returns:
+        A dict with exactly five keys:
+        ``total_sources`` (int),
+        ``languages_covered`` (mapping iso_code → count),
+        ``countries_covered`` (mapping country name → count),
+        ``stakeholder_types_present`` (mapping actor type → count),
+        ``coverage_gaps`` (list of strings, pass-through).
+
+        All three count-dicts are ordered by descending count, then
+        alphabetically for ties. Output is deterministic for a given input.
+    """
+    sources = prepared_dossier.get("sources") or []
+
+    languages: Counter[str] = Counter()
+    countries: Counter[str] = Counter()
+    stakeholder_types: Counter[str] = Counter()
+
+    for source in sources:
+        language = source.get("language")
+        if language:
+            languages[language] += 1
+        country = source.get("country")
+        if country:
+            countries[country] += 1
+        for actor in source.get("actors_quoted") or []:
+            if not isinstance(actor, dict):
+                continue
+            actor_type = actor.get("type")
+            if actor_type:
+                stakeholder_types[actor_type] += 1
+
+    return {
+        "total_sources": len(sources),
+        "languages_covered": _sorted_counter(languages),
+        "countries_covered": _sorted_counter(countries),
+        "stakeholder_types_present": _sorted_counter(stakeholder_types),
+        "coverage_gaps": list(prepared_dossier.get("coverage_gaps") or []),
+    }
+
+
+# ---------------------------------------------------------------------------
 # Wrapper: ResearcherHydratedPlanStage  (topic, hydrated only)
 # ---------------------------------------------------------------------------
 
@@ -1309,10 +1632,8 @@ class ResearcherHydratedPlanStage(_AgentStageBase):
     async def __call__(
         self, topic_bus: TopicBus, run_bus: RunBusReadOnly
     ) -> TopicBus:
-        from src.hydration_aggregator import build_coverage_summary
-
         assignment = topic_bus.editor_selected_topic
-        coverage_summary = build_coverage_summary(
+        coverage_summary = _build_coverage_summary(
             topic_bus.hydration_pre_dossier.model_dump()
         )
         message = (
@@ -1363,14 +1684,6 @@ class HydrationPhase1Stage(_AgentStageBase):
     async def __call__(
         self, topic_bus: TopicBus, run_bus: RunBusReadOnly
     ) -> TopicBus:
-        import asyncio
-
-        from src.hydration_aggregator import (
-            _distribute_chunks,
-            _prepare_article,
-            _run_phase1_chunk,
-        )
-
         assignment = topic_bus.editor_selected_topic
         fetch_results = list(topic_bus.hydration_fetch_results or [])
         successful = [
@@ -1394,9 +1707,6 @@ class HydrationPhase1Stage(_AgentStageBase):
                 for i, chunk in enumerate(chunks)
             ]
         )
-        # Merge chunk results — adapted from src/hydration_aggregator._merge_phase1_results
-        # which expects (chunk_results, chunks) and re-indexes globally.
-        from src.hydration_aggregator import _merge_phase1_results
         all_analyses = _merge_phase1_results(chunk_results, chunks)
         return topic_bus.model_copy(update={"hydration_phase1_analyses": all_analyses})
 
@@ -1435,11 +1745,6 @@ class HydrationPhase2Stage(_AgentStageBase):
     async def __call__(
         self, topic_bus: TopicBus, run_bus: RunBusReadOnly
     ) -> TopicBus:
-        from src.hydration_aggregator import (
-            _build_article_metadata,
-            _run_phase2_reducer,
-        )
-
         assignment = topic_bus.editor_selected_topic
         successful = [
             r
