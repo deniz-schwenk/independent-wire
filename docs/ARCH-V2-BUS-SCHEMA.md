@@ -1,8 +1,8 @@
 # V2 Pipeline Architecture — Bus Schema
 
-**Status:** Architecture decision, S15 (2026-04-29). Pre-implementation.
-**Replaces:** Ad-hoc Topic Package construction in `src/pipeline.py` and `src/pipeline_hydrated.py`.
-**Migration approach:** Big-bang refactor. The current V1 pipeline is git-tagged as `v1-final` before V2 work starts, so V1 remains accessible as a rollback baseline if V2 implementation gets stuck.
+**Status:** Implemented and shipped (May 2026). V1 deleted in commit 19348f3 (V2-11b).
+**Authoritative for:** the operational V2 pipeline as it lives in `src/bus.py`, `src/stage.py`, `src/stages/`, `src/agent_stages.py`, `src/render.py`, and `src/runner/`.
+**History:** This document was originally written 2026-04-29 as a pre-implementation architecture decision. The V2 work-stream shipped V2-01 through V2-11b across April–May 2026. See §10 Decision log for the complete migration sequence.
 
 ---
 
@@ -177,6 +177,7 @@ The RunBus is created once per pipeline run and lives for the duration of the ru
 | `run_variant` | init | `""` | `"production"` or `"hydrated"` | `internal` |
 | `max_produce` | init | `3` | The number of TopicBuses this run intends to dispatch. Read by `select_topics` (top-N selection) and by `finalize_run` (intent-vs-actual reporting). Set by `init_run` from the `--max-produce` CLI flag (default 3). | `internal` |
 | `run_stage_log` | init | `[]` | List of `{stage, started_at, ended_at, status, scope}` per executed stage. `scope` is `"run"` or `"topic:{slug}"`. | `internal` |
+| `previous_coverage` | init (`init_run` reads recent published TPs from disk) | `[]` | Last ~7 days of published TP summaries: `[{tp_id, date, headline, slug, summary}]`. Read by Editor stage to inform follow-up decisions. | `internal` |
 | `run_topic_manifest` | init / `finalize_run` | `[]` | After all topic stages complete: list of `{topic_id, topic_slug, status, stages_completed}` summary entries — one per dispatched TopicBus. Does NOT carry the TopicBus contents themselves. | `internal` |
 
 The Pipeline Runner holds the actual collection of TopicBus instances during topic-stage execution. The RunBus learns about that collection only at the end, via the manifest written by `finalize_run`.
@@ -264,7 +265,8 @@ The renumbering stage is the single point where IDs are finalised. Every later a
 |---|---|---|---|---|---|
 | `qa_problems_found` | qa_analyze | `[]` | List of factual problems QA identified | `tp`, `mcp` | — |
 | `qa_proposed_corrections` | qa_analyze | `[]` | One-liner correction per problem, in same order as `qa_problems_found` | `tp`, `mcp` | — |
-| `qa_corrected_article` | qa_analyze + `mirror_qa_corrected` stage | `{}` (empty dict) | After QA emits: either fully populated with the corrected article (when QA found problems) or remains empty (when QA found no problems and omitted the `article` field). After the mirror stage: if empty, filled completely from `writer_article`; if populated, kept as-is. Final state always has all four article fields populated. | `tp`, `mcp`, `rss` | `writer_article` (slot-level) || `qa_divergences` | qa_analyze | `[]` | Cross-source factual disagreements. References to source IDs are already in `src-NNN` form because QA reads from `final_sources`. | `tp`, `mcp` | — |
+| `qa_corrected_article` | qa_analyze + `mirror_qa_corrected` stage | `{}` (empty dict) | After QA emits: either fully populated with the corrected article (when QA found problems) or remains empty (when QA found no problems and omitted the `article` field). After the mirror stage: if empty, filled completely from `writer_article`; if populated, kept as-is. Final state always has all four article fields populated. | `tp`, `mcp`, `rss` | `writer_article` (slot-level) |
+| `qa_divergences` | qa_analyze | `[]` | Cross-source factual disagreements. References to source IDs are already in `src-NNN` form because QA reads from `final_sources`. | `tp`, `mcp` | — |
 
 Mirror semantics: this slot uses **slot-level** empty-then-fill (granularity (a) per Section 3.3). The QA agent is instructed to emit the full `article` object when corrections apply, and to omit the `article` field entirely when no corrections apply. The `mirror_qa_corrected` stage runs after `qa_analyze` and checks if `qa_corrected_article` is empty. If empty (no corrections were emitted), the entire `writer_article` is copied into `qa_corrected_article`. If non-empty (a corrected article was emitted), it is kept as-is.
 
@@ -378,14 +380,19 @@ RUN STAGES (operate on RunBus again, run once after all topic stages complete)
 
 ### 5.2 Stage list (hydrated variant)
 
-Run stages 1–5 identical to production. Topic stages diverge after `instantiate_topic_buses`:
+Run stages diverge from production: hydrated adds `attach_hydration_urls_to_assignments` between Editor and `select_topics`. Topic stages then diverge further after `instantiate_topic_buses`. Notably, `mirror_perspective_synced` runs twice in the hydrated topic-stage sequence — once after `enrich_perspective_clusters` (which produces an empty `perspective_clusters_synced` initially; the first mirror does a 1:1 fill from `perspective_clusters`), then a second time after `perspective_sync` (which has emitted per-element deltas; the second mirror merges those deltas onto the existing fill). The mirror stage is idempotent for both granularities, so the double dispatch is safe.
 
 ```
-RUN STAGES — same as production stages 1–5
+RUN STAGES (operate on RunBus)
+1. init_run                                 — Same as production stage 1
+2. curator                                  — Same as production stage 2
+3. editor                                   — Same as production stage 3
+4. attach_hydration_urls_to_assignments     — Python: scans run_bus.editor_assignments; for each assignment, looks up cluster source URLs in run_bus.curator_topics_unsliced and writes them into editor_assignments[].raw_data.hydration_urls. Run-stage because it operates on the full editor_assignments list (cross-topic), not on a single TopicBus.
+5. select_topics                            — Same as production stage 4
+6. instantiate_topic_buses                  — Same as production stage 5
 
-TOPIC STAGES (operate on each TopicBus)
-6. attach_hydration_urls          — Python: extracts hydration_urls from editor_selected_topic.raw_data (Curator-side cluster matching happens here)
-7. hydration_fetch                — Python: aiohttp + trafilatura fetch of hydration_urls; populates hydration_fetch_results
+TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
+7. hydration_fetch                — Python: aiohttp + trafilatura fetch of editor_selected_topic.raw_data.hydration_urls; populates hydration_fetch_results
 8. hydration_phase1               — Reads hydration_fetch_results (success-only filter); populates hydration_phase1_analyses
 9. hydration_phase2               — Reads hydration_phase1_analyses + hydration_fetch_results metadata; populates hydration_phase2_corpus
 10. assemble_hydration_dossier    — Python: combines phase1 + phase2 + fetch metadata into hydration_pre_dossier (sources carry hydrate-rsrc-NNN IDs)
@@ -396,22 +403,26 @@ TOPIC STAGES (operate on each TopicBus)
 15. renumber_sources              — Python: assigns final src-NNN IDs; populates final_sources, id_rename_map
 16. normalize_pre_research        — Python: rewrites IDs in merged_preliminary_divergences and merged_coverage_gaps
 17. perspective                   — Same as production stage 12
-18. writer                        — Same as production stage 14
-19. qa_analyze                    — Same as production stage 15
-20. mirror_qa_corrected           — Same as production stage 16
-21. perspective_sync              — Reads perspective_clusters + qa_corrected_article + qa_problems_found + qa_proposed_corrections; emits cluster deltas (only changed fields) into perspective_clusters_synced
-22. mirror_perspective_synced     — Python: empty-then-fill mirror. For clusters where perspective_sync emitted deltas, those are kept; for clusters not in the delta output, the stage copies from perspective_clusters as 1:1.
-23. compute_source_balance        — Same as production stage 17
-24. validate_coverage_gaps        — Same as production stage 18
-25. bias_language                 — Same as production stage 19
-26. compose_transparency_card     — Same as production stage 20
+18. enrich_perspective_clusters   — Python: attaches pc-NNN ids, actors, regions, languages, representation to perspective_clusters
+19. mirror_perspective_synced     — Python: first invocation. perspective_clusters_synced is empty; mirror does 1:1 fill from perspective_clusters.
+20. writer                        — Same as production stage 14
+21. qa_analyze                    — Same as production stage 15
+22. mirror_qa_corrected           — Same as production stage 16
+23. perspective_sync              — Reads perspective_clusters + qa_corrected_article + qa_problems_found + qa_proposed_corrections; emits cluster deltas (only changed fields)
+24. mirror_perspective_synced     — Python: second invocation. For clusters where perspective_sync emitted deltas, those are merged onto the slot's existing content (per-element granularity).
+25. compute_source_balance        — Same as production stage 17
+26. validate_coverage_gaps        — Same as production stage 18
+27. bias_language                 — Same as production stage 19
+28. compose_transparency_card     — Same as production stage 20
 
-RUN STAGES — same as production stages 21–22
+RUN STAGES (operate on RunBus again, run once after all topic stages complete)
+29. render                        — Same as production stage 21
+30. finalize_run                  — Same as production stage 22
 ```
 
-The hydrated variant adds five hydration topic stages and one perspective-sync topic stage. All other stages are identical and reuse the same agent calls.
+The hydrated variant adds one run-stage (`attach_hydration_urls_to_assignments`) between Editor and `select_topics`, plus six hydration/perspective-sync topic stages and a second invocation of `mirror_perspective_synced`. All shared stages reuse the same agent calls and the same deterministic logic.
 
-Note: in production, `mirror_perspective_synced` runs immediately after `perspective` because there is no `perspective_sync` stage. In hydrated, `mirror_perspective_synced` runs after `perspective_sync` so the mirror can fill from `perspective_clusters` only the clusters that the sync agent did not deliver deltas for.
+In production, `mirror_perspective_synced` runs once (after `enrich_perspective_clusters`, with `perspective_clusters_synced` empty — produces a 1:1 fill). In hydrated, the same stage runs twice: once after `enrich_perspective_clusters` (1:1 fill), then again after `perspective_sync` (per-element delta merge over the now-modified slot).
 
 ### 5.3 Stage interface
 
@@ -515,6 +526,8 @@ Result: no agent post-Perspective ever sees a `rsrc-` token. The TP cannot leak 
 
 The S15-era `_normalize_all_source_ids` recursive sweep becomes unnecessary — the architecture makes its purpose structurally redundant.
 
+**ID-flow symmetry across Writer and QA (post-V2-09e).** The Writer reads `final_sources` (already in `src-NNN` form) and emits inline citations as `[src-NNN]` directly — there is no post-Writer body-rewrite stage. The Writer's output `sources[]` array carries `{src_id: src-NNN}` entries (matching `WRITER_SCHEMA.sources[].src_id` in `src/schemas.py`). QA reads the same `final_sources` as its evidence base and emits `[src-NNN]` citations in `qa_corrected_article.body` and in `qa_problems_found[].article_excerpt` / `.explanation`. The pipeline's ID-flow is therefore fully symmetric end-to-end: every agent that reads sources reads the renumbered set, every agent that emits citations emits in `src-NNN` form. The audit-trail field `transparency.article_original.body` is a verbatim capture of the Writer's emit and consequently also in `src-NNN` form — pre-V2-09e it carried `[rsrc-NNN]` because the Writer prompt incorrectly instructed that form despite receiving `src-NNN` IDs. V2-09e corrected the prompt to match the architecture; commit 636fe21 closed Bug-5.
+
 ---
 
 ## 8. Migration plan (big-bang with Git-tag rollback)
@@ -592,6 +605,12 @@ Not part of the V2 refactor — to be addressed in subsequent workstreams or eva
 - **2026-04-29 S15:** Visibility modelled as Pydantic field-metadata on the schema. Render functions filter generically by visibility tag rather than hand-listing slot names. Documentation tables are explanatory; the schema is authoritative.
 - **2026-04-29 S15:** Anglicise the agent name `perspektiv` to `perspective` consistently — agent folder, code references, schema slot names, prompts, and documentation. Big-bang is the right moment for this naming consolidation.
 - Architect's reasoning: aggregation surface in V1 is the failure source for five S14/S15 bugs. Fixing the bugs at the structural level (one RunBus, N TopicBuses, one stage list, one render layer, one universal mirror pattern) is preferred over patching aggregation logic.
+- **2026-04-30 V2-01 through V2-09b:** V2 implementation phases shipped per the §8 plan. Bus classes, stage interface, deterministic stages, agent-stage wrappers, render layer, runner package, anglicisation (perspektiv → perspective), CLI integration. 333 V2 tests green at the end of V2-09b.
+- **2026-05-01 V2-10 / V2-10b smoke:** End-to-end smoke verified V2 architecture against real LLMs. Five bugs surfaced and patched: `[web-N]` Writer-citation leak (V2-09c2), `run_bus.run_stage_log` empty slot (V2-09c), `[[COVERAGE_STATEMENT]]` template-marker leak (V2-09c2), Curator silent-zero token logging (V2-09c), `rsrc-NNN` audit-trail leak (V2-09e). All five closed; commit 636fe21.
+- **2026-05-01 V2-09e:** Writer + QA prompts corrected to consistent `[src-NNN]` ID form. `WRITER_SCHEMA.sources[].rsrc_id` renamed to `src_id`. ID-flow now fully symmetric end-to-end (see §7).
+- **2026-05-01 V2-10c re-smoke:** All 18 verification items PASS against real LLMs. Bug-5 closed. Spend €0.55. V2 architecture confirmed end-to-end.
+- **2026-05-01 V2-11a:** `src/agent_stages.py` internalised the 7 helpers V2 needed from `src/hydration_aggregator.py` plus their transitive helpers and module-level constants. Lazy imports replaced with direct module-local calls. Pure refactor, +324/-19 lines, single commit. V2 became standalone of the V1-era hydration_aggregator module.
+- **2026-05-01 V2-11b:** V1 source code, V1 tests, V1 spike scripts deleted. AgentResult dataclass relocated from `src/models.py` to `src/agent.py`. 25 files changed, +17/-11,084. The V2 big-bang architecture work-stream closes here at the source level.
 
 ---
 

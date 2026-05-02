@@ -1,5 +1,13 @@
 # Independent Wire — Framework Architecture
 
+> **DEPRECATED FOR PIPELINE ARCHITECTURE.** This document was the V1 architecture reference. The V2 Bus-architecture work-stream (April–May 2026) replaced V1 source-level. Pipeline architecture is now fully described in **`docs/ARCH-V2-BUS-SCHEMA.md`**. V1 source files (`src/pipeline.py`, `src/pipeline_hydrated.py`, `src/hydration_aggregator.py`, `src/hydration_urls.py`, `src/models.py`) were deleted in commit 19348f3 (V2-11b).
+>
+> What this document still describes accurately: the **framework decision** (why Independent Wire builds its own minimal Python framework rather than adopting OpenClaw / Hermes / Nanobot / Paperclip), the **three core abstractions** (Agent, Tool, *and what V1 called Pipeline — replaced in V2 by RunBus + TopicBus + Stage*), and the architectural **reasoning** for those decisions. These have lasting value as the project's first-principles record.
+>
+> What this document no longer describes accurately: V1 pipeline construction, V1 agent invocation patterns inside `Pipeline._produce_single`, V1 hydration aggregation. For the operational pipeline as it exists today, read `docs/ARCH-V2-BUS-SCHEMA.md`.
+
+---
+
 ## Decision
 
 Independent Wire uses its own minimal Python framework instead of OpenClaw, Hermes Agent, Nanobot, or Paperclip. The framework is purpose-built for a **deterministic multi-agent news pipeline** — not a general-purpose personal AI assistant.

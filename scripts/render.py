@@ -760,7 +760,7 @@ def _wrap_non_latin_in_html(text: str) -> str:
 
 
 def build_perspectives(tp: dict) -> str:
-    """Render Perspektiv V2 position_clusters. One cluster = one card,
+    """Render Perspective V2 position_clusters. One cluster = one card,
     with representation badge, summary, and a flat list of quoted actors.
     """
     clusters = tp.get("perspectives", [])
@@ -808,7 +808,7 @@ def build_perspectives(tp: dict) -> str:
 
 
 def build_missing_voices(tp: dict) -> str:
-    """Render Perspektiv V2 missing_positions as a simple bulleted list."""
+    """Render Perspective V2 missing_positions as a simple bulleted list."""
     missing = (
         tp.get("bias_analysis", {})
           .get("perspectives", {})
