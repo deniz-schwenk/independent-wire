@@ -12,14 +12,27 @@ import logging
 import os
 import random
 import time
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 import httpx
 from openai import AsyncOpenAI, APIStatusError
 
-from src.models import AgentResult
 from src.tools.registry import Tool
+
+
+@dataclass
+class AgentResult:
+    """What an agent returns."""
+
+    content: str
+    structured: dict | None = None
+    tool_calls: list[dict] = field(default_factory=list)
+    tokens_used: int = 0
+    cost_usd: float = 0.0
+    model: str = ""
+    duration_seconds: float = 0.0
 
 logger = logging.getLogger(__name__)
 

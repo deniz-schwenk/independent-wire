@@ -1289,7 +1289,7 @@ class BiasLanguageStage(_AgentStageBase):
 
 
 # ---------------------------------------------------------------------------
-# Hydration phase helpers (V2-11a — internalized from src/hydration_aggregator)
+# Hydration phase helpers (V2-11a — internalized from former external module)
 # ---------------------------------------------------------------------------
 
 

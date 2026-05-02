@@ -27,7 +27,7 @@ from src.agent_stages import (
     _unwrap_list,
 )
 from src.bus import EditorAssignment, RunBus, TopicBus
-from src.models import AgentResult
+from src.agent import AgentResult
 from src.stage import (
     StagePostconditionError,
     get_stage_meta,

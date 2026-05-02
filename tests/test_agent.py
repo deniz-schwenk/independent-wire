@@ -9,8 +9,7 @@ import tempfile
 
 import pytest
 
-from src.agent import Agent, AgentError
-from src.models import AgentResult
+from src.agent import Agent, AgentError, AgentResult
 from src.tools.registry import Tool
 
 HAS_API_KEY = bool(os.environ.get("OPENROUTER_API_KEY"))
