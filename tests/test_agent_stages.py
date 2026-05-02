@@ -1280,7 +1280,7 @@ def test_qa_analyze_problems_found_path():
                 {
                     "article_excerpt": "Original body [src-001].",
                     "problem": "factually_incorrect",
-                    "explanation": "Source rsrc-001 reports differently.",
+                    "explanation": "Source src-001 reports differently.",
                 }
             ],
             "proposed_corrections": ["Replace X with Y."],

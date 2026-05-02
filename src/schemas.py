@@ -202,9 +202,9 @@ WRITER_SCHEMA = {
             "items": {
                 "type": "object",
                 "properties": {
-                    "rsrc_id": {"type": "string"},
+                    "src_id": {"type": "string"},
                 },
-                "required": ["rsrc_id"],
+                "required": ["src_id"],
                 "additionalProperties": False,
             },
         },

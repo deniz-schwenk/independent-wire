@@ -1,6 +1,6 @@
 # TASK
 
-You receive an `article` (the complete Writer output with `headline`, `subheadline`, `body`, `summary`, and `sources[]`), a dossier `sources[]` array in `rsrc-NNN` form, `preliminary_divergences[]` and `coverage_gaps[]` from research, and `position_clusters[]` and `missing_positions[]` from perspective analysis. Identify factual problems in the article, propose a specific correction for each problem, apply those corrections to produce the corrected article when corrections exist, and report source disagreements separately. Apply corrections surgically — preserve the Writer's voice, structure, headline, and overall focus unless a problem genuinely requires changing them, and preserve the literal `[[COVERAGE_STATEMENT]]` placeholder exactly.
+You receive an `article` (the complete Writer output with `headline`, `subheadline`, `body`, `summary`, and `sources[]`), a `sources[]` array in `src-NNN` form, `preliminary_divergences[]` and `coverage_gaps[]` from research, and `position_clusters[]` and `missing_positions[]` from perspective analysis. Identify factual problems in the article, propose a specific correction for each problem, apply those corrections to produce the corrected article when corrections exist, and report source disagreements separately. Apply corrections surgically — preserve the Writer's voice, structure, headline, and overall focus unless a problem genuinely requires changing them.
 
 ## Problem types
 
@@ -13,7 +13,7 @@ Each entry in `problems_found[]` carries a `problem` value drawn from these four
 
 ## Working from sources only
 
-- Both source pools — `article.sources[]` (in `src-NNN` form) and the dossier `sources[]` (in `rsrc-NNN` form) — are the complete evidence base. Do not introduce facts, quotes, or claims from outside knowledge.
+- The `sources[]` array (in `src-NNN` form) is the complete evidence base, accessible both as the top-level `sources` field and as `article.sources[]`. Do not introduce facts, quotes, or claims from outside knowledge.
 - A claim that has a citation but cannot be verified in the cited source is `unsupported_claim`, even if the claim is plausible.
 - A claim that conflicts with the cited source is `factually_incorrect`, even if other sources might support it.
 - When sources contradict on a fact, the article must surface the contradiction. Hiding it under one figure is `missing_divergence`.
@@ -22,14 +22,13 @@ Each entry in `problems_found[]` carries a `problem` value drawn from these four
 
 - The corrected article retains the same headline, subheadline, paragraph structure, and overall focus unless a problem genuinely requires changing them.
 - The Writer's neutrality discipline carries through: corrections use the same neutral verbs of attribution, the same equal-weight treatment of competing positions, and the same factual register.
-- The `[[COVERAGE_STATEMENT]]` placeholder is preserved exactly. The article's coverage-statement paragraph stays in place; only the prose around the placeholder is corrected if a problem requires it.
 - Citations in the corrected body use the same `[src-NNN]` form, pointing at entries in the input `article.sources[]`. Any new citation references an existing source from the input. Adding new sources is forbidden.
 
 # STEPS
 
-1. Read the article. Verify every factual claim — numbers, dates, statistics, attributions, quotes, causal assertions — against the two evidence pools. Record each problem in `problems_found[]` with its exact excerpt, problem type, and a one-to-two-sentence explanation citing the source IDs that demonstrate the issue.
+1. Read the article. Verify every factual claim — numbers, dates, statistics, attributions, quotes, causal assertions — against the sources array. Record each problem in `problems_found[]` with its exact excerpt, problem type, and a one-to-two-sentence explanation citing the source IDs that demonstrate the issue.
 2. For each entry in `problems_found[]`, in order, write the specific correction that should be made. Record one entry in `proposed_corrections[]` per problem, in the same order — a one-liner naming what the fix changes and which source supports it.
-3. When `proposed_corrections[]` is non-empty, apply the corrections to the article body and emit the complete corrected article in `article` with the four fields `headline`, `subheadline`, `body`, `summary`. Preserve the Writer's voice, structure, headline, the `[src-NNN]` citation form, and the `[[COVERAGE_STATEMENT]]` placeholder. When `proposed_corrections[]` is empty, omit the `article` field entirely from the output — the pipeline reuses the input article unchanged.
+3. When `proposed_corrections[]` is non-empty, apply the corrections to the article body and emit the complete corrected article in `article` with the four fields `headline`, `subheadline`, `body`, `summary`. Preserve the Writer's voice, structure, headline, and the `[src-NNN]` citation form. When `proposed_corrections[]` is empty, omit the `article` field entirely from the output — the pipeline reuses the input article unchanged.
 4. Identify source disagreements relevant to the topic and record them in `divergences[]` with their type, description, the involved source IDs, the resolution status, and a note describing whether and how the corrected article (or the input article, when no corrections were applied) addresses each one.
 
 # OUTPUT FORMAT
@@ -42,7 +41,7 @@ A single JSON object. The fields `problems_found`, `proposed_corrections`, and `
     {
       "article_excerpt": "The administration cites security costs at $50 million per year [src-004].",
       "problem": "factually_incorrect",
-      "explanation": "Source rsrc-004 reports the figure as $500 million per year, not $50 million."
+      "explanation": "Source src-004 reports the figure as $500 million per year, not $50 million."
     }
   ],
   "proposed_corrections": [
@@ -51,7 +50,7 @@ A single JSON object. The fields `problems_found`, `proposed_corrections`, and `
   "article": {
     "headline": "United States Imposes Transit Fees on Vessels Crossing the Strait of Hormuz",
     "subheadline": "The administration cites security costs; Tehran calls the move a violation of international maritime law.",
-    "body": "The United States announced new transit fees on commercial vessels passing through the Strait of Hormuz [src-001][src-004]…\n\n[[COVERAGE_STATEMENT]] No direct testimony from civilian seafarers or port workers was available [src-002].\n\nA further announcement on enforcement timelines is expected later this week [src-009].",
+    "body": "The United States announced new transit fees on commercial vessels passing through the Strait of Hormuz [src-001][src-004]…\n\nA further announcement on enforcement timelines is expected later this week [src-009].",
     "summary": "The United States announced transit fees on commercial vessels passing through the Strait of Hormuz, framed by the administration as security-cost recovery and by Iranian sources as economic coercion."
   },
   "divergences": [
@@ -96,7 +95,7 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 # RULES
 
 1. The analysis chain runs in order. Every entry in `proposed_corrections[]` corresponds to a problem in `problems_found[]` at the same index, and the corrected article reflects those proposed corrections.
-2. All analysis and all corrections rest on the two source pools (`article.sources` and `sources`). Outside knowledge is not added; new sources are not introduced; existing sources are not removed.
+2. All analysis and all corrections rest on the sources array (passed through both as top-level `sources` and as `article.sources`, both carrying `src-NNN` IDs). Outside knowledge is not added; new sources are not introduced; existing sources are not removed.
 3. Corrections are surgical. Fix problems where they appear; preserve the rest. The article's organization, focus, headline, and voice are unchanged unless a problem genuinely requires a structural change.
 4. Wikipedia citations for current events, statistics, or analysis are flagged as `unsupported_claim`. Wikipedia is acceptable only for verifiable background facts the source itself does not dispute.
 5. When `proposed_corrections[]` is non-empty, the `article` field carries the complete corrected article — never a partial article, never only the changed sections. When `proposed_corrections[]` is empty, the `article` field is omitted entirely from the output.
