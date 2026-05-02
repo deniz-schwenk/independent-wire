@@ -1,10 +1,10 @@
 # Agent Prompt Inventory
 
-Authoritative mapping of every prompt file under `agents/` to its load site, agent configuration, and lifecycle status. Updated whenever a prompt is added, archived, or its load site changes.
+Authoritative mapping of every prompt file under `agents/` to its agent-stage class, agent configuration, and lifecycle status. Updated whenever a prompt is added, archived, or its load site changes.
 
-Last updated: 2026-04-27
+Last updated: 2026-05-02 (V2 big-bang work-stream complete; V1 deleted in commit 19348f3)
 
-## Two-file prompt convention (S13)
+## Two-file prompt convention
 
 Every active agent's prompt is a pair of files:
 
@@ -39,93 +39,85 @@ The `<instructions>` block is always present. The other two are conditional on t
 
 ---
 
-## Active prompts
+## Active prompts (V2)
+
+In V2, every agent is invoked by an **agent-stage wrapper class** in `src/agent_stages.py`. The wrapper class reads the relevant Bus slots, formats the agent's input, calls the registered `Agent` instance, and writes the agent's output to the relevant Bus slots. Agent registration (model, temperature, tools, max_tokens, output_schema) happens in `scripts/run.py:create_agents` (production) and `scripts/run.py:create_agents_hydrated` (hydrated, extends production with four hydrated-only agents).
 
 ### Production + Hydrated (both pipelines)
 
-Loaded by `scripts/run.py:create_agents` *and* `scripts/test_hydration_pipeline.py:create_hydrated_agents` with identical configs (modulo `max_tokens`, which the hydrated wiring overrides locally).
+Loaded by `scripts/run.py:create_agents` and inherited by `create_agents_hydrated` with identical configs.
 
-| File pair | Agent name | Model | Temp | Reasoning | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `agents/perspektiv/SYSTEM.md` + `INSTRUCTIONS.md` | `perspektiv` | `anthropic/claude-opus-4.6` | 0.1 | `none` | V2 (position clusters), `tools=[]` |
-| `agents/writer/SYSTEM.md` + `INSTRUCTIONS.md` | `writer` | `anthropic/claude-opus-4.6` | 0.3 | `none` | `tools=[web_search_tool]` |
-| `agents/qa_analyze/SYSTEM.md` + `INSTRUCTIONS.md` | `qa_analyze` | `anthropic/claude-sonnet-4.6` | 0.1 | `none` | `tools=[]`. Never use `r-medium` (per `run.py` docstring) |
-| `agents/bias_detector/SYSTEM.md` + `INSTRUCTIONS.md` | `bias_language` | `anthropic/claude-opus-4.6` | 0.1 | `none` | Filename is `bias_detector/`; the registered agent name is `bias_language`. `tools=[]` |
-| `agents/researcher/ASSEMBLE-SYSTEM.md` + `ASSEMBLE-INSTRUCTIONS.md` | `researcher_assemble` | `google/gemini-3-flash-preview` | 0.2 | `none` | `tools=[]` |
-
-### Production only
-
-Loaded only by `scripts/run.py:create_agents`.
-
-| File pair | Agent name | Model | Temp | Reasoning | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `agents/curator/SYSTEM.md` + `INSTRUCTIONS.md` | `curator` | `google/gemini-3-flash-preview` | 0.2 | `none` | `tools=[]` |
-| `agents/editor/SYSTEM.md` + `INSTRUCTIONS.md` | `editor` | `anthropic/claude-opus-4.6` | 0.3 | `none` | `tools=[]` |
-| `agents/researcher/PLAN-SYSTEM.md` + `PLAN-INSTRUCTIONS.md` | `researcher_plan` | `google/gemini-3-flash-preview` | 0.5 | `none` | `tools=[]`. Hydrated pipeline uses `researcher_hydrated/PLAN-*.md` instead |
+| File pair | Agent name | Wrapper class | Model | Temp | Reasoning | max_tokens | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `agents/curator/SYSTEM.md` + `INSTRUCTIONS.md` | `curator` | `CuratorStage` (run-stage) | `google/gemini-3-flash-preview` | 0.2 | `none` | 64000 | `tools=[]`. 64000 max_tokens because the `{topics, cluster_assignments}` envelope on ~1400 findings overflows the 32000 default. Schema: `CURATOR_SCHEMA`. |
+| `agents/editor/SYSTEM.md` + `INSTRUCTIONS.md` | `editor` | `EditorStage` (run-stage) | `anthropic/claude-opus-4.6` | 0.3 | `none` | 32000 | `tools=[]`. Reads `previous_coverage` for follow-up decisions. Schema: `EDITOR_SCHEMA`. |
+| `agents/researcher/PLAN-SYSTEM.md` + `PLAN-INSTRUCTIONS.md` | `researcher_plan` | `ResearcherPlanStage` (topic-stage) | `google/gemini-3-flash-preview` | 0.5 | `none` | 32000 | `tools=[]`. Emits multilingual search query plan. Schema: `RESEARCHER_PLAN_SCHEMA`. |
+| `agents/researcher/ASSEMBLE-SYSTEM.md` + `ASSEMBLE-INSTRUCTIONS.md` | `researcher_assemble` | `ResearcherAssembleStage` (topic-stage) | `google/gemini-3-flash-preview` | 0.2 | `none` | 32000 | `tools=[]`. Emits research dossier with `research-rsrc-NNN` IDs (renumbered to `src-NNN` by Python in `renumber_sources` topic-stage). Schema: `RESEARCHER_ASSEMBLE_SCHEMA`. |
+| `agents/perspective/SYSTEM.md` + `INSTRUCTIONS.md` | `perspective` | `PerspectiveStage` (topic-stage) | `anthropic/claude-opus-4.6` | 0.1 | `none` | 32000 | `tools=[]`. Emits position clusters; `pc-NNN` IDs and source-balance derivations attached by `enrich_perspective_clusters` deterministic topic-stage. Reads `final_sources` (already in `src-NNN` form). Schema: `PERSPECTIVE_SCHEMA`. |
+| `agents/writer/SYSTEM.md` + `INSTRUCTIONS.md` | `writer` | `WriterStage` (topic-stage) | `anthropic/claude-opus-4.6` | 0.3 | `none` | 32000 | `tools=[]` (web_search disabled in V2-09c2 to close `[web-N]` Bug-1). Reads `final_sources`, emits `[src-NNN]` citations directly in `body`. Schema: `WRITER_SCHEMA` (`sources[].src_id` post-V2-09e). |
+| `agents/qa_analyze/SYSTEM.md` + `INSTRUCTIONS.md` | `qa_analyze` | `QaAnalyzeStage` (topic-stage) | `anthropic/claude-sonnet-4.6` | 0.1 | `none` | 32000 | `tools=[]`. Never use `r-medium` (crashes 2/4 in eval). Reads `final_sources` and emits `[src-NNN]` citations symmetric with Writer. Slot-level mirror semantics: emits full `article` only when corrections apply, otherwise omits. Schema: `QA_ANALYZE_SCHEMA`. |
+| `agents/bias_detector/SYSTEM.md` + `INSTRUCTIONS.md` | `bias_language` | `BiasLanguageStage` (topic-stage) | `anthropic/claude-opus-4.6` | 0.1 | `none` | 32000 | Filename is `bias_detector/`; the registered agent name is `bias_language`. `tools=[]`. Reads `qa_corrected_article`. Schema: `BIAS_DETECTOR_SCHEMA`. |
 
 ### Hydrated only
 
-Loaded only by `scripts/test_hydration_pipeline.py:create_hydrated_agents` or by `src/pipeline_hydrated.py` itself.
+Loaded only by `scripts/run.py:create_agents_hydrated` (additive on top of `create_agents`).
 
-| File pair | Agent name | Model | Temp | Reasoning | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `agents/researcher_hydrated/PLAN-SYSTEM.md` + `PLAN-INSTRUCTIONS.md` | `researcher_hydrated_plan` | `google/gemini-3-flash-preview` | 0.5 | `none` | Hydrated planner; sees pre-dossier coverage summary. `max_tokens=16384` |
-| `agents/hydration_aggregator/PHASE1-SYSTEM.md` + `PHASE1-INSTRUCTIONS.md` | `hydration_aggregator_phase1` | `google/gemini-3-flash-preview` | 0.3 | `none` | Per-chunk article extraction. Registered as a proper Agent instance in `create_hydrated_agents`. Run by `_run_phase1_chunk` in `src/hydration_aggregator.py`. `max_tokens=32000` |
-| `agents/hydration_aggregator/PHASE2-SYSTEM.md` + `PHASE2-INSTRUCTIONS.md` | `hydration_aggregator_phase2` | `anthropic/claude-opus-4.6` | 0.1 | `none` | Cross-corpus reducer. Registered as a proper Agent instance in `create_hydrated_agents`. Run by `_run_phase2_reducer` in `src/hydration_aggregator.py`. `max_tokens=32000` |
-| `agents/perspektiv_sync/SYSTEM.md` + `INSTRUCTIONS.md` | `perspektiv_sync` | `anthropic/claude-opus-4.6` | 0.1 | `none` | **Active.** V2 sync — emits `position_cluster_updates[]` with `position_label` / `position_summary` deltas. Auto-registered by `PipelineHydrated.__init__` (`src/pipeline_hydrated.py`) when not pre-supplied. Eligibility gated on QA reporting `proposed_corrections`; runs after QA+Fix in the hydrated pipeline. `tools=[]` |
+| File pair | Agent name | Wrapper class | Model | Temp | Reasoning | max_tokens | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `agents/researcher_hydrated/PLAN-SYSTEM.md` + `PLAN-INSTRUCTIONS.md` | `researcher_hydrated_plan` | `ResearcherHydratedPlanStage` (topic-stage) | `google/gemini-3-flash-preview` | 0.5 | `none` | 16384 | `tools=[]`. Gap-aware plan reads `hydration_pre_dossier` coverage summary (computed by deterministic helper `_build_coverage_summary` internalised into `src/agent_stages.py` in V2-11a). Schema: `RESEARCHER_PLAN_SCHEMA` (same shape as production planner). |
+| `agents/hydration_aggregator/PHASE1-SYSTEM.md` + `PHASE1-INSTRUCTIONS.md` | `hydration_aggregator_phase1` | `HydrationPhase1Stage` (topic-stage) | `google/gemini-3-flash-preview` | 0.3 | `none` | 32000 | `tools=[]`. Per-article extraction, parallel chunked (`ceil(N/10)` chunks of 5–10 articles). Up to 2 retries per chunk that re-request only missing indices. Schema: `HYDRATION_PHASE1_SCHEMA`. |
+| `agents/hydration_aggregator/PHASE2-SYSTEM.md` + `PHASE2-INSTRUCTIONS.md` | `hydration_aggregator_phase2` | `HydrationPhase2Stage` (topic-stage) | `anthropic/claude-opus-4.6` | 0.1 | `none` | 32000 | `tools=[]`. Cross-corpus reducer over phase1 analyses. Eval-validated at 114/120 (Opus 4.6 @ temp 0.1). Schema: `HYDRATION_PHASE2_SCHEMA`. |
+| `agents/perspective_sync/SYSTEM.md` + `INSTRUCTIONS.md` | `perspective_sync` | `PerspectiveSyncStage` (topic-stage) | `anthropic/claude-opus-4.6` | 0.1 | `none` | 32000 | `tools=[]`. Per-element mirror semantics: emits cluster deltas (id + only changed fields). The `mirror_perspective_synced` deterministic stage merges deltas onto `perspective_clusters_synced`. Schema: `PERSPECTIVE_SYNC_SCHEMA`. |
 
-### Conditional
+### Conditional addendum
 
-Prompts loaded on specific code paths only.
+Not a stand-alone agent — appended inside the Writer's `<instructions>` block when the topic is a follow-up.
 
-| File | Agent name | Trigger | Composition | Notes |
-| --- | --- | --- | --- | --- |
-| `agents/writer/FOLLOWUP.md` | `writer` (extension) | `assignment.follow_up_to` is truthy on the topic being produced | Read into `writer_addendum` and passed to `Agent.run(..., instructions_addendum=writer_addendum)`. Appended **inside** the User-turn `<instructions>` block, separated from INSTRUCTIONS.md by one blank line | Loaded by both `src/pipeline.py` and `src/pipeline_hydrated.py`. Both call sites log a WARNING if the file is missing; pipeline does not fail. Active-by-design — do not archive |
-
-### Test-only
-
-Referenced by string literal only in test/spike scripts; not loaded by any pipeline run.
-
-| File | Reference | Notes |
-| --- | --- | --- |
-| `agents/collector/AGENTS.md` | `tests/test_tools.py` (6 sites) | Used as a fixture path when constructing test Agent instances. Single-file legacy form retained because the Collector pipeline step is fully disabled (see below). Companion to the disabled `collector/PLAN.md` and `collector/ASSEMBLE.md`. The Agent constructor stores both paths but does not read the file unless `.run()` is called, which these tests do not do |
-
-## Disabled prompts
-
-Present in the codebase but explicitly commented out at their load site. Not archived because reactivation is planned.
-
-| File | Disabled at | Reason | Reactivation criterion |
+| File | Used by | Trigger | Notes |
 | --- | --- | --- | --- |
-| `agents/collector/PLAN.md` | `scripts/run.py` (commented `collector_plan` block) | RSS feeds suffice at current scale; Collector deactivated | 200+ RSS feeds — pre-filter for the Curator |
-| `agents/collector/ASSEMBLE.md` | `scripts/run.py` (commented `collector_assemble` block) | Same | Same |
+| `agents/writer/FOLLOWUP.md` | `WriterStage` | `editor_selected_topic.follow_up` is non-empty | Loaded as `instructions_addendum` parameter to `Agent.run()`. Single-file survivor of the two-file convention. |
 
-The disabled blocks reference the two-file convention (`PLAN-SYSTEM.md` + `PLAN-INSTRUCTIONS.md`, `ASSEMBLE-SYSTEM.md` + `ASSEMBLE-INSTRUCTIONS.md`); those files do not exist on disk yet and would need to be created if the Collector is reactivated.
+### Deactivated (configuration kept commented in source)
+
+The Collector agent is deactivated in `scripts/run.py:create_agents` — RSS feeds provide sufficient coverage at current scale. The two-file pair `agents/collector/PLAN-SYSTEM.md` + `INSTRUCTIONS.md` and `ASSEMBLE-SYSTEM.md` + `INSTRUCTIONS.md` remain on disk. Reactivate when scaling to 200+ feeds as pre-filter for the Curator.
+
+---
 
 ## Archived prompts
 
-Moved to `agents/_archive/` on the date below. Reason for archival: no live load site found.
+Located under `agents/_archive/`. Not loaded by any active code path. Preserved for historical reference and revert paths during eval.
 
-| File (archived path) | Original path | Archived on | Reason |
-| --- | --- | --- | --- |
-| `agents/_archive/hydration_aggregator-AGENTS-2026-04-23.md` | `agents/hydration_aggregator/AGENTS.md` | 2026-04-23 | Legacy single-pass design replaced by the two-phase chunked aggregator (S12 commits `1ceac49` + `7437753`). The S12 deprecation banner expired after multiple green hydrated runs through S13 |
+The V2 work-stream anglicised two German agent names (per `docs/ARCH-V2-BUS-SCHEMA.md` §10 decision-log entry of 2026-04-29):
 
-The `agents/_archive/` directory contains a `README.md` explaining its purpose.
-
-## Unresolved
-
-Files where status could not be determined automatically and require architect review before archival.
-
-| File | Issue | Recommended action |
+| Folder | Reason for archival | Replaced by |
 | --- | --- | --- |
-| *None* | | |
+| `agents/_archive/perspektiv/` | Anglicised during V2 implementation | `agents/perspective/` |
+| `agents/_archive/perspektiv_sync/` | Anglicised during V2 implementation | `agents/perspective_sync/` |
 
-## Reference: full canonical wiring
+Other historical archived prompts may exist; consult `agents/_archive/` directly.
 
-Source of truth for every active configuration above:
+---
 
-- `scripts/run.py:create_agents` — production pipeline.
-- `scripts/test_hydration_pipeline.py:create_hydrated_agents` — hydrated pipeline.
-- `src/hydration_aggregator.py` — Phase 1 / Phase 2 wiring inside the chunked aggregator (`PHASE_PROMPT_PATHS` constant; `run_aggregator(phase1_agent=..., phase2_agent=...)`; `_run_phase1_chunk`, `_run_phase2_reducer`).
-- `src/pipeline_hydrated.py` — `perspektiv_sync` auto-registration in `PipelineHydrated.__init__`; `_run_perspektiv_sync` (V2) and `merge_perspektiv_deltas` (V2 cluster-shape merge).
-- `src/pipeline.py` and `src/pipeline_hydrated.py` — `agents/writer/FOLLOWUP.md` conditional load and `instructions_addendum` plumbing.
-- `src/agent.py` — `_build_system_prompt`, `_build_user_message` (three-block User-turn layout).
+## Architectural principle
+
+Each entry above shows what the agent emits. **Pipeline-derived fields (IDs, slugs, dates, counts, source enrichment) are routed by Python in `src/stages/topic_stages.py` or `src/stages/run_stages.py`, never by the LLM.** See `docs/AGENT-IO-MAP.md` for the per-agent input/output contract and the corresponding deterministic stages.
+
+The two named architectural principles (formalised in `docs/ARCH-V2-BUS-SCHEMA.md` §3.1 and §3.2):
+
+1. **Originary output** — every Bus slot has exactly one owner; agents do not write to slots owned by other agents. Pass-through fields are routed by Python after the LLM call.
+2. **Agents are isolated from the Bus schema** — agents emit structures local to their task in their own contract; the agent-stage wrappers in `src/agent_stages.py` map those structures onto Bus slots. Agents are reusable across pipeline variants without prompt changes.
+
+---
+
+## Agent invocation lifecycle (V2)
+
+The code path for any agent invocation:
+
+1. **Pipeline runner** (`src/runner/runner.py:PipelineRunner`) picks up the next stage from the active stage list (`src/runner/stage_lists.py:build_production_stages` or `build_hydrated_stages`).
+2. **Stage dispatch.** Run-stages call `stage(run_bus)`, topic-stages call `stage(topic_bus, run_bus)`. Agent-stage wrappers are instances of classes in `src/agent_stages.py` (e.g. `WriterStage(agents["writer"])`); deterministic stages are pure functions in `src/stages/`.
+3. **Agent-stage wrapper** reads the declared input slots from the bus, formats them as a JSON-encoded `context` dict, and calls `agent.run(context=...)`.
+4. **`Agent.run()`** (`src/agent.py`) composes the three-block User turn (context / memory / instructions), sends to OpenRouter with strict-mode `output_schema` enforcement, handles tool calls in a loop if the agent has tools registered, and returns an `AgentResult` (defined in `src/agent.py` post-V2-11b; previously in deleted `src/models.py`).
+5. **Wrapper extraction.** The wrapper extracts the `structured` dict from `AgentResult`, performs any agent-local post-processing (e.g. merging schema-required fields with pass-through fields), and writes to the declared output slots.
+6. **Pipeline runner** advances to the next stage. Stage execution is logged into `run_bus.run_stage_log` with `started_at`, `ended_at`, status, and scope.
+
+For deterministic stages (steps 3–5 above), the agent invocation is replaced by a pure Python function call. The bus interface and logging are identical.
