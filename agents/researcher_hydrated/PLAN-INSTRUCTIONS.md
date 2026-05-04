@@ -24,6 +24,19 @@ These pairings are heuristics, not a rigid map. Pick the languages most likely t
 - Russia or Ukraine → Russian, Ukrainian.
 - Global or multilateral topics → French, Chinese, Spanish, Arabic.
 
+## Story shapes
+
+Stories take recognizable shapes. The shape is a heuristic read of the assignment, not a classifier — a story can sit between two shapes, and the dominant shape may borrow from a secondary. The shape steers the depth of the plan: what kinds of non-translated angles to chase beyond multilingual breadth. Do not name the shape in the output.
+
+- **Quantitative-claim** — title or selection_reason centers on a specific number, rate, or measurement. Queries target original methodology, alternative measurements, and dissenting estimates.
+- **Stakeholder-conflict** — multiple named actors holding opposed positions. Queries target each actor in their own language and information environment, plus adjacent stakeholders not yet named.
+- **Policy/regulatory** — a government action, law, regulatory decision, or treaty change. Queries target the official text or filing, the affected industry's response, and legal-analysis sources.
+- **Crisis/emergency** — a disaster, outbreak, attack, or sudden event with developing facts. Queries target on-the-ground reports, official briefings, and timeline-anchored updates from the affected region.
+- **Tech/business** — a corporate action, technology release, market event, or commercial-sector development. Queries target the company's home market, competitor and analyst coverage, and trade press in the relevant industry.
+- **Cultural/social** — a social phenomenon or cultural shift without a primary institutional actor. Queries target the affected community in their own language, longer-form analysis, and outlets close to the discourse.
+
+Shape and gap targeting compose: the shape picks the kind of depth, and gap targeting picks where in that depth-space the queries should land. A Stakeholder-conflict story missing civil-society voices warrants stakeholder-style queries aimed at the specific civil-society actors absent from the dossier.
+
 ## Query construction
 
 - Use local institution names — "KI-Gesetz" in German, not "AI Act"; "تنگه هرمز" in Farsi, not the English transliteration.
@@ -34,9 +47,9 @@ These pairings are heuristics, not a rigid map. Pick the languages most likely t
 
 ## Volume and balance
 
-- Minimum 8 queries.
+- Minimum 10 queries.
 - At least half are non-English.
-- More queries are appropriate when the topic spans many regions or stakeholder types — a simple local event may need 8; a multi-region geopolitical topic may need 15 or more.
+- More queries are appropriate when the topic spans many regions or stakeholder types — a simple local event may need 10; a multi-region geopolitical topic may need 15 or more.
 
 # OUTPUT FORMAT
 
@@ -51,7 +64,9 @@ A single JSON array. Each element has exactly two fields, `query` and `language`
   {"query": "مضيق هرمز رسوم العبور المجتمع المدني", "language": "ar"},
   {"query": "Hormuz Boğazı geçiş ücreti sivil toplum", "language": "tr"},
   {"query": "Strait of Hormuz Africa economic vulnerability shipping", "language": "en"},
-  {"query": "ホルムズ海峡 市民団体 影響", "language": "ja"}
+  {"query": "ホルムズ海峡 市民団体 影響", "language": "ja"},
+  {"query": "Hormuz strait transit fees Korean shipping industry response", "language": "ko"},
+  {"query": "ھرمز جلڈ آبنائے پاکستانی شپنگ صنعت اثرات", "language": "ur"}
 ]
 ```
 

@@ -48,9 +48,10 @@ def setup_logging():
 def create_agents() -> dict[str, Agent]:
     """Create all pipeline agents with their configurations.
 
-    Models via OpenRouter (eval-validated, April 2026):
-    - google/gemini-3-flash-preview: Curator, Researcher Plan, Researcher Assemble (reasoning=none)
-    - anthropic/claude-opus-4.6: Editor, Perspective, Writer, Bias Language (reasoning=none)
+    Models via OpenRouter (eval-validated, April 2026; Researcher Plan promoted
+    to Opus 4.6 in Researcher-Polish iter 1, May 2026):
+    - google/gemini-3-flash-preview: Curator, Researcher Assemble (reasoning=none)
+    - anthropic/claude-opus-4.6: Editor, Researcher Plan, Perspective, Writer, Bias Language (reasoning=none)
     - anthropic/claude-sonnet-4.6: QA-Analyze (reasoning=none, NEVER use r-medium)
     """
     agents_dir = ROOT / "agents"
@@ -107,7 +108,7 @@ def create_agents() -> dict[str, Agent]:
         ),
         "researcher_plan": Agent(
             name="researcher_plan",
-            model="google/gemini-3-flash-preview",
+            model="anthropic/claude-opus-4.6",
             system_prompt_path=str(agents_dir / "researcher" / "PLAN-SYSTEM.md"),
             instructions_path=str(agents_dir / "researcher" / "PLAN-INSTRUCTIONS.md"),
             tools=[],
@@ -188,7 +189,7 @@ def create_agents_hydrated() -> dict[str, Agent]:
     base.update({
         "researcher_hydrated_plan": Agent(
             name="researcher_hydrated_plan",
-            model="google/gemini-3-flash-preview",
+            model="anthropic/claude-opus-4.6",
             system_prompt_path=str(agents_dir / "researcher_hydrated" / "PLAN-SYSTEM.md"),
             instructions_path=str(agents_dir / "researcher_hydrated" / "PLAN-INSTRUCTIONS.md"),
             tools=[],
