@@ -578,6 +578,85 @@ def test_run_stage_log_bus_slot_records_topic_stage_entries(tmp_path: Path):
     assert all(e["stage"] == "_fake_writer" for e in topic_entries)
 
 
+def test_run_stage_log_persists_cost_and_tokens_for_agent_stage(tmp_path: Path):
+    """Agent-stage entries carry cost_usd and tokens; deterministic stages
+    omit those keys. Closes the gap surfaced in
+    SMOKE-POST-POLISH-2026-05-02.md cost-verification step."""
+    from src.agent_stages import _AgentStageBase
+
+    class _MeteredAgent:
+        """Mimics the Agent contract for cost/token accumulation."""
+
+        def __init__(self, name: str, cost_per_call: float, tokens_per_call: int) -> None:
+            self.name = name
+            self._cost_per_call = cost_per_call
+            self._tokens_per_call = tokens_per_call
+            self.last_cost_usd: float = 0.0
+            self.last_tokens: int = 0
+
+        def reset_call_metrics(self) -> None:
+            self.last_cost_usd = 0.0
+            self.last_tokens = 0
+
+        async def run(self, *args: Any, **kwargs: Any):
+            self.last_cost_usd += self._cost_per_call
+            self.last_tokens += self._tokens_per_call
+            return None
+
+    class _FakeAgentTopicStage(_AgentStageBase):
+        stage_kind = "topic"
+        reads = ("editor_selected_topic",)
+        writes = ("writer_article",)
+        agent_role = "metered"
+
+        def __init__(self, agent: _MeteredAgent) -> None:
+            self.agent = agent
+
+        async def __call__(
+            self, topic_bus: TopicBus, run_bus: RunBusReadOnly
+        ) -> TopicBus:
+            await self.agent.run()
+            await self.agent.run()
+            return topic_bus.model_copy(
+                update={"writer_article": WriterArticle(headline="h", summary="s", body="b")}
+            )
+
+    metered = _MeteredAgent("metered", cost_per_call=0.0123, tokens_per_call=1234)
+    runner = PipelineRunner(
+        run_stages=[_fake_init, _fake_curator, _fake_select],
+        topic_stages=[_FakeAgentTopicStage(metered)],
+        output_dir=tmp_path,
+        skip_render=True,
+        skip_finalize=True,
+    )
+    rb = asyncio.run(runner.run())
+
+    state_dir = tmp_path / rb.run_date / "_state" / rb.run_id
+    jsonl_path = state_dir / "run_stage_log.jsonl"
+    entries = [
+        json.loads(line)
+        for line in jsonl_path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+
+    agent_entries = [e for e in entries if e["stage"] == "_FakeAgentTopicStage"]
+    assert len(agent_entries) == 2, f"expected one agent entry per topic; got {agent_entries}"
+    for entry in agent_entries:
+        # Two run() calls per stage execution × cost_per_call=0.0123
+        assert entry["cost_usd"] == pytest.approx(0.0246, abs=1e-9)
+        assert entry["tokens"] == 2468
+        # Reset between topics: each topic's entry reflects only its own calls
+        # (not cumulative across topics). The accumulator is zeroed by the
+        # runner before each stage execution.
+
+    # Deterministic stages must NOT carry the keys
+    deterministic_entries = [e for e in entries if e["stage"] in {"_fake_init", "_fake_curator", "_fake_select"}]
+    assert deterministic_entries, "expected deterministic stages in log"
+    for entry in deterministic_entries:
+        assert "cost_usd" not in entry, f"deterministic stage leaked cost_usd: {entry}"
+        assert "tokens" not in entry, f"deterministic stage leaked tokens: {entry}"
+
+
 def test_stage_label_function():
     assert _stage_label(_fake_init) == "_fake_init"
 

@@ -180,6 +180,20 @@ class Agent:
         # Build tool lookup for fast access during tool-call loop
         self._tool_map: dict[str, Tool] = {t.name: t for t in self.tools}
 
+        # Per-stage cost/token accumulators. Each `run()` call adds its
+        # totals here; the runner resets before each stage and reads after,
+        # so the values reflect the cost of one stage execution (which may
+        # involve multiple `run()` calls — e.g. HydrationPhase1's parallel
+        # chunk dispatch). See TASK-RUN-STAGE-LOG-COST.
+        self.last_cost_usd: float = 0.0
+        self.last_tokens: int = 0
+
+    def reset_call_metrics(self) -> None:
+        """Zero the per-stage cost/token accumulators. Called by the runner
+        before each stage execution."""
+        self.last_cost_usd = 0.0
+        self.last_tokens = 0
+
     def _load_system_content(self) -> str:
         """Load the SYSTEM.md (role-only) content for this agent."""
         path = Path(self.system_prompt_path)
@@ -738,6 +752,9 @@ class Agent:
             _format_tokens_for_log(total_tokens, usage_missing_count),
             len(all_tool_calls),
         )
+
+        self.last_cost_usd += total_cost_usd
+        self.last_tokens += total_tokens
 
         return AgentResult(
             content=content,

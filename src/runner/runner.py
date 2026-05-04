@@ -50,6 +50,40 @@ from src.runner.state import (
 logger = logging.getLogger(__name__)
 
 
+def _reset_agent_metrics(stage: Any) -> None:
+    """Zero per-stage cost/token accumulators on the wrapper's agent, if any.
+
+    Agent-stage wrappers carry `self.agent`. Deterministic stages don't —
+    `getattr` with default makes this a no-op for them.
+    """
+    agent = getattr(stage, "agent", None)
+    reset = getattr(agent, "reset_call_metrics", None)
+    if callable(reset):
+        reset()
+
+
+def _collect_agent_metrics(stage: Any) -> dict:
+    """Read accumulated cost/tokens off the wrapper's agent.
+
+    Returns ``{"cost_usd": float, "tokens": int}`` for agent-stages and
+    ``{}`` for deterministic stages — keys are omitted from the log entry
+    rather than emitted as zeros, so a deterministic-stage row stays
+    distinguishable from an agent-stage row that happened to have no
+    measurable cost (e.g. provider failed to report usage).
+    """
+    agent = getattr(stage, "agent", None)
+    if agent is None:
+        return {}
+    cost = getattr(agent, "last_cost_usd", None)
+    tokens = getattr(agent, "last_tokens", None)
+    if cost is None and tokens is None:
+        return {}
+    return {
+        "cost_usd": round(float(cost or 0.0), 6),
+        "tokens": int(tokens or 0),
+    }
+
+
 # ---------------------------------------------------------------------------
 # Stage-label resolution
 # ---------------------------------------------------------------------------
@@ -280,10 +314,15 @@ class PipelineRunner:
     ) -> RunBus:
         validate_preconditions(stage, run_bus)
         before_dump = run_bus.model_dump()
+        _reset_agent_metrics(stage)
         try:
             run_bus = await self._call_run_stage(stage, run_bus)
         except Exception as exc:
-            self._log_stage(run_bus, name, "run", "failed", error=str(exc))
+            self._log_stage(
+                run_bus, name, "run", "failed",
+                error=str(exc),
+                **_collect_agent_metrics(stage),
+            )
             raise
         validate_postconditions(
             stage,
@@ -292,7 +331,10 @@ class PipelineRunner:
         )
         self._current_run_id = run_bus.run_id or self._current_run_id
         self._current_run_date = run_bus.run_date or self._current_run_date
-        run_bus = self._log_stage(run_bus, name, "run", "success")
+        run_bus = self._log_stage(
+            run_bus, name, "run", "success",
+            **_collect_agent_metrics(stage),
+        )
         save_run_bus_snapshot(run_bus, self.output_dir, name)
         return run_bus
 
@@ -380,6 +422,7 @@ class PipelineRunner:
             expected_state = run_bus.as_readonly()
             validate_preconditions(stage, topic_bus)
             before_dump = topic_bus.model_dump()
+            _reset_agent_metrics(stage)
             try:
                 topic_bus = await self._call_topic_stage(stage, topic_bus, read_only)
             except Exception:
@@ -414,6 +457,7 @@ class PipelineRunner:
                 "success",
                 topic_index=topic_index,
                 topic_slug=topic_bus.editor_selected_topic.topic_slug,
+                **_collect_agent_metrics(stage),
             )
             if self.to_stage and self.to_stage == name:
                 if topic_index == len(self.topic_buses) - 1:
