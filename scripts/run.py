@@ -157,6 +157,7 @@ def create_agents() -> dict[str, Agent]:
             instructions_path=str(agents_dir / "qa_analyze" / "INSTRUCTIONS.md"),
             tools=[],
             temperature=0.1,
+            max_tokens=64000,
             provider="openrouter",
             reasoning="none",
             output_schema=QA_ANALYZE_SCHEMA,
