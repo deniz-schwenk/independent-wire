@@ -41,6 +41,7 @@ from __future__ import annotations
 
 import copy
 import logging
+import re
 from typing import Any, Callable, Optional
 
 from src.bus import (
@@ -477,6 +478,150 @@ async def validate_coverage_gaps_stage(
 
 
 # ---------------------------------------------------------------------------
+# 19a. prune_unused_sources_and_clusters
+# ---------------------------------------------------------------------------
+
+
+_SRC_CITATION_RE = re.compile(r"\[(src-\d+)\]")
+
+
+def _collect_referenced_src_ids(topic_bus: TopicBus) -> set[str]:
+    """Walk every downstream consumer of ``final_sources`` and return the
+    set of ``src-NNN`` IDs that are actually referenced somewhere.
+
+    Sources whose IDs are NOT in this set become candidates for
+    pruning by :func:`prune_unused_sources_and_clusters` (only when they
+    also lack content — see that stage's docstring for the second
+    condition).
+    """
+    referenced: set[str] = set()
+
+    # Cluster source_ids (post-mirror, post-sync)
+    for cluster in topic_bus.perspective_clusters_synced or []:
+        if isinstance(cluster, dict):
+            for sid in cluster.get("source_ids") or []:
+                if isinstance(sid, str):
+                    referenced.add(sid)
+
+    # QA-corrected divergences carry source_ids
+    for div in topic_bus.qa_divergences or []:
+        if isinstance(div, dict):
+            for sid in div.get("source_ids") or []:
+                if isinstance(sid, str):
+                    referenced.add(sid)
+
+    # Pre-research divergences (Phase 2 + research) reference src-NNN by
+    # the time normalize_pre_research has run.
+    for div in topic_bus.merged_preliminary_divergences or []:
+        if isinstance(div, dict):
+            for sid in div.get("source_ids") or []:
+                if isinstance(sid, str):
+                    referenced.add(sid)
+
+    # Article bodies carry [src-NNN] inline citations.
+    for article in (topic_bus.writer_article, topic_bus.qa_corrected_article):
+        if article is None:
+            continue
+        for field in ("body", "headline", "subheadline", "summary"):
+            value = getattr(article, field, "") or ""
+            if isinstance(value, str):
+                referenced.update(_SRC_CITATION_RE.findall(value))
+
+    # Bias language findings can echo article excerpts that include citations.
+    for finding in topic_bus.bias_language_findings or []:
+        if isinstance(finding, dict):
+            text = finding.get("excerpt") or ""
+            if isinstance(text, str):
+                referenced.update(_SRC_CITATION_RE.findall(text))
+
+    return referenced
+
+
+@topic_stage_def(
+    reads=(
+        "final_sources",
+        "perspective_clusters_synced",
+        "writer_article",
+        "qa_corrected_article",
+        "qa_divergences",
+        "bias_language_findings",
+        "merged_preliminary_divergences",
+    ),
+    writes=("final_sources", "perspective_clusters_synced"),
+)
+async def prune_unused_sources_and_clusters(
+    topic_bus: TopicBus, run_bus: RunBusReadOnly
+) -> TopicBus:
+    """Drop dead-weight sources and empty position clusters.
+
+    A source is dropped when ALL of the following hold:
+
+    - its ``id`` is not referenced by any cluster, divergence, article body,
+      or bias finding (per :func:`_collect_referenced_src_ids`);
+    - its ``summary`` is empty (no content extracted from hydration / research);
+    - its ``actors_quoted`` list is empty.
+
+    A cluster is dropped when both ``actors`` and ``source_ids`` are empty —
+    a cluster the agent emitted but for which no extracted speaker came
+    through is dead weight in the published TP.
+
+    The default is to keep. Any of the three keep-conditions on a source
+    (it's referenced, OR it has a summary, OR it has actors) saves it.
+
+    Each drop logs a single INFO line so reviewers can trace which
+    entries were removed on a smoke run.
+    """
+    final_sources = list(topic_bus.final_sources or [])
+    clusters = list(topic_bus.perspective_clusters_synced or [])
+
+    referenced = _collect_referenced_src_ids(topic_bus)
+
+    kept_sources: list = []
+    for source in final_sources:
+        if not isinstance(source, dict):
+            kept_sources.append(source)
+            continue
+        sid = source.get("id")
+        is_referenced = isinstance(sid, str) and sid in referenced
+        has_summary = bool((source.get("summary") or "").strip())
+        has_actors = bool(source.get("actors_quoted") or [])
+        if is_referenced or has_summary or has_actors:
+            kept_sources.append(source)
+        else:
+            logger.info(
+                "prune_unused_sources_and_clusters: dropped source %s "
+                "(unreferenced, empty summary, no actors): outlet=%s url=%s",
+                sid,
+                source.get("outlet"),
+                source.get("url"),
+            )
+
+    kept_clusters: list = []
+    for cluster in clusters:
+        if not isinstance(cluster, dict):
+            kept_clusters.append(cluster)
+            continue
+        actors = cluster.get("actors") or []
+        source_ids = cluster.get("source_ids") or []
+        if actors or source_ids:
+            kept_clusters.append(cluster)
+        else:
+            logger.info(
+                "prune_unused_sources_and_clusters: dropped cluster %s "
+                "(empty actors and empty source_ids): label=%s",
+                cluster.get("id") or cluster.get("position_label"),
+                cluster.get("position_label"),
+            )
+
+    return topic_bus.model_copy(
+        update={
+            "final_sources": kept_sources,
+            "perspective_clusters_synced": kept_clusters,
+        }
+    )
+
+
+# ---------------------------------------------------------------------------
 # 20. compose_transparency_card
 # ---------------------------------------------------------------------------
 
@@ -657,9 +802,14 @@ async def assemble_hydration_dossier(
                 "title": record.get("title"),
                 "outlet": record.get("outlet"),
                 "language": record.get("language"),
-                "country": record.get("country"),
+                # Defence-in-depth: hydrate_urls now resolves country from
+                # the outlet registry (or sets it to "unknown" explicitly),
+                # but we keep this nullable-coalesce so a stale fetch
+                # snapshot reused via --reuse never propagates a literal
+                # null to final_sources.
+                "country": record.get("country") or "unknown",
                 "summary": analysis.get("summary", ""),
-                "estimated_date": None,
+                "estimated_date": record.get("published_date"),
                 "actors_quoted": actors_out,
             }
         )

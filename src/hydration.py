@@ -50,8 +50,14 @@ from typing import Any, Iterable, Literal, Mapping
 from urllib.parse import urlsplit
 from urllib.robotparser import RobotFileParser
 
+import re
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
+
 import aiohttp
 import trafilatura
+
+from src.outlet_registry import lookup_outlet
 
 logger = logging.getLogger(__name__)
 
@@ -199,7 +205,119 @@ def _blank_originary_fields() -> dict[str, Any]:
         "word_count": 0,
         "error": None,
         "fetch_duration_ms": 0,
+        # ``published_date`` is filled when one of three sources resolves to a
+        # date: trafilatura metadata, the HTTP Last-Modified header, or a
+        # date pattern in the URL. ``None`` is honest unknown.
+        "published_date": None,
     }
+
+
+# ---------- date extraction ----------
+
+_URL_DATE_YMD = re.compile(r"/(\d{4})[/-](\d{2})[/-](\d{2})(?:/|[^0-9])")
+_URL_DATE_YMD_COMPACT = re.compile(r"/(\d{4})(\d{2})(\d{2})(?:/|[^0-9]|$)")
+_URL_DATE_YM = re.compile(r"/(\d{4})[/-](\d{2})(?:/|[^0-9])")
+
+
+def _normalise_date_to_iso(raw: Any) -> str | None:
+    """Return ``YYYY-MM-DD`` for a date-like input, or ``None`` if no
+    plausible calendar date can be recovered.
+
+    Handles the formats trafilatura is observed to return: bare ISO date
+    (``2026-05-04``), ISO datetime (``2026-05-04T12:34:56+00:00``),
+    space-separated (``2026-05-04 12:34:56``), and English long-form
+    (``May 4, 2026``). All others fall through to ``None`` rather than
+    persisting a partial / unparseable value.
+    """
+    if raw is None:
+        return None
+    if isinstance(raw, datetime):
+        return raw.date().isoformat()
+    if not isinstance(raw, str):
+        return None
+    s = raw.strip()
+    if not s:
+        return None
+    # ISO-prefix shortcut (handles "YYYY-MM-DD" plus any T-separated tail).
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})", s)
+    if m:
+        try:
+            datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        except ValueError:
+            return None
+        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+    # English long form (best-effort; trafilatura sometimes returns this).
+    for fmt in ("%B %d, %Y", "%b %d, %Y", "%d %B %Y", "%d %b %Y", "%Y/%m/%d", "%d-%m-%Y"):
+        try:
+            return datetime.strptime(s, fmt).date().isoformat()
+        except ValueError:
+            continue
+    return None
+
+
+def _extract_date_from_url(url: str) -> str | None:
+    """URL-pattern date fall-back. Mirrors the helpers in
+    ``src/agent_stages.py`` and ``src/stages/topic_stages.py``."""
+    if not url:
+        return None
+    m = _URL_DATE_YMD.search(url)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12 and 1 <= d <= 31:
+            return f"{y:04d}-{mo:02d}-{d:02d}"
+    m = _URL_DATE_YMD_COMPACT.search(url)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12 and 1 <= d <= 31:
+            return f"{y:04d}-{mo:02d}-{d:02d}"
+    m = _URL_DATE_YM.search(url)
+    if m:
+        y, mo = int(m.group(1)), int(m.group(2))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12:
+            return f"{y:04d}-{mo:02d}-01"
+    return None
+
+
+def _extract_date_from_last_modified(header_value: str | None) -> str | None:
+    """Parse an HTTP ``Last-Modified`` header to ``YYYY-MM-DD`` UTC."""
+    if not header_value:
+        return None
+    try:
+        dt = parsedate_to_datetime(header_value)
+    except (TypeError, ValueError):
+        return None
+    if dt is None:
+        return None
+    if dt.tzinfo is not None:
+        dt = dt.astimezone(timezone.utc)
+    return dt.date().isoformat()
+
+
+def _extract_published_date(html: str, url: str, last_modified: str | None) -> str | None:
+    """Resolve a publication date from the strongest available signal.
+
+    Priority: trafilatura metadata > HTTP Last-Modified > URL pattern.
+    Returns ``None`` when no signal yields a plausible date.
+    """
+    # 1. trafilatura metadata (covers <meta property="article:published_time">,
+    #    JSON-LD datePublished, <time datetime="...">, etc.)
+    if html:
+        try:
+            meta = trafilatura.extract_metadata(html)
+        except Exception as exc:  # trafilatura is third-party; never let it
+                                  # crash the fetcher
+            logger.debug("trafilatura.extract_metadata error for %s: %s", url, exc)
+            meta = None
+        if meta is not None:
+            iso = _normalise_date_to_iso(getattr(meta, "date", None))
+            if iso:
+                return iso
+    # 2. HTTP Last-Modified header.
+    iso = _extract_date_from_last_modified(last_modified)
+    if iso:
+        return iso
+    # 3. Date pattern in URL path.
+    return _extract_date_from_url(url)
 
 
 # ---------- per-URL worker ----------
@@ -216,6 +334,28 @@ async def _hydrate_one(
     output.update(_blank_originary_fields())
 
     url = entry.get("url")
+    # Outlet/country enrichment happens before any network call so that
+    # failed fetches still carry resolved metadata downstream. The input
+    # dict's ``country`` is used as a defence-in-depth fallback when the
+    # URL hostname is missing or the registry has no entry.
+    if isinstance(url, str) and url:
+        registry_entry = lookup_outlet(url)
+        if registry_entry:
+            output["outlet"] = registry_entry.get("outlet") or output.get("outlet")
+            resolved_country = registry_entry.get("country")
+            if resolved_country:
+                output["country"] = resolved_country
+    if not output.get("country"):
+        output["country"] = "unknown"
+
+    # URL-pattern date is the weakest signal but works even on fetch
+    # failures. The success branch upgrades to trafilatura/Last-Modified
+    # when those are stronger.
+    if isinstance(url, str) and url:
+        url_date = _extract_date_from_url(url)
+        if url_date:
+            output["published_date"] = url_date
+
     if not isinstance(url, str) or not url:
         output["status"] = "connection_error"
         output["error"] = "invalid_url: missing or non-string"
@@ -254,6 +394,7 @@ async def _hydrate_one(
     status_code: int | None = None
     charset: str | None = None
     raw: bytes = b""
+    last_modified: str | None = None
     try:
         async with session.get(
             url,
@@ -263,6 +404,7 @@ async def _hydrate_one(
             status_code = response.status
             charset = response.charset
             raw = await response.read()
+            last_modified = response.headers.get("Last-Modified")
     except asyncio.TimeoutError:
         output["status"] = "timeout"
         output["error"] = "request exceeded timeout"
@@ -306,6 +448,13 @@ async def _hydrate_one(
                 output["error"] = (
                     f"word_count {word_count} below threshold {partial_word_threshold}"
                 )
+
+    # Pubdate extraction is best-effort and runs whenever we have an HTML
+    # body to inspect — including ``partial`` and ``bot_blocked`` outcomes
+    # where the body still contains JSON-LD / og:published_time tags. The
+    # URL fall-back inside ``_extract_published_date`` covers the cases
+    # where no body was retrieved at all.
+    output["published_date"] = _extract_published_date(body, url, last_modified)
 
     output["fetch_duration_ms"] = int((time.monotonic() - start_mono) * 1000)
     return output

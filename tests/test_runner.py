@@ -104,14 +104,14 @@ def test_build_production_stages_returns_three_lists():
     assert run_stages, "run_stages should not be empty"
     assert topic_stages, "topic_stages should not be empty"
     assert post_run_stages == [], "production post_run_stages reserved for runner-built handlers"
-    assert len(topic_stages) == 16, f"expected 16 production topic-stages per ARCH §5.1+V2-06b, got {len(topic_stages)}"
+    assert len(topic_stages) == 17, f"expected 17 production topic-stages (V2-06b + prune_unused_sources_and_clusters), got {len(topic_stages)}"
 
 
 def test_build_hydrated_stages_returns_three_lists():
     agents = _fake_agent_dict(_HYDRATED_AGENTS)
     run_stages, topic_stages, post_run_stages = build_hydrated_stages(agents)
     assert run_stages, "run_stages should not be empty"
-    assert len(topic_stages) == 23, f"expected 23 hydrated topic-stages per ARCH §5.2+V2-06b, got {len(topic_stages)}"
+    assert len(topic_stages) == 24, f"expected 24 hydrated topic-stages (V2-06b + prune_unused_sources_and_clusters), got {len(topic_stages)}"
 
 
 def test_production_stage_names_unique():

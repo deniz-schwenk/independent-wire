@@ -34,6 +34,7 @@ from src.stages.topic_stages import (
     mirror_perspective_synced,
     mirror_qa_corrected,
     normalize_pre_research,
+    prune_unused_sources_and_clusters,
     renumber_sources,
     validate_coverage_gaps_stage,
 )
@@ -63,6 +64,7 @@ __all__ = [
     "mirror_qa_corrected",
     "mirror_stage",
     "normalize_pre_research",
+    "prune_unused_sources_and_clusters",
     "renumber_sources",
     "select_topics",
     "validate_coverage_gaps_stage",

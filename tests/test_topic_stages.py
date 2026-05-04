@@ -38,6 +38,7 @@ from src.stages.topic_stages import (
     mirror_perspective_synced,
     mirror_qa_corrected,
     normalize_pre_research,
+    prune_unused_sources_and_clusters,
     renumber_sources,
     validate_coverage_gaps_stage,
 )
@@ -1006,3 +1007,123 @@ def test_researcher_search_skips_empty_query_strings():
     tb_after = _run(stage, tb, _ro())
     assert fake_tool.calls == ["good"]
     assert len(tb_after.researcher_search_results) == 1
+
+
+# ---------------------------------------------------------------------------
+# prune_unused_sources_and_clusters
+# ---------------------------------------------------------------------------
+
+
+def test_prune_drops_dead_weight_source_and_keeps_content_bearing():
+    """A source unreferenced anywhere AND with empty summary AND no actors
+    is dropped. A source unreferenced but carrying content (summary or
+    actors) is kept — content alone justifies retention for transparency."""
+    tb = TopicBus()
+    tb.final_sources = [
+        {
+            "id": "src-001", "outlet": "Cited Outlet", "summary": "x", "actors_quoted": [],
+        },
+        {
+            # Dead-weight: not cited anywhere, no summary, no actors.
+            "id": "src-023", "outlet": "Dead Outlet", "summary": "", "actors_quoted": [],
+        },
+        {
+            # Unreferenced but content-bearing — kept.
+            "id": "src-099", "outlet": "Quiet Outlet", "summary": "useful background",
+            "actors_quoted": [],
+        },
+    ]
+    # src-001 is referenced via a cluster; src-023 and src-099 are not.
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "position_label": "P1", "actors": ["A"], "source_ids": ["src-001"]},
+    ]
+
+    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
+
+    kept_ids = {s["id"] for s in tb_after.final_sources}
+    assert "src-001" in kept_ids, "referenced source must be kept"
+    assert "src-099" in kept_ids, "content-bearing source must be kept"
+    assert "src-023" not in kept_ids, "dead-weight source must be dropped"
+
+
+def test_prune_keeps_source_referenced_only_in_article_body():
+    """A source cited inline in writer body via [src-NNN] is referenced
+    even when no cluster mentions it — pruning must not strip it."""
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-007", "outlet": "X", "summary": "", "actors_quoted": []},
+    ]
+    tb.writer_article = WriterArticle(
+        headline="h",
+        subheadline="sh",
+        body="A claim is supported [src-007] in the body.",
+        summary="s",
+    )
+    tb.perspective_clusters_synced = []
+
+    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
+
+    assert {s["id"] for s in tb_after.final_sources} == {"src-007"}
+
+
+def test_prune_drops_empty_cluster_and_keeps_populated_cluster():
+    """A cluster with both actors and source_ids empty is dropped; one
+    populated by either dimension is kept."""
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-001", "outlet": "X", "summary": "x", "actors_quoted": [{"name": "A"}]},
+    ]
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "position_label": "Has actors", "actors": ["A"], "source_ids": []},
+        {"id": "pc-002", "position_label": "Has sources", "actors": [], "source_ids": ["src-001"]},
+        {"id": "pc-003", "position_label": "Empty", "actors": [], "source_ids": []},
+    ]
+
+    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
+
+    kept_cluster_ids = {c["id"] for c in tb_after.perspective_clusters_synced}
+    assert kept_cluster_ids == {"pc-001", "pc-002"}, (
+        f"expected pc-001 + pc-002 kept, pc-003 dropped; got {kept_cluster_ids}"
+    )
+
+
+def test_prune_is_noop_when_nothing_to_drop():
+    """A bus where every source is either referenced or content-bearing,
+    and every cluster carries actors or source_ids, passes through
+    unchanged."""
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-001", "outlet": "X", "summary": "x", "actors_quoted": []},
+        {"id": "src-002", "outlet": "Y", "summary": "", "actors_quoted": [{"name": "A"}]},
+    ]
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "position_label": "P", "actors": ["A"], "source_ids": ["src-001"]},
+    ]
+
+    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
+
+    assert len(tb_after.final_sources) == 2
+    assert len(tb_after.perspective_clusters_synced) == 1
+
+
+def test_prune_picks_up_qa_divergence_source_ids():
+    """A source referenced only via a QA divergence (post-fix output)
+    must be kept."""
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-005", "outlet": "Z", "summary": "", "actors_quoted": []},
+    ]
+    tb.qa_divergences = [
+        {
+            "type": "factual",
+            "description": "casualty figure conflict",
+            "source_ids": ["src-005"],
+            "resolution": "unresolved",
+            "resolution_note": "n",
+        }
+    ]
+    tb.perspective_clusters_synced = []
+
+    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
+
+    assert {s["id"] for s in tb_after.final_sources} == {"src-005"}

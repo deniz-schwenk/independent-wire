@@ -50,6 +50,7 @@ from src.stages import (
     mirror_perspective_synced,
     mirror_qa_corrected,
     normalize_pre_research,
+    prune_unused_sources_and_clusters,
     renumber_sources,
     select_topics,
     validate_coverage_gaps_stage,
@@ -134,6 +135,7 @@ def build_production_stages(
         compute_source_balance,
         validate_coverage_gaps_stage,
         BiasLanguageStage(agents["bias_language"]),
+        prune_unused_sources_and_clusters,
         compose_transparency_card,
     ]
 
@@ -217,6 +219,7 @@ def build_hydrated_stages(
         compute_source_balance,
         validate_coverage_gaps_stage,
         BiasLanguageStage(agents["bias_language"]),
+        prune_unused_sources_and_clusters,
         compose_transparency_card,
     ]
 
@@ -263,6 +266,7 @@ _PRODUCTION_TOPIC_NAMES = (
     "compute_source_balance",
     "validate_coverage_gaps_stage",
     "BiasLanguageStage",
+    "prune_unused_sources_and_clusters",
     "compose_transparency_card",
 )
 
@@ -291,6 +295,7 @@ _HYDRATED_TOPIC_NAMES = (
     "compute_source_balance",
     "validate_coverage_gaps_stage",
     "BiasLanguageStage",
+    "prune_unused_sources_and_clusters",
     "compose_transparency_card",
 )
 
