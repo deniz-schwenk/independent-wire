@@ -393,6 +393,40 @@ def test_researcher_plan_stage_empty_output_post_validates_to_failure():
         )
 
 
+def test_researcher_plan_wrappers_pass_run_date_into_context():
+    """Both Plan wrappers must surface run_bus.run_date in the agent context
+    under key `today`. Closes the date-anchor drift documented in
+    SMOKE-POST-POLISH-2026-05-02.md (Plan queries fell back to training
+    cutoff because the wrapper never delivered the date)."""
+    rb = RunBus()
+    rb.run_date = "2026-05-02"
+
+    # Production ResearcherPlanStage
+    fake_prod = FakeAgent(structured={"queries": [{"query": "q", "language": "en"}]})
+    tb_prod = TopicBus(
+        editor_selected_topic=EditorAssignment(
+            title="t", selection_reason="r", raw_data={"x": 1}
+        )
+    )
+    _run(ResearcherPlanStage(fake_prod), tb_prod, rb.as_readonly())
+    ctx_prod = fake_prod.calls[0]["context"]
+    assert ctx_prod.get("today") == "2026-05-02"
+
+    # Hydrated ResearcherHydratedPlanStage
+    fake_hy = FakeAgent(structured={"queries": [{"query": "q", "language": "en"}]})
+    tb_hy = TopicBus(
+        editor_selected_topic=EditorAssignment(
+            title="t", selection_reason="r", raw_data={"x": 1}
+        )
+    )
+    tb_hy.hydration_pre_dossier = HydrationPreDossier(
+        sources=[], preliminary_divergences=[], coverage_gaps=[]
+    )
+    _run(ResearcherHydratedPlanStage(fake_hy), tb_hy, rb.as_readonly())
+    ctx_hy = fake_hy.calls[0]["context"]
+    assert ctx_hy.get("today") == "2026-05-02"
+
+
 # ---------------------------------------------------------------------------
 # Helper: _prepare_curator_input
 # ---------------------------------------------------------------------------

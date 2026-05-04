@@ -720,6 +720,7 @@ class ResearcherPlanStage(_AgentStageBase):
             "title": assignment.title,
             "selection_reason": assignment.selection_reason,
             "raw_data": dict(assignment.raw_data or {}),
+            "today": run_bus.run_date,
         }
         result = await self.agent.run(message, context=context)
         parsed = _parse_agent_output(result)
@@ -1653,6 +1654,7 @@ class ResearcherHydratedPlanStage(_AgentStageBase):
                 "selection_reason": assignment.selection_reason,
                 "raw_data": dict(assignment.raw_data or {}),
                 "coverage_summary": coverage_summary,
+                "today": run_bus.run_date,
             },
         )
         parsed = _parse_agent_output(result)
