@@ -91,7 +91,7 @@ The V2 big-bang work-stream broke into eleven sequential CC tasks. Listed here f
 
 | Task | Status | Description |
 |------|--------|-------------|
-| TASK-BIAS-LANGUAGE-RENDER-SHAPE | 🔵 Queued | Small code-patch in `src/render.py`: `bias_analysis.language` currently rendered as a list `["findings", "severity"]` rather than nested object. Pre-existing since V2-04, surfaced by V2-10b §3.4 review. ~10 lines. |
+| TASK-BIAS-LANGUAGE-RENDER-SHAPE | ✅ | Closed in commit `2a41570`. Root cause was in the `BiasLanguageStage` wrapper (`src/agent_stages.py`), not `src/render.py` — the original ticket title misnamed the location; the wrapper was returning the dict's keys instead of the findings array, and the `severity` field was removed end-to-end. |
 
 ### Future work-streams (catalogued, not actively running)
 

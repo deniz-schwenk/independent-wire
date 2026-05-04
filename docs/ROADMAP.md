@@ -104,7 +104,7 @@ These items improve V2 further but don't block any current capability:
 
 | Task | Description |
 |------|-------------|
-| TASK-BIAS-LANGUAGE-RENDER-SHAPE | Small code-patch in `src/render.py`: `bias_analysis.language` currently rendered as a list rather than nested object. Pre-existing since V2-04. |
+| TASK-BIAS-LANGUAGE-RENDER-SHAPE | ✅ Closed (commit `2a41570`): root cause was in the `BiasLanguageStage` wrapper (`src/agent_stages.py`), not `src/render.py` — the original ticket title misnamed the location. Severity field removed end-to-end. |
 | WP-OPUS-4.7-MIGRATION | Opus 4.6 → 4.7 across all Opus-using agents. `src/agent.py` refactor for `output_config.effort`. Per-agent effort-level eval. |
 | WP-STRUCTURED-OUTPUTS-V2 | After Researcher-Polish. Migration of `response_format` patterns where structured outputs improve robustness. |
 | WP-TOPIC-STAGE-PARALLELISATION | Run multiple TopicBuses concurrently. Architecturally trivial in V2 (no cross-TopicBus dependency). |
