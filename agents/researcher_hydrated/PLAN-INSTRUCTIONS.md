@@ -26,16 +26,24 @@ These pairings are heuristics, not a rigid map. Pick the languages most likely t
 
 ## Story shapes
 
-Stories take recognizable shapes. The shape is a heuristic read of the assignment, not a classifier — a story can sit between two shapes, and the dominant shape may borrow from a secondary. The shape steers the depth of the plan: what kinds of non-translated angles to chase beyond multilingual breadth. Do not name the shape in the output.
+Every query in the plan carries exactly one of the six shapes below. The shape is a heuristic read of what each query is doing — a story can sit between two shapes, and the dominant shape may borrow from a secondary. The shape steers the depth of the query: what kind of non-translated angle it chases beyond the multilingual baseline.
 
-- **Quantitative-claim** — title or selection_reason centers on a specific number, rate, or measurement. Queries target original methodology, alternative measurements, and dissenting estimates.
-- **Stakeholder-conflict** — multiple named actors holding opposed positions. Queries target each actor in their own language and information environment, plus adjacent stakeholders not yet named.
-- **Policy/regulatory** — a government action, law, regulatory decision, or treaty change. Queries target the official text or filing, the affected industry's response, and legal-analysis sources.
-- **Crisis/emergency** — a disaster, outbreak, attack, or sudden event with developing facts. Queries target on-the-ground reports, official briefings, and timeline-anchored updates from the affected region.
-- **Tech/business** — a corporate action, technology release, market event, or commercial-sector development. Queries target the company's home market, competitor and analyst coverage, and trade press in the relevant industry.
-- **Cultural/social** — a social phenomenon or cultural shift without a primary institutional actor. Queries target the affected community in their own language, longer-form analysis, and outlets close to the discourse.
+- **Quantitative-claim** — the query targets a specific number, rate, or measurement: original methodology, alternative measurements, dissenting estimates.
+- **Stakeholder-conflict** — the query targets a named actor in their own language and information environment, or an adjacent stakeholder not yet named.
+- **Policy/regulatory** — the query targets the official text or filing, the affected industry's response, or legal-analysis sources.
+- **Crisis/emergency** — the query targets on-the-ground reports, official briefings, or timeline-anchored updates from the affected region.
+- **Tech/business** — the query targets the company's home market, competitor and analyst coverage, or trade press in the relevant industry.
+- **Cultural/social** — the query targets the affected community in their own language, longer-form analysis, or outlets close to the discourse.
 
 Shape and gap targeting compose: the shape picks the kind of depth, and gap targeting picks where in that depth-space the queries should land. A Stakeholder-conflict story missing civil-society voices warrants stakeholder-style queries aimed at the specific civil-society actors absent from the dossier.
+
+## Per-query discipline
+
+The shape obligation is per-query, not per-plan. Each query — English and non-English alike — must be shaped on its own merits, against the substance of the story, in the language it is written in.
+
+A shape may repeat across queries only when the repetition adds new information: same shape across three different language-communities affected by the story is fine; same shape across three languages that all translate the same headline angle is the translation-matrix anti-pattern and is forbidden by construction. Concretely, a plan that emits "Trump notifies Congress War Powers Act termination 2026" in English and then re-emits the same angle in Arabic, Farsi, German, Portuguese, and French is a single shape × six languages — it counts as one query, not six. Replace the duplicates with shape-distinct queries grounded in each language's own substance: an Arabic query on a regional stakeholder, a Farsi query on Iranian official response, a German query on European parliamentary reaction.
+
+Diversity-by-angle takes precedence over diversity-by-language-coverage. A plan with five distinct shapes covered by ten queries beats a plan with two shapes covered by ten queries spread across five languages.
 
 ## Query construction
 
@@ -43,7 +51,7 @@ Shape and gap targeting compose: the shape picks the kind of depth, and gap targ
 - Use local abbreviations and terminology where they exist.
 - Use native script for non-Latin languages: Arabic, Chinese, Japanese, Korean, Farsi, Hindi, Urdu, Russian, Ukrainian, Hebrew, Greek, Thai.
 - Include temporal markers where natural — the current year, a specific date, or local equivalents of "today."
-- Cover a different angle per query: a different affected country, a different stakeholder group, a different aspect of the story.
+- Each query carries its own shape and its own angle. Two queries in different languages chasing the same shape must be chasing different stakeholders, regions, or substantive aspects — not the same headline rendered twice.
 
 ## Volume and balance
 
@@ -53,7 +61,7 @@ Shape and gap targeting compose: the shape picks the kind of depth, and gap targ
 
 # OUTPUT FORMAT
 
-A single JSON array. Each element has exactly two fields, `query` and `language`. Example:
+A single JSON array. Each element has exactly two fields, `query` and `language`. The shape that drove each query is not emitted. Example:
 
 ```json
 [
