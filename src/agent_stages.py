@@ -1278,11 +1278,17 @@ class BiasLanguageStage(_AgentStageBase):
         if not isinstance(parsed, dict):
             parsed = {}
 
+        language_bias = parsed.get("language_bias") or {}
+        if isinstance(language_bias, dict):
+            findings = language_bias.get("findings") or []
+        else:
+            findings = []
+        if not isinstance(findings, list):
+            findings = []
+
         return topic_bus.model_copy(
             update={
-                "bias_language_findings": list(
-                    parsed.get("language_bias") or parsed.get("findings") or []
-                ),
+                "bias_language_findings": findings,
                 "bias_reader_note": parsed.get("reader_note", "") or "",
             }
         )

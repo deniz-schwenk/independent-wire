@@ -989,9 +989,11 @@ def test_bias_language_metadata():
 def test_bias_language_happy_path():
     fake = FakeAgent(
         structured={
-            "language_bias": [
-                {"excerpt": "x", "issue": "loaded", "explanation": "y"}
-            ],
+            "language_bias": {
+                "findings": [
+                    {"excerpt": "x", "issue": "loaded", "explanation": "y"}
+                ],
+            },
             "reader_note": "Three sources across three languages.",
         }
     )
@@ -1014,6 +1016,47 @@ def test_bias_language_happy_path():
     bias_card_ctx = fake.calls[0]["context"]["bias_card"]
     assert bias_card_ctx["source_balance"]["total"] == 1
     assert bias_card_ctx["perspectives"]["cluster_count"] == 1
+
+
+def test_bias_language_stage_extracts_nested_findings():
+    """BiasLanguageStage extracts findings from language_bias.findings
+    nested array, not from the language_bias dict itself (which would
+    yield the dict's keys ['findings'] — buggy pre-V2-12 behaviour)."""
+    findings_emitted = [
+        {
+            "excerpt": "the devastating attack",
+            "issue": "evaluative_adjective",
+            "explanation": "'Devastating' characterizes severity in the article's own voice.",
+        },
+        {
+            "excerpt": "the regime announced",
+            "issue": "loaded_term",
+            "explanation": "'Regime' carries implicit judgment about legitimacy.",
+        },
+    ]
+    fake = FakeAgent(
+        structured={
+            "language_bias": {"findings": findings_emitted},
+            "reader_note": "Two-sentence reader note.",
+        }
+    )
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.qa_corrected_article = WriterArticle(
+        headline="H", body="B", summary="Sm"
+    )
+    tb.final_sources = [
+        {"id": "src-001", "country": "United States", "language": "en"},
+    ]
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "representation": "dominant", "actors": []}
+    ]
+    stage = BiasLanguageStage(fake)
+    tb_after = _run(stage, tb, _ro())
+
+    assert tb_after.bias_language_findings == findings_emitted
+    assert tb_after.bias_reader_note == "Two-sentence reader note."
+    # Negative assertion: regression guard against the V2-04 bug
+    assert tb_after.bias_language_findings != ["findings"]
 
 
 def test_build_bias_card_for_agent_input_aggregates():

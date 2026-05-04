@@ -1,6 +1,6 @@
 # TASK
 
-You receive `article_body` (the full final article text after corrections, citations in `[src-NNN]` form) and `bias_card` (a pre-aggregated structural profile carrying `source_balance`, `geographic_coverage`, `perspectives`, `factual_divergences`, and `coverage_gaps`). Produce two things in one JSON object: a `language_bias` block carrying findings extracted from the article body together with an overall `severity` level, and a `reader_note` that synthesizes the structural facts in the bias card with the language findings into two or three plain-language sentences. The bias card's counts, distributions, and lists are already aggregated — read them for the synthesis; do not recompute or restate them mechanically.
+You receive `article_body` (the full final article text after corrections, citations in `[src-NNN]` form) and `bias_card` (a pre-aggregated structural profile carrying `source_balance`, `geographic_coverage`, `perspectives`, `factual_divergences`, and `coverage_gaps`). Produce two things in one JSON object: a `language_bias` block carrying findings extracted from the article body, and a `reader_note` that synthesizes the structural facts in the bias card with the language findings into two or three plain-language sentences. The bias card's counts, distributions, and lists are already aggregated — read them for the synthesis; do not recompute or restate them mechanically.
 
 ## Language bias categories
 
@@ -49,8 +49,7 @@ A single JSON object with exactly two top-level fields. Example:
         "issue": "loaded_term",
         "explanation": "'Regime' carries an implicit judgment about the legitimacy of the government, where the neutral 'government' would describe the same body without that judgment."
       }
-    ],
-    "severity": "moderate"
+    ]
   },
   "reader_note": "This article draws on 22 sources in six languages. No voices from the seafarers, port workers, or coastal communities directly affected by the announcement were available, and no East African shipping perspectives were represented despite the route running through the strait. Iranian and US sources also report different timelines for when the new fees take effect; the discrepancy has not been resolved."
 }
@@ -63,7 +62,6 @@ Field notes:
   - `issue` (mandatory) — exactly one of: `evaluative_adjective`, `emotionalizing`, `passive_obscuring`, `loaded_term`, `hedging`, `intensifier`.
   - `explanation` (mandatory) — one sentence stating what the flagged text does (the judgment it embeds, the attribution it lacks, the agent it obscures).
   Empty array when the article body has no meaningful language bias.
-- `language_bias.severity` — exactly one of: `low`, `moderate`, `high`. `low` when findings is empty or contains only minor stylistic issues; `moderate` when several patterns colour interpretation; `high` when evaluative language is pervasive enough to shape understanding before the reader encounters the facts.
 - `reader_note` — two to three sentences in plain language. No bullet points, no internal terminology, no jargon.
 
 Output only the JSON object. No commentary, no markdown fences, no preamble.
@@ -75,4 +73,4 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 3. Do not flag legitimate practice. Standard attribution, data-backed description, genuinely uncertain language for real ambiguity, and direct quotes from sources are not bias.
 4. Do not re-analyze the bias card. Source balance, geographic coverage, missing positions, and divergences are already aggregated; the agent reads them for the reader note but does not produce competing structural analysis or recount the card's contents.
 5. The reader note synthesizes for a thoughtful reader. Two or three plain-language sentences that pick the most important things — never an enumeration of every data point. Do not use internal terminology like "pipeline," "agents," "bias card," "dimensions," or "system."
-6. Empty findings are valid. When the article body has no meaningful language bias, `findings` is an empty array and `severity` is `low`. Do not invent findings to appear thorough.
+6. Empty findings are valid. When the article body has no meaningful language bias, `findings` is an empty array. Do not invent findings to appear thorough.
