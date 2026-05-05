@@ -80,7 +80,7 @@ def test_topicbus_constructs_with_all_typed_empty_defaults():
         "perspective_clusters": [],
         "perspective_missing_positions": [],
         "qa_problems_found": [],
-        "qa_proposed_corrections": [],
+        "qa_corrections": [],
         "qa_divergences": [],
         "perspective_clusters_synced": [],
         "bias_language_findings": [],

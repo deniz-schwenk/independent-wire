@@ -38,6 +38,7 @@ from typing import Any, Optional
 
 from src.agent import Agent
 from src.bus import (
+    Correction,
     EditorAssignment,
     HydrationPhase2Corpus,
     HydrationPreDossier,
@@ -1135,7 +1136,7 @@ class QaAnalyzeStage(_AgentStageBase):
 
     Reads `writer_article`, `final_sources`, `perspective_clusters_synced`,
     `merged_preliminary_divergences`. Writes `qa_problems_found`,
-    `qa_proposed_corrections`, `qa_corrected_article`, `qa_divergences`.
+    `qa_corrections`, `qa_corrected_article`, `qa_divergences`.
 
     Mirror integration: when QA finds no problems and the agent omits the
     `article` field per the V2 prompt, the wrapper leaves
@@ -1159,7 +1160,7 @@ class QaAnalyzeStage(_AgentStageBase):
     )
     writes = (
         "qa_problems_found",
-        "qa_proposed_corrections",
+        "qa_corrections",
         "qa_corrected_article",
         "qa_divergences",
     )
@@ -1203,22 +1204,34 @@ class QaAnalyzeStage(_AgentStageBase):
             parsed = {}
 
         problems = list(parsed.get("problems_found") or [])
-        corrections = list(parsed.get("proposed_corrections") or [])
+        raw_corrections = list(parsed.get("qa_corrections") or [])
+        corrections: list[Correction] = []
+        for entry in raw_corrections:
+            if not isinstance(entry, dict):
+                continue
+            corrections.append(
+                Correction(
+                    proposed_correction=str(entry.get("proposed_correction", "") or ""),
+                    correction_needed=bool(entry.get("correction_needed", False)),
+                )
+            )
         divergences = list(parsed.get("divergences") or [])
 
         update: dict[str, Any] = {
             "qa_problems_found": problems,
-            "qa_proposed_corrections": corrections,
+            "qa_corrections": corrections,
             "qa_divergences": divergences,
         }
 
         # Mirror-pattern semantics: only write qa_corrected_article when the
-        # agent actually emitted an `article` object. When the field is
-        # absent (V2 schema makes it optional; QA omits when no corrections),
-        # leave the slot at its empty default and let mirror_qa_corrected
-        # fill it from writer_article downstream.
+        # agent emitted an `article` object AND at least one entry warrants a
+        # body change. When every entry is a retraction (or array empty), or
+        # the agent omitted `article` per the V2 prompt, leave the slot at
+        # its empty default and let mirror_qa_corrected fill it from
+        # writer_article downstream.
+        any_fix = any(c.correction_needed for c in corrections)
         article = parsed.get("article")
-        if isinstance(article, dict) and article:
+        if any_fix and isinstance(article, dict) and article:
             update["qa_corrected_article"] = WriterArticle(
                 headline=article.get("headline", "") or "",
                 subheadline=article.get("subheadline", "") or "",
@@ -1250,7 +1263,7 @@ class BiasLanguageStage(_AgentStageBase):
         "perspective_clusters_synced",
         "perspective_missing_positions",
         "qa_problems_found",
-        "qa_proposed_corrections",
+        "qa_corrections",
         "qa_divergences",
         "coverage_gaps_validated",
     )
@@ -1793,7 +1806,7 @@ class PerspectiveSyncStage(_AgentStageBase):
     left as-is.
 
     Reads `perspective_clusters`, `qa_corrected_article`, `qa_problems_found`,
-    `qa_proposed_corrections`. Writes `perspective_clusters_synced` (the
+    `qa_corrections`. Writes `perspective_clusters_synced` (the
     fully merged per-element list when corrections triggered the run; left
     untouched when the gate skipped the call).
 
@@ -1817,7 +1830,7 @@ class PerspectiveSyncStage(_AgentStageBase):
         "perspective_clusters",
         "qa_corrected_article",
         "qa_problems_found",
-        "qa_proposed_corrections",
+        "qa_corrections",
     )
     writes = ("perspective_clusters_synced",)
     agent_role = "perspective_sync"  # V1 folder name; V2-07 anglicises
@@ -1828,8 +1841,14 @@ class PerspectiveSyncStage(_AgentStageBase):
     async def __call__(
         self, topic_bus: TopicBus, run_bus: RunBusReadOnly
     ) -> TopicBus:
-        # Eligibility gate: skip the call when QA had no corrections.
-        if not topic_bus.qa_proposed_corrections:
+        # Eligibility gate: skip the call when no entry warrants a body fix
+        # (empty array, or every entry is a retraction).
+        active_fixes = [
+            c.proposed_correction
+            for c in (topic_bus.qa_corrections or [])
+            if c.correction_needed
+        ]
+        if not active_fixes:
             return topic_bus  # mirror stage downstream produces 1:1 copy
 
         message = (
@@ -1842,7 +1861,7 @@ class PerspectiveSyncStage(_AgentStageBase):
                 "position_clusters": list(topic_bus.perspective_clusters),
                 "article_body": topic_bus.qa_corrected_article.body,
                 "qa_problems_found": list(topic_bus.qa_problems_found),
-                "qa_proposed_corrections": list(topic_bus.qa_proposed_corrections),
+                "qa_proposed_corrections": active_fixes,
             },
         )
         parsed = _parse_agent_output(result) or {}

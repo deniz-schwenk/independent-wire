@@ -177,7 +177,7 @@ _TP_RESHAPED_SLOTS: dict[str, str] = {
     "bias_reader_note": "bias_analysis.reader_note",
     "source_balance": "bias_analysis.source / bias_analysis.geographical",
     "qa_problems_found": "bias_analysis.selection.qa_findings",
-    "qa_proposed_corrections": "bias_analysis.selection (or mcp top-level)",
+    "qa_corrections": "bias_analysis.selection (or mcp top-level)",
 }
 
 
@@ -214,7 +214,7 @@ def render_mcp_response(
     level for clients that want to consume the QA chain."""
     base = render_tp_public(topic_bus, run_bus)
     base["qa_problems_found"] = list(topic_bus.qa_problems_found)
-    base["qa_proposed_corrections"] = list(topic_bus.qa_proposed_corrections)
+    base["qa_corrections"] = [c.model_dump() for c in topic_bus.qa_corrections]
     return base
 
 

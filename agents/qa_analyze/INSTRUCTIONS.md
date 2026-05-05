@@ -1,6 +1,6 @@
 # TASK
 
-You receive an `article` (the complete Writer output with `headline`, `subheadline`, `body`, `summary`, and `sources[]`), a `sources[]` array in `src-NNN` form, `preliminary_divergences[]` and `coverage_gaps[]` from research, and `position_clusters[]` and `missing_positions[]` from perspective analysis. Identify factual problems in the article, propose a specific correction for each problem, apply those corrections to produce the corrected article when corrections exist, and report source disagreements separately. Apply corrections surgically — preserve the Writer's voice, structure, headline, and overall focus unless a problem genuinely requires changing them.
+You receive an `article` (the complete Writer output with `headline`, `subheadline`, `body`, `summary`, and `sources[]`), a `sources[]` array in `src-NNN` form, `preliminary_divergences[]` and `coverage_gaps[]` from research, and `position_clusters[]` and `missing_positions[]` from perspective analysis. Identify factual problems in the article, write a `qa_corrections[]` entry for each one — proposing a fix or recording why no fix is warranted — apply the fixes that are warranted to produce the corrected article, and report source disagreements separately. Apply corrections surgically — preserve the Writer's voice, structure, headline, and overall focus unless a problem genuinely requires changing them.
 
 ## Problem types
 
@@ -27,13 +27,13 @@ Each entry in `problems_found[]` carries a `problem` value drawn from these four
 # STEPS
 
 1. Read the article. Verify every factual claim — numbers, dates, statistics, attributions, quotes, causal assertions — against the sources array. Record each problem in `problems_found[]` with its exact excerpt, problem type, and a one-to-three-sentence explanation naming what the flagged text does, with the source IDs that demonstrate the issue.
-2. For each entry in `problems_found[]`, in order, write the specific correction that should be made. Record one entry in `proposed_corrections[]` per problem, in the same order — a one-liner naming what the fix changes and which source supports it.
-3. When `proposed_corrections[]` is non-empty, apply the corrections to the article body and emit the complete corrected article in `article` with the four fields `headline`, `subheadline`, `body`, `summary`. Preserve the Writer's voice, structure, headline, and the `[src-NNN]` citation form. When `proposed_corrections[]` is empty, omit the `article` field entirely from the output — the pipeline reuses the input article unchanged.
-4. Identify source disagreements relevant to the topic and record them in `divergences[]` with their type, description, the involved source IDs, the resolution status, and a note describing whether and how the corrected article (or the input article, when no corrections were applied) addresses each one.
+2. For each entry in `problems_found[]`, in order, write the `proposed_correction` text. Two outcomes are legitimate. If the finding warrants a body change, write a concrete fix anchor naming what changes and which source supports it. If, while drafting the fix, you realise the finding does not actually warrant a body change — the source mislabels something the article does not repeat, the issue duplicates an earlier correction, the finding is a minor omission rather than a distortion — write a brief retraction explaining why no fix is needed. After committing the `proposed_correction` text, set `correction_needed`: `true` when a fix was written, `false` when the entry retracts.
+3. When at least one entry in `qa_corrections[]` has `correction_needed: true`, apply those entries' fixes to the article body and emit the complete corrected article in `article` with the four fields `headline`, `subheadline`, `body`, `summary`. Preserve the Writer's voice, structure, headline, and the `[src-NNN]` citation form. Entries with `correction_needed: false` leave the body untouched. When every entry has `correction_needed: false` (or `qa_corrections[]` is empty), omit the `article` field entirely from the output — the pipeline reuses the input article unchanged.
+4. Identify source disagreements relevant to the topic and record them in `divergences[]` with their type, description, the involved source IDs, the resolution status, and a note describing whether and how the corrected article (or the input article, when no fixes were applied) addresses each one.
 
 # OUTPUT FORMAT
 
-A single JSON object. The fields `problems_found`, `proposed_corrections`, and `divergences` are always present. The `article` field is present only when corrections were applied; it is omitted when `proposed_corrections[]` is empty. Example with corrections applied:
+A single JSON object. The fields `problems_found`, `qa_corrections`, and `divergences` are always present. The `article` field is present only when at least one entry in `qa_corrections[]` has `correction_needed: true`; it is omitted otherwise. Example with one correction and one retraction:
 
 ```json
 {
@@ -42,10 +42,22 @@ A single JSON object. The fields `problems_found`, `proposed_corrections`, and `
       "article_excerpt": "The administration cites security costs at $50 million per year [src-004].",
       "problem": "factually_incorrect",
       "explanation": "Source src-004 reports the figure as $500 million per year, not $50 million."
+    },
+    {
+      "article_excerpt": "Ukrainian Defence Minister Fyodorov stated …",
+      "problem": "factually_incorrect",
+      "explanation": "Source src-001 identifies Fyodorov as Defence Minister, but Fyodorov is Ukraine's Minister of Digital Transformation."
     }
   ],
-  "proposed_corrections": [
-    "Replace '$50 million per year' with '$500 million per year' to match the figure reported in src-004."
+  "qa_corrections": [
+    {
+      "proposed_correction": "Replace '$50 million per year' with '$500 million per year' to match the figure reported in src-004.",
+      "correction_needed": true
+    },
+    {
+      "proposed_correction": "Source src-001 mislabels Fyodorov as Defence Minister, but checking the body, the article does not actually name Fyodorov. The source's mislabel does not propagate into the article.",
+      "correction_needed": false
+    }
   ],
   "article": {
     "headline": "United States Imposes Transit Fees on Vessels Crossing the Strait of Hormuz",
@@ -65,12 +77,12 @@ A single JSON object. The fields `problems_found`, `proposed_corrections`, and `
 }
 ```
 
-Example with no corrections (`article` omitted):
+Example with no fixes applied (`article` omitted):
 
 ```json
 {
   "problems_found": [],
-  "proposed_corrections": [],
+  "qa_corrections": [],
   "divergences": [
     {
       "type": "framing",
@@ -86,17 +98,18 @@ Example with no corrections (`article` omitted):
 Field notes:
 
 - `problems_found[]` — one entry per identified problem. Each carries `article_excerpt` (the exact verbatim text from the article), `problem` (one of `factually_incorrect`, `unsupported_claim`, `missing_divergence`, `misleading_framing`), and `explanation` (mandatory) — one to three sentences naming what the flagged text does (the judgment it embeds, the attribution it lacks, the agent it obscures, or the source-versus-article mismatch it represents). Empty array when no problems are found.
-- `proposed_corrections[]` — one one-liner per problem, in the same order as `problems_found[]`. Empty array when no problems are found.
-- `article` — emitted only when `proposed_corrections[]` is non-empty. When present, it carries all four fields (`headline`, `subheadline`, `body`, `summary`) — the complete corrected article, never a partial one. When absent, the pipeline reuses the input article unchanged. The article's sources array is owned by the pipeline and is not emitted by the agent; the input `article.sources[]` remains the citation target.
+- `qa_corrections[]` — one entry per problem, in the same order as `problems_found[]`. Each entry carries `proposed_correction` and then `correction_needed`, in that order. `proposed_correction` is a single string in one of two registers: a concrete fix anchor when a body change is warranted, or a brief retraction explanation when the finding does not warrant a change. `correction_needed` is the boolean conclusion that emerged while writing `proposed_correction` — `true` when the entry proposes a fix, `false` when the entry retracts. The boolean and the text agree on outcome. Empty array when no problems are found.
+- `article` — emitted only when at least one `qa_corrections[]` entry has `correction_needed: true`. When present, it carries all four fields (`headline`, `subheadline`, `body`, `summary`) — the complete corrected article reflecting only the warranted fixes, never a partial one. When absent, the pipeline reuses the input article unchanged. The article's sources array is owned by the pipeline and is not emitted by the agent; the input `article.sources[]` remains the citation target.
 - `divergences[]` — source disagreements. Each carries `type` (one of `factual`, `framing`, `omission`, `emphasis`), `description`, `source_ids[]`, `resolution` (one of `resolved`, `unresolved`, `partially_resolved`), and `resolution_note` describing how or whether the article addresses the disagreement. Empty array when no disagreements are present.
 
 Output only the JSON object. No commentary, no markdown fences, no preamble.
 
 # RULES
 
-1. The analysis chain runs in order. Every entry in `proposed_corrections[]` corresponds to a problem in `problems_found[]` at the same index, and the corrected article reflects those proposed corrections.
+1. The analysis chain runs in order. Every entry in `qa_corrections[]` corresponds to a problem in `problems_found[]` at the same index, the two arrays have the same length, and the corrected article reflects the entries with `correction_needed: true`.
 2. The `explanation` field is one to three sentences naming what the flagged text does — the judgment it embeds, the attribution it lacks, the agent it obscures, or the source-versus-article mismatch it represents. "The article says the road was the Kharkiv-Chuhuiv road, the source says Kyiv-Kharkiv-Dovzhanskyi" passes; an extended write-up that re-quotes the source, walks through the discrepancy, and reasons about implications fails. The reasoning belongs in the agent's own analysis, not in the field.
-3. All analysis and all corrections rest on the sources array (passed through both as top-level `sources` and as `article.sources`, both carrying `src-NNN` IDs). Outside knowledge is not added; new sources are not introduced; existing sources are not removed.
-4. Corrections are surgical. Fix problems where they appear; preserve the rest. The article's organization, focus, headline, and voice are unchanged unless a problem genuinely requires a structural change.
-5. Wikipedia citations for current events, statistics, or analysis are flagged as `unsupported_claim`. Wikipedia is acceptable only for verifiable background facts the source itself does not dispute.
-6. When `proposed_corrections[]` is non-empty, the `article` field carries the complete corrected article — never a partial article, never only the changed sections. When `proposed_corrections[]` is empty, the `article` field is omitted entirely from the output.
+3. Retraction is a legitimate outcome. When drafting `proposed_correction` reveals that a finding does not warrant a body change — the source mislabels something the article does not repeat, the finding duplicates an earlier correction, the issue is a minor omission rather than a distortion — write the retraction in `proposed_correction` and set `correction_needed: false`. Do not edit `problems_found[i]` retroactively, do not write meta-notes inside `explanation`, do not set `correction_needed: false` while writing a fix, and do not set `correction_needed: true` on a fragment that does not name what changes and which source supports it.
+4. All analysis and all corrections rest on the sources array (passed through both as top-level `sources` and as `article.sources`, both carrying `src-NNN` IDs). Outside knowledge is not added; new sources are not introduced; existing sources are not removed.
+5. Corrections are surgical. Fix problems where they appear; preserve the rest. The article's organization, focus, headline, and voice are unchanged unless a problem genuinely requires a structural change.
+6. Wikipedia citations for current events, statistics, or analysis are flagged as `unsupported_claim`. Wikipedia is acceptable only for verifiable background facts the source itself does not dispute.
+7. When at least one `qa_corrections[]` entry has `correction_needed: true`, the `article` field carries the complete corrected article reflecting only those entries — never a partial article, never only the changed sections, and never the body changes from retracted entries. When every entry has `correction_needed: false`, or when `qa_corrections[]` is empty, the `article` field is omitted entirely from the output.

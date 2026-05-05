@@ -234,9 +234,17 @@ QA_ANALYZE_SCHEMA = {
                 "additionalProperties": False,
             },
         },
-        "proposed_corrections": {
+        "qa_corrections": {
             "type": "array",
-            "items": {"type": "string"},
+            "items": {
+                "type": "object",
+                "properties": {
+                    "proposed_correction": {"type": "string"},
+                    "correction_needed": {"type": "boolean"},
+                },
+                "required": ["proposed_correction", "correction_needed"],
+                "additionalProperties": False,
+            },
         },
         # Note: ``article.sources`` is intentionally NOT in the schema. The
         # QA prompt asks for sources to be passed through, and Python's QA
@@ -281,7 +289,7 @@ QA_ANALYZE_SCHEMA = {
         },
     },
     "required": [
-        "problems_found", "proposed_corrections", "divergences",
+        "problems_found", "qa_corrections", "divergences",
     ],
     "additionalProperties": False,
 }

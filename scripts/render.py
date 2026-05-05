@@ -990,10 +990,19 @@ def build_transparency(tp: dict) -> str:
     if t.get("selection_reason"):
         parts.append(f'<dt>Selection Reason</dt><dd>{_esc(t["selection_reason"])}</dd>\n')
 
-    corrections = t.get("qa_proposed_corrections", [])
+    corrections = t.get("qa_corrections", [])
     if corrections:
-        items = "\n".join(f"<li>{_esc(c)}</li>" for c in corrections)
-        parts.append(f'<dt>QA Proposed Corrections</dt><dd><ul>{items}</ul></dd>\n')
+        items = []
+        for c in corrections:
+            if isinstance(c, dict):
+                text = c.get("proposed_correction", "")
+                applied = c.get("correction_needed", False)
+            else:
+                text = str(c)
+                applied = True
+            tag = "applied" if applied else "retracted"
+            items.append(f'<li>[{tag}] {_esc(text)}</li>')
+        parts.append(f'<dt>QA Corrections</dt><dd><ul>{"".join(items)}</ul></dd>\n')
 
     run = t.get("pipeline_run", {})
     if run:

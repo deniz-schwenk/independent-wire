@@ -630,7 +630,7 @@ async def prune_unused_sources_and_clusters(
     reads=(
         "editor_selected_topic",
         "qa_problems_found",
-        "qa_proposed_corrections",
+        "qa_corrections",
         "writer_article",
         "qa_corrected_article",
     ),
@@ -648,7 +648,7 @@ async def compose_transparency_card(
     - pipeline_run: {run_id, date} pulled from the RunBus.
     - article_original: a copy of writer_article iff QA modified anything
       (qa_problems_found is non-empty); None otherwise.
-    - qa_problems_found / qa_proposed_corrections: copied through.
+    - qa_problems_found / qa_corrections: copied through.
     """
     raw_reason = topic_bus.editor_selected_topic.selection_reason or ""
     cleaned_reason = strip_stale_quantifiers(raw_reason)
@@ -663,7 +663,7 @@ async def compose_transparency_card(
         pipeline_run={"run_id": run_bus.run_id, "date": run_bus.run_date},
         article_original=article_original,
         qa_problems_found=copy.deepcopy(topic_bus.qa_problems_found),
-        qa_proposed_corrections=copy.deepcopy(topic_bus.qa_proposed_corrections),
+        qa_corrections=copy.deepcopy(topic_bus.qa_corrections),
     )
     return topic_bus.model_copy(update={"transparency_card": card})
 

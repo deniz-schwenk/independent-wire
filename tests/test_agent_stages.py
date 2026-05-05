@@ -758,6 +758,7 @@ from src.agent_stages import (  # noqa: E402
     _merge_perspective_deltas,
 )
 from src.bus import (  # noqa: E402
+    Correction,
     HydrationPhase2Corpus,
     HydrationPreDossier,
     ResearcherAssembleDossier,
@@ -1240,15 +1241,30 @@ def test_perspective_sync_metadata():
 
 
 def test_perspective_sync_eligibility_gate_skips_when_no_corrections():
-    """qa_proposed_corrections empty → wrapper skips agent call, leaves
+    """qa_corrections empty → wrapper skips agent call, leaves
     perspective_clusters_synced empty so the V2-03b mirror produces 1:1."""
     fake = FakeAgent(structured={"position_cluster_updates": []})
     tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
     tb.perspective_clusters = [{"id": "pc-001", "position_label": "A"}]
-    tb.qa_proposed_corrections = []  # gate fires → skip
+    tb.qa_corrections = []  # gate fires → skip
     stage = PerspectiveSyncStage(fake)
     tb_after = _run(stage, tb, _ro())
     assert tb_after.perspective_clusters_synced == []  # mirror handles it
+    assert len(fake.calls) == 0
+
+
+def test_perspective_sync_eligibility_gate_skips_when_all_retracted():
+    """All entries have correction_needed=False → gate fires → skip."""
+    fake = FakeAgent(structured={"position_cluster_updates": []})
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.perspective_clusters = [{"id": "pc-001", "position_label": "A"}]
+    tb.qa_corrections = [
+        Correction(proposed_correction="retract reason 1", correction_needed=False),
+        Correction(proposed_correction="retract reason 2", correction_needed=False),
+    ]
+    stage = PerspectiveSyncStage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert tb_after.perspective_clusters_synced == []
     assert len(fake.calls) == 0
 
 
@@ -1266,9 +1282,14 @@ def test_perspective_sync_runs_when_qa_corrections_present():
         {"id": "pc-002", "position_label": "Anti", "position_summary": "opposes"},
     ]
     tb.qa_corrected_article = WriterArticle(body="corrected body")
-    tb.qa_proposed_corrections = ["replace X with Y"]
+    tb.qa_corrections = [
+        Correction(proposed_correction="replace X with Y", correction_needed=True),
+        Correction(proposed_correction="retract", correction_needed=False),
+    ]
     stage = PerspectiveSyncStage(fake)
     tb_after = _run(stage, tb, _ro())
+    # Only the correction_needed=True text reaches the agent context
+    assert fake.calls[0]["context"]["qa_proposed_corrections"] == ["replace X with Y"]
     synced = tb_after.perspective_clusters_synced
     # Delta applied to pc-001, pc-002 unchanged
     assert synced[0]["position_label"] == "Strongly Pro"
@@ -1319,7 +1340,7 @@ def test_qa_analyze_metadata():
     )
     assert m.writes == (
         "qa_problems_found",
-        "qa_proposed_corrections",
+        "qa_corrections",
         "qa_corrected_article",
         "qa_divergences",
     )
@@ -1360,7 +1381,9 @@ def test_qa_analyze_problems_found_path():
                     "explanation": "Source src-001 reports differently.",
                 }
             ],
-            "proposed_corrections": ["Replace X with Y."],
+            "qa_corrections": [
+                {"proposed_correction": "Replace X with Y.", "correction_needed": True}
+            ],
             "article": {
                 "headline": "Corrected headline",
                 "subheadline": "Corrected sub",
@@ -1383,7 +1406,9 @@ def test_qa_analyze_problems_found_path():
     tb_after = _run(stage, tb, _ro())
 
     assert len(tb_after.qa_problems_found) == 1
-    assert tb_after.qa_proposed_corrections == ["Replace X with Y."]
+    assert len(tb_after.qa_corrections) == 1
+    assert tb_after.qa_corrections[0].proposed_correction == "Replace X with Y."
+    assert tb_after.qa_corrections[0].correction_needed is True
     assert tb_after.qa_corrected_article.headline == "Corrected headline"
     assert tb_after.qa_corrected_article.body == "Corrected body [src-001]."
     assert len(tb_after.qa_divergences) == 1
@@ -1399,7 +1424,7 @@ def test_qa_analyze_clean_run_omits_article_leaves_slot_empty():
     fake = FakeAgent(
         structured={
             "problems_found": [],
-            "proposed_corrections": [],
+            "qa_corrections": [],
             # `article` field absent — V2 prompt omits it on clean runs
             "divergences": [],
         }
@@ -1409,7 +1434,7 @@ def test_qa_analyze_clean_run_omits_article_leaves_slot_empty():
     tb_after = _run(stage, tb, _ro())
 
     assert tb_after.qa_problems_found == []
-    assert tb_after.qa_proposed_corrections == []
+    assert tb_after.qa_corrections == []
     assert tb_after.qa_divergences == []
     # Slot stays at empty WriterArticle default
     assert tb_after.qa_corrected_article == WriterArticle()
@@ -1422,7 +1447,7 @@ def test_qa_analyze_clean_run_passes_post_validation():
     fake = FakeAgent(
         structured={
             "problems_found": [],
-            "proposed_corrections": [],
+            "qa_corrections": [],
             "divergences": [],
         }
     )
@@ -1449,7 +1474,7 @@ def test_qa_analyze_then_mirror_fills_corrected_article_from_writer():
     fake = FakeAgent(
         structured={
             "problems_found": [],
-            "proposed_corrections": [],
+            "qa_corrections": [],
             "divergences": [],
         }
     )
@@ -1479,7 +1504,7 @@ def test_qa_analyze_problems_found_path_passes_post_validation():
     fake = FakeAgent(
         structured={
             "problems_found": [{"article_excerpt": "x", "problem": "p", "explanation": "e"}],
-            "proposed_corrections": ["fix"],
+            "qa_corrections": [{"proposed_correction": "fix", "correction_needed": True}],
             "article": {"headline": "C", "subheadline": "S", "body": "B", "summary": "Sm"},
             "divergences": [],
         }
@@ -1510,7 +1535,76 @@ def test_qa_analyze_schema_does_not_require_article():
     )
     # Sanity: the other three are still required
     assert "problems_found" in QA_ANALYZE_SCHEMA["required"]
-    assert "proposed_corrections" in QA_ANALYZE_SCHEMA["required"]
+    assert "qa_corrections" in QA_ANALYZE_SCHEMA["required"]
     assert "divergences" in QA_ANALYZE_SCHEMA["required"]
     # Sanity: article still defined as a property (just optional)
     assert "article" in QA_ANALYZE_SCHEMA["properties"]
+
+
+def test_qa_analyze_all_retractions_omits_corrected_article():
+    """Every entry has correction_needed=False → wrapper does NOT write
+    qa_corrected_article (mirror fills from writer_article downstream)."""
+    fake = FakeAgent(
+        structured={
+            "problems_found": [
+                {"article_excerpt": "x", "problem": "p", "explanation": "e"},
+                {"article_excerpt": "y", "problem": "p", "explanation": "e"},
+            ],
+            "qa_corrections": [
+                {"proposed_correction": "retract: source mislabel", "correction_needed": False},
+                {"proposed_correction": "retract: duplicate", "correction_needed": False},
+            ],
+            # `article` field could be present or absent — wrapper must ignore
+            # it when no correction_needed=True is set.
+            "article": {"headline": "X", "subheadline": "X", "body": "X", "summary": "X"},
+            "divergences": [],
+        }
+    )
+    tb = _make_qa_topicbus()
+    stage = QaAnalyzeStage(fake)
+    tb_after = _run(stage, tb, _ro())
+
+    assert len(tb_after.qa_corrections) == 2
+    assert all(not c.correction_needed for c in tb_after.qa_corrections)
+    # qa_corrected_article stays at empty default (mirror handles downstream)
+    assert tb_after.qa_corrected_article == WriterArticle()
+
+
+def test_qa_analyze_mixed_corrections_emits_corrected_article():
+    """At least one correction_needed=True → wrapper writes qa_corrected_article."""
+    fake = FakeAgent(
+        structured={
+            "problems_found": [
+                {"article_excerpt": "x", "problem": "p", "explanation": "e"},
+                {"article_excerpt": "y", "problem": "p", "explanation": "e"},
+            ],
+            "qa_corrections": [
+                {"proposed_correction": "retract", "correction_needed": False},
+                {"proposed_correction": "real fix", "correction_needed": True},
+            ],
+            "article": {
+                "headline": "Corrected H",
+                "subheadline": "Corrected S",
+                "body": "Corrected B",
+                "summary": "Corrected Sm",
+            },
+            "divergences": [],
+        }
+    )
+    tb = _make_qa_topicbus()
+    stage = QaAnalyzeStage(fake)
+    tb_after = _run(stage, tb, _ro())
+
+    assert tb_after.qa_corrected_article.headline == "Corrected H"
+    assert any(c.correction_needed for c in tb_after.qa_corrections)
+
+
+def test_correction_model_field_order_is_load_bearing():
+    """The strict-mode JSON Schema reflects field declaration order.
+    proposed_correction must precede correction_needed so Sonnet writes the
+    text before committing to the boolean."""
+    fields = list(Correction.model_fields.keys())
+    assert fields == ["proposed_correction", "correction_needed"], (
+        f"Correction field order drifted: {fields}. Sonnet streams output in "
+        "declared order; the boolean must arrive after the text."
+    )

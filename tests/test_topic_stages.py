@@ -11,6 +11,7 @@ import asyncio
 import pytest
 
 from src.bus import (
+    Correction,
     EditorAssignment,
     HydrationPhase2Corpus,
     HydrationPreDossier,
@@ -656,7 +657,7 @@ def test_compose_transparency_card_clean_run_no_article_original():
     )
     tb.writer_article = WriterArticle(headline="H", body="B")
     tb.qa_problems_found = []
-    tb.qa_proposed_corrections = []
+    tb.qa_corrections = []
 
     tb_after = _run(compose_transparency_card, tb, rb.as_readonly())
     card = tb_after.transparency_card
@@ -685,14 +686,16 @@ def test_compose_transparency_card_qa_changed_carries_article_original():
     tb = TopicBus(editor_selected_topic=EditorAssignment(selection_reason="x"))
     tb.writer_article = WriterArticle(headline="orig-H", body="orig-B")
     tb.qa_problems_found = [{"problem": "factually_incorrect", "excerpt": "..."}]
-    tb.qa_proposed_corrections = ["replace X with Y"]
+    tb.qa_corrections = [Correction(proposed_correction="replace X with Y", correction_needed=True)]
 
     tb_after = _run(compose_transparency_card, tb, _ro())
     card = tb_after.transparency_card
     assert card.article_original is not None
     assert card.article_original.headline == "orig-H"
     assert card.qa_problems_found == [{"problem": "factually_incorrect", "excerpt": "..."}]
-    assert card.qa_proposed_corrections == ["replace X with Y"]
+    assert len(card.qa_corrections) == 1
+    assert card.qa_corrections[0].proposed_correction == "replace X with Y"
+    assert card.qa_corrections[0].correction_needed is True
 
 
 # ---------------------------------------------------------------------------

@@ -137,6 +137,17 @@ class WriterArticle(_StrictSubModel):
     summary: str = ""
 
 
+class Correction(_StrictSubModel):
+    """One QA correction entry. Field-order is load-bearing: Sonnet streams
+    output in declared order, so `proposed_correction` (free text) must come
+    before `correction_needed` (the boolean conclusion). The model writes
+    its way to a verdict in the text before committing to the flag.
+    """
+
+    proposed_correction: str = ""
+    correction_needed: bool = False
+
+
 class SourceBalance(_StrictSubModel):
     """ARCH-V2 §4B.11."""
 
@@ -176,7 +187,7 @@ class TransparencyCard(_StrictSubModel):
     pipeline_run: dict = Field(default_factory=dict)
     article_original: Optional[WriterArticle] = None
     qa_problems_found: list = Field(default_factory=list)
-    qa_proposed_corrections: list = Field(default_factory=list)
+    qa_corrections: list[Correction] = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -333,7 +344,7 @@ class TopicBus(BaseModel):
         visibility=["tp", "mcp"],
         optional_write=True,
     )
-    qa_proposed_corrections: list = Slot(
+    qa_corrections: list[Correction] = Slot(
         default_factory=list,
         visibility=["tp", "mcp"],
         optional_write=True,

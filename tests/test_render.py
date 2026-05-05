@@ -90,7 +90,7 @@ def _make_topicbus(
     )
     tb.qa_corrected_article = qa_corrected if qa_corrected is not None else tb.writer_article.model_copy(deep=True)
     tb.qa_problems_found = []
-    tb.qa_proposed_corrections = []
+    tb.qa_corrections = []
     tb.qa_divergences = [
         {
             "type": "factual",
@@ -116,7 +116,7 @@ def _make_topicbus(
         pipeline_run={"run_id": "run-2026-04-30-abc", "date": "2026-04-30"},
         article_original=None,
         qa_problems_found=[],
-        qa_proposed_corrections=[],
+        qa_corrections=[],
     )
     return tb
 
@@ -128,7 +128,7 @@ def _make_topicbus(
 
 def test_select_by_visibility_topicbus_tp():
     """tp-tagged TopicBus slots: final_sources + qa_problems_found +
-    qa_proposed_corrections + qa_corrected_article + qa_divergences +
+    qa_corrections + qa_corrected_article + qa_divergences +
     perspective_clusters_synced + bias_language_findings + bias_reader_note +
     coverage_gaps_validated + source_balance + transparency_card."""
     tb = _make_topicbus()
@@ -136,7 +136,7 @@ def test_select_by_visibility_topicbus_tp():
     expected = {
         "final_sources",
         "qa_problems_found",
-        "qa_proposed_corrections",
+        "qa_corrections",
         "qa_corrected_article",
         "qa_divergences",
         "perspective_clusters_synced",
@@ -309,9 +309,9 @@ def test_render_mcp_response_extends_tp_public():
         assert key in mcp
     # Plus QA reasoning at top level
     assert "qa_problems_found" in mcp
-    assert "qa_proposed_corrections" in mcp
+    assert "qa_corrections" in mcp
     assert mcp["qa_problems_found"] == tb.qa_problems_found
-    assert mcp["qa_proposed_corrections"] == tb.qa_proposed_corrections
+    assert mcp["qa_corrections"] == [c.model_dump() for c in tb.qa_corrections]
 
 
 # ---------------------------------------------------------------------------
