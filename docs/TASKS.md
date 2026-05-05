@@ -1,7 +1,7 @@
 # Independent Wire — Task Tracker
 
 **Created:** 2026-03-30
-**Updated:** 2026-05-02 (V2 big-bang architecture work-stream complete; V1 deleted in commit 19348f3)
+**Updated:** 2026-05-05 (post-Researcher-Polish + Phase-0-Eval cleanup; latest commit 8f48804)
 **Purpose:** Living document — updated after each session
 
 ---
@@ -81,11 +81,17 @@ The V2 big-bang work-stream broke into eleven sequential CC tasks. Listed here f
 
 ## Active / Queued
 
-### Researcher-Polish (next)
+### Phase-1 LLM Plan-model sweep (next active workstream)
 
 | Task | Status | Description |
 |------|--------|-------------|
-| TASK-RESEARCHER-POLISH | 🔵 Queued | Iteration 1 (locked plan): three outputs — Prompt-Engineer-Briefings for `agents/researcher/PLAN-INSTRUCTIONS.md` + `agents/researcher_hydrated/PLAN-INSTRUCTIONS.md` with inline 6-shape Story-Shape-Targeting (Quantitative-claim, Stakeholder-conflict, Policy/regulatory, Crisis/emergency, Tech/business, Cultural/social — heuristic, not rigid); SYSTEM.md light role-sharpening (breadth + depth dual mandate); CC mini-task to switch `researcher_plan` and `researcher_hydrated_plan` to `anthropic/claude-opus-4.6` (~+€55/month, Assemble stays on Gemini Flash). Plus pre/post smoke-eval. |
+| TASK-EVAL-PHASE-1-PLAN-MODEL-SWEEP | 🔵 Active | 10-combination LLM Plan-model sweep against the 2026-05-05 baseline (Opus 4.6 with story-shape inline). Substrate: `output/2026-05-05/_state/run-2026-05-05-6189fcca/topic_buses.ResearcherHydratedPlanStage.{0,1,2}.json`. Combinations: Sonnet 4.6 × 2 reasoning settings, Gemini 3.1 Pro Preview × 4, DeepSeek V4 Pro × 4. Builds `scripts/eval_plan_stage.py` first (~80-120 lines). Total cost ~€1. Brief in `TASK-EVAL-PHASE-1-PLAN-MODEL-SWEEP.md` at repo root; snapshot path needs updating to 2026-05-05 before activation. |
+
+### Researcher-Polish
+
+| Task | Status | Description |
+|------|--------|-------------|
+| TASK-RESEARCHER-POLISH | ✅ | Iteration 1 + 1.5 SHIPPED in commits b2bec02 (story-shape + Opus 4.6 swap), bd92e44 (date context), 14da73a (cost_usd persistence), 0b03760 (per-query story-shape obligation), 45d9b3e (post doc-reconcile). Authoritative cost €0.22/Plan-call (Opus 4.6, ~43K tokens). Six-axis smoke pass in SMOKE-POST-POLISH-ITER-1.5-2026-05-02.md. Adjacent-stakeholder coverage ~33% largest cluster; translation-matrix dropped 36% → ~17%. Suite 349/0 → 365/0 → 372/0. Iteration 2 (deterministic Pre-Plan stage) deferred — must be universally applicable to all topic types, not just the 6 shapes. |
 
 ### Pre-Researcher-Polish small patches
 
@@ -93,11 +99,33 @@ The V2 big-bang work-stream broke into eleven sequential CC tasks. Listed here f
 |------|--------|-------------|
 | TASK-BIAS-LANGUAGE-RENDER-SHAPE | ✅ | Closed in commit `2a41570`. Root cause was in the `BiasLanguageStage` wrapper (`src/agent_stages.py`), not `src/render.py` — the original ticket title misnamed the location; the wrapper was returning the dict's keys instead of the findings array, and the `severity` field was removed end-to-end. |
 
+### Post-V2-DOC-RECONCILE work-stream (May 2-5 2026) — all ✅
+
+The work-stream that followed V2-DOC-RECONCILE Phase B and prepared the pipeline for the LLM Plan-model sweep (Phase 1 eval).
+
+| Task | Status | Description |
+|------|--------|-------------|
+| TASK-RESEARCHER-POLISH-ITER-1 | ✅ | Story-Shape inline targeting in PLAN-INSTRUCTIONS for production + hydrated. SYSTEM.md mini-touch. researcher_plan + researcher_hydrated_plan switched to anthropic/claude-opus-4.6. Commits b2bec02. |
+| TASK-RESEARCHER-PLAN-DATE-CONTEXT | ✅ | Pass run_date into Plan stage context block. Commit bd92e44. |
+| TASK-RUN-STAGE-LOG-COST | ✅ | Persist cost_usd + tokens per stage in run_stage_log.jsonl entries. Commit 14da73a. Authoritative substrate for the €/Plan-call accounting. |
+| TASK-RESEARCHER-POLISH-ITER-1.5 | ✅ | Per-query Story-Shape obligation: planner must explicitly select a Story-Shape per query and constrain the query to that shape. Commit 0b03760. |
+| TASK-DOC-RECONCILE-POST-RESEARCHER-POLISH | ✅ | Aligned ARCHITECTURE.md + ARCH-V2-BUS-SCHEMA.md to the polished Plan stage. Commit 45d9b3e. |
+| TASK-CLAUDE-MD-RECONCILE | ✅ | Local-only CLAUDE.md updated. No git operations (file is gitignored). |
+| TASK-FULL-HYDRATED-RUN-2026-05-04 | ✅ | Phase 0 baseline hydrated run for 2026-05-04. 2 TPs, $1.65, 30 min. |
+| TASK-EVAL-PHASE-0-PIPELINE-COMPARE | ✅ | Side-by-side production vs hydrated for 2026-05-04. 4 findings catalogued; 2 actioned (truncation, source-metadata), 2 not actionable (date-coverage, render-shape). |
+| TASK-QA-EXPLANATION-BREVITY | ✅ | QA-Analyze problems_found.explanation constrained to one-to-three sentences; max_tokens lifted 32000 → 64000 to prevent truncation in long topics. Commit 813c4e4. |
+| TASK-HYDRATED-SOURCE-METADATA-ENRICHMENT | ✅ | New config/outlet_registry.json (118 entries), src/outlet_registry.py, hydration.py pubdate extraction (trafilatura → Last-Modified → URL pattern), assemble_hydration_dossier consumes both fields, new prune_unused_sources_and_clusters stage. 9 files, 12 new tests. Commit 59f46fc. |
+| TASK-QA-CORRECTION-NEEDED-FLAG-EXEC | ✅ | QA schema rewrite: qa_proposed_corrections (list[str]) → qa_corrections (list[Correction] with proposed_correction + correction_needed). 1:1 length with problems_found. Article emits iff any(correction_needed). PerspectiveSync gate updated. 16 files. Commit e2e7efd. |
+| TASK-RATIONALE-DOC-RECONCILE-AND-REUSE-OVERWRITE-SAFETY | ✅ | docs/AGENT-IO-MAP.md §8: removed obsolete queries[].rationale row. scripts/run.py: added --force flag; --reuse {date} now aborts when prior run-state directory exists unless --force is passed. 3 new CLI tests. Commit f9b4d75. |
+| TASK-FULL-HYDRATED-RUN-2026-05-05 | ✅ | Today's hydrated run with all post-Phase-0 commits in place. 3 TPs, $2.71, 29 min, 79 state files. country-set 100% across topics; date-set 80%/84%/38%. Run UUID 6189fcca. |
+| TASK-PRUNE-VALIDATOR-STRICTER-DROP-RULE | ✅ | prune_unused_sources_and_clusters: strict drop rule (drop if id not in reference set). Reference set spans body + clusters + divergences + bias findings + coverage gaps. 4 new tests. Smoke validation against 2026-05-05 state: Topic 0 41→31, Topic 1 37→27, Topic 2 13→13. Commit a8b40e3. |
+| TASK-CURATOR-PROMPT-TIGHTENING | ✅ | agents/curator/INSTRUCTIONS.md: STEPS step 5 reframes null as default cluster_assignment with shared-region/actor-type anti-pattern; RULE 1 anchors topic subject to "concrete event, decision, conflict, or development." No code change. Commit 8f48804. |
+
 ### Future work-streams (catalogued, not actively running)
 
 | Task | Status | Description |
 |------|--------|-------------|
-| TASK-FUTURE-RESEARCH-DEPTH | 🔵 Future | Direct institutional source fetch via curated registry (RSS/API endpoints per source-category), bypassing LLM-Planner. Prerequisite: Researcher-Polish iteration 1 evaluated. |
+| TASK-FUTURE-RESEARCH-DEPTH | 🔵 Future | Direct institutional source fetch via curated registry (RSS/API endpoints per source-category), bypassing LLM-Planner. Prerequisite: TASK-EVAL-PHASE-1-PLAN-MODEL-SWEEP completed and Researcher-Polish iteration 1 evaluated against challenger models. |
 | WP-OPUS-4.7-MIGRATION | 🔵 Future | Opus 4.6 → 4.7 swap. `src/agent.py` refactor for `output_config.effort` (low/medium/high/xhigh/max). Breaking changes: `temperature`/`top_p`/`top_k` removed; reasoning levels replaced. All current Opus 4.6 agents swap simultaneously when migration lands. |
 | WP-STRUCTURED-OUTPUTS-V2 | 🔵 Future | After Researcher-Polish settles. Migration of `response_format` patterns where structured outputs improve robustness further. Research documented in `docs/RESEARCH-OPENROUTER-STRUCTURED-OUTPUTS.md`. |
 | WP-TOPIC-STAGE-PARALLELISATION | 🔵 Future | Run multiple TopicBuses concurrently rather than serially. Architecturally trivial in V2 (no cross-TopicBus dependency); deferred for stability. |

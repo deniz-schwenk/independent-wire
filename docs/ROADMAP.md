@@ -1,7 +1,7 @@
 # Independent Wire — Open Source Roadmap
 
 **Created:** 2026-03-26
-**Updated:** 2026-05-02 (V2 big-bang architecture work-stream complete; documentation reconciled)
+**Updated:** 2026-05-05 (post-Researcher-Polish iteration 1 + Phase-0 Eval cleanup; latest commit 8f48804).
 **Status:** Living document — strategic overview.
 **Basis:** Vision paper (March 2026) + PoC experience (Sessions 1–12) + Model Evals (Sessions 4–5) + Cost Optimization (Session 6) + Rendering + Website (Session 7) + V2 architecture (April–May 2026)
 
@@ -87,7 +87,7 @@ V1 had aggregation surface as the source of all five S14/S15 bug classes (ID-con
 
 Full architectural specification: `docs/ARCH-V2-BUS-SCHEMA.md`. Decision log: same document §10.
 
-### H3.2 — Content Quality Polish (Researcher-Polish) — next
+### H3.2 — Content Quality Polish (Researcher-Polish) — iteration 1 ✅ complete; iteration 2 deferred
 
 V2 made the pipeline architecturally clean. The next emphasis is content depth and quality.
 
@@ -95,8 +95,21 @@ V2 made the pipeline architecturally clean. The next emphasis is content depth a
 
 | Task | Description | Effort |
 |------|-------------|--------|
-| TASK-RESEARCHER-POLISH (iteration 1) | Inline 6-shape Story-Shape-Targeting in Plan-INSTRUCTIONS for both production and hydrated variants. SYSTEM.md mini-touch on breadth + depth dual mandate. Switch `researcher_plan` and `researcher_hydrated_plan` to `anthropic/claude-opus-4.6` (~+€55/month, Assemble stays on Gemini Flash for cost reasons). Pre/post smoke-eval to verify quality lift. | 1 session |
+| TASK-RESEARCHER-POLISH (iteration 1) | ✅ shipped May 2-4 2026. Inline 6-shape Story-Shape-Targeting in Plan-INSTRUCTIONS for both production and hydrated variants (commit b2bec02). SYSTEM.md mini-touch on breadth + depth dual mandate. Researcher-Plan and Researcher-Hydrated-Plan now run on anthropic/claude-opus-4.6. Date context passed in (commit bd92e44). Per-query Story-Shape obligation (commit 0b03760). Authoritative cost €0.22/Plan-call. Six-axis smoke pass. | 1 session |
 | TASK-RESEARCHER-POLISH (iteration 2) | Deterministic Pre-Plan stage that classifies story shape before the LLM plans. Deferred — needs to be universally applicable, not just for the 6 shapes from iteration 1. | After iteration 1 evaluated |
+
+### H3.2.5 — Phase-1 LLM Plan-Model Sweep — next active workstream
+
+With Researcher-Polish iteration 1 stable and the 2026-05-05 hydrated baseline producing publish-ready Topic Packages with all post-Phase-0 commits in place, the next workstream is a controlled LLM evaluation of Plan-model alternatives.
+
+10-combination sweep against the Opus 4.6 baseline:
+- Sonnet 4.6 (effort none / xhigh) × 2
+- Gemini 3.1 Pro Preview (temp 1.0/0.7, effort minimal/xhigh) × 4
+- DeepSeek V4 Pro (temp 0.5/0.7, effort none/xhigh) × 4
+
+Substrate: `output/2026-05-05/_state/run-2026-05-05-6189fcca/topic_buses.ResearcherHydratedPlanStage.{0,1,2}.json`.
+
+Brief: `TASK-EVAL-PHASE-1-PLAN-MODEL-SWEEP.md` at repo root.
 
 ### H3.3 — Architecture-quality follow-ups (catalogued, queued)
 
@@ -110,6 +123,12 @@ These items improve V2 further but don't block any current capability:
 | WP-TOPIC-STAGE-PARALLELISATION | Run multiple TopicBuses concurrently. Architecturally trivial in V2 (no cross-TopicBus dependency). |
 | WP-SPENDING-CAP-REDESIGN | Pre-call spending cap rather than post-phase check. V2-10 came near €5 before tripping post-phase guard — pre-call check catches overruns earlier. |
 | TASK-FUTURE-RESEARCH-DEPTH | Direct institutional source fetch via curated registry (RSS/API endpoints per source-category), bypassing LLM-Planner. Prerequisite: Researcher-Polish iteration 1 evaluated. |
+| TASK-QA-EXPLANATION-BREVITY | ✅ Closed (commit 813c4e4): explanations one-to-three sentences; max_tokens 64000 to prevent truncation. |
+| TASK-HYDRATED-SOURCE-METADATA-ENRICHMENT | ✅ Closed (commit 59f46fc): outlet registry, pubdate extraction, prune_unused_sources_and_clusters new stage. |
+| TASK-QA-CORRECTION-NEEDED-FLAG | ✅ Closed (commit e2e7efd): qa_proposed_corrections → qa_corrections with explicit correction_needed flag. PerspectiveSync gate updated. |
+| TASK-RATIONALE-DOC-RECONCILE-AND-REUSE-OVERWRITE-SAFETY | ✅ Closed (commit f9b4d75): obsolete rationale row removed; --force flag for --reuse safety. |
+| TASK-PRUNE-VALIDATOR-STRICTER-DROP-RULE | ✅ Closed (commit a8b40e3): strict drop rule on unreferenced sources. |
+| TASK-CURATOR-PROMPT-TIGHTENING | ✅ Closed (commit 8f48804): null as cluster_assignment default; topic subject anchored to concrete event/decision/conflict. |
 
 ### H3.4 — Production-hardening (catalogued)
 

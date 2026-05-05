@@ -10,7 +10,7 @@ A ✅ in the **Originär** column means only the LLM can produce the field (judg
 
 Each section also lists **the deterministic stages** that read or write related slots, so the data routing is fully traceable.
 
-Last updated: 2026-05-02 (V2-11b shipped).
+Last updated: 2026-05-05 (post-Researcher-Polish + Phase-0-Eval cleanup; latest commit 8f48804).
 
 ---
 
@@ -50,7 +50,7 @@ Last updated: 2026-05-02 (V2-11b shipped).
 - **Production:** `curator_topics_unsliced` is sliced to top-10 by `relevance_score` to produce `curator_topics` (Editor sees 10).
 - **Hydrated:** identical Curator stage — diverges only at the `attach_hydration_urls_to_assignments` run-stage that runs between Editor and `select_topics`.
 
-**Status:** ✅ Pass-through clean. No Python-derivable field in the LLM output.
+**Status:** ✅ Pass-through clean. No Python-derivable field in the LLM output. The Curator INSTRUCTIONS.md was sharpened in commit 8f48804 (STEPS step 5: explicit null-default; RULE 1: anchored to "concrete event, decision, conflict, or development").
 
 ---
 
@@ -243,7 +243,7 @@ The factory pattern is used because the `web_search_tool` is injected — tests 
 | `preliminary_divergences[]` | ✅ | ✅ | Cross-source contradictions |
 | `coverage_gaps[]` | ✅ | ✅ | Gap statements |
 
-**Status:** ✅ Pass-through clean (LLM-emitted `research-rsrc-NNN` IDs are normalised by Python downstream).
+**Status:** ✅ Pass-through clean (LLM-emitted `research-rsrc-NNN` IDs are normalised by Python downstream). `source.country` defaults to `'unknown'` (never null) per `assemble_hydration_dossier` defence-in-depth (commit 59f46fc).
 
 ---
 
@@ -261,6 +261,23 @@ The factory pattern is used because the `web_search_tool` is injected — tests 
 **`normalize_pre_research`:** rewrites all `hydrate-rsrc-NNN` and `research-rsrc-NNN` references in `merged_preliminary_divergences` and `merged_coverage_gaps` to `src-NNN` via `id_rename_map`.
 
 After these three stages, every downstream consumer sees only `src-NNN`. This is the **ID normalisation invariant** documented in `docs/ARCH-V2-BUS-SCHEMA.md` §7.
+
+### prune_unused_sources_and_clusters — strict-drop deterministic topic-stage
+
+**Function:** `src/stages/topic_stages.py:prune_unused_sources_and_clusters`
+**Reads:** `topic_bus.final_sources`, `topic_bus.perspective_clusters_synced`,
+  `topic_bus.qa_divergences`, `topic_bus.merged_preliminary_divergences`,
+  `topic_bus.qa_corrected_article`, `topic_bus.writer_article`,
+  `topic_bus.bias_language_findings`, `topic_bus.coverage_gaps_validated`
+**Writes:** `topic_bus.final_sources`, `topic_bus.perspective_clusters_synced`
+
+Drops sources whose IDs are not referenced anywhere downstream — body, clusters, divergences, gaps, bias findings. Reference set is computed by helper `_collect_referenced_src_ids` which scans every slot that may carry an `src-NNN` token (string-form `[src-NNN]` regex over article bodies and prose; structured `source_ids[]` over collection slots).
+
+Drop rule (commit a8b40e3, strict): a source is dropped if its `id` is not in the reference set. No content-based reprieve — the previous heuristic kept any source with non-empty summary/actors_quoted, which let off-topic Researcher-Assembler-dumped findings survive.
+
+Cluster drop rule unchanged: a cluster is dropped only when both `actors[]` and `source_ids[]` are empty.
+
+Each drop logs an INFO line with id, outlet, and a 60-char summary snippet.
 
 ---
 
@@ -339,15 +356,15 @@ V2-09c2 disabled `tools=[web_search_tool]` for this agent to close `[web-N]` Bug
 
 **Wrapper:** `src/agent_stages.py:QaAnalyzeStage`
 **Reads:** `topic_bus.writer_article`, `topic_bus.final_sources`, `topic_bus.perspective_clusters_synced`
-**Writes:** `topic_bus.qa_problems_found`, `topic_bus.qa_proposed_corrections`, `topic_bus.qa_corrected_article`, `topic_bus.qa_divergences`
+**Writes:** `topic_bus.qa_problems_found`, `topic_bus.qa_corrections`, `topic_bus.qa_corrected_article`, `topic_bus.qa_divergences`
 
 ### OUTPUT
 
 | Field | LLM emits | Originär? | Notes |
 | --- | --- | --- | --- |
 | `problems_found[]` | ✅ | ✅ | List of factual problems with article excerpt + explanation. Citations in `[src-NNN]` form symmetric with Writer (V2-09e). |
-| `proposed_corrections[]` | ✅ | ✅ | One-liner correction per problem, in same order as `problems_found`. |
-| `article` | ✅ (conditional) | ✅ | **Slot-level mirror semantics:** emitted only when `proposed_corrections[]` is non-empty. Omitted entirely when no problems found — `mirror_qa_corrected` then fills from `writer_article`. Citations also in `[src-NNN]` form. |
+| `qa_corrections[]` | ✅ | ✅ | Each item is a Correction object: `{proposed_correction: str, correction_needed: bool}`. The list is 1:1 length-equal with `problems_found` by index. Schema declaration order is load-bearing — Sonnet streams in order. The `qa_corrected_article` field is emitted iff `any(c.correction_needed)`; when all corrections are retractions (all false), the article is omitted and the `mirror_qa_corrected` stage backfills from `writer_article`. Schema rename `qa_proposed_corrections` → `qa_corrections` in commit e2e7efd; `--reuse` on pre-rename snapshots requires manual migration. |
+| `article` | ✅ (conditional) | ✅ | **Slot-level mirror semantics:** emitted only when `any(qa_corrections[i].correction_needed)`; omitted when all corrections are retractions (all false) or when `qa_corrections` is empty. `mirror_qa_corrected` fills from `writer_article` in the omit case. Citations in `[src-NNN]` form. Explanations in `problems_found` are constrained to one-to-three sentences (commit 813c4e4) and `max_tokens` lifted to 64000. |
 | `divergences[]` | ✅ | ✅ | Cross-source factual disagreements identified by QA. References to source IDs already in `src-NNN` form. |
 
 **Status:** ✅ Pass-through clean. Schema (`QA_ANALYZE_SCHEMA`) marks `article` as **optional** at the top level so strict-mode validation accepts outputs without an `article` field — the prerequisite for slot-level mirror semantics (§3.3 (a)).
@@ -360,7 +377,7 @@ V2-09c2 disabled `tools=[web_search_tool]` for this agent to close `[web-N]` Bug
 **Reads:** `topic_bus.writer_article`, `topic_bus.qa_corrected_article`
 **Writes:** `topic_bus.qa_corrected_article`
 
-Empty-then-fill mirror, **slot-level granularity** (`§3.3 (a)`). If `qa_corrected_article` is empty (QA found no problems), fill all four fields from `writer_article`. If non-empty (QA emitted a corrected article), keep as-is.
+Empty-then-fill mirror, **slot-level granularity** (`§3.3 (a)`). If `qa_corrected_article` is empty (QA omitted it because all corrections were retractions, or because no problems were found), fill all four fields from `writer_article`. If non-empty (QA emitted a corrected article because at least one correction had `correction_needed: true`), keep as-is.
 
 After this stage `qa_corrected_article` always has all four fields populated. Render layers read `qa_corrected_article` directly with no conditional fallback.
 
@@ -418,7 +435,7 @@ After this stage `qa_corrected_article` always has all four fields populated. Re
 ## 21. compose_transparency_card — deterministic topic-stage
 
 **Function:** `src/stages/topic_stages.py:compose_transparency_card`
-**Reads:** `topic_bus.editor_selected_topic`, `topic_bus.writer_article`, `topic_bus.qa_corrected_article`, `topic_bus.qa_problems_found`, `topic_bus.qa_proposed_corrections`, `run_bus.run_id`, `run_bus.run_date`
+**Reads:** `topic_bus.editor_selected_topic`, `topic_bus.writer_article`, `topic_bus.qa_corrected_article`, `topic_bus.qa_problems_found`, `topic_bus.qa_corrections`, `run_bus.run_id`, `run_bus.run_date`
 **Writes:** `topic_bus.transparency_card`
 
 Aggregates the transparency block. `selection_reason` cleaned via `strip_stale_quantifiers` helper. `article_original` populated only if QA modified the article (mirror semantics: `qa_corrected_article != writer_article` element-wise). `pipeline_run` carries `run_id` and `date` from the read-only RunBus reference.
@@ -462,13 +479,32 @@ Every agent has its `output_schema` registered at agent-creation time in `script
 - `RESEARCHER_ASSEMBLE_SCHEMA`
 - `PERSPECTIVE_SCHEMA`
 - `WRITER_SCHEMA` (V2-09e: `sources[].src_id`)
-- `QA_ANALYZE_SCHEMA` (V2: `article` optional; mirror semantics)
+- `QA_ANALYZE_SCHEMA` (V2: `article` optional; mirror semantics; `qa_corrections` renamed in e2e7efd; Correction shape: `{proposed_correction: str, correction_needed: bool}`)
 - `BIAS_DETECTOR_SCHEMA`
 - `HYDRATION_PHASE1_SCHEMA`
 - `HYDRATION_PHASE2_SCHEMA`
 - `PERSPECTIVE_SYNC_SCHEMA`
 
 OpenRouter's `response_format` strict mode enforces schema compliance at decode time. Defense-in-depth: `_extract_dict` / `_extract_list` in `src/agent.py` provide fallback parsing for malformed responses (regex-strip, `json-repair` 4th-fallback). Any agent output that violates its schema raises a structured error — the runner does not silently accept partial output.
+
+---
+
+## 25. Outlet Registry and source enrichment
+
+**Files:**
+- `config/outlet_registry.json` — community-contributable mapping of `{hostname → {outlet, country}}`. 118 entries as of 2026-05-05.
+- `src/outlet_registry.py` — `lookup_outlet(url)` with hostname normalisation; helper `register_outlet(hostname, outlet, country)`.
+
+**Hydration enrichment** in `src/hydration.py:_hydrate_one`:
+- After fetch, looks up the URL's hostname in the outlet registry.
+- Sets `record["country"]` from registry; defaults to `"unknown"` (never null) if no match.
+- Extracts `record["published_date"]` via three-tier fallback: trafilatura's metadata extraction → `Last-Modified` HTTP header → URL-pattern regex (`/YYYY/MM/DD/...` or `/YYYYMMDD/...`).
+
+**`assemble_hydration_dossier`** consumes both fields and propagates them into the `final_sources` slot:
+- `country` falls back to `"unknown"` (defence-in-depth) so a stale `--reuse` snapshot never propagates literal null.
+- `estimated_date` is the raw `record.get("published_date")` value — may be absent on regional outlets without discoverable pubdates (legitimate; outlets such as Armenpress, ArmInfo, EVN Report do not surface metadata).
+
+**Status:** The Hydrated variant achieves ~80-100% country coverage (registry lookup) and ~38-84% date coverage (depending on outlet mix per topic). Researcher-Assemble inherits the country-defaulting behaviour but emits dates only when reasonably extracted.
 
 ---
 
