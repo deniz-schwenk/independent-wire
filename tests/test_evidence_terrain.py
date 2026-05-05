@@ -81,7 +81,8 @@ def test_render_terrain_unbucketed_country_appears_in_footer():
 
 
 def test_render_terrain_total_sources_caption_correct():
-    """Total caption shows the correct sum across all buckets."""
+    """The total source count is reachable via plain text search of the
+    rendered SVG (the desc element + the legend row both surface it)."""
     by = {
         "Germany": 3,
         "United States": 4,
@@ -94,8 +95,66 @@ def test_render_terrain_total_sources_caption_correct():
     svg = render_evidence_terrain(by)
     assert sum(by.values()) == 17
     m = re.search(r"(\d+)\s*TOTAL SOURCES", svg)
-    assert m is not None, "TOTAL SOURCES caption not found"
+    assert m is not None, "TOTAL SOURCES not found"
     assert int(m.group(1)) == 17
+
+
+def test_total_sources_in_eighth_row():
+    """TOTAL SOURCES sits as an eighth legend row directly below the
+    LATIN AMERICA & CARIBBEAN row, with the same number/label typography
+    as the seven region rows (Space Grotesk display number + Space Mono
+    label). No connector follows this row."""
+    by = {
+        "Germany": 3,
+        "United States": 4,
+        "Iran": 2,
+        "Brazil": 3,
+        "China": 2,
+        "Pakistan": 1,
+        "Nigeria": 2,
+    }
+    svg = render_evidence_terrain(by)
+    assert sum(by.values()) == 17
+
+    # The 8th-row label appears AFTER the LAC label in source order
+    # (i.e. below it visually, since both elements share the same x
+    # column and y increases downward).
+    lac_idx = svg.find("LATIN AMERICA &")
+    assert lac_idx != -1, "LATIN AMERICA & label missing"
+    label_idx = svg.find(">TOTAL SOURCES<", lac_idx)
+    assert label_idx != -1, "TOTAL SOURCES legend-row label missing"
+
+    # The "17" rendered as part of the 8th row uses the same Space
+    # Grotesk display-number style as active region rows. ``label_idx``
+    # points to the ``>`` of ``>TOTAL SOURCES<`` — find the <text>
+    # element that immediately precedes the label's opening tag.
+    label_open = svg.rfind("<text ", 0, label_idx)
+    prev_text_open = svg.rfind("<text ", 0, label_open)
+    prev_text_close = svg.find("</text>", prev_text_open) + len("</text>")
+    prev_text = svg[prev_text_open:prev_text_close]
+    assert "Space Grotesk" in prev_text, (
+        f"TOTAL SOURCES number is not in Space Grotesk display font; "
+        f"got: {prev_text}"
+    )
+    m = re.search(r">(\d+)</text>", prev_text)
+    assert m is not None and int(m.group(1)) == 17, (
+        f"expected total 17 immediately before TOTAL SOURCES label; "
+        f"got {m.group(1) if m else None}"
+    )
+
+    # The 8th row has NO horizontal connector — the only connectors in
+    # the legend area are the seven region-row connectors. Crude check:
+    # count <line> elements with stroke-opacity 0.6 (active connectors)
+    # plus the dashed zero connectors. Should equal 7 for active+zero
+    # combined (active solid 0.6 OR dashed 0.35 — both connect to
+    # terrain). Sum across both stroke-opacity values:
+    active_connectors = svg.count('stroke-opacity="0.6"')
+    # Dashed zero connectors carry stroke-dasharray="3 3".
+    zero_connectors = svg.count('stroke-dasharray="3 3"')
+    assert active_connectors + zero_connectors == 7, (
+        f"expected exactly 7 connector lines (one per region row); "
+        f"got {active_connectors} active + {zero_connectors} zero"
+    )
 
 
 def test_render_terrain_no_text_outside_viewbox():

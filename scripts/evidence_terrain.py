@@ -50,10 +50,10 @@ logger = logging.getLogger(__name__)
 # Canvas + projection
 # ---------------------------------------------------------------------------
 CANVAS_W = 1080
-CANVAS_H = 760
+CANVAS_H = 700                    # shrunk after TOTAL SOURCES moved into legend
 LEGEND_RIGHT_EDGE = 270           # terrain clipped to x > LEGEND_RIGHT_EDGE
 PROJ_CX = 700                     # terrain centre, shifted right of legend
-PROJ_CY = CANVAS_H * 0.66
+PROJ_CY = 501.6                   # frozen so canvas-shrink doesn't move mountains
 PROJ_SCALE = 290                  # tightened so terrain fits in the right 75%
 PROJ_TILT = 0.55
 PROJ_VSCALE = 250
@@ -101,12 +101,20 @@ ZERO_OPACITY = 0.35
 ACTIVE_INK = "#0a0a0a"
 
 # ---------------------------------------------------------------------------
-# Footer
+# Footer / total-row
 # ---------------------------------------------------------------------------
-FOOTER_RULE_OFFSET = 56
-FOOTER_CAPTION_OFFSET = 36
-FOOTER_TOTAL_FONT_SIZE = 38
-FOOTER_LABEL_FONT_SIZE = 14
+# Vertical step between the last region row (LAC) and the TOTAL SOURCES row.
+# Matches the natural spacing between any two adjacent region rows (which is
+# determined by the evenly-spaced anchor v values).
+LEGEND_TOTAL_ROW_GAP = 40
+# Hairline above the TOTAL SOURCES row that signals "this row is a sum,
+# not an eighth region". Spans only the number + rule columns.
+LEGEND_TOTAL_HAIRLINE_OPACITY = 0.5
+LEGEND_TOTAL_HAIRLINE_WIDTH = 0.6
+# Distance from the TOTAL SOURCES row to the unbucketed-countries footer
+# line (only emitted when ``unbucketed > 0``).
+LEGEND_UNBUCKETED_OFFSET = 30
+LEGEND_UNBUCKETED_FS = 12
 
 
 # ---------------------------------------------------------------------------
@@ -601,37 +609,62 @@ def render_evidence_terrain(by_country: dict[str, int]) -> str:
                 f'r="{TERMINUS_DOT_RADIUS}" fill="{ACTIVE_INK}"/>'
             )
 
-    # ---- Footer: hairline rule + centred TOTAL SOURCES caption -----------
-    base_y = CANVAS_H - FOOTER_RULE_OFFSET
+    # ---- 8th legend row: TOTAL SOURCES ----------------------------------
+    # Compute the y of the last region row (LAC, the bottom-most row) and
+    # place the totals row one row-step below it. A short hairline above
+    # the totals row spans only the number + rule columns — the only
+    # visual signal that this row is structurally a sum, not an eighth
+    # region.
+    last_region_row_y = max(
+        _project(*ANCHORS[k], 0.0)[1] for k in legend_order
+    )
+    total_row_y = last_region_row_y + LEGEND_TOTAL_ROW_GAP
+    hairline_y = last_region_row_y + LEGEND_TOTAL_ROW_GAP / 2
+
     parts.append(
-        f'<line x1="{LEGEND_RIGHT_EDGE}" y1="{base_y}" '
-        f'x2="{CANVAS_W - 60}" y2="{base_y}" '
-        f'stroke="#000" stroke-width="0.7" stroke-opacity="0.4"/>'
+        f'<line x1="{LEGEND_PAD_LEFT}" x2="{LEGEND_RULE_X}" '
+        f'y1="{hairline_y:.1f}" y2="{hairline_y:.1f}" '
+        f'stroke="{ACTIVE_INK}" '
+        f'stroke-width="{LEGEND_TOTAL_HAIRLINE_WIDTH}" '
+        f'stroke-opacity="{LEGEND_TOTAL_HAIRLINE_OPACITY}"/>'
     )
 
-    cap_x = (LEGEND_RIGHT_EDGE + CANVAS_W) * 0.5
-    cap_y = base_y + FOOTER_CAPTION_OFFSET
-
-    # Big number, right-aligned at cap_x − 8.
+    # Number — same Space Grotesk display style as active region rows.
+    total_num_baseline = total_row_y + LEGEND_NUM_FS * 0.34
     parts.append(
-        f'<text x="{cap_x - 8:.1f}" y="{cap_y:.1f}" text-anchor="end" '
+        f'<text x="{LEGEND_NUM_X_END}" y="{total_num_baseline:.1f}" '
         f'font-family="\'Space Grotesk\', sans-serif" '
-        f'font-weight="800" font-size="{FOOTER_TOTAL_FONT_SIZE}" '
-        f'letter-spacing="-0.02em" fill="#000">{total}</text>'
+        f'font-size="{LEGEND_NUM_FS}" font-weight="800" '
+        f'letter-spacing="-0.02em" text-anchor="end" '
+        f'fill="{ACTIVE_INK}">{total}</text>'
     )
+    # Vertical hairline rule between number and label — same as region rows.
     parts.append(
-        f'<text x="{cap_x + 8:.1f}" y="{cap_y - 4:.1f}" text-anchor="start" '
+        f'<line x1="{LEGEND_RULE_X}" x2="{LEGEND_RULE_X}" '
+        f'y1="{total_row_y - LEGEND_RULE_HEIGHT / 2:.1f}" '
+        f'y2="{total_row_y + LEGEND_RULE_HEIGHT / 2:.1f}" '
+        f'stroke="{ACTIVE_INK}" stroke-width="0.8" stroke-opacity="0.55"/>'
+    )
+    # "TOTAL SOURCES" label — same Space Mono style as region names. No
+    # connector follows; this row terminates at its label.
+    total_label_baseline = total_row_y + LEGEND_NAME_FS * 0.4
+    parts.append(
+        f'<text x="{LEGEND_NAME_X}" y="{total_label_baseline:.1f}" '
         f'font-family="\'Space Mono\', monospace" '
-        f'font-size="{FOOTER_LABEL_FONT_SIZE}" font-weight="700" '
-        f'letter-spacing="0.18em" fill="#000">TOTAL SOURCES</text>'
+        f'font-size="{LEGEND_NAME_FS}" font-weight="700" '
+        f'letter-spacing="{LEGEND_NAME_LETTER_SPACING}" '
+        f'text-anchor="start" fill="{ACTIVE_INK}">TOTAL SOURCES</text>'
     )
 
     if unbucketed > 0:
+        # Small mono note shifted up to the new compact canvas; same form
+        # as the prior footer line.
         parts.append(
-            f'<text x="{cap_x:.1f}" y="{cap_y + 22:.1f}" '
-            f'text-anchor="middle" '
+            f'<text x="{LEGEND_NAME_X}" '
+            f'y="{total_row_y + LEGEND_UNBUCKETED_OFFSET:.1f}" '
+            f'text-anchor="start" '
             f'font-family="\'Space Mono\', monospace" '
-            f'font-size="13" letter-spacing="0.04em" '
+            f'font-size="{LEGEND_UNBUCKETED_FS}" letter-spacing="0.04em" '
             f'fill="#0a0a0a" opacity="0.7">'
             f'{unbucketed} source{"s" if unbucketed != 1 else ""} '
             f'from countries not regionally classified.</text>'
