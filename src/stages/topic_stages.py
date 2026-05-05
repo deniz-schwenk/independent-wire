@@ -489,37 +489,43 @@ def _collect_referenced_src_ids(topic_bus: TopicBus) -> set[str]:
     """Walk every downstream consumer of ``final_sources`` and return the
     set of ``src-NNN`` IDs that are actually referenced somewhere.
 
-    Sources whose IDs are NOT in this set become candidates for
-    pruning by :func:`prune_unused_sources_and_clusters` (only when they
-    also lack content — see that stage's docstring for the second
-    condition).
+    Reference sites scanned:
+
+    - ``perspective_clusters_synced[i].source_ids[]``
+    - ``qa_divergences[i].source_ids[]``
+    - ``merged_preliminary_divergences[i].source_ids[]``
+    - ``qa_corrected_article`` and ``writer_article`` (body/headline/
+      subheadline/summary), via inline ``[src-NNN]`` citations
+    - ``bias_language_findings[i]`` excerpt + issue + explanation prose
+      (any inline ``[src-NNN]`` citation echoed from the article)
+    - ``coverage_gaps_validated[i]`` strings (any inline ``[src-NNN]``
+      reference)
+
+    Items that fail the expected shape are skipped with a
+    ``logger.warning`` rather than crashing the stage — the schema is V2
+    typed but defensive scanning costs nothing.
     """
     referenced: set[str] = set()
 
-    # Cluster source_ids (post-mirror, post-sync)
-    for cluster in topic_bus.perspective_clusters_synced or []:
-        if isinstance(cluster, dict):
-            for sid in cluster.get("source_ids") or []:
+    def _harvest_source_ids(items, label: str) -> None:
+        for item in items or []:
+            if not isinstance(item, dict):
+                logger.warning(
+                    "prune: unexpected non-dict item in %s: %r", label, type(item),
+                )
+                continue
+            for sid in item.get("source_ids") or []:
                 if isinstance(sid, str):
                     referenced.add(sid)
 
-    # QA-corrected divergences carry source_ids
-    for div in topic_bus.qa_divergences or []:
-        if isinstance(div, dict):
-            for sid in div.get("source_ids") or []:
-                if isinstance(sid, str):
-                    referenced.add(sid)
+    _harvest_source_ids(topic_bus.perspective_clusters_synced, "perspective_clusters_synced")
+    _harvest_source_ids(topic_bus.qa_divergences, "qa_divergences")
+    _harvest_source_ids(topic_bus.merged_preliminary_divergences, "merged_preliminary_divergences")
 
-    # Pre-research divergences (Phase 2 + research) reference src-NNN by
-    # the time normalize_pre_research has run.
-    for div in topic_bus.merged_preliminary_divergences or []:
-        if isinstance(div, dict):
-            for sid in div.get("source_ids") or []:
-                if isinstance(sid, str):
-                    referenced.add(sid)
-
-    # Article bodies carry [src-NNN] inline citations.
-    for article in (topic_bus.writer_article, topic_bus.qa_corrected_article):
+    # Article bodies carry [src-NNN] inline citations. qa_corrected_article
+    # is post-mirror so it carries the active body; writer_article is the
+    # defence-in-depth fallback for the case where qa_corrected is empty.
+    for article in (topic_bus.qa_corrected_article, topic_bus.writer_article):
         if article is None:
             continue
         for field in ("body", "headline", "subheadline", "summary"):
@@ -529,10 +535,31 @@ def _collect_referenced_src_ids(topic_bus: TopicBus) -> set[str]:
 
     # Bias language findings can echo article excerpts that include citations.
     for finding in topic_bus.bias_language_findings or []:
-        if isinstance(finding, dict):
-            text = finding.get("excerpt") or ""
+        if not isinstance(finding, dict):
+            logger.warning(
+                "prune: unexpected non-dict item in bias_language_findings: %r",
+                type(finding),
+            )
+            continue
+        for key in ("excerpt", "issue", "explanation"):
+            text = finding.get(key) or ""
             if isinstance(text, str):
                 referenced.update(_SRC_CITATION_RE.findall(text))
+
+    # coverage_gaps_validated entries are descriptive strings; they may
+    # still contain inline [src-NNN] references when the gap names a
+    # specific source-coverage shortfall.
+    for gap in topic_bus.coverage_gaps_validated or []:
+        if isinstance(gap, str):
+            referenced.update(_SRC_CITATION_RE.findall(gap))
+        elif isinstance(gap, dict):
+            for key in ("description", "explanation", "gap"):
+                text = gap.get(key) or ""
+                if isinstance(text, str):
+                    referenced.update(_SRC_CITATION_RE.findall(text))
+            for sid in gap.get("source_ids") or []:
+                if isinstance(sid, str):
+                    referenced.add(sid)
 
     return referenced
 
@@ -546,6 +573,7 @@ def _collect_referenced_src_ids(topic_bus: TopicBus) -> set[str]:
         "qa_divergences",
         "bias_language_findings",
         "merged_preliminary_divergences",
+        "coverage_gaps_validated",
     ),
     writes=("final_sources", "perspective_clusters_synced"),
 )
@@ -554,19 +582,20 @@ async def prune_unused_sources_and_clusters(
 ) -> TopicBus:
     """Drop dead-weight sources and empty position clusters.
 
-    A source is dropped when ALL of the following hold:
-
-    - its ``id`` is not referenced by any cluster, divergence, article body,
-      or bias finding (per :func:`_collect_referenced_src_ids`);
-    - its ``summary`` is empty (no content extracted from hydration / research);
-    - its ``actors_quoted`` list is empty.
+    Source drop rule (strict): a source is dropped when its ``id`` is not
+    referenced anywhere downstream. The reference set spans
+    ``perspective_clusters_synced``, ``qa_divergences``,
+    ``merged_preliminary_divergences``, the article bodies
+    (``qa_corrected_article`` first, ``writer_article`` fallback),
+    ``bias_language_findings``, and ``coverage_gaps_validated`` —
+    see :func:`_collect_referenced_src_ids` for the full list.
+    Content (summary, actors_quoted) is no longer a keep-reprieve: if
+    the synthesis stack chose not to use a source, it is off-topic and
+    drops out of the published TP.
 
     A cluster is dropped when both ``actors`` and ``source_ids`` are empty —
     a cluster the agent emitted but for which no extracted speaker came
     through is dead weight in the published TP.
-
-    The default is to keep. Any of the three keep-conditions on a source
-    (it's referenced, OR it has a summary, OR it has actors) saves it.
 
     Each drop logs a single INFO line so reviewers can trace which
     entries were removed on a smoke run.
@@ -583,17 +612,17 @@ async def prune_unused_sources_and_clusters(
             continue
         sid = source.get("id")
         is_referenced = isinstance(sid, str) and sid in referenced
-        has_summary = bool((source.get("summary") or "").strip())
-        has_actors = bool(source.get("actors_quoted") or [])
-        if is_referenced or has_summary or has_actors:
+        if is_referenced:
             kept_sources.append(source)
         else:
+            summary_snippet = (source.get("summary") or "").strip()[:60]
             logger.info(
                 "prune_unused_sources_and_clusters: dropped source %s "
-                "(unreferenced, empty summary, no actors): outlet=%s url=%s",
+                "(not referenced in body, clusters, divergences, gaps, or "
+                "bias_findings): outlet=%s summary=%r",
                 sid,
                 source.get("outlet"),
-                source.get("url"),
+                summary_snippet,
             )
 
     kept_clusters: list = []

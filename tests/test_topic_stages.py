@@ -1017,26 +1017,21 @@ def test_researcher_search_skips_empty_query_strings():
 # ---------------------------------------------------------------------------
 
 
-def test_prune_drops_dead_weight_source_and_keeps_content_bearing():
-    """A source unreferenced anywhere AND with empty summary AND no actors
-    is dropped. A source unreferenced but carrying content (summary or
-    actors) is kept — content alone justifies retention for transparency."""
+def test_prune_drops_unreferenced_sources_regardless_of_content():
+    """Strict rule: a source is dropped iff its id is not referenced
+    downstream. Content (summary, actors_quoted) is no longer a
+    keep-reprieve — if the synthesis stack didn't use the source, it's
+    off-topic and drops out."""
     tb = TopicBus()
     tb.final_sources = [
-        {
-            "id": "src-001", "outlet": "Cited Outlet", "summary": "x", "actors_quoted": [],
-        },
-        {
-            # Dead-weight: not cited anywhere, no summary, no actors.
-            "id": "src-023", "outlet": "Dead Outlet", "summary": "", "actors_quoted": [],
-        },
-        {
-            # Unreferenced but content-bearing — kept.
-            "id": "src-099", "outlet": "Quiet Outlet", "summary": "useful background",
-            "actors_quoted": [],
-        },
+        # Referenced via cluster — kept.
+        {"id": "src-001", "outlet": "Cited", "summary": "x", "actors_quoted": []},
+        # Dead-weight: empty content, unreferenced — dropped (still).
+        {"id": "src-023", "outlet": "Dead", "summary": "", "actors_quoted": []},
+        # Unreferenced but content-bearing — under the strict rule, dropped.
+        {"id": "src-099", "outlet": "Off-topic", "summary": "useful background",
+         "actors_quoted": [{"name": "A"}]},
     ]
-    # src-001 is referenced via a cluster; src-023 and src-099 are not.
     tb.perspective_clusters_synced = [
         {"id": "pc-001", "position_label": "P1", "actors": ["A"], "source_ids": ["src-001"]},
     ]
@@ -1044,9 +1039,9 @@ def test_prune_drops_dead_weight_source_and_keeps_content_bearing():
     tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
 
     kept_ids = {s["id"] for s in tb_after.final_sources}
-    assert "src-001" in kept_ids, "referenced source must be kept"
-    assert "src-099" in kept_ids, "content-bearing source must be kept"
-    assert "src-023" not in kept_ids, "dead-weight source must be dropped"
+    assert kept_ids == {"src-001"}, (
+        f"strict rule: only referenced sources kept; got {kept_ids}"
+    )
 
 
 def test_prune_keeps_source_referenced_only_in_article_body():
@@ -1091,16 +1086,16 @@ def test_prune_drops_empty_cluster_and_keeps_populated_cluster():
 
 
 def test_prune_is_noop_when_nothing_to_drop():
-    """A bus where every source is either referenced or content-bearing,
-    and every cluster carries actors or source_ids, passes through
-    unchanged."""
+    """A bus where every source is referenced and every cluster carries
+    actors or source_ids passes through unchanged."""
     tb = TopicBus()
     tb.final_sources = [
         {"id": "src-001", "outlet": "X", "summary": "x", "actors_quoted": []},
         {"id": "src-002", "outlet": "Y", "summary": "", "actors_quoted": [{"name": "A"}]},
     ]
     tb.perspective_clusters_synced = [
-        {"id": "pc-001", "position_label": "P", "actors": ["A"], "source_ids": ["src-001"]},
+        {"id": "pc-001", "position_label": "P", "actors": ["A"],
+         "source_ids": ["src-001", "src-002"]},
     ]
 
     tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
@@ -1130,3 +1125,81 @@ def test_prune_picks_up_qa_divergence_source_ids():
     tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
 
     assert {s["id"] for s in tb_after.final_sources} == {"src-005"}
+
+
+def test_prune_drops_unreferenced_source_with_full_content():
+    """Strict-rule regression guard: a source carrying both summary and
+    actors_quoted but whose id never appears downstream is dropped."""
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-001", "outlet": "Cited", "summary": "x",
+         "actors_quoted": [{"name": "Cited Speaker"}]},
+        {"id": "src-042", "outlet": "Off-topic Anadolu",
+         "summary": "Anadolu reports unrelated regional news in 240 chars of text.",
+         "actors_quoted": [{"name": "An Anadolu reporter"}, {"name": "A second voice"}]},
+    ]
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "position_label": "P", "actors": ["A"],
+         "source_ids": ["src-001"]},
+    ]
+
+    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
+
+    assert {s["id"] for s in tb_after.final_sources} == {"src-001"}, (
+        "src-042 has content but no reference site — must be dropped"
+    )
+
+
+def test_prune_keeps_source_referenced_only_in_bias_findings():
+    """A source's id appearing inside a bias_language_finding's
+    excerpt/issue/explanation prose must be treated as referenced."""
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-031", "outlet": "X", "summary": "", "actors_quoted": []},
+    ]
+    tb.bias_language_findings = [
+        {
+            "excerpt": "controversial move",
+            "issue": "loaded_term",
+            "explanation": "framing flagged in [src-031]; see source for full quote.",
+        }
+    ]
+
+    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
+
+    assert {s["id"] for s in tb_after.final_sources} == {"src-031"}
+
+
+def test_prune_keeps_source_referenced_only_in_coverage_gaps():
+    """A source whose id appears only in a coverage_gaps_validated entry
+    is referenced and must be kept."""
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-050", "outlet": "Y", "summary": "", "actors_quoted": []},
+    ]
+    tb.coverage_gaps_validated = [
+        "Iranian state media not represented; only [src-050] partially covers the angle.",
+    ]
+
+    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
+
+    assert {s["id"] for s in tb_after.final_sources} == {"src-050"}
+
+
+def test_prune_keeps_source_referenced_only_in_writer_body_when_qa_article_is_empty():
+    """Defence-in-depth: when qa_corrected_article body is empty (no QA
+    fixes), the validator must still find references in writer_article.body."""
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-077", "outlet": "Z", "summary": "", "actors_quoted": []},
+    ]
+    tb.writer_article = WriterArticle(
+        headline="h", subheadline="sh",
+        body="A claim is supported [src-077] in the writer body.",
+        summary="s",
+    )
+    # qa_corrected_article left at empty default — simulates the clean-run
+    # path before mirror_qa_corrected fills the slot.
+    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
+
+    assert {s["id"] for s in tb_after.final_sources} == {"src-077"}
