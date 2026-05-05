@@ -545,16 +545,11 @@ def render_evidence_terrain(by_country: dict[str, int]) -> str:
         n = bucket_counts.get(bucket_key, 0)
         is_zero = n == 0
 
-        # Connector — pure horizontal at row_y, from the legend right edge
-        # to the bucket's projected anchor x.
-        if is_zero:
-            parts.append(
-                f'<line x1="{LEGEND_CONNECTOR_START_X}" y1="{row_y:.1f}" '
-                f'x2="{anchor_x:.1f}" y2="{row_y:.1f}" '
-                f'stroke="{ACTIVE_INK}" stroke-width="0.5" '
-                f'stroke-opacity="{ZERO_OPACITY}" stroke-dasharray="3 3"/>'
-            )
-        else:
+        # Connector — only for active rows. Pure horizontal at row_y from
+        # the legend right edge to the bucket's projected anchor x. Zero
+        # rows render no connector; the dim N + name in the legend column
+        # carries enough signal on its own.
+        if not is_zero:
             parts.append(
                 f'<line x1="{LEGEND_CONNECTOR_START_X}" y1="{row_y:.1f}" '
                 f'x2="{anchor_x:.1f}" y2="{row_y:.1f}" '
