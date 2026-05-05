@@ -9,28 +9,8 @@ import unicodedata
 from datetime import datetime
 from pathlib import Path
 
-# ---------------------------------------------------------------------------
-# Radial source network — region config (matches approved React reference)
-# ---------------------------------------------------------------------------
-# Angles in degrees, 0=right, clockwise. Each region: (start, end, color, countries)
-REGION_CONFIG: dict[str, dict] = {
-    "Middle East & N. Africa": {"start": 330, "end": 30,  "color": "#8b5cf6",
-        "countries": ["Iran", "Turkey", "Saudi Arabia", "United Arab Emirates", "Jordan", "Egypt", "Israel", "Qatar", "Iraq"]},
-    "East Asia":               {"start": 30,  "end": 75,  "color": "#0891b2",
-        "countries": ["China", "Japan", "South Korea", "Taiwan"]},
-    "South & Central Asia":    {"start": 75,  "end": 120, "color": "#0d9488",
-        "countries": ["India", "Pakistan", "Bangladesh", "Russia"]},
-    "SE Asia & Oceania":       {"start": 120, "end": 165, "color": "#059669",
-        "countries": ["Indonesia", "Philippines", "Thailand", "Australia", "Vietnam"]},
-    "Sub-Saharan Africa":      {"start": 165, "end": 210, "color": "#d97706",
-        "countries": ["Nigeria", "South Africa", "Kenya", "Ethiopia"]},
-    "Americas":                {"start": 210, "end": 255, "color": "#3b82f6",
-        "countries": ["United States", "Canada", "Mexico"]},
-    "Latin America":           {"start": 255, "end": 295, "color": "#2563eb",
-        "countries": ["Brazil", "Argentina", "Colombia", "Chile"]},
-    "Europe":                  {"start": 295, "end": 330, "color": "#6366f1",
-        "countries": ["United Kingdom", "Germany", "Spain", "France", "Italy", "Poland", "Ukraine", "Netherlands"]},
-}
+from scripts.evidence_terrain import render_evidence_terrain
+from src.region_buckets import get_buckets, lookup_region
 
 COUNTRY_DISPLAY: dict[str, str] = {
     "United States": "US", "United Kingdom": "UK", "United Arab Emirates": "UAE",
@@ -454,229 +434,36 @@ def build_meta_bar(tp: dict) -> str:
     return f'<div class="meta-bar">\n{inner}\n</div>\n'
 
 
-def _render_source_network(sources_by_country: dict[str, int]) -> str:
-    """Generate radial source network SVG matching the approved React reference.
-
-    Deterministic layout: 8 fixed angular sectors, straight connection lines,
-    flat-fill nodes with feDropShadow filter, segment arcs with tick marks.
-    """
-    import math
-
-    CX, CY = 380, 380
-    R_CENTER = 44
-    R_NODE_INNER = 185
-    R_NODE_OUTER = 235
-    R_ARC = 280
-    R_LABEL = 305
-    W, H = 760, 760
-    PADDING_DEG = 6  # degrees padding from sector edges
-
-    # Resolve compound country names ("Israel/France" -> Israel, France)
-    active: dict[str, int] = {}
-    for name, count in sources_by_country.items():
-        if "/" in name:
-            for part in name.split("/"):
-                part = part.strip()
-                active[part] = active.get(part, 0) + count
-        else:
-            active[name] = active.get(name, 0) + count
-
-    total_sources = sum(sources_by_country.values())
-
-    def to_rad(deg: float) -> float:
-        return deg * math.pi / 180
-
-    def polar(angle_deg: float, radius: float) -> tuple[float, float]:
-        """angle_deg: 0=right, clockwise (standard SVG/screen coords)."""
-        rad = to_rad(angle_deg)
-        return CX + radius * math.cos(rad), CY + radius * math.sin(rad)
-
-    def normalize(start: int, end: int) -> tuple[float, float]:
-        s, e = float(start), float(end)
-        if e < s:
-            e += 360
-        return s, e
-
-    def sector_positions(start: int, end: int, n: int) -> list[float]:
-        """Evenly distribute n items within [start+pad, end-pad]."""
-        s, e = normalize(start, end)
-        span = e - s
-        s_pad = s + PADDING_DEG
-        e_pad = e - PADDING_DEG
-        usable = e_pad - s_pad
-        if n <= 0:
-            return []
-        if n == 1:
-            return [s_pad + usable / 2]
-        step = usable / (n - 1)
-        return [s_pad + i * step for i in range(n)]
-
-    def arc_path(start_deg: int, end_deg: int, radius: float) -> str:
-        s, e = normalize(start_deg, end_deg)
-        x1, y1 = polar(s, radius)
-        x2, y2 = polar(e, radius)
-        span = e - s
-        large = 1 if span > 180 else 0
-        return f"M{x1:.1f},{y1:.1f} A{radius},{radius} 0 {large} 1 {x2:.1f},{y2:.1f}"
-
-    # Pre-compute node data per region
-    NodeInfo = tuple  # (country, x, y, r, count)
-    region_nodes: dict[str, list[NodeInfo]] = {}
-
-    for rname, cfg in REGION_CONFIG.items():
-        countries = cfg["countries"]
-        start, end = cfg["start"], cfg["end"]
-        active_in = [c for c in countries if c in active]
-        if not active_in:
-            region_nodes[rname] = []
-            continue
-        n = len(active_in)
-        angles = sector_positions(start, end, n)
-        nodes = []
-        for i, (country, angle) in enumerate(zip(active_in, angles)):
-            count = active[country]
-            r = 16 if count == 1 else (21 if count == 2 else 26)
-            # Alternate inner/outer radius for crowded sectors
-            if n >= 2:
-                radius = R_NODE_INNER if i % 2 == 0 else R_NODE_OUTER
-            else:
-                radius = (R_NODE_INNER + R_NODE_OUTER) / 2  # 210px
-            nx, ny = polar(angle, radius)
-            nodes.append((country, nx, ny, r, count))
-        region_nodes[rname] = nodes
-
-    # SVG start (no filter defs — brutalist: no shadows)
-    parts: list[str] = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 {W + 80} {H + 80}"'
-        f' class="source-network" role="img"'
-        f' aria-label="Source network: {total_sources} sources from {len(active)} countries">',
-    ]
-
-    # --- 1. Segment arcs + tick marks ---
-    for rname, cfg in REGION_CONFIG.items():
-        start, end = cfg["start"], cfg["end"]
-        # Arc
-        d = arc_path(start, end, R_ARC)
-        parts.append(
-            f'<path d="{d}" fill="none" stroke="#e0e0e0" '
-            f'stroke-width="0.75" opacity="0.6"/>'
-        )
-        # Tick mark at start boundary
-        x1, y1 = polar(start, 265)
-        x2, y2 = polar(start, 295)
-        parts.append(
-            f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" '
-            f'stroke="#e0e0e0" stroke-width="0.75" opacity="0.4"/>'
-        )
-
-    # --- 2-4. Country groups: connection line + node + count + name label ---
-    for rname, cfg in REGION_CONFIG.items():
-        color = cfg["color"]
-        for country, nx, ny, r, count in region_nodes[rname]:
-            display = COUNTRY_DISPLAY.get(country, country)
-            font_size = 13 if r > 20 else 11
-
-            # Connection line endpoints
-            angle = math.atan2(ny - CY, nx - CX)
-            sx = CX + R_CENTER * math.cos(angle)
-            sy = CY + R_CENTER * math.sin(angle)
-            ex = nx - r * math.cos(angle)
-            ey = ny - r * math.sin(angle)
-
-            parts.append(f'<g class="source-node">')
-            # Connection line
-            parts.append(
-                f'<line class="conn-line" x1="{sx:.1f}" y1="{sy:.1f}" '
-                f'x2="{ex:.1f}" y2="{ey:.1f}" '
-                f'stroke="#000" stroke-width="1" opacity="0.12"/>'
-            )
-            # Node circle
-            parts.append(
-                f'<circle cx="{nx:.1f}" cy="{ny:.1f}" r="{r}" '
-                f'fill="{color}" '
-                f'stroke="#000" stroke-width="1.5">'
-                f'<title>{_esc(display)} ({count} source{"s" if count != 1 else ""})</title>'
-                f'</circle>'
-            )
-            # Count label
-            parts.append(
-                f'<text class="count-label" x="{nx:.1f}" y="{ny + 4:.1f}" '
-                f'font-size="{font_size}" font-family="\'Space Mono\', \'Courier New\', monospace" fill="white" '
-                f'font-weight="700" text-anchor="middle" pointer-events="none">'
-                f'{count}</text>'
-            )
-            # Name label (hidden, shown on hover via CSS)
-            parts.append(
-                f'<text class="name-label" x="{nx:.1f}" y="{ny + r + 14:.1f}" '
-                f'font-family="\'Space Mono\', \'Courier New\', monospace" text-anchor="middle" '
-                f'font-size="10" font-weight="700" fill="#000">'
-                f'{_esc(display)}</text>'
-            )
-            parts.append('</g>')
-
-    # --- 5. Central node (brutalist: pure black, no shadow) ---
-    parts.append(
-        f'<circle cx="{CX}" cy="{CY}" r="{R_CENTER}" '
-        f'fill="#000"/>'
-    )
-    # 6. Central labels
-    parts.append(
-        f'<text x="{CX}" y="{CY - 6}" font-size="22" '
-        f'font-family="\'Space Mono\', \'Courier New\', monospace" fill="white" font-weight="700" '
-        f'text-anchor="middle" dominant-baseline="middle">{total_sources}</text>'
-    )
-    parts.append(
-        f'<text x="{CX}" y="{CY + 14}" font-size="9" '
-        f'font-family="\'Space Mono\', \'Courier New\', monospace" fill="white" '
-        f'letter-spacing="0.1em" text-anchor="middle">SOURCES</text>'
-    )
-
-    # --- 7. Region labels ---
-    for rname, cfg in REGION_CONFIG.items():
-        start, end = cfg["start"], cfg["end"]
-        color = cfg["color"]
-        s, e = normalize(start, end)
-        mid = s + (e - s) / 2
-        lx, ly = polar(mid, R_LABEL)
-
-        has_sources = len(region_nodes[rname]) > 0
-        fill = "#64748b" if has_sources else "#cbd5e1"
-
-        # Text anchor based on horizontal position
-        if lx > CX + 40:
-            anchor = "start"
-        elif lx < CX - 40:
-            anchor = "end"
-        else:
-            anchor = "middle"
-
-        parts.append(
-            f'<text x="{lx:.1f}" y="{ly:.1f}" font-size="8.5" '
-            f'font-family="\'Space Mono\', \'Courier New\', monospace" fill="{fill}" font-weight="600" '
-            f'letter-spacing="0.1em" text-anchor="{anchor}" '
-            f'dominant-baseline="middle">{_esc(rname.upper())}</text>'
-        )
-
-    parts.append("</svg>")
-    return "\n".join(parts)
-
-
 def _country_region_color(country: str) -> str:
-    """Find the region color for a country."""
-    for cfg in REGION_CONFIG.values():
-        if country in cfg["countries"]:
-            return cfg["color"]
-    return "#94a3b8"
+    """Return the bucket colour for a country, or grey for unbucketed."""
+    bucket_key = lookup_region(country)
+    if bucket_key is None:
+        return "#999999"
+    return get_buckets()[bucket_key].get("color", "#999999")
 
 
 def build_source_map(tp: dict) -> str:
-    """Build radial source network SVG + country badge legend."""
+    """Build evidence terrain SVG + country badge legend."""
     bias = tp.get("bias_analysis", {})
-    by_country = bias.get("source_balance", {}).get("by_country", {})
+    # V2 render shape: bias_analysis.source.by_country (compose_bias_card).
+    # Older shapes used bias_analysis.source_balance.by_country; fall back.
+    by_country = (
+        bias.get("source", {}).get("by_country")
+        or bias.get("source_balance", {}).get("by_country")
+        or {}
+    )
 
-    svg_html = _render_source_network(by_country)
+    metadata = tp.get("metadata", {})
+    title = metadata.get("title", "") or tp.get("title", "")
+    date = _format_date(metadata.get("date", "") or tp.get("date", ""))
 
-    # Country badges sorted by count descending, colored by region
+    svg_html = render_evidence_terrain(
+        by_country=by_country,
+        title=title,
+        date=date,
+    )
+
+    # Country badges sorted by count descending, coloured by region bucket.
     sorted_countries = sorted(by_country.items(), key=lambda x: -x[1])
     active_badges = []
     for country, count in sorted_countries:
@@ -691,7 +478,7 @@ def build_source_map(tp: dict) -> str:
 
     badges_html = "\n".join(active_badges)
     return (
-        f'<h2>Source Countries</h2>\n'
+        f'<h2>Source Distribution</h2>\n'
         f'{svg_html}\n'
         f'<div class="country-grid" style="margin-top:0.75rem">\n{badges_html}\n</div>\n'
     )
