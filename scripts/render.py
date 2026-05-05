@@ -223,8 +223,10 @@ h2 {
 .back-nav a:hover { color: #000; text-decoration: underline; }
 .back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
 
-/* Source network SVG */
+/* Source network SVG (legacy class — keeps any historical templates working) */
 .source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+/* Evidence terrain SVG */
+.evidence-terrain { width: 100%; max-width: 720px; margin: 0.5rem auto 1rem; display: block; }
 .source-node { cursor: pointer; }
 .source-node .name-label {
   opacity: 0; transition: opacity 0.15s ease;
@@ -453,15 +455,7 @@ def build_source_map(tp: dict) -> str:
         or {}
     )
 
-    metadata = tp.get("metadata", {})
-    title = metadata.get("title", "") or tp.get("title", "")
-    date = _format_date(metadata.get("date", "") or tp.get("date", ""))
-
-    svg_html = render_evidence_terrain(
-        by_country=by_country,
-        title=title,
-        date=date,
-    )
+    svg_html = render_evidence_terrain(by_country=by_country)
 
     # Country badges sorted by count descending, coloured by region bucket.
     sorted_countries = sorted(by_country.items(), key=lambda x: -x[1])
