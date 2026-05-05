@@ -8,7 +8,7 @@ You receive a list of findings (news headlines and short summaries from many out
 2. Cluster findings that report the same underlying event or development into a single topic. Findings about the same policy decision or incident belong together regardless of outlet or wording.
 3. For each topic, write a `title` (a descriptive label, not a headline) and a 1–3 sentence `summary` drawn only from the input findings.
 4. Score each topic's newsworthiness on a 1–10 scale using the criteria below. Sort topics by score, descending.
-5. Produce a `cluster_assignments` array — one entry per finding in input order — where each entry is the index of the topic the finding belongs to, or `null` if it fits no topic.
+5. Produce a `cluster_assignments` array — one entry per finding in input order — where each entry is the index of the topic the finding belongs to, or `null`. A finding belongs to a topic only if it reports the same event, decision, or conflict — not if it merely shares a region or actor type. When in doubt, `null` is the correct answer.
 
 ## Newsworthiness criteria
 
@@ -52,7 +52,7 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 
 # RULES
 
-1. Every topic has a specific subject. No catch-all groupings such as "Other News" or "Miscellaneous Updates."
+1. Every topic has a specific subject — a concrete event, decision, conflict, or development that the findings collectively report on. No catch-all groupings such as "Other News" or "Miscellaneous Updates."
 2. Summaries contain only information present in the input findings. Do not add background, historical context, or claims the findings themselves do not state.
 3. `cluster_assignments` has exactly one entry per input finding, in input order. A finding that fits no topic uses `null` — never an omitted slot.
 4. Volume is not significance. Many sources from one country do not outrank fewer sources covering an event of broader consequence.
