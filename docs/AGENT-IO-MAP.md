@@ -208,7 +208,6 @@ The two wrappers differ only in input — hydrated reads the pre-dossier coverag
 | --- | --- | --- | --- |
 | `queries[].query` | ✅ | ✅ | Search query string |
 | `queries[].language` | ✅ | ✅ | ISO language code for the query |
-| `queries[].rationale` | ✅ | ✅ | Why this query (drives observability) |
 
 **Status:** ✅ Pass-through clean.
 

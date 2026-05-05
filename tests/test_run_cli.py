@@ -186,7 +186,7 @@ def _namespace(**overrides):
     base = dict(
         from_step=None, to_step=None, topic=None, reuse=None,
         max_produce=3, fetch=False, publish=False, hydrated=False,
-        help_stages=False,
+        help_stages=False, force=False,
     )
     base.update(overrides)
     return argparse.Namespace(**base)
@@ -415,3 +415,48 @@ def test_main_logs_manifest_summary(caplog):
     assert "completed t1" in caplog.text
     assert "failed t2" in caplog.text
     assert "skipped t3" in caplog.text
+
+
+# ---------------------------------------------------------------------------
+# --force gate on --reuse overwrites
+# ---------------------------------------------------------------------------
+
+
+def test_check_reuse_overwrite_safety_aborts_without_force_when_state_exists(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+):
+    run = _load_run_module()
+    state_dir = tmp_path / "2026-05-04" / "_state"
+    state_dir.mkdir(parents=True)
+    (state_dir / "run-2026-05-04-deadbeef").mkdir()
+
+    with pytest.raises(SystemExit) as excinfo:
+        run._check_reuse_overwrite_safety("2026-05-04", tmp_path, force=False)
+    assert excinfo.value.code == 1
+    err = capsys.readouterr().err
+    assert "already exists" in err
+    assert "run-2026-05-04-deadbeef" in err
+    assert "--force" in err
+
+
+def test_check_reuse_overwrite_safety_proceeds_with_force_when_state_exists(
+    tmp_path: Path,
+):
+    run = _load_run_module()
+    state_dir = tmp_path / "2026-05-04" / "_state"
+    state_dir.mkdir(parents=True)
+    (state_dir / "run-2026-05-04-deadbeef").mkdir()
+
+    # Must NOT raise
+    run._check_reuse_overwrite_safety("2026-05-04", tmp_path, force=True)
+
+
+def test_check_reuse_overwrite_safety_proceeds_without_force_when_no_prior_state(
+    tmp_path: Path,
+):
+    run = _load_run_module()
+    # No state directory at all
+    run._check_reuse_overwrite_safety("2026-05-04", tmp_path, force=False)
+    # Empty state directory also passes
+    (tmp_path / "2026-05-04" / "_state").mkdir(parents=True)
+    run._check_reuse_overwrite_safety("2026-05-04", tmp_path, force=False)

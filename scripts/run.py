@@ -292,7 +292,51 @@ def parse_args():
         "--help-stages", action="store_true",
         help="Print the production and hydrated stage names, then exit.",
     )
+    parser.add_argument(
+        "--force", action="store_true",
+        help=(
+            "Overwrite an existing run-state directory for --reuse {date} "
+            "instead of aborting. Default behaviour without --force is to "
+            "refuse to overwrite."
+        ),
+    )
     return parser.parse_args()
+
+
+def _check_reuse_overwrite_safety(
+    reuse_arg: str, output_dir: Path, force: bool
+) -> None:
+    """Refuse to overwrite prior --reuse snapshots without --force.
+
+    --reuse {date} runs in-place against an existing state directory and
+    overwrites per-stage snapshots. Without --force we abort early with an
+    instructive error naming the conflicting paths.
+    """
+    if force:
+        return
+    run_date = reuse_arg.strip("/").split("/")[0]
+    state_dir = output_dir / run_date / "_state"
+    if not state_dir.is_dir():
+        return
+    existing = sorted(
+        d for d in state_dir.iterdir()
+        if d.is_dir() and d.name.startswith(f"run-{run_date}-")
+    )
+    if not existing:
+        return
+    paths = "\n".join(f"  {d}" for d in existing)
+    sample = existing[-1]
+    msg = (
+        f"ERROR: Run-state for {run_date} already exists at:\n"
+        f"{paths}\n\n"
+        f"Re-running with --reuse {run_date} would overwrite the snapshots in\n"
+        f"the run that minted the new run-id. To preserve the prior snapshots,\n"
+        f"copy them first:\n"
+        f"  cp -r {sample} {state_dir.parent}/_state-backup/\n\n"
+        f"To proceed and overwrite, re-run with --force.\n"
+    )
+    print(msg, file=sys.stderr)
+    raise SystemExit(1)
 
 
 def _resolve_reuse(reuse_arg: str, output_dir: Path) -> tuple[str, str]:
@@ -411,6 +455,7 @@ async def main():
     reuse_run_id = None
     reuse_run_date = None
     if args.reuse:
+        _check_reuse_overwrite_safety(args.reuse, output_dir, args.force)
         try:
             reuse_run_date, reuse_run_id = _resolve_reuse(args.reuse, output_dir)
         except RuntimeError as e:
