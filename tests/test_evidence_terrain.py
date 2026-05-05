@@ -24,8 +24,8 @@ def test_render_terrain_returns_svg_string():
 
 
 def test_render_terrain_empty_input_renders_all_seven_dimmed():
-    """Empty input renders all seven cartouches (rows in the legend) with
-    a count of zero."""
+    """Empty input renders all seven legend rows with a dimmed "0" and
+    a dimmed region name."""
     svg = render_evidence_terrain({})
     assert svg.startswith("<svg")
     # Every region's first label line appears (handles two-line wraps).
@@ -34,18 +34,18 @@ def test_render_terrain_empty_input_renders_all_seven_dimmed():
         "EUROPE &",             # EUROPE & CENTRAL ASIA
         "LATIN AMERICA &",      # LATIN AMERICA & CARIBBEAN
         "MIDDLE EAST &",        # MIDDLE EAST & NORTH AFRICA
-        "NORTH AMERICA",        # single line (no &)
-        "SOUTH ASIA",           # single line
-        "SUB-SAHARAN AFRICA",   # single line (no & — hyphen, not split)
+        "NORTH",                # NORTH AMERICA wraps (13 chars > 11)
+        "SOUTH ASIA",           # single line, ≤11 chars
+        "SUB-SAHARAN",          # SUB-SAHARAN AFRICA wraps on space
     ]
     for token in expected_first_tokens:
-        assert token in svg, f"missing cartouche label {token!r}"
-    # Every cartouche shows zero (one occurrence of >0</text> per bucket
-    # plus the footer total at >0</text> for an empty input).
+        assert token in svg, f"missing legend label token {token!r}"
+    # Every legend row renders "0" plus the footer total ("0") = 8 zeros.
     zero_count = len(re.findall(r">0</text>", svg))
     assert zero_count >= 7, f"expected ≥7 zeros, got {zero_count}"
-    # All bucket cartouches dimmed (non-zero opacity attribute set to 0.42).
-    assert svg.count('opacity="0.42"') >= 7
+    # Zero-row elements (numbers, names, rules, connectors) all dimmed at
+    # opacity 0.35.
+    assert svg.count('opacity="0.35"') >= 7
 
 
 def test_render_terrain_aggregates_to_buckets_correctly():
@@ -61,11 +61,11 @@ def test_render_terrain_aggregates_to_buckets_correctly():
         return int(m.group(1))
 
     assert count_after("EUROPE &") == 5
-    assert count_after("NORTH AMERICA") == 0
+    assert count_after("NORTH") == 0   # NORTH AMERICA wraps to NORTH / AMERICA
     assert count_after("MIDDLE EAST &") == 0
     assert count_after("EAST ASIA &") == 0
     assert count_after("SOUTH ASIA") == 0
-    assert count_after("SUB-SAHARAN AFRICA") == 0
+    assert count_after("SUB-SAHARAN") == 0
     assert count_after("LATIN AMERICA &") == 0
 
 

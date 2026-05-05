@@ -2,42 +2,37 @@
 
 Aggregates a per-country source-count map to seven World-Bank region buckets
 via :mod:`src.region_buckets`, then renders each active bucket as an
-isolated mountain on a stylised world floor-plan: per-region marching-
-squares contour rings (one bucket at a time so neighbours never coalesce
-into a single massif), soft regional washes hugging each summit, and
-relative-to-summit cartouches with leader lines + region-name + count.
+isolated mountain on the right side of the canvas. A vertical legend on
+the left lists every bucket; horizontal connector lines link each legend
+row to its bucket's position on the terrain.
 
 Algorithm — Python port of the JS mock at
 ``independent-wire-design-system/project/preview/component-evidence-
-terrain.html``:
+terrain.html`` (handoff hash Ab231lVDyYEjg_lYp32Yow), restructured per
+the architect's rough visual:
 
 1. **Per-region height field.** Each bucket samples its own Gaussian on a
-   compact 90×90 grid centred on its anchor (sample window
-   ``[a.u ± 0.9, a.v ± 0.9]``). Fields are NOT summed across buckets, so
-   adjacent peaks always read as distinct mountains.
+   compact 90×90 grid centred on its anchor. Fields are NOT summed.
 2. **Marching squares per region** at a level set scaled to the region's
-   own peak. Ring count grows with ``sqrt(n)`` so taller mountains carry
-   denser contours.
-3. **Polyline chaining** stitches the marching-squares segments into
-   continuous polylines.
-4. **Painter's algorithm**: regions are rendered back-to-front sorted by
-   base-anchor screen-y. Closer mountains visually overlap further ones.
-5. **Oblique projection** from world (u, v, h) to screen (x, y):
+   own peak. Ring count grows with ``sqrt(n)``.
+3. **Polyline chaining** stitches the segments into continuous polylines.
+4. **Painter's algorithm** depth-sort: regions render back-to-front by
+   base-anchor screen-y. Closer mountains overlap farther ones.
+5. **Oblique projection** ``(u, v, h) → (x, y)``:
        x = cx + u * scale
        y = cy − v * scale * tilt − h * vScale
-6. **Cartouches** are always rendered for all seven buckets (dimmed when
-   ``n == 0``). Each cartouche's ``dx, dy`` offset from its summit (or
-   base anchor when zero) plus the leader-line geometry (vertical drop
-   + short hook) follow the mock layout exactly.
-7. **Footer** carries a TOTAL SOURCES anchor; topic title and date are
-   not duplicated inside the SVG (they already appear in the page's
-   ``<h1>`` / date bar).
+6. **Left-edge legend** with seven rows ordered top-to-bottom by terrain
+   ``y_base`` (so connectors are horizontal). Active rows render
+   ``N | NAME`` on the left; zero rows render only the dim ``NAME`` and
+   place a dim ``0`` at the bucket's terrain position. Connectors run
+   horizontally at ``row_y = y_base`` from the legend column to the
+   bucket's projected anchor x — pure horizontals never cross.
+7. **Footer** carries a ``{N} TOTAL SOURCES`` caption centred under the
+   terrain.
 
-Constants are tuned for a 1080×760 viewBox rendered at ~700 px width on
-the TP page (scale factor ~0.65). Font sizes below are chosen so
-physical render size stays ≥ 11 px on screen. If the canvas size or
-bucket count changes, the anchors, cartouche offsets, sigma/peak curves,
-and projection need to be re-derived.
+The terrain layer is clipped to the right ~75 % of the canvas so any
+outer ring leakage from a high-source bump does not bleed into the
+legend column.
 """
 
 from __future__ import annotations
@@ -56,16 +51,17 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 CANVAS_W = 1080
 CANVAS_H = 760
-PROJ_CX = CANVAS_W * 0.5
+LEGEND_RIGHT_EDGE = 270           # terrain clipped to x > LEGEND_RIGHT_EDGE
+PROJ_CX = 700                     # terrain centre, shifted right of legend
 PROJ_CY = CANVAS_H * 0.66
-PROJ_SCALE = 380
+PROJ_SCALE = 290                  # tightened so terrain fits in the right 75%
 PROJ_TILT = 0.55
 PROJ_VSCALE = 250
 
 # Per-region grid — compact bumps don't need a fine global grid.
 GRID_W = 90
 GRID_H = 90
-SAMPLE_HALF_WINDOW = 0.9    # sample u/v in [a.u-0.9, a.u+0.9] × ditto v
+SAMPLE_HALF_WINDOW = 0.9
 
 # ---------------------------------------------------------------------------
 # Per-region field shape. Bumps are isolated; fields are NOT summed.
@@ -76,70 +72,58 @@ SIGMA_CAP_N = 35
 PEAK_EXPONENT = 0.78
 PEAK_SCALE = 0.078
 
-# Tint / wash hugs the upper slope.
-TINT_LEVEL_FACTOR = 0.55     # threshold = peak * 0.55
+TINT_LEVEL_FACTOR = 0.55
 TINT_OPACITY = 0.22
 
-# Topographic levels per region — count grows with √n; biased toward summit.
 ISOLINE_MIN_LEVEL = 0.04
 ISOLINE_GAMMA = 1.18
 ISOLINE_LEVELS_MIN = 8
 ISOLINE_LEVELS_MAX = 24
 
-# Shore (outermost dashed contour).
 SHORE_LEVEL = 0.02
 
 # ---------------------------------------------------------------------------
-# Cartouche typography (SVG-space sizes; physical size = svg_fs × ~0.65)
+# Legend column (left side)
 # ---------------------------------------------------------------------------
-NAME_FONT_SIZE = 15
-NAME_LINE_HEIGHT = 17
-NAME_CHAR_WIDTH = 9.0
-NUM_FONT_SIZE_BASE = 30
-NUM_FONT_SIZE_SLOPE = 0.42
-NUM_FONT_SIZE_BONUS_CAP = 14
-ZERO_NUM_FONT_SIZE = 22
-PAD_NAME = 14
-PAD_NUM = 22
+LEGEND_PAD_LEFT = 16
+LEGEND_NUM_FS = 30                # active row big number
+LEGEND_NUM_X_END = 76             # right-anchored end of the active number
+LEGEND_RULE_X = 92                # vertical hairline rule
+LEGEND_RULE_HEIGHT = 24
+LEGEND_NAME_X = 106               # left-anchored start of the region name
+LEGEND_NAME_FS = 14
+LEGEND_NAME_LINE_HEIGHT = 16
+LEGEND_NAME_LETTER_SPACING = "0.06em"
+LEGEND_CONNECTOR_START_X = 244    # horizontal connector starts here (past the longest name)
+TERMINUS_ZERO_FS = 22             # the "0" rendered at the bucket's terrain anchor
+TERMINUS_DOT_RADIUS = 2.4         # filled summit dot for active buckets
+ZERO_OPACITY = 0.35
+ACTIVE_INK = "#0a0a0a"
 
 # ---------------------------------------------------------------------------
 # Footer
 # ---------------------------------------------------------------------------
-FOOTER_RULE_OFFSET = 56          # baseline rule at y = CANVAS_H − 56
-FOOTER_CAPTION_OFFSET = 36       # caption baseline = rule_y + 36
+FOOTER_RULE_OFFSET = 56
+FOOTER_CAPTION_OFFSET = 36
 FOOTER_TOTAL_FONT_SIZE = 38
 FOOTER_LABEL_FONT_SIZE = 14
 
 
 # ---------------------------------------------------------------------------
 # Bucket anchor positions on the (u, v) world plane.
-# u ∈ [-1, 1] horizontal; v ∈ [-1, 1] depth (positive = back of canvas).
-# Composed as a balanced floor-plan that keeps bumps separated even at
-# typical (1–35 per bucket) source distributions.
+# v values are evenly spaced top-to-bottom so the legend rows (which align
+# to each anchor's y_base) are also evenly spaced. u values keep a roughly
+# geographic floor-plan: Americas left, Europe centre-back, Asia right,
+# Africa centre-front.
 # ---------------------------------------------------------------------------
 ANCHORS: dict[str, tuple[float, float]] = {
+    "europe_central_asia":      ( 0.05,  0.85),
+    "east_asia_pacific":        ( 0.85,  0.60),
     "north_america":            (-0.85,  0.35),
-    "europe_central_asia":      ( 0.05,  0.70),
-    "east_asia_pacific":        ( 0.85,  0.55),
-    "middle_east_north_africa": ( 0.45,  0.05),
-    "south_asia":               ( 0.92, -0.10),
-    "sub_saharan_africa":       (-0.05, -0.45),
-    "latin_america_caribbean":  (-0.78, -0.55),
-}
-
-
-# ---------------------------------------------------------------------------
-# Cartouche placement relative to each summit projection.
-# ``side`` = which edge of the cartouche the leader-line hooks into.
-# ---------------------------------------------------------------------------
-CARTOUCHES: dict[str, dict] = {
-    "north_america":            {"dx":    0, "dy": -54, "side": "right"},
-    "europe_central_asia":      {"dx":    0, "dy": -54, "side": "right"},
-    "east_asia_pacific":        {"dx":    0, "dy": -54, "side": "left"},
-    "middle_east_north_africa": {"dx":   86, "dy": -22, "side": "right"},
-    "south_asia":               {"dx": -100, "dy":  20, "side": "left"},
-    "sub_saharan_africa":       {"dx":    0, "dy":  74, "side": "right"},
-    "latin_america_caribbean":  {"dx":    0, "dy":  74, "side": "right"},
+    "middle_east_north_africa": ( 0.45,  0.10),
+    "south_asia":               ( 0.92, -0.15),
+    "sub_saharan_africa":       (-0.05, -0.40),
+    "latin_america_caribbean":  (-0.78, -0.65),
 }
 
 
@@ -156,8 +140,6 @@ def _project(u: float, v: float, h: float) -> tuple[float, float]:
 
 
 def _bucket_sigma_peak(n: int) -> tuple[float, float]:
-    """Return (sigma, peak) for a bucket with ``n`` sources. ``n<=0``
-    yields a baseline sigma + zero peak."""
     if n <= 0:
         return SIGMA_BASE, 0.0
     sigma = SIGMA_BASE + SIGMA_PER_SOURCE * min(n, SIGMA_CAP_N)
@@ -166,16 +148,22 @@ def _bucket_sigma_peak(n: int) -> tuple[float, float]:
 
 
 def _wrap_label(label: str) -> list[str]:
-    """Wrap a region label to at most two lines on " & "; otherwise keep
-    as a single line."""
+    """Wrap a region label to at most two lines.
+
+    Splits on ``" & "`` when present (puts ``&`` on the first line).
+    Otherwise, a label longer than 11 characters splits on its last
+    space. Single-line labels are returned unchanged.
+    """
     if " & " in label:
         a, b = label.split(" & ", 1)
         return [a + " &", b]
+    if len(label) > 11 and " " in label:
+        idx = label.rfind(" ")
+        return [label[:idx], label[idx + 1:]]
     return [label]
 
 
 def _esc(text: str) -> str:
-    """Minimal XML-text escape for SVG content."""
     if text is None:
         return ""
     return (
@@ -195,11 +183,6 @@ def _region_field(
     anchor: tuple[float, float], n: int,
     u_min: float, u_max: float, v_min: float, v_max: float,
 ) -> tuple[list[list[float]], float, float]:
-    """Sample a Gaussian centred on ``anchor`` over a 90×90 grid spanning
-    [u_min, u_max] × [v_min, v_max]. Returns (field, peak, sigma).
-
-    ``field[r][c]`` is row r (v-axis) and column c (u-axis); row 0 is
-    the front of the canvas (v_min)."""
     sigma, peak = _bucket_sigma_peak(n)
     if peak == 0.0:
         return ([[0.0] * GRID_W for _ in range(GRID_H)], 0.0, sigma)
@@ -224,10 +207,6 @@ def _region_field(
 # Marching squares + polyline chaining (per-region)
 # ---------------------------------------------------------------------------
 
-
-# 16-case isoline lookup. Bit positions: 1=v00 (front-left), 2=v10
-# (front-right), 4=v11 (back-right), 8=v01 (back-left). Edges: B=front
-# (v00↔v10), R=right (v10↔v11), T=back (v01↔v11), L=left (v00↔v01).
 _MS_TABLE: dict[int, list[tuple[str, str]]] = {
     1:  [("L", "B")], 2: [("B", "R")], 3: [("L", "R")], 4: [("T", "R")],
     5:  [("L", "T"), ("B", "R")], 6: [("B", "T")], 7: [("L", "T")],
@@ -240,8 +219,6 @@ def _isolines_at(
     field: list[list[float]], level: float,
     u_min: float, u_max: float, v_min: float, v_max: float,
 ) -> list[tuple[tuple[float, float], tuple[float, float]]]:
-    """Run marching squares at ``level`` over a region-local field.
-    Returns segments in screen coordinates (already projected at h=level)."""
     h = GRID_H
     w = GRID_W
     du = (u_max - u_min) / (w - 1)
@@ -298,7 +275,6 @@ def _isolines_at(
             for ea, eb in entry:
                 pa = edge_uv(ea)
                 pb = edge_uv(eb)
-                # Project at h = level (we are on an isoline of value ``level``).
                 segments.append((
                     _project(pa[0], pa[1], level),
                     _project(pb[0], pb[1], level),
@@ -309,7 +285,6 @@ def _isolines_at(
 def _chain_segs(
     segments: list[tuple[tuple[float, float], tuple[float, float]]],
 ) -> list[list[tuple[float, float]]]:
-    """Stitch segments into continuous polylines via endpoint matching."""
     if not segments:
         return []
 
@@ -328,7 +303,6 @@ def _chain_segs(
             continue
         used[i] = True
         line = [a, b]
-        # Extend forward.
         while True:
             tail = line[-1]
             cands = by_key.get(key(tail), [])
@@ -348,7 +322,6 @@ def _chain_segs(
             if nxt is None:
                 break
             used[nxt] = True
-        # Extend backward.
         while True:
             head = line[0]
             cands = by_key.get(key(head), [])
@@ -373,7 +346,6 @@ def _chain_segs(
 
 
 def _path_d(points: list[tuple[float, float]], close: bool = False) -> str:
-    """Build an SVG ``d`` attribute from a list of (x, y) points."""
     if not points:
         return ""
     out = [f"M{points[0][0]:.1f},{points[0][1]:.1f}"]
@@ -394,8 +366,9 @@ def render_evidence_terrain(by_country: dict[str, int]) -> str:
 
     By-country counts aggregate to bucket-level via :func:`lookup_region`.
     Unbucketed countries surface in a small footer line below the total.
-    Empty input still produces a valid SVG with all seven cartouches
-    dimmed at zero — the absence of data is the data point.
+    Empty input still produces a valid SVG with all seven legend rows
+    visible (dimmed at zero, with a "0" placed at each bucket's terrain
+    anchor position).
     """
     by_country = by_country or {}
 
@@ -426,10 +399,7 @@ def render_evidence_terrain(by_country: dict[str, int]) -> str:
         f'aria-label="Evidence terrain: {total} sources across '
         f'{active_count} regions">'
     )
-    # The <desc> carries the literal "{N} TOTAL SOURCES" string so plain
-    # text searches across the rendered HTML (including the published-TP
-    # verification snippet using ``re.search(r'(\d+)\s*TOTAL SOURCES')``)
-    # match without depending on the visible two-element caption layout.
+    # Plain-text marker for downstream regex searches.
     parts.append(
         f'<desc>{total} TOTAL SOURCES across {active_count} regions</desc>'
     )
@@ -439,6 +409,12 @@ def render_evidence_terrain(by_country: dict[str, int]) -> str:
         '<stop offset="0%" stop-color="#fafaf7"/>'
         '<stop offset="100%" stop-color="#f1eee5"/>'
         '</radialGradient>'
+        # Clip terrain so high-source bump rings can't bleed into the
+        # legend column.
+        f'<clipPath id="et-terrain-clip">'
+        f'<rect x="{LEGEND_RIGHT_EDGE}" y="0" '
+        f'width="{CANVAS_W - LEGEND_RIGHT_EDGE}" height="{CANVAS_H}"/>'
+        f'</clipPath>'
         '</defs>'
     )
     parts.append(
@@ -446,7 +422,7 @@ def render_evidence_terrain(by_country: dict[str, int]) -> str:
         f'fill="url(#et-paper)"/>'
     )
 
-    # Build per-region structures (field, peak, summit, base anchor projection).
+    # Build per-region structures.
     regions: list[dict] = []
     for bucket_key in ANCHORS:
         n = bucket_counts.get(bucket_key, 0)
@@ -471,10 +447,11 @@ def render_evidence_terrain(by_country: dict[str, int]) -> str:
             "summit": summit, "base_anchor": base_anchor,
         })
 
-    # Painter's algorithm: render back-to-front by base-anchor screen-y so
-    # closer mountains overlap farther ones.
+    # Painter's algorithm: render back-to-front by base-anchor screen-y.
     sorted_regions = sorted(regions, key=lambda r: r["base_anchor"][1])
 
+    # Terrain group, clipped so rings never reach into the legend.
+    parts.append(f'<g clip-path="url(#et-terrain-clip)">')
     for r in sorted_regions:
         if r["n"] <= 0:
             continue
@@ -501,8 +478,7 @@ def render_evidence_terrain(by_country: dict[str, int]) -> str:
                 f'fill-opacity="{TINT_OPACITY}" stroke="none"/>'
             )
 
-        # 2. Per-region topographic isolines. Ring count grows with √n so
-        # taller mountains carry denser contours.
+        # 2. Per-region topographic isolines (ring count grows with √n).
         n_levels = max(
             ISOLINE_LEVELS_MIN,
             min(ISOLINE_LEVELS_MAX, round(8 + math.sqrt(n) * 2.4)),
@@ -542,132 +518,107 @@ def render_evidence_terrain(by_country: dict[str, int]) -> str:
                 f'stroke-width="0.45" stroke-opacity="0.25" '
                 f'stroke-dasharray="2 3"/>'
             )
+    parts.append('</g>')   # close terrain clip group
 
-    # Cartouches: always rendered for all seven buckets (dimmed at zero).
-    for r in regions:
-        bucket_key = r["key"]
-        n = r["n"]
+    # ---- Legend column on the left + horizontal connectors ---------------
+    # Order rows by anchor v descending (back-to-front) so each legend row
+    # sits at the same y as its bucket's projected base anchor — connectors
+    # are pure horizontals and never cross.
+    legend_order = sorted(ANCHORS.keys(), key=lambda k: -ANCHORS[k][1])
+
+    for bucket_key in legend_order:
         meta = buckets_meta.get(bucket_key, {})
         # Labels come from the trusted region_buckets.json — uppercase + wrap
-        # on " & " gives the design's preferred two-line display where the
-        # ampersand sits at the end of the first line.
+        # on " & " gives the design's preferred two-line display.
         label = meta.get("label", bucket_key).upper()
         name_lines = _wrap_label(label)
-        cart = CARTOUCHES[bucket_key]
-
+        au, av = ANCHORS[bucket_key]
+        anchor_x, row_y = _project(au, av, 0.0)
+        n = bucket_counts.get(bucket_key, 0)
         is_zero = n == 0
-        ink = "#0a0a0a"
-        ink_opacity = 0.42 if is_zero else 1.0
 
-        # Where the leader meets the visualisation: the projected summit
-        # for non-empty buckets, the base anchor for empty ones.
-        sx, sy = r["summit"] if not is_zero else r["base_anchor"]
-
-        # Cartouche placement.
-        lx = sx + cart["dx"]
-        ly = sy + cart["dy"]
-        is_above = cart["dy"] < 0
-
-        # Typography sizing.
+        # Connector — pure horizontal at row_y, from the legend right edge
+        # to the bucket's projected anchor x.
         if is_zero:
-            num_size = float(ZERO_NUM_FONT_SIZE)
-            num_weight = 500
-        else:
-            num_size = float(NUM_FONT_SIZE_BASE
-                              + min(NUM_FONT_SIZE_BONUS_CAP,
-                                    n * NUM_FONT_SIZE_SLOPE))
-            num_weight = 700
-        max_chars = max(len(s) for s in name_lines)
-        name_w = max_chars * NAME_CHAR_WIDTH
-        num_w = len(str(n)) * (num_size * 0.58)
-        total_w = name_w + num_w + PAD_NAME + PAD_NUM
-
-        # Cartouche internal layout.
-        if cart["side"] == "left":
-            # [NAME] | [NUMBER] — leader hooks into right edge of cartouche.
-            name_x = lx - total_w
-            rule_x = name_x + name_w + PAD_NAME
-            num_x = rule_x + PAD_NUM
-        else:
-            # [NUMBER] | [NAME] — leader hooks into left edge.
-            num_x = lx
-            rule_x = num_x + num_w + PAD_NUM
-            name_x = rule_x + PAD_NAME
-
-        cy0 = ly
-
-        # Leader path: drop + hook.
-        start_y = sy + (-3 if is_above else 3)
-        hook_end_x = lx - 4 if cart["side"] == "left" else lx + 4
-        leader_d = (
-            f"M {sx:.1f} {start_y:.1f} "
-            f"L {sx:.1f} {cy0:.1f} "
-            f"L {hook_end_x:.1f} {cy0:.1f}"
-        )
-        parts.append(
-            f'<path d="{leader_d}" fill="none" stroke="{ink}" '
-            f'stroke-width="0.9" '
-            f'stroke-opacity="{0.28 if is_zero else 0.6}"/>'
-        )
-
-        # Anchor dot at summit.
-        dot_r = 1.6 if is_zero else 2.2
-        dot_op = 0.4 if is_zero else 1.0
-        parts.append(
-            f'<circle cx="{sx:.1f}" cy="{start_y:.1f}" r="{dot_r}" '
-            f'fill="{ink}" opacity="{dot_op}"/>'
-        )
-
-        # Vertical hairline rule between name and number.
-        rule_h = max(20.0, num_size * 0.7)
-        parts.append(
-            f'<line x1="{rule_x:.1f}" x2="{rule_x:.1f}" '
-            f'y1="{cy0 - rule_h / 2:.1f}" y2="{cy0 + rule_h / 2:.1f}" '
-            f'stroke="{ink}" stroke-width="0.8" '
-            f'stroke-opacity="{0.28 if is_zero else 0.5}"/>'
-        )
-
-        # Region name (Space Mono, possibly two lines).
-        name_h = len(name_lines) * NAME_LINE_HEIGHT
-        first_baseline = cy0 - name_h / 2 + 13
-        for i, line in enumerate(name_lines):
-            bl = first_baseline + i * NAME_LINE_HEIGHT
             parts.append(
-                f'<text x="{name_x:.1f}" y="{bl:.1f}" '
-                f'font-family="\'Space Mono\', monospace" '
-                f'font-size="{NAME_FONT_SIZE}" font-weight="700" '
-                f'letter-spacing="0.06em" '
-                f'text-anchor="start" fill="{ink}" '
-                f'opacity="{ink_opacity:.2f}">{line}</text>'
+                f'<line x1="{LEGEND_CONNECTOR_START_X}" y1="{row_y:.1f}" '
+                f'x2="{anchor_x:.1f}" y2="{row_y:.1f}" '
+                f'stroke="{ACTIVE_INK}" stroke-width="0.5" '
+                f'stroke-opacity="{ZERO_OPACITY}" stroke-dasharray="3 3"/>'
+            )
+        else:
+            parts.append(
+                f'<line x1="{LEGEND_CONNECTOR_START_X}" y1="{row_y:.1f}" '
+                f'x2="{anchor_x:.1f}" y2="{row_y:.1f}" '
+                f'stroke="{ACTIVE_INK}" stroke-width="0.7" '
+                f'stroke-opacity="0.6"/>'
             )
 
-        # Number (Space Grotesk display).
+        # Region name — left-aligned at NAME_X, possibly wrapped to two lines.
+        name_h = len(name_lines) * LEGEND_NAME_LINE_HEIGHT
+        first_baseline = row_y - name_h / 2 + 12
+        text_opacity = ZERO_OPACITY if is_zero else 1.0
+        for i, line in enumerate(name_lines):
+            bl = first_baseline + i * LEGEND_NAME_LINE_HEIGHT
+            parts.append(
+                f'<text x="{LEGEND_NAME_X}" y="{bl:.1f}" '
+                f'font-family="\'Space Mono\', monospace" '
+                f'font-size="{LEGEND_NAME_FS}" font-weight="700" '
+                f'letter-spacing="{LEGEND_NAME_LETTER_SPACING}" '
+                f'text-anchor="start" fill="{ACTIVE_INK}" '
+                f'opacity="{text_opacity:.2f}">{line}</text>'
+            )
+
+        # Same anatomy in every row: N (or "0") | rule | NAME. Zero rows
+        # are dimmed but never lose the N column.
+        num_baseline = row_y + LEGEND_NUM_FS * 0.34
+        num_weight = "700" if is_zero else "800"
+        num_opacity = ZERO_OPACITY if is_zero else 1.0
+        rule_opacity = ZERO_OPACITY if is_zero else 0.55
         parts.append(
-            f'<text x="{num_x:.1f}" y="{cy0 + num_size * 0.34:.1f}" '
+            f'<text x="{LEGEND_NUM_X_END}" y="{num_baseline:.1f}" '
             f'font-family="\'Space Grotesk\', sans-serif" '
-            f'font-size="{num_size:.0f}" font-weight="{num_weight}" '
-            f'letter-spacing="-0.02em" text-anchor="start" '
-            f'fill="{ink}" opacity="{ink_opacity:.2f}">{n}</text>'
+            f'font-size="{LEGEND_NUM_FS}" font-weight="{num_weight}" '
+            f'letter-spacing="-0.02em" text-anchor="end" '
+            f'fill="{ACTIVE_INK}" opacity="{num_opacity:.2f}">{n}</text>'
+        )
+        parts.append(
+            f'<line x1="{LEGEND_RULE_X}" x2="{LEGEND_RULE_X}" '
+            f'y1="{row_y - LEGEND_RULE_HEIGHT / 2:.1f}" '
+            f'y2="{row_y + LEGEND_RULE_HEIGHT / 2:.1f}" '
+            f'stroke="{ACTIVE_INK}" stroke-width="0.8" '
+            f'stroke-opacity="{rule_opacity:.2f}"/>'
         )
 
-    # Footer: hairline rule + centred TOTAL SOURCES caption.
+        if not is_zero:
+            # Active terminus: small filled dot at the summit (vertically
+            # aligned with the connector endpoint so the eye traces from
+            # row to mountain peak).
+            _, peak_h = _bucket_sigma_peak(n)
+            summit_y = row_y - peak_h * PROJ_VSCALE
+            parts.append(
+                f'<circle cx="{anchor_x:.1f}" cy="{summit_y:.1f}" '
+                f'r="{TERMINUS_DOT_RADIUS}" fill="{ACTIVE_INK}"/>'
+            )
+
+    # ---- Footer: hairline rule + centred TOTAL SOURCES caption -----------
     base_y = CANVAS_H - FOOTER_RULE_OFFSET
     parts.append(
-        f'<line x1="60" y1="{base_y}" x2="{CANVAS_W - 60}" y2="{base_y}" '
+        f'<line x1="{LEGEND_RIGHT_EDGE}" y1="{base_y}" '
+        f'x2="{CANVAS_W - 60}" y2="{base_y}" '
         f'stroke="#000" stroke-width="0.7" stroke-opacity="0.4"/>'
     )
 
-    cap_x = CANVAS_W * 0.5
+    cap_x = (LEGEND_RIGHT_EDGE + CANVAS_W) * 0.5
     cap_y = base_y + FOOTER_CAPTION_OFFSET
 
-    # Big number, right-aligned at cap_x − 8 (number ends just left of centre).
+    # Big number, right-aligned at cap_x − 8.
     parts.append(
         f'<text x="{cap_x - 8:.1f}" y="{cap_y:.1f}" text-anchor="end" '
         f'font-family="\'Space Grotesk\', sans-serif" '
         f'font-weight="800" font-size="{FOOTER_TOTAL_FONT_SIZE}" '
         f'letter-spacing="-0.02em" fill="#000">{total}</text>'
     )
-    # Label, left-aligned at cap_x + 8.
     parts.append(
         f'<text x="{cap_x + 8:.1f}" y="{cap_y - 4:.1f}" text-anchor="start" '
         f'font-family="\'Space Mono\', monospace" '
