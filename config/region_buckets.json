@@ -26,6 +26,7 @@
     "east_asia_pacific": {
       "label": "East Asia & Pacific",
       "wb_region": "East Asia and Pacific",
+      "color": "#7a6a99",
       "rationale": "World Bank Regional Classification (2023). Includes ASEAN, Greater China, Japan, the Koreas, Australia, NZ, and Pacific island states.",
       "countries": [
         "Australia",
@@ -65,6 +66,7 @@
     "europe_central_asia": {
       "label": "Europe & Central Asia",
       "wb_region": "Europe and Central Asia",
+      "color": "#c9a063",
       "rationale": "World Bank Regional Classification (2023). Includes EU, EFTA, Western Balkans, EU candidates excluding Turkey, all post-Soviet states excluding Afghanistan.",
       "countries": [
         "Albania",
@@ -124,6 +126,7 @@
     "latin_america_caribbean": {
       "label": "Latin America & Caribbean",
       "wb_region": "Latin America and Caribbean",
+      "color": "#6b8da6",
       "rationale": "World Bank Regional Classification (2023). Includes Mexico, Central America, South America, and all Caribbean nations.",
       "countries": [
         "Antigua and Barbuda",
@@ -161,6 +164,7 @@
     "middle_east_north_africa": {
       "label": "Middle East & North Africa",
       "wb_region": "Middle East, North Africa, Afghanistan and Pakistan",
+      "color": "#b56b5a",
       "rationale": "World Bank Regional Classification (2023), with two documented divergences: (1) Turkey is included in MENA rather than Europe & Central Asia, reflecting cultural, linguistic, and journalistic affiliation with the Middle East — see _divergences.turkey. (2) Afghanistan and Pakistan are excluded from this bucket and assigned to South Asia, reflecting their pre-2024 WB classification and their cultural and linguistic affiliation with the South Asian subcontinent — see _divergences.afghanistan_pakistan.",
       "countries": [
         "Algeria",
@@ -190,6 +194,7 @@
     "north_america": {
       "label": "North America",
       "wb_region": "North America",
+      "color": "#5a6b7a",
       "rationale": "World Bank Regional Classification (2023). United States and Canada only. Mexico is in Latin America & Caribbean per WB.",
       "countries": [
         "Canada",
@@ -199,6 +204,7 @@
     "south_asia": {
       "label": "South Asia",
       "wb_region": "South Asia (incl. Afghanistan, Pakistan)",
+      "color": "#7a9a93",
       "rationale": "World Bank Regional Classification (2023), with one documented divergence: Afghanistan and Pakistan are included in South Asia, reflecting their pre-2024 WB classification and their cultural and linguistic affiliation with the subcontinent. WB reassigned them to MENA-AP in 2024 for lending-operations reasons; that reassignment does not reflect journalistic geography. See _divergences.afghanistan_pakistan.",
       "countries": [
         "Afghanistan",
@@ -214,6 +220,7 @@
     "sub_saharan_africa": {
       "label": "Sub-Saharan Africa",
       "wb_region": "Sub-Saharan Africa",
+      "color": "#9a7b54",
       "rationale": "World Bank Regional Classification (2023). All African countries south of the Sahara.",
       "countries": [
         "Angola",

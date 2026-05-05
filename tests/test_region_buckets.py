@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 from src.region_buckets import get_buckets, lookup_region
@@ -79,3 +80,17 @@ def test_no_country_in_two_buckets():
             else:
                 seen[country] = bucket_key
     assert not duplicates, f"countries in two buckets: {duplicates}"
+
+
+_HEX_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
+
+
+def test_every_bucket_has_color_hex():
+    """Every bucket must declare a 6-digit hex color used by the renderer
+    for the soft regional wash beneath the topographic isolines."""
+    for bucket_key, bucket in get_buckets().items():
+        color = bucket.get("color")
+        assert color is not None, f"bucket {bucket_key!r} has no color"
+        assert _HEX_RE.match(color), (
+            f"bucket {bucket_key!r} color {color!r} is not a valid 6-digit hex"
+        )
