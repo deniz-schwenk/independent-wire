@@ -305,7 +305,11 @@ def test_enrich_perspective_clusters_metadata():
 
     meta = get_stage_meta(enrich_perspective_clusters)
     assert meta.kind == "topic"
-    assert meta.reads == ("perspective_clusters", "final_sources")
+    assert meta.reads == (
+        "perspective_clusters",
+        "final_sources",
+        "final_actors",
+    )
     assert meta.writes == ("perspective_clusters",)
 
 
@@ -326,12 +330,19 @@ def test_enrich_perspective_clusters_assigns_pc_nnn_in_order():
     ]
 
 
-def test_enrich_perspective_clusters_walks_actors_quoted_with_verbatim():
-    """Actors from each cited source are attached to the cluster, carrying
-    name, role, type, single-element source_ids, and verbatim_quote."""
+def test_enrich_perspective_clusters_no_longer_walks_actors_quoted():
+    """The leak loop that fanned every source's actors_quoted into every
+    cluster citing the source is gone. cluster.actor_ids is the validated
+    agent-assigned mapping; regions and languages still derive from cited
+    sources deterministically.
+    """
     tb = TopicBus()
     tb.perspective_clusters = [
-        {"position_label": "Pro", "source_ids": ["src-001", "src-002"]},
+        {
+            "position_label": "Pro",
+            "source_ids": ["src-001", "src-002"],
+            "actor_ids": ["actor-001"],
+        },
     ]
     tb.final_sources = [
         {
@@ -344,12 +355,6 @@ def test_enrich_perspective_clusters_walks_actors_quoted_with_verbatim():
                     "role": "Prime Minister",
                     "type": "official",
                     "verbatim_quote": "We will act.",
-                },
-                {
-                    "name": "Spokesperson",
-                    "role": "Press Sec",
-                    "type": "official",
-                    "verbatim_quote": None,
                 },
             ],
         },
@@ -367,55 +372,72 @@ def test_enrich_perspective_clusters_walks_actors_quoted_with_verbatim():
             ],
         },
     ]
+    tb.final_actors = [
+        {"id": "actor-001", "name": "PM"},
+        {"id": "actor-002", "name": "Analyst"},
+    ]
     tb_after = _run(enrich_perspective_clusters, tb, _ro())
-    actors = tb_after.perspective_clusters[0]["actors"]
-    assert len(actors) == 3
-    assert actors[0] == {
-        "name": "PM",
-        "role": "Prime Minister",
-        "type": "official",
-        "source_ids": ["src-001"],
-        "quote": "We will act.",
-    }
-    assert actors[1]["quote"] is None
-    assert actors[2]["source_ids"] == ["src-002"]
+    cluster = tb_after.perspective_clusters[0]
+    assert "actors" not in cluster
+    assert cluster["actor_ids"] == ["actor-001"]
+    assert cluster["regions"] == ["United Kingdom", "United States"]
+    assert cluster["languages"] == ["en"]
+    assert cluster["n_actors"] == 1
+    assert cluster["n_sources"] == 2
+    assert cluster["n_regions"] == 2
+    assert cluster["n_languages"] == 1
+    assert "representation" not in cluster
 
 
-def test_enrich_perspective_clusters_representation_buckets():
-    """ratio ≥ 0.40 → dominant; ≥ 0.15 → substantial; else → marginal.
-    Dossier of 5 sources: cluster with 3 cited (60%) → dominant,
-    cluster with 1 cited (20%) → substantial, cluster with 0 (0%) →
-    marginal."""
+def test_enrich_perspective_clusters_count_fields_replace_representation():
+    """The temporary `representation` bucket is gone. Counts are first-
+    class deterministic outputs of the stage."""
     tb = TopicBus()
     tb.perspective_clusters = [
-        {"position_label": "Big", "source_ids": ["src-001", "src-002", "src-003"]},
-        {"position_label": "Med", "source_ids": ["src-004"]},
-        {"position_label": "None", "source_ids": []},
+        {
+            "position_label": "Big",
+            "source_ids": ["src-001", "src-002", "src-003"],
+            "actor_ids": ["actor-001", "actor-002"],
+        },
+        {
+            "position_label": "Med",
+            "source_ids": ["src-004"],
+            "actor_ids": ["actor-003"],
+        },
+        {"position_label": "None", "source_ids": [], "actor_ids": []},
     ]
     tb.final_sources = [
         {"id": f"src-{i:03d}", "country": "X", "language": "en"} for i in range(1, 6)
     ]
+    tb.final_actors = [
+        {"id": f"actor-{i:03d}", "name": f"a{i}"} for i in range(1, 4)
+    ]
     tb_after = _run(enrich_perspective_clusters, tb, _ro())
-    reps = [c["representation"] for c in tb_after.perspective_clusters]
-    assert reps == ["dominant", "substantial", "marginal"]
+    n_sources = [c["n_sources"] for c in tb_after.perspective_clusters]
+    n_actors = [c["n_actors"] for c in tb_after.perspective_clusters]
+    assert n_sources == [3, 1, 0]
+    assert n_actors == [2, 1, 0]
+    for cluster in tb_after.perspective_clusters:
+        assert "representation" not in cluster
 
 
-def test_enrich_perspective_clusters_empty_dossier_all_marginal():
-    """final_sources empty → all clusters default to marginal with WARNING."""
+def test_enrich_perspective_clusters_empty_dossier_does_not_warn():
+    """final_sources empty: stage no longer emits a representation-warning
+    (representation is gone). Counts are simply zero."""
     tb = TopicBus()
     tb.perspective_clusters = [
-        {"position_label": "A", "source_ids": ["src-001"]},
-        {"position_label": "B", "source_ids": []},
+        {"position_label": "A", "source_ids": ["src-001"], "actor_ids": []},
+        {"position_label": "B", "source_ids": [], "actor_ids": []},
     ]
     tb.final_sources = []
     tb_after = _run(enrich_perspective_clusters, tb, _ro())
     for c in tb_after.perspective_clusters:
-        assert c["representation"] == "marginal"
+        assert "representation" not in c
 
 
 def test_enrich_perspective_clusters_missing_source_ids_is_safe():
-    """Cluster with no source_ids → still gets pc-NNN, empty actors/
-    regions/languages, marginal representation."""
+    """Cluster with no source_ids → still gets pc-NNN, empty regions/
+    languages, zero counts."""
     tb = TopicBus()
     tb.perspective_clusters = [
         {"position_label": "Orphan"},  # no source_ids field at all
@@ -426,18 +448,19 @@ def test_enrich_perspective_clusters_missing_source_ids_is_safe():
     tb_after = _run(enrich_perspective_clusters, tb, _ro())
     cluster = tb_after.perspective_clusters[0]
     assert cluster["id"] == "pc-001"
-    assert cluster["actors"] == []
     assert cluster["regions"] == []
     assert cluster["languages"] == []
-    assert cluster["representation"] == "marginal"
+    assert cluster["n_sources"] == 0
+    assert cluster["n_actors"] == 0
+    assert "representation" not in cluster
 
 
 def test_enrich_perspective_clusters_unknown_source_id_skipped():
     """Cluster references a source not in final_sources → skipped silently
-    in actors walking; representation still computed against total."""
+    in region/language walking; n_sources still uses the raw len(source_ids)."""
     tb = TopicBus()
     tb.perspective_clusters = [
-        {"position_label": "X", "source_ids": ["src-001", "src-999"]},
+        {"position_label": "X", "source_ids": ["src-001", "src-999"], "actor_ids": []},
     ]
     tb.final_sources = [
         {
@@ -450,10 +473,8 @@ def test_enrich_perspective_clusters_unknown_source_id_skipped():
     tb_after = _run(enrich_perspective_clusters, tb, _ro())
     cluster = tb_after.perspective_clusters[0]
     assert cluster["regions"] == ["United States"]
-    assert len(cluster["actors"]) == 1  # only src-001 contributed
-    # Ratio: 2 source_ids / 1 known source — uses len(source_ids) not matched count
-    # (matching V1 behaviour: ratio = len(cluster.source_ids) / total_dossier_sources)
-    assert cluster["representation"] == "dominant"  # 2/1 = 2.0 → ≥0.40
+    assert cluster["n_sources"] == 2  # raw count of source_ids
+    assert cluster["n_regions"] == 1  # only matched sources counted
 
 
 def test_enrich_perspective_clusters_empty_input_is_no_op():
@@ -497,7 +518,7 @@ def test_enrich_perspective_clusters_does_not_mutate_input():
     _ = _run(enrich_perspective_clusters, tb, _ro())
     # Input bus unchanged — model_copy idiom
     assert "id" not in tb.perspective_clusters[0]
-    assert "representation" not in tb.perspective_clusters[0]
+    assert "n_sources" not in tb.perspective_clusters[0]
 
 
 # ---------------------------------------------------------------------------
@@ -1065,16 +1086,16 @@ def test_prune_keeps_source_referenced_only_in_article_body():
 
 
 def test_prune_drops_empty_cluster_and_keeps_populated_cluster():
-    """A cluster with both actors and source_ids empty is dropped; one
+    """A cluster with both actor_ids and source_ids empty is dropped; one
     populated by either dimension is kept."""
     tb = TopicBus()
     tb.final_sources = [
         {"id": "src-001", "outlet": "X", "summary": "x", "actors_quoted": [{"name": "A"}]},
     ]
     tb.perspective_clusters_synced = [
-        {"id": "pc-001", "position_label": "Has actors", "actors": ["A"], "source_ids": []},
-        {"id": "pc-002", "position_label": "Has sources", "actors": [], "source_ids": ["src-001"]},
-        {"id": "pc-003", "position_label": "Empty", "actors": [], "source_ids": []},
+        {"id": "pc-001", "position_label": "Has actors", "actor_ids": ["actor-001"], "source_ids": []},
+        {"id": "pc-002", "position_label": "Has sources", "actor_ids": [], "source_ids": ["src-001"]},
+        {"id": "pc-003", "position_label": "Empty", "actor_ids": [], "source_ids": []},
     ]
 
     tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
@@ -1087,14 +1108,14 @@ def test_prune_drops_empty_cluster_and_keeps_populated_cluster():
 
 def test_prune_is_noop_when_nothing_to_drop():
     """A bus where every source is referenced and every cluster carries
-    actors or source_ids passes through unchanged."""
+    actor_ids or source_ids passes through unchanged."""
     tb = TopicBus()
     tb.final_sources = [
         {"id": "src-001", "outlet": "X", "summary": "x", "actors_quoted": []},
         {"id": "src-002", "outlet": "Y", "summary": "", "actors_quoted": [{"name": "A"}]},
     ]
     tb.perspective_clusters_synced = [
-        {"id": "pc-001", "position_label": "P", "actors": ["A"],
+        {"id": "pc-001", "position_label": "P", "actor_ids": ["actor-001"],
          "source_ids": ["src-001", "src-002"]},
     ]
 

@@ -853,7 +853,7 @@ def test_perspective_metadata():
 
 def test_perspective_stage_writes_raw_clusters_only():
     """PerspectiveStage writes the agent's raw output verbatim. Deterministic
-    enrichment (pc-NNN, actors, regions, languages, representation) is the
+    enrichment (pc-NNN, regions, languages, n_*) is the
     `enrich_perspective_clusters` topic-stage's job and runs immediately
     after this wrapper. Wrapper output must NOT carry those fields."""
     fake = FakeAgent(
@@ -863,11 +863,13 @@ def test_perspective_stage_writes_raw_clusters_only():
                     "position_label": "Pro",
                     "position_summary": "supports",
                     "source_ids": ["src-001", "src-002"],
+                    "actor_ids": ["actor-001"],
                 },
                 {
                     "position_label": "Anti",
                     "position_summary": "opposes",
                     "source_ids": ["src-003"],
+                    "actor_ids": ["actor-002"],
                 },
             ],
             "missing_positions": [{"label": "civilians"}],
@@ -879,22 +881,26 @@ def test_perspective_stage_writes_raw_clusters_only():
         {"id": "src-002", "country": "United States", "language": "en"},
         {"id": "src-003", "country": "Iran", "language": "fa"},
     ]
+    tb.final_actors = [
+        {"id": "actor-001", "name": "A"},
+        {"id": "actor-002", "name": "B"},
+    ]
     stage = PerspectiveStage(fake)
     tb_after = _run(stage, tb, _ro())
     clusters = tb_after.perspective_clusters
     assert len(clusters) == 2
-    # Raw shape only — agent emits position_label, position_summary, source_ids
+    # Raw shape only — agent emits position_label, position_summary, source_ids, actor_ids
     assert clusters[0] == {
         "position_label": "Pro",
         "position_summary": "supports",
         "source_ids": ["src-001", "src-002"],
+        "actor_ids": ["actor-001"],
     }
     # No enrichment fields on the wrapper output
     assert "id" not in clusters[0]
-    assert "actors" not in clusters[0]
     assert "regions" not in clusters[0]
     assert "languages" not in clusters[0]
-    assert "representation" not in clusters[0]
+    assert "n_sources" not in clusters[0]
     assert tb_after.perspective_missing_positions == [{"label": "civilians"}]
 
 

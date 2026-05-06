@@ -227,6 +227,118 @@ async def filter_media_actors_quoted(
 
 
 # ---------------------------------------------------------------------------
+# 10c. consolidate_actors
+# ---------------------------------------------------------------------------
+
+
+@topic_stage_def(
+    reads=("final_sources",),
+    writes=("final_actors",),
+)
+async def consolidate_actors(
+    topic_bus: TopicBus, run_bus: RunBusReadOnly
+) -> TopicBus:
+    """Flatten ``final_sources[].actors_quoted[]`` into a deduped
+    ``final_actors[]`` list with stable ``actor-NNN`` IDs.
+
+    Runs after ``filter_media_actors_quoted`` (so ``type=media`` entries
+    are already gone) and before ``PerspectiveStage`` (which receives the
+    flat list and emits per-cluster ``actor_ids[]``).
+
+    Dedup is exact-string-match on the actor's ``name`` field
+    (case-sensitive, no normalisation). "Donald Trump" / "President
+    Trump" / "Trump" therefore yield three distinct entries — alias
+    resolution is a deferred future workstream.
+
+    For role/type conflicts (the same actor name classified differently
+    across sources) the first encountered value wins. Quote records
+    accumulate one entry per source-membership; ``verbatim`` may be
+    ``None`` when the source paraphrases.
+
+    Phase-1 schema per TASK-PERSPECTIVE-ACTOR-SCOPING §1.1::
+
+        {
+            "id": "actor-NNN",
+            "name": str,
+            "role": str,
+            "type": str,
+            "source_ids": [str, ...],
+            "quotes": [
+                {"source_id": str, "verbatim": str | None, "position": str},
+                ...
+            ],
+        }
+    """
+    final_sources = list(topic_bus.final_sources or [])
+    if not final_sources:
+        return topic_bus
+
+    # Insertion-ordered dict from name -> actor record so we can both
+    # dedup and preserve first-appearance order for ID assignment.
+    by_name: dict[str, dict] = {}
+    sources_seen = 0
+    for source in final_sources:
+        if not isinstance(source, dict):
+            continue
+        sources_seen += 1
+        sid = source.get("id")
+        if not isinstance(sid, str) or not sid:
+            continue
+        actors = source.get("actors_quoted")
+        if not isinstance(actors, list) or not actors:
+            continue
+        for entry in actors:
+            if not isinstance(entry, dict):
+                continue
+            name = entry.get("name")
+            if not isinstance(name, str) or not name:
+                continue
+            role = entry.get("role") or ""
+            atype = entry.get("type") or ""
+            position = entry.get("position") or ""
+            verbatim = entry.get("verbatim_quote")
+            if not isinstance(verbatim, str) or not verbatim:
+                verbatim = None
+
+            record = by_name.get(name)
+            if record is None:
+                record = {
+                    "id": "",  # filled after the dedup loop
+                    "name": name,
+                    "role": role,
+                    "type": atype,
+                    "source_ids": [],
+                    "quotes": [],
+                }
+                by_name[name] = record
+            # source_ids accumulates one entry per distinct source the
+            # actor appears in (a single source contributing two
+            # paraphrased and verbatim entries shouldn't double-count).
+            if sid not in record["source_ids"]:
+                record["source_ids"].append(sid)
+            record["quotes"].append(
+                {
+                    "source_id": sid,
+                    "verbatim": verbatim,
+                    "position": position,
+                }
+            )
+
+    final_actors: list[dict] = []
+    for i, record in enumerate(by_name.values(), start=1):
+        record["id"] = f"actor-{i:03d}"
+        final_actors.append(record)
+
+    logger.info(
+        "consolidate_actors: %d unique actors across %d sources",
+        len(final_actors),
+        sources_seen,
+    )
+
+    return topic_bus.model_copy(update={"final_actors": final_actors})
+
+
+# ---------------------------------------------------------------------------
 # 11. normalize_pre_research
 # ---------------------------------------------------------------------------
 
@@ -303,19 +415,40 @@ def _build_source_index(sources: list) -> dict[str, dict]:
     return out
 
 
+def _build_actor_index(actors: list) -> dict[str, dict]:
+    """Map actor id → actor dict for O(1) lookup during enrichment."""
+    out: dict[str, dict] = {}
+    for actor in actors or []:
+        if isinstance(actor, dict):
+            aid = actor.get("id")
+            if isinstance(aid, str) and aid:
+                out[aid] = actor
+    return out
+
+
 def _enrich_position_clusters_logic(
-    perspective_analysis: dict, final_sources: list
+    perspective_analysis: dict,
+    final_sources: list,
+    final_actors: list,
 ) -> dict:
     """Attach deterministic fields to the agent's raw cluster output.
 
-    V1 reference: src/pipeline.py:_enrich_position_clusters (lines 754-849).
-    Same semantics: pc-NNN ids, actors with verbatim quotes, regions and
-    languages from cited sources, representation bucketed from source-id
-    ratio (≥0.40 dominant, ≥0.15 substantial, else marginal).
+    Cluster→actor assignment is an agent decision (per-cluster
+    ``actor_ids[]`` emitted by PerspectiveStage), not a source-membership
+    fan-out — that prior leak loop is gone.
 
-    Empty source pool → all clusters default to representation='marginal'
-    with a single WARNING. The input dict is not mutated — callers get a
-    deep-copied result.
+    What this stage adds, deterministically:
+
+    - ``id`` — sequential ``pc-NNN``
+    - ``regions`` / ``languages`` — derived from the cited sources
+    - ``n_actors`` / ``n_sources`` / ``n_regions`` / ``n_languages`` —
+      objective counts replacing the prior ``representation``
+      bucket (which reproduced the bias the system aims to surface and
+      was arithmetically inconsistent against the post-prune source set)
+
+    Validation: every ``actor_ids`` entry the agent emitted must reference
+    an ID present in ``final_actors[]``; invalid IDs are dropped and a
+    WARNING is logged so the smoke run flags hallucinations.
     """
     import copy as _copy
 
@@ -323,13 +456,7 @@ def _enrich_position_clusters_logic(
         return perspective_analysis
 
     by_id = _build_source_index(final_sources)
-    total_sources = len([s for s in (final_sources or []) if isinstance(s, dict)])
-
-    if total_sources == 0:
-        logger.warning(
-            "enrich_perspective_clusters: final_sources is empty; all "
-            "clusters default to representation='marginal'"
-        )
+    actor_index = _build_actor_index(final_actors)
 
     enriched = _copy.deepcopy(perspective_analysis)
     for cluster_idx, cluster in enumerate(
@@ -342,7 +469,6 @@ def _enrich_position_clusters_logic(
             s for s in (cluster.get("source_ids") or []) if isinstance(s, str)
         ]
 
-        actors: list[dict] = []
         regions_seen: set[str] = set()
         languages_seen: set[str] = set()
         for sid in source_ids:
@@ -355,40 +481,40 @@ def _enrich_position_clusters_logic(
                 regions_seen.add(country)
             if language:
                 languages_seen.add(language)
-            for entry in src.get("actors_quoted", []) or []:
-                if not isinstance(entry, dict):
-                    continue
-                actors.append(
-                    {
-                        "name": entry.get("name", ""),
-                        "role": entry.get("role", ""),
-                        "type": entry.get("type", ""),
-                        "source_ids": [sid],
-                        "quote": entry.get("verbatim_quote"),
-                    }
+
+        # Validate agent-assigned actor_ids against the canonical
+        # final_actors[] list. Invalid IDs (hallucinations or stale
+        # references) are dropped and logged so the smoke flags them.
+        raw_actor_ids = [
+            a for a in (cluster.get("actor_ids") or []) if isinstance(a, str)
+        ]
+        valid_actor_ids: list[str] = []
+        seen_aids: set[str] = set()
+        for aid in raw_actor_ids:
+            if aid in actor_index and aid not in seen_aids:
+                valid_actor_ids.append(aid)
+                seen_aids.add(aid)
+            elif aid not in actor_index:
+                logger.warning(
+                    "enrich_perspective_clusters: cluster %s referenced "
+                    "unknown actor_id %r; dropping",
+                    cluster["id"],
+                    aid,
                 )
 
-        if total_sources == 0:
-            representation = "marginal"
-        else:
-            ratio = len(source_ids) / total_sources
-            if ratio >= 0.40:
-                representation = "dominant"
-            elif ratio >= 0.15:
-                representation = "substantial"
-            else:
-                representation = "marginal"
-
-        cluster["actors"] = actors
+        cluster["actor_ids"] = valid_actor_ids
         cluster["regions"] = sorted(regions_seen)
         cluster["languages"] = sorted(languages_seen)
-        cluster["representation"] = representation
+        cluster["n_actors"] = len(valid_actor_ids)
+        cluster["n_sources"] = len(source_ids)
+        cluster["n_regions"] = len(regions_seen)
+        cluster["n_languages"] = len(languages_seen)
 
     return enriched
 
 
 @topic_stage_def(
-    reads=("perspective_clusters", "final_sources"),
+    reads=("perspective_clusters", "final_sources", "final_actors"),
     writes=("perspective_clusters",),
 )
 async def enrich_perspective_clusters(
@@ -399,9 +525,11 @@ async def enrich_perspective_clusters(
     in both production and hydrated variants.
 
     Reads `perspective_clusters` (raw shape from PerspectiveStage:
-    `[{position_label, position_summary, source_ids}]`) and `final_sources`.
-    Writes `perspective_clusters` enriched with `pc-NNN`, actors (with
-    verbatim quotes), regions, languages, representation.
+    `[{position_label, position_summary, source_ids, actor_ids}]`),
+    `final_sources`, and `final_actors`. Writes `perspective_clusters`
+    enriched with `pc-NNN`, validated `actor_ids`, regions, languages,
+    and the count summary plus the temporary `representation` field
+    (Phase 1 sanity-check; removed in Phase 2).
 
     No-op when `perspective_clusters` is empty (PerspectiveStage may have
     failed or emitted nothing). The post-validator accepts the empty case
@@ -412,7 +540,9 @@ async def enrich_perspective_clusters(
         return topic_bus
 
     enriched = _enrich_position_clusters_logic(
-        {"position_clusters": raw}, list(topic_bus.final_sources or [])
+        {"position_clusters": raw},
+        list(topic_bus.final_sources or []),
+        list(topic_bus.final_actors or []),
     )
     return topic_bus.model_copy(
         update={
@@ -670,9 +800,10 @@ async def prune_unused_sources_and_clusters(
     the synthesis stack chose not to use a source, it is off-topic and
     drops out of the published TP.
 
-    A cluster is dropped when both ``actors`` and ``source_ids`` are empty —
-    a cluster the agent emitted but for which no extracted speaker came
-    through is dead weight in the published TP.
+    A cluster is dropped when both ``actor_ids`` and ``source_ids`` are
+    empty — a cluster the agent emitted but for which neither a speaker
+    nor a source-level grounding came through is dead weight in the
+    published TP.
 
     Each drop logs a single INFO line so reviewers can trace which
     entries were removed on a smoke run.
@@ -716,14 +847,14 @@ async def prune_unused_sources_and_clusters(
         if not isinstance(cluster, dict):
             kept_clusters.append(cluster)
             continue
-        actors = cluster.get("actors") or []
+        actor_ids = cluster.get("actor_ids") or []
         source_ids = cluster.get("source_ids") or []
-        if actors or source_ids:
+        if actor_ids or source_ids:
             kept_clusters.append(cluster)
         else:
             logger.info(
                 "prune_unused_sources_and_clusters: dropped cluster %s "
-                "(empty actors and empty source_ids): label=%s",
+                "(empty actor_ids and empty source_ids): label=%s",
                 cluster.get("id") or cluster.get("position_label"),
                 cluster.get("position_label"),
             )
@@ -1140,6 +1271,7 @@ __all__ = [
     "attach_hydration_urls",
     "compose_transparency_card",
     "compute_source_balance",
+    "consolidate_actors",
     "enrich_perspective_clusters",
     "filter_media_actors_quoted",
     "make_researcher_search",

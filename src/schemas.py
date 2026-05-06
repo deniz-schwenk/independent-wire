@@ -167,8 +167,22 @@ PERSPECTIVE_SCHEMA = {
                         "type": "array",
                         "items": {"type": "string"},
                     },
+                    # actor_ids — `actor-NNN` references into the
+                    # `final_actors[]` input list. The agent decides
+                    # which actors voice this cluster's position;
+                    # cluster→actor assignment is not derivable from
+                    # source membership alone (an actor's source can
+                    # appear in a cluster without the actor's own
+                    # statements voicing that cluster's claim).
+                    "actor_ids": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                    },
                 },
-                "required": ["position_label", "position_summary", "source_ids"],
+                "required": [
+                    "position_label", "position_summary", "source_ids",
+                    "actor_ids",
+                ],
                 "additionalProperties": False,
             },
         },

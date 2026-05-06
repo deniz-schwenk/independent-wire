@@ -972,6 +972,7 @@ class PerspectiveStage(_AgentStageBase):
     reads = (
         "editor_selected_topic",
         "final_sources",
+        "final_actors",
         "merged_preliminary_divergences",
         "merged_coverage_gaps",
     )
@@ -995,6 +996,7 @@ class PerspectiveStage(_AgentStageBase):
                 "title": assignment.title,
                 "selection_reason": assignment.selection_reason,
                 "sources": list(topic_bus.final_sources),
+                "final_actors": list(topic_bus.final_actors),
                 "preliminary_divergences": list(
                     topic_bus.merged_preliminary_divergences
                 ),
