@@ -83,19 +83,32 @@ def select_by_visibility(
 # ---------------------------------------------------------------------------
 
 
-def _follow_up_block(assignment: EditorAssignment) -> dict | None:
+def _follow_up_block(
+    assignment: EditorAssignment, run_bus: RunBus | RunBusReadOnly
+) -> dict | None:
     """Construct the metadata.follow_up block from the editor assignment.
 
-    V2 simplification per task §3.2: no disk lookup for previous_headline /
-    previous_slug. Returns `{previous_tp_id, reason}` when follow_up_to is
-    set, else `None`. The runner (V2-10) can enrich with disk-loaded
-    headlines if needed before render.
+    Looks up `previous_headline` and `previous_date` from
+    `run_bus.previous_coverage` (populated by the `init_run` stage by
+    scanning prior `tp-*.json` files). Returns
+    `{previous_tp_id, reason, previous_headline, previous_date}` when
+    `follow_up_to` is set, else `None`. Missing fields surface as empty
+    strings — the renderer hides the DIV when `previous_headline` is empty.
     """
     if not assignment.follow_up_to:
         return None
+    previous_headline = ""
+    previous_date = ""
+    for entry in run_bus.previous_coverage or []:
+        if isinstance(entry, dict) and entry.get("tp_id") == assignment.follow_up_to:
+            previous_headline = entry.get("headline", "") or ""
+            previous_date = entry.get("date", "") or ""
+            break
     return {
         "previous_tp_id": assignment.follow_up_to,
         "reason": assignment.follow_up_reason or "",
+        "previous_headline": previous_headline,
+        "previous_date": previous_date,
     }
 
 
@@ -141,7 +154,7 @@ def render_tp_public(
         "status": "review",
         "topic_slug": assignment.topic_slug,
         "priority": assignment.priority,
-        "follow_up": _follow_up_block(assignment),
+        "follow_up": _follow_up_block(assignment, rb),
         "selection_reason": topic_bus.transparency_card.selection_reason,
     }
 

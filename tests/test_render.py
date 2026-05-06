@@ -39,6 +39,15 @@ def _make_runbus() -> RunBus:
     rb.run_date = "2026-04-30"
     rb.run_variant = "production"
     rb.max_produce = 3
+    rb.previous_coverage = [
+        {
+            "tp_id": "tp-2026-04-29-002",
+            "date": "2026-04-29",
+            "headline": "Talks Stall as Deadline Approaches",
+            "slug": "talks-stall",
+            "summary": "Negotiators end the round without progress.",
+        }
+    ]
     return rb
 
 
@@ -282,16 +291,31 @@ def test_render_tp_public_follow_up_none_when_not_set():
     assert out["metadata"]["follow_up"] is None
 
 
-def test_render_tp_public_follow_up_simplified_when_set():
+def test_render_tp_public_follow_up_passthrough_when_set():
+    """metadata.follow_up carries previous_headline + previous_date,
+    resolved from run_bus.previous_coverage by tp_id match."""
     out = render_tp_public(_make_topicbus(follow_up=True), _make_runbus())
     fu = out["metadata"]["follow_up"]
     assert fu == {
         "previous_tp_id": "tp-2026-04-29-002",
         "reason": "enforcement deadline reached",
+        "previous_headline": "Talks Stall as Deadline Approaches",
+        "previous_date": "2026-04-29",
     }
-    # No previous_headline / previous_slug — V2 simplification
-    assert "previous_headline" not in fu
-    assert "previous_slug" not in fu
+
+
+def test_render_tp_public_follow_up_unmatched_tp_id_returns_empty_strings():
+    """When `follow_up_to` does not match any previous_coverage entry,
+    `previous_headline` / `previous_date` come through as empty strings —
+    the downstream renderer treats that as "hide the DIV"."""
+    rb = _make_runbus()
+    rb.previous_coverage = []  # no matches
+    out = render_tp_public(_make_topicbus(follow_up=True), rb)
+    fu = out["metadata"]["follow_up"]
+    assert fu["previous_tp_id"] == "tp-2026-04-29-002"
+    assert fu["reason"] == "enforcement deadline reached"
+    assert fu["previous_headline"] == ""
+    assert fu["previous_date"] == ""
 
 
 # ---------------------------------------------------------------------------

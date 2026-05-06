@@ -476,7 +476,7 @@ def compose_bias_card(topic_bus: TopicBus) -> dict: ...                        #
 The on-disk Topic Package JSON is built by `render_tp_public(topic_bus, run_bus)`. Selected slots:
 
 - `id`: from `topic_bus.editor_selected_topic.id`
-- `metadata`: `{title, date, status, topic_slug, priority, follow_up}` from `topic_bus.editor_selected_topic` and `run_bus.run_date`
+- `metadata`: `{title, date, status, topic_slug, priority, follow_up}` from `topic_bus.editor_selected_topic` and `run_bus.run_date`. When the topic is a follow-up, `follow_up` is `{previous_tp_id, reason, previous_headline, previous_date}` — the headline and date are resolved at render time from `run_bus.previous_coverage` by matching `tp_id`; missing matches render as empty strings. Otherwise `follow_up` is `null`.
 - `article`: from `topic_bus.qa_corrected_article` (always; mirror semantics guarantee completeness)
 - `sources`: from `topic_bus.final_sources`, with internal-prefix fields stripped
 - `perspectives`: `{position_clusters: from topic_bus.perspective_clusters_synced, missing_positions: from topic_bus.perspective_missing_positions}`
