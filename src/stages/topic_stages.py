@@ -155,6 +155,78 @@ async def renumber_sources(
 
 
 # ---------------------------------------------------------------------------
+# 10b. filter_media_actors_quoted
+# ---------------------------------------------------------------------------
+
+
+@topic_stage_def(
+    reads=("final_sources",),
+    writes=("final_sources",),
+)
+async def filter_media_actors_quoted(
+    topic_bus: TopicBus, run_bus: RunBusReadOnly
+) -> TopicBus:
+    """Drop ``type: media`` entries from every source's ``actors_quoted``.
+
+    Phase 1 (Flash) classifies outlets — Al Jazeera, Channel 14, Israeli
+    Broadcasting Corporation, Tasnim News Agency, etc. — as ``type=media``
+    in the per-article actor extraction. Outlets are sources of
+    attribution, not policy actors with positions, and shouldn't appear
+    in actor lists rendered downstream or harvested into perspective
+    clusters by ``enrich_perspective_clusters``.
+
+    Sources without an ``actors_quoted`` field, with an empty list, or
+    whose list contains zero ``type=media`` entries pass through
+    unchanged. Non-dict actor entries are preserved as-is. Sources whose
+    ``actors_quoted`` becomes empty after filtering remain in
+    ``final_sources`` — empty actors_quoted is fine, the source is still
+    a source.
+
+    Logs one INFO line per topic with the tally of dropped entries.
+    """
+    final_sources = list(topic_bus.final_sources or [])
+    if not final_sources:
+        return topic_bus
+
+    new_sources: list = []
+    dropped_total = 0
+    sources_touched = 0
+    for source in final_sources:
+        if not isinstance(source, dict):
+            new_sources.append(source)
+            continue
+        actors = source.get("actors_quoted")
+        if not isinstance(actors, list) or not actors:
+            new_sources.append(source)
+            continue
+        kept: list = []
+        dropped_here = 0
+        for entry in actors:
+            if isinstance(entry, dict) and entry.get("type") == "media":
+                dropped_here += 1
+                continue
+            kept.append(entry)
+        if dropped_here == 0:
+            new_sources.append(source)
+            continue
+        new_source = copy.deepcopy(source)
+        new_source["actors_quoted"] = kept
+        new_sources.append(new_source)
+        dropped_total += dropped_here
+        sources_touched += 1
+
+    if dropped_total:
+        logger.info(
+            "filter_media_actors_quoted: dropped %d actors of type=media "
+            "across %d source(s)",
+            dropped_total,
+            sources_touched,
+        )
+
+    return topic_bus.model_copy(update={"final_sources": new_sources})
+
+
+# ---------------------------------------------------------------------------
 # 11. normalize_pre_research
 # ---------------------------------------------------------------------------
 
@@ -1039,6 +1111,7 @@ __all__ = [
     "compose_transparency_card",
     "compute_source_balance",
     "enrich_perspective_clusters",
+    "filter_media_actors_quoted",
     "make_researcher_search",
     "merge_sources",
     "mirror_qa_corrected",

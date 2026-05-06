@@ -362,6 +362,7 @@ TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
 8. researcher_assemble           — Reads researcher_search_results; populates researcher_assemble_dossier
 9. merge_sources                 — Python: hydration_pre_dossier is empty in production; copies research dossier sources into merged_sources_pre_renumber
 10. renumber_sources              — Python: assigns final src-NNN IDs; populates final_sources, id_rename_map
+10b. filter_media_actors_quoted   — Python: drops `type=media` entries from every source's actors_quoted list (outlets are sources, not policy actors); logs a per-topic tally
 11. normalize_pre_research        — Python: rewrites IDs in merged_preliminary_divergences and merged_coverage_gaps using id_rename_map
 12. perspective                   — Reads final_sources + merged_preliminary_divergences + merged_coverage_gaps; populates perspective_clusters, perspective_missing_positions
 13. mirror_perspective_synced     — Python: empty-then-fill mirror. perspective_clusters_synced is empty (production never runs perspective_sync); the stage fills it from perspective_clusters as a 1:1 copy.
@@ -401,6 +402,7 @@ TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
 13. researcher_assemble           — Reads researcher_search_results; populates researcher_assemble_dossier (sources carry research-rsrc-NNN IDs)
 14. merge_sources                 — Python: concatenates hydration_pre_dossier.sources and researcher_assemble_dossier.sources; populates merged_sources_pre_renumber
 15. renumber_sources              — Python: assigns final src-NNN IDs; populates final_sources, id_rename_map
+15b. filter_media_actors_quoted   — Python: drops `type=media` entries from every source's actors_quoted list (outlets are sources, not policy actors); logs a per-topic tally
 16. normalize_pre_research        — Python: rewrites IDs in merged_preliminary_divergences and merged_coverage_gaps
 17. perspective                   — Same as production stage 12
 18. enrich_perspective_clusters   — Python: attaches pc-NNN ids, actors, regions, languages, representation to perspective_clusters
