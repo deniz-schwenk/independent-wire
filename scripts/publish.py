@@ -74,8 +74,10 @@ def extract_metadata(json_path: Path) -> dict:
         "summary": article.get("summary", ""),
         "word_count": article.get("word_count", 0),
         "sources_count": len(tp.get("sources", [])),
-        "languages_count": len(bias.get("source_balance", {}).get("by_language", {})),
-        "stakeholders_count": len(tp.get("perspectives", [])),
+        "languages_count": len(bias.get("source", {}).get("by_language", {})),
+        "stakeholders_count": (
+            bias.get("framing", {}).get("distinct_actor_count", 0)
+        ),
         "divergences_count": len(tp.get("divergences", [])),
         "html_filename": f"reports/{tp['id']}.html",
         "follow_up": follow_up,

@@ -418,8 +418,10 @@ def build_follow_up_ref(tp: dict) -> str:
 def build_meta_bar(tp: dict) -> str:
     sources_count = len(tp.get("sources", []))
     bias = tp.get("bias_analysis", {})
-    lang_count = len(bias.get("source_balance", {}).get("by_language", {}))
-    persp_count = len(tp.get("perspectives", []))
+    lang_count = len(bias.get("source", {}).get("by_language", {}))
+    persp_count = (
+        bias.get("framing", {}).get("distinct_actor_count", 0)
+    )
     div_count = len(tp.get("divergences", []))
 
     items = [
@@ -544,7 +546,7 @@ def build_perspectives(tp: dict) -> str:
     """Render Perspective V2 position_clusters. One cluster = one card,
     with representation badge, summary, and a flat list of quoted actors.
     """
-    clusters = tp.get("perspectives", [])
+    clusters = tp.get("perspectives", {}).get("position_clusters", [])
     if not clusters:
         return ""
     cards = []
@@ -590,11 +592,7 @@ def build_perspectives(tp: dict) -> str:
 
 def build_missing_voices(tp: dict) -> str:
     """Render Perspective V2 missing_positions as a simple bulleted list."""
-    missing = (
-        tp.get("bias_analysis", {})
-          .get("perspectives", {})
-          .get("missing_positions", [])
-    )
+    missing = tp.get("perspectives", {}).get("missing_positions", [])
     if not missing:
         return ""
     items = []
@@ -639,28 +637,25 @@ def build_divergences(tp: dict) -> str:
 
 def build_bias_card(tp: dict) -> str:
     bias = tp.get("bias_analysis", {})
-    lang_bias = bias.get("language_bias", {})
-    findings = lang_bias.get("findings", [])
-    severity = lang_bias.get("severity", "low")
-    by_language = bias.get("source_balance", {}).get("by_language", {})
+    findings = bias.get("language", [])
+    by_language = bias.get("source", {}).get("by_language", {})
 
     parts = []
     parts.append('<h2>Bias Analysis</h2>\n')
 
-    # Summary line — always visible
-    sev_color = SEVERITY_COLORS.get(severity, "#64748b")
+    # Summary line — always visible. V2 schema has no severity field.
     if findings:
         parts.append(
             f'<p style="font-family:var(--font-mono);font-size:0.85rem;'
             f'color:var(--color-text-secondary);">'
             f'{len(findings)} language bias finding{"s" if len(findings) != 1 else ""}'
-            f' &middot; Severity: {_badge(severity, sev_color)}</p>\n'
+            f'</p>\n'
         )
     else:
         parts.append(
             f'<p style="font-family:var(--font-mono);font-size:0.85rem;'
             f'color:var(--color-text-secondary);">'
-            f'No language bias findings &middot; Severity: {_badge(severity, sev_color)}</p>\n'
+            f'No language bias findings</p>\n'
         )
 
     # Build findings HTML
@@ -722,7 +717,12 @@ def build_bias_card(tp: dict) -> str:
 
 
 def build_coverage_gaps(tp: dict) -> str:
-    gaps = tp.get("bias_analysis", {}).get("coverage_gaps", [])
+    gaps = (
+        tp.get("bias_analysis", {})
+          .get("selection", {})
+          .get("coverage_gaps", [])
+        or tp.get("gaps", [])
+    )
     if not gaps:
         return ""
     items = "\n".join(f'<div class="coverage-gap">{_esc(g)}</div>' for g in gaps)
