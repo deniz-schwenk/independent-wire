@@ -419,7 +419,7 @@ def test_runner_to_stage_stops_in_topic_phase(tmp_path: Path):
     )
     rb = asyncio.run(runner.run())
     # No render output should be written because --to cuts before Phase D
-    assert not (tmp_path / rb.run_date / "slug-001.json").exists()
+    assert not (tmp_path / rb.run_date / "topic-001.json").exists()
     # And finalize_run was skipped, so manifest stays empty
     assert rb.run_topic_manifest == []
 
@@ -472,8 +472,34 @@ def test_runner_writes_tp_public_after_full_run(tmp_path: Path):
         output_dir=tmp_path,
     )
     rb = asyncio.run(runner.run())
-    assert (tmp_path / rb.run_date / "slug-001.json").exists()
-    assert (tmp_path / rb.run_date / "slug-002.json").exists()
+    assert (tmp_path / rb.run_date / "topic-001.json").exists()
+    assert (tmp_path / rb.run_date / "topic-002.json").exists()
+
+
+def test_runner_writes_id_named_output(tmp_path: Path):
+    """Filenames are derived from the assignment id, not the topic_slug.
+
+    Regression guard for PUBLISH-NAMING-MISMATCH: ``publish.py`` discovers
+    files by ``tp-{date}-*.json`` glob; the runner must emit id-named
+    files. The fixture's id (``topic-001``) and slug (``slug-001``)
+    deliberately differ so a regression to slug-based naming would
+    surface immediately.
+    """
+    runner = PipelineRunner(
+        run_stages=[_fake_init, _fake_curator, _fake_select],
+        topic_stages=[_fake_writer],
+        output_dir=tmp_path,
+    )
+    rb = asyncio.run(runner.run())
+    public_dir = tmp_path / rb.run_date
+    assert (public_dir / "topic-001.json").exists()
+    assert (public_dir / "topic-002.json").exists()
+    # Slug-based names must not be used.
+    assert not (public_dir / "slug-001.json").exists()
+    assert not (public_dir / "slug-002.json").exists()
+    # The JSON content carries the id matching the filename.
+    payload = json.loads((public_dir / "topic-001.json").read_text())
+    assert payload["id"] == "topic-001"
 
 
 def test_runner_writes_debug_dir(tmp_path: Path):
@@ -485,7 +511,7 @@ def test_runner_writes_debug_dir(tmp_path: Path):
     rb = asyncio.run(runner.run())
     debug_dir = tmp_path / rb.run_date / "_debug"
     assert debug_dir.is_dir()
-    assert (debug_dir / "slug-001.json").exists()
+    assert (debug_dir / "topic-001.json").exists()
 
 
 def test_runner_finalize_writes_manifest(tmp_path: Path):
@@ -516,8 +542,8 @@ def test_runner_failed_topic_excluded_from_render(tmp_path: Path):
         output_dir=tmp_path,
     )
     rb = asyncio.run(runner.run())
-    assert (tmp_path / rb.run_date / "slug-001.json").exists()
-    assert not (tmp_path / rb.run_date / "slug-002.json").exists()
+    assert (tmp_path / rb.run_date / "topic-001.json").exists()
+    assert not (tmp_path / rb.run_date / "topic-002.json").exists()
 
 
 # ---------------------------------------------------------------------------
@@ -686,8 +712,8 @@ def test_runner_topic_filter_skips_other_topics(tmp_path: Path):
     statuses = {m["topic_id"]: m["status"] for m in rb.run_topic_manifest}
     assert statuses == {"topic-001": "skipped", "topic-002": "success"}
     # Only the selected topic gets rendered to disk
-    assert not (tmp_path / rb.run_date / "slug-001.json").exists()
-    assert (tmp_path / rb.run_date / "slug-002.json").exists()
+    assert not (tmp_path / rb.run_date / "topic-001.json").exists()
+    assert (tmp_path / rb.run_date / "topic-002.json").exists()
 
 
 def test_runner_topic_filter_writer_runs_only_for_selected_topic(tmp_path: Path):

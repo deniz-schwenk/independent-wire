@@ -125,8 +125,8 @@ def _index_of(stages: list, name: str) -> int:
 class RenderStage:
     """Render every successful TopicBus to disk.
 
-    Writes ``output_dir/{run_date}/{topic_slug}.json`` (TP-public) and
-    ``output_dir/{run_date}/_debug/{topic_slug}.json`` (internal debug)
+    Writes ``output_dir/{run_date}/{tp_id}.json`` (TP-public) and
+    ``output_dir/{run_date}/_debug/{tp_id}.json`` (internal debug)
     per TopicBus. Failed TopicBuses are skipped — their state is captured
     in ``run_topic_manifest`` instead.
     """
@@ -148,9 +148,9 @@ class RenderStage:
         for tb, status in zip(topic_buses, statuses):
             if status in ("failed", "skipped"):
                 continue
-            slug = tb.editor_selected_topic.topic_slug or tb.editor_selected_topic.id
-            public_path = public_dir / f"{slug}.json"
-            debug_path = debug_dir / f"{slug}.json"
+            tp_id = tb.editor_selected_topic.id
+            public_path = public_dir / f"{tp_id}.json"
+            debug_path = debug_dir / f"{tp_id}.json"
             public_path.write_text(
                 json.dumps(render_tp_public(tb, run_bus), indent=2, ensure_ascii=False),
                 encoding="utf-8",
