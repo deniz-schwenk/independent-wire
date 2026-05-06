@@ -281,22 +281,35 @@ Each drop logs an INFO line with id, outlet, and a 60-char summary snippet.
 
 ---
 
+## 11b. consolidate_actors — deterministic topic-stage
+
+**Function:** `src/stages/topic_stages.py:consolidate_actors`
+**Reads:** `topic_bus.final_sources`
+**Writes:** `topic_bus.final_actors`
+
+Flattens every `final_sources[].actors_quoted[]` entry into a single deduped list with stable `actor-NNN` IDs. Dedup is exact-string-match on `name` (alias resolution is deferred). For role/type conflicts the first-encountered values win. Each output entry carries one `quotes[].{source_id, verbatim, position}` record per source-membership; `verbatim` is `None` for paraphrased actors. Runs after `filter_media_actors_quoted` so `type=media` never enters the flat list.
+
+Logs one INFO line per topic with the unique-actor / source-count tally.
+
+---
+
 ## 12. Perspective (Opus 4.6, topic-stage)
 
 **Wrapper:** `src/agent_stages.py:PerspectiveStage`
-**Reads:** `topic_bus.final_sources`, `topic_bus.merged_preliminary_divergences`, `topic_bus.merged_coverage_gaps`, `topic_bus.editor_selected_topic`
+**Reads:** `topic_bus.final_sources`, `topic_bus.final_actors`, `topic_bus.merged_preliminary_divergences`, `topic_bus.merged_coverage_gaps`, `topic_bus.editor_selected_topic`
 **Writes:** `topic_bus.perspective_clusters`, `topic_bus.perspective_missing_positions`
 
 ### OUTPUT
 
 | Field | LLM emits | Originär? | Notes |
 | --- | --- | --- | --- |
-| `position_clusters[].id` | ✅ | ✅ | `pc-NNN` format, agent-emitted (V2 PerspectiveV2 schema) |
 | `position_clusters[].position_label` | ✅ | ✅ | Short cluster label |
 | `position_clusters[].position_summary` | ✅ | ✅ | Cluster prose |
 | `position_clusters[].source_ids[]` | ✅ | ✅ | References to `src-NNN` IDs from `final_sources` |
-| `position_clusters[].actors[]` | ✅ | ✅ | Actors aligned to this position cluster |
+| `position_clusters[].actor_ids[]` | ✅ | ✅ | References to `actor-NNN` IDs from `final_actors`. Inclusion criterion: the actor's own statements voice the cluster's position. An actor's source feeding a cluster does NOT auto-include the actor. |
 | `missing_positions[]` | ✅ | ✅ | Stakeholder voices the dossier could not source |
+
+The `position_clusters[].id` (`pc-NNN`) is attached by `enrich_perspective_clusters`, not the agent. The prior `actors[]` field has been removed in favour of `actor_ids[]`.
 
 **Status:** ✅ Pass-through clean.
 
@@ -305,10 +318,12 @@ Each drop logs an INFO line with id, outlet, and a 60-char summary snippet.
 ## 13. enrich_perspective_clusters — deterministic topic-stage
 
 **Function:** `src/stages/topic_stages.py:enrich_perspective_clusters`
-**Reads:** `topic_bus.perspective_clusters`, `topic_bus.final_sources`
-**Writes:** `topic_bus.perspective_clusters` (in-place enrichment), `topic_bus.source_balance` (initial pass — finalised by `compute_source_balance`)
+**Reads:** `topic_bus.perspective_clusters`, `topic_bus.final_sources`, `topic_bus.final_actors`
+**Writes:** `topic_bus.perspective_clusters` (in-place enrichment)
 
-Attaches per-cluster `regions[]`, `languages[]`, and `representation` (proportional source share) to each cluster. Pure Python computation from `final_sources` + the cluster's declared `source_ids`.
+Attaches per-cluster `id` (`pc-NNN`), `regions[]`, `languages[]`, and the count fields `n_actors`, `n_sources`, `n_regions`, `n_languages`. Validates the agent-emitted `actor_ids[]` against `final_actors[]`: unknown IDs are dropped and a WARNING is logged.
+
+The prior `representation` bucket and the `actors[]` fan-out from source membership have been removed (TASK-PERSPECTIVE-ACTOR-SCOPING). Cluster→actor mapping is now an agent decision; the count fields replace the bucket.
 
 Helper logic in `src/stages/topic_stages.py:_enrich_position_clusters_logic`.
 

@@ -246,11 +246,19 @@ In the production variant, all hydration slots remain at empty defaults and are 
 
 The renumbering stage is the single point where IDs are finalised. Every later agent receives source records and source-id references already in `src-NNN` form. No agent ever sees a `rsrc-` token after this stage.
 
+#### 4B.4b Actor consolidation (deterministic stage)
+
+| Slot | Owner | Initial | Final | Visibility |
+|---|---|---|---|---|
+| `final_actors` | init (Python `consolidate_actors` stage, runs after `filter_media_actors_quoted`) | `[]` | Flattened, deduped list of every actor quoted across `final_sources[].actors_quoted[]`. Each entry: `{id: "actor-NNN", name, role, type, source_ids[], quotes: [{source_id, verbatim, position}, …]}`. Dedup is exact-string-match on `name` (case-sensitive — alias resolution is a deferred future workstream). For role/type conflicts the first-encountered values win. `verbatim` is `None` when the source paraphrased rather than quoted. | `internal` |
+
+This slot is the canonical actor registry for the topic. The Perspective agent reads it as input and emits per-cluster `actor_ids[]`; downstream consumers (BiasLanguage, render) join `actor_ids[]` against this list when actor identity matters.
+
 #### 4B.5 Perspective phase
 
 | Slot | Owner | Initial | Final | Visibility |
 |---|---|---|---|---|
-| `perspective_clusters` | perspective | `[]` | Position clusters: `[{id: "pc-NNN", position_label, position_summary, source_ids[], actors[]}]`. Source-ids reference `final_sources` (already normalised). Cluster IDs (`pc-NNN`) are emitted by the agent. | `internal` |
+| `perspective_clusters` | perspective + `enrich_perspective_clusters` stage | `[]` | Position clusters. Agent emits `[{position_label, position_summary, source_ids[], actor_ids[]}]`. The deterministic enrichment stage attaches `id: "pc-NNN"`, `regions[]`, `languages[]`, and the count fields `n_actors`, `n_sources`, `n_regions`, `n_languages`. `source_ids[]` references `final_sources`; `actor_ids[]` references `final_actors`. The agent decides cluster→actor mapping from the actors' own statements (their `quotes[].position` / `verbatim`); inclusion is not a fan-out from source membership. | `internal` |
 | `perspective_missing_positions` | perspective | `[]` | Stakeholder voices the dossier could not source | `internal` |
 
 #### 4B.6 Writer phase
@@ -331,8 +339,10 @@ The composed `bias_analysis` block in the rendered TP looks like:
     "qa_problems_found": [...from qa_problems_found...]
   },
   "framing": {
-    "position_clusters_summary": [...high-level summary of perspective_clusters_synced...],
-    "cross_source_divergences": [...from qa_divergences...]
+    "position_clusters_summary": [...{id, position_label, n_actors, n_sources}...],
+    "cross_source_divergences": [...from qa_divergences...],
+    "cluster_count": ...,             // count of perspective_clusters_synced
+    "distinct_actor_count": ...       // count of named entries in final_actors
   },
   "reader_note": "..."  // from bias_reader_note
 }
@@ -363,8 +373,9 @@ TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
 9. merge_sources                 — Python: hydration_pre_dossier is empty in production; copies research dossier sources into merged_sources_pre_renumber
 10. renumber_sources              — Python: assigns final src-NNN IDs; populates final_sources, id_rename_map
 10b. filter_media_actors_quoted   — Python: drops `type=media` entries from every source's actors_quoted list (outlets are sources, not policy actors); logs a per-topic tally
+10c. consolidate_actors           — Python: flattens final_sources[].actors_quoted[] into a deduped final_actors[] with stable actor-NNN IDs; logs a per-topic tally. Runs after the media filter so type=media never enters the flat list.
 11. normalize_pre_research        — Python: rewrites IDs in merged_preliminary_divergences and merged_coverage_gaps using id_rename_map
-12. perspective                   — Reads final_sources + merged_preliminary_divergences + merged_coverage_gaps; populates perspective_clusters, perspective_missing_positions
+12. perspective                   — Reads final_sources + final_actors + merged_preliminary_divergences + merged_coverage_gaps; populates perspective_clusters (with per-cluster actor_ids[]), perspective_missing_positions
 13. mirror_perspective_synced     — Python: empty-then-fill mirror. perspective_clusters_synced is empty (production never runs perspective_sync); the stage fills it from perspective_clusters as a 1:1 copy.
 14. writer                        — Reads final_sources + perspective_clusters_synced + perspective_missing_positions + merged_coverage_gaps + editor_selected_topic; populates writer_article
 15. qa_analyze                    — Reads writer_article + final_sources + perspective_clusters_synced; populates qa_problems_found, qa_proposed_corrections, qa_corrected_article (only changed fields; empty otherwise), qa_divergences
@@ -403,9 +414,10 @@ TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
 14. merge_sources                 — Python: concatenates hydration_pre_dossier.sources and researcher_assemble_dossier.sources; populates merged_sources_pre_renumber
 15. renumber_sources              — Python: assigns final src-NNN IDs; populates final_sources, id_rename_map
 15b. filter_media_actors_quoted   — Python: drops `type=media` entries from every source's actors_quoted list (outlets are sources, not policy actors); logs a per-topic tally
+15c. consolidate_actors           — Python: flattens final_sources[].actors_quoted[] into a deduped final_actors[] with stable actor-NNN IDs.
 16. normalize_pre_research        — Python: rewrites IDs in merged_preliminary_divergences and merged_coverage_gaps
-17. perspective                   — Same as production stage 12
-18. enrich_perspective_clusters   — Python: attaches pc-NNN ids, actors, regions, languages, representation to perspective_clusters
+17. perspective                   — Same as production stage 12 (reads final_sources + final_actors)
+18. enrich_perspective_clusters   — Python: attaches pc-NNN ids, validated actor_ids, regions, languages, n_actors, n_sources, n_regions, n_languages to perspective_clusters
 19. mirror_perspective_synced     — Python: first invocation. perspective_clusters_synced is empty; mirror does 1:1 fill from perspective_clusters.
 20. writer                        — Same as production stage 14
 21. qa_analyze                    — Same as production stage 15
