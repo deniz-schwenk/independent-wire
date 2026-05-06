@@ -1046,8 +1046,9 @@ def test_bias_language_happy_path():
         {"id": "src-001", "country": "United States", "language": "en"},
     ]
     tb.perspective_clusters_synced = [
-        {"id": "pc-001", "representation": "dominant", "actors": [{"name": "A", "role": "r"}]}
+        {"id": "pc-001", "actor_ids": ["actor-001"], "source_ids": ["src-001"]}
     ]
+    tb.final_actors = [{"id": "actor-001", "name": "A"}]
     stage = BiasLanguageStage(fake)
     tb_after = _run(stage, tb, _ro())
     assert len(tb_after.bias_language_findings) == 1
@@ -1089,7 +1090,7 @@ def test_bias_language_stage_extracts_nested_findings():
         {"id": "src-001", "country": "United States", "language": "en"},
     ]
     tb.perspective_clusters_synced = [
-        {"id": "pc-001", "representation": "dominant", "actors": []}
+        {"id": "pc-001", "actor_ids": [], "source_ids": ["src-001"]}
     ]
     stage = BiasLanguageStage(fake)
     tb_after = _run(stage, tb, _ro())
@@ -1108,9 +1109,10 @@ def test_build_bias_card_for_agent_input_aggregates():
         {"id": "src-002", "country": "France", "language": "fr"},
     ]
     tb.perspective_clusters_synced = [
-        {"id": "pc-001", "representation": "dominant", "actors": [{"name": "A", "role": "r"}]},
-        {"id": "pc-002", "representation": "marginal", "actors": []},
+        {"id": "pc-001", "actor_ids": ["actor-001"], "source_ids": ["src-001"]},
+        {"id": "pc-002", "actor_ids": [], "source_ids": ["src-002"]},
     ]
+    tb.final_actors = [{"id": "actor-001", "name": "A"}]
     tb.qa_divergences = [{"type": "factual"}]
     tb.coverage_gaps_validated = ["a gap"]
     bc = _build_bias_card_for_agent_input(tb)
@@ -1118,9 +1120,7 @@ def test_build_bias_card_for_agent_input_aggregates():
     assert bc["source_balance"]["total"] == 2
     assert bc["perspectives"]["cluster_count"] == 2
     assert bc["perspectives"]["distinct_actor_count"] == 1
-    assert bc["perspectives"]["representation_distribution"] == {
-        "dominant": 1, "substantial": 0, "marginal": 1
-    }
+    assert "representation_distribution" not in bc["perspectives"]
     assert bc["factual_divergences"] == [{"type": "factual"}]
     assert bc["coverage_gaps"] == ["a gap"]
 

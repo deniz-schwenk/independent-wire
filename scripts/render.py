@@ -144,10 +144,6 @@ def _badge(text: str, color: str) -> str:
 
 
 # Color maps
-REPRESENTATION_COLORS = {
-    "strong": "#0f766e", "moderate": "#ca8a04", "weak": "#9f1239",
-    "dominant": "#0f766e", "substantial": "#ca8a04", "marginal": "#9f1239",
-}
 SIGNIFICANCE_COLORS = {"critical": "#9f1239", "notable": "#ca8a04", "minor": "#64748b"}
 DIVERGENCE_COLORS = {"factual": "#9f1239", "framing": "#7c3aed", "omission": "#ca8a04", "emphasis": "#0369a1"}
 RESOLUTION_LABELS = {"resolved": "Resolved", "partially_resolved": "Partially resolved", "unresolved": "Unresolved"}
@@ -335,7 +331,7 @@ details[open] summary::before {
   padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
 }
 
-/* Bias-card stat line + representation pills */
+/* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
   color: var(--color-text-secondary);
@@ -344,14 +340,6 @@ details[open] summary::before {
 }
 .bias-stats strong { color: var(--color-text); font-weight: 700; }
 .bias-stats .sep { color: var(--color-text-subtle); }
-.representation-pills {
-  margin: 0 0 0.75rem; display: flex; flex-wrap: wrap; gap: 0.4rem;
-}
-.pill {
-  display: inline-block; padding: 0.15rem 0.6rem; border-radius: 0;
-  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.05em;
-}
 
 /* Source actors expandable */
 .source-actors-row > td { padding: 0 0.75rem 0.75rem; border-bottom: 1px solid var(--color-border-light); }
@@ -643,8 +631,12 @@ def _wrap_non_latin_in_html(text: str) -> str:
 
 
 def build_perspectives(tp: dict) -> str:
-    """Render Perspective V2 position_clusters. One cluster = one card,
-    with representation badge, summary, and a flat list of quoted actors.
+    """Render Perspective V2 position_clusters. One cluster = one card.
+
+    The representation badge has been removed; cluster cards now show
+    just the position label and the position summary. The richer
+    cluster-card content (count summary, joined actor list) is the
+    UX3 follow-up workstream.
     """
     clusters = tp.get("perspectives", {}).get("position_clusters", [])
     if not clusters:
@@ -653,38 +645,12 @@ def build_perspectives(tp: dict) -> str:
     for c in clusters:
         if not isinstance(c, dict):
             continue
-        rep = c.get("representation", "marginal")
-        rep_color = REPRESENTATION_COLORS.get(rep, "#64748b")
-        rep_badge = _badge(rep, rep_color)
         label = c.get("position_label", "")
         summary = c.get("position_summary", "")
-
-        actor_items: list[str] = []
-        for a in c.get("actors", []) or []:
-            if not isinstance(a, dict):
-                continue
-            name = _esc(a.get("name", ""))
-            role = _esc(a.get("role", ""))
-            quote = a.get("quote")
-            quote_html = ""
-            if quote and str(quote).strip().lower() not in ("null", "none", "n/a"):
-                quote_html = (
-                    f'<div class="card-quote">{_esc(str(quote))}</div>'
-                )
-            actor_items.append(
-                f'<li><strong>{name}</strong> — {role}{quote_html}</li>'
-            )
-
-        actors_block = (
-            f'<ul class="cluster-actors">{"".join(actor_items)}</ul>'
-            if actor_items else ""
-        )
-
         cards.append(
             f'<div class="card">\n'
-            f'  <div class="card-header"><span class="card-actor">{_esc(label)}</span>{rep_badge}</div>\n'
+            f'  <div class="card-header"><span class="card-actor">{_esc(label)}</span></div>\n'
             f'  <div class="card-position">{_esc(summary)}</div>\n'
-            f'  {actors_block}\n'
             f'</div>\n'
         )
     return f'<h2>Perspectives &mdash; Position Clusters</h2>\n<div class="card-grid">\n{"".join(cards)}</div>\n'
@@ -760,22 +726,6 @@ def build_bias_card(tp: dict) -> str:
         '<span class="sep">&middot;</span>'
         f'<span><strong>{lang_count}</strong> languages</span>'
         '</p>\n'
-    )
-
-    # Representation pills — fixed order; zero counts render at low opacity.
-    rep_dist = framing.get("representation_distribution", {}) or {}
-    pill_parts = []
-    for key in ("dominant", "substantial", "marginal"):
-        n = int(rep_dist.get(key, 0) or 0)
-        color = REPRESENTATION_COLORS.get(key, "#64748b")
-        opacity = "0.4" if n == 0 else "1"
-        pill_parts.append(
-            f'<span class="pill pill-{key}" '
-            f'style="background:{color}15;color:{color};border:1px solid {color}40;'
-            f'opacity:{opacity}">{n} {key}</span>'
-        )
-    parts.append(
-        f'<p class="representation-pills">{"".join(pill_parts)}</p>\n'
     )
 
     # Summary line — always visible. V2 schema has no severity field.

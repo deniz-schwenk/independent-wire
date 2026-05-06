@@ -289,10 +289,8 @@ def compose_bias_card(topic_bus: TopicBus) -> dict:
     - selection: coverage_gaps_validated + perspective_missing_positions +
                  qa_problems_found
     - framing: position_clusters_summary (high-level projection of
-               perspective_clusters_synced) + qa_divergences plus three
-               deterministic aggregates (cluster_count, distinct_actor_count,
-               representation_distribution) — V1 reference
-               src/pipeline.py:870-949.
+               perspective_clusters_synced) + qa_divergences plus two
+               deterministic counts (cluster_count, distinct_actor_count).
 
     Plus the LLM-supplied reader_note from the bias_language agent.
 
@@ -300,7 +298,8 @@ def compose_bias_card(topic_bus: TopicBus) -> dict:
     """
     sb = topic_bus.source_balance
     clusters = topic_bus.perspective_clusters_synced
-    aggregates = _cluster_aggregates(clusters)
+    actors = topic_bus.final_actors
+    aggregates = _cluster_aggregates(clusters, actors)
 
     return {
         "language": list(topic_bus.bias_language_findings),
@@ -325,64 +324,47 @@ def compose_bias_card(topic_bus: TopicBus) -> dict:
             "cross_source_divergences": list(topic_bus.qa_divergences),
             "cluster_count": aggregates["cluster_count"],
             "distinct_actor_count": aggregates["distinct_actor_count"],
-            "representation_distribution": aggregates["representation_distribution"],
         },
         "reader_note": topic_bus.bias_reader_note,
     }
 
 
-def _cluster_aggregates(clusters: list[dict]) -> dict:
-    """Compute the three deterministic aggregates V1 surfaced in its
-    bias-card perspectives block (src/pipeline.py:870-949):
+def _cluster_aggregates(clusters: list[dict], actors: list) -> dict:
+    """Compute the two deterministic aggregates surfaced in the bias-card
+    framing block:
 
-    - cluster_count: len(clusters)
-    - distinct_actor_count: count of unique (name, role) tuples across
-      every cluster's actors[]; tuples where both fields are empty are
-      ignored.
-    - representation_distribution: counts of the `representation` field
-      on each cluster, bucketed into {dominant, substantial, marginal}.
-      Unrecognised representations are dropped (V1 behaviour); missing
-      representation defaults to "marginal" before bucketing.
+    - cluster_count: number of dict clusters.
+    - distinct_actor_count: number of named entries in ``final_actors`` —
+      the canonical deduped list. Replaces the prior per-cluster
+      (name, role) walk over ``cluster.actors[]`` (the leak-shaped slot
+      that no longer exists).
     """
-    distribution = {"dominant": 0, "substantial": 0, "marginal": 0}
-    distinct_actors: set[tuple] = set()
-    cluster_count = 0
-    for cluster in clusters or []:
-        if not isinstance(cluster, dict):
-            continue
-        cluster_count += 1
-        rep = cluster.get("representation", "marginal")
-        if rep in distribution:
-            distribution[rep] += 1
-        for actor in cluster.get("actors") or []:
-            if not isinstance(actor, dict):
-                continue
-            key = (actor.get("name", ""), actor.get("role", ""))
-            if any(key):
-                distinct_actors.add(key)
-
+    cluster_count = sum(1 for c in (clusters or []) if isinstance(c, dict))
+    distinct_actor_count = sum(
+        1 for a in (actors or []) if isinstance(a, dict) and a.get("name")
+    )
     return {
         "cluster_count": cluster_count,
-        "distinct_actor_count": len(distinct_actors),
-        "representation_distribution": distribution,
+        "distinct_actor_count": distinct_actor_count,
     }
 
 
 def _summarise_clusters(clusters: list[dict]) -> list[dict]:
     """Project each cluster to a high-level summary `{id, position_label,
-    representation, source_count}` for the framing block. Keeps the bias
+    n_actors, n_sources}` for the framing block. Keeps the bias
     card readable without duplicating the full perspectives section."""
     summary: list[dict] = []
     for c in clusters or []:
         if not isinstance(c, dict):
             continue
         source_ids = c.get("source_ids") or []
+        actor_ids = c.get("actor_ids") or []
         summary.append(
             {
                 "id": c.get("id", ""),
                 "position_label": c.get("position_label", ""),
-                "representation": c.get("representation", ""),
-                "source_count": len(source_ids) if isinstance(source_ids, list) else 0,
+                "n_actors": len(actor_ids) if isinstance(actor_ids, list) else 0,
+                "n_sources": len(source_ids) if isinstance(source_ids, list) else 0,
             }
         )
     return summary

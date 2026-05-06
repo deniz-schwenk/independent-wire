@@ -762,14 +762,20 @@ def _extract_date_from_url(url: str) -> Optional[str]:
 
 def _build_bias_card_for_agent_input(topic_bus: TopicBus) -> dict:
     """Compute the deterministic bias_card data structure that the
-    bias_language LLM consumes as context. V1: src/pipeline.py:870-944
-    `_build_bias_card` (the perspectives + coverage_gaps subsections; the
-    source/geographic blocks come from source_balance which is computed
-    by V2-03b's compute_source_balance stage).
+    bias_language LLM consumes as context.
+
+    The cluster→actor mapping now lives in ``cluster.actor_ids`` (the
+    canonical actor list is ``topic_bus.final_actors``); ``distinct_actor_count``
+    therefore reads ``len(final_actors)`` rather than walking a per-cluster
+    leak loop. The prior ``representation_distribution`` aggregate is
+    gone — the bias-language brief does not reference it, and the bucket
+    semantics it relied on were removed alongside the cluster
+    ``representation`` field.
     """
     article = topic_bus.qa_corrected_article
     sources = list(topic_bus.final_sources or [])
     clusters = list(topic_bus.perspective_clusters_synced or [])
+    actors = list(topic_bus.final_actors or [])
     missing_positions = list(topic_bus.perspective_missing_positions or [])
 
     by_language: dict[str, int] = {}
@@ -787,24 +793,9 @@ def _build_bias_card_for_agent_input(topic_bus: TopicBus) -> dict:
     }
     article_countries.discard("")
 
-    distinct_actors: set[tuple] = set()
-    representation_distribution: dict[str, int] = {
-        "dominant": 0,
-        "substantial": 0,
-        "marginal": 0,
-    }
-    for cluster in clusters:
-        if not isinstance(cluster, dict):
-            continue
-        rep = cluster.get("representation", "marginal")
-        if rep in representation_distribution:
-            representation_distribution[rep] += 1
-        for actor in cluster.get("actors") or []:
-            if not isinstance(actor, dict):
-                continue
-            key = (actor.get("name", ""), actor.get("role", ""))
-            if any(key):
-                distinct_actors.add(key)
+    distinct_actor_count = sum(
+        1 for a in actors if isinstance(a, dict) and a.get("name")
+    )
 
     return {
         "article_summary": article.summary,
@@ -818,8 +809,7 @@ def _build_bias_card_for_agent_input(topic_bus: TopicBus) -> dict:
         },
         "perspectives": {
             "cluster_count": len(clusters),
-            "distinct_actor_count": len(distinct_actors),
-            "representation_distribution": representation_distribution,
+            "distinct_actor_count": distinct_actor_count,
             "missing_positions": missing_positions,
         },
         "factual_divergences": list(topic_bus.qa_divergences or []),
@@ -1262,6 +1252,7 @@ class BiasLanguageStage(_AgentStageBase):
     reads = (
         "qa_corrected_article",
         "final_sources",
+        "final_actors",
         "perspective_clusters_synced",
         "perspective_missing_positions",
         "qa_problems_found",

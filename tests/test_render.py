@@ -77,16 +77,20 @@ def _make_topicbus(
             "id": "pc-001",
             "position_label": "US administration",
             "position_summary": "frames as security-cost recovery",
-            "representation": "dominant",
+            "actor_ids": ["actor-001"],
             "source_ids": ["src-001"],
         },
         {
             "id": "pc-002",
             "position_label": "Iranian state media",
             "position_summary": "calls move economic coercion",
-            "representation": "substantial",
+            "actor_ids": ["actor-002"],
             "source_ids": ["src-003"],
         },
+    ]
+    tb.final_actors = [
+        {"id": "actor-001", "name": "Spokesperson"},
+        {"id": "actor-002", "name": "Foreign Ministry"},
     ]
     tb.perspective_missing_positions = [
         {"label": "civilian seafarers", "reason": "no direct testimony"}
@@ -400,22 +404,21 @@ def test_compose_bias_card_shape():
     assert set(card["selection"]) == {"coverage_gaps", "missing_positions", "qa_problems_found"}
     assert card["selection"]["coverage_gaps"] == tb.coverage_gaps_validated
     assert card["selection"]["missing_positions"] == tb.perspective_missing_positions
-    # framing
+    # framing — representation_distribution is gone; objective counts only
     assert set(card["framing"]) == {
         "position_clusters_summary",
         "cross_source_divergences",
         "cluster_count",
         "distinct_actor_count",
-        "representation_distribution",
     }
     summary = card["framing"]["position_clusters_summary"]
     assert len(summary) == 2
-    assert set(summary[0]) == {"id", "position_label", "representation", "source_count"}
+    assert set(summary[0]) == {"id", "position_label", "n_actors", "n_sources"}
     assert summary[0] == {
         "id": "pc-001",
         "position_label": "US administration",
-        "representation": "dominant",
-        "source_count": 1,
+        "n_actors": 1,
+        "n_sources": 1,
     }
     # reader_note
     assert card["reader_note"] == tb.bias_reader_note
@@ -435,95 +438,53 @@ def test_compose_bias_card_empty_state_robustness():
     assert card["framing"]["cross_source_divergences"] == []
     assert card["framing"]["cluster_count"] == 0
     assert card["framing"]["distinct_actor_count"] == 0
-    assert card["framing"]["representation_distribution"] == {
-        "dominant": 0,
-        "substantial": 0,
-        "marginal": 0,
-    }
+    assert "representation_distribution" not in card["framing"]
     assert card["reader_note"] == ""
 
 
 def test_compose_bias_card_framing_aggregates_populated():
     """Cluster-aggregate fields in the framing block — populated case.
 
-    V1 reference src/pipeline.py:870-949: cluster_count counts clusters;
-    distinct_actor_count counts unique (name, role) tuples across every
-    cluster's actors[]; representation_distribution buckets the
-    representation field into {dominant, substantial, marginal}.
+    cluster_count counts dict clusters; distinct_actor_count reads
+    ``len(final_actors)`` (the canonical deduped list — no per-cluster
+    walk).
     """
     tb = TopicBus()
     tb.perspective_clusters_synced = [
         {
             "id": "pc-001",
             "position_label": "Pro",
-            "representation": "dominant",
-            "actors": [
-                {"name": "Alice", "role": "Minister"},
-                {"name": "Bob", "role": "Spokesperson"},
-            ],
+            "actor_ids": ["actor-001", "actor-002"],
+            "source_ids": ["src-001"],
         },
         {
             "id": "pc-002",
             "position_label": "Skeptic",
-            "representation": "substantial",
-            "actors": [
-                # Same person referenced in cluster pc-001 → not double-counted
-                {"name": "Alice", "role": "Minister"},
-                {"name": "Carol", "role": "Analyst"},
-            ],
+            "actor_ids": ["actor-001", "actor-003"],
+            "source_ids": ["src-002"],
         },
         {
             "id": "pc-003",
             "position_label": "Anti",
-            "representation": "marginal",
-            # actors[] missing entirely — gracefully ignored
-        },
-        {
-            "id": "pc-004",
-            "position_label": "Edge",
-            # representation missing — defaults to "marginal" per V1 behaviour
-            "actors": [
-                {"name": "", "role": ""},  # blank-blank tuple → ignored
-                {"name": "Dave"},  # role missing → still counts as ("Dave", "")
-                "not-a-dict",  # non-dict actor → skipped
-            ],
+            "actor_ids": [],
+            "source_ids": ["src-003"],
         },
         "not-a-dict-cluster",  # skipped
+    ]
+    tb.final_actors = [
+        {"id": "actor-001", "name": "Alice"},
+        {"id": "actor-002", "name": "Bob"},
+        {"id": "actor-003", "name": "Carol"},
+        {"id": "actor-004", "name": ""},  # missing name → ignored
     ]
     card = compose_bias_card(tb)
     framing = card["framing"]
 
-    # 4 dict-shaped clusters, the string entry is skipped
-    assert framing["cluster_count"] == 4
+    # 3 dict-shaped clusters, the string entry is skipped
+    assert framing["cluster_count"] == 3
 
-    # Unique (name, role) tuples: ("Alice", "Minister"), ("Bob", "Spokesperson"),
-    # ("Carol", "Analyst"), ("Dave", "") = 4 distinct
-    assert framing["distinct_actor_count"] == 4
-
-    # Distribution: dominant=1, substantial=1, marginal=2 (pc-003 + pc-004)
-    assert framing["representation_distribution"] == {
-        "dominant": 1,
-        "substantial": 1,
-        "marginal": 2,
-    }
-
-
-def test_compose_bias_card_framing_aggregates_unknown_representation_dropped():
-    """V1 behaviour: a representation value outside the three known buckets
-    is not added to the distribution (the bucket count stays 0). Cluster
-    is still counted in cluster_count."""
-    tb = TopicBus()
-    tb.perspective_clusters_synced = [
-        {"id": "pc-001", "representation": "dominant"},
-        {"id": "pc-002", "representation": "tangential"},  # unknown bucket
-    ]
-    card = compose_bias_card(tb)
-    assert card["framing"]["cluster_count"] == 2
-    assert card["framing"]["representation_distribution"] == {
-        "dominant": 1,
-        "substantial": 0,
-        "marginal": 0,
-    }
+    # 3 entries in final_actors with non-empty name
+    assert framing["distinct_actor_count"] == 3
 
 
 # ---------------------------------------------------------------------------

@@ -95,8 +95,9 @@ def test_transparency_dropped_section_sources_only():
 
 
 def test_position_clusters_section_renders_when_data_present():
-    """Bug 1: perspectives is a dict with `position_clusters`, not a flat
-    list. The section must render the cluster's position_label."""
+    """Perspectives is a dict with `position_clusters`, not a flat list.
+    The section must render the cluster's position_label and
+    position_summary; the representation badge has been removed."""
     tp = {
         "perspectives": {
             "position_clusters": [
@@ -104,8 +105,8 @@ def test_position_clusters_section_renders_when_data_present():
                     "id": "pc-001",
                     "position_label": "US administration",
                     "position_summary": "Imposes transit fees as economic pressure.",
-                    "representation": "dominant",
-                    "actors": [{"name": "Doe", "role": "Spokesperson"}],
+                    "actor_ids": ["actor-001"],
+                    "source_ids": ["src-001"],
                 }
             ],
             "missing_positions": [],
@@ -114,6 +115,10 @@ def test_position_clusters_section_renders_when_data_present():
     html = build_perspectives(tp)
     assert "US administration" in html
     assert 'class="card-position"' in html
+    assert "Imposes transit fees as economic pressure." in html
+    # Representation badge removed
+    assert "dominant" not in html
+    assert 'class="badge"' not in html
 
 
 def test_bias_card_renders_findings():
@@ -228,7 +233,7 @@ def test_meta_bar_stakeholders_uses_distinct_actor_count():
 
 
 def test_bias_stats_line_renders():
-    """Item 2: stat line surfaces cluster_count, distinct_actor_count,
+    """The stat line surfaces cluster_count, distinct_actor_count,
     source.total, and len(by_language)."""
     tp = {
         "sources": [],
@@ -241,11 +246,6 @@ def test_bias_stats_line_renders():
             "framing": {
                 "cluster_count": 9,
                 "distinct_actor_count": 18,
-                "representation_distribution": {
-                    "dominant": 0,
-                    "substantial": 3,
-                    "marginal": 6,
-                },
             },
         },
     }
@@ -261,9 +261,9 @@ def test_bias_stats_line_renders():
     assert "<strong>4</strong>" in stats_block
 
 
-def test_representation_pills_render_with_zero_dominant():
-    """Item 3: three pills in fixed order. Zero counts render at reduced
-    opacity 0.4 — visible, not hidden."""
+def test_representation_pills_section_removed():
+    """The dominant/substantial/marginal pills section is gone — UX1/UX2/UX3
+    in Task E will redesign the bias-card body."""
     tp = {
         "sources": [],
         "bias_analysis": {
@@ -272,30 +272,14 @@ def test_representation_pills_render_with_zero_dominant():
             "framing": {
                 "cluster_count": 0,
                 "distinct_actor_count": 0,
-                "representation_distribution": {
-                    "dominant": 0,
-                    "substantial": 3,
-                    "marginal": 6,
-                },
             },
         },
     }
     html = build_bias_card(tp)
-    assert 'class="representation-pills"' in html
-    # All three pills render.
-    assert "0 dominant" in html
-    assert "3 substantial" in html
-    assert "6 marginal" in html
-    # Dominant pill (count 0) gets reduced opacity styling.
-    pill_start = html.find("pill-dominant")
-    pill_end = html.find("</span>", pill_start)
-    dominant_pill = html[pill_start:pill_end]
-    assert "opacity:0.4" in dominant_pill
-    # Non-zero pills do not get reduced opacity.
-    sub_start = html.find("pill-substantial")
-    sub_end = html.find("</span>", sub_start)
-    substantial_pill = html[sub_start:sub_end]
-    assert "opacity:1" in substantial_pill
+    assert 'class="representation-pills"' not in html
+    assert "pill-dominant" not in html
+    assert "pill-substantial" not in html
+    assert "pill-marginal" not in html
 
 
 def test_source_row_expandable_actors_when_present():

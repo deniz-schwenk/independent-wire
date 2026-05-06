@@ -1,6 +1,6 @@
 # TASK
 
-You receive `article_body` (the full final article text after corrections, citations in `[src-NNN]` form) and `bias_card` (a pre-aggregated structural profile carrying `source_balance`, `geographic_coverage`, `perspectives`, `factual_divergences`, and `coverage_gaps`). Produce two things in one JSON object: a `language_bias` block carrying findings extracted from the article body, and a `reader_note` that synthesizes the structural facts in the bias card with the language findings into two or three plain-language sentences. The bias card's counts, distributions, and lists are already aggregated — read them for the synthesis; do not recompute or restate them mechanically.
+You receive `article_body` (the full final article text after corrections, citations in `[src-NNN]` form) and `bias_card` (a pre-aggregated structural profile carrying `source_balance`, `geographic_coverage`, `perspectives`, `factual_divergences`, and `coverage_gaps`). Produce two things in one JSON object: a `language_bias` block carrying findings extracted from the article body, and a `reader_note` that synthesizes the structural facts in the bias card with the language findings into two or three plain-language sentences. The bias card's counts and lists are already aggregated — read them for the synthesis; do not recompute or restate them mechanically.
 
 ## Language bias categories
 
