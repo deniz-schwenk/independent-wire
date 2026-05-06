@@ -336,6 +336,81 @@ details[open] summary::before {
   padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
 }
 
+/* Bias-card stat line + representation pills */
+.bias-stats {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+  display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline;
+}
+.bias-stats strong { color: var(--color-text); font-weight: 700; }
+.bias-stats .sep { color: var(--color-text-subtle); }
+.representation-pills {
+  margin: 0 0 0.75rem; display: flex; flex-wrap: wrap; gap: 0.4rem;
+}
+.pill {
+  display: inline-block; padding: 0.15rem 0.6rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+/* Source actors expandable */
+.source-actors-row > td { padding: 0 0.75rem 0.75rem; border-bottom: 1px solid var(--color-border-light); }
+.source-actors > summary {
+  font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-subtle);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.source-actor-list { list-style: none; padding-left: 0; margin: 0.35rem 0 0; }
+.source-actor-list > li {
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+  font-family: var(--font-sans); font-size: 0.85rem;
+}
+.source-actor-list > li:last-child { border-bottom: none; }
+.actor-role { color: var(--color-text-secondary); margin-left: 0.35rem; }
+.actor-type-badge {
+  display: inline-block; padding: 0.05rem 0.4rem; margin-left: 0.35rem;
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  background: var(--color-bg-subtle); color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-light);
+}
+.actor-position {
+  font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.55;
+  margin-top: 0.25rem;
+}
+.actor-verbatim {
+  font-style: italic; color: var(--color-text-subtle); margin-top: 0.35rem;
+  border-left: 2px solid var(--color-border-light); padding-left: 0.6rem;
+  font-size: 0.85rem;
+}
+
+/* QA correction details */
+.qa-tag {
+  display: inline-block; padding: 0.05rem 0.4rem; margin-right: 0.35rem;
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  border: 1px solid currentColor;
+}
+.qa-tag.tag-applied { color: #0f766e; }
+.qa-tag.tag-retracted { color: #9f1239; }
+.qa-detail {
+  margin: 0.35rem 0 0.5rem 1rem; padding: 0.5rem 0.75rem;
+  background: var(--color-bg-subtle); border-left: 3px solid var(--color-border-light);
+  font-family: var(--font-sans); font-size: 0.82rem;
+}
+.qa-problem-type {
+  display: inline-block; padding: 0.05rem 0.4rem; margin-bottom: 0.35rem;
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  background: #ca8a0415; color: #ca8a04; border: 1px solid #ca8a0440;
+}
+.qa-excerpt {
+  font-style: italic; margin: 0.25rem 0;
+  border-left: 2px solid var(--color-border-light); padding-left: 0.6rem;
+  color: var(--color-text-secondary);
+}
+.qa-explanation { margin-top: 0.35rem; line-height: 1.55; }
+
 /* Sources table */
 .sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .sources-table th {
@@ -639,9 +714,44 @@ def build_bias_card(tp: dict) -> str:
     bias = tp.get("bias_analysis", {})
     findings = bias.get("language", [])
     by_language = bias.get("source", {}).get("by_language", {})
+    framing = bias.get("framing", {})
+    source = bias.get("source", {})
 
     parts = []
     parts.append('<h2>Bias Analysis</h2>\n')
+
+    # Stat line — deterministic aggregates for the dossier.
+    cluster_count = framing.get("cluster_count", 0)
+    distinct_actors = framing.get("distinct_actor_count", 0)
+    source_total = source.get("total", len(tp.get("sources", [])))
+    lang_count = len(by_language)
+    parts.append(
+        '<p class="bias-stats">'
+        f'<span><strong>{cluster_count}</strong> position clusters</span>'
+        '<span class="sep">&middot;</span>'
+        f'<span><strong>{distinct_actors}</strong> distinct actors</span>'
+        '<span class="sep">&middot;</span>'
+        f'<span><strong>{source_total}</strong> sources</span>'
+        '<span class="sep">&middot;</span>'
+        f'<span><strong>{lang_count}</strong> languages</span>'
+        '</p>\n'
+    )
+
+    # Representation pills — fixed order; zero counts render at low opacity.
+    rep_dist = framing.get("representation_distribution", {}) or {}
+    pill_parts = []
+    for key in ("dominant", "substantial", "marginal"):
+        n = int(rep_dist.get(key, 0) or 0)
+        color = REPRESENTATION_COLORS.get(key, "#64748b")
+        opacity = "0.4" if n == 0 else "1"
+        pill_parts.append(
+            f'<span class="pill pill-{key}" '
+            f'style="background:{color}15;color:{color};border:1px solid {color}40;'
+            f'opacity:{opacity}">{n} {key}</span>'
+        )
+    parts.append(
+        f'<p class="representation-pills">{"".join(pill_parts)}</p>\n'
+    )
 
     # Summary line — always visible. V2 schema has no severity field.
     if findings:
@@ -750,6 +860,9 @@ def build_sources_table(tp: dict) -> str:
             f'<td>{_esc(s.get("country", ""))}</td>'
             f'</tr>'
         )
+        actors = [a for a in (s.get("actors_quoted") or []) if isinstance(a, dict)]
+        if actors:
+            rows.append(_actors_quoted_row(actors))
 
     return (
         f'<h2>Sources</h2>\n'
@@ -758,6 +871,47 @@ def build_sources_table(tp: dict) -> str:
         f'<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>\n'
         f'<tbody>\n{"".join(rows)}\n</tbody>\n'
         f'</table>\n</div>\n'
+    )
+
+
+def _actors_quoted_row(actors: list[dict]) -> str:
+    """Render an expandable details block for actors quoted from a source.
+
+    Emitted as a sibling table row with `colspan=5` so it sits visually
+    underneath its source row without disturbing column widths.
+    """
+    items = []
+    for a in actors:
+        name = _esc(a.get("name", ""))
+        role = _esc(a.get("role", ""))
+        atype = _esc(a.get("type", ""))
+        position = _esc(a.get("position", ""))
+        type_badge = (
+            f'<span class="actor-type-badge">{atype}</span>' if atype else ""
+        )
+        role_span = f'<span class="actor-role">{role}</span>' if role else ""
+        position_html = (
+            f'<p class="actor-position">{position}</p>' if position else ""
+        )
+        verbatim = a.get("verbatim_quote")
+        verbatim_html = ""
+        if verbatim and str(verbatim).strip().lower() not in ("null", "none", "n/a"):
+            verbatim_html = (
+                f'<blockquote class="actor-verbatim">{_esc(str(verbatim))}'
+                f'</blockquote>'
+            )
+        items.append(
+            f'<li><strong>{name}</strong> {role_span} {type_badge}'
+            f'{position_html}{verbatim_html}</li>'
+        )
+    n = len(actors)
+    summary = f'{n} actor{"s" if n != 1 else ""} quoted'
+    return (
+        f'<tr class="source-actors-row"><td colspan="5">'
+        f'<details class="source-actors">'
+        f'<summary>{summary}</summary>'
+        f'<ul class="source-actor-list">{"".join(items)}</ul>'
+        f'</details></td></tr>'
     )
 
 
@@ -772,9 +926,10 @@ def build_transparency(tp: dict) -> str:
         parts.append(f'<dt>Selection Reason</dt><dd>{_esc(t["selection_reason"])}</dd>\n')
 
     corrections = t.get("qa_corrections", [])
+    problems = t.get("qa_problems_found", [])
     if corrections:
         items = []
-        for c in corrections:
+        for i, c in enumerate(corrections):
             if isinstance(c, dict):
                 text = c.get("proposed_correction", "")
                 applied = c.get("correction_needed", False)
@@ -782,7 +937,34 @@ def build_transparency(tp: dict) -> str:
                 text = str(c)
                 applied = True
             tag = "applied" if applied else "retracted"
-            items.append(f'<li>[{tag}] {_esc(text)}</li>')
+            problem = problems[i] if i < len(problems) and isinstance(problems[i], dict) else {}
+            ptype = problem.get("problem", "")
+            excerpt = problem.get("article_excerpt", "")
+            explanation = problem.get("explanation", "")
+            tag_html = f'<span class="qa-tag tag-{tag}">{tag}</span>'
+            if ptype or excerpt or explanation:
+                detail_bits = []
+                if ptype:
+                    detail_bits.append(
+                        f'<span class="qa-problem-type">{_esc(ptype)}</span>'
+                    )
+                if excerpt:
+                    detail_bits.append(
+                        f'<blockquote class="qa-excerpt">{_esc(excerpt)}'
+                        f'</blockquote>'
+                    )
+                if explanation:
+                    detail_bits.append(
+                        f'<p class="qa-explanation">{_esc(explanation)}</p>'
+                    )
+                items.append(
+                    f'<li><details>'
+                    f'<summary>{tag_html} {_esc(text)}</summary>'
+                    f'<div class="qa-detail">{"".join(detail_bits)}</div>'
+                    f'</details></li>'
+                )
+            else:
+                items.append(f'<li>{tag_html} {_esc(text)}</li>')
         parts.append(f'<dt>QA Corrections</dt><dd><ul>{"".join(items)}</ul></dd>\n')
 
     run = t.get("pipeline_run", {})

@@ -14,6 +14,8 @@ from scripts.render import (
     build_meta_bar,
     build_missing_voices,
     build_perspectives,
+    build_sources_table,
+    build_transparency,
 )
 
 
@@ -148,6 +150,175 @@ def test_meta_bar_stakeholders_uses_distinct_actor_count():
     assert ">18</span><span class=\"meta-label\">Stakeholders<" in html
     # Regression guard: the old bug emitted 2 (the count of perspective dict keys).
     assert ">2</span><span class=\"meta-label\">Stakeholders<" not in html
+
+
+# ---------------------------------------------------------------------------
+# Commit 2 — five data-gap renderings (tests 7–11)
+# ---------------------------------------------------------------------------
+
+
+def test_bias_stats_line_renders():
+    """Item 2: stat line surfaces cluster_count, distinct_actor_count,
+    source.total, and len(by_language)."""
+    tp = {
+        "sources": [],
+        "bias_analysis": {
+            "language": [],
+            "source": {
+                "by_language": {"en": 1, "de": 1, "fa": 1, "ru": 1},
+                "total": 13,
+            },
+            "framing": {
+                "cluster_count": 9,
+                "distinct_actor_count": 18,
+                "representation_distribution": {
+                    "dominant": 0,
+                    "substantial": 3,
+                    "marginal": 6,
+                },
+            },
+        },
+    }
+    html = build_bias_card(tp)
+    assert 'class="bias-stats"' in html
+    # All four numbers present in the bias-stats block.
+    stats_start = html.find('class="bias-stats"')
+    stats_end = html.find("</p>", stats_start)
+    stats_block = html[stats_start:stats_end]
+    assert "<strong>9</strong>" in stats_block
+    assert "<strong>18</strong>" in stats_block
+    assert "<strong>13</strong>" in stats_block
+    assert "<strong>4</strong>" in stats_block
+
+
+def test_representation_pills_render_with_zero_dominant():
+    """Item 3: three pills in fixed order. Zero counts render at reduced
+    opacity 0.4 — visible, not hidden."""
+    tp = {
+        "sources": [],
+        "bias_analysis": {
+            "language": [],
+            "source": {"by_language": {}, "total": 0},
+            "framing": {
+                "cluster_count": 0,
+                "distinct_actor_count": 0,
+                "representation_distribution": {
+                    "dominant": 0,
+                    "substantial": 3,
+                    "marginal": 6,
+                },
+            },
+        },
+    }
+    html = build_bias_card(tp)
+    assert 'class="representation-pills"' in html
+    # All three pills render.
+    assert "0 dominant" in html
+    assert "3 substantial" in html
+    assert "6 marginal" in html
+    # Dominant pill (count 0) gets reduced opacity styling.
+    pill_start = html.find("pill-dominant")
+    pill_end = html.find("</span>", pill_start)
+    dominant_pill = html[pill_start:pill_end]
+    assert "opacity:0.4" in dominant_pill
+    # Non-zero pills do not get reduced opacity.
+    sub_start = html.find("pill-substantial")
+    sub_end = html.find("</span>", sub_start)
+    substantial_pill = html[sub_start:sub_end]
+    assert "opacity:1" in substantial_pill
+
+
+def test_source_row_expandable_actors_when_present():
+    """Item 1: a source with actors_quoted gets a `<details>` expandable
+    sibling row showing each actor's name."""
+    tp = {
+        "sources": [
+            {
+                "id": "src-001",
+                "outlet": "Al Jazeera",
+                "title": "T",
+                "language": "en",
+                "country": "Qatar",
+                "actors_quoted": [
+                    {
+                        "name": "Hakan Fidan",
+                        "role": "Foreign Minister",
+                        "type": "government",
+                        "position": "Discussed regional developments.",
+                    },
+                    {
+                        "name": "Donald Trump",
+                        "role": "United States President",
+                        "type": "government",
+                        "position": "Warned of escalation.",
+                        "verbatim_quote": "blown off the face of the earth",
+                    },
+                ],
+            }
+        ]
+    }
+    html = build_sources_table(tp)
+    assert 'class="source-actors"' in html
+    assert "2 actors quoted" in html
+    assert "Hakan Fidan" in html
+    assert "Donald Trump" in html
+    # Verbatim quote rendered as a blockquote.
+    assert 'class="actor-verbatim"' in html
+    assert "blown off the face of the earth" in html
+
+
+def test_source_row_no_expandable_when_actors_empty():
+    """Item 1 negative: source with empty actors_quoted gets no
+    `<details>` block — the row stays as today."""
+    tp = {
+        "sources": [
+            {
+                "id": "src-001",
+                "outlet": "Reuters",
+                "title": "T",
+                "language": "en",
+                "country": "United Kingdom",
+                "actors_quoted": [],
+            }
+        ]
+    }
+    html = build_sources_table(tp)
+    assert 'class="source-actors"' not in html
+    assert "actors quoted" not in html
+
+
+def test_qa_correction_expandable_with_problem_detail():
+    """Item 5: aligned qa_corrections / qa_problems_found arrays render
+    expandable details containing the proposed correction in summary and
+    the problem-type / excerpt / explanation in the detail block."""
+    tp = {
+        "transparency": {
+            "qa_corrections": [
+                {
+                    "proposed_correction": "Replace 'Council leadership' with 'Council President António Costa'.",
+                    "correction_needed": True,
+                }
+            ],
+            "qa_problems_found": [
+                {
+                    "problem": "misleading_framing",
+                    "article_excerpt": "European Council leadership noted that the forum was meeting...",
+                    "explanation": "Source src-008 attributes the statement specifically to António Costa.",
+                }
+            ],
+        }
+    }
+    html = build_transparency(tp)
+    assert "<details>" in html
+    # Summary contains the correction text (single quotes are HTML-escaped)
+    # and the applied tag.
+    assert "Replace " in html and "Council leadership" in html
+    assert "tag-applied" in html
+    # Detail block contains the problem fields.
+    assert 'class="qa-detail"' in html
+    assert "misleading_framing" in html
+    assert "European Council leadership noted" in html
+    assert "António Costa" in html
 
 
 def test_publish_extract_metadata_uses_v2_paths(tmp_path):
