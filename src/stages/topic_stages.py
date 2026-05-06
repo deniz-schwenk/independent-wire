@@ -647,7 +647,12 @@ def _collect_referenced_src_ids(topic_bus: TopicBus) -> set[str]:
         "merged_preliminary_divergences",
         "coverage_gaps_validated",
     ),
-    writes=("final_sources", "perspective_clusters_synced"),
+    writes=(
+        "final_sources",
+        "perspective_clusters_synced",
+        "prune_dropped_sources",
+        "prune_dropped_clusters",
+    ),
 )
 async def prune_unused_sources_and_clusters(
     topic_bus: TopicBus, run_bus: RunBusReadOnly
@@ -678,6 +683,7 @@ async def prune_unused_sources_and_clusters(
     referenced = _collect_referenced_src_ids(topic_bus)
 
     kept_sources: list = []
+    dropped_sources: list[dict] = []
     for source in final_sources:
         if not isinstance(source, dict):
             kept_sources.append(source)
@@ -696,8 +702,16 @@ async def prune_unused_sources_and_clusters(
                 source.get("outlet"),
                 summary_snippet,
             )
+            dropped_sources.append(
+                {
+                    "id": sid or "",
+                    "outlet": source.get("outlet") or "",
+                    "summary": summary_snippet,
+                }
+            )
 
     kept_clusters: list = []
+    dropped_clusters: list[dict] = []
     for cluster in clusters:
         if not isinstance(cluster, dict):
             kept_clusters.append(cluster)
@@ -713,11 +727,19 @@ async def prune_unused_sources_and_clusters(
                 cluster.get("id") or cluster.get("position_label"),
                 cluster.get("position_label"),
             )
+            dropped_clusters.append(
+                {
+                    "id": cluster.get("id") or "",
+                    "position_label": cluster.get("position_label") or "",
+                }
+            )
 
     return topic_bus.model_copy(
         update={
             "final_sources": kept_sources,
             "perspective_clusters_synced": kept_clusters,
+            "prune_dropped_sources": dropped_sources,
+            "prune_dropped_clusters": dropped_clusters,
         }
     )
 
@@ -734,6 +756,8 @@ async def prune_unused_sources_and_clusters(
         "qa_corrections",
         "writer_article",
         "qa_corrected_article",
+        "prune_dropped_sources",
+        "prune_dropped_clusters",
     ),
     writes=("transparency_card",),
 )
@@ -750,6 +774,10 @@ async def compose_transparency_card(
     - article_original: a copy of writer_article iff QA modified anything
       (qa_problems_found is non-empty); None otherwise.
     - qa_problems_found / qa_corrections: copied through.
+    - dropped_sources / dropped_clusters: passed through from the
+      `prune_dropped_*` staging slots populated by
+      `prune_unused_sources_and_clusters`. Both arrays are
+      present-but-empty when nothing was dropped.
     """
     raw_reason = topic_bus.editor_selected_topic.selection_reason or ""
     cleaned_reason = strip_stale_quantifiers(raw_reason)
@@ -765,6 +793,8 @@ async def compose_transparency_card(
         article_original=article_original,
         qa_problems_found=copy.deepcopy(topic_bus.qa_problems_found),
         qa_corrections=copy.deepcopy(topic_bus.qa_corrections),
+        dropped_sources=copy.deepcopy(list(topic_bus.prune_dropped_sources or [])),
+        dropped_clusters=copy.deepcopy(list(topic_bus.prune_dropped_clusters or [])),
     )
     return topic_bus.model_copy(update={"transparency_card": card})
 

@@ -1102,6 +1102,85 @@ def test_prune_is_noop_when_nothing_to_drop():
 
     assert len(tb_after.final_sources) == 2
     assert len(tb_after.perspective_clusters_synced) == 1
+    # Drop-staging slots are present-but-empty when nothing was dropped.
+    assert tb_after.prune_dropped_sources == []
+    assert tb_after.prune_dropped_clusters == []
+
+
+def test_prune_records_dropped_sources_and_clusters():
+    """When prune drops anything, the staging slots
+    (prune_dropped_sources / prune_dropped_clusters) carry one entry per
+    drop with the fields needed by the renderer (id + outlet + summary
+    snippet for sources; id + position_label for clusters)."""
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-001", "outlet": "Reuters", "summary": "kept", "actors_quoted": []},
+        {
+            "id": "src-007",
+            "outlet": "Off-topic Daily",
+            "summary": "An unrelated story not cited anywhere downstream.",
+            "actors_quoted": [],
+        },
+    ]
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "position_label": "Kept position",
+         "actors": ["A"], "source_ids": ["src-001"]},
+        # Empty cluster — strict-drop removes it.
+        {"id": "pc-002", "position_label": "Dropped position",
+         "actors": [], "source_ids": []},
+    ]
+
+    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
+
+    # Source-side drops.
+    assert len(tb_after.prune_dropped_sources) == 1
+    drop = tb_after.prune_dropped_sources[0]
+    assert drop["id"] == "src-007"
+    assert drop["outlet"] == "Off-topic Daily"
+    assert drop["summary"].startswith("An unrelated story not cited")
+    # Truncated to the same 60-char window the logger uses.
+    assert len(drop["summary"]) <= 60
+
+    # Cluster-side drops.
+    assert len(tb_after.prune_dropped_clusters) == 1
+    cdrop = tb_after.prune_dropped_clusters[0]
+    assert cdrop["id"] == "pc-002"
+    assert cdrop["position_label"] == "Dropped position"
+
+
+def test_compose_transparency_card_propagates_dropped_lists():
+    """compose_transparency_card reads prune_dropped_sources /
+    prune_dropped_clusters and forwards them onto the rendered
+    TransparencyCard."""
+    tb = TopicBus(editor_selected_topic=EditorAssignment(selection_reason="x"))
+    tb.writer_article = WriterArticle(headline="H", body="B")
+    tb.prune_dropped_sources = [
+        {"id": "src-007", "outlet": "Off-topic Daily", "summary": "..."}
+    ]
+    tb.prune_dropped_clusters = [
+        {"id": "pc-002", "position_label": "Dropped position"}
+    ]
+
+    tb_after = _run(compose_transparency_card, tb, _ro())
+    card = tb_after.transparency_card
+    assert card.dropped_sources == [
+        {"id": "src-007", "outlet": "Off-topic Daily", "summary": "..."}
+    ]
+    assert card.dropped_clusters == [
+        {"id": "pc-002", "position_label": "Dropped position"}
+    ]
+
+
+def test_compose_transparency_card_dropped_lists_default_empty():
+    """No drops staged → TransparencyCard.dropped_sources and
+    dropped_clusters are present-but-empty (not omitted, not None)."""
+    tb = TopicBus(editor_selected_topic=EditorAssignment(selection_reason="x"))
+    tb.writer_article = WriterArticle(headline="H", body="B")
+    # prune_dropped_* default to []; do not populate.
+
+    tb_after = _run(compose_transparency_card, tb, _ro())
+    assert tb_after.transparency_card.dropped_sources == []
+    assert tb_after.transparency_card.dropped_clusters == []
 
 
 def test_prune_picks_up_qa_divergence_source_ids():

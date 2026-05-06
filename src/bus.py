@@ -181,13 +181,21 @@ class HydrationPhase2Corpus(_StrictSubModel):
 
 
 class TransparencyCard(_StrictSubModel):
-    """ARCH-V2 §4B.11. `pipeline_run` is `{run_id, date}` per the doc."""
+    """ARCH-V2 §4B.11. `pipeline_run` is `{run_id, date}` per the doc.
+
+    `dropped_sources` and `dropped_clusters` surface the strict-drop
+    decisions made by `prune_unused_sources_and_clusters` so readers can
+    see why a TP's `final_sources[].id` sequence has gaps. Both arrays
+    are present-but-empty when nothing was dropped.
+    """
 
     selection_reason: str = ""
     pipeline_run: dict = Field(default_factory=dict)
     article_original: Optional[WriterArticle] = None
     qa_problems_found: list = Field(default_factory=list)
     qa_corrections: list[Correction] = Field(default_factory=list)
+    dropped_sources: list = Field(default_factory=list)
+    dropped_clusters: list = Field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -375,6 +383,21 @@ class TopicBus(BaseModel):
 
     # 4B.10 Coverage gaps (1 slot)
     coverage_gaps_validated: list = Slot(default_factory=list, visibility=["tp", "mcp"])
+
+    # 4B.10b Strict-drop staging slots written by
+    # `prune_unused_sources_and_clusters` and read by
+    # `compose_transparency_card`. Internal because they're surfaced to
+    # readers via `transparency_card.dropped_{sources,clusters}` instead.
+    prune_dropped_sources: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
+    prune_dropped_clusters: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
 
     # 4B.11 Source balance and rendered transparency (2 slots)
     source_balance: SourceBalance = Slot(

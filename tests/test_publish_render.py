@@ -20,6 +20,76 @@ from scripts.render import (
 
 
 # ---------------------------------------------------------------------------
+# Strict-drop pruning collapsible
+# ---------------------------------------------------------------------------
+
+
+def test_transparency_renders_dropped_collapsible_when_non_empty():
+    """When transparency.dropped_sources or dropped_clusters is non-empty,
+    a collapsible section appears with a summary line containing the
+    counts and an expandable body listing each drop."""
+    tp = {
+        "transparency": {
+            "selection_reason": "x",
+            "dropped_sources": [
+                {"id": "src-007", "outlet": "Off-topic Daily",
+                 "summary": "An unrelated story"},
+                {"id": "src-009", "outlet": "Other", "summary": "Another"},
+            ],
+            "dropped_clusters": [
+                {"id": "pc-002", "position_label": "Dropped position"}
+            ],
+            "pipeline_run": {"run_id": "r", "date": "2026-05-05"},
+        }
+    }
+    html = build_transparency(tp)
+    assert "Strict-drop Pruning" in html
+    assert 'class="dropped-details"' in html
+    assert "2 sources dropped" in html
+    assert "1 cluster dropped" in html
+    assert "src-007" in html
+    assert "Off-topic Daily" in html
+    assert "src-009" in html
+    assert "pc-002" in html
+    assert "Dropped position" in html
+
+
+def test_transparency_no_dropped_section_when_arrays_empty():
+    """Both dropped_sources and dropped_clusters empty → the collapsible
+    is not emitted at all."""
+    tp = {
+        "transparency": {
+            "selection_reason": "x",
+            "dropped_sources": [],
+            "dropped_clusters": [],
+            "pipeline_run": {"run_id": "r", "date": "2026-05-05"},
+        }
+    }
+    html = build_transparency(tp)
+    assert "Strict-drop Pruning" not in html
+    assert 'class="dropped-details"' not in html
+
+
+def test_transparency_dropped_section_sources_only():
+    """When only dropped_sources is non-empty, the summary mentions only
+    sources and the body shows only the Sources sub-block."""
+    tp = {
+        "transparency": {
+            "selection_reason": "x",
+            "dropped_sources": [
+                {"id": "src-007", "outlet": "Off-topic Daily", "summary": "..."}
+            ],
+            "dropped_clusters": [],
+            "pipeline_run": {"run_id": "r", "date": "2026-05-05"},
+        }
+    }
+    html = build_transparency(tp)
+    assert "Strict-drop Pruning" in html
+    assert "1 source dropped" in html
+    assert "cluster" not in html.split("Strict-drop Pruning")[1].split("</details>")[0]
+
+
+# ---------------------------------------------------------------------------
 # Commit 1 — six bug fixes (tests 1–6)
 # ---------------------------------------------------------------------------
 

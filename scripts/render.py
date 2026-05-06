@@ -432,6 +432,30 @@ details[open] summary::before {
 .transparency dt.pipeline-run { border-top: 1px solid var(--color-border-light); padding-top: 0.75rem; margin-top: 0.75rem; }
 .transparency dd.pipeline-run { border-bottom: 1px solid var(--color-border-light); padding-bottom: 0.75rem; margin-bottom: 0.75rem; }
 
+/* Strict-drop pruning collapsible */
+.dropped-details > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.dropped-detail { margin-top: 0.5rem; }
+.dropped-section-label {
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-text-subtle);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin: 0.5rem 0 0.25rem;
+}
+.dropped-list { list-style: none; padding-left: 0; margin: 0; }
+.dropped-list > li {
+  padding: 0.25rem 0; border-bottom: 1px solid var(--color-border-light);
+  font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-secondary);
+}
+.dropped-list > li:last-child { border-bottom: none; }
+.dropped-id {
+  display: inline-block; font-family: var(--font-mono); font-weight: 700;
+  color: var(--color-text); margin-right: 0.4rem;
+}
+.dropped-outlet { color: var(--color-text); }
+.dropped-label { font-family: var(--font-sans); }
+
 /* Footer */
 footer {
   margin-top: 3rem;
@@ -968,6 +992,15 @@ def build_transparency(tp: dict) -> str:
                 items.append(f'<li>{tag_html} {_esc(text)}</li>')
         parts.append(f'<dt>QA Corrections</dt><dd><ul>{"".join(items)}</ul></dd>\n')
 
+    dropped_sources = [
+        d for d in (t.get("dropped_sources") or []) if isinstance(d, dict)
+    ]
+    dropped_clusters = [
+        d for d in (t.get("dropped_clusters") or []) if isinstance(d, dict)
+    ]
+    if dropped_sources or dropped_clusters:
+        parts.append(_dropped_block(dropped_sources, dropped_clusters))
+
     run = t.get("pipeline_run", {})
     if run:
         parts.append(
@@ -977,6 +1010,71 @@ def build_transparency(tp: dict) -> str:
 
     parts.append('</dl>\n</div>\n')
     return "".join(parts)
+
+
+def _dropped_block(
+    dropped_sources: list[dict], dropped_clusters: list[dict]
+) -> str:
+    """Render the strict-drop collapsible inside the Transparency Trail.
+
+    Surfaces which sources / clusters `prune_unused_sources_and_clusters`
+    removed because no downstream consumer cited them. Default closed —
+    expanding it lists per-entry detail (id, outlet, summary snippet for
+    sources; id, position_label for clusters).
+    """
+    n_src = len(dropped_sources)
+    n_cls = len(dropped_clusters)
+    summary_bits: list[str] = []
+    if n_src:
+        summary_bits.append(
+            f'{n_src} source{"s" if n_src != 1 else ""} dropped'
+        )
+    if n_cls:
+        summary_bits.append(
+            f'{n_cls} cluster{"s" if n_cls != 1 else ""} dropped'
+        )
+    summary = " &middot; ".join(summary_bits)
+
+    body_parts: list[str] = []
+    if dropped_sources:
+        items = []
+        for d in dropped_sources:
+            sid = _esc(d.get("id", ""))
+            outlet = _esc(d.get("outlet", ""))
+            summary_snippet = _esc(d.get("summary", ""))
+            items.append(
+                f'<li><span class="dropped-id">{sid}</span> '
+                f'<span class="dropped-outlet">{outlet}</span>'
+                f'{f" &mdash; {summary_snippet}" if summary_snippet else ""}'
+                f'</li>'
+            )
+        body_parts.append(
+            '<p class="dropped-section-label">Sources</p>'
+            f'<ul class="dropped-list">{"".join(items)}</ul>'
+        )
+    if dropped_clusters:
+        items = []
+        for d in dropped_clusters:
+            cid = _esc(d.get("id", ""))
+            label = _esc(d.get("position_label", ""))
+            items.append(
+                f'<li><span class="dropped-id">{cid}</span> '
+                f'<span class="dropped-label">{label}</span></li>'
+            )
+        body_parts.append(
+            '<p class="dropped-section-label">Clusters</p>'
+            f'<ul class="dropped-list">{"".join(items)}</ul>'
+        )
+
+    return (
+        '<dt>Strict-drop Pruning</dt>'
+        '<dd><details class="dropped-details">'
+        f'<summary>{summary}</summary>'
+        '<div class="dropped-detail">'
+        f'{"".join(body_parts)}'
+        '</div>'
+        '</details></dd>\n'
+    )
 
 
 def build_glossary() -> str:

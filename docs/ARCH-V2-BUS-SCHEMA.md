@@ -302,7 +302,7 @@ The unvalidated `merged_coverage_gaps` remains in the TopicBus for full provenan
 | Slot | Owner | Initial | Final | Visibility |
 |---|---|---|---|---|
 | `source_balance` | init (Python aggregation, runs after `final_sources`) | `{by_country: {}, by_language: {}, represented: [], missing_from_dossier: []}` | Computed from `final_sources` | `tp`, `mcp` |
-| `transparency_card` | init (Python aggregation, runs after QA) | `{}` | Computed from TopicBus state. Contains: `selection_reason` (cleaned via stale-quantifier strip, references `editor_selected_topic.selection_reason`), `pipeline_run` (`run_id`, `date` — pulled from the parent RunBus), `article_original` (mirror of `writer_article` if QA changed anything, else absent), `qa_problems_found`, `qa_proposed_corrections`. | `tp`, `mcp` |
+| `transparency_card` | init (Python aggregation, runs after QA) | `{}` | Computed from TopicBus state. Contains: `selection_reason` (cleaned via stale-quantifier strip, references `editor_selected_topic.selection_reason`), `pipeline_run` (`run_id`, `date` — pulled from the parent RunBus), `article_original` (mirror of `writer_article` if QA changed anything, else absent), `qa_problems_found`, `qa_proposed_corrections`, `dropped_sources` (`[{id, outlet, summary}]` for each strict-dropped source), `dropped_clusters` (`[{id, position_label}]` for each strict-dropped cluster). The two dropped lists are populated from the internal `prune_dropped_sources` / `prune_dropped_clusters` staging slots written by `prune_unused_sources_and_clusters`; both are present-but-empty when nothing was dropped. | `tp`, `mcp` |
 
 #### 4B.12 Bias Card (rendered, multi-slot derived view)
 
