@@ -530,6 +530,25 @@ The S15-era `_normalize_all_source_ids` recursive sweep becomes unnecessary — 
 
 **ID-flow symmetry across Writer and QA (post-V2-09e).** The Writer reads `final_sources` (already in `src-NNN` form) and emits inline citations as `[src-NNN]` directly — there is no post-Writer body-rewrite stage. The Writer's output `sources[]` array carries `{src_id: src-NNN}` entries (matching `WRITER_SCHEMA.sources[].src_id` in `src/schemas.py`). QA reads the same `final_sources` as its evidence base and emits `[src-NNN]` citations in `qa_corrected_article.body` and in `qa_problems_found[].article_excerpt` / `.explanation`. The pipeline's ID-flow is therefore fully symmetric end-to-end: every agent that reads sources reads the renumbered set, every agent that emits citations emits in `src-NNN` form. The audit-trail field `transparency.article_original.body` is a verbatim capture of the Writer's emit and consequently also in `src-NNN` form — pre-V2-09e it carried `[rsrc-NNN]` because the Writer prompt incorrectly instructed that form despite receiving `src-NNN` IDs. V2-09e corrected the prompt to match the architecture; commit 636fe21 closed Bug-5.
 
+### 7.1 Strict-drop and source ID gaps
+
+After `renumber_sources` (topic stage 10 / 15) assigns the canonical `src-NNN` IDs, every downstream consumer — Writer, QA, perspective-clustering, divergences, bias-language, validated coverage gaps — mints `[src-NNN]` references against this contiguous numbering. Late in the topic-stage list, `prune_unused_sources_and_clusters` (stage 19a) walks every reference site (article body, cluster `source_ids[]`, divergence `source_ids[]`, validated coverage-gap text, bias-language excerpts/explanations) to build the *referenced set*, then drops any source whose `src-NNN` is not in that set. The principle is strict: **if the synthesis stack chose not to use a source, it is off-topic and drops out of the published TP** — content presence (a populated `summary` or `actors_quoted`) is no longer a keep-reprieve.
+
+The renumbering deliberately runs **before** pruning. Renumbering after pruning would invalidate every reference already minted by Writer / QA / clustering / divergences / bias-language and force a recursive rewrite pass across all of them — heavier and more error-prone than keeping the gaps. Therefore, observed gaps in `final_sources[].id` are **intentional**, not a bug. They preserve a direct mapping from each surviving `src-NNN` back to its position in `merged_sources_pre_renumber`, which is useful when correlating a published TP against the underlying hydration / researcher dossier on disk.
+
+A typical post-prune `final_sources[].id` sequence:
+
+```
+src-001, src-002, src-003, src-004, src-005, src-006, src-008, src-010,
+src-012, src-015, src-016, src-017, src-020, src-021, src-022, src-023,
+src-024, src-026, src-027, src-028, src-029, src-030, src-031, src-032,
+src-033, src-034, src-035, src-036, src-037, src-038, src-041
+```
+
+(31 surviving IDs out of an original pool of 41; `src-007 / 009 / 011 / 013 / 014 / 018 / 019 / 025 / 039 / 040` were dropped because no consumer cited them.)
+
+The same stage applies a parallel rule to clusters: a `pc-NNN` whose `actors[]` and `source_ids[]` are both empty after source-pruning is removed. Cluster IDs are not renumbered for the same reason source IDs aren't — every consumer that references `pc-NNN` does so against the original cluster numbering, and recursive rewrites would buy nothing. Each drop (source or cluster) is logged at INFO level so reviewers can trace which entries were removed on a smoke run.
+
 ---
 
 ## 8. Migration plan (big-bang with Git-tag rollback)
