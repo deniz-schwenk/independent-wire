@@ -429,6 +429,8 @@ details[open] summary::before {
 .transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
 .transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
 .transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+.transparency dt.pipeline-run { border-top: 1px solid var(--color-border-light); padding-top: 0.75rem; margin-top: 0.75rem; }
+.transparency dd.pipeline-run { border-bottom: 1px solid var(--color-border-light); padding-bottom: 0.75rem; margin-bottom: 0.75rem; }
 
 /* Footer */
 footer {
@@ -969,7 +971,8 @@ def build_transparency(tp: dict) -> str:
     run = t.get("pipeline_run", {})
     if run:
         parts.append(
-            f'<dt>Pipeline Run</dt><dd>{_esc(run.get("run_id", ""))} &middot; {_esc(run.get("date", ""))}</dd>\n'
+            f'<dt class="pipeline-run">Pipeline Run</dt>'
+            f'<dd class="pipeline-run">{_esc(run.get("run_id", ""))} &middot; {_esc(run.get("date", ""))}</dd>\n'
         )
 
     parts.append('</dl>\n</div>\n')
