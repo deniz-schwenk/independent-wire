@@ -150,7 +150,6 @@ REPRESENTATION_COLORS = {
 }
 SIGNIFICANCE_COLORS = {"critical": "#9f1239", "notable": "#ca8a04", "minor": "#64748b"}
 DIVERGENCE_COLORS = {"factual": "#9f1239", "framing": "#7c3aed", "omission": "#ca8a04", "emphasis": "#0369a1"}
-SEVERITY_COLORS = {"low": "#0f766e", "moderate": "#ca8a04", "high": "#9f1239"}
 RESOLUTION_LABELS = {"resolved": "Resolved", "partially_resolved": "Partially resolved", "unresolved": "Unresolved"}
 
 
