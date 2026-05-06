@@ -373,7 +373,7 @@ def test_compose_bias_card_shape():
     # geographical
     assert set(card["geographical"]) == {"represented", "by_country", "missing_from_dossier"}
     # selection
-    assert set(card["selection"]) == {"coverage_gaps", "missing_positions", "qa_findings"}
+    assert set(card["selection"]) == {"coverage_gaps", "missing_positions", "qa_problems_found"}
     assert card["selection"]["coverage_gaps"] == tb.coverage_gaps_validated
     assert card["selection"]["missing_positions"] == tb.perspective_missing_positions
     # framing

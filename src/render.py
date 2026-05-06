@@ -126,6 +126,11 @@ def render_tp_public(
     `article` always reads `qa_corrected_article` — the mirror_qa_corrected
     stage guarantees the slot is fully populated regardless of QA outcome
     or pipeline variant.
+
+    Top-level keys are ordered along the pipeline flow (Curator/Researcher
+    sources → researcher gaps → perspective clusters → writer/QA article →
+    QA divergences → bias-detector reflection → transparency trail) so a
+    reader following the JSON top-to-bottom traces the agent sequence.
     """
     rb = _runbus_for_render(run_bus)
     assignment = topic_bus.editor_selected_topic
@@ -146,13 +151,13 @@ def render_tp_public(
         "status": "review",
         "metadata": metadata,
         "sources": list(topic_bus.final_sources),
+        "gaps": list(topic_bus.coverage_gaps_validated),
         "perspectives": {
             "position_clusters": list(topic_bus.perspective_clusters_synced),
             "missing_positions": list(topic_bus.perspective_missing_positions),
         },
-        "divergences": list(topic_bus.qa_divergences),
-        "gaps": list(topic_bus.coverage_gaps_validated),
         "article": topic_bus.qa_corrected_article.model_dump(),
+        "divergences": list(topic_bus.qa_divergences),
         "bias_analysis": compose_bias_card(topic_bus),
         "transparency": topic_bus.transparency_card.model_dump(),
     }
@@ -176,7 +181,7 @@ _TP_RESHAPED_SLOTS: dict[str, str] = {
     "bias_language_findings": "bias_analysis.language",
     "bias_reader_note": "bias_analysis.reader_note",
     "source_balance": "bias_analysis.source / bias_analysis.geographical",
-    "qa_problems_found": "bias_analysis.selection.qa_findings",
+    "qa_problems_found": "bias_analysis.selection.qa_problems_found",
     "qa_corrections": "bias_analysis.selection (or mcp top-level)",
 }
 
@@ -300,7 +305,7 @@ def compose_bias_card(topic_bus: TopicBus) -> dict:
         "selection": {
             "coverage_gaps": list(topic_bus.coverage_gaps_validated),
             "missing_positions": list(topic_bus.perspective_missing_positions),
-            "qa_findings": list(topic_bus.qa_problems_found),
+            "qa_problems_found": list(topic_bus.qa_problems_found),
         },
         "framing": {
             "position_clusters_summary": _summarise_clusters(clusters),
