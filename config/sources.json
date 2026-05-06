@@ -311,50 +311,6 @@
       "enabled": true
     },
     {
-      "name": "BBC Middle East",
-      "url": "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml",
-      "type": "rss",
-      "region": "Middle East",
-      "language": "en",
-      "tier": 1,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "BBC regional desk",
-      "enabled": true
-    },
-    {
-      "name": "BBC Africa",
-      "url": "https://feeds.bbci.co.uk/news/world/africa/rss.xml",
-      "type": "rss",
-      "region": "Africa",
-      "language": "en",
-      "tier": 1,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "BBC regional desk",
-      "enabled": true
-    },
-    {
-      "name": "BBC Asia",
-      "url": "https://feeds.bbci.co.uk/news/world/asia/rss.xml",
-      "type": "rss",
-      "region": "East Asia",
-      "language": "en",
-      "tier": 1,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "BBC regional desk",
-      "enabled": true
-    },
-    {
-      "name": "BBC Latin America",
-      "url": "https://feeds.bbci.co.uk/news/world/latin_america/rss.xml",
-      "type": "rss",
-      "region": "Latin America",
-      "language": "en",
-      "tier": 1,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "BBC regional desk",
-      "enabled": true
-    },
-    {
       "name": "Le Monde",
       "url": "https://www.lemonde.fr/en/rss/une.xml",
       "type": "rss",
@@ -385,17 +341,6 @@
       "tier": 2,
       "editorial_independence": "independent",
       "bias_note": "German investigative newsmagazine",
-      "enabled": true
-    },
-    {
-      "name": "BBC Russian",
-      "url": "https://feeds.bbci.co.uk/russian/rss.xml",
-      "type": "rss",
-      "region": "Europe",
-      "language": "ru",
-      "tier": 2,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "BBC Russian service, independent Russian-language news",
       "enabled": true
     },
     {
@@ -506,17 +451,6 @@
       "tier": 2,
       "editorial_independence": "independent",
       "bias_note": "Major Nigerian newspaper",
-      "enabled": true
-    },
-    {
-      "name": "BBC Afrique",
-      "url": "https://www.bbc.com/afrique/index.xml",
-      "type": "rss",
-      "region": "Africa",
-      "language": "fr",
-      "tier": 2,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "BBC French-language African service",
       "enabled": true
     },
     {
