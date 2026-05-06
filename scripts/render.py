@@ -310,7 +310,7 @@ details summary::before {
   margin-right: 0.25rem;
 }
 details[open] summary::before {
-  content: "\2212  ";
+  content: "−  ";
 }
 
 /* Bias findings */
