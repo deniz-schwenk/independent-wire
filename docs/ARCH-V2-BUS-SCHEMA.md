@@ -328,7 +328,7 @@ The composed `bias_analysis` block in the rendered TP looks like:
   "selection": {
     "coverage_gaps": [...from coverage_gaps_validated...],
     "missing_positions": [...from perspective_missing_positions...],
-    "qa_findings": [...from qa_problems_found...]
+    "qa_problems_found": [...from qa_problems_found...]
   },
   "framing": {
     "position_clusters_summary": [...high-level summary of perspective_clusters_synced...],
