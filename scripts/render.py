@@ -274,6 +274,14 @@ h2 {
 .card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
 .card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
 .card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+.cluster-counts {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); margin: 0.75rem 0 0;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.cluster-counts a { color: inherit; text-decoration: underline; }
+.cluster-counts a:hover { color: var(--color-text); }
+.card:target { background: var(--color-bg-subtle, #f5f5f4); }
 
 /* Missing voices */
 .missing-voice {
@@ -630,13 +638,22 @@ def _wrap_non_latin_in_html(text: str) -> str:
     return result
 
 
+def _plural(n: int, singular: str, plural: str | None = None) -> str:
+    """Return ``"1 actor"`` / ``"2 actors"`` style strings. ``plural``
+    defaults to ``singular + 's'``."""
+    word = singular if n == 1 else (plural or f"{singular}s")
+    return f"{n} {word}"
+
+
 def build_perspectives(tp: dict) -> str:
     """Render Perspective V2 position_clusters. One cluster = one card.
 
-    The representation badge has been removed; cluster cards now show
-    just the position label and the position summary. The richer
-    cluster-card content (count summary, joined actor list) is the
-    UX3 follow-up workstream.
+    Cluster cards show the position label, a one-line summary, and a
+    monospace counts row: ``{n_actors} · {n_sources} · {n_regions} ·
+    {n_languages}``. The actor count is wrapped in ``<a
+    href="#cluster-{id}">`` so a click filters the Actors-section to
+    this cluster's members. Per-actor data is rendered in the
+    Actors-section (see ``build_actors_section``), not inline.
     """
     clusters = tp.get("perspectives", {}).get("position_clusters", [])
     if not clusters:
@@ -647,10 +664,37 @@ def build_perspectives(tp: dict) -> str:
             continue
         label = c.get("position_label", "")
         summary = c.get("position_summary", "")
+        cluster_id = c.get("id", "")
+        n_actors = int(c.get("n_actors", 0) or 0)
+        n_sources = int(c.get("n_sources", 0) or 0)
+        n_regions = int(c.get("n_regions", 0) or 0)
+        n_languages = int(c.get("n_languages", 0) or 0)
+
+        actors_label = _plural(n_actors, "actor")
+        if cluster_id:
+            actors_html = (
+                f'<a href="#cluster-{_esc(cluster_id)}">{actors_label}</a>'
+            )
+        else:
+            actors_html = actors_label
+
+        counts_line = (
+            f'<p class="cluster-counts">'
+            f'<span class="cluster-counts-actors">{actors_html}</span>'
+            f' &middot; '
+            f'<span>{_plural(n_sources, "source")}</span>'
+            f' &middot; '
+            f'<span>{_plural(n_regions, "region")}</span>'
+            f' &middot; '
+            f'<span>{_plural(n_languages, "language")}</span>'
+            f'</p>\n'
+        )
+
         cards.append(
-            f'<div class="card">\n'
+            f'<div class="card" id="{_esc(cluster_id)}">\n'
             f'  <div class="card-header"><span class="card-actor">{_esc(label)}</span></div>\n'
             f'  <div class="card-position">{_esc(summary)}</div>\n'
+            f'  {counts_line}'
             f'</div>\n'
         )
     return f'<h2>Perspectives &mdash; Position Clusters</h2>\n<div class="card-grid">\n{"".join(cards)}</div>\n'

@@ -96,8 +96,8 @@ def test_transparency_dropped_section_sources_only():
 
 def test_position_clusters_section_renders_when_data_present():
     """Perspectives is a dict with `position_clusters`, not a flat list.
-    The section must render the cluster's position_label and
-    position_summary; the representation badge has been removed."""
+    The section renders the position_label, position_summary, and a
+    counts line — no inline actor list, no representation badge."""
     tp = {
         "perspectives": {
             "position_clusters": [
@@ -107,6 +107,10 @@ def test_position_clusters_section_renders_when_data_present():
                     "position_summary": "Imposes transit fees as economic pressure.",
                     "actor_ids": ["actor-001"],
                     "source_ids": ["src-001"],
+                    "n_actors": 1,
+                    "n_sources": 1,
+                    "n_regions": 1,
+                    "n_languages": 1,
                 }
             ],
             "missing_positions": [],
@@ -116,9 +120,90 @@ def test_position_clusters_section_renders_when_data_present():
     assert "US administration" in html
     assert 'class="card-position"' in html
     assert "Imposes transit fees as economic pressure." in html
-    # Representation badge removed
-    assert "dominant" not in html
+    # Counts line replaces representation badge + inline actors
+    assert 'class="cluster-counts"' in html
+    assert "1 actor" in html
+    assert "1 source" in html
+    assert "1 region" in html
+    assert "1 language" in html
+    # The actor count is a clickable link to the cluster's filter hash
+    # (the JS shim in build_actors_section listens for #cluster-{id})
+    assert 'href="#cluster-pc-001"' in html
+    # The cluster card itself is anchorable by its canonical id
+    assert 'id="pc-001"' in html
+    # No inline actor list anymore
+    assert 'class="cluster-actors"' not in html
     assert 'class="badge"' not in html
+    assert "dominant" not in html
+
+
+def test_cluster_card_counts_use_singular_plural_correctly():
+    """Singular forms for n=1, plural for n=0 / n>=2. Same for sources,
+    regions, languages."""
+    tp = {
+        "perspectives": {
+            "position_clusters": [
+                {
+                    "id": "pc-001",
+                    "position_label": "Empty",
+                    "position_summary": "",
+                    "actor_ids": [],
+                    "source_ids": [],
+                    "n_actors": 0,
+                    "n_sources": 0,
+                    "n_regions": 0,
+                    "n_languages": 0,
+                },
+                {
+                    "id": "pc-002",
+                    "position_label": "Plural",
+                    "position_summary": "",
+                    "actor_ids": ["a", "b", "c"],
+                    "source_ids": ["s", "t"],
+                    "n_actors": 3,
+                    "n_sources": 2,
+                    "n_regions": 4,
+                    "n_languages": 5,
+                },
+            ],
+            "missing_positions": [],
+        }
+    }
+    html = build_perspectives(tp)
+    # Empty cluster: still renders "0 actors" plural form (n=0 → plural)
+    assert "0 actors" in html
+    assert "0 sources" in html
+    assert "0 regions" in html
+    assert "0 languages" in html
+    # Multi cluster
+    assert "3 actors" in html
+    assert "2 sources" in html
+    assert "4 regions" in html
+    assert "5 languages" in html
+
+
+def test_cluster_card_actor_count_is_clickable_when_id_present():
+    tp = {
+        "perspectives": {
+            "position_clusters": [
+                {
+                    "id": "pc-007",
+                    "position_label": "X",
+                    "position_summary": "y",
+                    "n_actors": 2,
+                    "n_sources": 1,
+                    "n_regions": 1,
+                    "n_languages": 1,
+                }
+            ],
+            "missing_positions": [],
+        }
+    }
+    html = build_perspectives(tp)
+    # Actor count wrapped in anchor to the cluster's filter hash
+    assert '<a href="#cluster-pc-007">2 actors</a>' in html
+    # Cluster card itself anchorable by canonical id
+    assert 'id="pc-007"' in html
 
 
 def test_bias_card_renders_findings():
