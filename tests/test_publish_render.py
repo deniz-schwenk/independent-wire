@@ -525,7 +525,7 @@ def test_sources_section_source_id_label_matches_canonical():
 
 
 def test_qa_correction_expandable_with_problem_detail():
-    """Item 5: aligned qa_corrections / qa_problems_found arrays render
+    """Aligned qa_corrections / qa_problems_found arrays render
     expandable details containing the proposed correction in summary and
     the problem-type / excerpt / explanation in the detail block."""
     tp = {
@@ -546,7 +546,7 @@ def test_qa_correction_expandable_with_problem_detail():
         }
     }
     html = build_transparency(tp)
-    assert "<details>" in html
+    assert "<details" in html
     # Summary contains the correction text (single quotes are HTML-escaped)
     # and the applied tag.
     assert "Replace " in html and "Council leadership" in html
@@ -556,6 +556,61 @@ def test_qa_correction_expandable_with_problem_detail():
     assert "misleading_framing" in html
     assert "European Council leadership noted" in html
     assert "António Costa" in html
+
+
+def test_qa_corrections_wrapper_renders_with_counts():
+    """The outer <details> wrapper carries 'N applied · M retracted'
+    in its summary, default closed."""
+    tp = {
+        "transparency": {
+            "qa_corrections": [
+                {"proposed_correction": "fix1", "correction_needed": True},
+                {"proposed_correction": "fix2", "correction_needed": True},
+                {"proposed_correction": "fix3", "correction_needed": True},
+                {"proposed_correction": "skip1", "correction_needed": False},
+                {"proposed_correction": "skip2", "correction_needed": False},
+            ],
+            "qa_problems_found": [],
+        }
+    }
+    html = build_transparency(tp)
+    assert 'class="qa-corrections-wrapper"' in html
+    assert "3 applied" in html
+    assert "2 retracted" in html
+    # Default closed — the wrapper element has no `open` attribute. The
+    # inner per-correction details may still render `open=False` too.
+    assert 'class="qa-corrections-wrapper" open' not in html
+
+
+def test_qa_corrections_wrapper_omitted_when_no_corrections():
+    """Empty qa_corrections → wrapper not emitted; the QA Corrections
+    <dt> doesn't appear at all (matches the strict-drop pattern)."""
+    tp = {
+        "transparency": {
+            "qa_corrections": [],
+            "qa_problems_found": [],
+            "selection_reason": "x",
+        }
+    }
+    html = build_transparency(tp)
+    assert "qa-corrections-wrapper" not in html
+    assert "QA Corrections" not in html
+
+
+def test_qa_corrections_wrapper_all_applied():
+    """All entries with correction_needed=True → '5 applied · 0 retracted'."""
+    tp = {
+        "transparency": {
+            "qa_corrections": [
+                {"proposed_correction": f"fix{i}", "correction_needed": True}
+                for i in range(5)
+            ],
+            "qa_problems_found": [],
+        }
+    }
+    html = build_transparency(tp)
+    assert "5 applied" in html
+    assert "0 retracted" in html
 
 
 def test_publish_extract_metadata_uses_v2_paths(tmp_path):

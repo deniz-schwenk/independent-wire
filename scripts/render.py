@@ -414,6 +414,11 @@ details[open] summary::before {
   color: var(--color-text-secondary);
 }
 .qa-explanation { margin-top: 0.35rem; line-height: 1.55; }
+.qa-corrections-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -1298,6 +1303,12 @@ def build_transparency(tp: dict) -> str:
     corrections = t.get("qa_corrections", [])
     problems = t.get("qa_problems_found", [])
     if corrections:
+        applied_count = sum(
+            1 for c in corrections
+            if isinstance(c, dict) and c.get("correction_needed", False)
+        )
+        retracted_count = len(corrections) - applied_count
+
         items = []
         for i, c in enumerate(corrections):
             if isinstance(c, dict):
@@ -1335,7 +1346,21 @@ def build_transparency(tp: dict) -> str:
                 )
             else:
                 items.append(f'<li>{tag_html} {_esc(text)}</li>')
-        parts.append(f'<dt>QA Corrections</dt><dd><ul>{"".join(items)}</ul></dd>\n')
+
+        # Outer collapsible wrapping the per-correction list. Default
+        # closed so the Transparency-Trail stays scannable; readers
+        # expand to see excerpt and explanation per correction.
+        outer_summary = (
+            f'QA Corrections &mdash; <strong>{applied_count} applied '
+            f'&middot; {retracted_count} retracted</strong>'
+        )
+        parts.append(
+            f'<dt>QA Corrections</dt><dd>'
+            f'<details class="qa-corrections-wrapper">'
+            f'<summary>{outer_summary}</summary>'
+            f'<ul class="qa-corrections">{"".join(items)}</ul>'
+            f'</details></dd>\n'
+        )
 
     dropped_sources = [
         d for d in (t.get("dropped_sources") or []) if isinstance(d, dict)
