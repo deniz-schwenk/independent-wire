@@ -77,6 +77,8 @@ def test_topicbus_constructs_with_all_typed_empty_defaults():
         "id_rename_map": {},
         "merged_preliminary_divergences": [],
         "merged_coverage_gaps": [],
+        "canonical_actors": [],
+        "actor_alias_mapping": [],
         "perspective_clusters": [],
         "perspective_missing_positions": [],
         "qa_problems_found": [],
@@ -322,12 +324,14 @@ def test_runbus_slot_count_regression_guard():
 def test_topicbus_slot_count_regression_guard():
     """Hard-coded expectation. Source: ARCH-V2-BUS-SCHEMA §4B.1–§4B.11.
 
-    Expected: 30 slots across 11 phases.
+    Expected: 32 slots across 11 phases.
     Phase counts: 4B.1=1, 4B.2=5, 4B.3=3, 4B.4=5, 4B.4b=1 (final_actors,
-    Phase 1 of TASK-PERSPECTIVE-ACTOR-SCOPING), 4B.5=2, 4B.6=1, 4B.7=4,
-    4B.8=1, 4B.9=2, 4B.10=1, 4B.10b=2 (prune_dropped_*), 4B.11=2.
+    Phase 1 of TASK-PERSPECTIVE-ACTOR-SCOPING), 4B.4c=2 (canonical_actors,
+    actor_alias_mapping — Phase 1 of TASK-RESOLVE-ACTOR-ALIASES), 4B.5=2,
+    4B.6=1, 4B.7=4, 4B.8=1, 4B.9=2, 4B.10=1, 4B.10b=2 (prune_dropped_*),
+    4B.11=2.
     """
-    assert len(TopicBus.model_fields) == 30
+    assert len(TopicBus.model_fields) == 32
 
 
 # ---------------------------------------------------------------------------

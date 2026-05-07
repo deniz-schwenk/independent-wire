@@ -164,7 +164,9 @@ def render_tp_public(
         "status": "review",
         "metadata": metadata,
         "sources": list(topic_bus.final_sources),
-        "actors": list(topic_bus.final_actors),
+        "actors": list(topic_bus.canonical_actors),
+        "final_actors": list(topic_bus.final_actors),
+        "actor_alias_mapping": list(topic_bus.actor_alias_mapping),
         "gaps": list(topic_bus.coverage_gaps_validated),
         "perspectives": {
             "position_clusters": list(topic_bus.perspective_clusters_synced),
@@ -190,7 +192,11 @@ _TP_RESHAPED_SLOTS: dict[str, str] = {
     "qa_divergences": "divergences",
     "coverage_gaps_validated": "gaps",
     "final_sources": "sources",
-    "final_actors": "actors",
+    # `actors` top-level key carries `canonical_actors` (consumer-facing,
+    # post alias resolution). `final_actors` (raw, pre-resolution) is
+    # surfaced as a separate audit key under its slot name — kept in the
+    # JSON for transparency parallel to dropped_sources[] (§7.1).
+    "canonical_actors": "actors",
     "transparency_card": "transparency",
     # Bias-card-derived slots (composed via compose_bias_card)
     "bias_language_findings": "bias_analysis.language",
@@ -300,7 +306,7 @@ def compose_bias_card(topic_bus: TopicBus) -> dict:
     """
     sb = topic_bus.source_balance
     clusters = topic_bus.perspective_clusters_synced
-    actors = topic_bus.final_actors
+    actors = topic_bus.canonical_actors
     aggregates = _cluster_aggregates(clusters, actors)
 
     return {
@@ -336,10 +342,12 @@ def _cluster_aggregates(clusters: list[dict], actors: list) -> dict:
     framing block:
 
     - cluster_count: number of dict clusters.
-    - distinct_actor_count: number of named entries in ``final_actors`` —
-      the canonical deduped list. Replaces the prior per-cluster
-      (name, role) walk over ``cluster.actors[]`` (the leak-shaped slot
-      that no longer exists).
+    - distinct_actor_count: number of named entries in
+      ``canonical_actors`` — the alias-resolved deduped list. Replaces
+      the prior per-cluster ``cluster.actors[]`` walk (leak-shaped slot
+      that no longer exists), and supersedes Phase-1's
+      ``final_actors``-based count which inflated the figure under
+      multilingual coverage.
     """
     cluster_count = sum(1 for c in (clusters or []) if isinstance(c, dict))
     distinct_actor_count = sum(

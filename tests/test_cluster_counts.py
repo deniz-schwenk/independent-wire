@@ -36,7 +36,7 @@ def test_count_fields_populated_on_normal_cluster():
         {"id": "src-002", "country": "France",        "language": "fr"},
         {"id": "src-003", "country": "United Kingdom", "language": "en"},
     ]
-    tb.final_actors = [
+    tb.canonical_actors = [
         {"id": "actor-001", "name": "A"},
         {"id": "actor-002", "name": "B"},
     ]
@@ -64,7 +64,7 @@ def test_n_sources_counts_raw_source_ids_not_matches():
     tb.final_sources = [
         {"id": "src-001", "country": "United States", "language": "en"},
     ]
-    tb.final_actors = []
+    tb.canonical_actors = []
     tb_after = _run(enrich_perspective_clusters, tb, _ro())
     cluster = tb_after.perspective_clusters[0]
     assert cluster["n_sources"] == 2  # raw count
@@ -88,7 +88,7 @@ def test_n_regions_and_n_languages_dedup():
         {"id": "src-002", "country": "United States", "language": "en"},
         {"id": "src-003", "country": "France",        "language": "fr"},
     ]
-    tb.final_actors = []
+    tb.canonical_actors = []
     tb_after = _run(enrich_perspective_clusters, tb, _ro())
     cluster = tb_after.perspective_clusters[0]
     assert cluster["n_regions"] == 2
@@ -110,7 +110,7 @@ def test_n_actors_reflects_validated_actor_ids_only():
     tb.final_sources = [
         {"id": "src-001", "country": "X", "language": "en"},
     ]
-    tb.final_actors = [
+    tb.canonical_actors = [
         {"id": "actor-001", "name": "A"},
         {"id": "actor-002", "name": "B"},
     ]
@@ -126,7 +126,7 @@ def test_count_fields_zero_on_empty_cluster():
         {"position_label": "Empty", "source_ids": [], "actor_ids": []},
     ]
     tb.final_sources = [{"id": "src-001", "country": "X", "language": "en"}]
-    tb.final_actors = [{"id": "actor-001", "name": "A"}]
+    tb.canonical_actors = [{"id": "actor-001", "name": "A"}]
     tb_after = _run(enrich_perspective_clusters, tb, _ro())
     cluster = tb_after.perspective_clusters[0]
     assert cluster["n_sources"] == 0

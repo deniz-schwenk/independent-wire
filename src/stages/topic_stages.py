@@ -544,7 +544,7 @@ def _build_actor_index(actors: list) -> dict[str, dict]:
 def _enrich_position_clusters_logic(
     perspective_analysis: dict,
     final_sources: list,
-    final_actors: list,
+    canonical_actors: list,
 ) -> dict:
     """Attach deterministic fields to the agent's raw cluster output.
 
@@ -562,8 +562,11 @@ def _enrich_position_clusters_logic(
       was arithmetically inconsistent against the post-prune source set)
 
     Validation: every ``actor_ids`` entry the agent emitted must reference
-    an ID present in ``final_actors[]``; invalid IDs are dropped and a
-    WARNING is logged so the smoke run flags hallucinations.
+    an ID present in ``canonical_actors[]`` (the post-resolution actor
+    list); invalid IDs are dropped and a WARNING is logged so the smoke
+    run flags hallucinations. Aliased IDs that PerspectiveStage may have
+    referenced (rare — Perspective receives canonical_actors as input,
+    so this is a defensive guard) are also dropped here.
     """
     import copy as _copy
 
@@ -571,7 +574,7 @@ def _enrich_position_clusters_logic(
         return perspective_analysis
 
     by_id = _build_source_index(final_sources)
-    actor_index = _build_actor_index(final_actors)
+    actor_index = _build_actor_index(canonical_actors)
 
     enriched = _copy.deepcopy(perspective_analysis)
     for cluster_idx, cluster in enumerate(
@@ -598,8 +601,10 @@ def _enrich_position_clusters_logic(
                 languages_seen.add(language)
 
         # Validate agent-assigned actor_ids against the canonical
-        # final_actors[] list. Invalid IDs (hallucinations or stale
-        # references) are dropped and logged so the smoke flags them.
+        # canonical_actors[] list (post alias resolution). Invalid IDs
+        # (hallucinations, stale references, or aliased IDs that
+        # disappeared post-merge) are dropped and logged so the smoke
+        # flags them.
         raw_actor_ids = [
             a for a in (cluster.get("actor_ids") or []) if isinstance(a, str)
         ]
@@ -629,7 +634,7 @@ def _enrich_position_clusters_logic(
 
 
 @topic_stage_def(
-    reads=("perspective_clusters", "final_sources", "final_actors"),
+    reads=("perspective_clusters", "final_sources", "canonical_actors"),
     writes=("perspective_clusters",),
 )
 async def enrich_perspective_clusters(
@@ -641,10 +646,11 @@ async def enrich_perspective_clusters(
 
     Reads `perspective_clusters` (raw shape from PerspectiveStage:
     `[{position_label, position_summary, source_ids, actor_ids}]`),
-    `final_sources`, and `final_actors`. Writes `perspective_clusters`
-    enriched with `pc-NNN`, validated `actor_ids`, regions, languages,
-    and the count summary plus the temporary `representation` field
-    (Phase 1 sanity-check; removed in Phase 2).
+    `final_sources`, and `canonical_actors` (the post alias-resolution
+    actor list). Writes `perspective_clusters` enriched with `pc-NNN`,
+    validated `actor_ids` (joined against `canonical_actors`), regions,
+    languages, and the count summary `n_actors / n_sources / n_regions /
+    n_languages` computed against canonical-actor membership.
 
     No-op when `perspective_clusters` is empty (PerspectiveStage may have
     failed or emitted nothing). The post-validator accepts the empty case
@@ -657,7 +663,7 @@ async def enrich_perspective_clusters(
     enriched = _enrich_position_clusters_logic(
         {"position_clusters": raw},
         list(topic_bus.final_sources or []),
-        list(topic_bus.final_actors or []),
+        list(topic_bus.canonical_actors or []),
     )
     return topic_bus.model_copy(
         update={

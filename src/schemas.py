@@ -409,6 +409,37 @@ HYDRATION_PHASE1_SCHEMA = {
     "additionalProperties": False,
 }
 
+# ---------------------------------------------------------------- Resolve Actor Aliases
+# Cross-variant alias resolver. Receives final_actors[] (post
+# consolidate_actors) and returns: (a) merge instructions identifying
+# which actor IDs refer to the same real-world entity, (b) IDs of
+# actors whose `name` field is a generic source-class label (e.g.
+# "Iranian military-linked sources") that should be flagged
+# is_anonymous on the canonical entry. Both arrays may be empty.
+RESOLVE_ACTOR_ALIASES_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "aliases": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "alias_id": {"type": "string"},
+                    "canonical_id": {"type": "string"},
+                },
+                "required": ["alias_id", "canonical_id"],
+                "additionalProperties": False,
+            },
+        },
+        "anonymous_flags": {
+            "type": "array",
+            "items": {"type": "string"},
+        },
+    },
+    "required": ["aliases", "anonymous_flags"],
+    "additionalProperties": False,
+}
+
 # ---------------------------------------------------------------- Hydration Aggregator Phase 2
 # Cross-corpus reducer. Both arrays may legitimately be empty when no
 # divergence / gap is observed; strict mode requires the keys present

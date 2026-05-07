@@ -561,6 +561,26 @@ src-033, src-034, src-035, src-036, src-037, src-038, src-041
 
 The same stage applies a parallel rule to clusters: a `pc-NNN` whose `actors[]` and `source_ids[]` are both empty after source-pruning is removed. Cluster IDs are not renumbered for the same reason source IDs aren't — every consumer that references `pc-NNN` does so against the original cluster numbering, and recursive rewrites would buy nothing. Each drop (source or cluster) is logged at INFO level so reviewers can trace which entries were removed on a smoke run.
 
+### 7.2 Strict-merge and actor ID gaps
+
+The actor-side analogue of §7.1's strict-drop pattern. After `consolidate_actors` (topic stage 12) flattens `final_sources[].actors_quoted[]` into a deduped `final_actors[]` list (exact-string-match dedup only), the `resolve_actor_aliases` agent stage runs and identifies actors whose `name` field is a multilingual or paraphrased variant of the same real-world entity ("Russian Defense Ministry" / "Russia's Defense Ministry" / "Министерство обороны России" all reference one institution). The stage applies first-source-wins canonical selection (smaller numeric ID wins) deterministically and produces a separate `canonical_actors[]` slot containing the merged entries plus an `actor_alias_mapping[]` audit trail of every merge decision.
+
+**Dual-list design.** `final_actors[]` is preserved unchanged as the pre-resolution audit artifact — every consumer (PerspectiveStage, enrich_perspective_clusters, BiasLanguageStage, WriterStage, the Actors-section render, the Sources-section actor-refs) reads from `canonical_actors[]`. `final_actors[]` survives only in the rendered TP JSON for transparency, parallel to the `transparency.dropped_sources[]` audit pattern from §7.1: the pre-decision state is visible alongside the post-decision state so a reader can reconstruct the resolver's reasoning.
+
+**Aliased IDs disappear, leaving gaps.** `canonical_actors[]` retains the original numeric IDs from `final_actors[]`; aliased IDs simply do not appear, leaving gaps in the sequence (e.g. `actor-001, actor-002, actor-003, actor-013, actor-014, ...` when `actor-012`, `actor-040`, `actor-043` were merged into `actor-003`). The `actor_alias_mapping[]` slot makes the gaps explicit:
+
+```json
+[
+  {"alias_id": "actor-012", "alias_name": "Russia's Defense Ministry", "canonical_id": "actor-003"},
+  {"alias_id": "actor-040", "alias_name": "Russian Ministry of Defense", "canonical_id": "actor-003"},
+  {"alias_id": "actor-043", "alias_name": "Ministry of Defense of the Russian Federation", "canonical_id": "actor-003"}
+]
+```
+
+Renumbering `canonical_actors[]` after merge would force recursive reference rewrites across every cluster's `actor_ids[]`, every render anchor (`#actor-NNN`), every `actor_alias_mapping[]` entry, and every consumer that minted an `actor-NNN` reference before the resolver ran. The same trade-off as §7.1's source IDs — keeping the gaps preserves the direct mapping from each canonical entry back to its position in `final_actors[]`, which is useful when correlating a published TP against the pre-resolution snapshot. The mapping table explains every gap.
+
+**Engineering note — task-specific reasoning profile.** The diagnostic-V2 30-run matrix (3 configs × 2 topics × 5 runs) for `resolve_actor_aliases` produced a finding worth recording for future agent design: Flash with `temperature=1.0` + `reasoning="medium"` + `max_tokens=66000` outperforms `temperature=0.2` + `reasoning="none"` on multi-entity-reasoning tasks. The Iter-2 prompt at `temp=0.2 + reasoning=none` showed run-to-run variance on the borderline anonymous-flag case (Gaza-flotilla-crew) — 3/5 hits. The same prompt at the `temp=1.0 + reasoning=medium` Y-config produced 5/5 unanimous results across all four critical patterns (Cooper/CENTCOM separate, Grossi/IAEA separate, South Korea merged, Russian MoD × 4 merged) plus 5/5 on the borderline anonymous-flag case. This contradicts the prior fleet-level "reasoning=none" default established for Curator and other Flash agents in the original `Anti-Reasoning principle for structured-extraction agents` and is **task-specific**: agents handling >30 entities or multi-step pattern matching may benefit from this profile. The finding is recorded here so future agent additions evaluate the trade-off explicitly rather than defaulting to `reasoning=none` by habit.
+
 ---
 
 ## 8. Migration plan (big-bang with Git-tag rollback)

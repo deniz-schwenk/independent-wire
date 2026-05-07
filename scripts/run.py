@@ -32,6 +32,7 @@ from src.schemas import (
     QA_ANALYZE_SCHEMA,
     RESEARCHER_ASSEMBLE_SCHEMA,
     RESEARCHER_PLAN_SCHEMA,
+    RESOLVE_ACTOR_ALIASES_SCHEMA,
     WRITER_SCHEMA,
 )
 from src.tools import web_search_tool
@@ -127,6 +128,18 @@ def create_agents() -> dict[str, Agent]:
             provider="openrouter",
             reasoning="none",
             output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
+        ),
+        "resolve_actor_aliases": Agent(
+            name="resolve_actor_aliases",
+            model="google/gemini-3-flash-preview",
+            system_prompt_path=str(agents_dir / "resolve_actor_aliases" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "resolve_actor_aliases" / "INSTRUCTIONS.md"),
+            tools=[],
+            temperature=1.0,
+            max_tokens=66000,
+            provider="openrouter",
+            reasoning="medium",
+            output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
         ),
         "perspective": Agent(
             name="perspective",

@@ -343,11 +343,57 @@ class TopicBus(BaseModel):
 
     # 4B.4b Actor consolidation (1 slot). Written by `consolidate_actors`
     # — flattens all `final_sources[].actors_quoted[]` into a single
-    # deduped list of canonical actor records keyed by `actor-NNN`.
-    # Read by `PerspectiveStage` (cluster→actor assignment via
-    # `actor_ids[]`) and surfaced to the rendered TP for the Actors-
-    # section.
+    # deduped list keyed by `actor-NNN`. Exact-string-match dedup only;
+    # the same real-world entity under multilingual or paraphrased name
+    # variants appears as multiple entries here. The cross-variant
+    # alias resolver `ResolveActorAliasesStage` runs after this stage
+    # and produces the consumer-facing `canonical_actors[]` slot below.
+    #
+    # **Read/write contract (Phase 2 of TASK-RESOLVE-ACTOR-ALIASES):**
+    # - Writers: `consolidate_actors` populates this slot.
+    # - Readers (behavior code): NONE. All consumers read
+    #   `canonical_actors[]` instead. This slot is audit-only post
+    #   Phase 2 — kept in the rendered TP JSON as the pre-resolution
+    #   snapshot, parallel to the `transparency.dropped_sources[]`
+    #   audit pattern from §7.1 (Strict-drop and source ID gaps).
     final_actors: list = Slot(
+        default_factory=list,
+        visibility=["tp", "mcp"],
+        optional_write=True,
+    )
+
+    # 4B.4c Actor alias resolution (2 slots). Written by
+    # `ResolveActorAliasesStage` — runs after `consolidate_actors` and
+    # before `PerspectiveStage`. The Flash-driven agent identifies
+    # actors whose `name` field is a variant of the same real-world
+    # entity (cross-language, cross-translation, cross-phrasing). The
+    # stage applies first-source-wins canonical selection (smaller
+    # numeric ID wins) deterministically and produces:
+    #
+    # - `canonical_actors[]`: merged actor records mirroring the
+    #   `final_actors[]` shape plus `is_anonymous: bool`. Aliased IDs
+    #   disappear (gaps in the numeric sequence are intentional —
+    #   parallel to the source strict-drop pattern in §7.1; the
+    #   actor-side §7.2 documents the same dual-list design).
+    # - `actor_alias_mapping[]`: audit trail of every merge decision,
+    #   `[{alias_id, alias_name, canonical_id}]`. Empty array when no
+    #   merges. Connects pre- (`final_actors[]`) and post-
+    #   (`canonical_actors[]`) state for transparency-curious readers.
+    #
+    # **Read/write contract (Phase 2):** `canonical_actors[]` is the
+    # consumer-facing actor slot. `PerspectiveStage`,
+    # `enrich_perspective_clusters`, `WriterStage`, `BiasLanguageStage`,
+    # the Actors-section render, and the Sources-section actor-refs all
+    # read from this slot. `final_actors[]` is audit-only.
+    #
+    # `optional_write=True` — smoke runs that bypass the resolver leave
+    # both slots at their typed empty defaults.
+    canonical_actors: list = Slot(
+        default_factory=list,
+        visibility=["tp", "mcp"],
+        optional_write=True,
+    )
+    actor_alias_mapping: list = Slot(
         default_factory=list,
         visibility=["tp", "mcp"],
         optional_write=True,

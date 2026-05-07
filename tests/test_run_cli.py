@@ -215,6 +215,7 @@ def _patch_create_agents(run_module):
     """Avoid the heavy real Agent construction (which loads prompt files)."""
     fake_agents = {k: MagicMock(name=k) for k in [
         "curator", "editor", "researcher_plan", "researcher_assemble",
+        "resolve_actor_aliases",
         "perspective", "writer", "qa_analyze", "bias_language",
         "researcher_hydrated_plan",
         "hydration_aggregator_phase1", "hydration_aggregator_phase2",

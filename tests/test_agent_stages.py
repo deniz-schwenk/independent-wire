@@ -881,7 +881,7 @@ def test_perspective_stage_writes_raw_clusters_only():
         {"id": "src-002", "country": "United States", "language": "en"},
         {"id": "src-003", "country": "Iran", "language": "fa"},
     ]
-    tb.final_actors = [
+    tb.canonical_actors = [
         {"id": "actor-001", "name": "A"},
         {"id": "actor-002", "name": "B"},
     ]
@@ -1048,7 +1048,7 @@ def test_bias_language_happy_path():
     tb.perspective_clusters_synced = [
         {"id": "pc-001", "actor_ids": ["actor-001"], "source_ids": ["src-001"]}
     ]
-    tb.final_actors = [{"id": "actor-001", "name": "A"}]
+    tb.canonical_actors = [{"id": "actor-001", "name": "A"}]
     stage = BiasLanguageStage(fake)
     tb_after = _run(stage, tb, _ro())
     assert len(tb_after.bias_language_findings) == 1
@@ -1112,7 +1112,7 @@ def test_build_bias_card_for_agent_input_aggregates():
         {"id": "pc-001", "actor_ids": ["actor-001"], "source_ids": ["src-001"]},
         {"id": "pc-002", "actor_ids": [], "source_ids": ["src-002"]},
     ]
-    tb.final_actors = [{"id": "actor-001", "name": "A"}]
+    tb.canonical_actors = [{"id": "actor-001", "name": "A"}]
     tb.qa_divergences = [{"type": "factual"}]
     tb.coverage_gaps_validated = ["a gap"]
     bc = _build_bias_card_for_agent_input(tb)

@@ -308,7 +308,7 @@ def test_enrich_perspective_clusters_metadata():
     assert meta.reads == (
         "perspective_clusters",
         "final_sources",
-        "final_actors",
+        "canonical_actors",
     )
     assert meta.writes == ("perspective_clusters",)
 
@@ -372,7 +372,7 @@ def test_enrich_perspective_clusters_no_longer_walks_actors_quoted():
             ],
         },
     ]
-    tb.final_actors = [
+    tb.canonical_actors = [
         {"id": "actor-001", "name": "PM"},
         {"id": "actor-002", "name": "Analyst"},
     ]
@@ -409,7 +409,7 @@ def test_enrich_perspective_clusters_count_fields_replace_representation():
     tb.final_sources = [
         {"id": f"src-{i:03d}", "country": "X", "language": "en"} for i in range(1, 6)
     ]
-    tb.final_actors = [
+    tb.canonical_actors = [
         {"id": f"actor-{i:03d}", "name": f"a{i}"} for i in range(1, 4)
     ]
     tb_after = _run(enrich_perspective_clusters, tb, _ro())

@@ -765,17 +765,18 @@ def _build_bias_card_for_agent_input(topic_bus: TopicBus) -> dict:
     bias_language LLM consumes as context.
 
     The cluster→actor mapping now lives in ``cluster.actor_ids`` (the
-    canonical actor list is ``topic_bus.final_actors``); ``distinct_actor_count``
-    therefore reads ``len(final_actors)`` rather than walking a per-cluster
-    leak loop. The prior ``representation_distribution`` aggregate is
-    gone — the bias-language brief does not reference it, and the bucket
-    semantics it relied on were removed alongside the cluster
-    ``representation`` field.
+    canonical actor list is ``topic_bus.canonical_actors`` — the
+    alias-resolved deduplicated list); ``distinct_actor_count``
+    therefore reads ``len(canonical_actors)`` rather than walking a
+    per-cluster leak loop. The prior ``representation_distribution``
+    aggregate is gone — the bias-language brief does not reference it,
+    and the bucket semantics it relied on were removed alongside the
+    cluster ``representation`` field.
     """
     article = topic_bus.qa_corrected_article
     sources = list(topic_bus.final_sources or [])
     clusters = list(topic_bus.perspective_clusters_synced or [])
-    actors = list(topic_bus.final_actors or [])
+    actors = list(topic_bus.canonical_actors or [])
     missing_positions = list(topic_bus.perspective_missing_positions or [])
 
     by_language: dict[str, int] = {}
@@ -962,7 +963,7 @@ class PerspectiveStage(_AgentStageBase):
     reads = (
         "editor_selected_topic",
         "final_sources",
-        "final_actors",
+        "canonical_actors",
         "merged_preliminary_divergences",
         "merged_coverage_gaps",
     )
@@ -986,7 +987,7 @@ class PerspectiveStage(_AgentStageBase):
                 "title": assignment.title,
                 "selection_reason": assignment.selection_reason,
                 "sources": list(topic_bus.final_sources),
-                "final_actors": list(topic_bus.final_actors),
+                "canonical_actors": list(topic_bus.canonical_actors),
                 "preliminary_divergences": list(
                     topic_bus.merged_preliminary_divergences
                 ),
@@ -1033,6 +1034,8 @@ class WriterStage(_AgentStageBase):
     reads = (
         "editor_selected_topic",
         "final_sources",
+        "canonical_actors",
+        "actor_alias_mapping",
         "perspective_clusters_synced",
         "perspective_missing_positions",
         "merged_coverage_gaps",
@@ -1065,6 +1068,8 @@ class WriterStage(_AgentStageBase):
             "selection_reason": assignment.selection_reason,
             "perspective_analysis": perspective_analysis,
             "sources": list(topic_bus.final_sources),
+            "actors": list(topic_bus.canonical_actors),
+            "actor_aliases": list(topic_bus.actor_alias_mapping),
             "coverage_gaps": list(topic_bus.merged_coverage_gaps),
         }
 
@@ -1252,7 +1257,7 @@ class BiasLanguageStage(_AgentStageBase):
     reads = (
         "qa_corrected_article",
         "final_sources",
-        "final_actors",
+        "canonical_actors",
         "perspective_clusters_synced",
         "perspective_missing_positions",
         "qa_problems_found",
@@ -1874,6 +1879,259 @@ class PerspectiveSyncStage(_AgentStageBase):
         )
 
 
+# ---------------------------------------------------------------------------
+# Wrapper: ResolveActorAliasesStage  (topic, production + hydrated)
+# ---------------------------------------------------------------------------
+
+
+def _actor_id_numeric_order(actor_id: str) -> int:
+    """Return the numeric suffix of an `actor-NNN` ID, or a large
+    sentinel for malformed IDs so they sort last and never beat a
+    well-formed ID for canonical selection."""
+    if not isinstance(actor_id, str):
+        return 10**9
+    if not actor_id.startswith("actor-"):
+        return 10**9
+    try:
+        return int(actor_id[len("actor-"):])
+    except ValueError:
+        return 10**9
+
+
+def _resolve_canonical_groups(
+    valid_ids: set[str],
+    aliases: list[dict[str, Any]],
+) -> dict[str, str]:
+    """Apply first-source-wins canonical selection over the agent's
+    alias list. Builds a union-find over alias pairs (transitive
+    closure) and picks the smallest numeric ID per group.
+
+    Returns a mapping {actor_id -> canonical_id} that includes only
+    aliased IDs (canonical IDs map to themselves and are NOT included).
+    """
+    parent: dict[str, str] = {}
+
+    def find(x: str) -> str:
+        # Iterative path-compression find.
+        root = x
+        while parent.get(root, root) != root:
+            root = parent[root]
+        # Compress.
+        cur = x
+        while parent.get(cur, cur) != cur:
+            nxt = parent[cur]
+            parent[cur] = root
+            cur = nxt
+        return root
+
+    def union(a: str, b: str) -> None:
+        ra, rb = find(a), find(b)
+        if ra == rb:
+            return
+        # Smaller numeric ID becomes the new root (first-source-wins).
+        if _actor_id_numeric_order(ra) <= _actor_id_numeric_order(rb):
+            parent[rb] = ra
+        else:
+            parent[ra] = rb
+
+    for entry in aliases:
+        if not isinstance(entry, dict):
+            continue
+        a = entry.get("alias_id")
+        b = entry.get("canonical_id")
+        if not isinstance(a, str) or not isinstance(b, str):
+            continue
+        if a not in valid_ids or b not in valid_ids:
+            # Defensive: drop pairs referencing IDs not in the input
+            # final_actors[] list. Logged by the caller.
+            continue
+        if a == b:
+            continue
+        # Initialise both into the union-find before unioning.
+        parent.setdefault(a, a)
+        parent.setdefault(b, b)
+        union(a, b)
+
+    # Build the alias_id -> canonical_id mapping. A node is "aliased"
+    # iff its root is a different ID; canonical IDs are excluded.
+    mapping: dict[str, str] = {}
+    for node in parent:
+        root = find(node)
+        if node != root:
+            mapping[node] = root
+    return mapping
+
+
+class ResolveActorAliasesStage(_AgentStageBase):
+    """Actor-Alias Resolver wrapper. Reads `final_actors[]`, calls the
+    Flash agent, applies first-source-wins canonical selection
+    deterministically, and writes `canonical_actors[]` plus
+    `actor_alias_mapping[]`.
+
+    Per ARCH-V2 §7.2 (TASK-RESOLVE-ACTOR-ALIASES): the resolver is
+    non-destructive — `final_actors[]` survives unchanged as the pre-
+    resolution audit artifact. Aliased IDs disappear from
+    `canonical_actors[]`, leaving gaps in the numeric sequence.
+    `actor_alias_mapping[]` documents every merge decision.
+
+    Anonymous source-class labels (e.g. "Iranian military-linked
+    sources") are flagged with `is_anonymous: true` on the canonical
+    entry. Named individuals and specific institutions retain
+    `is_anonymous: false`.
+
+    Stage-order: runs after `consolidate_actors` and before
+    `PerspectiveStage`. Phase 1 of the alias-resolver task ships the
+    resolver only; consumer migration to `canonical_actors[]` is
+    deferred to Phase 2.
+    """
+
+    stage_kind = "topic"
+    reads = ("final_actors",)
+    writes = ("canonical_actors", "actor_alias_mapping")
+    agent_role = "resolve_actor_aliases"
+
+    def __init__(self, agent: Agent) -> None:
+        self.agent = agent
+
+    async def __call__(
+        self, topic_bus: TopicBus, run_bus: RunBusReadOnly
+    ) -> TopicBus:
+        final_actors = list(topic_bus.final_actors or [])
+        if not final_actors:
+            # No actors to resolve. Both output slots stay at their
+            # typed-empty defaults; optional_write covers the no-write.
+            return topic_bus
+
+        message = (
+            "Identify which actor entries refer to the same real-world "
+            "entity. Flag entries whose name is a generic source-class "
+            "label."
+        )
+        result = await self.agent.run(
+            message,
+            context={"final_actors": final_actors},
+        )
+        parsed = _parse_agent_output(result) or {}
+        if not isinstance(parsed, dict):
+            parsed = {}
+
+        valid_ids = {
+            a.get("id")
+            for a in final_actors
+            if isinstance(a, dict) and isinstance(a.get("id"), str)
+        }
+
+        aliases_raw = parsed.get("aliases") or []
+        if not isinstance(aliases_raw, list):
+            aliases_raw = []
+        anonymous_raw = parsed.get("anonymous_flags") or []
+        if not isinstance(anonymous_raw, list):
+            anonymous_raw = []
+
+        # Normalise alias pairs into {alias_id -> canonical_id} via
+        # union-find, applying first-source-wins (smaller numeric ID).
+        alias_map = _resolve_canonical_groups(valid_ids, aliases_raw)
+
+        # Anonymous flag set: only IDs present in the input list count;
+        # anonymous IDs that get aliased away resolve to the canonical
+        # entry (the canonical entry inherits the flag).
+        anon_canonical_ids: set[str] = set()
+        for raw_id in anonymous_raw:
+            if not isinstance(raw_id, str):
+                continue
+            if raw_id not in valid_ids:
+                continue
+            canonical = alias_map.get(raw_id, raw_id)
+            anon_canonical_ids.add(canonical)
+
+        # Build canonical_actors[] in the same order as final_actors[].
+        # Aliased entries are skipped; canonical entries absorb the
+        # source_ids and quotes of every alias that maps to them.
+        actors_by_id: dict[str, dict] = {}
+        for entry in final_actors:
+            if not isinstance(entry, dict):
+                continue
+            aid = entry.get("id")
+            if isinstance(aid, str):
+                actors_by_id[aid] = entry
+
+        # Pre-collect aliases per canonical so we can union-merge in
+        # input order while preserving determinism.
+        aliases_by_canonical: dict[str, list[str]] = {}
+        for alias_id, canonical_id in alias_map.items():
+            aliases_by_canonical.setdefault(canonical_id, []).append(alias_id)
+        # Sort each canonical's alias list by numeric order so the
+        # resulting source_ids / quotes order is deterministic.
+        for canonical_id in aliases_by_canonical:
+            aliases_by_canonical[canonical_id].sort(
+                key=_actor_id_numeric_order
+            )
+
+        canonical_actors: list[dict] = []
+        for entry in final_actors:
+            if not isinstance(entry, dict):
+                continue
+            aid = entry.get("id")
+            if not isinstance(aid, str):
+                continue
+            # Skip aliased entries.
+            if aid in alias_map:
+                continue
+            # Build canonical record from this entry as the seed.
+            merged_source_ids: list[str] = list(entry.get("source_ids") or [])
+            merged_quotes: list = list(entry.get("quotes") or [])
+            for alias_id in aliases_by_canonical.get(aid, []):
+                alias_entry = actors_by_id.get(alias_id)
+                if not isinstance(alias_entry, dict):
+                    continue
+                for sid in alias_entry.get("source_ids") or []:
+                    if isinstance(sid, str) and sid not in merged_source_ids:
+                        merged_source_ids.append(sid)
+                for q in alias_entry.get("quotes") or []:
+                    merged_quotes.append(q)
+            canonical_record = {
+                "id": aid,
+                "name": entry.get("name", ""),
+                "role": entry.get("role", ""),
+                "type": entry.get("type", ""),
+                "source_ids": merged_source_ids,
+                "quotes": merged_quotes,
+                "is_anonymous": aid in anon_canonical_ids,
+            }
+            canonical_actors.append(canonical_record)
+
+        # Build the audit trail. Sort by alias_id numeric order for
+        # deterministic output regardless of agent emission order.
+        actor_alias_mapping: list[dict] = []
+        for alias_id in sorted(alias_map.keys(), key=_actor_id_numeric_order):
+            alias_entry = actors_by_id.get(alias_id, {})
+            actor_alias_mapping.append(
+                {
+                    "alias_id": alias_id,
+                    "alias_name": alias_entry.get("name", "")
+                    if isinstance(alias_entry, dict)
+                    else "",
+                    "canonical_id": alias_map[alias_id],
+                }
+            )
+
+        n_anonymous = sum(1 for a in canonical_actors if a.get("is_anonymous"))
+        logger.info(
+            "resolve_actor_aliases: %d aliases merged into %d canonical "
+            "actors, %d flagged anonymous",
+            len(actor_alias_mapping),
+            len(canonical_actors),
+            n_anonymous,
+        )
+
+        return topic_bus.model_copy(
+            update={
+                "canonical_actors": canonical_actors,
+                "actor_alias_mapping": actor_alias_mapping,
+            }
+        )
+
+
 __all__ = [
     "BiasLanguageStage",
     "CuratorStage",
@@ -1886,5 +2144,6 @@ __all__ = [
     "ResearcherAssembleStage",
     "ResearcherHydratedPlanStage",
     "ResearcherPlanStage",
+    "ResolveActorAliasesStage",
     "WriterStage",
 ]

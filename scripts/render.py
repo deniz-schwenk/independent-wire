@@ -754,8 +754,10 @@ def build_perspectives(tp: dict) -> str:
 
 
 def build_actors_section(tp: dict) -> str:
-    """First-class Actors-section: every actor in ``final_actors`` listed
-    once, with cluster memberships and source attributions.
+    """First-class Actors-section: every actor in ``canonical_actors``
+    (the alias-resolved consumer-facing list, surfaced under the
+    top-level ``actors`` key) listed once, with cluster memberships and
+    source attributions.
 
     Renders between Positions and Sources. Each ``<li>`` carries:
     - ``id="actor-NNN"`` — direct anchor target (CSS ``:target`` styles
@@ -853,11 +855,15 @@ def build_actors_section(tp: dict) -> str:
                 'Quoted in Sources but not assigned to any cluster.</p>'
             )
 
+        anon_html = (
+            ' <em class="actor-anonymous">(anonymous)</em>'
+            if actor.get("is_anonymous") else ""
+        )
         items.append(
             f'<li id="{_esc(aid)}" class="actor" data-clusters="{data_clusters}">\n'
             f'  <div class="actor-header">'
             f'<strong>{name}</strong> '
-            f'<span class="actor-role">{role}</span> '
+            f'<span class="actor-role">{role}</span>{anon_html} '
             f'<span class="actor-type">{atype}</span>'
             f'</div>\n'
             f'  <div class="actor-positions">{position_lines}</div>\n'
@@ -1159,12 +1165,44 @@ def build_sources_section(tp: dict) -> str:
     if not sources:
         return ""
 
-    actors_by_name: dict[str, dict] = {}
+    # Build the canonical-actor lookup. ``tp["actors"]`` carries
+    # ``canonical_actors`` post Phase 2 — the alias-resolved consumer
+    # view. Source-level actors_quoted entries may reference an actor
+    # under a name variant that isn't the canonical name (e.g. a source
+    # cites "Russia's Defense Ministry" while the canonical entry is
+    # "Russian Defense Ministry"). Resolve those via the alias mapping
+    # so the rendered link text shows the canonical name and the anchor
+    # target points at the canonical actor's `actor-NNN` ID.
+    canonical_by_name: dict[str, dict] = {}
+    canonical_by_id: dict[str, dict] = {}
     for actor in tp.get("actors") or []:
         if isinstance(actor, dict):
+            aid = actor.get("id")
             name = actor.get("name")
+            if isinstance(aid, str) and aid:
+                canonical_by_id[aid] = actor
             if isinstance(name, str) and name:
-                actors_by_name[name] = actor
+                canonical_by_name[name] = actor
+
+    # Alias mapping: source-side variant name → canonical actor entry.
+    alias_to_canonical: dict[str, dict] = {}
+    for entry in tp.get("actor_alias_mapping") or []:
+        if not isinstance(entry, dict):
+            continue
+        alias_name = entry.get("alias_name")
+        canonical_id = entry.get("canonical_id")
+        if not isinstance(alias_name, str) or not alias_name:
+            continue
+        if not isinstance(canonical_id, str) or not canonical_id:
+            continue
+        canonical_actor = canonical_by_id.get(canonical_id)
+        if canonical_actor is not None:
+            alias_to_canonical[alias_name] = canonical_actor
+
+    # Combined lookup: try canonical names first, then alias names.
+    actors_by_name: dict[str, dict] = dict(canonical_by_name)
+    for alias_name, canonical_actor in alias_to_canonical.items():
+        actors_by_name.setdefault(alias_name, canonical_actor)
 
     by_outlet: dict[str, list[dict]] = {}
     for s in sources:
@@ -1236,8 +1274,11 @@ def build_sources_section(tp: dict) -> str:
                     continue
                 canonical = actors_by_name.get(name)
                 if canonical is None:
-                    # Source actor without a final_actors entry (e.g.
-                    # filtered by A2 type=media). Skip silently.
+                    # Source actor with no canonical match — neither a
+                    # direct hit on canonical_actors[].name nor an
+                    # entry in actor_alias_mapping[]. Common case: A2
+                    # type=media filter dropped the actor before the
+                    # resolver ran. Skip silently.
                     continue
                 aid = canonical.get("id", "")
                 canonical_name = canonical.get("name") or name

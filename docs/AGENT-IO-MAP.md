@@ -287,16 +287,47 @@ Each drop logs an INFO line with id, outlet, and a 60-char summary snippet.
 **Reads:** `topic_bus.final_sources`
 **Writes:** `topic_bus.final_actors`
 
-Flattens every `final_sources[].actors_quoted[]` entry into a single deduped list with stable `actor-NNN` IDs. Dedup is exact-string-match on `name` (alias resolution is deferred). For role/type conflicts the first-encountered values win. Each output entry carries one `quotes[].{source_id, verbatim, position}` record per source-membership; `verbatim` is `None` for paraphrased actors. Runs after `filter_media_actors_quoted` so `type=media` never enters the flat list.
+Flattens every `final_sources[].actors_quoted[]` entry into a single deduped list with stable `actor-NNN` IDs. Dedup is exact-string-match on `name` (multilingual / paraphrased variants of the same entity therefore appear separately — alias resolution happens in stage 11c below). For role/type conflicts the first-encountered values win. Each output entry carries one `quotes[].{source_id, verbatim, position}` record per source-membership; `verbatim` is `None` for paraphrased actors. Runs after `filter_media_actors_quoted` so `type=media` never enters the flat list.
+
+`final_actors[]` is audit-only post Phase 2 of TASK-RESOLVE-ACTOR-ALIASES — preserved in the rendered TP JSON for transparency, but not read by behaviour code (consumers read `canonical_actors[]` from stage 11c).
 
 Logs one INFO line per topic with the unique-actor / source-count tally.
+
+---
+
+## 11c. resolve_actor_aliases (Gemini Flash, topic-stage)
+
+**Wrapper:** `src/agent_stages.py:ResolveActorAliasesStage`
+**Reads:** `topic_bus.final_actors`
+**Writes:** `topic_bus.canonical_actors`, `topic_bus.actor_alias_mapping`
+
+Cross-variant alias resolver. Reads the exact-string-match deduped `final_actors[]` from `consolidate_actors` and identifies entries whose `name` field is a multilingual or paraphrased variant of the same real-world entity ("Russian Defense Ministry" / "Russia's Defense Ministry" / "Министерство обороны России" all reference one institution).
+
+### OUTPUT
+
+| Field | LLM emits | Originär? | Notes |
+| --- | --- | --- | --- |
+| `aliases[].alias_id` | ✅ | ✅ | `actor-NNN` ID merged into another |
+| `aliases[].canonical_id` | ✅ | ✅ | `actor-NNN` ID the alias references |
+| `anonymous_flags[]` | ✅ | ✅ | `actor-NNN` IDs whose `name` is a generic source-class label |
+
+The wrapper applies first-source-wins canonical selection deterministically (smaller numeric ID wins; transitive closure via union-find) and writes:
+
+- `canonical_actors[]` — merged entries mirroring `final_actors[]` shape plus `is_anonymous: bool`. Aliased IDs disappear (gaps in the numeric sequence per ARCH-V2 §7.2).
+- `actor_alias_mapping[]` — audit trail `[{alias_id, alias_name, canonical_id}]` connecting pre- and post-resolution state.
+
+`final_actors[]` is preserved unchanged (non-destructive). Runs between `consolidate_actors` and `normalize_pre_research`.
+
+**Production config (Y, verified diagnostic-V2 30-run smoke):** `model=google/gemini-flash-latest`, `temperature=1.0`, `reasoning="medium"`, `max_tokens=66000`. The reasoning-enabled profile contradicts the prior fleet-level `reasoning=none` default for Flash and is task-specific — see ARCH-V2 §7.2 Engineering note.
+
+**Status:** ✅ Pass-through clean. Logs `resolve_actor_aliases: N aliases merged into M canonical actors, K flagged anonymous`.
 
 ---
 
 ## 12. Perspective (Opus 4.6, topic-stage)
 
 **Wrapper:** `src/agent_stages.py:PerspectiveStage`
-**Reads:** `topic_bus.final_sources`, `topic_bus.final_actors`, `topic_bus.merged_preliminary_divergences`, `topic_bus.merged_coverage_gaps`, `topic_bus.editor_selected_topic`
+**Reads:** `topic_bus.final_sources`, `topic_bus.canonical_actors`, `topic_bus.merged_preliminary_divergences`, `topic_bus.merged_coverage_gaps`, `topic_bus.editor_selected_topic`
 **Writes:** `topic_bus.perspective_clusters`, `topic_bus.perspective_missing_positions`
 
 ### OUTPUT
@@ -306,10 +337,10 @@ Logs one INFO line per topic with the unique-actor / source-count tally.
 | `position_clusters[].position_label` | ✅ | ✅ | Short cluster label |
 | `position_clusters[].position_summary` | ✅ | ✅ | Cluster prose |
 | `position_clusters[].source_ids[]` | ✅ | ✅ | References to `src-NNN` IDs from `final_sources` |
-| `position_clusters[].actor_ids[]` | ✅ | ✅ | References to `actor-NNN` IDs from `final_actors`. Inclusion criterion: the actor's own statements voice the cluster's position. An actor's source feeding a cluster does NOT auto-include the actor. |
+| `position_clusters[].actor_ids[]` | ✅ | ✅ | References to `actor-NNN` IDs from `canonical_actors`. Inclusion criterion: the actor's own statements voice the cluster's position. An actor's source feeding a cluster does NOT auto-include the actor. |
 | `missing_positions[]` | ✅ | ✅ | Stakeholder voices the dossier could not source |
 
-The `position_clusters[].id` (`pc-NNN`) is attached by `enrich_perspective_clusters`, not the agent. The prior `actors[]` field has been removed in favour of `actor_ids[]`.
+The `position_clusters[].id` (`pc-NNN`) is attached by `enrich_perspective_clusters`, not the agent. The prior `actors[]` field has been removed in favour of `actor_ids[]`. Phase 2 of TASK-RESOLVE-ACTOR-ALIASES migrated the agent-context input from `final_actors[]` to `canonical_actors[]`, so cluster→actor assignment now happens against the alias-resolved actor set.
 
 **Status:** ✅ Pass-through clean.
 
@@ -318,12 +349,12 @@ The `position_clusters[].id` (`pc-NNN`) is attached by `enrich_perspective_clust
 ## 13. enrich_perspective_clusters — deterministic topic-stage
 
 **Function:** `src/stages/topic_stages.py:enrich_perspective_clusters`
-**Reads:** `topic_bus.perspective_clusters`, `topic_bus.final_sources`, `topic_bus.final_actors`
+**Reads:** `topic_bus.perspective_clusters`, `topic_bus.final_sources`, `topic_bus.canonical_actors`
 **Writes:** `topic_bus.perspective_clusters` (in-place enrichment)
 
-Attaches per-cluster `id` (`pc-NNN`), `regions[]`, `languages[]`, and the count fields `n_actors`, `n_sources`, `n_regions`, `n_languages`. Validates the agent-emitted `actor_ids[]` against `final_actors[]`: unknown IDs are dropped and a WARNING is logged.
+Attaches per-cluster `id` (`pc-NNN`), `regions[]`, `languages[]`, and the count fields `n_actors`, `n_sources`, `n_regions`, `n_languages`. Validates the agent-emitted `actor_ids[]` against `canonical_actors[]` (the post alias-resolution actor list): unknown IDs and aliased IDs are dropped and a WARNING is logged.
 
-The prior `representation` bucket and the `actors[]` fan-out from source membership have been removed (TASK-PERSPECTIVE-ACTOR-SCOPING). Cluster→actor mapping is now an agent decision; the count fields replace the bucket.
+The prior `representation` bucket and the `actors[]` fan-out from source membership have been removed (TASK-PERSPECTIVE-ACTOR-SCOPING). Cluster→actor mapping is now an agent decision; the count fields replace the bucket. Phase 2 of TASK-RESOLVE-ACTOR-ALIASES migrated the validation join from `final_actors[]` to `canonical_actors[]` so `n_actors` reflects post-merge counts.
 
 Helper logic in `src/stages/topic_stages.py:_enrich_position_clusters_logic`.
 
@@ -344,12 +375,12 @@ The stage is **idempotent** — running it twice in hydrated (once after `enrich
 ## 15. Writer (Opus 4.6, topic-stage)
 
 **Wrapper:** `src/agent_stages.py:WriterStage`
-**Reads:** `topic_bus.final_sources`, `topic_bus.perspective_clusters_synced`, `topic_bus.perspective_missing_positions`, `topic_bus.merged_coverage_gaps`, `topic_bus.editor_selected_topic`
+**Reads:** `topic_bus.final_sources`, `topic_bus.canonical_actors`, `topic_bus.actor_alias_mapping`, `topic_bus.perspective_clusters_synced`, `topic_bus.perspective_missing_positions`, `topic_bus.merged_coverage_gaps`, `topic_bus.editor_selected_topic`
 **Writes:** `topic_bus.writer_article`
 
 ### INPUT
 
-The wrapper passes `final_sources` directly — Writer reads `src-NNN` IDs and emits `[src-NNN]` citations directly.
+The wrapper passes `final_sources` directly — Writer reads `src-NNN` IDs and emits `[src-NNN]` citations directly. Phase 2 of TASK-RESOLVE-ACTOR-ALIASES added `canonical_actors[]` (as `actors` in the Writer's context) plus `actor_alias_mapping[]` (as `actor_aliases`) so the Writer dereferences cluster `actor_ids[]` against canonical names rather than source-side `actors_quoted[]` variants. F2 dedup now reaches the published article text.
 
 ### OUTPUT
 
@@ -413,8 +444,10 @@ After this stage `qa_corrected_article` always has all four fields populated. Re
 ## 19. Bias Language (Opus 4.6, topic-stage)
 
 **Wrapper:** `src/agent_stages.py:BiasLanguageStage`
-**Reads:** `topic_bus.qa_corrected_article` (NOT `writer_article` — V2 always reads the corrected version)
+**Reads:** `topic_bus.qa_corrected_article` (NOT `writer_article` — V2 always reads the corrected version), `topic_bus.final_sources`, `topic_bus.canonical_actors`, `topic_bus.perspective_clusters_synced`, plus the QA / coverage / divergence slots used by the deterministic bias-card builder
 **Writes:** `topic_bus.bias_language_findings`, `topic_bus.bias_reader_note`
+
+The deterministic bias-card builder (`_build_bias_card_for_agent_input`) reads `canonical_actors` to compute `distinct_actor_count` post Phase 2 of TASK-RESOLVE-ACTOR-ALIASES. The pre-Phase-2 implementation read `final_actors[]`, which inflated the count under multilingual coverage; the migration to `canonical_actors[]` collapses alias variants of the same entity into one count.
 
 ### OUTPUT
 

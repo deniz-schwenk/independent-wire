@@ -149,6 +149,8 @@ def test_select_by_visibility_topicbus_tp():
     expected = {
         "final_sources",
         "final_actors",
+        "canonical_actors",
+        "actor_alias_mapping",
         "qa_problems_found",
         "qa_corrections",
         "qa_corrected_article",
@@ -205,6 +207,8 @@ def test_render_tp_public_shape():
         "metadata",
         "sources",
         "actors",
+        "final_actors",
+        "actor_alias_mapping",
         "perspectives",
         "divergences",
         "gaps",
@@ -449,8 +453,8 @@ def test_compose_bias_card_framing_aggregates_populated():
     """Cluster-aggregate fields in the framing block — populated case.
 
     cluster_count counts dict clusters; distinct_actor_count reads
-    ``len(final_actors)`` (the canonical deduped list — no per-cluster
-    walk).
+    ``len(canonical_actors)`` (the alias-resolved deduped list — no
+    per-cluster walk).
     """
     tb = TopicBus()
     tb.perspective_clusters_synced = [
@@ -474,7 +478,7 @@ def test_compose_bias_card_framing_aggregates_populated():
         },
         "not-a-dict-cluster",  # skipped
     ]
-    tb.final_actors = [
+    tb.canonical_actors = [
         {"id": "actor-001", "name": "Alice"},
         {"id": "actor-002", "name": "Bob"},
         {"id": "actor-003", "name": "Carol"},
@@ -486,7 +490,7 @@ def test_compose_bias_card_framing_aggregates_populated():
     # 3 dict-shaped clusters, the string entry is skipped
     assert framing["cluster_count"] == 3
 
-    # 3 entries in final_actors with non-empty name
+    # 3 entries in canonical_actors with non-empty name
     assert framing["distinct_actor_count"] == 3
 
 

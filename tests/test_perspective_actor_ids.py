@@ -5,7 +5,7 @@ Covers:
 
 - Schema-shape: ``cluster.actor_ids`` survives the enrichment stage.
 - Validation: every emitted actor_id must reference an entry in
-  ``final_actors[]``; unknown IDs are dropped and a warning is logged.
+  ``canonical_actors[]``; unknown IDs are dropped and a warning is logged.
 - Multi-cluster membership: an actor appearing in two cluster
   ``actor_ids[]`` survives in both — the validator does NOT enforce
   uniqueness across clusters.
@@ -40,7 +40,7 @@ def test_actor_ids_pass_through_when_all_known():
         },
     ]
     tb.final_sources = [{"id": "src-001", "country": "X", "language": "en"}]
-    tb.final_actors = [
+    tb.canonical_actors = [
         {"id": "actor-001", "name": "A"},
         {"id": "actor-002", "name": "B"},
         {"id": "actor-003", "name": "C"},
@@ -61,7 +61,7 @@ def test_unknown_actor_id_dropped_with_warning(caplog):
         },
     ]
     tb.final_sources = [{"id": "src-001", "country": "X", "language": "en"}]
-    tb.final_actors = [
+    tb.canonical_actors = [
         {"id": "actor-001", "name": "A"},
         {"id": "actor-002", "name": "B"},
     ]
@@ -85,7 +85,7 @@ def test_actor_ids_per_cluster_dedup():
         },
     ]
     tb.final_sources = [{"id": "src-001", "country": "X", "language": "en"}]
-    tb.final_actors = [
+    tb.canonical_actors = [
         {"id": "actor-001", "name": "A"},
         {"id": "actor-002", "name": "B"},
     ]
@@ -117,7 +117,7 @@ def test_actor_membership_can_span_multiple_clusters():
         {"id": "src-001", "country": "X", "language": "en"},
         {"id": "src-002", "country": "Y", "language": "en"},
     ]
-    tb.final_actors = [
+    tb.canonical_actors = [
         {"id": "actor-001", "name": "Macron"},
         {"id": "actor-002", "name": "Merz"},
     ]
@@ -136,7 +136,7 @@ def test_actor_ids_empty_when_agent_omits():
         {"position_label": "X", "source_ids": ["src-001"]},  # no actor_ids
     ]
     tb.final_sources = [{"id": "src-001", "country": "X", "language": "en"}]
-    tb.final_actors = [{"id": "actor-001", "name": "A"}]
+    tb.canonical_actors = [{"id": "actor-001", "name": "A"}]
     tb_after = _run(enrich_perspective_clusters, tb, _ro())
     cluster = tb_after.perspective_clusters[0]
     assert cluster["actor_ids"] == []
