@@ -193,7 +193,7 @@ Combines phase 1 + phase 2 + fetch metadata into the pre-research dossier. Each 
 
 ---
 
-## 8. Researcher Plan (Gemini 3 Flash, topic-stage)
+## 8. Researcher Plan (Opus 4.6, topic-stage)
 
 **Production wrapper:** `src/agent_stages.py:ResearcherPlanStage`
 **Hydrated wrapper:** `src/agent_stages.py:ResearcherHydratedPlanStage`
@@ -275,7 +275,7 @@ Drops sources whose IDs are not referenced anywhere downstream — body, cluster
 
 Drop rule (commit a8b40e3, strict): a source is dropped if its `id` is not in the reference set. No content-based reprieve — the previous heuristic kept any source with non-empty summary/actors_quoted, which let off-topic Researcher-Assembler-dumped findings survive.
 
-Cluster drop rule unchanged: a cluster is dropped only when both `actors[]` and `source_ids[]` are empty.
+Cluster drop rule unchanged: a cluster is dropped only when both `actor_ids[]` and `source_ids[]` are empty (post Task C the cluster-shape field is `actor_ids[]`, not `actors[]`).
 
 Each drop logs an INFO line with id, outlet, and a 60-char summary snippet.
 
@@ -465,7 +465,7 @@ The deterministic bias-card builder (`_build_bias_card_for_agent_input`) reads `
 ## 20. Perspective-Sync (Opus 4.6, topic-stage, hydrated only)
 
 **Wrapper:** `src/agent_stages.py:PerspectiveSyncStage`
-**Reads:** `topic_bus.perspective_clusters` (the source slot, not the synced target), `topic_bus.qa_corrected_article`, `topic_bus.qa_problems_found`, `topic_bus.qa_proposed_corrections`
+**Reads:** `topic_bus.perspective_clusters` (the source slot, not the synced target), `topic_bus.qa_corrected_article`, `topic_bus.qa_problems_found`, `topic_bus.qa_corrections`
 **Writes:** `topic_bus.perspective_clusters_synced` (delta-only — `mirror_perspective_synced` then merges)
 
 ### OUTPUT
