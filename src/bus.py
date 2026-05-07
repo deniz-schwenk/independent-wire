@@ -311,7 +311,24 @@ class TopicBus(BaseModel):
 
     # 4B.4 Source merge and renumbering (5 slots)
     merged_sources_pre_renumber: list = Slot(default_factory=list, visibility="internal")
-    final_sources: list = Slot(default_factory=list, visibility=["tp", "mcp"])
+    final_sources: list = Slot(
+        default_factory=list,
+        visibility=["tp", "mcp"],
+        description=(
+            "Canonical source list referenced everywhere downstream. "
+            "Each entry is a dict carrying at least `id`, `outlet`, "
+            "`title`, `url`, `language`, `country`, `summary`, "
+            "`actors_quoted[]`. Three optional fields populated by "
+            "`propagate_outlet_metadata` when the outlet appears in "
+            "`config/sources.json`: `tier` (1-4 or None), "
+            "`editorial_independence` "
+            "(independent / publicly_funded_autonomous / state_directed / "
+            "state_influenced or None), `bias_note` (free text or None). "
+            "Researcher-hydrated third-party citations leave the three "
+            "fields at None — the renderer surfaces a 'not yet "
+            "categorized' indicator."
+        ),
+    )
     id_rename_map: dict = Slot(default_factory=dict, visibility="internal")
     merged_preliminary_divergences: list = Slot(
         default_factory=list,
