@@ -177,7 +177,7 @@ The RunBus is created once per pipeline run and lives for the duration of the ru
 | `run_variant` | init | `""` | `"production"` or `"hydrated"` | `internal` |
 | `max_produce` | init | `3` | The number of TopicBuses this run intends to dispatch. Read by `select_topics` (top-N selection) and by `finalize_run` (intent-vs-actual reporting). Set by `init_run` from the `--max-produce` CLI flag (default 3). | `internal` |
 | `run_stage_log` | init | `[]` | List of `{stage, started_at, ended_at, status, scope}` per executed stage. `scope` is `"run"` or `"topic:{slug}"`. | `internal` |
-| `previous_coverage` | init (`init_run` reads recent published TPs from disk) | `[]` | Last ~7 days of published TP summaries: `[{tp_id, date, headline, slug, summary}]`. Read by Editor stage to inform follow-up decisions. | `internal` |
+| `previous_coverage` | init (`init_run` reads recent published TPs from disk) | `[]` | Recent published TP summaries: `[{tp_id, date, headline, slug, summary}]`. Walk window defaults to the last 7 days, configured via `RunInitConfig.previous_coverage_days` in `src/stages/run_stages.py`. The deterministic helper `_scan_previous_coverage` projects each `tp-*.json` into the record shape (skips files without a headline; sorts by date descending). Read by **Editor** (primary — informs follow-up assignment decisions) and by **Writer** (follow-up topics dereference `editor_selected_topic.follow_up_to` against this list to surface the previous headline in the article addendum). Slot is `optional_write=True`: legitimately empty on the first-ever run for a date with no prior `output/` directory. | `internal` |
 | `run_topic_manifest` | init / `finalize_run` | `[]` | After all topic stages complete: list of `{topic_id, topic_slug, status, stages_completed}` summary entries — one per dispatched TopicBus. Does NOT carry the TopicBus contents themselves. | `internal` |
 
 The Pipeline Runner holds the actual collection of TopicBus instances during topic-stage execution. The RunBus learns about that collection only at the end, via the manifest written by `finalize_run`.
@@ -272,8 +272,8 @@ This slot is the canonical actor registry for the topic. The Perspective agent r
 | Slot | Owner | Initial | Final | Visibility | mirrors_from |
 |---|---|---|---|---|---|
 | `qa_problems_found` | qa_analyze | `[]` | List of factual problems QA identified | `tp`, `mcp` | — |
-| `qa_proposed_corrections` | qa_analyze | `[]` | One-liner correction per problem, in same order as `qa_problems_found` | `tp`, `mcp` | — |
-| `qa_corrected_article` | qa_analyze + `mirror_qa_corrected` stage | `{}` (empty dict) | After QA emits: either fully populated with the corrected article (when QA found problems) or remains empty (when QA found no problems and omitted the `article` field). After the mirror stage: if empty, filled completely from `writer_article`; if populated, kept as-is. Final state always has all four article fields populated. | `tp`, `mcp`, `rss` | `writer_article` (slot-level) |
+| `qa_corrections` | qa_analyze | `[]` | List of `Correction` objects, one per `qa_problems_found` entry in matching order. Each item is `{proposed_correction: str, correction_needed: bool}` — the agent writes prose justifying or retracting the correction first, then commits to the boolean verdict. Schema field-order is load-bearing because Sonnet streams output in declared order. Slot was renamed from `qa_proposed_corrections` (commit `e2e7efd`); pre-rename `--reuse` snapshots require manual migration. | `tp`, `mcp` | — |
+| `qa_corrected_article` | qa_analyze + `mirror_qa_corrected` stage | `{}` (empty `WriterArticle`) | After QA emits: either fully populated with the corrected article (when at least one correction has `correction_needed: true`) or remains empty (when no corrections fire — every `correction_needed` is false, or `qa_corrections` is empty). After the mirror stage: if empty, filled completely from `writer_article`; if populated, kept as-is. Final state always has all four article fields populated. | `tp`, `mcp`, `rss` | `writer_article` (slot-level) |
 | `qa_divergences` | qa_analyze | `[]` | Cross-source factual disagreements. References to source IDs are already in `src-NNN` form because QA reads from `final_sources`. | `tp`, `mcp` | — |
 
 Mirror semantics: this slot uses **slot-level** empty-then-fill (granularity (a) per Section 3.3). The QA agent is instructed to emit the full `article` object when corrections apply, and to omit the `article` field entirely when no corrections apply. The `mirror_qa_corrected` stage runs after `qa_analyze` and checks if `qa_corrected_article` is empty. If empty (no corrections were emitted), the entire `writer_article` is copied into `qa_corrected_article`. If non-empty (a corrected article was emitted), it is kept as-is.
@@ -310,7 +310,7 @@ The unvalidated `merged_coverage_gaps` remains in the TopicBus for full provenan
 | Slot | Owner | Initial | Final | Visibility |
 |---|---|---|---|---|
 | `source_balance` | init (Python aggregation, runs after `final_sources`) | `{by_country: {}, by_language: {}, represented: [], missing_from_dossier: []}` | Computed from `final_sources` | `tp`, `mcp` |
-| `transparency_card` | init (Python aggregation, runs after QA) | `{}` | Computed from TopicBus state. Contains: `selection_reason` (cleaned via stale-quantifier strip, references `editor_selected_topic.selection_reason`), `pipeline_run` (`run_id`, `date` — pulled from the parent RunBus), `article_original` (mirror of `writer_article` if QA changed anything, else absent), `qa_problems_found`, `qa_proposed_corrections`, `dropped_sources` (`[{id, outlet, summary}]` for each strict-dropped source), `dropped_clusters` (`[{id, position_label}]` for each strict-dropped cluster). The two dropped lists are populated from the internal `prune_dropped_sources` / `prune_dropped_clusters` staging slots written by `prune_unused_sources_and_clusters`; both are present-but-empty when nothing was dropped. | `tp`, `mcp` |
+| `transparency_card` | init (Python aggregation, runs after QA) | `{}` | Computed from TopicBus state. Contains: `selection_reason` (cleaned via stale-quantifier strip, references `editor_selected_topic.selection_reason`), `pipeline_run` (`run_id`, `date` — pulled from the parent RunBus), `article_original` (mirror of `writer_article` if QA changed anything, else absent), `qa_problems_found`, `qa_corrections`, `dropped_sources` (`[{id, outlet, summary}]` for each strict-dropped source), `dropped_clusters` (`[{id, position_label}]` for each strict-dropped cluster). The two dropped lists are populated from the internal `prune_dropped_sources` / `prune_dropped_clusters` staging slots written by `prune_unused_sources_and_clusters`; both are present-but-empty when nothing was dropped. | `tp`, `mcp` |
 
 #### 4B.12 Bias Card (rendered, multi-slot derived view)
 
@@ -378,12 +378,12 @@ TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
 12. perspective                   — Reads final_sources + final_actors + merged_preliminary_divergences + merged_coverage_gaps; populates perspective_clusters (with per-cluster actor_ids[]), perspective_missing_positions
 13. mirror_perspective_synced     — Python: empty-then-fill mirror. perspective_clusters_synced is empty (production never runs perspective_sync); the stage fills it from perspective_clusters as a 1:1 copy.
 14. writer                        — Reads final_sources + perspective_clusters_synced + perspective_missing_positions + merged_coverage_gaps + editor_selected_topic; populates writer_article
-15. qa_analyze                    — Reads writer_article + final_sources + perspective_clusters_synced; populates qa_problems_found, qa_proposed_corrections, qa_corrected_article (only changed fields; empty otherwise), qa_divergences
+15. qa_analyze                    — Reads writer_article + final_sources + perspective_clusters_synced; populates qa_problems_found, qa_corrections, qa_corrected_article (only changed fields; empty otherwise), qa_divergences
 16. mirror_qa_corrected           — Python: empty-then-fill mirror. Fills empty fields of qa_corrected_article from writer_article. Final state: qa_corrected_article has all four fields populated.
 17. compute_source_balance        — Python: aggregates final_sources into source_balance
 18. validate_coverage_gaps        — Python: filters merged_coverage_gaps against source_balance; populates coverage_gaps_validated
 19. bias_language                 — Reads qa_corrected_article; populates bias_language_findings, bias_reader_note
-20. compose_transparency_card     — Python: assembles transparency_card from editor_selected_topic.selection_reason (cleaned), the parent RunBus's run_id and run_date, qa_problems_found, qa_proposed_corrections, and writer_article (as article_original) if qa modified anything
+20. compose_transparency_card     — Python: assembles transparency_card from editor_selected_topic.selection_reason (cleaned), the parent RunBus's run_id and run_date, qa_problems_found, qa_corrections, and writer_article (as article_original) if qa modified anything
 
 RUN STAGES (operate on RunBus again, run once after all topic stages complete)
 21. render                        — For each TopicBus the Runner holds, for each requested output (tp, mcp, rss): apply the corresponding render function with (topic_bus, run_bus); write to disk or return
@@ -392,7 +392,11 @@ RUN STAGES (operate on RunBus again, run once after all topic stages complete)
 
 ### 5.2 Stage list (hydrated variant)
 
-Run stages diverge from production: hydrated adds `attach_hydration_urls_to_assignments` between Editor and `select_topics`. Topic stages then diverge further after `instantiate_topic_buses`. Notably, `mirror_perspective_synced` runs twice in the hydrated topic-stage sequence — once after `enrich_perspective_clusters` (which produces an empty `perspective_clusters_synced` initially; the first mirror does a 1:1 fill from `perspective_clusters`), then a second time after `perspective_sync` (which has emitted per-element deltas; the second mirror merges those deltas onto the existing fill). The mirror stage is idempotent for both granularities, so the double dispatch is safe.
+Run stages diverge from production: hydrated adds `attach_hydration_urls_to_assignments` between Editor and `select_topics`. Topic stages then diverge further after `instantiate_topic_buses`.
+
+**Why `attach_hydration_urls_to_assignments` is a run-stage and sits where it does.** The stage walks `run_bus.editor_assignments` (every assignment, not just the top-N selection) and matches each to a Curator cluster by token overlap, lifting the cluster's URL list onto `assignment.raw_data.hydration_urls`. The operation is cross-topic by construction — it touches the full assignment list before topic-level work begins — and the data it produces (URL lists per assignment) must exist before `select_topics` runs so that the selected subset enters topic-stage execution with its hydration URLs already attached. Run-stage placement between Editor (which writes `editor_assignments`) and `select_topics` (which trims to `max_produce`) is the only point in the pipeline where (a) the full assignment list is visible and (b) downstream topic-level work has not yet split the work into per-TopicBus lanes. A topic-stage placement would force the runner to re-walk the full Curator output for each TopicBus instance — duplicate work and a violation of the run/topic phase boundary.
+
+**Double dispatch of `mirror_perspective_synced`.** The stage runs twice in the hydrated topic-stage sequence. The first invocation runs immediately after `enrich_perspective_clusters`: at that point `perspective_clusters_synced` is empty, so the mirror does a 1:1 fill from `perspective_clusters` — this is the initialisation pattern (slot is now populated). The second invocation runs after `perspective_sync`: that agent has emitted per-element deltas (cluster IDs plus only the changed `position_label` and/or `position_summary` fields), and the second mirror merges those deltas onto the existing fill, leaving non-delta clusters untouched. Both invocations are deterministic and idempotent for the granularities they encounter — the generic `mirror_stage` engine reads `mirror_granularity` from `bus.py` schema metadata and does the right thing in either case (slot-level fill on the first call when the slot is empty; per-element merge on the second call when the source has updates). The double dispatch is necessary because empty-then-fill cannot meaningfully merge deltas onto an empty target; the second invocation needs an initial state to merge onto, and the first invocation provides it. A single mirror at the end (after `perspective_sync`) would not work because `qa_analyze` reads `perspective_clusters_synced` between the two invocations and requires it to be already populated. Production runs the same stage exactly once (no `perspective_sync` step exists in production) — the single invocation is a 1:1 fill, and `perspective_clusters_synced` is byte-equal to `perspective_clusters` in production output.
 
 ```
 RUN STAGES (operate on RunBus)
@@ -422,7 +426,7 @@ TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
 20. writer                        — Same as production stage 14
 21. qa_analyze                    — Same as production stage 15
 22. mirror_qa_corrected           — Same as production stage 16
-23. perspective_sync              — Reads perspective_clusters + qa_corrected_article + qa_problems_found + qa_proposed_corrections; emits cluster deltas (only changed fields)
+23. perspective_sync              — Reads perspective_clusters + qa_corrected_article + qa_problems_found + qa_corrections; emits cluster deltas (only changed fields)
 24. mirror_perspective_synced     — Python: second invocation. For clusters where perspective_sync emitted deltas, those are merged onto the slot's existing content (per-element granularity).
 25. compute_source_balance        — Same as production stage 17
 26. validate_coverage_gaps        — Same as production stage 18
@@ -519,7 +523,7 @@ def render_rss_entry(topic_bus: TopicBus, run_bus: RunBus) -> dict:
 
 ### 6.4 MCP render
 
-Returns a structured dict suitable for MCP consumption — by default identical to `render_tp_public` plus optional access to `topic_bus.qa_problems_found` and `topic_bus.qa_proposed_corrections` for clients that want to consume the QA reasoning chain.
+Returns a structured dict suitable for MCP consumption — by default identical to `render_tp_public` plus optional access to `topic_bus.qa_problems_found` and `topic_bus.qa_corrections` for clients that want to consume the QA reasoning chain.
 
 ### 6.5 Consumer choice is consumer choice
 
