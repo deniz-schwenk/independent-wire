@@ -283,6 +283,44 @@ h2 {
 .cluster-counts a:hover { color: var(--color-text); }
 .card:target { background: var(--color-bg-subtle, #f5f5f4); }
 
+/* Actors section */
+.actors h2 { margin-top: 2rem; }
+.actors-meta {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--color-text-secondary); margin: 0 0 1rem;
+}
+#actors-show-all {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  background: transparent; border: 1px solid #000; cursor: pointer;
+  padding: 0.3rem 0.75rem; margin-bottom: 1rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+#actors-show-all:hover { background: #000; color: var(--color-bg); }
+.actor-list { list-style: none; padding: 0; margin: 0; }
+.actor {
+  padding: 1rem 0; border-top: 1px solid var(--color-border-light);
+}
+.actor:first-child { border-top: 0; padding-top: 0; }
+.actor[hidden] { display: none; }
+.actor:target { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-header {
+  font-family: var(--font-sans); font-size: 1rem; margin-bottom: 0.4rem;
+}
+.actor-header strong { font-weight: 700; }
+.actor-role { color: var(--color-text-secondary); margin-left: 0.4rem; }
+.actor-type {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); margin-left: 0.4rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.actor-position-line {
+  font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55;
+  color: var(--color-text-secondary); margin: 0.35rem 0 0;
+}
+.actor-position-line a { color: inherit; text-decoration: underline; }
+.actor-verbatim { font-style: italic; }
+.actor-no-cluster { color: var(--color-text-subtle); font-size: 0.85rem; }
+
 /* Missing voices */
 .missing-voice {
   border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
@@ -698,6 +736,173 @@ def build_perspectives(tp: dict) -> str:
             f'</div>\n'
         )
     return f'<h2>Perspectives &mdash; Position Clusters</h2>\n<div class="card-grid">\n{"".join(cards)}</div>\n'
+
+
+def build_actors_section(tp: dict) -> str:
+    """First-class Actors-section: every actor in ``final_actors`` listed
+    once, with cluster memberships and source attributions.
+
+    Renders between Positions and Sources. Each ``<li>`` carries:
+    - ``id="actor-NNN"`` — direct anchor target (CSS ``:target`` styles
+      it on a ``#actor-NNN`` URL).
+    - ``data-clusters="cluster-pc-001 cluster-pc-005"`` — space-separated
+      list of cluster filter tags. The inline JS shim listens to
+      ``hashchange``: when the URL fragment matches ``#cluster-...``,
+      actors whose ``data-clusters`` does not include that token are
+      hidden and a "Show all" button surfaces.
+
+    Per cluster the actor belongs to, one position-line is rendered with:
+    the cluster anchor, the actor's ``quotes[].position`` text for that
+    cluster (filtered by ``source_id ∈ cluster.source_ids``), the
+    optional ``verbatim`` quote in italics, and the source-id anchor.
+    """
+    actors = tp.get("actors") or []
+    clusters = tp.get("perspectives", {}).get("position_clusters", []) or []
+
+    # Build cluster-id → set(source_id) for filtering quotes per
+    # actor-cluster pair. Also remember each cluster's index so we can
+    # reference "Cluster N" in human-readable form.
+    cluster_sources: dict[str, set[str]] = {}
+    cluster_index: dict[str, int] = {}
+    for i, c in enumerate(clusters, start=1):
+        if not isinstance(c, dict):
+            continue
+        cid = c.get("id")
+        if not isinstance(cid, str) or not cid:
+            continue
+        cluster_sources[cid] = set(c.get("source_ids") or [])
+        cluster_index[cid] = i
+
+    # Reverse: actor-id → list of cluster-ids the actor belongs to,
+    # preserving the cluster order in which the agent emitted them.
+    actor_clusters: dict[str, list[str]] = {}
+    for c in clusters:
+        if not isinstance(c, dict):
+            continue
+        cid = c.get("id")
+        for aid in c.get("actor_ids") or []:
+            if not isinstance(aid, str):
+                continue
+            actor_clusters.setdefault(aid, []).append(cid)
+
+    def _position_line(actor: dict, cluster_id: str) -> str:
+        cluster_label = f"Cluster {cluster_index.get(cluster_id, '?')}"
+        cluster_anchor = (
+            f'<a href="#{_esc(cluster_id)}">{_esc(cluster_label)}</a>'
+        )
+        # Pick the first quote whose source_id grounds this cluster.
+        # Architect-neutral: a single position-line per cluster keeps
+        # the actor card scannable; multi-source quotes fall through
+        # to the §3.4 source-actor-refs layer.
+        quotes = actor.get("quotes") or []
+        chosen = None
+        for q in quotes:
+            if not isinstance(q, dict):
+                continue
+            sid = q.get("source_id")
+            if isinstance(sid, str) and sid in cluster_sources.get(cluster_id, set()):
+                chosen = q
+                break
+        if chosen is None:
+            return f'<p class="actor-position-line">{cluster_anchor}</p>'
+        position = _esc(chosen.get("position", "") or "")
+        verbatim = chosen.get("verbatim")
+        verbatim_html = ""
+        if isinstance(verbatim, str) and verbatim:
+            verbatim_html = (
+                f' <em class="actor-verbatim">&ldquo;{_esc(verbatim)}&rdquo;</em>'
+            )
+        sid = chosen.get("source_id", "")
+        src_anchor = (
+            f' (<a href="#{_esc(sid)}">{_esc(sid)}</a>)' if sid else ""
+        )
+        return (
+            f'<p class="actor-position-line">{cluster_anchor}: '
+            f'{position}{verbatim_html}{src_anchor}</p>'
+        )
+
+    items: list[str] = []
+    for actor in actors:
+        if not isinstance(actor, dict):
+            continue
+        aid = actor.get("id", "")
+        name = _esc(actor.get("name", ""))
+        role = _esc(actor.get("role", ""))
+        atype = _esc(actor.get("type", ""))
+        belongs = actor_clusters.get(aid, [])
+        data_clusters = " ".join(f"cluster-{cid}" for cid in belongs)
+        position_lines = "".join(_position_line(actor, cid) for cid in belongs)
+        if not position_lines:
+            position_lines = (
+                '<p class="actor-position-line actor-no-cluster">'
+                'Quoted in Sources but not assigned to any cluster.</p>'
+            )
+
+        items.append(
+            f'<li id="{_esc(aid)}" class="actor" data-clusters="{data_clusters}">\n'
+            f'  <div class="actor-header">'
+            f'<strong>{name}</strong> '
+            f'<span class="actor-role">{role}</span> '
+            f'<span class="actor-type">{atype}</span>'
+            f'</div>\n'
+            f'  <div class="actor-positions">{position_lines}</div>\n'
+            f'</li>\n'
+        )
+
+    n = len(items)
+    if n == 0:
+        return (
+            '<section id="actors-section" class="actors">\n'
+            '<h2>Actors</h2>\n'
+            '<p class="actors-meta">0 actors quoted across this topic.</p>\n'
+            '</section>\n'
+        )
+
+    actors_meta = (
+        f'<p class="actors-meta">{n} actor{"" if n == 1 else "s"} '
+        f'quoted across this topic. Click a cluster card&rsquo;s actor '
+        f'count above to filter, or jump to a specific actor.</p>\n'
+    )
+
+    js_shim = (
+        '<script>\n'
+        '(function() {\n'
+        '  const list = document.querySelector(\'.actor-list\');\n'
+        '  const showAll = document.getElementById(\'actors-show-all\');\n'
+        '  if (!list || !showAll) return;\n'
+        '  function applyFilter() {\n'
+        '    const m = (window.location.hash || \'\').match(/^#cluster-(\\S+)$/);\n'
+        '    if (!m) {\n'
+        '      list.querySelectorAll(\'.actor\').forEach(li => { li.hidden = false; });\n'
+        '      showAll.hidden = true;\n'
+        '      return;\n'
+        '    }\n'
+        '    const target = \'cluster-\' + m[1];\n'
+        '    list.querySelectorAll(\'.actor\').forEach(li => {\n'
+        '      const tags = (li.dataset.clusters || \'\').split(/\\s+/);\n'
+        '      li.hidden = !tags.includes(target);\n'
+        '    });\n'
+        '    showAll.hidden = false;\n'
+        '  }\n'
+        '  showAll.addEventListener(\'click\', () => {\n'
+        '    history.pushState(\'\', document.title, window.location.pathname);\n'
+        '    applyFilter();\n'
+        '  });\n'
+        '  window.addEventListener(\'hashchange\', applyFilter);\n'
+        '  applyFilter();\n'
+        '})();\n'
+        '</script>\n'
+    )
+
+    return (
+        '<section id="actors-section" class="actors">\n'
+        '<h2>Actors</h2>\n'
+        f'{actors_meta}'
+        '<button id="actors-show-all" type="button" hidden>Show all actors</button>\n'
+        f'<ol class="actor-list">\n{"".join(items)}</ol>\n'
+        f'{js_shim}'
+        '</section>\n'
+    )
 
 
 def build_missing_voices(tp: dict) -> str:
@@ -1209,6 +1414,7 @@ def render(tp: dict) -> str:
         build_reader_note(tp),
         build_article_body(tp),
         build_perspectives(tp),
+        build_actors_section(tp),
         build_missing_voices(tp),
         build_divergences(tp),
         build_bias_card(tp),

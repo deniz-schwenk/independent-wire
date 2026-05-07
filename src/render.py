@@ -164,6 +164,7 @@ def render_tp_public(
         "status": "review",
         "metadata": metadata,
         "sources": list(topic_bus.final_sources),
+        "actors": list(topic_bus.final_actors),
         "gaps": list(topic_bus.coverage_gaps_validated),
         "perspectives": {
             "position_clusters": list(topic_bus.perspective_clusters_synced),
@@ -189,6 +190,7 @@ _TP_RESHAPED_SLOTS: dict[str, str] = {
     "qa_divergences": "divergences",
     "coverage_gaps_validated": "gaps",
     "final_sources": "sources",
+    "final_actors": "actors",
     "transparency_card": "transparency",
     # Bias-card-derived slots (composed via compose_bias_card)
     "bias_language_findings": "bias_analysis.language",

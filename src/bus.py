@@ -344,13 +344,12 @@ class TopicBus(BaseModel):
     # 4B.4b Actor consolidation (1 slot). Written by `consolidate_actors`
     # — flattens all `final_sources[].actors_quoted[]` into a single
     # deduped list of canonical actor records keyed by `actor-NNN`.
-    # Read by `PerspectiveStage` (so the agent can assign cluster→actor
-    # mappings via `actor_ids[]`) and by downstream render. Internal
-    # visibility for Phase 1 of TASK-PERSPECTIVE-ACTOR-SCOPING — Phase 2
-    # may bump to `tp/mcp` once the cluster-card joins it.
+    # Read by `PerspectiveStage` (cluster→actor assignment via
+    # `actor_ids[]`) and surfaced to the rendered TP for the Actors-
+    # section.
     final_actors: list = Slot(
         default_factory=list,
-        visibility="internal",
+        visibility=["tp", "mcp"],
         optional_write=True,
     )
 

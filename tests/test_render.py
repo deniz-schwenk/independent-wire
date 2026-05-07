@@ -140,7 +140,7 @@ def _make_topicbus(
 
 
 def test_select_by_visibility_topicbus_tp():
-    """tp-tagged TopicBus slots: final_sources + qa_problems_found +
+    """tp-tagged TopicBus slots: final_sources + final_actors + qa_problems_found +
     qa_corrections + qa_corrected_article + qa_divergences +
     perspective_clusters_synced + bias_language_findings + bias_reader_note +
     coverage_gaps_validated + source_balance + transparency_card."""
@@ -148,6 +148,7 @@ def test_select_by_visibility_topicbus_tp():
     out = select_by_visibility(tb, "tp")
     expected = {
         "final_sources",
+        "final_actors",
         "qa_problems_found",
         "qa_corrections",
         "qa_corrected_article",
@@ -203,6 +204,7 @@ def test_render_tp_public_shape():
         "status",
         "metadata",
         "sources",
+        "actors",
         "perspectives",
         "divergences",
         "gaps",
@@ -217,6 +219,7 @@ def test_render_tp_public_shape():
     assert out["status"] == "review"
     assert isinstance(out["metadata"], dict)
     assert isinstance(out["sources"], list)
+    assert isinstance(out["actors"], list)
     assert isinstance(out["perspectives"], dict)
     assert isinstance(out["divergences"], list)
     assert isinstance(out["gaps"], list)
