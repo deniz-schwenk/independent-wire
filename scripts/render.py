@@ -387,35 +387,6 @@ details[open] summary::before {
 .bias-stats strong { color: var(--color-text); font-weight: 700; }
 .bias-stats .sep { color: var(--color-text-subtle); }
 
-/* Source actors expandable */
-.source-actors-row > td { padding: 0 0.75rem 0.75rem; border-bottom: 1px solid var(--color-border-light); }
-.source-actors > summary {
-  font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-subtle);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.source-actor-list { list-style: none; padding-left: 0; margin: 0.35rem 0 0; }
-.source-actor-list > li {
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-  font-family: var(--font-sans); font-size: 0.85rem;
-}
-.source-actor-list > li:last-child { border-bottom: none; }
-.actor-role { color: var(--color-text-secondary); margin-left: 0.35rem; }
-.actor-type-badge {
-  display: inline-block; padding: 0.05rem 0.4rem; margin-left: 0.35rem;
-  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.05em;
-  background: var(--color-bg-subtle); color: var(--color-text-secondary);
-  border: 1px solid var(--color-border-light);
-}
-.actor-position {
-  font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.55;
-  margin-top: 0.25rem;
-}
-.actor-verbatim {
-  font-style: italic; color: var(--color-text-subtle); margin-top: 0.35rem;
-  border-left: 2px solid var(--color-border-light); padding-left: 0.6rem;
-  font-size: 0.85rem;
-}
 
 /* QA correction details */
 .qa-tag {
@@ -444,18 +415,57 @@ details[open] summary::before {
 }
 .qa-explanation { margin-top: 0.35rem; line-height: 1.55; }
 
-/* Sources table */
-.sources-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-.sources-table th {
-  font-family: var(--font-mono); text-align: left; padding: 0.5rem 0.75rem;
-  border-bottom: 3px solid #000;
-  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
-  color: var(--color-text-subtle);
+/* Sources section — two-level outlet blocks */
+.sources-meta {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--color-text-secondary); margin: 0 0 1rem;
 }
-.sources-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border-light); vertical-align: top; }
-.sources-table a { color: var(--color-primary); text-decoration: none; }
-.sources-table a:hover { text-decoration: underline; }
-.source-num { font-family: var(--font-mono); font-weight: 600; color: var(--color-text-subtle); }
+.sources-by-outlet { display: flex; flex-direction: column; gap: 0.5rem; }
+.outlet-block { border: 1px solid var(--color-border-light); padding: 0.5rem 0.75rem; }
+.outlet-block > summary {
+  font-family: var(--font-sans); cursor: pointer; padding: 0.35rem 0;
+  display: flex; gap: 0.75rem; align-items: baseline; flex-wrap: wrap;
+}
+.outlet-block > summary strong { font-size: 1rem; }
+.outlet-meta {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.outlet-source-count {
+  margin-left: auto; font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.source-list { list-style: none; padding: 0; margin: 0.5rem 0 0; }
+.source {
+  padding: 0.75rem 0; border-top: 1px solid var(--color-border-light);
+}
+.source:first-child { border-top: 0; }
+.source:target { background: var(--color-bg-subtle, #f5f5f4); }
+.source-header { font-family: var(--font-sans); font-size: 0.95rem; }
+.source-id {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); margin-right: 0.4rem;
+}
+.source-headline { color: var(--color-primary); text-decoration: none; }
+.source-headline:hover { text-decoration: underline; }
+.source-meta {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); margin: 0.25rem 0;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.source-summary {
+  font-family: var(--font-sans); font-size: 0.85rem; line-height: 1.55;
+  color: var(--color-text-secondary); margin: 0.25rem 0;
+}
+.source-bias-note {
+  font-family: var(--font-sans); font-size: 0.82rem;
+  color: var(--color-text-subtle); margin: 0.25rem 0;
+}
+.source-actors-refs {
+  font-family: var(--font-sans); font-size: 0.8rem;
+  color: var(--color-text-subtle); margin-top: 0.35rem;
+}
+.source-actors-refs a { color: inherit; text-decoration: underline; }
 
 /* Transparency trail */
 .transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
@@ -1063,80 +1073,216 @@ def build_coverage_gaps(tp: dict) -> str:
     return f'<h2>Coverage Gaps</h2>\n{items}\n'
 
 
-def build_sources_table(tp: dict) -> str:
-    sources = tp.get("sources", [])
+_OUTLET_COUNTRY_BY_NAME: dict[str, str] | None = None
+
+
+def _outlet_country_lookup(name: str) -> str | None:
+    """Build a reverse outlet-name → country lookup from
+    ``config/outlet_registry.json`` once and cache it. Returns ``None``
+    when no entry matches. Different hostnames pointing at the same
+    outlet name resolve to the first country observed (rare, defensive)."""
+    global _OUTLET_COUNTRY_BY_NAME
+    if _OUTLET_COUNTRY_BY_NAME is None:
+        registry_path = Path(__file__).resolve().parents[1] / "config" / "outlet_registry.json"
+        try:
+            raw = json.loads(registry_path.read_text())
+        except FileNotFoundError:
+            raw = {}
+        out: dict[str, str] = {}
+        for key, value in raw.items():
+            if key.startswith("_") or not isinstance(value, dict):
+                continue
+            outlet_name = value.get("outlet")
+            country = value.get("country")
+            if isinstance(outlet_name, str) and isinstance(country, str):
+                out.setdefault(outlet_name, country)
+        _OUTLET_COUNTRY_BY_NAME = out
+    return _OUTLET_COUNTRY_BY_NAME.get(name)
+
+
+def _outlet_meta_line(outlet_name: str, sample_source: dict) -> str:
+    """Compose the Country · editorial_independence subheader per
+    Decision 6 of TASK-RENDER-RESTRUCTURE-V2:
+
+    - Both present:        ``"{Country} · {editorial_independence}"``
+    - Country only:        ``"{Country} · not yet categorized"``
+    - Independence only:   ``"{editorial_independence}"``
+    - Neither:             ``"not yet categorized"``
+
+    Country resolution: prefer ``sample_source.country``; fall back to
+    the outlet-name reverse-lookup against ``config/outlet_registry.json``;
+    omit when both are absent.
+
+    The "not yet categorized" wording is editorial — it telegraphs the
+    data gap and a commitment to closing it.
+    """
+    independence = sample_source.get("editorial_independence")
+    country = sample_source.get("country")
+    if not country:
+        country = _outlet_country_lookup(outlet_name)
+
+    if independence and country:
+        return f"{_esc(country)} &middot; {_esc(independence)}"
+    if independence:
+        return _esc(independence)
+    if country:
+        return f"{_esc(country)} &middot; not yet categorized"
+    return "not yet categorized"
+
+
+def _slugify(value: str) -> str:
+    """Lower, ASCII-only, hyphenated. Used for outlet anchor IDs only."""
+    out = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return out or "outlet"
+
+
+def build_sources_section(tp: dict) -> str:
+    """Two-level Sources section grouped by outlet.
+
+    Level 1: ``<details open>`` per outlet with ``<summary>`` showing
+    outlet name, Country &middot; editorial_independence (or "not yet
+    categorized" fallback), and the source count.
+
+    Level 2: ``<ol>`` of per-source ``<li id="src-NNN">`` entries with
+    headline link, country/language/date metadata, summary, optional
+    italic ``bias_note`` line, and an inline actors-refs list whose
+    names anchor into the Actors-section.
+
+    Outlet sorting is alphabetical by ``outlet`` field.
+    """
+    sources = tp.get("sources") or []
     if not sources:
         return ""
 
-    rows = []
+    actors_by_name: dict[str, dict] = {}
+    for actor in tp.get("actors") or []:
+        if isinstance(actor, dict):
+            name = actor.get("name")
+            if isinstance(name, str) and name:
+                actors_by_name[name] = actor
+
+    by_outlet: dict[str, list[dict]] = {}
     for s in sources:
-        sid = s.get("id", "")
-        num = sid.replace("src-", "").lstrip("0") or "0"
-        title = s.get("title", "")
-        url = s.get("url", "")
-        title_html = f'<a href="{_esc(url)}" target="_blank" rel="noopener">{_esc(title)}</a>' if url else _esc(title)
-        rows.append(
-            f'<tr id="{_esc(sid)}">'
-            f'<td class="source-num">{num}</td>'
-            f'<td>{_esc(s.get("outlet", ""))}</td>'
-            f'<td>{title_html}</td>'
-            f'<td>{_esc(s.get("language", ""))}</td>'
-            f'<td>{_esc(s.get("country", ""))}</td>'
-            f'</tr>'
-        )
-        actors = [a for a in (s.get("actors_quoted") or []) if isinstance(a, dict)]
-        if actors:
-            rows.append(_actors_quoted_row(actors))
+        if not isinstance(s, dict):
+            continue
+        outlet = s.get("outlet") or "(unknown outlet)"
+        by_outlet.setdefault(outlet, []).append(s)
 
-    return (
-        f'<h2>Sources</h2>\n'
-        f'<div class="sources-table-wrap">\n'
-        f'<table class="sources-table">\n'
-        f'<thead><tr><th>#</th><th>Outlet</th><th>Title</th><th>Lang</th><th>Country</th></tr></thead>\n'
-        f'<tbody>\n{"".join(rows)}\n</tbody>\n'
-        f'</table>\n</div>\n'
+    n_outlets = len(by_outlet)
+    n_languages = len({
+        s.get("language") for s in sources
+        if isinstance(s, dict) and s.get("language")
+    })
+    meta_line = (
+        f'{len(sources)} source{"" if len(sources) == 1 else "s"} '
+        f'from {n_outlets} outlet{"" if n_outlets == 1 else "s"} '
+        f'across {n_languages} language{"" if n_languages == 1 else "s"}.'
     )
 
+    blocks: list[str] = []
+    for outlet in sorted(by_outlet.keys(), key=str.lower):
+        entries = by_outlet[outlet]
+        n = len(entries)
+        outlet_meta = _outlet_meta_line(outlet, entries[0])
+        slug = _slugify(outlet)
 
-def _actors_quoted_row(actors: list[dict]) -> str:
-    """Render an expandable details block for actors quoted from a source.
+        items: list[str] = []
+        for s in entries:
+            sid = s.get("id", "")
+            num = sid.replace("src-", "").lstrip("0") or "0"
+            url = s.get("url", "")
+            title = s.get("title", "")
+            if url:
+                headline_html = (
+                    f'<a class="source-headline" href="{_esc(url)}" '
+                    f'target="_blank" rel="noopener">{_esc(title)}</a>'
+                )
+            else:
+                headline_html = f'<span class="source-headline">{_esc(title)}</span>'
 
-    Emitted as a sibling table row with `colspan=5` so it sits visually
-    underneath its source row without disturbing column widths.
-    """
-    items = []
-    for a in actors:
-        name = _esc(a.get("name", ""))
-        role = _esc(a.get("role", ""))
-        atype = _esc(a.get("type", ""))
-        position = _esc(a.get("position", ""))
-        type_badge = (
-            f'<span class="actor-type-badge">{atype}</span>' if atype else ""
-        )
-        role_span = f'<span class="actor-role">{role}</span>' if role else ""
-        position_html = (
-            f'<p class="actor-position">{position}</p>' if position else ""
-        )
-        verbatim = a.get("verbatim_quote")
-        verbatim_html = ""
-        if verbatim and str(verbatim).strip().lower() not in ("null", "none", "n/a"):
-            verbatim_html = (
-                f'<blockquote class="actor-verbatim">{_esc(str(verbatim))}'
-                f'</blockquote>'
+            meta_parts: list[str] = []
+            for field in ("country", "language", "estimated_date"):
+                value = s.get(field)
+                if isinstance(value, str) and value:
+                    meta_parts.append(f'<span>{_esc(value)}</span>')
+            meta_html = " &middot; ".join(meta_parts)
+
+            summary_text = s.get("summary") or ""
+            summary_html = (
+                f'<p class="source-summary">{_esc(summary_text)}</p>'
+                if summary_text else ""
             )
-        items.append(
-            f'<li><strong>{name}</strong> {role_span} {type_badge}'
-            f'{position_html}{verbatim_html}</li>'
+
+            bias_note = s.get("bias_note")
+            bias_note_html = ""
+            if isinstance(bias_note, str) and bias_note:
+                bias_note_html = (
+                    f'<p class="source-bias-note">'
+                    f'<em>{_esc(bias_note)}</em></p>'
+                )
+
+            actor_refs_html = ""
+            actor_links: list[str] = []
+            for entry in s.get("actors_quoted") or []:
+                if not isinstance(entry, dict):
+                    continue
+                name = entry.get("name")
+                if not isinstance(name, str) or not name:
+                    continue
+                canonical = actors_by_name.get(name)
+                if canonical is None:
+                    # Source actor without a final_actors entry (e.g.
+                    # filtered by A2 type=media). Skip silently.
+                    continue
+                aid = canonical.get("id", "")
+                canonical_name = canonical.get("name") or name
+                actor_links.append(
+                    f'<a href="#{_esc(aid)}">{_esc(canonical_name)}</a>'
+                )
+            if actor_links:
+                actor_refs_html = (
+                    f'<div class="source-actors-refs">'
+                    f'Actors quoted: {", ".join(actor_links)}'
+                    f'</div>'
+                )
+
+            items.append(
+                f'<li id="{_esc(sid)}" class="source">\n'
+                f'  <div class="source-header">'
+                f'<span class="source-id">[{num}]</span> {headline_html}'
+                f'</div>\n'
+                + (f'  <div class="source-meta">{meta_html}</div>\n' if meta_html else "")
+                + f'  {summary_html}\n'
+                + (f'  {bias_note_html}\n' if bias_note_html else "")
+                + (f'  {actor_refs_html}\n' if actor_refs_html else "")
+                + '</li>\n'
+            )
+
+        blocks.append(
+            f'<details class="outlet-block" id="outlet-{_esc(slug)}" open>\n'
+            f'<summary>'
+            f'<strong>{_esc(outlet)}</strong> '
+            f'<span class="outlet-meta">{outlet_meta}</span> '
+            f'<span class="outlet-source-count">'
+            f'{n} source{"" if n == 1 else "s"}'
+            f'</span>'
+            f'</summary>\n'
+            f'<ol class="source-list">\n{"".join(items)}</ol>\n'
+            f'</details>\n'
         )
-    n = len(actors)
-    summary = f'{n} actor{"s" if n != 1 else ""} quoted'
+
     return (
-        f'<tr class="source-actors-row"><td colspan="5">'
-        f'<details class="source-actors">'
-        f'<summary>{summary}</summary>'
-        f'<ul class="source-actor-list">{"".join(items)}</ul>'
-        f'</details></td></tr>'
+        f'<section id="sources-section" class="sources">\n'
+        f'<h2>Sources</h2>\n'
+        f'<p class="sources-meta">{meta_line}</p>\n'
+        f'<div class="sources-by-outlet">\n{"".join(blocks)}</div>\n'
+        f'</section>\n'
     )
+
+
+# Back-compat alias — legacy callers (and tests) may still import the
+# old name. Both point at the same restructured builder.
+build_sources_table = build_sources_section
 
 
 def build_transparency(tp: dict) -> str:
@@ -1419,7 +1565,7 @@ def render(tp: dict) -> str:
         build_divergences(tp),
         build_bias_card(tp),
         build_coverage_gaps(tp),
-        build_sources_table(tp),
+        build_sources_section(tp),
         build_transparency(tp),
         build_glossary(),
         back_nav_bottom,

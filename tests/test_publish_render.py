@@ -367,63 +367,161 @@ def test_representation_pills_section_removed():
     assert "pill-marginal" not in html
 
 
-def test_source_row_expandable_actors_when_present():
-    """Item 1: a source with actors_quoted gets a `<details>` expandable
-    sibling row showing each actor's name."""
+def test_sources_section_renders_outlet_block_with_full_meta():
+    """Outlet has both Country and editorial_independence: meta line
+    shows {Country} · {editorial_independence}."""
     tp = {
         "sources": [
             {
-                "id": "src-001",
-                "outlet": "Al Jazeera",
-                "title": "T",
-                "language": "en",
+                "id": "src-001", "outlet": "Al Jazeera", "title": "T",
+                "url": "https://example.com/a", "language": "en",
                 "country": "Qatar",
-                "actors_quoted": [
-                    {
-                        "name": "Hakan Fidan",
-                        "role": "Foreign Minister",
-                        "type": "government",
-                        "position": "Discussed regional developments.",
-                    },
-                    {
-                        "name": "Donald Trump",
-                        "role": "United States President",
-                        "type": "government",
-                        "position": "Warned of escalation.",
-                        "verbatim_quote": "blown off the face of the earth",
-                    },
-                ],
-            }
-        ]
-    }
-    html = build_sources_table(tp)
-    assert 'class="source-actors"' in html
-    assert "2 actors quoted" in html
-    assert "Hakan Fidan" in html
-    assert "Donald Trump" in html
-    # Verbatim quote rendered as a blockquote.
-    assert 'class="actor-verbatim"' in html
-    assert "blown off the face of the earth" in html
-
-
-def test_source_row_no_expandable_when_actors_empty():
-    """Item 1 negative: source with empty actors_quoted gets no
-    `<details>` block — the row stays as today."""
-    tp = {
-        "sources": [
-            {
-                "id": "src-001",
-                "outlet": "Reuters",
-                "title": "T",
-                "language": "en",
-                "country": "United Kingdom",
+                "editorial_independence": "publicly_funded_autonomous",
+                "summary": "Lead.", "estimated_date": "2026-05-04",
                 "actors_quoted": [],
             }
-        ]
+        ],
+        "actors": [],
     }
     html = build_sources_table(tp)
-    assert 'class="source-actors"' not in html
-    assert "actors quoted" not in html
+    assert 'id="sources-section"' in html
+    assert 'class="outlet-block"' in html
+    assert "Al Jazeera" in html
+    # Outlet meta shows both Country and editorial_independence
+    assert "Qatar" in html
+    assert "publicly_funded_autonomous" in html
+    # No "not yet categorized" when both fields populated
+    assert "not yet categorized" not in html
+    # Source [N] label
+    assert ">[1]<" in html
+    # <li id="src-001"> for direct anchor
+    assert 'id="src-001"' in html
+    # Headline links to the source URL
+    assert 'href="https://example.com/a"' in html
+
+
+def test_sources_section_outlet_meta_country_only_falls_back():
+    """Country present but editorial_independence missing: meta line
+    shows {Country} · not yet categorized."""
+    tp = {
+        "sources": [
+            {
+                "id": "src-001", "outlet": "Al-Bayan", "title": "T",
+                "language": "ar", "country": "Iran",
+                "summary": "x",
+                "actors_quoted": [],
+            }
+        ],
+        "actors": [],
+    }
+    html = build_sources_table(tp)
+    assert "Iran" in html
+    assert "not yet categorized" in html
+
+
+def test_sources_section_outlet_meta_neither_field_present():
+    """Both Country and editorial_independence missing: meta line is
+    just 'not yet categorized'."""
+    tp = {
+        "sources": [
+            {
+                "id": "src-001", "outlet": "ZZZ Unknown Site",
+                "title": "T", "summary": "x", "actors_quoted": [],
+            }
+        ],
+        "actors": [],
+    }
+    html = build_sources_table(tp)
+    assert "not yet categorized" in html
+
+
+def test_sources_section_bias_note_renders_when_present():
+    tp = {
+        "sources": [
+            {
+                "id": "src-001", "outlet": "Al Jazeera", "title": "T",
+                "language": "en", "country": "Qatar",
+                "editorial_independence": "publicly_funded_autonomous",
+                "bias_note": "Qatar-funded, strong Global South coverage",
+                "summary": "x", "actors_quoted": [],
+            }
+        ],
+        "actors": [],
+    }
+    html = build_sources_table(tp)
+    assert 'class="source-bias-note"' in html
+    assert "Qatar-funded" in html
+
+
+def test_sources_section_bias_note_omitted_when_absent():
+    tp = {
+        "sources": [
+            {
+                "id": "src-001", "outlet": "Al Jazeera", "title": "T",
+                "language": "en", "country": "Qatar",
+                "summary": "x", "actors_quoted": [],
+            }
+        ],
+        "actors": [],
+    }
+    html = build_sources_table(tp)
+    assert 'class="source-bias-note"' not in html
+
+
+def test_sources_section_actors_refs_with_anchor_links():
+    tp = {
+        "sources": [
+            {
+                "id": "src-001", "outlet": "Al Jazeera", "title": "T",
+                "language": "en", "country": "Qatar", "summary": "x",
+                "actors_quoted": [
+                    {"name": "Donald Trump", "role": "P", "type": "government",
+                     "position": "p"},
+                    {"name": "Hakan Fidan", "role": "FM", "type": "government",
+                     "position": "p"},
+                ],
+            }
+        ],
+        "actors": [
+            {"id": "actor-001", "name": "Donald Trump"},
+            {"id": "actor-007", "name": "Hakan Fidan"},
+        ],
+    }
+    html = build_sources_table(tp)
+    assert 'class="source-actors-refs"' in html
+    assert 'href="#actor-001">Donald Trump' in html
+    assert 'href="#actor-007">Hakan Fidan' in html
+
+
+def test_sources_section_outlets_sorted_alphabetically():
+    tp = {
+        "sources": [
+            {"id": "src-001", "outlet": "Zeit", "title": "z", "summary": "x", "actors_quoted": []},
+            {"id": "src-002", "outlet": "Al Jazeera", "title": "a", "summary": "x", "actors_quoted": []},
+            {"id": "src-003", "outlet": "Middle East Eye", "title": "m", "summary": "x", "actors_quoted": []},
+        ],
+        "actors": [],
+    }
+    html = build_sources_table(tp)
+    pos_aj = html.find("Al Jazeera")
+    pos_mee = html.find("Middle East Eye")
+    pos_z = html.find("Zeit")
+    assert pos_aj < pos_mee < pos_z
+
+
+def test_sources_section_source_id_label_matches_canonical():
+    """The [N] label is derived from the source's id, stripping the
+    src- prefix and leading zeros."""
+    tp = {
+        "sources": [
+            {"id": "src-007", "outlet": "X", "title": "t", "summary": "x", "actors_quoted": []},
+            {"id": "src-042", "outlet": "X", "title": "t", "summary": "x", "actors_quoted": []},
+        ],
+        "actors": [],
+    }
+    html = build_sources_table(tp)
+    assert ">[7]<" in html
+    assert ">[42]<" in html
 
 
 def test_qa_correction_expandable_with_problem_detail():
