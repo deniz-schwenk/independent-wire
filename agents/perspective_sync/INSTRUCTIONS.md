@@ -1,6 +1,6 @@
 # TASK
 
-You receive `original_perspectives` containing the position-cluster map (`position_clusters[]` with cluster-level `id`, `position_label`, `position_summary`, plus pass-through `actors`, `regions`, `languages`, `representation`, and `source_ids`; plus `missing_positions[]`), a `corrected_article` containing the four article fields after QA+Fix, and a `qa_corrections` block carrying `problems_found[]` and `proposed_corrections[]` that describe what QA changed and why. Identify clusters whose `position_label` or `position_summary` no longer matches the corrected article body, and emit a narrow delta for each affected cluster — the cluster's `id` plus only the changed field or fields.
+You receive `original_perspectives` containing the position-cluster map (`position_clusters[]` with cluster-level `id`, `position_label`, `position_summary`, plus pass-through `actor_ids`, `regions`, `languages`, `source_ids`, and the per-cluster counts `n_actors / n_sources / n_regions / n_languages`; plus `missing_positions[]`), a `corrected_article` containing the four article fields after QA+Fix, and a `qa_corrections` block carrying `problems_found[]` and `proposed_corrections[]` that describe what QA changed and why. Identify clusters whose `position_label` or `position_summary` no longer matches the corrected article body, and emit a narrow delta for each affected cluster — the cluster's `id` plus only the changed field or fields.
 
 You do not rebuild the cluster map. You do not decide which clusters to keep. You do not emit unchanged clusters, `missing_positions`, or any pass-through cluster fields. The output lists only changes — unchanged clusters and unchanged fields are simply omitted.
 
@@ -8,7 +8,7 @@ You do not rebuild the cluster map. You do not decide which clusters to keep. Yo
 
 - `position_label` — the one-sentence position statement at the head of a cluster. Update it when the original wording misrepresents the position as the corrected article body now states it, or when QA flagged the wording as misleading framing.
 - `position_summary` — the elaboration of the position. Update it when the summary describes the position in terms that conflict with the corrected article body.
-- All other cluster fields — `id`, `actors[]`, `regions[]`, `languages[]`, `representation`, `source_ids[]` — are pass-through. Do not modify them and do not include them in the output.
+- All other cluster fields — `id`, `actor_ids[]`, `regions[]`, `languages[]`, `source_ids[]`, and the per-cluster counts — are pass-through. Do not modify them and do not include them in the output.
 - `missing_positions[]` is also pass-through. Do not modify, add to, or remove entries from it.
 
 ## Identifying affected clusters
@@ -51,6 +51,6 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 # RULES
 
 1. Output only deltas for clusters whose `position_label` or `position_summary` changed. Unchanged clusters do not appear; unchanged fields on a changed cluster do not appear. Omission means "do not touch this field"; presence means "overwrite with this value."
-2. Each delta entry carries the cluster's `id` plus only `position_label` and/or `position_summary`. The other cluster fields (`actors`, `regions`, `languages`, `representation`, `source_ids`) and `missing_positions[]` never appear in the output.
+2. Each delta entry carries the cluster's `id` plus only `position_label` and/or `position_summary`. The other cluster fields (`actor_ids`, `regions`, `languages`, `source_ids`, and the per-cluster counts) and `missing_positions[]` never appear in the output.
 3. Focus on clusters whose label or summary references a fact, framing, or attribution that QA changed. Do not re-analyze or second-guess clusters untouched by QA.
 4. All updates rest on the QA reasoning chain (`problems_found`, `proposed_corrections`) and the corrected article body. Do not introduce facts, quotes, or attributions from outside knowledge. When QA removed an attribution the original cluster summary depended on, rewrite the summary to match the corrected article body rather than fabricating an alternative.

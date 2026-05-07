@@ -1023,11 +1023,12 @@ class WriterStage(_AgentStageBase):
     optional follow-up addendum loaded from `agents/writer/FOLLOWUP.md` when
     `editor_selected_topic.follow_up_to` is truthy.
 
-    Writes `writer_article`. The Writer agent has `tools=[web_search_tool]`
-    configured at construction; the agent's tool-call loop handles invocation
-    transparently. Per V2-03b stage order, final_sources already carries
-    `src-NNN` ids, so the Writer emits `[src-NNN]` citations directly — V1's
-    post-Writer `_merge_writer_sources` is structurally redundant in V2.
+    Writes `writer_article`. The Writer agent has `tools=[]` configured at
+    construction (V2-current). The Writer relies entirely on the pipeline-
+    supplied input and does not perform any tool-mediated lookups. Per
+    V2-03b stage order, final_sources already carries `src-NNN` ids, so
+    the Writer emits `[src-NNN]` citations directly — V1's post-Writer
+    `_merge_writer_sources` is structurally redundant in V2.
     """
 
     stage_kind = "topic"

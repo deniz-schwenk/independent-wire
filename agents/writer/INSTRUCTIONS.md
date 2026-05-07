@@ -18,7 +18,7 @@ The article does not contain numeric claims about source counts, language counts
 
 ## Neutrality
 
-- **Equal weight to competing positions.** When two clusters disagree, give each the same factual register, the same density of attribution, and the same kind of phrasing. The `representation` field decides which clusters appear; once a cluster is in the article, it is presented with the same care as any other.
+- **Equal weight to competing positions.** When two clusters disagree, give each the same factual register, the same density of attribution, and the same kind of phrasing. The per-cluster counts (`n_actors`, `n_sources`, `n_regions`, `n_languages`) decide which clusters carry editorial weight in the body; once a cluster is in the article, it is presented with the same care as any other.
 - **Neutral verbs of attribution.** Use `said`, `stated`, `reported`, `told`, `wrote`, `announced`, `published`, `described` — these report a speech act without commenting on its credibility. Reserve `claimed` only for cases the source itself frames as disputed; in normal attribution, the neutral verb is correct.
 - **Closings describe the current state.** End the article with the latest known facts or the named next expected developments, attributed to sources. The closing reports what is happening, not which framing turns out to be correct.
 - **Symmetrical framing across regions and languages.** When contrasting positions from different language groups or regions, write each clause in the same factual register: same kind of verb, same kind of modifier, no asymmetric editorial loading.
