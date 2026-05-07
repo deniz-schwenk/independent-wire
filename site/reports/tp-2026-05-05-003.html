@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Nearly 50 European Leaders Convene in Yerevan for Security Summit as Armenia Accelerates Pivot from Moscow</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG (legacy class — keeps any historical templates working) */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+/* Evidence terrain SVG */
+.evidence-terrain { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+.cluster-counts {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); margin: 0.75rem 0 0;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.cluster-counts a { color: inherit; text-decoration: underline; }
+.cluster-counts a:hover { color: var(--color-text); }
+.card:target { background: var(--color-bg-subtle, #f5f5f4); }
+
+/* Actors section */
+.actors h2 { margin-top: 2rem; }
+.actors-meta {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--color-text-secondary); margin: 0 0 1rem;
+}
+#actors-show-all {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  background: transparent; border: 1px solid #000; cursor: pointer;
+  padding: 0.3rem 0.75rem; margin-bottom: 1rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+#actors-show-all:hover { background: #000; color: var(--color-bg); }
+.actor-list { list-style: none; padding: 0; margin: 0; }
+.actor {
+  padding: 1rem 0; border-top: 1px solid var(--color-border-light);
+}
+.actor:first-child { border-top: 0; padding-top: 0; }
+.actor[hidden] { display: none; }
+.actor:target { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-header {
+  font-family: var(--font-sans); font-size: 1rem; margin-bottom: 0.4rem;
+}
+.actor-header strong { font-weight: 700; }
+.actor-role { color: var(--color-text-secondary); margin-left: 0.4rem; }
+.actor-type {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); margin-left: 0.4rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.actor-position-line {
+  font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55;
+  color: var(--color-text-secondary); margin: 0.35rem 0 0;
+}
+.actor-position-line a { color: inherit; text-decoration: underline; }
+.actor-verbatim { font-style: italic; }
+.actor-no-cluster { color: var(--color-text-subtle); font-size: 0.85rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "+  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "−  ";
+}
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Bias-card stat line */
+.bias-stats {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+  display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline;
+}
+.bias-stats strong { color: var(--color-text); font-weight: 700; }
+.bias-stats .sep { color: var(--color-text-subtle); }
+
+
+/* QA correction details */
+.qa-tag {
+  display: inline-block; padding: 0.05rem 0.4rem; margin-right: 0.35rem;
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  border: 1px solid currentColor;
+}
+.qa-tag.tag-applied { color: #0f766e; }
+.qa-tag.tag-retracted { color: #9f1239; }
+.qa-detail {
+  margin: 0.35rem 0 0.5rem 1rem; padding: 0.5rem 0.75rem;
+  background: var(--color-bg-subtle); border-left: 3px solid var(--color-border-light);
+  font-family: var(--font-sans); font-size: 0.82rem;
+}
+.qa-problem-type {
+  display: inline-block; padding: 0.05rem 0.4rem; margin-bottom: 0.35rem;
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  background: #ca8a0415; color: #ca8a04; border: 1px solid #ca8a0440;
+}
+.qa-excerpt {
+  font-style: italic; margin: 0.25rem 0;
+  border-left: 2px solid var(--color-border-light); padding-left: 0.6rem;
+  color: var(--color-text-secondary);
+}
+.qa-explanation { margin-top: 0.35rem; line-height: 1.55; }
+.qa-corrections-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
+
+/* Sources section — two-level outlet blocks */
+.sources-meta {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--color-text-secondary); margin: 0 0 1rem;
+}
+.sources-by-outlet { display: flex; flex-direction: column; gap: 0.5rem; }
+.outlet-block { border: 1px solid var(--color-border-light); padding: 0.5rem 0.75rem; }
+.outlet-block > summary {
+  font-family: var(--font-sans); cursor: pointer; padding: 0.35rem 0;
+  display: flex; gap: 0.75rem; align-items: baseline; flex-wrap: wrap;
+}
+.outlet-block > summary strong { font-size: 1rem; }
+.outlet-meta {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.outlet-source-count {
+  margin-left: auto; font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.source-list { list-style: none; padding: 0; margin: 0.5rem 0 0; }
+.source {
+  padding: 0.75rem 0; border-top: 1px solid var(--color-border-light);
+}
+.source:first-child { border-top: 0; }
+.source:target { background: var(--color-bg-subtle, #f5f5f4); }
+.source-header { font-family: var(--font-sans); font-size: 0.95rem; }
+.source-id {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); margin-right: 0.4rem;
+}
+.source-headline { color: var(--color-primary); text-decoration: none; }
+.source-headline:hover { text-decoration: underline; }
+.source-meta {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); margin: 0.25rem 0;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.source-summary {
+  font-family: var(--font-sans); font-size: 0.85rem; line-height: 1.55;
+  color: var(--color-text-secondary); margin: 0.25rem 0;
+}
+.source-bias-note {
+  font-family: var(--font-sans); font-size: 0.82rem;
+  color: var(--color-text-subtle); margin: 0.25rem 0;
+}
+.source-actors-refs {
+  font-family: var(--font-sans); font-size: 0.8rem;
+  color: var(--color-text-subtle); margin-top: 0.35rem;
+}
+.source-actors-refs a { color: inherit; text-decoration: underline; }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+.transparency dt.pipeline-run { border-top: 1px solid var(--color-border-light); padding-top: 0.75rem; margin-top: 0.75rem; }
+.transparency dd.pipeline-run { border-bottom: 1px solid var(--color-border-light); padding-bottom: 0.75rem; margin-bottom: 0.75rem; }
+
+/* Strict-drop pruning collapsible */
+.dropped-details > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.dropped-detail { margin-top: 0.5rem; }
+.dropped-section-label {
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-text-subtle);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin: 0.5rem 0 0.25rem;
+}
+.dropped-list { list-style: none; padding-left: 0; margin: 0; }
+.dropped-list > li {
+  padding: 0.25rem 0; border-bottom: 1px solid var(--color-border-light);
+  font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-secondary);
+}
+.dropped-list > li:last-child { border-bottom: none; }
+.dropped-id {
+  display: inline-block; font-family: var(--font-mono); font-weight: 700;
+  color: var(--color-text); margin-right: 0.4rem;
+}
+.dropped-outlet { color: var(--color-text); }
+.dropped-label { font-family: var(--font-sans); }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>Nearly 50 European Leaders Convene in Yerevan for Security Summit as Armenia Accelerates Pivot from Moscow</h1>
+<p class="subtitle">The eighth European Political Community gathering highlights competing framings: European defense autonomy, Turkish-Armenian normalization, and warnings about geopolitical risk in the South Caucasus.</p>
+<p class="date">May 5, 2026</p>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">13</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">4</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">0</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">3</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Distribution</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 700" class="evidence-terrain" role="img" aria-label="Evidence terrain: 13 sources across 2 regions">
+<desc>13 TOTAL SOURCES across 2 regions</desc>
+<defs><radialGradient id="et-paper" cx="50%" cy="55%" r="75%"><stop offset="0%" stop-color="#fafaf7"/><stop offset="100%" stop-color="#f1eee5"/></radialGradient><clipPath id="et-terrain-clip"><rect x="270" y="0" width="810" height="700"/></clipPath></defs>
+<rect x="0" y="0" width="1080" height="700" fill="url(#et-paper)"/>
+<g clip-path="url(#et-terrain-clip)">
+<path d="M691.0,345.6 L694.0,346.2 L699.8,347.1 L705.7,347.7 L711.6,348.0 L717.4,348.0 L723.3,347.7 L729.2,347.1 L735.0,346.2 L738.0,345.6 L740.9,345.0 L746.8,343.4 L749.7,342.4 L752.6,341.3 L757.7,339.1 L758.5,338.7 L763.6,335.9 L764.4,335.5 L768.3,332.7 L770.2,331.1 L772.0,329.5 L774.9,326.2 L776.1,324.6 L777.2,323.0 L778.8,319.8 L779.9,316.6 L780.4,313.3 L780.4,310.1 L779.9,306.9 L778.8,303.7 L777.2,300.4 L776.1,298.8 L774.9,297.2 L772.0,294.0 L770.2,292.4 L768.3,290.8 L764.4,288.0 L763.6,287.5 L758.5,284.7 L757.7,284.3 L752.6,282.1 L749.7,281.1 L746.8,280.1 L740.9,278.5 L738.0,277.9 L735.0,277.2 L729.2,276.3 L723.3,275.8 L717.4,275.5 L711.6,275.5 L705.7,275.8 L699.8,276.3 L694.0,277.2 L691.0,277.9 L688.1,278.5 L682.2,280.1 L679.3,281.1 L676.4,282.1 L671.3,284.3 L670.5,284.7 L665.4,287.5 L664.6,288.0 L660.7,290.8 L658.8,292.4 L657.0,294.0 L654.1,297.2 L652.9,298.8 L651.8,300.4 L650.2,303.7 L649.1,306.9 L648.6,310.1 L648.6,313.3 L649.1,316.6 L650.2,319.8 L651.8,323.0 L652.9,324.6 L654.1,326.2 L657.0,329.5 L658.8,331.1 L660.7,332.7 L664.6,335.5 L665.4,335.9 L670.5,338.7 L671.3,339.1 L676.4,341.3 L679.3,342.4 L682.2,343.4 L688.1,345.0 L691.0,345.6 Z" fill="#c9a063" fill-opacity="0.22" stroke="none"/>
+<path d="M687.0,425.4 L688.1,425.5 L694.0,426.2 L699.8,426.6 L705.7,426.9 L711.6,427.1 L717.4,427.1 L723.3,426.9 L729.2,426.6 L735.0,426.2 L740.9,425.5 L742.0,425.4 L746.8,424.8 L752.6,423.9 L758.5,422.8 L761.4,422.2 L764.4,421.5 L770.2,420.1 L774.3,418.9 L776.1,418.4 L781.9,416.6 L784.4,415.7 L787.8,414.5 L792.8,412.5 L793.7,412.1 L799.5,409.4 L799.9,409.3 L805.4,406.4 L806.2,406.0 L811.3,403.0 L811.6,402.8 L816.5,399.6 L817.1,399.1 L820.8,396.3 L823.0,394.5 L824.6,393.1 L828.0,389.9 L828.9,388.9 L831.0,386.7 L833.6,383.4 L834.7,381.8 L835.9,380.2 L837.9,377.0 L839.6,373.8 L840.6,371.2 L840.9,370.5 L842.0,367.3 L842.9,364.1 L843.4,360.9 L843.7,357.6 L843.7,354.4 L843.4,351.2 L842.9,348.0 L842.0,344.7 L840.9,341.5 L840.6,340.9 L839.6,338.3 L837.9,335.1 L835.9,331.8 L834.7,330.2 L833.6,328.6 L831.0,325.4 L828.9,323.1 L828.0,322.2 L824.6,318.9 L823.0,317.6 L820.8,315.7 L817.1,313.0 L816.5,312.5 L811.6,309.3 L811.3,309.0 L806.2,306.0 L805.4,305.6 L799.9,302.8 L799.5,302.6 L793.7,299.9 L792.8,299.6 L787.8,297.5 L784.4,296.3 L781.9,295.5 L776.1,293.6 L774.3,293.1 L770.2,291.9 L764.4,290.5 L761.4,289.9 L758.5,289.2 L752.6,288.1 L746.8,287.2 L742.0,286.7 L740.9,286.5 L735.0,285.9 L729.2,285.4 L723.3,285.1 L717.4,285.0 L711.6,285.0 L705.7,285.1 L699.8,285.4 L694.0,285.9 L688.1,286.5 L687.0,286.7 L682.2,287.2 L676.4,288.1 L670.5,289.2 L667.6,289.9 L664.6,290.5 L658.8,291.9 L654.7,293.1 L652.9,293.6 L647.1,295.5 L644.6,296.3 L641.2,297.5 L636.2,299.6 L635.3,299.9 L629.5,302.6 L629.1,302.8 L623.6,305.6 L622.8,306.0 L617.7,309.0 L617.4,309.3 L612.5,312.5 L611.9,313.0 L608.2,315.7 L606.0,317.6 L604.4,318.9 L601.0,322.2 L600.1,323.1 L598.0,325.4 L595.4,328.6 L594.3,330.2 L593.1,331.8 L591.1,335.1 L589.4,338.3 L588.4,340.9 L588.1,341.5 L587.0,344.7 L586.1,348.0 L585.6,351.2 L585.3,354.4 L585.3,357.6 L585.6,360.9 L586.1,364.1 L587.0,367.3 L588.1,370.5 L588.4,371.2 L589.4,373.8 L591.1,377.0 L593.1,380.2 L594.3,381.8 L595.4,383.4 L598.0,386.7 L600.1,388.9 L601.0,389.9 L604.4,393.1 L606.0,394.5 L608.2,396.3 L611.9,399.1 L612.5,399.6 L617.4,402.8 L617.7,403.0 L622.8,406.0 L623.6,406.4 L629.1,409.3 L629.5,409.4 L635.3,412.1 L636.2,412.5 L641.2,414.5 L644.6,415.7 L647.1,416.6 L652.9,418.4 L654.7,418.9 L658.8,420.1 L664.6,421.5 L667.6,422.2 L670.5,422.8 L676.4,423.9 L682.2,424.8 L687.0,425.4" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.20" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M681.1,414.9 L682.2,415.1 L688.1,416.0 L694.0,416.6 L699.8,417.1 L705.7,417.4 L711.6,417.5 L717.4,417.5 L723.3,417.4 L729.2,417.1 L735.0,416.6 L740.9,416.0 L746.8,415.1 L747.9,414.9 L752.6,414.1 L758.5,413.0 L763.7,411.7 L764.4,411.5 L770.2,410.0 L775.0,408.4 L776.1,408.1 L781.9,406.1 L784.0,405.2 L787.8,403.7 L791.6,402.0 L793.7,401.0 L798.0,398.8 L799.5,397.9 L803.6,395.5 L805.4,394.4 L808.5,392.3 L811.3,390.2 L812.8,389.1 L816.5,385.9 L817.1,385.3 L819.9,382.6 L822.7,379.4 L823.0,379.1 L825.3,376.2 L827.5,373.0 L828.9,370.4 L829.2,369.7 L830.8,366.5 L832.0,363.3 L832.8,360.1 L833.4,356.8 L833.7,353.6 L833.7,350.4 L833.4,347.2 L832.8,343.9 L832.0,340.7 L830.8,337.5 L829.2,334.3 L828.9,333.6 L827.5,331.0 L825.3,327.8 L823.0,324.9 L822.7,324.6 L819.9,321.4 L817.1,318.7 L816.5,318.1 L812.8,314.9 L811.3,313.7 L808.5,311.7 L805.4,309.6 L803.6,308.4 L799.5,306.1 L798.0,305.2 L793.7,303.0 L791.6,302.0 L787.8,300.3 L784.0,298.8 L781.9,297.9 L776.1,295.9 L775.0,295.5 L770.2,294.0 L764.4,292.5 L763.7,292.3 L758.5,291.0 L752.6,289.9 L747.9,289.1 L746.8,288.9 L740.9,288.0 L735.0,287.4 L729.2,286.9 L723.3,286.6 L717.4,286.4 L711.6,286.4 L705.7,286.6 L699.8,286.9 L694.0,287.4 L688.1,288.0 L682.2,288.9 L681.1,289.1 L676.4,289.9 L670.5,291.0 L665.3,292.3 L664.6,292.5 L658.8,294.0 L654.0,295.5 L652.9,295.9 L647.1,297.9 L645.0,298.8 L641.2,300.3 L637.4,302.0 L635.3,303.0 L631.0,305.2 L629.5,306.1 L625.4,308.4 L623.6,309.6 L620.5,311.7 L617.7,313.7 L616.2,314.9 L612.5,318.1 L611.9,318.7 L609.1,321.4 L606.3,324.6 L606.0,324.9 L603.7,327.8 L601.5,331.0 L600.1,333.6 L599.8,334.3 L598.2,337.5 L597.0,340.7 L596.2,343.9 L595.6,347.2 L595.3,350.4 L595.3,353.6 L595.6,356.8 L596.2,360.1 L597.0,363.3 L598.2,366.5 L599.8,369.7 L600.1,370.4 L601.5,373.0 L603.7,376.2 L606.0,379.1 L606.3,379.4 L609.1,382.6 L611.9,385.3 L612.5,385.9 L616.2,389.1 L617.7,390.2 L620.5,392.3 L623.6,394.4 L625.4,395.5 L629.5,397.9 L631.0,398.8 L635.3,401.0 L637.4,402.0 L641.2,403.7 L645.0,405.2 L647.1,406.1 L652.9,408.1 L654.0,408.4 L658.8,410.0 L664.6,411.5 L665.3,411.7 L670.5,413.0 L676.4,414.1 L681.1,414.9" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.24" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M701.8,406.6 L705.7,406.8 L711.6,407.0 L717.4,407.0 L723.3,406.8 L727.2,406.6 L729.2,406.5 L735.0,406.0 L740.9,405.3 L746.8,404.4 L752.0,403.3 L752.6,403.2 L758.5,402.0 L764.4,400.4 L765.3,400.1 L770.2,398.6 L775.1,396.9 L776.1,396.6 L781.9,394.2 L783.1,393.7 L787.8,391.5 L789.9,390.4 L793.7,388.3 L795.6,387.2 L799.5,384.7 L800.5,384.0 L804.8,380.8 L805.4,380.3 L808.6,377.5 L811.3,374.8 L811.8,374.3 L814.6,371.1 L816.9,367.9 L817.1,367.5 L819.0,364.6 L820.6,361.4 L821.9,358.2 L822.8,355.0 L823.0,353.9 L823.5,351.7 L823.8,348.5 L823.8,345.3 L823.5,342.1 L823.0,339.9 L822.8,338.8 L821.9,335.6 L820.6,332.4 L819.0,329.2 L817.1,326.3 L816.9,325.9 L814.6,322.7 L811.8,319.5 L811.3,319.0 L808.6,316.3 L805.4,313.5 L804.8,313.0 L800.5,309.8 L799.5,309.1 L795.6,306.6 L793.7,305.5 L789.9,303.3 L787.8,302.3 L783.1,300.1 L781.9,299.6 L776.1,297.2 L775.1,296.9 L770.2,295.2 L765.3,293.7 L764.4,293.4 L758.5,291.8 L752.6,290.6 L752.0,290.4 L746.8,289.4 L740.9,288.5 L735.0,287.8 L729.2,287.3 L727.2,287.2 L723.3,287.0 L717.4,286.8 L711.6,286.8 L705.7,287.0 L701.8,287.2 L699.8,287.3 L694.0,287.8 L688.1,288.5 L682.2,289.4 L677.0,290.4 L676.4,290.6 L670.5,291.8 L664.6,293.4 L663.7,293.7 L658.8,295.2 L653.9,296.9 L652.9,297.2 L647.1,299.6 L645.9,300.1 L641.2,302.3 L639.1,303.3 L635.3,305.5 L633.4,306.6 L629.5,309.1 L628.5,309.8 L624.2,313.0 L623.6,313.5 L620.4,316.3 L617.7,319.0 L617.2,319.5 L614.4,322.7 L612.1,325.9 L611.9,326.3 L610.0,329.2 L608.4,332.4 L607.1,335.6 L606.2,338.8 L606.0,339.9 L605.5,342.1 L605.2,345.3 L605.2,348.5 L605.5,351.7 L606.0,353.9 L606.2,355.0 L607.1,358.2 L608.4,361.4 L610.0,364.6 L611.9,367.5 L612.1,367.9 L614.4,371.1 L617.2,374.3 L617.7,374.8 L620.4,377.5 L623.6,380.3 L624.2,380.8 L628.5,384.0 L629.5,384.7 L633.4,387.2 L635.3,388.3 L639.1,390.4 L641.2,391.5 L645.9,393.7 L647.1,394.2 L652.9,396.6 L653.9,396.9 L658.8,398.6 L663.7,400.1 L664.6,400.4 L670.5,402.0 L676.4,403.2 L677.0,403.3 L682.2,404.4 L688.1,405.3 L694.0,406.0 L699.8,406.5 L701.8,406.6" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.28" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M687.9,394.5 L688.1,394.6 L694.0,395.4 L699.8,395.9 L705.7,396.3 L711.6,396.5 L717.4,396.5 L723.3,396.3 L729.2,395.9 L735.0,395.4 L740.9,394.6 L741.1,394.5 L746.8,393.6 L752.6,392.4 L757.0,391.3 L758.5,390.9 L764.4,389.2 L767.8,388.1 L770.2,387.2 L776.1,384.9 L776.2,384.8 L781.9,382.2 L783.1,381.6 L787.8,379.0 L788.8,378.4 L793.7,375.2 L793.8,375.2 L798.0,371.9 L799.5,370.6 L801.7,368.7 L804.7,365.5 L805.4,364.7 L807.4,362.3 L809.6,359.0 L811.3,355.9 L811.3,355.8 L812.8,352.6 L813.9,349.4 L814.6,346.1 L814.9,342.9 L814.9,339.7 L814.6,336.5 L813.9,333.2 L812.8,330.0 L811.3,326.8 L811.3,326.7 L809.6,323.6 L807.4,320.3 L805.4,317.9 L804.7,317.1 L801.7,313.9 L799.5,312.0 L798.0,310.6 L793.8,307.4 L793.7,307.4 L788.8,304.2 L787.8,303.6 L783.1,301.0 L781.9,300.4 L776.2,297.7 L776.1,297.7 L770.2,295.4 L767.8,294.5 L764.4,293.4 L758.5,291.7 L757.0,291.3 L752.6,290.2 L746.8,289.0 L741.1,288.1 L740.9,288.0 L735.0,287.2 L729.2,286.6 L723.3,286.3 L717.4,286.1 L711.6,286.1 L705.7,286.3 L699.8,286.6 L694.0,287.2 L688.1,288.0 L687.9,288.1 L682.2,289.0 L676.4,290.2 L672.0,291.3 L670.5,291.7 L664.6,293.4 L661.2,294.5 L658.8,295.4 L652.9,297.7 L652.8,297.7 L647.1,300.4 L645.9,301.0 L641.2,303.6 L640.2,304.2 L635.3,307.4 L635.2,307.4 L631.0,310.6 L629.5,312.0 L627.3,313.9 L624.3,317.1 L623.6,317.9 L621.6,320.3 L619.4,323.6 L617.7,326.7 L617.7,326.8 L616.2,330.0 L615.1,333.2 L614.4,336.5 L614.1,339.7 L614.1,342.9 L614.4,346.1 L615.1,349.4 L616.2,352.6 L617.7,355.8 L617.7,355.9 L619.4,359.0 L621.6,362.3 L623.6,364.7 L624.3,365.5 L627.3,368.7 L629.5,370.6 L631.0,371.9 L635.2,375.2 L635.3,375.2 L640.2,378.4 L641.2,379.0 L645.9,381.6 L647.1,382.2 L652.8,384.8 L652.9,384.9 L658.8,387.2 L661.2,388.1 L664.6,389.2 L670.5,390.9 L672.0,391.3 L676.4,392.4 L682.2,393.6 L687.9,394.5" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.32" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M699.1,385.3 L699.8,385.4 L705.7,385.8 L711.6,386.1 L717.4,386.1 L723.3,385.8 L729.2,385.4 L729.9,385.3 L735.0,384.8 L740.9,384.0 L746.8,382.9 L750.1,382.1 L752.6,381.5 L758.5,379.9 L761.7,378.9 L764.4,378.0 L770.2,375.8 L770.4,375.7 L776.1,373.1 L777.4,372.4 L781.9,369.9 L783.2,369.2 L787.8,366.1 L788.0,366.0 L792.1,362.8 L793.7,361.3 L795.6,359.5 L798.5,356.3 L799.5,354.9 L800.9,353.1 L802.9,349.9 L804.4,346.6 L805.4,343.8 L805.6,343.4 L806.3,340.2 L806.7,337.0 L806.7,333.7 L806.3,330.5 L805.6,327.3 L805.4,326.9 L804.4,324.1 L802.9,320.8 L800.9,317.6 L799.5,315.8 L798.5,314.4 L795.6,311.1 L793.7,309.4 L792.1,307.9 L788.0,304.7 L787.8,304.6 L783.2,301.5 L781.9,300.8 L777.4,298.2 L776.1,297.6 L770.4,295.0 L770.2,294.9 L764.4,292.7 L761.7,291.8 L758.5,290.7 L752.6,289.1 L750.1,288.6 L746.8,287.8 L740.9,286.7 L735.0,285.9 L729.9,285.3 L729.2,285.3 L723.3,284.8 L717.4,284.6 L711.6,284.6 L705.7,284.8 L699.8,285.3 L699.1,285.3 L694.0,285.9 L688.1,286.7 L682.2,287.8 L678.9,288.6 L676.4,289.1 L670.5,290.7 L667.3,291.8 L664.6,292.7 L658.8,294.9 L658.6,295.0 L652.9,297.6 L651.6,298.2 L647.1,300.8 L645.8,301.5 L641.2,304.6 L641.0,304.7 L636.9,307.9 L635.3,309.4 L633.4,311.1 L630.5,314.4 L629.5,315.8 L628.1,317.6 L626.1,320.8 L624.6,324.1 L623.6,326.9 L623.4,327.3 L622.7,330.5 L622.3,333.7 L622.3,337.0 L622.7,340.2 L623.4,343.4 L623.6,343.8 L624.6,346.6 L626.1,349.9 L628.1,353.1 L629.5,354.9 L630.5,356.3 L633.4,359.5 L635.3,361.3 L636.9,362.8 L641.0,366.0 L641.2,366.1 L645.8,369.2 L647.1,369.9 L651.6,372.4 L652.9,373.1 L658.6,375.7 L658.8,375.8 L664.6,378.0 L667.3,378.9 L670.5,379.9 L676.4,381.5 L678.9,382.1 L682.2,382.9 L688.1,384.0 L694.0,384.8 L699.1,385.3" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.36" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M684.8,372.7 L688.1,373.3 L694.0,374.3 L699.8,375.0 L705.7,375.4 L711.6,375.6 L717.4,375.6 L723.3,375.4 L729.2,375.0 L735.0,374.3 L740.9,373.3 L744.2,372.7 L746.8,372.1 L752.6,370.7 L756.7,369.4 L758.5,368.9 L764.4,366.7 L765.6,366.2 L770.2,364.1 L772.5,363.0 L776.1,361.0 L778.2,359.8 L781.9,357.2 L782.9,356.5 L786.8,353.3 L787.8,352.3 L790.1,350.1 L792.7,346.9 L793.7,345.5 L794.9,343.6 L796.6,340.4 L797.9,337.2 L798.7,333.9 L799.1,330.7 L799.1,327.5 L798.7,324.3 L797.9,321.0 L796.6,317.8 L794.9,314.6 L793.7,312.8 L792.7,311.4 L790.1,308.1 L787.8,305.9 L786.8,304.9 L782.9,301.7 L781.9,301.0 L778.2,298.5 L776.1,297.2 L772.5,295.2 L770.2,294.1 L765.6,292.0 L764.4,291.5 L758.5,289.4 L756.7,288.8 L752.6,287.5 L746.8,286.1 L744.2,285.6 L740.9,284.9 L735.0,283.9 L729.2,283.3 L723.3,282.8 L717.4,282.6 L711.6,282.6 L705.7,282.8 L699.8,283.3 L694.0,283.9 L688.1,284.9 L684.8,285.6 L682.2,286.1 L676.4,287.5 L672.3,288.8 L670.5,289.4 L664.6,291.5 L663.4,292.0 L658.8,294.1 L656.5,295.2 L652.9,297.2 L650.8,298.5 L647.1,301.0 L646.1,301.7 L642.2,304.9 L641.2,305.9 L638.9,308.1 L636.3,311.4 L635.3,312.8 L634.1,314.6 L632.4,317.8 L631.1,321.0 L630.3,324.3 L629.9,327.5 L629.9,330.7 L630.3,333.9 L631.1,337.2 L632.4,340.4 L634.1,343.6 L635.3,345.5 L636.3,346.9 L638.9,350.1 L641.2,352.3 L642.2,353.3 L646.1,356.5 L647.1,357.2 L650.8,359.8 L652.9,361.0 L656.5,363.0 L658.8,364.1 L663.4,366.2 L664.6,366.7 L670.5,368.9 L672.3,369.4 L676.4,370.7 L682.2,372.1 L684.8,372.7" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.40" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M689.9,363.0 L694.0,363.7 L699.8,364.4 L705.7,364.9 L711.6,365.2 L717.4,365.2 L723.3,364.9 L729.2,364.4 L735.0,363.7 L739.1,363.0 L740.9,362.7 L746.8,361.3 L752.4,359.7 L752.6,359.7 L758.5,357.7 L761.3,356.5 L764.4,355.2 L768.2,353.3 L770.2,352.2 L773.7,350.1 L776.1,348.4 L778.2,346.8 L781.8,343.6 L781.9,343.5 L784.8,340.4 L787.2,337.2 L787.8,336.2 L789.1,333.9 L790.5,330.7 L791.4,327.5 L791.8,324.3 L791.8,321.0 L791.4,317.8 L790.5,314.6 L789.1,311.4 L787.8,309.1 L787.2,308.1 L784.8,304.9 L781.9,301.8 L781.8,301.7 L778.2,298.5 L776.1,296.9 L773.7,295.2 L770.2,293.1 L768.2,292.0 L764.4,290.1 L761.3,288.8 L758.5,287.6 L752.6,285.6 L752.4,285.6 L746.8,284.0 L740.9,282.6 L739.1,282.3 L735.0,281.6 L729.2,280.9 L723.3,280.4 L717.4,280.1 L711.6,280.1 L705.7,280.4 L699.8,280.9 L694.0,281.6 L689.9,282.3 L688.1,282.6 L682.2,284.0 L676.6,285.6 L676.4,285.6 L670.5,287.6 L667.7,288.8 L664.6,290.1 L660.8,292.0 L658.8,293.1 L655.3,295.2 L652.9,296.9 L650.8,298.5 L647.2,301.7 L647.1,301.8 L644.2,304.9 L641.8,308.1 L641.2,309.1 L639.9,311.4 L638.5,314.6 L637.6,317.8 L637.2,321.0 L637.2,324.3 L637.6,327.5 L638.5,330.7 L639.9,333.9 L641.2,336.2 L641.8,337.2 L644.2,340.4 L647.1,343.5 L647.2,343.6 L650.8,346.8 L652.9,348.4 L655.3,350.1 L658.8,352.2 L660.8,353.3 L664.6,355.2 L667.7,356.5 L670.5,357.7 L676.4,359.7 L676.6,359.7 L682.2,361.3 L688.1,362.7 L689.9,363.0" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.44" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M694.7,353.1 L699.8,353.8 L705.7,354.4 L711.6,354.7 L717.4,354.7 L723.3,354.4 L729.2,353.8 L734.3,353.1 L735.0,353.0 L740.9,351.9 L746.8,350.4 L748.4,349.9 L752.6,348.5 L757.4,346.6 L758.5,346.2 L764.1,343.4 L764.4,343.3 L769.4,340.2 L770.2,339.6 L773.6,337.0 L776.1,334.6 L777.0,333.7 L779.7,330.5 L781.8,327.3 L781.9,326.9 L783.3,324.1 L784.3,320.8 L784.8,317.6 L784.8,314.4 L784.3,311.2 L783.3,307.9 L781.9,305.1 L781.8,304.7 L779.7,301.5 L777.0,298.3 L776.1,297.3 L773.6,295.0 L770.2,292.4 L769.4,291.8 L764.4,288.7 L764.1,288.6 L758.5,285.8 L757.4,285.3 L752.6,283.5 L748.4,282.1 L746.8,281.6 L740.9,280.1 L735.0,279.0 L734.3,278.9 L729.2,278.2 L723.3,277.6 L717.4,277.3 L711.6,277.3 L705.7,277.6 L699.8,278.2 L694.7,278.9 L694.0,279.0 L688.1,280.1 L682.2,281.6 L680.6,282.1 L676.4,283.5 L671.6,285.3 L670.5,285.8 L664.9,288.6 L664.6,288.7 L659.6,291.8 L658.8,292.4 L655.4,295.0 L652.9,297.3 L652.0,298.3 L649.3,301.5 L647.2,304.7 L647.1,305.1 L645.7,307.9 L644.7,311.2 L644.2,314.4 L644.2,317.6 L644.7,320.8 L645.7,324.1 L647.1,326.9 L647.2,327.3 L649.3,330.5 L652.0,333.7 L652.9,334.6 L655.4,337.0 L658.8,339.6 L659.6,340.2 L664.6,343.3 L664.9,343.4 L670.5,346.2 L671.6,346.6 L676.4,348.5 L680.6,349.9 L682.2,350.4 L688.1,351.9 L694.0,353.0 L694.7,353.1" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.48" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M699.6,343.0 L699.8,343.1 L705.7,343.7 L711.6,344.0 L717.4,344.0 L723.3,343.7 L729.2,343.1 L729.4,343.0 L735.0,342.1 L740.9,340.8 L744.6,339.8 L746.8,339.1 L752.6,337.0 L753.6,336.6 L758.5,334.2 L760.1,333.4 L764.4,330.7 L765.1,330.1 L769.0,326.9 L770.2,325.7 L772.1,323.7 L774.4,320.5 L776.1,317.3 L776.1,317.2 L777.3,314.0 L777.8,310.8 L777.8,307.5 L777.3,304.3 L776.1,301.1 L776.1,301.0 L774.4,297.9 L772.1,294.6 L770.2,292.6 L769.0,291.4 L765.1,288.2 L764.4,287.7 L760.1,285.0 L758.5,284.1 L753.6,281.7 L752.6,281.3 L746.8,279.2 L744.6,278.5 L740.9,277.5 L735.0,276.2 L729.4,275.3 L729.2,275.3 L723.3,274.6 L717.4,274.3 L711.6,274.3 L705.7,274.6 L699.8,275.3 L699.6,275.3 L694.0,276.2 L688.1,277.5 L684.4,278.5 L682.2,279.2 L676.4,281.3 L675.4,281.7 L670.5,284.1 L668.9,285.0 L664.6,287.7 L663.9,288.2 L660.0,291.4 L658.8,292.6 L656.9,294.6 L654.6,297.9 L652.9,301.0 L652.9,301.1 L651.7,304.3 L651.2,307.5 L651.2,310.8 L651.7,314.0 L652.9,317.2 L652.9,317.3 L654.6,320.5 L656.9,323.7 L658.8,325.7 L660.0,326.9 L663.9,330.1 L664.6,330.7 L668.9,333.4 L670.5,334.2 L675.4,336.6 L676.4,337.0 L682.2,339.1 L684.4,339.8 L688.1,340.8 L694.0,342.1 L699.6,343.0" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.51" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M706.6,332.8 L711.6,333.1 L717.4,333.1 L722.4,332.8 L723.3,332.8 L729.2,332.1 L735.0,331.0 L740.7,329.6 L740.9,329.5 L746.8,327.5 L749.6,326.4 L752.6,324.9 L755.9,323.1 L758.5,321.5 L760.6,319.9 L764.2,316.7 L764.4,316.6 L766.9,313.5 L768.9,310.2 L770.1,307.0 L770.2,306.5 L770.7,303.8 L770.7,300.6 L770.2,297.8 L770.1,297.3 L768.9,294.1 L766.9,290.9 L764.4,287.8 L764.2,287.7 L760.6,284.4 L758.5,282.9 L755.9,281.2 L752.6,279.4 L749.6,278.0 L746.8,276.8 L740.9,274.8 L740.7,274.8 L735.0,273.3 L729.2,272.3 L723.3,271.6 L722.4,271.5 L717.4,271.2 L711.6,271.2 L706.6,271.5 L705.7,271.6 L699.8,272.3 L694.0,273.3 L688.3,274.8 L688.1,274.8 L682.2,276.8 L679.4,278.0 L676.4,279.4 L673.1,281.2 L670.5,282.9 L668.4,284.4 L664.8,287.7 L664.6,287.8 L662.1,290.9 L660.1,294.1 L658.9,297.3 L658.8,297.8 L658.3,300.6 L658.3,303.8 L658.8,306.5 L658.9,307.0 L660.1,310.2 L662.1,313.5 L664.6,316.6 L664.8,316.7 L668.4,319.9 L670.5,321.5 L673.1,323.1 L676.4,324.9 L679.4,326.4 L682.2,327.5 L688.1,329.5 L688.3,329.6 L694.0,331.0 L699.8,332.1 L705.7,332.8 L706.6,332.8" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.55" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M693.0,319.2 L694.0,319.5 L699.8,320.7 L705.7,321.5 L711.6,321.9 L717.4,321.9 L723.3,321.5 L729.2,320.7 L735.0,319.5 L736.0,319.2 L740.9,317.7 L745.2,316.0 L746.8,315.3 L751.3,312.8 L752.6,311.9 L755.7,309.6 L758.5,306.9 L759.0,306.3 L761.2,303.1 L762.7,299.9 L763.4,296.7 L763.4,293.4 L762.7,290.2 L761.2,287.0 L759.0,283.8 L758.5,283.2 L755.7,280.5 L752.6,278.2 L751.3,277.3 L746.8,274.8 L745.2,274.1 L740.9,272.4 L736.0,270.9 L735.0,270.6 L729.2,269.3 L723.3,268.5 L717.4,268.2 L711.6,268.2 L705.7,268.5 L699.8,269.3 L694.0,270.6 L693.0,270.9 L688.1,272.4 L683.8,274.1 L682.2,274.8 L677.7,277.3 L676.4,278.2 L673.3,280.5 L670.5,283.2 L670.0,283.8 L667.8,287.0 L666.3,290.2 L665.6,293.4 L665.6,296.7 L666.3,299.9 L667.8,303.1 L670.0,306.3 L670.5,306.9 L673.3,309.6 L676.4,311.9 L677.7,312.8 L682.2,315.3 L683.8,316.0 L688.1,317.7 L693.0,319.2" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.59" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M699.1,308.8 L699.8,308.9 L705.7,309.9 L711.6,310.3 L717.4,310.3 L723.3,309.9 L729.2,308.9 L729.9,308.8 L735.0,307.4 L740.0,305.5 L740.9,305.1 L746.0,302.3 L746.8,301.8 L750.1,299.1 L752.6,296.2 L752.9,295.8 L754.6,292.6 L755.5,289.4 L755.5,286.2 L754.6,282.9 L752.9,279.7 L752.6,279.3 L750.1,276.5 L746.8,273.8 L746.0,273.3 L740.9,270.5 L740.0,270.0 L735.0,268.2 L729.9,266.8 L729.2,266.6 L723.3,265.7 L717.4,265.2 L711.6,265.2 L705.7,265.7 L699.8,266.6 L699.1,266.8 L694.0,268.2 L689.0,270.0 L688.1,270.5 L683.0,273.3 L682.2,273.8 L678.9,276.5 L676.4,279.3 L676.1,279.7 L674.4,282.9 L673.5,286.2 L673.5,289.4 L674.4,292.6 L676.1,295.8 L676.4,296.2 L678.9,299.1 L682.2,301.8 L683.0,302.3 L688.1,305.1 L689.0,305.5 L694.0,307.4 L699.1,308.8" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.63" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M696.3,294.9 L699.8,296.1 L705.7,297.4 L711.6,298.0 L717.4,298.0 L723.3,297.4 L729.2,296.1 L732.7,294.9 L735.0,294.0 L739.2,291.7 L740.9,290.4 L743.1,288.5 L745.4,285.2 L746.6,282.0 L746.6,278.8 L745.4,275.6 L743.1,272.3 L740.9,270.4 L739.2,269.1 L735.0,266.8 L732.7,265.9 L729.2,264.7 L723.3,263.4 L717.4,262.8 L711.6,262.8 L705.7,263.4 L699.8,264.7 L696.3,265.9 L694.0,266.8 L689.8,269.1 L688.1,270.4 L685.9,272.3 L683.6,275.6 L682.4,278.8 L682.4,282.0 L683.6,285.2 L685.9,288.5 L688.1,290.4 L689.8,291.7 L694.0,294.0 L696.3,294.9" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.67" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M700.0,281.0 L705.7,283.1 L711.6,284.2 L717.4,284.2 L723.3,283.1 L729.0,281.0 L729.2,280.9 L733.0,277.8 L734.9,274.5 L734.9,271.3 L733.0,268.1 L729.2,264.9 L729.0,264.9 L723.3,262.7 L717.4,261.7 L711.6,261.7 L705.7,262.7 L700.0,264.9 L699.8,264.9 L696.0,268.1 L694.1,271.3 L694.1,274.5 L696.0,277.8 L699.8,280.9 L700.0,281.0" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.71" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M682.0,440.1 L682.2,440.1 L688.1,440.8 L694.0,441.3 L699.8,441.7 L705.7,442.0 L711.6,442.1 L717.4,442.1 L723.3,442.0 L729.2,441.7 L735.0,441.3 L740.9,440.8 L746.8,440.1 L747.0,440.1 L752.6,439.4 L758.5,438.4 L764.4,437.3 L766.5,436.8 L770.2,436.1 L776.1,434.7 L780.0,433.6 L781.9,433.1 L787.8,431.4 L790.7,430.4 L793.7,429.4 L799.5,427.2 L799.7,427.2 L805.4,424.8 L807.4,423.9 L811.3,422.2 L814.2,420.7 L817.1,419.2 L820.3,417.5 L823.0,415.9 L825.7,414.3 L828.9,412.1 L830.5,411.0 L834.7,407.9 L834.8,407.8 L838.8,404.6 L840.6,402.9 L842.4,401.3 L845.6,398.1 L846.5,397.1 L848.5,394.9 L851.0,391.7 L852.3,389.6 L853.2,388.4 L855.2,385.2 L856.9,382.0 L858.2,378.9 L858.3,378.8 L859.5,375.5 L860.5,372.3 L861.2,369.1 L861.7,365.9 L861.9,362.6 L861.9,359.4 L861.7,356.2 L861.2,353.0 L860.5,349.7 L859.5,346.5 L858.3,343.3 L858.2,343.1 L856.9,340.1 L855.2,336.8 L853.2,333.6 L852.3,332.4 L851.0,330.4 L848.5,327.2 L846.5,325.0 L845.6,323.9 L842.4,320.7 L840.6,319.1 L838.8,317.5 L834.8,314.3 L834.7,314.2 L830.5,311.0 L828.9,309.9 L825.7,307.8 L823.0,306.2 L820.3,304.6 L817.1,302.8 L814.2,301.3 L811.3,299.9 L807.4,298.1 L805.4,297.2 L799.7,294.9 L799.5,294.9 L793.7,292.6 L790.7,291.7 L787.8,290.7 L781.9,288.9 L780.0,288.4 L776.1,287.3 L770.2,286.0 L766.5,285.2 L764.4,284.7 L758.5,283.6 L752.6,282.7 L747.0,282.0 L746.8,282.0 L740.9,281.2 L735.0,280.7 L729.2,280.3 L723.3,280.1 L717.4,279.9 L711.6,279.9 L705.7,280.1 L699.8,280.3 L694.0,280.7 L688.1,281.2 L682.2,282.0 L682.0,282.0 L676.4,282.7 L670.5,283.6 L664.6,284.7 L662.5,285.2 L658.8,286.0 L652.9,287.3 L649.0,288.4 L647.1,288.9 L641.2,290.7 L638.3,291.7 L635.3,292.6 L629.5,294.9 L629.3,294.9 L623.6,297.2 L621.6,298.1 L617.7,299.9 L614.8,301.3 L611.9,302.8 L608.7,304.6 L606.0,306.2 L603.3,307.8 L600.1,309.9 L598.5,311.0 L594.3,314.2 L594.2,314.3 L590.2,317.5 L588.4,319.1 L586.6,320.7 L583.4,323.9 L582.5,325.0 L580.5,327.2 L578.0,330.4 L576.7,332.4 L575.8,333.6 L573.8,336.8 L572.1,340.1 L570.8,343.1 L570.7,343.3 L569.5,346.5 L568.5,349.7 L567.8,353.0 L567.3,356.2 L567.1,359.4 L567.1,362.6 L567.3,365.9 L567.8,369.1 L568.5,372.3 L569.5,375.5 L570.7,378.8 L570.8,378.9 L572.1,382.0 L573.8,385.2 L575.8,388.4 L576.7,389.6 L578.0,391.7 L580.5,394.9 L582.5,397.1 L583.4,398.1 L586.6,401.3 L588.4,402.9 L590.2,404.6 L594.2,407.8 L594.3,407.9 L598.5,411.0 L600.1,412.1 L603.3,414.3 L606.0,415.9 L608.7,417.5 L611.9,419.2 L614.8,420.7 L617.7,422.2 L621.6,423.9 L623.6,424.8 L629.3,427.2 L629.5,427.2 L635.3,429.4 L638.3,430.4 L641.2,431.4 L647.1,433.1 L649.0,433.6 L652.9,434.7 L658.8,436.1 L662.5,436.8 L664.6,437.3 L670.5,438.4 L676.4,439.4 L682.0,440.1" fill="none" stroke="#000" stroke-width="0.45" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+<path d="M819.5,481.9 L821.7,482.1 L827.6,482.4 L833.4,482.4 L839.3,482.1 L841.5,481.9 L845.2,481.5 L851.0,480.6 L856.9,479.3 L859.0,478.7 L862.8,477.5 L868.4,475.4 L868.6,475.3 L874.5,472.5 L875.1,472.2 L880.2,469.0 L880.4,468.9 L884.2,465.8 L886.2,463.7 L887.3,462.5 L889.7,459.3 L891.4,456.1 L892.1,454.1 L892.5,452.9 L893.1,449.6 L893.1,446.4 L892.5,443.2 L892.1,441.9 L891.4,440.0 L889.7,436.7 L887.3,433.5 L886.2,432.3 L884.2,430.3 L880.4,427.2 L880.2,427.0 L875.1,423.8 L874.5,423.5 L868.6,420.7 L868.4,420.6 L862.8,418.5 L859.0,417.4 L856.9,416.8 L851.0,415.5 L845.2,414.5 L841.5,414.1 L839.3,413.9 L833.4,413.6 L827.6,413.6 L821.7,413.9 L819.5,414.1 L815.8,414.5 L810.0,415.5 L804.1,416.8 L802.0,417.4 L798.2,418.5 L792.6,420.6 L792.4,420.7 L786.5,423.5 L785.9,423.8 L780.8,427.0 L780.6,427.2 L776.8,430.3 L774.8,432.3 L773.7,433.5 L771.3,436.7 L769.6,440.0 L768.9,441.9 L768.5,443.2 L767.9,446.4 L767.9,449.6 L768.5,452.9 L768.9,454.1 L769.6,456.1 L771.3,459.3 L773.7,462.5 L774.8,463.7 L776.8,465.8 L780.6,468.9 L780.8,469.0 L785.9,472.2 L786.5,472.5 L792.4,475.3 L792.6,475.4 L798.2,477.5 L802.0,478.7 L804.1,479.3 L810.0,480.6 L815.8,481.5 L819.5,481.9 Z" fill="#b56b5a" fill-opacity="0.22" stroke="none"/>
+<path d="M801.6,535.3 L804.1,535.7 L810.0,536.4 L815.8,537.0 L821.7,537.3 L827.6,537.5 L833.4,537.5 L839.3,537.3 L845.2,537.0 L851.0,536.4 L856.9,535.7 L859.4,535.3 L862.8,534.9 L868.6,533.8 L874.5,532.5 L876.1,532.1 L880.4,531.1 L886.2,529.3 L887.5,528.9 L892.1,527.4 L896.5,525.7 L897.9,525.1 L903.8,522.5 L903.9,522.4 L909.7,519.5 L910.2,519.2 L915.5,516.0 L915.6,516.0 L920.4,512.7 L921.4,511.9 L924.5,509.5 L927.3,507.0 L928.1,506.3 L931.2,503.1 L933.1,500.7 L933.9,499.8 L936.3,496.6 L938.1,493.4 L939.0,491.6 L939.7,490.2 L941.0,486.9 L942.0,483.7 L942.6,480.5 L942.9,477.3 L942.9,474.0 L942.6,470.8 L942.0,467.6 L941.0,464.4 L939.7,461.1 L939.0,459.7 L938.1,457.9 L936.3,454.7 L933.9,451.5 L933.1,450.6 L931.2,448.2 L928.1,445.0 L927.3,444.3 L924.5,441.8 L921.4,439.4 L920.4,438.6 L915.6,435.3 L915.5,435.3 L910.2,432.1 L909.7,431.8 L903.9,428.9 L903.8,428.8 L897.9,426.2 L896.5,425.6 L892.1,423.9 L887.5,422.4 L886.2,422.0 L880.4,420.2 L876.1,419.2 L874.5,418.8 L868.6,417.5 L862.8,416.4 L859.4,416.0 L856.9,415.6 L851.0,414.9 L845.2,414.3 L839.3,414.0 L833.4,413.8 L827.6,413.8 L821.7,414.0 L815.8,414.3 L810.0,414.9 L804.1,415.6 L801.6,416.0 L798.2,416.4 L792.4,417.5 L786.5,418.8 L784.9,419.2 L780.6,420.2 L774.8,422.0 L773.5,422.4 L768.9,423.9 L764.5,425.6 L763.1,426.2 L757.2,428.8 L757.1,428.9 L751.3,431.8 L750.8,432.1 L745.5,435.3 L745.4,435.3 L740.6,438.6 L739.6,439.4 L736.5,441.8 L733.7,444.3 L732.9,445.0 L729.8,448.2 L727.9,450.6 L727.1,451.5 L724.7,454.7 L722.9,457.9 L722.0,459.7 L721.3,461.1 L720.0,464.4 L719.0,467.6 L718.4,470.8 L718.1,474.0 L718.1,477.3 L718.4,480.5 L719.0,483.7 L720.0,486.9 L721.3,490.2 L722.0,491.6 L722.9,493.4 L724.7,496.6 L727.1,499.8 L727.9,500.7 L729.8,503.1 L732.9,506.3 L733.7,507.0 L736.5,509.5 L739.6,511.9 L740.6,512.7 L745.4,516.0 L745.5,516.0 L750.8,519.2 L751.3,519.5 L757.1,522.4 L757.2,522.5 L763.1,525.1 L764.5,525.7 L768.9,527.4 L773.5,528.9 L774.8,529.3 L780.6,531.1 L784.9,532.1 L786.5,532.5 L792.4,533.8 L798.2,534.9 L801.6,535.3" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.20" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M814.3,528.9 L815.8,529.1 L821.7,529.5 L827.6,529.6 L833.4,529.6 L839.3,529.5 L845.2,529.1 L846.7,528.9 L851.0,528.5 L856.9,527.8 L862.8,526.9 L868.4,525.7 L868.6,525.6 L874.5,524.3 L880.4,522.6 L880.9,522.5 L886.2,520.8 L890.3,519.2 L892.1,518.5 L897.8,516.0 L897.9,516.0 L903.8,513.0 L904.2,512.8 L909.6,509.6 L909.7,509.5 L914.3,506.3 L915.5,505.3 L918.3,503.1 L921.4,500.2 L921.7,499.9 L924.7,496.7 L927.2,493.4 L927.3,493.3 L929.4,490.2 L931.1,487.0 L932.4,483.8 L933.1,481.4 L933.4,480.5 L934.1,477.3 L934.5,474.1 L934.5,470.9 L934.1,467.6 L933.4,464.4 L933.1,463.6 L932.4,461.2 L931.1,457.9 L929.4,454.7 L927.3,451.6 L927.2,451.5 L924.7,448.3 L921.7,445.0 L921.4,444.8 L918.3,441.8 L915.5,439.6 L914.3,438.6 L909.7,435.4 L909.6,435.4 L904.2,432.1 L903.8,431.9 L897.9,429.0 L897.8,428.9 L892.1,426.4 L890.3,425.7 L886.2,424.2 L880.9,422.5 L880.4,422.3 L874.5,420.6 L868.6,419.3 L868.4,419.2 L862.8,418.1 L856.9,417.1 L851.0,416.4 L846.7,416.0 L845.2,415.9 L839.3,415.5 L833.4,415.3 L827.6,415.3 L821.7,415.5 L815.8,415.9 L814.3,416.0 L810.0,416.4 L804.1,417.1 L798.2,418.1 L792.6,419.2 L792.4,419.3 L786.5,420.6 L780.6,422.3 L780.1,422.5 L774.8,424.2 L770.7,425.7 L768.9,426.4 L763.2,428.9 L763.1,429.0 L757.2,431.9 L756.8,432.1 L751.4,435.4 L751.3,435.4 L746.7,438.6 L745.5,439.6 L742.7,441.8 L739.6,444.8 L739.3,445.0 L736.3,448.3 L733.8,451.5 L733.7,451.6 L731.6,454.7 L729.9,457.9 L728.6,461.2 L727.9,463.6 L727.6,464.4 L726.9,467.6 L726.5,470.9 L726.5,474.1 L726.9,477.3 L727.6,480.5 L727.9,481.4 L728.6,483.8 L729.9,487.0 L731.6,490.2 L733.7,493.3 L733.8,493.4 L736.3,496.7 L739.3,499.9 L739.6,500.2 L742.7,503.1 L745.5,505.3 L746.7,506.3 L751.3,509.5 L751.4,509.6 L756.8,512.8 L757.2,513.0 L763.1,516.0 L763.2,516.0 L768.9,518.5 L770.7,519.2 L774.8,520.8 L780.1,522.5 L780.6,522.6 L786.5,524.3 L792.4,525.6 L792.6,525.7 L798.2,526.9 L804.1,527.8 L810.0,528.5 L814.3,528.9" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M802.5,518.4 L804.1,518.7 L810.0,519.6 L815.8,520.2 L821.7,520.6 L827.6,520.8 L833.4,520.8 L839.3,520.6 L845.2,520.2 L851.0,519.6 L856.9,518.7 L858.5,518.4 L862.8,517.7 L868.6,516.4 L873.1,515.2 L874.5,514.8 L880.4,513.0 L883.2,512.0 L886.2,510.9 L891.1,508.8 L892.1,508.3 L897.6,505.5 L897.9,505.3 L903.0,502.3 L903.8,501.8 L907.7,499.1 L909.7,497.4 L911.6,495.9 L914.9,492.6 L915.5,491.9 L917.7,489.4 L920.1,486.2 L921.4,483.8 L921.9,482.9 L923.5,479.7 L924.6,476.5 L925.3,473.3 L925.7,470.0 L925.7,466.8 L925.3,463.6 L924.6,460.4 L923.5,457.1 L921.9,453.9 L921.4,453.0 L920.1,450.7 L917.7,447.5 L915.5,445.0 L914.9,444.2 L911.6,441.0 L909.7,439.4 L907.7,437.8 L903.8,435.1 L903.0,434.6 L897.9,431.5 L897.6,431.3 L892.1,428.5 L891.1,428.1 L886.2,426.0 L883.2,424.9 L880.4,423.8 L874.5,422.0 L873.1,421.7 L868.6,420.5 L862.8,419.2 L858.5,418.4 L856.9,418.1 L851.0,417.3 L845.2,416.7 L839.3,416.3 L833.4,416.1 L827.6,416.1 L821.7,416.3 L815.8,416.7 L810.0,417.3 L804.1,418.1 L802.5,418.4 L798.2,419.2 L792.4,420.5 L787.9,421.7 L786.5,422.0 L780.6,423.8 L777.8,424.9 L774.8,426.0 L769.9,428.1 L768.9,428.5 L763.4,431.3 L763.1,431.5 L758.0,434.6 L757.2,435.1 L753.3,437.8 L751.3,439.4 L749.4,441.0 L746.1,444.2 L745.5,445.0 L743.3,447.5 L740.9,450.7 L739.6,453.0 L739.1,453.9 L737.5,457.1 L736.4,460.4 L735.7,463.6 L735.3,466.8 L735.3,470.0 L735.7,473.3 L736.4,476.5 L737.5,479.7 L739.1,482.9 L739.6,483.8 L740.9,486.2 L743.3,489.4 L745.5,491.9 L746.1,492.6 L749.4,495.9 L751.3,497.4 L753.3,499.1 L757.2,501.8 L758.0,502.3 L763.1,505.3 L763.4,505.5 L768.9,508.3 L769.9,508.8 L774.8,510.9 L777.8,512.0 L780.6,513.0 L786.5,514.8 L787.9,515.2 L792.4,516.4 L798.2,517.7 L802.5,518.4" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.29" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M812.9,510.8 L815.8,511.1 L821.7,511.6 L827.6,511.8 L833.4,511.8 L839.3,511.6 L845.2,511.1 L848.1,510.8 L851.0,510.5 L856.9,509.6 L862.8,508.4 L866.2,507.6 L868.6,507.0 L874.5,505.2 L877.1,504.3 L880.4,503.2 L885.3,501.1 L886.2,500.7 L891.8,497.9 L892.1,497.7 L897.2,494.6 L897.9,494.1 L901.7,491.4 L903.8,489.6 L905.5,488.2 L908.6,485.0 L909.7,483.6 L911.2,481.7 L913.3,478.5 L915.0,475.3 L915.5,473.7 L916.2,472.1 L917.0,468.8 L917.4,465.6 L917.4,462.4 L917.0,459.2 L916.2,455.9 L915.5,454.3 L915.0,452.7 L913.3,449.5 L911.2,446.3 L909.7,444.4 L908.6,443.0 L905.5,439.8 L903.8,438.4 L901.7,436.6 L897.9,433.9 L897.2,433.4 L892.1,430.3 L891.8,430.1 L886.2,427.3 L885.3,426.9 L880.4,424.8 L877.1,423.7 L874.5,422.8 L868.6,421.0 L866.2,420.5 L862.8,419.6 L856.9,418.4 L851.0,417.6 L848.1,417.2 L845.2,416.9 L839.3,416.4 L833.4,416.2 L827.6,416.2 L821.7,416.4 L815.8,416.9 L812.9,417.2 L810.0,417.6 L804.1,418.4 L798.2,419.6 L794.8,420.5 L792.4,421.0 L786.5,422.8 L783.9,423.7 L780.6,424.8 L775.7,426.9 L774.8,427.3 L769.2,430.1 L768.9,430.3 L763.8,433.4 L763.1,433.9 L759.3,436.6 L757.2,438.4 L755.5,439.8 L752.4,443.0 L751.3,444.4 L749.8,446.3 L747.7,449.5 L746.0,452.7 L745.5,454.3 L744.8,455.9 L744.0,459.2 L743.6,462.4 L743.6,465.6 L744.0,468.8 L744.8,472.1 L745.5,473.7 L746.0,475.3 L747.7,478.5 L749.8,481.7 L751.3,483.6 L752.4,485.0 L755.5,488.2 L757.2,489.6 L759.3,491.4 L763.1,494.1 L763.8,494.6 L768.9,497.7 L769.2,497.9 L774.8,500.7 L775.7,501.1 L780.6,503.2 L783.9,504.3 L786.5,505.2 L792.4,507.0 L794.8,507.6 L798.2,508.4 L804.1,509.6 L810.0,510.5 L812.9,510.8" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.34" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M800.9,499.6 L804.1,500.3 L810.0,501.3 L815.8,502.1 L821.7,502.5 L827.6,502.8 L833.4,502.8 L839.3,502.5 L845.2,502.1 L851.0,501.3 L856.9,500.3 L860.1,499.6 L862.8,499.0 L868.6,497.4 L871.8,496.4 L874.5,495.5 L880.2,493.2 L880.4,493.1 L886.2,490.2 L886.7,489.9 L891.9,486.7 L892.1,486.6 L896.3,483.5 L897.9,482.0 L899.9,480.3 L902.8,477.0 L903.8,475.6 L905.1,473.8 L907.0,470.6 L908.3,467.4 L909.1,464.1 L909.6,460.9 L909.6,457.7 L909.1,454.5 L908.3,451.2 L907.0,448.0 L905.1,444.8 L903.8,443.0 L902.8,441.6 L899.9,438.3 L897.9,436.6 L896.3,435.1 L892.1,432.0 L891.9,431.9 L886.7,428.6 L886.2,428.4 L880.4,425.5 L880.2,425.4 L874.5,423.1 L871.8,422.2 L868.6,421.1 L862.8,419.6 L860.1,419.0 L856.9,418.3 L851.0,417.2 L845.2,416.5 L839.3,416.0 L833.4,415.8 L827.6,415.8 L821.7,416.0 L815.8,416.5 L810.0,417.2 L804.1,418.3 L800.9,419.0 L798.2,419.6 L792.4,421.1 L789.2,422.2 L786.5,423.1 L780.8,425.4 L780.6,425.5 L774.8,428.4 L774.3,428.6 L769.1,431.9 L768.9,432.0 L764.7,435.1 L763.1,436.6 L761.1,438.3 L758.2,441.6 L757.2,443.0 L755.9,444.8 L754.0,448.0 L752.7,451.2 L751.9,454.5 L751.4,457.7 L751.4,460.9 L751.9,464.1 L752.7,467.4 L754.0,470.6 L755.9,473.8 L757.2,475.6 L758.2,477.0 L761.1,480.3 L763.1,482.0 L764.7,483.5 L768.9,486.6 L769.1,486.7 L774.3,489.9 L774.8,490.2 L780.6,493.1 L780.8,493.2 L786.5,495.5 L789.2,496.4 L792.4,497.4 L798.2,499.0 L800.9,499.6" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.38" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M806.4,491.5 L810.0,492.1 L815.8,493.0 L821.7,493.5 L827.6,493.8 L833.4,493.8 L839.3,493.5 L845.2,493.0 L851.0,492.1 L854.6,491.5 L856.9,491.0 L862.8,489.6 L867.1,488.2 L868.6,487.7 L874.5,485.5 L875.5,485.0 L880.4,482.7 L882.0,481.8 L886.2,479.1 L887.1,478.6 L891.2,475.3 L892.1,474.5 L894.5,472.1 L897.1,468.9 L897.9,467.6 L899.2,465.7 L900.7,462.4 L901.6,459.2 L902.1,456.0 L902.1,452.8 L901.6,449.5 L900.7,446.3 L899.2,443.1 L897.9,441.1 L897.1,439.9 L894.5,436.6 L892.1,434.2 L891.2,433.4 L887.1,430.2 L886.2,429.6 L882.0,426.9 L880.4,426.1 L875.5,423.7 L874.5,423.3 L868.6,421.0 L867.1,420.5 L862.8,419.2 L856.9,417.7 L854.6,417.3 L851.0,416.6 L845.2,415.8 L839.3,415.2 L833.4,415.0 L827.6,415.0 L821.7,415.2 L815.8,415.8 L810.0,416.6 L806.4,417.3 L804.1,417.7 L798.2,419.2 L793.9,420.5 L792.4,421.0 L786.5,423.3 L785.5,423.7 L780.6,426.1 L779.0,426.9 L774.8,429.6 L773.9,430.2 L769.8,433.4 L768.9,434.2 L766.5,436.6 L763.9,439.9 L763.1,441.1 L761.8,443.1 L760.3,446.3 L759.4,449.5 L758.9,452.8 L758.9,456.0 L759.4,459.2 L760.3,462.4 L761.8,465.7 L763.1,467.6 L763.9,468.9 L766.5,472.1 L768.9,474.5 L769.8,475.3 L773.9,478.6 L774.8,479.1 L779.0,481.8 L780.6,482.7 L785.5,485.0 L786.5,485.5 L792.4,487.7 L793.9,488.2 L798.2,489.6 L804.1,491.0 L806.4,491.5" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.43" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M812.0,483.1 L815.8,483.7 L821.7,484.3 L827.6,484.6 L833.4,484.6 L839.3,484.3 L845.2,483.7 L849.0,483.1 L851.0,482.8 L856.9,481.5 L862.7,479.9 L862.8,479.9 L868.6,477.8 L871.2,476.7 L874.5,475.1 L877.5,473.5 L880.4,471.6 L882.3,470.2 L886.2,467.0 L886.2,467.0 L889.2,463.8 L891.5,460.5 L892.1,459.4 L893.2,457.3 L894.3,454.1 L894.8,450.9 L894.8,447.6 L894.3,444.4 L893.2,441.2 L892.1,439.1 L891.5,438.0 L889.2,434.7 L886.2,431.5 L886.2,431.5 L882.3,428.3 L880.4,426.9 L877.5,425.1 L874.5,423.4 L871.2,421.8 L868.6,420.7 L862.8,418.6 L862.7,418.6 L856.9,417.0 L851.0,415.7 L849.0,415.4 L845.2,414.8 L839.3,414.2 L833.4,413.9 L827.6,413.9 L821.7,414.2 L815.8,414.8 L812.0,415.4 L810.0,415.7 L804.1,417.0 L798.3,418.6 L798.2,418.6 L792.4,420.7 L789.8,421.8 L786.5,423.4 L783.5,425.1 L780.6,426.9 L778.7,428.3 L774.8,431.5 L774.8,431.5 L771.8,434.7 L769.5,438.0 L768.9,439.1 L767.8,441.2 L766.7,444.4 L766.2,447.6 L766.2,450.9 L766.7,454.1 L767.8,457.3 L768.9,459.4 L769.5,460.5 L771.8,463.8 L774.8,467.0 L774.8,467.0 L778.7,470.2 L780.6,471.6 L783.5,473.5 L786.5,475.1 L789.8,476.7 L792.4,477.8 L798.2,479.9 L798.3,479.9 L804.1,481.5 L810.0,482.8 L812.0,483.1" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.48" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M818.5,474.6 L821.7,475.0 L827.6,475.3 L833.4,475.3 L839.3,475.0 L842.5,474.6 L845.2,474.3 L851.0,473.3 L856.9,471.8 L858.2,471.4 L862.8,469.9 L866.8,468.2 L868.6,467.3 L872.9,465.0 L874.5,464.0 L877.5,461.7 L880.4,459.2 L881.1,458.5 L883.7,455.3 L885.6,452.1 L886.2,450.6 L886.9,448.8 L887.5,445.6 L887.5,442.4 L886.9,439.2 L886.2,437.4 L885.6,435.9 L883.7,432.7 L881.1,429.5 L880.4,428.8 L877.5,426.3 L874.5,424.0 L872.9,423.0 L868.6,420.7 L866.8,419.8 L862.8,418.1 L858.2,416.6 L856.9,416.2 L851.0,414.7 L845.2,413.7 L842.5,413.3 L839.3,413.0 L833.4,412.6 L827.6,412.6 L821.7,413.0 L818.5,413.3 L815.8,413.7 L810.0,414.7 L804.1,416.2 L802.8,416.6 L798.2,418.1 L794.2,419.8 L792.4,420.7 L788.1,423.0 L786.5,424.0 L783.5,426.3 L780.6,428.8 L779.9,429.5 L777.3,432.7 L775.4,435.9 L774.8,437.4 L774.1,439.2 L773.5,442.4 L773.5,445.6 L774.1,448.8 L774.8,450.6 L775.4,452.1 L777.3,455.3 L779.9,458.5 L780.6,459.2 L783.5,461.7 L786.5,464.0 L788.1,465.0 L792.4,467.3 L794.2,468.2 L798.2,469.9 L802.8,471.4 L804.1,471.8 L810.0,473.3 L815.8,474.3 L818.5,474.6" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.52" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M807.8,462.8 L810.0,463.4 L815.8,464.6 L821.7,465.4 L827.6,465.8 L833.4,465.8 L839.3,465.4 L845.2,464.6 L851.0,463.4 L853.2,462.8 L856.9,461.6 L862.1,459.6 L862.8,459.3 L868.1,456.3 L868.6,456.0 L872.4,453.1 L874.5,451.1 L875.6,449.9 L877.8,446.7 L879.3,443.4 L880.0,440.2 L880.0,437.0 L879.3,433.8 L877.8,430.5 L875.6,427.3 L874.5,426.1 L872.4,424.1 L868.6,421.2 L868.1,420.8 L862.8,417.9 L862.1,417.6 L856.9,415.5 L853.2,414.4 L851.0,413.8 L845.2,412.6 L839.3,411.8 L833.4,411.4 L827.6,411.4 L821.7,411.8 L815.8,412.6 L810.0,413.8 L807.8,414.4 L804.1,415.5 L798.9,417.6 L798.2,417.9 L792.9,420.8 L792.4,421.2 L788.6,424.1 L786.5,426.1 L785.4,427.3 L783.2,430.5 L781.7,433.8 L781.0,437.0 L781.0,440.2 L781.7,443.4 L783.2,446.7 L785.4,449.9 L786.5,451.1 L788.6,453.1 L792.4,456.0 L792.9,456.3 L798.2,459.3 L798.9,459.6 L804.1,461.6 L807.8,462.8" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.57" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M814.1,454.0 L815.8,454.4 L821.7,455.4 L827.6,455.8 L833.4,455.8 L839.3,455.4 L845.2,454.4 L846.9,454.0 L851.0,452.9 L856.7,450.8 L856.9,450.7 L862.6,447.6 L862.8,447.5 L866.6,444.4 L868.6,442.1 L869.4,441.1 L871.1,437.9 L871.9,434.7 L871.9,431.5 L871.1,428.2 L869.4,425.0 L868.6,424.1 L866.6,421.8 L862.8,418.7 L862.6,418.5 L856.9,415.4 L856.7,415.3 L851.0,413.2 L846.9,412.1 L845.2,411.7 L839.3,410.7 L833.4,410.3 L827.6,410.3 L821.7,410.7 L815.8,411.7 L814.1,412.1 L810.0,413.2 L804.3,415.3 L804.1,415.4 L798.4,418.5 L798.2,418.7 L794.4,421.8 L792.4,424.1 L791.6,425.0 L789.9,428.2 L789.1,431.5 L789.1,434.7 L789.9,437.9 L791.6,441.1 L792.4,442.1 L794.4,444.4 L798.2,447.5 L798.4,447.6 L804.1,450.7 L804.3,450.8 L810.0,452.9 L814.1,454.0" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.61" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M826.7,445.2 L827.6,445.3 L833.4,445.3 L834.3,445.2 L839.3,444.6 L845.2,443.4 L849.4,441.9 L851.0,441.3 L855.7,438.7 L856.9,437.8 L859.5,435.5 L861.8,432.3 L862.8,429.5 L862.9,429.0 L862.9,425.8 L862.8,425.3 L861.8,422.6 L859.5,419.4 L856.9,417.0 L855.7,416.1 L851.0,413.6 L849.4,412.9 L845.2,411.5 L839.3,410.2 L834.3,409.7 L833.4,409.6 L827.6,409.6 L826.7,409.7 L821.7,410.2 L815.8,411.5 L811.6,412.9 L810.0,413.6 L805.3,416.1 L804.1,417.0 L801.5,419.4 L799.2,422.6 L798.2,425.3 L798.1,425.8 L798.1,429.0 L798.2,429.5 L799.2,432.3 L801.5,435.5 L804.1,437.8 L805.3,438.7 L810.0,441.3 L811.6,441.9 L815.8,443.4 L821.7,444.6 L826.7,445.2" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.66" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M826.5,433.0 L827.6,433.1 L833.4,433.1 L834.5,433.0 L839.3,432.1 L845.2,430.0 L845.5,429.8 L849.5,426.5 L851.0,423.9 L851.3,423.3 L851.3,420.1 L851.0,419.5 L849.5,416.8 L845.5,413.6 L845.2,413.4 L839.3,411.3 L834.5,410.4 L833.4,410.2 L827.6,410.2 L826.5,410.4 L821.7,411.3 L815.8,413.4 L815.5,413.6 L811.5,416.8 L810.0,419.5 L809.7,420.1 L809.7,423.3 L810.0,423.9 L811.5,426.5 L815.5,429.8 L815.8,430.0 L821.7,432.1 L826.5,433.0" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.70" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M795.0,550.0 L798.2,550.5 L804.1,551.3 L810.0,551.9 L815.8,552.3 L821.7,552.6 L827.6,552.7 L833.4,552.7 L839.3,552.6 L845.2,552.3 L851.0,551.9 L856.9,551.3 L862.8,550.5 L866.0,550.0 L868.6,549.6 L874.5,548.6 L880.4,547.3 L882.5,546.8 L886.2,545.9 L892.1,544.3 L894.4,543.6 L897.9,542.5 L903.8,540.4 L903.9,540.3 L909.7,538.1 L912.0,537.1 L915.5,535.5 L918.9,533.9 L921.4,532.6 L924.9,530.7 L927.3,529.3 L930.3,527.4 L933.1,525.5 L935.0,524.2 L939.0,521.0 L939.1,521.0 L942.9,517.7 L944.9,515.8 L946.2,514.5 L949.2,511.3 L950.7,509.3 L951.7,508.1 L954.0,504.8 L955.9,501.6 L956.6,500.2 L957.6,498.4 L959.0,495.2 L960.0,491.9 L960.8,488.7 L961.3,485.5 L961.6,482.3 L961.6,479.0 L961.3,475.8 L960.8,472.6 L960.0,469.4 L959.0,466.1 L957.6,462.9 L956.6,461.1 L955.9,459.7 L954.0,456.5 L951.7,453.2 L950.7,452.0 L949.2,450.0 L946.2,446.8 L944.9,445.5 L942.9,443.6 L939.1,440.3 L939.0,440.3 L935.0,437.1 L933.1,435.8 L930.3,433.9 L927.3,432.0 L924.9,430.6 L921.4,428.7 L918.9,427.4 L915.5,425.8 L912.0,424.2 L909.7,423.2 L903.9,421.0 L903.8,420.9 L897.9,418.8 L894.4,417.7 L892.1,417.0 L886.2,415.4 L882.5,414.5 L880.4,414.0 L874.5,412.7 L868.6,411.7 L866.0,411.3 L862.8,410.8 L856.9,410.0 L851.0,409.4 L845.2,409.0 L839.3,408.7 L833.4,408.6 L827.6,408.6 L821.7,408.7 L815.8,409.0 L810.0,409.4 L804.1,410.0 L798.2,410.8 L795.0,411.3 L792.4,411.7 L786.5,412.7 L780.6,414.0 L778.5,414.5 L774.8,415.4 L768.9,417.0 L766.6,417.7 L763.1,418.8 L757.2,420.9 L757.1,421.0 L751.3,423.2 L749.0,424.2 L745.5,425.8 L742.1,427.4 L739.6,428.7 L736.1,430.6 L733.7,432.0 L730.7,433.9 L727.9,435.8 L726.0,437.1 L722.0,440.3 L721.9,440.3 L718.1,443.6 L716.1,445.5 L714.8,446.8 L711.8,450.0 L710.3,452.0 L709.3,453.2 L707.0,456.5 L705.1,459.7 L704.4,461.1 L703.4,462.9 L702.0,466.1 L701.0,469.4 L700.2,472.6 L699.7,475.8 L699.4,479.0 L699.4,482.3 L699.7,485.5 L700.2,488.7 L701.0,491.9 L702.0,495.2 L703.4,498.4 L704.4,500.2 L705.1,501.6 L707.0,504.8 L709.3,508.1 L710.3,509.3 L711.8,511.3 L714.8,514.5 L716.1,515.8 L718.1,517.7 L721.9,521.0 L722.0,521.0 L726.0,524.2 L727.9,525.5 L730.7,527.4 L733.7,529.3 L736.1,530.7 L739.6,532.6 L742.1,533.9 L745.5,535.5 L749.0,537.1 L751.3,538.1 L757.1,540.3 L757.2,540.4 L763.1,542.5 L766.6,543.6 L768.9,544.3 L774.8,545.9 L778.5,546.8 L780.6,547.3 L786.5,548.6 L792.4,549.6 L795.0,550.0" fill="none" stroke="#000" stroke-width="0.45" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+</g>
+<line x1="244" y1="366.0" x2="714.5" y2="366.0" stroke="#0a0a0a" stroke-width="0.7" stroke-opacity="0.6"/>
+<text x="106" y="362.0" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">EUROPE &</text>
+<text x="106" y="378.0" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">CENTRAL ASIA</text>
+<text x="76" y="376.2" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="1.00">8</text>
+<line x1="92" x2="92" y1="354.0" y2="378.0" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<circle cx="714.5" cy="267.3" r="2.4" fill="#0a0a0a"/>
+<text x="106" y="401.9" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">EAST ASIA &</text>
+<text x="106" y="417.9" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">PACIFIC</text>
+<text x="76" y="416.1" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="700" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="0.35">0</text>
+<line x1="92" x2="92" y1="393.9" y2="417.9" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.35"/>
+<text x="106" y="441.8" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">NORTH</text>
+<text x="106" y="457.8" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">AMERICA</text>
+<text x="76" y="456.0" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="700" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="0.35">0</text>
+<line x1="92" x2="92" y1="433.8" y2="457.8" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.35"/>
+<line x1="244" y1="485.7" x2="830.5" y2="485.7" stroke="#0a0a0a" stroke-width="0.7" stroke-opacity="0.6"/>
+<text x="106" y="481.7" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">MIDDLE EAST &</text>
+<text x="106" y="497.7" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">NORTH AFRICA</text>
+<text x="76" y="495.9" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="1.00">5</text>
+<line x1="92" x2="92" y1="473.7" y2="497.7" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<circle cx="830.5" cy="417.2" r="2.4" fill="#0a0a0a"/>
+<text x="106" y="529.5" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">SOUTH ASIA</text>
+<text x="76" y="535.7" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="700" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="0.35">0</text>
+<line x1="92" x2="92" y1="513.5" y2="537.5" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.35"/>
+<text x="106" y="561.4" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">SUB-SAHARAN</text>
+<text x="106" y="577.4" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">AFRICA</text>
+<text x="76" y="575.6" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="700" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="0.35">0</text>
+<line x1="92" x2="92" y1="553.4" y2="577.4" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.35"/>
+<text x="106" y="601.3" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">LATIN AMERICA &</text>
+<text x="106" y="617.3" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">CARIBBEAN</text>
+<text x="76" y="615.5" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="700" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="0.35">0</text>
+<line x1="92" x2="92" y1="593.3" y2="617.3" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.35"/>
+<line x1="16" x2="92" y1="625.3" y2="625.3" stroke="#0a0a0a" stroke-width="0.6" stroke-opacity="0.5"/>
+<text x="76" y="655.5" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a">13</text>
+<line x1="92" x2="92" y1="633.3" y2="657.3" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<text x="106" y="650.9" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a">TOTAL SOURCES</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#b56b5a12;color:#b56b5a;border:1px solid #b56b5a30" title="Turkey: 5 sources">Turkey (5)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Armenia: 4 sources">Armenia (4)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Germany: 2 sources">Germany (2)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Belgium: 1 source">Belgium</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Russia: 1 source">Russia</span>
+</div>
+
+<div class="reader-note">This article draws on 13 sources across four languages, but five of those originate from a single Turkish state outlet (Anadolu Agency), giving Turkish diplomatic framing outsized weight. No Azerbaijani government voice explains Baku&#x27;s refusal to attend despite being a central regional stakeholder, and no independent analysts, civil society representatives, or affected communities — such as displaced persons from Nagorno-Karabakh — provide perspectives outside the state-actor consensus. The article occasionally characterizes geopolitical dynamics in its own voice using terms like &quot;unilateralism&quot; and &quot;extraction operation&quot; that embed editorial judgment rather than letting attributed sources carry the interpretive weight.</div>
+
+<div class="article-body">
+<p>Nearly 50 European leaders gathered in Yerevan on May 4, 2026, for the eighth summit of the European Political Community, marking the first time the forum has convened in the South Caucasus <a href="#src-007" class="source-ref"><sup>[7]</sup></a><a href="#src-008" class="source-ref"><sup>[8]</sup></a>. Armenian media described the event as the largest diplomatic gathering the country has hosted since independence <a href="#src-007" class="source-ref"><sup>[7]</sup></a>, while European Council President António Costa emphasized the geographic significance of holding the meeting in the Caucasus region <a href="#src-008" class="source-ref"><sup>[8]</sup></a>.</p>
+<p>The summit unfolded against a backdrop of accelerating transatlantic strain. President Donald Trump ordered the withdrawal of more than 5,000 troops from Germany following tensions with Chancellor Friedrich Merz over Iran policy <a href="#src-010" class="source-ref"><sup>[10]</sup></a>. German Defence Minister Boris Pistorius responded that the drawdown was foreseeable and that NATO must become &quot;more European&quot; to remain transatlantic, calling on member states to assume greater responsibility for their own defense <a href="#src-009" class="source-ref"><sup>[9]</sup></a>. EU-level reporting echoed this framing, emphasizing energy independence and the diversification of global partnerships as core summit objectives <a href="#src-006" class="source-ref"><sup>[6]</sup></a>.</p>
+<p>Trump&#x27;s friction extended beyond Germany. He publicly stated that &quot;Italy has not been of any help to us&quot; and threatened to pull American forces from the country <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. US Secretary of State Marco Rubio was dispatched to Rome and the Vatican to manage the fallout, which also included disagreements with Pope Leo XIV over US-Israeli military strikes on Iran and immigration policy <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. The pattern of American unilateralism provided an immediate context for the Yerevan summit&#x27;s defense-autonomy agenda.</p>
+<p>For Armenia, hosting the summit carried a distinct geopolitical message. Russian-language reporting framed the event as a deliberate Western strategy to draw Yerevan out of Moscow&#x27;s orbit <a href="#src-013" class="source-ref"><sup>[13]</sup></a>. ArmInfo reported that one of Armenia&#x27;s specific goals tied to the summit was phasing out Russian border guard services along its frontiers <a href="#src-011" class="source-ref"><sup>[11]</sup></a>. A former Armenian foreign minister, however, warned that the gathering could provoke diplomatic friction, particularly given Azerbaijan&#x27;s refusal to attend and the broader sensitivities of the South Caucasus security environment <a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+<p>Turkish officials used the occasion to advance a normalization narrative. Vice President Cevdet Yilmaz met Armenian Prime Minister Nikol Pashinyan on the summit&#x27;s sidelines, and the two sides signed a memorandum to restore the ancient Ani Bridge spanning the border <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. Yilmaz stated that the normalization process between Türkiye and Armenia is &quot;extremely valuable&quot; and &quot;will serve as an example and inspiration for others&quot; <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. He also credited Azerbaijani President Ilham Aliyev for contributing to regional peace, though Baku itself declined to participate in the summit <a href="#src-003" class="source-ref"><sup>[3]</sup></a><a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+<p>President Recep Tayyip Erdogan, speaking separately, framed Türkiye&#x27;s role in broader terms. &quot;Let it not be forgotten that Türkiye is no longer the old Türkiye, nor is the world still confined to the sphere of influence of Western states,&quot; he said, urging the EU to abandon what he called &quot;strategic myopia&quot; regarding Ankara&#x27;s membership bid <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. Erdogan positioned European cooperation with Türkiye as a necessity for Europe&#x27;s continued relevance as a global actor rather than a concession to Ankara <a href="#src-002" class="source-ref"><sup>[2]</sup></a>.</p>
+<p>The summit&#x27;s regional context extended to the wider Middle East. Turkish Foreign Minister Hakan Fidan and his Qatari counterpart Mohammed bin Abdulrahman Al Thani discussed US-Iran negotiations and a new wave of Iranian missile and drone attacks targeting the UAE, with both ministers expressing concern about regional stability and the risk of further escalation <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. Separately, Rome prosecutors opened an investigation into the Israeli military&#x27;s interception of the Global Sumud Flotilla, an Italian-flagged vessel carrying humanitarian aid to Gaza that was boarded in international waters near Crete, with prosecutors opening a probe against Israeli forces on suspicion of kidnapping, robbery, and causing damage with risk of shipwreck under Italian law, while the two Italian activists aboard are the alleged victims in the case <a href="#src-005" class="source-ref"><sup>[5]</sup></a>.</p>
+<p>French President Emmanuel Macron arrived in Yerevan for the discussions <a href="#src-008" class="source-ref"><sup>[8]</sup></a>, underscoring Paris&#x27;s continued engagement with Armenia — a relationship that has deepened as Yerevan&#x27;s ties with Moscow have frayed. The summit&#x27;s agenda included sessions on energy security and collective defense planning, though detailed outcomes had not been publicly released at the time of reporting <a href="#src-006" class="source-ref"><sup>[6]</sup></a>.</p>
+<p>The Yerevan gathering exposed a central tension: whether Armenia&#x27;s European turn can be sustained without provoking further instability in a region where Russian, Turkish, and Azerbaijani interests intersect. Russian media characterized the summit as a geopolitical extraction operation <a href="#src-013" class="source-ref"><sup>[13]</sup></a>, while Armenian critics cautioned that the diplomatic benefits must be weighed against the risks of alienating neighbors <a href="#src-012" class="source-ref"><sup>[12]</sup></a>. European participants, for their part, focused on the summit as a vehicle for defense self-reliance in an era of diminishing American guarantees <a href="#src-009" class="source-ref"><sup>[9]</sup></a><a href="#src-006" class="source-ref"><sup>[6]</sup></a>. No statements from NATO, the OSCE, or the CSTO regarding the summit&#x27;s impact on existing collective security arrangements were available in the reporting reviewed.</p>
+</div>
+<p class="word-count">766 words</p>
+
+<h2>Perspectives &mdash; Position Clusters</h2>
+<div class="card-grid">
+<div class="card" id="pc-001">
+  <div class="card-header"><span class="card-actor">Europe must assume greater responsibility for its own defense as US military commitment recedes</span></div>
+  <div class="card-position">German and EU-level voices argue that the US troop withdrawal from Europe was foreseeable and that NATO must become more European in character, requiring member states to invest in autonomous defense capabilities rather than relying on American guarantees.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">0 actors</a></span> &middot; <span>3 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
+</div>
+<div class="card" id="pc-002">
+  <div class="card-header"><span class="card-actor">Türkiye is now an indispensable equal partner that Europe cannot afford to marginalize</span></div>
+  <div class="card-position">President Erdogan asserts that Türkiye has become a leading pole in a multipolar world and that the EU&#x27;s historical prejudices and &#x27;strategic myopia&#x27; regarding Ankara&#x27;s membership bid undermine Europe&#x27;s own global standing. He frames European cooperation with Türkiye as a necessity for Europe rather than a favor to Ankara.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">0 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
+</div>
+<div class="card" id="pc-003">
+  <div class="card-header"><span class="card-actor">Turkish-Armenian normalization is a model peace process that advances regional connectivity</span></div>
+  <div class="card-position">Turkish officials celebrate the bilateral meeting in Yerevan and the Ani Bridge memorandum as proof that dialogue can resolve long-standing conflicts, while also promoting the Middle Corridor trade route as a strategic benefit of regional peace.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">0 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
+</div>
+<div class="card" id="pc-004">
+  <div class="card-header"><span class="card-actor">The Yerevan summit represents Armenia&#x27;s deliberate pivot away from Russia toward European integration</span></div>
+  <div class="card-position">Russian-language sources frame the hosting of the European Political Community summit as a Western strategy to pull Armenia out of Moscow&#x27;s orbit, with concrete steps such as phasing out Russian border guard services serving as evidence of this geopolitical realignment.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">0 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>1 language</span></p>
+</div>
+<div class="card" id="pc-005">
+  <div class="card-header"><span class="card-actor">Hosting the EPC summit carries geopolitical risks for Armenia given regional tensions</span></div>
+  <div class="card-position">A former Armenian foreign minister warns that the summit could provoke diplomatic friction, particularly given Azerbaijan&#x27;s refusal to attend and the broader sensitivities of the South Caucasus security environment.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">0 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
+</div>
+<div class="card" id="pc-006">
+  <div class="card-header"><span class="card-actor">The summit marks a historic milestone for Armenia&#x27;s international standing and European belonging</span></div>
+  <div class="card-position">Armenian media emphasize the unprecedented scale of the event as the largest diplomatic gathering since independence, while European Council leadership highlights that the European Political Community is meeting in the South Caucasus for the first time.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">0 actors</a></span> &middot; <span>2 sources</span> &middot; <span>1 region</span> &middot; <span>2 languages</span></p>
+</div>
+<div class="card" id="pc-007">
+  <div class="card-header"><span class="card-actor">US unilateralism is straining relations with traditional allies including Italy and the Vatican</span></div>
+  <div class="card-position">Reporting highlights President Trump&#x27;s threats to withdraw forces from Italy, friction with Pope Leo XIV over military strikes on Iran and immigration policy, and Secretary Rubio&#x27;s damage-control mission to Rome, illustrating a pattern of transatlantic rupture driven by American assertiveness.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">0 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
+</div>
+<div class="card" id="pc-008">
+  <div class="card-header"><span class="card-actor">Israel&#x27;s interception of the Gaza aid flotilla constitutes a criminal act under Italian law</span></div>
+  <div class="card-position">Rome prosecutors have opened an investigation into the boarding of an Italian-flagged vessel in international waters, probing Israeli forces on suspicion of kidnapping, robbery, and causing damage with risk of shipwreck under Italian law, with the two Italian activists aboard treated as alleged victims rather than suspects.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">0 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
+</div>
+<div class="card" id="pc-009">
+  <div class="card-header"><span class="card-actor">Regional instability in the Middle East requires coordinated Turkish-Qatari diplomatic engagement</span></div>
+  <div class="card-position">Turkish and Qatari foreign ministers consulted on the status of US-Iran negotiations and new Iranian attacks on the UAE, with both ministers expressing concern about regional stability and the risk of further escalation.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-009">0 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
+</div>
+</div>
+
+<section id="actors-section" class="actors">
+<h2>Actors</h2>
+<p class="actors-meta">0 actors quoted across this topic.</p>
+</section>
+
+<h2>What's missing</h2>
+<ul class="missing-positions"><li><strong>civil_society</strong> — No independent analysts, think-tank researchers, or NGO voices assess the summit&#x27;s implications for European security architecture or Armenian sovereignty, leaving all framing to state actors.</li><li><strong>affected_community</strong> — No displaced persons from Nagorno-Karabakh or Armenian border communities speak to how the security realignment and removal of Russian border guards affects their daily safety.</li><li><strong>international_org</strong> — No statements from NATO, the OSCE, or the CSTO regarding the summit&#x27;s impact on existing collective security arrangements in the Caucasus or Europe-wide defense planning.</li><li><strong>government</strong> — No Azerbaijani government voice explains its refusal to attend the summit or its perspective on Turkish-Armenian normalization, despite being a central regional stakeholder credited in Turkish framing.</li><li><strong>academia</strong> — No scholars of Caucasus geopolitics or European security studies provide independent analysis of whether Armenia&#x27;s pivot is sustainable or what the summit&#x27;s defense-autonomy agenda means in practice.</li></ul>
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">German and EU-level sources frame the Yerevan summit primarily through the lens of European strategic autonomy and the need to respond to US troop withdrawals, while Russian-language sources focus almost exclusively on the summit as a tool for Armenia&#x27;s geopolitical pivot away from Moscow and the removal of Russian border guards.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The corrected article presents both framings with attribution, giving equal weight to the European defense-autonomy narrative and the Russian characterization of the summit as a geopolitical extraction operation.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Turkish sources (Anadolu Agency) frame the Turkish-Armenian normalization and the Ani Bridge memorandum as a model peace process and regional inspiration, while Armenian critical voices and Russian-language sources emphasize the risks and geopolitical costs of Armenia&#x27;s westward turn, with no Armenian government rebuttal to the Turkish framing available in the sources.</div>
+  <div class="divergence-resolution"><strong>Partially resolved:</strong> The article presents both the Turkish normalization narrative and the Armenian critical warning with attribution, but no direct Armenian government response to the Turkish framing is available in the source material.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">Azerbaijan&#x27;s perspective on its refusal to attend the summit and on Turkish-Armenian normalization is absent from all sources, despite Baku being a central regional stakeholder credited by Turkish officials for contributing to regional peace.</div>
+  <div class="divergence-resolution"><strong>Unresolved:</strong> The article notes Azerbaijan&#x27;s absence and the lack of Azerbaijani participation but cannot supply Baku&#x27;s stated rationale, as no Azerbaijani source is available in the research dossier.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p class="bias-stats"><span><strong>9</strong> position clusters</span><span class="sep">&middot;</span><span><strong>0</strong> distinct actors</span><span class="sep">&middot;</span><span><strong>13</strong> sources</span><span class="sep">&middot;</span><span><strong>4</strong> languages</span></p>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">5 language bias findings</p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
+<div class="bias-finding">
+  <span class="bias-excerpt">accelerating transatlantic strain</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Accelerating&#x27; characterizes the pace and trajectory of diplomatic tensions in the article&#x27;s own voice without citing specific data or attributing the assessment to a named source.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">a geopolitical extraction operation</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Extraction operation&#x27; carries an implicit judgment that the summit&#x27;s purpose is coercive removal of Armenia from Russia&#x27;s sphere; while attributed to Russian media&#x27;s characterization, the article uses it in its own concluding paragraph without quotation marks as a summary descriptor.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">The pattern of American unilateralism provided an immediate context</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Unilateralism&#x27; is an editorial characterization in the article&#x27;s own voice that frames US actions as norm-violating rather than neutrally describing the policy decisions that preceded the summit.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Armenia&#x27;s European turn</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Turn&#x27; implies a decisive, directional shift in the article&#x27;s own voice rather than neutrally describing Armenia&#x27;s evolving diplomatic relationships, embedding a judgment about the nature and permanence of the policy change.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Yerevan&#x27;s ties with Moscow have frayed</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Frayed&#x27; is a metaphorical characterization in the article&#x27;s own voice that implies deterioration and damage, rather than neutrally describing the changing diplomatic relationship.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">7</span></div>
+<div class="bar-row"><span class="bar-label">ru</span><div class="bar-track"><div class="bar-fill" style="width:43%"></div></div><span class="bar-count">3</span></div>
+<div class="bar-row"><span class="bar-label">de</span><div class="bar-track"><div class="bar-fill" style="width:29%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">fr</span><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div><span class="bar-count">1</span></div>
+</div>
+</div>
+</details>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">No voices from civil society, independent analysts, or opposition politicians in any country — every quoted actor is a sitting government official or state institution, leaving public opinion and expert critique unrepresented.</div>
+<div class="coverage-gap">The corpus is entirely sourced from a single Turkish state outlet (Anadolu Agency), meaning the framing uniformly foregrounds Türkiye&#x27;s diplomatic role and regional interests while omitting how other participants characterize the summit&#x27;s purpose and outcomes.</div>
+<div class="coverage-gap">No coverage of the summit&#x27;s core agenda items — European defense independence from the U.S., collective security architecture, and Ukraine-related discussions — which the assignment identifies as central to the story.</div>
+<div class="coverage-gap">No Azerbaijani perspective is directly represented despite Azerbaijan being credited in the Turkish framing as a contributor to regional peace, and despite its direct stake in Caucasus security arrangements.</div>
+<div class="coverage-gap">There is a total absence of official statements or media coverage from Azerbaijan, despite their reported refusal to attend the summit being a significant regional development.</div>
+<div class="coverage-gap">No sources provide perspectives from the US State Department or Pentagon regarding the troop drawdown mentioned by European leaders.</div>
+<div class="coverage-gap">The voices of displaced persons from Nagorno-Karabakh are mentioned as a concern by civil society but are not directly quoted or featured as primary actors in any report.</div>
+
+<section id="sources-section" class="sources">
+<h2>Sources</h2>
+<p class="sources-meta">13 sources from 9 outlets across 4 languages.</p>
+<div class="sources-by-outlet">
+<details class="outlet-block" id="outlet-anadolu-agency" open>
+<summary><strong>Anadolu Agency</strong> <span class="outlet-meta">Turkey &middot; not yet categorized</span> <span class="outlet-source-count">5 sources</span></summary>
+<ol class="source-list">
+<li id="src-001" class="source">
+  <div class="source-header"><span class="source-id">[1]</span> <a class="source-headline" href="https://www.aa.com.tr/en/turkiye/-turkish-qatari-foreign-ministers-discuss-regional-situation/3927143" target="_blank" rel="noopener">Turkish, Qatari foreign ministers discuss regional situation</a></div>
+  <div class="source-meta"><span>Turkey</span> &middot; <span>en</span> &middot; <span>2026-05-04</span></div>
+  <p class="source-summary">Reports on a diplomatic phone call between the foreign ministers of Türkiye and Qatar regarding US-Iran negotiations and regional stability. The article highlights a new wave of Iranian missile and drone attacks targeting the UAE, occurring despite a recent ceasefire agreement between Tehran and Washington.</p>
+</li>
+<li id="src-002" class="source">
+  <div class="source-header"><span class="source-id">[2]</span> <a class="source-headline" href="https://www.aa.com.tr/en/politics/turkiyes-president-urges-eu-to-refrain-from-rhetoric-that-could-undermine-ankaras-constructive-stance/3926965" target="_blank" rel="noopener">Türkiye&#x27;s president urges EU to refrain from rhetoric that could undermine Ankara&#x27;s &#x27;constructive stance&#x27;</a></div>
+  <div class="source-meta"><span>Turkey</span> &middot; <span>en</span> &middot; <span>2026-05-04</span></div>
+  <p class="source-summary">Turkish President Erdogan criticizes the European Union&#x27;s &#x27;strategic myopia&#x27; and biased stance toward Ankara&#x27;s long-standing membership bid. He asserts that Türkiye is now a leading pole in a multipolar world and that Europe needs Türkiye&#x27;s cooperation more than the reverse to remain a global actor.</p>
+</li>
+<li id="src-003" class="source">
+  <div class="source-header"><span class="source-id">[3]</span> <a class="source-headline" href="https://www.aa.com.tr/en/turkiye/normalization-between-turkiye-armenia-sets-example-for-others-says-turkish-vice-president/3926887" target="_blank" rel="noopener">&#x27;Normalization between Türkiye, Armenia sets example for others,&#x27; says Turkish vice president</a></div>
+  <div class="source-meta"><span>Turkey</span> &middot; <span>en</span> &middot; <span>2026-05-04</span></div>
+  <p class="source-summary">Details a historic meeting in Yerevan between Turkish Vice President Cevdet Yilmaz and Armenian Prime Minister Nikol Pashinyan during the 8th European Political Community summit. The two nations signed a memorandum to restore the ancient Ani Bridge, signaling a concrete step in the normalization of South Caucasus relations.</p>
+</li>
+<li id="src-004" class="source">
+  <div class="source-header"><span class="source-id">[4]</span> <a class="source-headline" href="https://www.aa.com.tr/en/americas/us-secretary-of-state-to-visit-italy-vatican-amid-trumps-tensions-with-madrid-pope-leo/3926731" target="_blank" rel="noopener">US secretary of state to visit Italy, Vatican amid Trump&#x27;s tensions with Madrid, Pope Leo</a></div>
+  <div class="source-meta"><span>Turkey</span> &middot; <span>en</span> &middot; <span>2026-05-04</span></div>
+  <p class="source-summary">Outlines US Secretary of State Marco Rubio&#x27;s upcoming mission to Italy and the Vatican to address deteriorating relations following President Trump&#x27;s threats to withdraw US forces from Italy. The article notes significant friction with the Holy See over US military actions against Iran and the abduction of the Venezuelan president.</p>
+</li>
+<li id="src-005" class="source">
+  <div class="source-header"><span class="source-id">[5]</span> <a class="source-headline" href="https://www.aa.com.tr/en/europe/rome-prosecutors-probe-detention-of-2-italians-during-israeli-interception-of-gaza-aid-flotilla/3926429" target="_blank" rel="noopener">Rome prosecutors probe detention of 2 Italians during Israeli interception of Gaza aid flotilla</a></div>
+  <div class="source-meta"><span>Turkey</span> &middot; <span>en</span> &middot; <span>2026-05-04</span></div>
+  <p class="source-summary">Reports on an investigation by Rome prosecutors into the alleged kidnapping of two Italian activists by Israeli forces during the interception of the Global Sumud Flotilla. The flotilla was carrying humanitarian aid to Gaza when it was boarded in international waters near Crete.</p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-armenia-today" open>
+<summary><strong>Armenia Today</strong> <span class="outlet-meta">Armenia &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-012" class="source">
+  <div class="source-header"><span class="source-id">[12]</span> <a class="source-headline" href="https://armeniatoday.am/politics-ru/foreign-policy/1055656/" target="_blank" rel="noopener">Экс-глава МИД предупредил о рисках проведения европейского ...</a></div>
+  <div class="source-meta"><span>Armenia</span> &middot; <span>ru</span></div>
+  <p class="source-summary">Reports on internal Armenian criticism and the regional diplomatic friction caused by Azerbaijan&#x27;s refusal to attend.</p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-armenpress" open>
+<summary><strong>Armenpress</strong> <span class="outlet-meta">Armenia &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-008" class="source">
+  <div class="source-header"><span class="source-id">[8]</span> <a class="source-headline" href="https://armenpress.am/fr/article/1249184" target="_blank" rel="noopener">António Costa: pour la première fois, la Communauté politique ...</a></div>
+  <div class="source-meta"><span>Armenia</span> &middot; <span>fr</span></div>
+  <p class="source-summary">Reports on the opening speeches and the arrival of key European figures, highlighting the presence of the French President.</p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-arminfo" open>
+<summary><strong>ArmInfo</strong> <span class="outlet-meta">Armenia &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-011" class="source">
+  <div class="source-header"><span class="source-id">[11]</span> <a class="source-headline" href="https://www.arminfo.info/full_news.php?id=100653" target="_blank" rel="noopener">В Ереване начинает свою работу 8-ой саммит европейского ...</a></div>
+  <div class="source-meta"><span>Armenia</span> &middot; <span>ru</span></div>
+  <p class="source-summary">Highlights Armenia&#x27;s specific goal of phasing out Russian border guard services as a key outcome of the summit.</p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-der-spiegel" open>
+<summary><strong>Der Spiegel</strong> <span class="outlet-meta">Germany &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-010" class="source">
+  <div class="source-header"><span class="source-id">[10]</span> <a class="source-headline" href="https://www.spiegel.de/politik/deutschland/usa-zieht-truppen-ab-wie-der-zorn-von-donald-trump-deutschland-trifft-a-f0778f01-91a5-4291-a54a-523652dfd5ee" target="_blank" rel="noopener">Donald Trump: Bundesregierung reagiert gelassen auf Abzug von ...</a></div>
+  <div class="source-meta"><span>Germany</span> &middot; <span>de</span></div>
+  <p class="source-summary">Analyzes the political tension between the US President and the German Chancellor that led to the military withdrawal.</p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-evn-report" open>
+<summary><strong>EVN Report</strong> <span class="outlet-meta">Armenia &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-007" class="source">
+  <div class="source-header"><span class="source-id">[7]</span> <a class="source-headline" href="https://evnreport.com/new-updates/european-political-community-summit-kicks-off-in-yerevan/" target="_blank" rel="noopener">European Political Community Summit Kicks Off in Yerevan</a></div>
+  <div class="source-meta"><span>Armenia</span> &middot; <span>en</span></div>
+  <p class="source-summary">Provides a local perspective on the summit&#x27;s scale, noting it as the largest event in Armenia since its independence.</p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-federal-ministry-of-defence" open>
+<summary><strong>Federal Ministry of Defence</strong> <span class="outlet-meta">Germany &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-009" class="source">
+  <div class="source-header"><span class="source-id">[9]</span> <a class="source-headline" href="https://www.bmvg.de/de/aktuelles/truppenabzug-pistorius-reaktion-ankuendigung-us-praesident-6097994" target="_blank" rel="noopener">NATO muss europäischer werden, um transatlantisch zu bleiben</a></div>
+  <div class="source-meta"><span>Germany</span> &middot; <span>de</span></div>
+  <p class="source-summary">Details the German government&#x27;s official reaction to the US troop drawdown, framing it as an expected move that necessitates more European responsibility.</p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-ieu-monitoring" open>
+<summary><strong>IEU Monitoring</strong> <span class="outlet-meta">Belgium &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-006" class="source">
+  <div class="source-header"><span class="source-id">[6]</span> <a class="source-headline" href="https://ieu-monitoring.com/editorial/eu-leaders-call-for-stronger-unity-security-and-global-partnerships-at-epc-summit/1177486" target="_blank" rel="noopener">EU leaders call for stronger unity, security and global partnerships at ...</a></div>
+  <div class="source-meta"><span>Belgium</span> &middot; <span>en</span></div>
+  <p class="source-summary">Focuses on the high-level policy goals of the summit, specifically energy independence and the diversification of global partnerships.</p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-sn74" open>
+<summary><strong>SN74</strong> <span class="outlet-meta">Russia &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-013" class="source">
+  <div class="source-header"><span class="source-id">[13]</span> <a class="source-headline" href="https://sn74.ru/news/sammit-v-armenii-2026-pochemu-erevan-okazalsya-v-czentre-evropeiskoi-politiki/" target="_blank" rel="noopener">Саммит в Армении 2026: почему Ереван оказался в центре европейской политики</a></div>
+  <div class="source-meta"><span>Russia</span> &middot; <span>ru</span></div>
+  <p class="source-summary">Frames the summit as a deliberate Western effort to increase influence in Armenia and facilitate its departure from the Russian sphere.</p>
+</li>
+</ol>
+</details>
+</div>
+</section>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>Nearly 50 European leaders meeting to discuss defense independence from the U.S. and Armenia&#x27;s geopolitical pivot away from Russia represents a significant moment for European security architecture. The story connects to broader themes of transatlantic strain and post-Soviet realignment. Though sourced primarily through Turkish state media, the summit&#x27;s implications for Caucasus stability, EU defense autonomy, and the Russia-Armenia relationship offer rich competing framings across European, Turkish, and Russian perspectives.</dd>
+<dt>QA Corrections</dt><dd><details class="qa-corrections-wrapper"><summary>QA Corrections &mdash; <strong>2 applied &middot; 0 retracted</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-applied">applied</span> Replace &#x27;with two Italian activists detained on suspicion of kidnapping and robbery under Italian law&#x27; with &#x27;with Rome prosecutors opening a probe against Israeli forces on suspicion of kidnapping, robbery, and causing damage with risk of shipwreck under Italian law, while the two Italian activists are the alleged victims in the case&#x27; to correctly reflect that the activists are victims, not suspects, per src-005.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Rome prosecutors opened an investigation into the Israeli military&#x27;s interception of the Global Sumud Flotilla, an Italian-flagged vessel carrying humanitarian aid to Gaza that was boarded in international waters near Crete, with two Italian activists detained on suspicion of kidnapping and robbery under Italian law [src-005].</blockquote><p class="qa-explanation">The article states the two Italian activists were detained &#x27;on suspicion of kidnapping and robbery under Italian law,&#x27; but src-005 clarifies that it is the Rome Prosecutor&#x27;s Office that opened a probe against the Israeli forces on suspicion of kidnapping and robbery — the activists are the alleged victims, not suspects. The article&#x27;s phrasing inverts the roles of victim and accused.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Replace &#x27;positioning their governments as active mediators seeking to prevent further escalation&#x27; with &#x27;with both ministers expressing concern about regional stability and the risk of further escalation&#x27; to remove the unsupported &#x27;active mediators&#x27; characterization not found in src-001.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Turkish Foreign Minister Hakan Fidan and his Qatari counterpart Mohammed bin Abdulrahman Al Thani discussed US-Iran negotiations and a new wave of Iranian missile and drone attacks targeting the UAE, positioning their governments as active mediators seeking to prevent further escalation [src-001].</blockquote><p class="qa-explanation">Src-001 reports a phone call between the two ministers discussing regional developments and US-Iran negotiations, and notes Iranian attacks on the UAE, but does not describe either government as &#x27;active mediators&#x27; or use that framing. The characterization of their role as mediators is not supported by the cited source.</p></div></details></li></ul></details></dd>
+<dt class="pipeline-run">Pipeline Run</dt><dd class="pipeline-run">run-2026-05-05-6189fcca &middot; 2026-05-05</dd>
+</dl>
+</div>
+
+<details class="glossary" style="margin-top: 2rem; border-top: 3px solid #000; padding-top: 1rem">
+<summary style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.5rem 0">About these labels</summary>
+<div style="margin-top: 0.75rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6">
+<p style="margin-bottom: 1rem; font-style: italic">Not every tag needs a definition &mdash; those listed below cover the full vocabulary used across the dossier.</p>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Divergence types</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></dt><dd style="margin-left: 0">Sources disagree on a verifiable fact: a date, number, name, or whether something happened.</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></dt><dd style="margin-left: 0">Sources describe the same event using different language or implied meaning. Example: one outlet calls a payment &ldquo;compensation,&rdquo; another calls it &ldquo;sanctions relief.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></dt><dd style="margin-left: 0">One or more sources report something that other sources leave out entirely.</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></dt><dd style="margin-left: 0">Sources cover the same event but give different aspects different weight or prominence. Example: one outlet leads with casualty figures; another treats them as a footnote to the political negotiations.</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Bias issues</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span></dt><dd style="margin-left: 0">A descriptive word that signals the writer&rsquo;s judgment rather than a neutral fact. Examples: &ldquo;staggering,&rdquo; &ldquo;sharp,&rdquo; &ldquo;dramatic.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">intensifier</span></dt><dd style="margin-left: 0">A word that amplifies a statement without adding information. Examples: &ldquo;very,&rdquo; &ldquo;extremely,&rdquo; &ldquo;deeply.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span></dt><dd style="margin-left: 0">Vocabulary carrying strong political or emotional connotations that a more neutral word would avoid. Examples: &ldquo;regime&rdquo; vs. &ldquo;government,&rdquo; &ldquo;crackdown&rdquo; vs. &ldquo;enforcement.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">hedging</span></dt><dd style="margin-left: 0">Phrases that soften or obscure a claim, making attribution less clear. Examples: &ldquo;some say,&rdquo; &ldquo;allegedly,&rdquo; &ldquo;reportedly.&rdquo;</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Stakeholder types</h3>
+<dl style="margin-bottom: 0">
+<dt style="font-weight: 700; margin-top: 0.5rem">academia</dt><dd style="margin-left: 0">Researchers, professors, think tanks, and university-based experts.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">affected_community</dt><dd style="margin-left: 0">People directly impacted by the events themselves &mdash; civilians, displaced persons, local populations. Voices from within the group, not their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">civil_society</dt><dd style="margin-left: 0">Non-state organizations representing collective interests (NGOs, human rights groups, trade unions, religious bodies).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">government</dt><dd style="margin-left: 0">Executive branch officials, ministries, heads of state, and their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">industry</dt><dd style="margin-left: 0">Private companies, trade associations, and commercial actors.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">international_org</dt><dd style="margin-left: 0">Multilateral bodies and their representatives (UN agencies, IMF, IAEA, Red Cross, regional alliances).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">judiciary</dt><dd style="margin-left: 0">Judges, courts, prosecutors, and legal bodies acting in their official capacity.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">legislature</dt><dd style="margin-left: 0">Parliament, Congress, or equivalent body. Kept separate from &ldquo;government&rdquo; because legislatures often hold positions that differ from their own executive branch.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">media</dt><dd style="margin-left: 0">Journalists, editorial boards, and outlets quoted for their position or analysis, not as sources of factual reporting.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">military</dt><dd style="margin-left: 0">Armed forces personnel, commanders, and defense ministries.</dd>
+</dl>
+</div>
+</details>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>

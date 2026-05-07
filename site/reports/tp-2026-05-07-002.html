@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Hantavirus Outbreak on MV Hondius Cruise Ship Kills Three as WHO Coordinates 12-Country Contact Tracing</title>
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG (legacy class — keeps any historical templates working) */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+/* Evidence terrain SVG */
+.evidence-terrain { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Stakeholder cards */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+.cluster-counts {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); margin: 0.75rem 0 0;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.cluster-counts a { color: inherit; text-decoration: underline; }
+.cluster-counts a:hover { color: var(--color-text); }
+.card:target { background: var(--color-bg-subtle, #f5f5f4); }
+
+/* Actors section */
+.actors h2 { margin-top: 2rem; }
+.actors-meta {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--color-text-secondary); margin: 0 0 1rem;
+}
+#actors-show-all {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  background: transparent; border: 1px solid #000; cursor: pointer;
+  padding: 0.3rem 0.75rem; margin-bottom: 1rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+#actors-show-all:hover { background: #000; color: var(--color-bg); }
+.actor-list { list-style: none; padding: 0; margin: 0; }
+.actor {
+  padding: 1rem 0; border-top: 1px solid var(--color-border-light);
+}
+.actor:first-child { border-top: 0; padding-top: 0; }
+.actor[hidden] { display: none; }
+.actor:target { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-header {
+  font-family: var(--font-sans); font-size: 1rem; margin-bottom: 0.4rem;
+}
+.actor-header strong { font-weight: 700; }
+.actor-role { color: var(--color-text-secondary); margin-left: 0.4rem; }
+.actor-type {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); margin-left: 0.4rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.actor-position-line {
+  font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55;
+  color: var(--color-text-secondary); margin: 0.35rem 0 0;
+}
+.actor-position-line a { color: inherit; text-decoration: underline; }
+.actor-verbatim { font-style: italic; }
+.actor-no-cluster { color: var(--color-text-subtle); font-size: 0.85rem; }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "+  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "−  ";
+}
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Coverage gaps */
+.coverage-gap {
+  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Bias-card stat line */
+.bias-stats {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+  display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline;
+}
+.bias-stats strong { color: var(--color-text); font-weight: 700; }
+.bias-stats .sep { color: var(--color-text-subtle); }
+
+
+/* QA correction details */
+.qa-tag {
+  display: inline-block; padding: 0.05rem 0.4rem; margin-right: 0.35rem;
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  border: 1px solid currentColor;
+}
+.qa-tag.tag-applied { color: #0f766e; }
+.qa-tag.tag-retracted { color: #9f1239; }
+.qa-detail {
+  margin: 0.35rem 0 0.5rem 1rem; padding: 0.5rem 0.75rem;
+  background: var(--color-bg-subtle); border-left: 3px solid var(--color-border-light);
+  font-family: var(--font-sans); font-size: 0.82rem;
+}
+.qa-problem-type {
+  display: inline-block; padding: 0.05rem 0.4rem; margin-bottom: 0.35rem;
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  background: #ca8a0415; color: #ca8a04; border: 1px solid #ca8a0440;
+}
+.qa-excerpt {
+  font-style: italic; margin: 0.25rem 0;
+  border-left: 2px solid var(--color-border-light); padding-left: 0.6rem;
+  color: var(--color-text-secondary);
+}
+.qa-explanation { margin-top: 0.35rem; line-height: 1.55; }
+.qa-corrections-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
+
+/* Sources section — two-level outlet blocks */
+.sources-meta {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--color-text-secondary); margin: 0 0 1rem;
+}
+.sources-by-outlet { display: flex; flex-direction: column; gap: 0.5rem; }
+.outlet-block { border: 1px solid var(--color-border-light); padding: 0.5rem 0.75rem; }
+.outlet-block > summary {
+  font-family: var(--font-sans); cursor: pointer; padding: 0.35rem 0;
+  display: flex; gap: 0.75rem; align-items: baseline; flex-wrap: wrap;
+}
+.outlet-block > summary strong { font-size: 1rem; }
+.outlet-meta {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.outlet-source-count {
+  margin-left: auto; font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.source-list { list-style: none; padding: 0; margin: 0.5rem 0 0; }
+.source {
+  padding: 0.75rem 0; border-top: 1px solid var(--color-border-light);
+}
+.source:first-child { border-top: 0; }
+.source:target { background: var(--color-bg-subtle, #f5f5f4); }
+.source-header { font-family: var(--font-sans); font-size: 0.95rem; }
+.source-id {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); margin-right: 0.4rem;
+}
+.source-headline { color: var(--color-primary); text-decoration: none; }
+.source-headline:hover { text-decoration: underline; }
+.source-meta {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); margin: 0.25rem 0;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.source-summary {
+  font-family: var(--font-sans); font-size: 0.85rem; line-height: 1.55;
+  color: var(--color-text-secondary); margin: 0.25rem 0;
+}
+.source-bias-note {
+  font-family: var(--font-sans); font-size: 0.82rem;
+  color: var(--color-text-subtle); margin: 0.25rem 0;
+}
+.source-actors-refs {
+  font-family: var(--font-sans); font-size: 0.8rem;
+  color: var(--color-text-subtle); margin-top: 0.35rem;
+}
+.source-actors-refs a { color: inherit; text-decoration: underline; }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+.transparency dt.pipeline-run { border-top: 1px solid var(--color-border-light); padding-top: 0.75rem; margin-top: 0.75rem; }
+.transparency dd.pipeline-run { border-bottom: 1px solid var(--color-border-light); padding-bottom: 0.75rem; margin-bottom: 0.75rem; }
+
+/* Strict-drop pruning collapsible */
+.dropped-details > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.dropped-detail { margin-top: 0.5rem; }
+.dropped-section-label {
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-text-subtle);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin: 0.5rem 0 0.25rem;
+}
+.dropped-list { list-style: none; padding-left: 0; margin: 0; }
+.dropped-list > li {
+  padding: 0.25rem 0; border-bottom: 1px solid var(--color-border-light);
+  font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-secondary);
+}
+.dropped-list > li:last-child { border-bottom: none; }
+.dropped-id {
+  display: inline-block; font-family: var(--font-mono); font-weight: 700;
+  color: var(--color-text); margin-right: 0.4rem;
+}
+.dropped-outlet { color: var(--color-text); }
+.dropped-label { font-family: var(--font-sans); }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<h1>Hantavirus Outbreak on MV Hondius Cruise Ship Kills Three as WHO Coordinates 12-Country Contact Tracing</h1>
+<p class="subtitle">The WHO assesses public health risk as low, but the identification of the Andes strain—capable of human-to-human transmission—has triggered an urgent international effort to locate disembarked passengers.</p>
+<p class="date">May 7, 2026</p>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">12</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">10</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">4</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Distribution</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 700" class="evidence-terrain" role="img" aria-label="Evidence terrain: 12 sources across 5 regions">
+<desc>12 TOTAL SOURCES across 5 regions</desc>
+<defs><radialGradient id="et-paper" cx="50%" cy="55%" r="75%"><stop offset="0%" stop-color="#fafaf7"/><stop offset="100%" stop-color="#f1eee5"/></radialGradient><clipPath id="et-terrain-clip"><rect x="270" y="0" width="810" height="700"/></clipPath></defs>
+<rect x="0" y="0" width="1080" height="700" fill="url(#et-paper)"/>
+<g clip-path="url(#et-terrain-clip)">
+<path d="M703.5,362.3 L705.7,362.5 L711.6,362.8 L717.4,362.8 L723.3,362.5 L725.5,362.3 L729.2,361.9 L735.0,360.9 L740.9,359.6 L743.0,359.0 L746.8,357.9 L752.4,355.8 L752.6,355.7 L758.5,352.9 L759.1,352.6 L764.2,349.4 L764.4,349.2 L768.2,346.1 L770.2,344.1 L771.3,342.9 L773.7,339.7 L775.4,336.5 L776.1,334.5 L776.5,333.2 L777.1,330.0 L777.1,326.8 L776.5,323.6 L776.1,322.3 L775.4,320.3 L773.7,317.1 L771.3,313.9 L770.2,312.7 L768.2,310.6 L764.4,307.5 L764.2,307.4 L759.1,304.2 L758.5,303.9 L752.6,301.1 L752.4,301.0 L746.8,298.9 L743.0,297.7 L740.9,297.2 L735.0,295.8 L729.2,294.9 L725.5,294.5 L723.3,294.3 L717.4,294.0 L711.6,294.0 L705.7,294.3 L703.5,294.5 L699.8,294.9 L694.0,295.8 L688.1,297.2 L686.0,297.7 L682.2,298.9 L676.6,301.0 L676.4,301.1 L670.5,303.9 L669.9,304.2 L664.8,307.4 L664.6,307.5 L660.8,310.6 L658.8,312.7 L657.7,313.9 L655.3,317.1 L653.6,320.3 L652.9,322.3 L652.5,323.6 L651.9,326.8 L651.9,330.0 L652.5,333.2 L652.9,334.5 L653.6,336.5 L655.3,339.7 L657.7,342.9 L658.8,344.1 L660.8,346.1 L664.6,349.2 L664.8,349.4 L669.9,352.6 L670.5,352.9 L676.4,355.7 L676.6,355.8 L682.2,357.9 L686.0,359.0 L688.1,359.6 L694.0,360.9 L699.8,361.9 L703.5,362.3 Z" fill="#c9a063" fill-opacity="0.22" stroke="none"/>
+<path d="M685.6,415.7 L688.1,416.1 L694.0,416.8 L699.8,417.3 L705.7,417.7 L711.6,417.8 L717.4,417.8 L723.3,417.7 L729.2,417.3 L735.0,416.8 L740.9,416.1 L743.4,415.7 L746.8,415.2 L752.6,414.2 L758.5,412.9 L760.1,412.5 L764.4,411.4 L770.2,409.7 L771.5,409.3 L776.1,407.7 L780.5,406.0 L781.9,405.5 L787.8,402.8 L787.9,402.8 L793.7,399.9 L794.2,399.6 L799.5,396.4 L799.6,396.3 L804.4,393.1 L805.4,392.3 L808.5,389.9 L811.3,387.4 L812.1,386.7 L815.2,383.4 L817.1,381.1 L817.9,380.2 L820.3,377.0 L822.1,373.8 L823.0,371.9 L823.7,370.5 L825.0,367.3 L826.0,364.1 L826.6,360.9 L826.9,357.6 L826.9,354.4 L826.6,351.2 L826.0,348.0 L825.0,344.7 L823.7,341.5 L823.0,340.1 L822.1,338.3 L820.3,335.1 L817.9,331.8 L817.1,330.9 L815.2,328.6 L812.1,325.4 L811.3,324.7 L808.5,322.2 L805.4,319.7 L804.4,318.9 L799.6,315.7 L799.5,315.7 L794.2,312.5 L793.7,312.2 L787.9,309.3 L787.8,309.2 L781.9,306.6 L780.5,306.0 L776.1,304.3 L771.5,302.8 L770.2,302.4 L764.4,300.6 L760.1,299.6 L758.5,299.2 L752.6,297.9 L746.8,296.8 L743.4,296.3 L740.9,295.9 L735.0,295.2 L729.2,294.7 L723.3,294.4 L717.4,294.2 L711.6,294.2 L705.7,294.4 L699.8,294.7 L694.0,295.2 L688.1,295.9 L685.6,296.3 L682.2,296.8 L676.4,297.9 L670.5,299.2 L668.9,299.6 L664.6,300.6 L658.8,302.4 L657.5,302.8 L652.9,304.3 L648.5,306.0 L647.1,306.6 L641.2,309.2 L641.1,309.3 L635.3,312.2 L634.8,312.5 L629.5,315.7 L629.4,315.7 L624.6,318.9 L623.6,319.7 L620.5,322.2 L617.7,324.7 L616.9,325.4 L613.8,328.6 L611.9,330.9 L611.1,331.8 L608.7,335.1 L606.9,338.3 L606.0,340.1 L605.3,341.5 L604.0,344.7 L603.0,348.0 L602.4,351.2 L602.1,354.4 L602.1,357.6 L602.4,360.9 L603.0,364.1 L604.0,367.3 L605.3,370.5 L606.0,371.9 L606.9,373.8 L608.7,377.0 L611.1,380.2 L611.9,381.1 L613.8,383.4 L616.9,386.7 L617.7,387.4 L620.5,389.9 L623.6,392.3 L624.6,393.1 L629.4,396.3 L629.5,396.4 L634.8,399.6 L635.3,399.9 L641.1,402.8 L641.2,402.8 L647.1,405.5 L648.5,406.0 L652.9,407.7 L657.5,409.3 L658.8,409.7 L664.6,411.4 L668.9,412.5 L670.5,412.9 L676.4,414.2 L682.2,415.2 L685.6,415.7" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.20" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M698.3,409.3 L699.8,409.4 L705.7,409.8 L711.6,410.0 L717.4,410.0 L723.3,409.8 L729.2,409.4 L730.7,409.3 L735.0,408.9 L740.9,408.2 L746.8,407.2 L752.4,406.1 L752.6,406.0 L758.5,404.7 L764.4,403.0 L764.9,402.8 L770.2,401.1 L774.3,399.6 L776.1,398.9 L781.8,396.4 L781.9,396.3 L787.8,393.4 L788.2,393.2 L793.6,389.9 L793.7,389.9 L798.3,386.7 L799.5,385.7 L802.3,383.5 L805.4,380.5 L805.7,380.3 L808.7,377.0 L811.2,373.8 L811.3,373.7 L813.4,370.6 L815.1,367.4 L816.4,364.1 L817.1,361.7 L817.4,360.9 L818.1,357.7 L818.5,354.5 L818.5,351.2 L818.1,348.0 L817.4,344.8 L817.1,343.9 L816.4,341.5 L815.1,338.3 L813.4,335.1 L811.3,332.0 L811.2,331.9 L808.7,328.6 L805.7,325.4 L805.4,325.1 L802.3,322.2 L799.5,320.0 L798.3,319.0 L793.7,315.8 L793.6,315.7 L788.2,312.5 L787.8,312.3 L781.9,309.3 L781.8,309.3 L776.1,306.8 L774.3,306.1 L770.2,304.5 L764.9,302.8 L764.4,302.7 L758.5,301.0 L752.6,299.7 L752.4,299.6 L746.8,298.5 L740.9,297.5 L735.0,296.8 L730.7,296.4 L729.2,296.2 L723.3,295.8 L717.4,295.7 L711.6,295.7 L705.7,295.8 L699.8,296.2 L698.3,296.4 L694.0,296.8 L688.1,297.5 L682.2,298.5 L676.6,299.6 L676.4,299.7 L670.5,301.0 L664.6,302.7 L664.1,302.8 L658.8,304.5 L654.7,306.1 L652.9,306.8 L647.2,309.3 L647.1,309.3 L641.2,312.3 L640.8,312.5 L635.4,315.7 L635.3,315.8 L630.7,319.0 L629.5,320.0 L626.7,322.2 L623.6,325.1 L623.3,325.4 L620.3,328.6 L617.8,331.9 L617.7,332.0 L615.6,335.1 L613.9,338.3 L612.6,341.5 L611.9,343.9 L611.6,344.8 L610.9,348.0 L610.5,351.2 L610.5,354.5 L610.9,357.7 L611.6,360.9 L611.9,361.7 L612.6,364.1 L613.9,367.4 L615.6,370.6 L617.7,373.7 L617.8,373.8 L620.3,377.0 L623.3,380.3 L623.6,380.5 L626.7,383.5 L629.5,385.7 L630.7,386.7 L635.3,389.9 L635.4,389.9 L640.8,393.2 L641.2,393.4 L647.1,396.3 L647.2,396.4 L652.9,398.9 L654.7,399.6 L658.8,401.1 L664.1,402.8 L664.6,403.0 L670.5,404.7 L676.4,406.0 L676.6,406.1 L682.2,407.2 L688.1,408.2 L694.0,408.9 L698.3,409.3" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M686.5,398.8 L688.1,399.1 L694.0,399.9 L699.8,400.6 L705.7,401.0 L711.6,401.1 L717.4,401.1 L723.3,401.0 L729.2,400.6 L735.0,399.9 L740.9,399.1 L742.5,398.8 L746.8,398.1 L752.6,396.8 L757.1,395.6 L758.5,395.2 L764.4,393.4 L767.2,392.4 L770.2,391.2 L775.1,389.1 L776.1,388.7 L781.6,385.9 L781.9,385.7 L787.0,382.7 L787.8,382.2 L791.7,379.5 L793.7,377.8 L795.6,376.2 L798.9,373.0 L799.5,372.3 L801.7,369.8 L804.1,366.5 L805.4,364.2 L805.9,363.3 L807.5,360.1 L808.6,356.9 L809.3,353.6 L809.7,350.4 L809.7,347.2 L809.3,344.0 L808.6,340.7 L807.5,337.5 L805.9,334.3 L805.4,333.4 L804.1,331.1 L801.7,327.8 L799.5,325.4 L798.9,324.6 L795.6,321.4 L793.7,319.8 L791.7,318.2 L787.8,315.5 L787.0,314.9 L781.9,311.9 L781.6,311.7 L776.1,308.9 L775.1,308.5 L770.2,306.4 L767.2,305.3 L764.4,304.2 L758.5,302.4 L757.1,302.0 L752.6,300.8 L746.8,299.5 L742.5,298.8 L740.9,298.5 L735.0,297.7 L729.2,297.1 L723.3,296.7 L717.4,296.5 L711.6,296.5 L705.7,296.7 L699.8,297.1 L694.0,297.7 L688.1,298.5 L686.5,298.8 L682.2,299.5 L676.4,300.8 L671.9,302.0 L670.5,302.4 L664.6,304.2 L661.8,305.3 L658.8,306.4 L653.9,308.5 L652.9,308.9 L647.4,311.7 L647.1,311.9 L642.0,314.9 L641.2,315.5 L637.3,318.2 L635.3,319.8 L633.4,321.4 L630.1,324.6 L629.5,325.4 L627.3,327.8 L624.9,331.1 L623.6,333.4 L623.1,334.3 L621.5,337.5 L620.4,340.7 L619.7,344.0 L619.3,347.2 L619.3,350.4 L619.7,353.6 L620.4,356.9 L621.5,360.1 L623.1,363.3 L623.6,364.2 L624.9,366.5 L627.3,369.8 L629.5,372.3 L630.1,373.0 L633.4,376.2 L635.3,377.8 L637.3,379.5 L641.2,382.2 L642.0,382.7 L647.1,385.7 L647.4,385.9 L652.9,388.7 L653.9,389.1 L658.8,391.2 L661.8,392.4 L664.6,393.4 L670.5,395.2 L671.9,395.6 L676.4,396.8 L682.2,398.1 L686.5,398.8" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.29" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M696.9,391.2 L699.8,391.5 L705.7,392.0 L711.6,392.2 L717.4,392.2 L723.3,392.0 L729.2,391.5 L732.1,391.2 L735.0,390.8 L740.9,389.9 L746.8,388.8 L750.2,387.9 L752.6,387.3 L758.5,385.6 L761.1,384.7 L764.4,383.5 L769.3,381.5 L770.2,381.1 L775.8,378.2 L776.1,378.1 L781.2,375.0 L781.9,374.5 L785.7,371.8 L787.8,370.0 L789.5,368.6 L792.6,365.3 L793.7,364.0 L795.2,362.1 L797.3,358.9 L799.0,355.7 L799.5,354.1 L800.2,352.4 L801.0,349.2 L801.4,346.0 L801.4,342.8 L801.0,339.5 L800.2,336.3 L799.5,334.7 L799.0,333.1 L797.3,329.9 L795.2,326.6 L793.7,324.7 L792.6,323.4 L789.5,320.2 L787.8,318.7 L785.7,317.0 L781.9,314.2 L781.2,313.7 L776.1,310.7 L775.8,310.5 L770.2,307.7 L769.3,307.3 L764.4,305.2 L761.1,304.1 L758.5,303.1 L752.6,301.4 L750.2,300.8 L746.8,300.0 L740.9,298.8 L735.0,297.9 L732.1,297.6 L729.2,297.3 L723.3,296.8 L717.4,296.6 L711.6,296.6 L705.7,296.8 L699.8,297.3 L696.9,297.6 L694.0,297.9 L688.1,298.8 L682.2,300.0 L678.8,300.8 L676.4,301.4 L670.5,303.1 L667.9,304.1 L664.6,305.2 L659.7,307.3 L658.8,307.7 L653.2,310.5 L652.9,310.7 L647.8,313.7 L647.1,314.2 L643.3,317.0 L641.2,318.7 L639.5,320.2 L636.4,323.4 L635.3,324.7 L633.8,326.6 L631.7,329.9 L630.0,333.1 L629.5,334.7 L628.8,336.3 L628.0,339.5 L627.6,342.8 L627.6,346.0 L628.0,349.2 L628.8,352.4 L629.5,354.1 L630.0,355.7 L631.7,358.9 L633.8,362.1 L635.3,364.0 L636.4,365.3 L639.5,368.6 L641.2,370.0 L643.3,371.8 L647.1,374.5 L647.8,375.0 L652.9,378.1 L653.2,378.2 L658.8,381.1 L659.7,381.5 L664.6,383.5 L667.9,384.7 L670.5,385.6 L676.4,387.3 L678.8,387.9 L682.2,388.8 L688.1,389.9 L694.0,390.8 L696.9,391.2" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.34" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M684.9,380.0 L688.1,380.7 L694.0,381.7 L699.8,382.4 L705.7,382.9 L711.6,383.2 L717.4,383.2 L723.3,382.9 L729.2,382.4 L735.0,381.7 L740.9,380.7 L744.1,380.0 L746.8,379.4 L752.6,377.8 L755.8,376.8 L758.5,375.8 L764.2,373.5 L764.4,373.5 L770.2,370.6 L770.7,370.3 L775.9,367.1 L776.1,367.0 L780.3,363.9 L781.9,362.4 L783.9,360.6 L786.8,357.4 L787.8,356.0 L789.1,354.2 L791.0,351.0 L792.3,347.7 L793.1,344.5 L793.6,341.3 L793.6,338.1 L793.1,334.8 L792.3,331.6 L791.0,328.4 L789.1,325.2 L787.8,323.4 L786.8,321.9 L783.9,318.7 L781.9,317.0 L780.3,315.5 L776.1,312.4 L775.9,312.2 L770.7,309.0 L770.2,308.8 L764.4,305.9 L764.2,305.8 L758.5,303.5 L755.8,302.6 L752.6,301.5 L746.8,299.9 L744.1,299.3 L740.9,298.6 L735.0,297.6 L729.2,296.9 L723.3,296.4 L717.4,296.2 L711.6,296.2 L705.7,296.4 L699.8,296.9 L694.0,297.6 L688.1,298.6 L684.9,299.3 L682.2,299.9 L676.4,301.5 L673.2,302.6 L670.5,303.5 L664.8,305.8 L664.6,305.9 L658.8,308.8 L658.3,309.0 L653.1,312.2 L652.9,312.4 L648.7,315.5 L647.1,317.0 L645.1,318.7 L642.2,321.9 L641.2,323.4 L639.9,325.2 L638.0,328.4 L636.7,331.6 L635.9,334.8 L635.4,338.1 L635.4,341.3 L635.9,344.5 L636.7,347.7 L638.0,351.0 L639.9,354.2 L641.2,356.0 L642.2,357.4 L645.1,360.6 L647.1,362.4 L648.7,363.9 L652.9,367.0 L653.1,367.1 L658.3,370.3 L658.8,370.6 L664.6,373.5 L664.8,373.5 L670.5,375.8 L673.2,376.8 L676.4,377.8 L682.2,379.4 L684.9,380.0" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.38" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M690.4,371.8 L694.0,372.5 L699.8,373.3 L705.7,373.9 L711.6,374.1 L717.4,374.1 L723.3,373.9 L729.2,373.3 L735.0,372.5 L738.6,371.8 L740.9,371.4 L746.8,369.9 L751.1,368.6 L752.6,368.1 L758.5,365.9 L759.5,365.4 L764.4,363.0 L766.0,362.2 L770.2,359.5 L771.1,358.9 L775.2,355.7 L776.1,354.9 L778.5,352.5 L781.1,349.3 L781.9,348.0 L783.2,346.0 L784.7,342.8 L785.6,339.6 L786.1,336.4 L786.1,333.1 L785.6,329.9 L784.7,326.7 L783.2,323.5 L781.9,321.5 L781.1,320.2 L778.5,317.0 L776.1,314.6 L775.2,313.8 L771.1,310.5 L770.2,310.0 L766.0,307.3 L764.4,306.4 L759.5,304.1 L758.5,303.6 L752.6,301.4 L751.1,300.9 L746.8,299.5 L740.9,298.1 L738.6,297.6 L735.0,297.0 L729.2,296.1 L723.3,295.6 L717.4,295.3 L711.6,295.3 L705.7,295.6 L699.8,296.1 L694.0,297.0 L690.4,297.6 L688.1,298.1 L682.2,299.5 L677.9,300.9 L676.4,301.4 L670.5,303.6 L669.5,304.1 L664.6,306.4 L663.0,307.3 L658.8,310.0 L657.9,310.5 L653.8,313.8 L652.9,314.6 L650.5,317.0 L647.9,320.2 L647.1,321.5 L645.8,323.5 L644.3,326.7 L643.4,329.9 L642.9,333.1 L642.9,336.4 L643.4,339.6 L644.3,342.8 L645.8,346.0 L647.1,348.0 L647.9,349.3 L650.5,352.5 L652.9,354.9 L653.8,355.7 L657.9,358.9 L658.8,359.5 L663.0,362.2 L664.6,363.0 L669.5,365.4 L670.5,365.9 L676.4,368.1 L677.9,368.6 L682.2,369.9 L688.1,371.4 L690.4,371.8" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.43" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M696.0,363.5 L699.8,364.1 L705.7,364.7 L711.6,365.0 L717.4,365.0 L723.3,364.7 L729.2,364.1 L733.0,363.5 L735.0,363.2 L740.9,361.9 L746.7,360.3 L746.8,360.3 L752.6,358.2 L755.2,357.1 L758.5,355.5 L761.5,353.8 L764.4,352.0 L766.3,350.6 L770.2,347.4 L770.2,347.4 L773.2,344.2 L775.5,340.9 L776.1,339.8 L777.2,337.7 L778.3,334.5 L778.8,331.2 L778.8,328.0 L778.3,324.8 L777.2,321.6 L776.1,319.4 L775.5,318.3 L773.2,315.1 L770.2,311.9 L770.2,311.9 L766.3,308.7 L764.4,307.3 L761.5,305.4 L758.5,303.8 L755.2,302.2 L752.6,301.1 L746.8,299.0 L746.7,299.0 L740.9,297.3 L735.0,296.1 L733.0,295.8 L729.2,295.2 L723.3,294.6 L717.4,294.3 L711.6,294.3 L705.7,294.6 L699.8,295.2 L696.0,295.8 L694.0,296.1 L688.1,297.3 L682.3,299.0 L682.2,299.0 L676.4,301.1 L673.8,302.2 L670.5,303.8 L667.5,305.4 L664.6,307.3 L662.7,308.7 L658.8,311.9 L658.8,311.9 L655.8,315.1 L653.5,318.3 L652.9,319.4 L651.8,321.6 L650.7,324.8 L650.2,328.0 L650.2,331.2 L650.7,334.5 L651.8,337.7 L652.9,339.8 L653.5,340.9 L655.8,344.2 L658.8,347.4 L658.8,347.4 L662.7,350.6 L664.6,352.0 L667.5,353.8 L670.5,355.5 L673.8,357.1 L676.4,358.2 L682.2,360.3 L682.3,360.3 L688.1,361.9 L694.0,363.2 L696.0,363.5" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.48" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M702.5,355.0 L705.7,355.4 L711.6,355.7 L717.4,355.7 L723.3,355.4 L726.5,355.0 L729.2,354.7 L735.0,353.6 L740.9,352.2 L742.2,351.8 L746.8,350.2 L750.8,348.6 L752.6,347.7 L756.9,345.3 L758.5,344.3 L761.5,342.1 L764.4,339.6 L765.1,338.9 L767.7,335.7 L769.6,332.4 L770.2,331.0 L770.9,329.2 L771.5,326.0 L771.5,322.8 L770.9,319.5 L770.2,317.8 L769.6,316.3 L767.7,313.1 L765.1,309.9 L764.4,309.1 L761.5,306.6 L758.5,304.4 L756.9,303.4 L752.6,301.0 L750.8,300.2 L746.8,298.5 L742.2,296.9 L740.9,296.5 L735.0,295.1 L729.2,294.0 L726.5,293.7 L723.3,293.4 L717.4,293.0 L711.6,293.0 L705.7,293.4 L702.5,293.7 L699.8,294.0 L694.0,295.1 L688.1,296.5 L686.8,296.9 L682.2,298.5 L678.2,300.2 L676.4,301.0 L672.1,303.4 L670.5,304.4 L667.5,306.6 L664.6,309.1 L663.9,309.9 L661.3,313.1 L659.4,316.3 L658.8,317.8 L658.1,319.5 L657.5,322.8 L657.5,326.0 L658.1,329.2 L658.8,331.0 L659.4,332.4 L661.3,335.7 L663.9,338.9 L664.6,339.6 L667.5,342.1 L670.5,344.3 L672.1,345.3 L676.4,347.7 L678.2,348.6 L682.2,350.2 L686.8,351.8 L688.1,352.2 L694.0,353.6 L699.8,354.7 L702.5,355.0" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.52" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M691.8,343.2 L694.0,343.8 L699.8,345.0 L705.7,345.8 L711.6,346.2 L717.4,346.2 L723.3,345.8 L729.2,345.0 L735.0,343.8 L737.2,343.2 L740.9,342.0 L746.1,339.9 L746.8,339.6 L752.1,336.7 L752.6,336.4 L756.4,333.5 L758.5,331.4 L759.6,330.3 L761.8,327.0 L763.3,323.8 L764.0,320.6 L764.0,317.4 L763.3,314.1 L761.8,310.9 L759.6,307.7 L758.5,306.5 L756.4,304.5 L752.6,301.6 L752.1,301.2 L746.8,298.3 L746.1,298.0 L740.9,295.9 L737.2,294.8 L735.0,294.2 L729.2,292.9 L723.3,292.2 L717.4,291.8 L711.6,291.8 L705.7,292.2 L699.8,292.9 L694.0,294.2 L691.8,294.8 L688.1,295.9 L682.9,298.0 L682.2,298.3 L676.9,301.2 L676.4,301.6 L672.6,304.5 L670.5,306.5 L669.4,307.7 L667.2,310.9 L665.7,314.1 L665.0,317.4 L665.0,320.6 L665.7,323.8 L667.2,327.0 L669.4,330.3 L670.5,331.4 L672.6,333.5 L676.4,336.4 L676.9,336.7 L682.2,339.6 L682.9,339.9 L688.1,342.0 L691.8,343.2" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.57" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M698.1,334.4 L699.8,334.8 L705.7,335.8 L711.6,336.2 L717.4,336.2 L723.3,335.8 L729.2,334.8 L730.9,334.4 L735.0,333.3 L740.7,331.2 L740.9,331.1 L746.6,328.0 L746.8,327.9 L750.6,324.7 L752.6,322.4 L753.4,321.5 L755.1,318.3 L755.9,315.1 L755.9,311.8 L755.1,308.6 L753.4,305.4 L752.6,304.4 L750.6,302.2 L746.8,299.0 L746.6,298.9 L740.9,295.8 L740.7,295.7 L735.0,293.6 L730.9,292.5 L729.2,292.1 L723.3,291.1 L717.4,290.7 L711.6,290.7 L705.7,291.1 L699.8,292.1 L698.1,292.5 L694.0,293.6 L688.3,295.7 L688.1,295.8 L682.4,298.9 L682.2,299.0 L678.4,302.2 L676.4,304.4 L675.6,305.4 L673.9,308.6 L673.1,311.8 L673.1,315.1 L673.9,318.3 L675.6,321.5 L676.4,322.4 L678.4,324.7 L682.2,327.9 L682.4,328.0 L688.1,331.1 L688.3,331.2 L694.0,333.3 L698.1,334.4" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.61" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M710.7,325.5 L711.6,325.6 L717.4,325.6 L718.3,325.5 L723.3,325.0 L729.2,323.7 L733.4,322.3 L735.0,321.6 L739.7,319.1 L740.9,318.2 L743.5,315.9 L745.8,312.6 L746.8,309.9 L746.9,309.4 L746.9,306.2 L746.8,305.7 L745.8,303.0 L743.5,299.7 L740.9,297.4 L739.7,296.5 L735.0,294.0 L733.4,293.3 L729.2,291.9 L723.3,290.6 L718.3,290.1 L717.4,290.0 L711.6,290.0 L710.7,290.1 L705.7,290.6 L699.8,291.9 L695.6,293.3 L694.0,294.0 L689.3,296.5 L688.1,297.4 L685.5,299.7 L683.2,303.0 L682.2,305.7 L682.1,306.2 L682.1,309.4 L682.2,309.9 L683.2,312.6 L685.5,315.9 L688.1,318.2 L689.3,319.1 L694.0,321.6 L695.6,322.3 L699.8,323.7 L705.7,325.0 L710.7,325.5" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.66" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M710.5,313.4 L711.6,313.5 L717.4,313.5 L718.5,313.4 L723.3,312.5 L729.2,310.3 L729.5,310.1 L733.5,306.9 L735.0,304.3 L735.3,303.7 L735.3,300.5 L735.0,299.8 L733.5,297.2 L729.5,294.0 L729.2,293.8 L723.3,291.6 L718.5,290.8 L717.4,290.6 L711.6,290.6 L710.5,290.8 L705.7,291.6 L699.8,293.8 L699.5,294.0 L695.5,297.2 L694.0,299.8 L693.7,300.5 L693.7,303.7 L694.0,304.3 L695.5,306.9 L699.5,310.1 L699.8,310.3 L705.7,312.5 L710.5,313.4" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.70" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M679.0,430.4 L682.2,430.9 L688.1,431.7 L694.0,432.3 L699.8,432.7 L705.7,433.0 L711.6,433.1 L717.4,433.1 L723.3,433.0 L729.2,432.7 L735.0,432.3 L740.9,431.7 L746.8,430.9 L750.0,430.4 L752.6,430.0 L758.5,429.0 L764.4,427.7 L766.5,427.2 L770.2,426.3 L776.1,424.7 L778.4,423.9 L781.9,422.9 L787.8,420.7 L787.9,420.7 L793.7,418.5 L796.0,417.5 L799.5,415.9 L802.9,414.3 L805.4,413.0 L808.9,411.0 L811.3,409.6 L814.3,407.8 L817.1,405.8 L819.0,404.6 L823.0,401.4 L823.1,401.3 L826.9,398.1 L828.9,396.2 L830.2,394.9 L833.2,391.7 L834.7,389.6 L835.7,388.4 L838.0,385.2 L839.9,382.0 L840.6,380.5 L841.6,378.8 L843.0,375.5 L844.0,372.3 L844.8,369.1 L845.3,365.9 L845.6,362.6 L845.6,359.4 L845.3,356.2 L844.8,353.0 L844.0,349.7 L843.0,346.5 L841.6,343.3 L840.6,341.5 L839.9,340.1 L838.0,336.8 L835.7,333.6 L834.7,332.4 L833.2,330.4 L830.2,327.2 L828.9,325.9 L826.9,323.9 L823.1,320.7 L823.0,320.6 L819.0,317.5 L817.1,316.2 L814.3,314.3 L811.3,312.4 L808.9,311.0 L805.4,309.1 L802.9,307.8 L799.5,306.2 L796.0,304.6 L793.7,303.6 L787.9,301.3 L787.8,301.3 L781.9,299.2 L778.4,298.1 L776.1,297.4 L770.2,295.8 L766.5,294.9 L764.4,294.3 L758.5,293.1 L752.6,292.1 L750.0,291.7 L746.8,291.1 L740.9,290.4 L735.0,289.8 L729.2,289.4 L723.3,289.1 L717.4,288.9 L711.6,288.9 L705.7,289.1 L699.8,289.4 L694.0,289.8 L688.1,290.4 L682.2,291.1 L679.0,291.7 L676.4,292.1 L670.5,293.1 L664.6,294.3 L662.5,294.9 L658.8,295.8 L652.9,297.4 L650.6,298.1 L647.1,299.2 L641.2,301.3 L641.1,301.3 L635.3,303.6 L633.0,304.6 L629.5,306.2 L626.1,307.8 L623.6,309.1 L620.1,311.0 L617.7,312.4 L614.7,314.3 L611.9,316.2 L610.0,317.5 L606.0,320.6 L605.9,320.7 L602.1,323.9 L600.1,325.9 L598.8,327.2 L595.8,330.4 L594.3,332.4 L593.3,333.6 L591.0,336.8 L589.1,340.1 L588.4,341.5 L587.4,343.3 L586.0,346.5 L585.0,349.7 L584.2,353.0 L583.7,356.2 L583.4,359.4 L583.4,362.6 L583.7,365.9 L584.2,369.1 L585.0,372.3 L586.0,375.5 L587.4,378.8 L588.4,380.5 L589.1,382.0 L591.0,385.2 L593.3,388.4 L594.3,389.6 L595.8,391.7 L598.8,394.9 L600.1,396.2 L602.1,398.1 L605.9,401.3 L606.0,401.4 L610.0,404.6 L611.9,405.8 L614.7,407.8 L617.7,409.6 L620.1,411.0 L623.6,413.0 L626.1,414.3 L629.5,415.9 L633.0,417.5 L635.3,418.5 L641.1,420.7 L641.2,420.7 L647.1,422.9 L650.6,423.9 L652.9,424.7 L658.8,426.3 L662.5,427.2 L664.6,427.7 L670.5,429.0 L676.4,430.0 L679.0,430.4" fill="none" stroke="#000" stroke-width="0.45" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+<path d="M923.3,411.3 L926.0,411.9 L931.8,412.9 L937.7,413.5 L943.6,413.8 L949.4,413.8 L955.3,413.5 L961.2,412.9 L967.0,411.9 L969.7,411.3 L972.9,410.5 L978.8,408.7 L980.6,408.1 L984.6,406.4 L987.9,404.8 L990.5,403.4 L993.3,401.6 L996.4,399.4 L997.6,398.4 L1000.8,395.1 L1002.2,393.4 L1003.3,391.9 L1005.1,388.7 L1006.3,385.5 L1006.8,382.2 L1006.8,379.0 L1006.3,375.8 L1005.1,372.6 L1003.3,369.3 L1002.2,367.9 L1000.8,366.1 L997.6,362.9 L996.4,361.9 L993.3,359.7 L990.5,357.9 L987.9,356.4 L984.6,354.9 L980.6,353.2 L978.8,352.5 L972.9,350.7 L969.7,350.0 L967.0,349.4 L961.2,348.4 L955.3,347.8 L949.4,347.4 L943.6,347.4 L937.7,347.8 L931.8,348.4 L926.0,349.4 L923.3,350.0 L920.1,350.7 L914.2,352.5 L912.4,353.2 L908.4,354.9 L905.1,356.4 L902.5,357.9 L899.7,359.7 L896.6,361.9 L895.4,362.9 L892.2,366.1 L890.8,367.9 L889.7,369.3 L887.9,372.6 L886.7,375.8 L886.2,379.0 L886.2,382.2 L886.7,385.5 L887.9,388.7 L889.7,391.9 L890.8,393.4 L892.2,395.1 L895.4,398.4 L896.6,399.4 L899.7,401.6 L902.5,403.4 L905.1,404.8 L908.4,406.4 L912.4,408.1 L914.2,408.7 L920.1,410.5 L923.3,411.3 Z" fill="#7a6a99" fill-opacity="0.22" stroke="none"/>
+<path d="M914.2,445.9 L914.2,445.9 L920.1,447.0 L926.0,447.8 L931.8,448.4 L937.7,448.8 L943.6,448.9 L949.4,448.9 L955.3,448.8 L961.2,448.4 L967.0,447.8 L972.9,447.0 L978.8,445.9 L978.8,445.9 L984.6,444.7 L990.5,443.1 L992.0,442.7 L996.4,441.4 L1001.6,439.4 L1002.2,439.2 L1008.1,436.8 L1009.2,436.2 L1013.9,433.9 L1015.5,433.0 L1019.8,430.4 L1020.8,429.8 L1025.3,426.5 L1025.7,426.2 L1029.2,423.3 L1031.5,420.9 L1032.4,420.1 L1035.2,416.9 L1037.4,413.7 L1037.4,413.6 L1039.4,410.4 L1040.8,407.2 L1041.9,404.0 L1042.6,400.7 L1042.9,397.5 L1042.9,394.3 L1042.6,391.1 L1041.9,387.8 L1040.8,384.6 L1039.4,381.4 L1037.4,378.2 L1037.4,378.1 L1035.2,374.9 L1032.4,371.7 L1031.5,370.9 L1029.2,368.5 L1025.7,365.6 L1025.3,365.3 L1020.8,362.0 L1019.8,361.4 L1015.5,358.8 L1013.9,357.9 L1009.2,355.6 L1008.1,355.0 L1002.2,352.6 L1001.6,352.4 L996.4,350.4 L992.0,349.1 L990.5,348.7 L984.6,347.1 L978.8,345.9 L978.8,345.9 L972.9,344.8 L967.0,344.0 L961.2,343.4 L955.3,343.0 L949.4,342.9 L943.6,342.9 L937.7,343.0 L931.8,343.4 L926.0,344.0 L920.1,344.8 L914.2,345.9 L914.2,345.9 L908.4,347.1 L902.5,348.7 L901.0,349.1 L896.6,350.4 L891.4,352.4 L890.8,352.6 L884.9,355.0 L883.8,355.6 L879.1,357.9 L877.5,358.8 L873.2,361.4 L872.2,362.0 L867.7,365.3 L867.3,365.6 L863.8,368.5 L861.5,370.9 L860.6,371.7 L857.8,374.9 L855.6,378.1 L855.6,378.2 L853.6,381.4 L852.2,384.6 L851.1,387.8 L850.4,391.1 L850.1,394.3 L850.1,397.5 L850.4,400.7 L851.1,404.0 L852.2,407.2 L853.6,410.4 L855.6,413.6 L855.6,413.7 L857.8,416.9 L860.6,420.1 L861.5,420.9 L863.8,423.3 L867.3,426.2 L867.7,426.5 L872.2,429.8 L873.2,430.4 L877.5,433.0 L879.1,433.9 L883.8,436.2 L884.9,436.8 L890.8,439.2 L891.4,439.4 L896.6,441.4 L901.0,442.7 L902.5,443.1 L908.4,444.7 L914.2,445.9" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.20" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M917.1,440.5 L920.1,441.1 L926.0,442.0 L931.8,442.6 L937.7,443.0 L943.6,443.2 L949.4,443.2 L955.3,443.0 L961.2,442.6 L967.0,442.0 L972.9,441.1 L975.9,440.5 L978.8,440.0 L984.6,438.6 L989.3,437.3 L990.5,436.9 L996.4,435.0 L998.7,434.0 L1002.2,432.6 L1006.1,430.8 L1008.1,429.9 L1012.2,427.6 L1013.9,426.5 L1017.3,424.4 L1019.8,422.5 L1021.5,421.1 L1025.1,417.9 L1025.7,417.3 L1028.1,414.7 L1030.6,411.5 L1031.5,409.9 L1032.6,408.2 L1034.2,405.0 L1035.4,401.8 L1036.2,398.6 L1036.5,395.3 L1036.5,392.1 L1036.2,388.9 L1035.4,385.7 L1034.2,382.4 L1032.6,379.2 L1031.5,377.5 L1030.6,376.0 L1028.1,372.8 L1025.7,370.2 L1025.1,369.5 L1021.5,366.3 L1019.8,365.0 L1017.3,363.1 L1013.9,360.9 L1012.2,359.9 L1008.1,357.6 L1006.1,356.6 L1002.2,354.8 L998.7,353.4 L996.4,352.5 L990.5,350.5 L989.3,350.2 L984.6,348.8 L978.8,347.5 L975.9,346.9 L972.9,346.4 L967.0,345.5 L961.2,344.8 L955.3,344.4 L949.4,344.2 L943.6,344.2 L937.7,344.4 L931.8,344.8 L926.0,345.5 L920.1,346.4 L917.1,346.9 L914.2,347.5 L908.4,348.8 L903.7,350.2 L902.5,350.5 L896.6,352.5 L894.3,353.4 L890.8,354.8 L886.9,356.6 L884.9,357.6 L880.8,359.9 L879.1,360.9 L875.7,363.1 L873.2,365.0 L871.5,366.3 L867.9,369.5 L867.3,370.2 L864.9,372.8 L862.4,376.0 L861.5,377.5 L860.4,379.2 L858.8,382.4 L857.6,385.7 L856.8,388.9 L856.5,392.1 L856.5,395.3 L856.8,398.6 L857.6,401.8 L858.8,405.0 L860.4,408.2 L861.5,409.9 L862.4,411.5 L864.9,414.7 L867.3,417.3 L867.9,417.9 L871.5,421.1 L873.2,422.5 L875.7,424.4 L879.1,426.5 L880.8,427.6 L884.9,429.9 L886.9,430.8 L890.8,432.6 L894.3,434.0 L896.6,435.0 L902.5,436.9 L903.7,437.3 L908.4,438.6 L914.2,440.0 L917.1,440.5" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M922.3,434.5 L926.0,435.1 L931.8,435.8 L937.7,436.3 L943.6,436.5 L949.4,436.5 L955.3,436.3 L961.2,435.8 L967.0,435.1 L970.7,434.5 L972.9,434.2 L978.8,433.0 L984.6,431.4 L985.0,431.3 L990.5,429.6 L994.6,428.1 L996.4,427.4 L1001.9,424.8 L1002.2,424.7 L1007.8,421.6 L1008.1,421.4 L1012.7,418.4 L1013.9,417.4 L1016.7,415.2 L1019.8,412.2 L1020.0,411.9 L1022.8,408.7 L1025.0,405.5 L1025.7,404.3 L1026.8,402.3 L1028.1,399.0 L1028.9,395.8 L1029.3,392.6 L1029.3,389.4 L1028.9,386.1 L1028.1,382.9 L1026.8,379.7 L1025.7,377.7 L1025.0,376.5 L1022.8,373.2 L1020.0,370.0 L1019.8,369.8 L1016.7,366.8 L1013.9,364.5 L1012.7,363.5 L1008.1,360.5 L1007.8,360.3 L1002.2,357.3 L1001.9,357.1 L996.4,354.6 L994.6,353.9 L990.5,352.3 L985.0,350.6 L984.6,350.5 L978.8,349.0 L972.9,347.8 L970.7,347.4 L967.0,346.8 L961.2,346.1 L955.3,345.6 L949.4,345.4 L943.6,345.4 L937.7,345.6 L931.8,346.1 L926.0,346.8 L922.3,347.4 L920.1,347.8 L914.2,349.0 L908.4,350.5 L908.0,350.6 L902.5,352.3 L898.4,353.9 L896.6,354.6 L891.1,357.1 L890.8,357.3 L885.2,360.3 L884.9,360.5 L880.3,363.5 L879.1,364.5 L876.3,366.8 L873.2,369.8 L873.0,370.0 L870.2,373.2 L868.0,376.5 L867.3,377.7 L866.2,379.7 L864.9,382.9 L864.1,386.1 L863.7,389.4 L863.7,392.6 L864.1,395.8 L864.9,399.0 L866.2,402.3 L867.3,404.3 L868.0,405.5 L870.2,408.7 L873.0,411.9 L873.2,412.2 L876.3,415.2 L879.1,417.4 L880.3,418.4 L884.9,421.4 L885.2,421.6 L890.8,424.7 L891.1,424.8 L896.6,427.4 L898.4,428.1 L902.5,429.6 L908.0,431.3 L908.4,431.4 L914.2,433.0 L920.1,434.2 L922.3,434.5" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.30" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M927.7,428.3 L931.8,428.8 L937.7,429.3 L943.6,429.6 L949.4,429.6 L955.3,429.3 L961.2,428.8 L965.3,428.3 L967.0,428.0 L972.9,427.0 L978.8,425.6 L980.9,425.0 L984.6,423.9 L990.5,421.8 L990.6,421.8 L996.4,419.3 L997.8,418.6 L1002.2,416.1 L1003.5,415.4 L1008.1,412.2 L1008.1,412.1 L1011.9,408.9 L1013.9,406.8 L1015.0,405.7 L1017.5,402.5 L1019.4,399.2 L1019.8,398.3 L1020.8,396.0 L1021.8,392.8 L1022.2,389.6 L1022.2,386.3 L1021.8,383.1 L1020.8,379.9 L1019.8,377.6 L1019.4,376.7 L1017.5,373.4 L1015.0,370.2 L1013.9,369.1 L1011.9,367.0 L1008.1,363.8 L1008.1,363.7 L1003.5,360.5 L1002.2,359.7 L997.8,357.3 L996.4,356.6 L990.6,354.1 L990.5,354.0 L984.6,351.9 L980.9,350.8 L978.8,350.3 L972.9,348.9 L967.0,347.8 L965.3,347.6 L961.2,347.1 L955.3,346.6 L949.4,346.3 L943.6,346.3 L937.7,346.6 L931.8,347.1 L927.7,347.6 L926.0,347.8 L920.1,348.9 L914.2,350.3 L912.1,350.8 L908.4,351.9 L902.5,354.0 L902.4,354.1 L896.6,356.6 L895.2,357.3 L890.8,359.7 L889.5,360.5 L884.9,363.7 L884.9,363.8 L881.1,367.0 L879.1,369.1 L878.0,370.2 L875.5,373.4 L873.6,376.7 L873.2,377.6 L872.2,379.9 L871.2,383.1 L870.8,386.3 L870.8,389.6 L871.2,392.8 L872.2,396.0 L873.2,398.3 L873.6,399.2 L875.5,402.5 L878.0,405.7 L879.1,406.8 L881.1,408.9 L884.9,412.1 L884.9,412.2 L889.5,415.4 L890.8,416.1 L895.2,418.6 L896.6,419.3 L902.4,421.8 L902.5,421.8 L908.4,423.9 L912.1,425.0 L914.2,425.6 L920.1,427.0 L926.0,428.0 L927.7,428.3" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.35" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M933.4,421.8 L937.7,422.2 L943.6,422.5 L949.4,422.5 L955.3,422.2 L959.6,421.8 L961.2,421.7 L967.0,420.8 L972.9,419.7 L977.0,418.6 L978.8,418.1 L984.6,416.2 L986.8,415.4 L990.5,413.8 L993.8,412.1 L996.4,410.8 L999.3,408.9 L1002.2,406.9 L1003.7,405.7 L1007.2,402.5 L1008.1,401.5 L1010.0,399.2 L1012.2,396.0 L1013.7,392.8 L1013.9,392.0 L1014.7,389.6 L1015.2,386.3 L1015.2,383.1 L1014.7,379.9 L1013.9,377.5 L1013.7,376.7 L1012.2,373.4 L1010.0,370.2 L1008.1,367.9 L1007.2,367.0 L1003.7,363.8 L1002.2,362.6 L999.3,360.5 L996.4,358.7 L993.8,357.3 L990.5,355.7 L986.8,354.1 L984.6,353.2 L978.8,351.3 L977.0,350.9 L972.9,349.8 L967.0,348.6 L961.2,347.8 L959.6,347.6 L955.3,347.2 L949.4,346.9 L943.6,346.9 L937.7,347.2 L933.4,347.6 L931.8,347.8 L926.0,348.6 L920.1,349.8 L916.0,350.9 L914.2,351.3 L908.4,353.2 L906.2,354.1 L902.5,355.7 L899.2,357.3 L896.6,358.7 L893.7,360.5 L890.8,362.6 L889.3,363.8 L885.8,367.0 L884.9,367.9 L883.0,370.2 L880.8,373.4 L879.3,376.7 L879.1,377.5 L878.3,379.9 L877.8,383.1 L877.8,386.3 L878.3,389.6 L879.1,392.0 L879.3,392.8 L880.8,396.0 L883.0,399.2 L884.9,401.5 L885.8,402.5 L889.3,405.7 L890.8,406.9 L893.7,408.9 L896.6,410.8 L899.2,412.1 L902.5,413.8 L906.2,415.4 L908.4,416.2 L914.2,418.1 L916.0,418.6 L920.1,419.7 L926.0,420.8 L931.8,421.7 L933.4,421.8" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.40" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M941.3,415.2 L943.6,415.4 L949.4,415.4 L951.7,415.2 L955.3,415.0 L961.2,414.4 L967.0,413.5 L972.9,412.1 L973.4,412.0 L978.8,410.4 L983.1,408.8 L984.6,408.2 L990.0,405.6 L990.5,405.3 L995.2,402.3 L996.4,401.5 L999.3,399.1 L1002.2,396.1 L1002.5,395.9 L1004.9,392.7 L1006.6,389.4 L1007.7,386.2 L1008.1,384.2 L1008.3,383.0 L1008.3,379.7 L1008.1,378.5 L1007.7,376.5 L1006.6,373.3 L1004.9,370.1 L1002.5,366.8 L1002.2,366.6 L999.3,363.6 L996.4,361.2 L995.2,360.4 L990.5,357.4 L990.0,357.2 L984.6,354.6 L983.1,353.9 L978.8,352.3 L973.4,350.7 L972.9,350.6 L967.0,349.3 L961.2,348.3 L955.3,347.7 L951.7,347.5 L949.4,347.4 L943.6,347.4 L941.3,347.5 L937.7,347.7 L931.8,348.3 L926.0,349.3 L920.1,350.6 L919.6,350.7 L914.2,352.3 L909.9,353.9 L908.4,354.6 L903.0,357.2 L902.5,357.4 L897.8,360.4 L896.6,361.2 L893.7,363.6 L890.8,366.6 L890.5,366.8 L888.1,370.1 L886.4,373.3 L885.3,376.5 L884.9,378.5 L884.7,379.7 L884.7,383.0 L884.9,384.2 L885.3,386.2 L886.4,389.4 L888.1,392.7 L890.5,395.9 L890.8,396.1 L893.7,399.1 L896.6,401.5 L897.8,402.3 L902.5,405.3 L903.0,405.6 L908.4,408.2 L909.9,408.8 L914.2,410.4 L919.6,412.0 L920.1,412.1 L926.0,413.5 L931.8,414.4 L937.7,415.0 L941.3,415.2" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.45" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M923.6,405.3 L926.0,405.9 L931.8,407.0 L937.7,407.7 L943.6,408.0 L949.4,408.0 L955.3,407.7 L961.2,407.0 L967.0,405.9 L969.4,405.3 L972.9,404.4 L978.8,402.3 L979.4,402.1 L984.6,399.6 L986.0,398.8 L990.5,395.9 L990.9,395.6 L994.6,392.4 L996.4,390.5 L997.4,389.2 L999.4,385.9 L1000.7,382.7 L1001.3,379.5 L1001.3,376.3 L1000.7,373.0 L999.4,369.8 L997.4,366.6 L996.4,365.3 L994.6,363.4 L990.9,360.1 L990.5,359.8 L986.0,356.9 L984.6,356.1 L979.4,353.7 L978.8,353.4 L972.9,351.4 L969.4,350.5 L967.0,349.9 L961.2,348.8 L955.3,348.1 L949.4,347.7 L943.6,347.7 L937.7,348.1 L931.8,348.8 L926.0,349.9 L923.6,350.5 L920.1,351.4 L914.2,353.4 L913.6,353.7 L908.4,356.1 L907.0,356.9 L902.5,359.8 L902.1,360.1 L898.4,363.4 L896.6,365.3 L895.6,366.6 L893.6,369.8 L892.3,373.0 L891.7,376.3 L891.7,379.5 L892.3,382.7 L893.6,385.9 L895.6,389.2 L896.6,390.5 L898.4,392.4 L902.1,395.6 L902.5,395.9 L907.0,398.8 L908.4,399.6 L913.6,402.1 L914.2,402.3 L920.1,404.4 L923.6,405.3" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.50" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M928.1,398.5 L931.8,399.3 L937.7,400.1 L943.6,400.5 L949.4,400.5 L955.3,400.1 L961.2,399.3 L964.9,398.5 L967.0,398.0 L972.9,396.1 L975.1,395.2 L978.8,393.6 L981.6,392.0 L984.6,390.0 L986.2,388.8 L989.6,385.6 L990.5,384.4 L991.9,382.3 L993.4,379.1 L994.1,375.9 L994.1,372.7 L993.4,369.4 L991.9,366.2 L990.5,364.2 L989.6,363.0 L986.2,359.8 L984.6,358.5 L981.6,356.5 L978.8,355.0 L975.1,353.3 L972.9,352.4 L967.0,350.6 L964.9,350.1 L961.2,349.3 L955.3,348.5 L949.4,348.1 L943.6,348.1 L937.7,348.5 L931.8,349.3 L928.1,350.1 L926.0,350.6 L920.1,352.4 L917.9,353.3 L914.2,355.0 L911.4,356.5 L908.4,358.5 L906.8,359.8 L903.4,363.0 L902.5,364.2 L901.1,366.2 L899.6,369.4 L898.9,372.7 L898.9,375.9 L899.6,379.1 L901.1,382.3 L902.5,384.4 L903.4,385.6 L906.8,388.8 L908.4,390.0 L911.4,392.0 L914.2,393.6 L917.9,395.2 L920.1,396.1 L926.0,398.0 L928.1,398.5" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.55" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M934.5,391.6 L937.7,392.1 L943.6,392.5 L949.4,392.5 L955.3,392.1 L958.5,391.6 L961.2,391.1 L967.0,389.5 L970.1,388.3 L972.9,387.1 L976.6,385.1 L978.8,383.6 L980.8,381.9 L983.8,378.7 L984.6,377.2 L985.6,375.4 L986.4,372.2 L986.4,369.0 L985.6,365.7 L984.6,364.0 L983.8,362.5 L980.8,359.3 L978.8,357.6 L976.6,356.1 L972.9,354.1 L970.1,352.8 L967.0,351.7 L961.2,350.1 L958.5,349.6 L955.3,349.1 L949.4,348.6 L943.6,348.6 L937.7,349.1 L934.5,349.6 L931.8,350.1 L926.0,351.7 L922.9,352.8 L920.1,354.1 L916.4,356.1 L914.2,357.6 L912.2,359.3 L909.2,362.5 L908.4,364.0 L907.4,365.7 L906.6,369.0 L906.6,372.2 L907.4,375.4 L908.4,377.2 L909.2,378.7 L912.2,381.9 L914.2,383.6 L916.4,385.1 L920.1,387.1 L922.9,388.3 L926.0,389.5 L931.8,391.1 L934.5,391.6" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.60" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M929.7,381.3 L931.8,382.0 L937.7,383.3 L943.6,384.0 L949.4,384.0 L955.3,383.3 L961.2,382.0 L963.3,381.3 L967.0,379.8 L970.1,378.1 L972.9,376.1 L974.2,374.9 L976.5,371.7 L977.7,368.4 L977.7,365.2 L976.5,362.0 L974.2,358.7 L972.9,357.6 L970.1,355.5 L967.0,353.8 L963.3,352.3 L961.2,351.6 L955.3,350.3 L949.4,349.6 L943.6,349.6 L937.7,350.3 L931.8,351.6 L929.7,352.3 L926.0,353.8 L922.9,355.5 L920.1,357.6 L918.8,358.7 L916.5,362.0 L915.3,365.2 L915.3,368.4 L916.5,371.7 L918.8,374.9 L920.1,376.1 L922.9,378.1 L926.0,379.8 L929.7,381.3" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.65" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M932.6,371.0 L937.7,372.9 L943.6,374.0 L949.4,374.0 L955.3,372.9 L960.4,371.0 L961.2,370.6 L964.6,367.8 L966.5,364.6 L966.5,361.3 L964.6,358.1 L961.2,355.3 L960.4,354.9 L955.3,353.0 L949.4,351.9 L943.6,351.9 L937.7,353.0 L932.6,354.9 L931.8,355.3 L928.4,358.1 L926.5,361.3 L926.5,364.6 L928.4,367.8 L931.8,370.6 L932.6,371.0" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.70" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M925.2,463.8 L926.0,463.9 L931.8,464.4 L937.7,464.8 L943.6,464.9 L949.4,464.9 L955.3,464.8 L961.2,464.4 L967.0,463.9 L967.8,463.8 L972.9,463.3 L978.8,462.4 L984.6,461.4 L988.5,460.6 L990.5,460.2 L996.4,458.8 L1001.3,457.4 L1002.2,457.1 L1008.1,455.2 L1011.1,454.1 L1013.9,453.1 L1019.1,450.9 L1019.8,450.6 L1025.7,447.8 L1025.9,447.7 L1031.5,444.6 L1031.8,444.4 L1036.9,441.2 L1037.4,440.8 L1041.4,438.0 L1043.3,436.4 L1045.3,434.8 L1048.7,431.5 L1049.1,431.0 L1051.7,428.3 L1054.3,425.1 L1055.0,424.0 L1056.5,421.9 L1058.4,418.6 L1059.9,415.4 L1060.9,412.6 L1061.0,412.2 L1062.0,409.0 L1062.6,405.7 L1062.9,402.5 L1062.9,399.3 L1062.6,396.1 L1062.0,392.8 L1061.0,389.6 L1060.9,389.2 L1059.9,386.4 L1058.4,383.2 L1056.5,379.9 L1055.0,377.8 L1054.3,376.7 L1051.7,373.5 L1049.1,370.8 L1048.7,370.3 L1045.3,367.0 L1043.3,365.4 L1041.4,363.8 L1037.4,361.0 L1036.9,360.6 L1031.8,357.4 L1031.5,357.2 L1025.9,354.1 L1025.7,354.0 L1019.8,351.2 L1019.1,350.9 L1013.9,348.7 L1011.1,347.7 L1008.1,346.6 L1002.2,344.7 L1001.3,344.4 L996.4,343.0 L990.5,341.6 L988.5,341.2 L984.6,340.4 L978.8,339.4 L972.9,338.5 L967.8,338.0 L967.0,337.9 L961.2,337.4 L955.3,337.0 L949.4,336.9 L943.6,336.9 L937.7,337.0 L931.8,337.4 L926.0,337.9 L925.2,338.0 L920.1,338.5 L914.2,339.4 L908.4,340.4 L904.5,341.2 L902.5,341.6 L896.6,343.0 L891.7,344.4 L890.8,344.7 L884.9,346.6 L881.9,347.7 L879.1,348.7 L873.9,350.9 L873.2,351.2 L867.3,354.0 L867.1,354.1 L861.5,357.2 L861.2,357.4 L856.1,360.6 L855.6,361.0 L851.6,363.8 L849.7,365.4 L847.7,367.0 L844.3,370.3 L843.9,370.8 L841.3,373.5 L838.7,376.7 L838.0,377.8 L836.5,379.9 L834.6,383.2 L833.1,386.4 L832.1,389.2 L832.0,389.6 L831.0,392.8 L830.4,396.1 L830.1,399.3 L830.1,402.5 L830.4,405.7 L831.0,409.0 L832.0,412.2 L832.1,412.6 L833.1,415.4 L834.6,418.6 L836.5,421.9 L838.0,424.0 L838.7,425.1 L841.3,428.3 L843.9,431.0 L844.3,431.5 L847.7,434.8 L849.7,436.4 L851.6,438.0 L855.6,440.8 L856.1,441.2 L861.2,444.4 L861.5,444.6 L867.1,447.7 L867.3,447.8 L873.2,450.6 L873.9,450.9 L879.1,453.1 L881.9,454.1 L884.9,455.2 L890.8,457.1 L891.7,457.4 L896.6,458.8 L902.5,460.2 L904.5,460.6 L908.4,461.4 L914.2,462.4 L920.1,463.3 L925.2,463.8" fill="none" stroke="#000" stroke-width="0.45" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+<path d="M436.9,465.7 L438.8,466.0 L444.7,466.7 L450.6,467.0 L456.4,467.0 L462.3,466.7 L468.2,466.0 L470.1,465.7 L474.0,465.0 L479.9,463.6 L483.4,462.5 L485.8,461.7 L491.6,459.2 L491.6,459.2 L497.5,456.0 L497.5,456.0 L501.9,452.8 L503.4,451.5 L505.4,449.6 L507.9,446.3 L509.2,444.2 L509.8,443.1 L511.0,439.9 L511.6,436.7 L511.6,433.4 L511.0,430.2 L509.8,427.0 L509.2,425.9 L507.9,423.8 L505.4,420.5 L503.4,418.6 L501.9,417.3 L497.5,414.1 L497.5,414.1 L491.6,410.9 L491.6,410.9 L485.8,408.4 L483.4,407.6 L479.9,406.5 L474.0,405.1 L470.1,404.4 L468.2,404.1 L462.3,403.4 L456.4,403.1 L450.6,403.1 L444.7,403.4 L438.8,404.1 L436.9,404.4 L433.0,405.1 L427.1,406.5 L423.6,407.6 L421.2,408.4 L415.4,410.9 L415.4,410.9 L409.5,414.1 L409.5,414.1 L405.1,417.3 L403.6,418.6 L401.6,420.5 L399.1,423.8 L397.8,425.9 L397.2,427.0 L396.0,430.2 L395.4,433.4 L395.4,436.7 L396.0,439.9 L397.2,443.1 L397.8,444.2 L399.1,446.3 L401.6,449.6 L403.6,451.5 L405.1,452.8 L409.5,456.0 L409.5,456.0 L415.4,459.2 L415.4,459.2 L421.2,461.7 L423.6,462.5 L427.1,463.6 L433.0,465.0 L436.9,465.7 Z" fill="#5a6b7a" fill-opacity="0.22" stroke="none"/>
+<path d="M427.5,466.4 L433.0,467.7 L438.8,468.6 L444.7,469.3 L450.6,469.6 L456.4,469.6 L462.3,469.3 L468.2,468.6 L474.0,467.7 L479.5,466.4 L479.9,466.3 L485.8,464.6 L489.5,463.2 L491.6,462.3 L496.5,460.0 L497.5,459.4 L501.7,456.7 L503.4,455.5 L505.9,453.5 L509.0,450.3 L509.2,450.1 L511.5,447.1 L513.2,443.8 L514.4,440.6 L514.9,437.4 L514.9,434.2 L514.4,430.9 L513.2,427.7 L511.5,424.5 L509.2,421.5 L509.0,421.3 L505.9,418.0 L503.4,416.0 L501.7,414.8 L497.5,412.1 L496.5,411.6 L491.6,409.2 L489.5,408.4 L485.8,407.0 L479.9,405.2 L479.5,405.1 L474.0,403.9 L468.2,402.9 L462.3,402.3 L456.4,402.0 L450.6,402.0 L444.7,402.3 L438.8,402.9 L433.0,403.9 L427.5,405.1 L427.1,405.2 L421.2,407.0 L417.5,408.4 L415.4,409.2 L410.5,411.6 L409.5,412.1 L405.3,414.8 L403.6,416.0 L401.1,418.0 L398.0,421.3 L397.8,421.5 L395.5,424.5 L393.8,427.7 L392.6,430.9 L392.1,434.2 L392.1,437.4 L392.6,440.6 L393.8,443.8 L395.5,447.1 L397.8,450.1 L398.0,450.3 L401.1,453.5 L403.6,455.5 L405.3,456.7 L409.5,459.4 L410.5,460.0 L415.4,462.3 L417.5,463.2 L421.2,464.6 L427.1,466.3 L427.5,466.4" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.20" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M437.2,465.7 L438.8,466.0 L444.7,466.6 L450.6,467.0 L456.4,467.0 L462.3,466.6 L468.2,466.0 L469.8,465.7 L474.0,464.9 L479.9,463.5 L483.3,462.5 L485.8,461.6 L491.5,459.2 L491.6,459.2 L497.4,456.0 L497.5,455.9 L501.8,452.8 L503.4,451.4 L505.3,449.6 L507.9,446.3 L509.2,444.0 L509.7,443.1 L511.0,439.9 L511.6,436.6 L511.6,433.4 L511.0,430.2 L509.7,427.0 L509.2,426.0 L507.9,423.7 L505.3,420.5 L503.4,418.7 L501.8,417.3 L497.5,414.1 L497.4,414.1 L491.6,410.9 L491.5,410.8 L485.8,408.5 L483.3,407.6 L479.9,406.6 L474.0,405.1 L469.8,404.4 L468.2,404.1 L462.3,403.4 L456.4,403.1 L450.6,403.1 L444.7,403.4 L438.8,404.1 L437.2,404.4 L433.0,405.1 L427.1,406.6 L423.7,407.6 L421.2,408.5 L415.5,410.8 L415.4,410.9 L409.6,414.1 L409.5,414.1 L405.2,417.3 L403.6,418.7 L401.7,420.5 L399.1,423.7 L397.8,426.0 L397.3,427.0 L396.0,430.2 L395.4,433.4 L395.4,436.6 L396.0,439.9 L397.3,443.1 L397.8,444.0 L399.1,446.3 L401.7,449.6 L403.6,451.4 L405.2,452.8 L409.5,455.9 L409.6,456.0 L415.4,459.2 L415.5,459.2 L421.2,461.6 L423.7,462.5 L427.1,463.5 L433.0,464.9 L437.2,465.7" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.26" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M433.0,461.5 L438.8,462.6 L444.7,463.3 L450.6,463.7 L456.4,463.7 L462.3,463.3 L468.2,462.6 L474.0,461.5 L474.0,461.5 L479.9,459.9 L484.6,458.3 L485.8,457.8 L491.6,455.1 L491.6,455.0 L496.7,451.8 L497.5,451.2 L500.5,448.6 L503.3,445.4 L503.4,445.4 L505.4,442.2 L506.7,438.9 L507.3,435.7 L507.3,432.5 L506.7,429.3 L505.4,426.0 L503.4,422.8 L503.3,422.8 L500.5,419.6 L497.5,417.0 L496.7,416.4 L491.6,413.1 L491.6,413.1 L485.8,410.4 L484.6,409.9 L479.9,408.3 L474.0,406.7 L474.0,406.7 L468.2,405.6 L462.3,404.9 L456.4,404.5 L450.6,404.5 L444.7,404.9 L438.8,405.6 L433.0,406.7 L433.0,406.7 L427.1,408.3 L422.4,409.9 L421.2,410.4 L415.4,413.1 L415.4,413.1 L410.3,416.4 L409.5,417.0 L406.5,419.6 L403.7,422.8 L403.6,422.8 L401.6,426.0 L400.3,429.3 L399.7,432.5 L399.7,435.7 L400.3,438.9 L401.6,442.2 L403.6,445.4 L403.7,445.4 L406.5,448.6 L409.5,451.2 L410.3,451.8 L415.4,455.0 L415.4,455.1 L421.2,457.8 L422.4,458.3 L427.1,459.9 L433.0,461.5 L433.0,461.5" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.32" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M431.5,457.3 L433.0,457.7 L438.8,458.9 L444.7,459.7 L450.6,460.1 L456.4,460.1 L462.3,459.7 L468.2,458.9 L474.0,457.7 L475.5,457.3 L479.9,455.9 L484.6,454.0 L485.8,453.5 L490.7,450.8 L491.6,450.2 L495.0,447.6 L497.5,445.2 L498.3,444.4 L500.5,441.1 L502.0,437.9 L502.7,434.7 L502.7,431.5 L502.0,428.2 L500.5,425.0 L498.3,421.8 L497.5,420.9 L495.0,418.6 L491.6,415.9 L490.7,415.3 L485.8,412.6 L484.6,412.1 L479.9,410.2 L475.5,408.9 L474.0,408.4 L468.2,407.2 L462.3,406.4 L456.4,406.0 L450.6,406.0 L444.7,406.4 L438.8,407.2 L433.0,408.4 L431.5,408.9 L427.1,410.2 L422.4,412.1 L421.2,412.6 L416.3,415.3 L415.4,415.9 L412.0,418.6 L409.5,420.9 L408.7,421.8 L406.5,425.0 L405.0,428.2 L404.3,431.5 L404.3,434.7 L405.0,437.9 L406.5,441.1 L408.7,444.4 L409.5,445.2 L412.0,447.6 L415.4,450.2 L416.3,450.8 L421.2,453.5 L422.4,454.0 L427.1,455.9 L431.5,457.3" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.38" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M449.3,456.2 L450.6,456.3 L456.4,456.3 L457.7,456.2 L462.3,455.8 L468.2,454.9 L474.0,453.5 L475.8,452.9 L479.9,451.5 L483.7,449.7 L485.8,448.6 L489.0,446.5 L491.6,444.3 L492.7,443.3 L495.2,440.0 L496.9,436.8 L497.5,434.3 L497.7,433.6 L497.7,430.4 L497.5,429.6 L496.9,427.1 L495.2,423.9 L492.7,420.7 L491.6,419.7 L489.0,417.5 L485.8,415.4 L483.7,414.2 L479.9,412.5 L475.8,411.0 L474.0,410.4 L468.2,409.0 L462.3,408.1 L457.7,407.8 L456.4,407.7 L450.6,407.7 L449.3,407.8 L444.7,408.1 L438.8,409.0 L433.0,410.4 L431.2,411.0 L427.1,412.5 L423.3,414.2 L421.2,415.4 L418.0,417.5 L415.4,419.7 L414.3,420.7 L411.8,423.9 L410.1,427.1 L409.5,429.6 L409.3,430.4 L409.3,433.6 L409.5,434.3 L410.1,436.8 L411.8,440.0 L414.3,443.3 L415.4,444.3 L418.0,446.5 L421.2,448.6 L423.3,449.7 L427.1,451.5 L431.2,452.9 L433.0,453.5 L438.8,454.9 L444.7,455.8 L449.3,456.2" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.44" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M446.7,451.8 L450.6,452.1 L456.4,452.1 L460.3,451.8 L462.3,451.6 L468.2,450.6 L474.0,448.9 L475.0,448.6 L479.9,446.4 L481.9,445.3 L485.8,442.7 L486.4,442.1 L489.4,438.9 L491.3,435.7 L491.6,434.6 L492.2,432.4 L492.2,429.2 L491.6,427.1 L491.3,426.0 L489.4,422.8 L486.4,419.5 L485.8,419.0 L481.9,416.3 L479.9,415.2 L475.0,413.1 L474.0,412.7 L468.2,411.1 L462.3,410.0 L460.3,409.9 L456.4,409.5 L450.6,409.5 L446.7,409.9 L444.7,410.0 L438.8,411.1 L433.0,412.7 L432.0,413.1 L427.1,415.2 L425.1,416.3 L421.2,419.0 L420.6,419.5 L417.6,422.8 L415.7,426.0 L415.4,427.1 L414.8,429.2 L414.8,432.4 L415.4,434.6 L415.7,435.7 L417.6,438.9 L420.6,442.1 L421.2,442.7 L425.1,445.3 L427.1,446.4 L432.0,448.6 L433.0,448.9 L438.8,450.6 L444.7,451.6 L446.7,451.8" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.51" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M448.4,447.4 L450.6,447.6 L456.4,447.6 L458.6,447.4 L462.3,447.0 L468.2,445.7 L472.8,444.2 L474.0,443.7 L479.0,440.9 L479.9,440.3 L482.7,437.7 L485.0,434.5 L485.8,432.5 L486.1,431.3 L486.1,428.0 L485.8,426.8 L485.0,424.8 L482.7,421.6 L479.9,419.0 L479.0,418.4 L474.0,415.6 L472.8,415.1 L468.2,413.6 L462.3,412.3 L458.6,411.9 L456.4,411.7 L450.6,411.7 L448.4,411.9 L444.7,412.3 L438.8,413.6 L434.2,415.1 L433.0,415.6 L428.0,418.4 L427.1,419.0 L424.3,421.6 L422.0,424.8 L421.2,426.8 L420.9,428.0 L420.9,431.3 L421.2,432.5 L422.0,434.5 L424.3,437.7 L427.1,440.3 L428.0,440.9 L433.0,443.7 L434.2,444.2 L438.8,445.7 L444.7,447.0 L448.4,447.4" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.57" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M438.1,439.7 L438.8,440.0 L444.7,441.6 L450.6,442.4 L456.4,442.4 L462.3,441.6 L468.2,440.0 L468.9,439.7 L474.0,436.9 L474.6,436.5 L477.5,433.3 L479.0,430.0 L479.0,426.8 L477.5,423.6 L474.6,420.4 L474.0,420.0 L468.9,417.1 L468.2,416.8 L462.3,415.2 L456.4,414.4 L450.6,414.4 L444.7,415.2 L438.8,416.8 L438.1,417.1 L433.0,420.0 L432.4,420.4 L429.5,423.6 L428.0,426.8 L428.0,430.0 L429.5,433.3 L432.4,436.5 L433.0,436.9 L438.1,439.7" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.63" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M447.0,435.2 L450.6,435.9 L456.4,435.9 L460.0,435.2 L462.3,434.6 L467.0,432.0 L468.2,430.8 L469.4,428.8 L469.4,425.6 L468.2,423.6 L467.0,422.3 L462.3,419.7 L460.0,419.1 L456.4,418.4 L450.6,418.4 L447.0,419.1 L444.7,419.7 L440.0,422.3 L438.8,423.6 L437.6,425.6 L437.6,428.8 L438.8,430.8 L440.0,432.0 L444.7,434.6 L447.0,435.2" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.69" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M431.8,487.5 L433.0,487.7 L438.8,488.4 L444.7,488.9 L450.6,489.1 L456.4,489.1 L462.3,488.9 L468.2,488.4 L474.0,487.7 L475.2,487.5 L479.9,486.9 L485.8,485.7 L491.4,484.3 L491.6,484.3 L497.5,482.6 L501.8,481.1 L503.4,480.5 L509.2,478.1 L509.7,477.9 L515.1,475.2 L516.1,474.6 L520.9,471.7 L521.4,471.4 L525.8,468.2 L526.8,467.3 L529.5,465.0 L532.6,461.7 L532.7,461.6 L535.2,458.5 L537.3,455.3 L538.5,452.7 L538.9,452.1 L540.1,448.8 L540.9,445.6 L541.3,442.4 L541.3,439.2 L540.9,435.9 L540.1,432.7 L538.9,429.5 L538.5,428.8 L537.3,426.3 L535.2,423.0 L532.7,419.9 L532.6,419.8 L529.5,416.6 L526.8,414.2 L525.8,413.4 L521.4,410.1 L520.9,409.9 L516.1,406.9 L515.1,406.4 L509.7,403.7 L509.2,403.5 L503.4,401.0 L501.8,400.5 L497.5,399.0 L491.6,397.3 L491.4,397.2 L485.8,395.8 L479.9,394.7 L475.2,394.0 L474.0,393.8 L468.2,393.1 L462.3,392.7 L456.4,392.5 L450.6,392.5 L444.7,392.7 L438.8,393.1 L433.0,393.8 L431.8,394.0 L427.1,394.7 L421.2,395.8 L415.6,397.2 L415.4,397.3 L409.5,399.0 L405.2,400.5 L403.6,401.0 L397.8,403.5 L397.3,403.7 L391.9,406.4 L390.9,406.9 L386.1,409.9 L385.6,410.1 L381.2,413.4 L380.2,414.2 L377.5,416.6 L374.4,419.8 L374.3,419.9 L371.8,423.0 L369.7,426.3 L368.5,428.8 L368.1,429.5 L366.9,432.7 L366.1,435.9 L365.7,439.2 L365.7,442.4 L366.1,445.6 L366.9,448.8 L368.1,452.1 L368.5,452.7 L369.7,455.3 L371.8,458.5 L374.3,461.6 L374.4,461.7 L377.5,465.0 L380.2,467.3 L381.2,468.2 L385.6,471.4 L386.1,471.7 L390.9,474.6 L391.9,475.2 L397.3,477.9 L397.8,478.1 L403.6,480.5 L405.2,481.1 L409.5,482.6 L415.4,484.3 L415.6,484.3 L421.2,485.7 L427.1,486.9 L431.8,487.5" fill="none" stroke="#000" stroke-width="0.45" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+<path d="M810.2,497.9 L815.8,498.8 L821.7,499.5 L827.6,499.8 L833.4,499.8 L839.3,499.5 L845.2,498.8 L850.8,497.9 L851.0,497.8 L856.9,496.4 L862.6,494.7 L862.8,494.6 L868.6,492.2 L870.2,491.4 L874.5,489.1 L875.9,488.2 L880.3,485.0 L880.4,484.9 L883.6,481.8 L886.1,478.5 L886.2,478.4 L888.0,475.3 L889.2,472.1 L889.7,468.8 L889.7,465.6 L889.2,462.4 L888.0,459.2 L886.2,456.1 L886.1,455.9 L883.6,452.7 L880.4,449.6 L880.3,449.5 L875.9,446.3 L874.5,445.4 L870.2,443.0 L868.6,442.3 L862.8,439.9 L862.6,439.8 L856.9,438.0 L851.0,436.6 L850.8,436.6 L845.2,435.6 L839.3,435.0 L833.4,434.7 L827.6,434.7 L821.7,435.0 L815.8,435.6 L810.2,436.6 L810.0,436.6 L804.1,438.0 L798.4,439.8 L798.2,439.9 L792.4,442.3 L790.8,443.0 L786.5,445.4 L785.1,446.3 L780.7,449.5 L780.6,449.6 L777.4,452.7 L774.9,455.9 L774.8,456.1 L773.0,459.2 L771.8,462.4 L771.3,465.6 L771.3,468.8 L771.8,472.1 L773.0,475.3 L774.8,478.4 L774.9,478.5 L777.4,481.8 L780.6,484.9 L780.7,485.0 L785.1,488.2 L786.5,489.1 L790.8,491.4 L792.4,492.2 L798.2,494.6 L798.4,494.7 L804.1,496.4 L810.0,497.8 L810.2,497.9 Z" fill="#b56b5a" fill-opacity="0.22" stroke="none"/>
+<path d="M801.6,519.2 L804.1,519.7 L810.0,520.7 L815.8,521.3 L821.7,521.8 L827.6,522.0 L833.4,522.0 L839.3,521.8 L845.2,521.3 L851.0,520.7 L856.9,519.7 L859.4,519.2 L862.8,518.5 L868.6,517.0 L872.1,516.0 L874.5,515.2 L880.4,513.1 L881.1,512.7 L886.2,510.5 L888.1,509.5 L892.1,507.3 L893.8,506.3 L897.9,503.5 L898.5,503.1 L902.5,499.8 L903.8,498.5 L905.7,496.6 L908.4,493.4 L909.7,491.5 L910.6,490.2 L912.3,486.9 L913.6,483.7 L914.4,480.5 L914.8,477.3 L914.8,474.0 L914.4,470.8 L913.6,467.6 L912.3,464.4 L910.6,461.1 L909.7,459.8 L908.4,457.9 L905.7,454.7 L903.8,452.8 L902.5,451.5 L898.5,448.2 L897.9,447.8 L893.8,445.0 L892.1,444.0 L888.1,441.8 L886.2,440.8 L881.1,438.6 L880.4,438.2 L874.5,436.1 L872.1,435.3 L868.6,434.3 L862.8,432.8 L859.4,432.1 L856.9,431.6 L851.0,430.6 L845.2,430.0 L839.3,429.5 L833.4,429.3 L827.6,429.3 L821.7,429.5 L815.8,430.0 L810.0,430.6 L804.1,431.6 L801.6,432.1 L798.2,432.8 L792.4,434.3 L788.9,435.3 L786.5,436.1 L780.6,438.2 L779.9,438.6 L774.8,440.8 L772.9,441.8 L768.9,444.0 L767.2,445.0 L763.1,447.8 L762.5,448.2 L758.5,451.5 L757.2,452.8 L755.3,454.7 L752.6,457.9 L751.3,459.8 L750.4,461.1 L748.7,464.4 L747.4,467.6 L746.6,470.8 L746.2,474.0 L746.2,477.3 L746.6,480.5 L747.4,483.7 L748.7,486.9 L750.4,490.2 L751.3,491.5 L752.6,493.4 L755.3,496.6 L757.2,498.5 L758.5,499.8 L762.5,503.1 L763.1,503.5 L767.2,506.3 L768.9,507.3 L772.9,509.5 L774.8,510.5 L779.9,512.7 L780.6,513.1 L786.5,515.2 L788.9,516.0 L792.4,517.0 L798.2,518.5 L801.6,519.2" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.20" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M801.2,514.4 L804.1,515.0 L810.0,516.0 L815.8,516.8 L821.7,517.2 L827.6,517.5 L833.4,517.5 L839.3,517.2 L845.2,516.8 L851.0,516.0 L856.9,515.0 L859.8,514.4 L862.8,513.7 L868.6,512.1 L871.5,511.2 L874.5,510.1 L879.9,507.9 L880.4,507.7 L886.2,504.8 L886.5,504.7 L891.8,501.5 L892.1,501.2 L896.1,498.2 L897.9,496.6 L899.7,495.0 L902.6,491.8 L903.8,490.1 L905.0,488.6 L906.8,485.3 L908.1,482.1 L909.0,478.9 L909.4,475.7 L909.4,472.4 L909.0,469.2 L908.1,466.0 L906.8,462.8 L905.0,459.5 L903.8,458.0 L902.6,456.3 L899.7,453.1 L897.9,451.5 L896.1,449.9 L892.1,446.9 L891.8,446.6 L886.5,443.4 L886.2,443.3 L880.4,440.4 L879.9,440.2 L874.5,438.0 L871.5,437.0 L868.6,436.0 L862.8,434.4 L859.8,433.7 L856.9,433.1 L851.0,432.1 L845.2,431.3 L839.3,430.9 L833.4,430.6 L827.6,430.6 L821.7,430.9 L815.8,431.3 L810.0,432.1 L804.1,433.1 L801.2,433.7 L798.2,434.4 L792.4,436.0 L789.5,437.0 L786.5,438.0 L781.1,440.2 L780.6,440.4 L774.8,443.3 L774.5,443.4 L769.2,446.6 L768.9,446.9 L764.9,449.9 L763.1,451.5 L761.3,453.1 L758.4,456.3 L757.2,458.0 L756.0,459.5 L754.2,462.8 L752.9,466.0 L752.0,469.2 L751.6,472.4 L751.6,475.7 L752.0,478.9 L752.9,482.1 L754.2,485.3 L756.0,488.6 L757.2,490.1 L758.4,491.8 L761.3,495.0 L763.1,496.6 L764.9,498.2 L768.9,501.2 L769.2,501.5 L774.5,504.7 L774.8,504.8 L780.6,507.7 L781.1,507.9 L786.5,510.1 L789.5,511.2 L792.4,512.1 L798.2,513.7 L801.2,514.4" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.26" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M803.3,509.1 L804.1,509.3 L810.0,510.4 L815.8,511.2 L821.7,511.8 L827.6,512.0 L833.4,512.0 L839.3,511.8 L845.2,511.2 L851.0,510.4 L856.9,509.3 L857.7,509.1 L862.8,507.9 L868.6,506.1 L869.2,505.9 L874.5,503.9 L877.3,502.7 L880.4,501.2 L883.5,499.5 L886.2,497.7 L888.5,496.2 L892.1,493.3 L892.5,493.0 L895.7,489.8 L897.9,487.0 L898.3,486.6 L900.3,483.3 L901.8,480.1 L902.7,476.9 L903.2,473.6 L903.2,470.4 L902.7,467.2 L901.8,464.0 L900.3,460.7 L898.3,457.5 L897.9,457.1 L895.7,454.3 L892.5,451.1 L892.1,450.7 L888.5,447.8 L886.2,446.3 L883.5,444.6 L880.4,442.9 L877.3,441.4 L874.5,440.2 L869.2,438.2 L868.6,438.0 L862.8,436.2 L857.7,434.9 L856.9,434.7 L851.0,433.6 L845.2,432.8 L839.3,432.3 L833.4,432.0 L827.6,432.0 L821.7,432.3 L815.8,432.8 L810.0,433.6 L804.1,434.7 L803.3,434.9 L798.2,436.2 L792.4,438.0 L791.8,438.2 L786.5,440.2 L783.7,441.4 L780.6,442.9 L777.5,444.6 L774.8,446.3 L772.5,447.8 L768.9,450.7 L768.5,451.1 L765.3,454.3 L763.1,457.1 L762.7,457.5 L760.7,460.7 L759.2,464.0 L758.3,467.2 L757.8,470.4 L757.8,473.6 L758.3,476.9 L759.2,480.1 L760.7,483.3 L762.7,486.6 L763.1,487.0 L765.3,489.8 L768.5,493.0 L768.9,493.3 L772.5,496.2 L774.8,497.7 L777.5,499.5 L780.6,501.2 L783.7,502.7 L786.5,503.9 L791.8,505.9 L792.4,506.1 L798.2,507.9 L803.3,509.1" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.31" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M805.9,503.7 L810.0,504.5 L815.8,505.4 L821.7,506.0 L827.6,506.3 L833.4,506.3 L839.3,506.0 L845.2,505.4 L851.0,504.5 L855.1,503.7 L856.9,503.3 L862.8,501.7 L866.5,500.5 L868.6,499.7 L874.3,497.2 L874.5,497.1 L880.2,494.0 L880.4,493.9 L884.8,490.8 L886.2,489.6 L888.5,487.6 L891.4,484.3 L892.1,483.4 L893.6,481.1 L895.3,477.9 L896.3,474.7 L896.8,471.4 L896.8,468.2 L896.3,465.0 L895.3,461.8 L893.6,458.5 L892.1,456.3 L891.4,455.3 L888.5,452.1 L886.2,450.0 L884.8,448.8 L880.4,445.7 L880.2,445.6 L874.5,442.5 L874.3,442.4 L868.6,439.9 L866.5,439.2 L862.8,437.9 L856.9,436.3 L855.1,435.9 L851.0,435.1 L845.2,434.2 L839.3,433.6 L833.4,433.3 L827.6,433.3 L821.7,433.6 L815.8,434.2 L810.0,435.1 L805.9,435.9 L804.1,436.3 L798.2,437.9 L794.5,439.2 L792.4,439.9 L786.7,442.4 L786.5,442.5 L780.8,445.6 L780.6,445.7 L776.2,448.8 L774.8,450.0 L772.5,452.1 L769.6,455.3 L768.9,456.3 L767.4,458.5 L765.7,461.8 L764.7,465.0 L764.2,468.2 L764.2,471.4 L764.7,474.7 L765.7,477.9 L767.4,481.1 L768.9,483.4 L769.6,484.3 L772.5,487.6 L774.8,489.6 L776.2,490.8 L780.6,493.9 L780.8,494.0 L786.5,497.1 L786.7,497.2 L792.4,499.7 L794.5,500.5 L798.2,501.7 L804.1,503.3 L805.9,503.7" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.36" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M808.6,498.1 L810.0,498.4 L815.8,499.4 L821.7,500.1 L827.6,500.4 L833.4,500.4 L839.3,500.1 L845.2,499.4 L851.0,498.4 L852.4,498.1 L856.9,497.0 L862.8,495.2 L863.7,494.9 L868.6,492.9 L871.1,491.7 L874.5,489.8 L876.7,488.4 L880.4,485.7 L881.0,485.2 L884.3,482.0 L886.2,479.5 L886.8,478.7 L888.6,475.5 L889.8,472.3 L890.3,469.1 L890.3,465.8 L889.8,462.6 L888.6,459.4 L886.8,456.2 L886.2,455.4 L884.3,452.9 L881.0,449.7 L880.4,449.2 L876.7,446.5 L874.5,445.1 L871.1,443.3 L868.6,442.1 L863.7,440.0 L862.8,439.7 L856.9,437.9 L852.4,436.8 L851.0,436.5 L845.2,435.5 L839.3,434.9 L833.4,434.5 L827.6,434.5 L821.7,434.9 L815.8,435.5 L810.0,436.5 L808.6,436.8 L804.1,437.9 L798.2,439.7 L797.3,440.0 L792.4,442.1 L789.9,443.3 L786.5,445.1 L784.3,446.5 L780.6,449.2 L780.0,449.7 L776.7,452.9 L774.8,455.4 L774.2,456.2 L772.4,459.4 L771.2,462.6 L770.7,465.8 L770.7,469.1 L771.2,472.3 L772.4,475.5 L774.2,478.7 L774.8,479.5 L776.7,482.0 L780.0,485.2 L780.6,485.7 L784.3,488.4 L786.5,489.8 L789.9,491.7 L792.4,492.9 L797.3,494.9 L798.2,495.2 L804.1,497.0 L808.6,498.1" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.42" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M811.8,492.4 L815.8,493.2 L821.7,493.9 L827.6,494.3 L833.4,494.3 L839.3,493.9 L845.2,493.2 L849.2,492.4 L851.0,492.0 L856.9,490.4 L860.5,489.2 L862.8,488.3 L867.7,486.0 L868.6,485.5 L872.9,482.7 L874.5,481.5 L876.8,479.5 L879.7,476.3 L880.4,475.2 L881.7,473.1 L883.1,469.8 L883.7,466.6 L883.7,463.4 L883.1,460.2 L881.7,456.9 L880.4,454.7 L879.7,453.7 L876.8,450.5 L874.5,448.5 L872.9,447.2 L868.6,444.5 L867.7,444.0 L862.8,441.7 L860.5,440.8 L856.9,439.5 L851.0,437.9 L849.2,437.6 L845.2,436.8 L839.3,436.1 L833.4,435.7 L827.6,435.7 L821.7,436.1 L815.8,436.8 L811.8,437.6 L810.0,437.9 L804.1,439.5 L800.5,440.8 L798.2,441.7 L793.3,444.0 L792.4,444.5 L788.1,447.2 L786.5,448.5 L784.2,450.5 L781.3,453.7 L780.6,454.7 L779.3,456.9 L777.9,460.2 L777.3,463.4 L777.3,466.6 L777.9,469.8 L779.3,473.1 L780.6,475.2 L781.3,476.3 L784.2,479.5 L786.5,481.5 L788.1,482.7 L792.4,485.5 L793.3,486.0 L798.2,488.3 L800.5,489.2 L804.1,490.4 L810.0,492.0 L811.8,492.4" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.48" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M815.7,486.6 L815.8,486.6 L821.7,487.5 L827.6,487.9 L833.4,487.9 L839.3,487.5 L845.2,486.6 L845.3,486.6 L851.0,485.3 L856.9,483.4 L857.0,483.4 L862.8,480.8 L863.8,480.2 L868.6,477.0 L868.7,476.9 L872.1,473.7 L874.5,470.5 L874.5,470.5 L876.0,467.3 L876.8,464.0 L876.8,460.8 L876.0,457.6 L874.5,454.4 L874.5,454.3 L872.1,451.1 L868.7,447.9 L868.6,447.9 L863.8,444.7 L862.8,444.1 L857.0,441.5 L856.9,441.4 L851.0,439.6 L845.3,438.2 L845.2,438.2 L839.3,437.4 L833.4,437.0 L827.6,437.0 L821.7,437.4 L815.8,438.2 L815.7,438.2 L810.0,439.6 L804.1,441.4 L804.0,441.5 L798.2,444.1 L797.2,444.7 L792.4,447.9 L792.3,447.9 L788.9,451.1 L786.5,454.3 L786.5,454.4 L785.0,457.6 L784.2,460.8 L784.2,464.0 L785.0,467.3 L786.5,470.5 L786.5,470.5 L788.9,473.7 L792.3,476.9 L792.4,477.0 L797.2,480.2 L798.2,480.8 L804.0,483.4 L804.1,483.4 L810.0,485.3 L815.7,486.6" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.53" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M822.6,480.8 L827.6,481.2 L833.4,481.2 L838.4,480.8 L839.3,480.7 L845.2,479.6 L851.0,478.0 L852.3,477.5 L856.9,475.5 L859.1,474.3 L862.8,471.8 L863.6,471.1 L866.6,467.9 L868.5,464.6 L868.6,464.2 L869.4,461.4 L869.4,458.2 L868.6,455.4 L868.5,455.0 L866.6,451.7 L863.6,448.5 L862.8,447.8 L859.1,445.3 L856.9,444.1 L852.3,442.1 L851.0,441.6 L845.2,440.0 L839.3,438.9 L838.4,438.8 L833.4,438.4 L827.6,438.4 L822.6,438.8 L821.7,438.9 L815.8,440.0 L810.0,441.6 L808.7,442.1 L804.1,444.1 L801.9,445.3 L798.2,447.8 L797.4,448.5 L794.4,451.7 L792.5,455.0 L792.4,455.4 L791.6,458.2 L791.6,461.4 L792.4,464.2 L792.5,464.6 L794.4,467.9 L797.4,471.1 L798.2,471.8 L801.9,474.3 L804.1,475.5 L808.7,477.5 L810.0,478.0 L815.8,479.6 L821.7,480.7 L822.6,480.8" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.58" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M815.2,471.6 L815.8,471.8 L821.7,473.1 L827.6,473.8 L833.4,473.8 L839.3,473.1 L845.2,471.8 L845.8,471.6 L851.0,469.5 L853.0,468.4 L856.9,465.5 L857.3,465.2 L859.7,461.9 L860.9,458.7 L860.9,455.5 L859.7,452.2 L857.3,449.0 L856.9,448.7 L853.0,445.8 L851.0,444.7 L845.8,442.6 L845.2,442.3 L839.3,441.0 L833.4,440.4 L827.6,440.4 L821.7,441.0 L815.8,442.3 L815.2,442.6 L810.0,444.7 L808.0,445.8 L804.1,448.7 L803.7,449.0 L801.3,452.2 L800.1,455.5 L800.1,458.7 L801.3,461.9 L803.7,465.2 L804.1,465.5 L808.0,468.4 L810.0,469.5 L815.2,471.6" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.64" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M817.5,462.4 L821.7,463.9 L827.6,465.0 L833.4,465.0 L839.3,463.9 L843.5,462.4 L845.2,461.5 L848.0,459.2 L849.9,455.9 L849.9,452.7 L848.0,449.5 L845.2,447.2 L843.5,446.3 L839.3,444.7 L833.4,443.6 L827.6,443.6 L821.7,444.7 L817.5,446.3 L815.8,447.2 L813.0,449.5 L811.1,452.7 L811.1,455.9 L813.0,459.2 L815.8,461.5 L817.5,462.4" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.70" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M805.1,537.1 L810.0,537.7 L815.8,538.3 L821.7,538.7 L827.6,538.9 L833.4,538.9 L839.3,538.7 L845.2,538.3 L851.0,537.7 L855.9,537.1 L856.9,537.0 L862.8,536.1 L868.6,535.0 L873.1,533.9 L874.5,533.6 L880.4,532.0 L884.5,530.7 L886.2,530.1 L892.1,528.0 L893.4,527.4 L897.9,525.5 L900.7,524.2 L903.8,522.6 L906.8,521.0 L909.7,519.2 L912.0,517.7 L915.5,515.2 L916.5,514.5 L920.4,511.3 L921.4,510.4 L923.9,508.1 L926.7,504.8 L927.3,504.1 L929.2,501.6 L931.3,498.4 L932.9,495.2 L933.1,494.6 L934.3,491.9 L935.3,488.7 L936.0,485.5 L936.3,482.3 L936.3,479.0 L936.0,475.8 L935.3,472.6 L934.3,469.4 L933.1,466.7 L932.9,466.1 L931.3,462.9 L929.2,459.7 L927.3,457.2 L926.7,456.5 L923.9,453.2 L921.4,450.9 L920.4,450.0 L916.5,446.8 L915.5,446.1 L912.0,443.6 L909.7,442.1 L906.8,440.3 L903.8,438.7 L900.7,437.1 L897.9,435.8 L893.4,433.9 L892.1,433.3 L886.2,431.2 L884.5,430.6 L880.4,429.3 L874.5,427.7 L873.1,427.4 L868.6,426.3 L862.8,425.2 L856.9,424.3 L855.9,424.2 L851.0,423.6 L845.2,423.0 L839.3,422.6 L833.4,422.4 L827.6,422.4 L821.7,422.6 L815.8,423.0 L810.0,423.6 L805.1,424.2 L804.1,424.3 L798.2,425.2 L792.4,426.3 L787.9,427.4 L786.5,427.7 L780.6,429.3 L776.5,430.6 L774.8,431.2 L768.9,433.3 L767.6,433.9 L763.1,435.8 L760.3,437.1 L757.2,438.7 L754.2,440.3 L751.3,442.1 L749.0,443.6 L745.5,446.1 L744.5,446.8 L740.6,450.0 L739.6,450.9 L737.1,453.2 L734.3,456.5 L733.7,457.2 L731.8,459.7 L729.7,462.9 L728.1,466.1 L727.9,466.7 L726.7,469.4 L725.7,472.6 L725.0,475.8 L724.7,479.0 L724.7,482.3 L725.0,485.5 L725.7,488.7 L726.7,491.9 L727.9,494.6 L728.1,495.2 L729.7,498.4 L731.8,501.6 L733.7,504.1 L734.3,504.8 L737.1,508.1 L739.6,510.4 L740.6,511.3 L744.5,514.5 L745.5,515.2 L749.0,517.7 L751.3,519.2 L754.2,521.0 L757.2,522.6 L760.3,524.2 L763.1,525.5 L767.6,527.4 L768.9,528.0 L774.8,530.1 L776.5,530.7 L780.6,532.0 L786.5,533.6 L787.9,533.9 L792.4,535.0 L798.2,536.1 L804.1,537.0 L805.1,537.1" fill="none" stroke="#000" stroke-width="0.45" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+<path d="M457.2,625.2 L459.1,625.5 L465.0,626.2 L470.9,626.5 L476.7,626.5 L482.6,626.2 L488.5,625.5 L490.4,625.2 L494.3,624.5 L500.2,623.1 L503.7,622.0 L506.1,621.2 L511.9,618.7 L511.9,618.7 L517.8,615.5 L517.8,615.5 L522.2,612.3 L523.7,611.0 L525.7,609.1 L528.2,605.8 L529.5,603.7 L530.1,602.6 L531.3,599.4 L531.9,596.2 L531.9,592.9 L531.3,589.7 L530.1,586.5 L529.5,585.4 L528.2,583.3 L525.7,580.0 L523.7,578.1 L522.2,576.8 L517.8,573.6 L517.8,573.6 L511.9,570.4 L511.9,570.4 L506.1,567.9 L503.7,567.1 L500.2,566.0 L494.3,564.6 L490.4,563.9 L488.5,563.6 L482.6,562.9 L476.7,562.6 L470.9,562.6 L465.0,562.9 L459.1,563.6 L457.2,563.9 L453.3,564.6 L447.4,566.0 L443.9,567.1 L441.5,567.9 L435.7,570.4 L435.7,570.4 L429.8,573.6 L429.8,573.6 L425.4,576.8 L423.9,578.1 L421.9,580.0 L419.4,583.3 L418.1,585.4 L417.5,586.5 L416.3,589.7 L415.7,592.9 L415.7,596.2 L416.3,599.4 L417.5,602.6 L418.1,603.7 L419.4,605.8 L421.9,609.1 L423.9,611.0 L425.4,612.3 L429.8,615.5 L429.8,615.5 L435.7,618.7 L435.7,618.7 L441.5,621.2 L443.9,622.0 L447.4,623.1 L453.3,624.5 L457.2,625.2 Z" fill="#6b8da6" fill-opacity="0.22" stroke="none"/>
+<path d="M447.8,625.9 L453.3,627.2 L459.1,628.1 L465.0,628.8 L470.9,629.1 L476.7,629.1 L482.6,628.8 L488.5,628.1 L494.3,627.2 L499.8,625.9 L500.2,625.8 L506.1,624.1 L509.8,622.7 L511.9,621.8 L516.8,619.5 L517.8,618.9 L522.0,616.2 L523.7,615.0 L526.2,613.0 L529.3,609.8 L529.5,609.6 L531.8,606.6 L533.5,603.3 L534.7,600.1 L535.2,596.9 L535.2,593.7 L534.7,590.4 L533.5,587.2 L531.8,584.0 L529.5,581.0 L529.3,580.8 L526.2,577.5 L523.7,575.5 L522.0,574.3 L517.8,571.6 L516.8,571.1 L511.9,568.7 L509.8,567.9 L506.1,566.5 L500.2,564.7 L499.8,564.6 L494.3,563.4 L488.5,562.4 L482.6,561.8 L476.7,561.5 L470.9,561.5 L465.0,561.8 L459.1,562.4 L453.3,563.4 L447.8,564.6 L447.4,564.7 L441.5,566.5 L437.8,567.9 L435.7,568.7 L430.8,571.1 L429.8,571.6 L425.6,574.3 L423.9,575.5 L421.4,577.5 L418.3,580.8 L418.1,581.0 L415.8,584.0 L414.1,587.2 L412.9,590.4 L412.4,593.7 L412.4,596.9 L412.9,600.1 L414.1,603.3 L415.8,606.6 L418.1,609.6 L418.3,609.8 L421.4,613.0 L423.9,615.0 L425.6,616.2 L429.8,618.9 L430.8,619.5 L435.7,621.8 L437.8,622.7 L441.5,624.1 L447.4,625.8 L447.8,625.9" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.20" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M457.5,625.2 L459.1,625.5 L465.0,626.1 L470.9,626.5 L476.7,626.5 L482.6,626.1 L488.5,625.5 L490.1,625.2 L494.3,624.4 L500.2,623.0 L503.6,622.0 L506.1,621.1 L511.8,618.7 L511.9,618.7 L517.7,615.5 L517.8,615.4 L522.1,612.3 L523.7,610.9 L525.6,609.1 L528.2,605.8 L529.5,603.5 L530.0,602.6 L531.3,599.4 L531.9,596.1 L531.9,592.9 L531.3,589.7 L530.0,586.5 L529.5,585.5 L528.2,583.2 L525.6,580.0 L523.7,578.2 L522.1,576.8 L517.8,573.6 L517.7,573.6 L511.9,570.4 L511.8,570.3 L506.1,568.0 L503.6,567.1 L500.2,566.1 L494.3,564.6 L490.1,563.9 L488.5,563.6 L482.6,562.9 L476.7,562.6 L470.9,562.6 L465.0,562.9 L459.1,563.6 L457.5,563.9 L453.3,564.6 L447.4,566.1 L444.0,567.1 L441.5,568.0 L435.8,570.3 L435.7,570.4 L429.9,573.6 L429.8,573.6 L425.5,576.8 L423.9,578.2 L422.0,580.0 L419.4,583.2 L418.1,585.5 L417.6,586.5 L416.3,589.7 L415.7,592.9 L415.7,596.1 L416.3,599.4 L417.6,602.6 L418.1,603.5 L419.4,605.8 L422.0,609.1 L423.9,610.9 L425.5,612.3 L429.8,615.4 L429.9,615.5 L435.7,618.7 L435.8,618.7 L441.5,621.1 L444.0,622.0 L447.4,623.0 L453.3,624.4 L457.5,625.2" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.26" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M453.3,621.0 L459.1,622.1 L465.0,622.8 L470.9,623.2 L476.7,623.2 L482.6,622.8 L488.5,622.1 L494.3,621.0 L494.3,621.0 L500.2,619.4 L504.9,617.8 L506.1,617.3 L511.9,614.6 L511.9,614.5 L517.0,611.3 L517.8,610.7 L520.8,608.1 L523.6,604.9 L523.7,604.9 L525.7,601.7 L527.0,598.4 L527.6,595.2 L527.6,592.0 L527.0,588.8 L525.7,585.5 L523.7,582.3 L523.6,582.3 L520.8,579.1 L517.8,576.5 L517.0,575.9 L511.9,572.6 L511.9,572.6 L506.1,569.9 L504.9,569.4 L500.2,567.8 L494.3,566.2 L494.3,566.2 L488.5,565.1 L482.6,564.4 L476.7,564.0 L470.9,564.0 L465.0,564.4 L459.1,565.1 L453.3,566.2 L453.3,566.2 L447.4,567.8 L442.7,569.4 L441.5,569.9 L435.7,572.6 L435.7,572.6 L430.6,575.9 L429.8,576.5 L426.8,579.1 L424.0,582.3 L423.9,582.3 L421.9,585.5 L420.6,588.8 L420.0,592.0 L420.0,595.2 L420.6,598.4 L421.9,601.7 L423.9,604.9 L424.0,604.9 L426.8,608.1 L429.8,610.7 L430.6,611.3 L435.7,614.5 L435.7,614.6 L441.5,617.3 L442.7,617.8 L447.4,619.4 L453.3,621.0 L453.3,621.0" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.32" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M451.8,616.8 L453.3,617.2 L459.1,618.4 L465.0,619.2 L470.9,619.6 L476.7,619.6 L482.6,619.2 L488.5,618.4 L494.3,617.2 L495.8,616.8 L500.2,615.4 L504.9,613.5 L506.1,613.0 L511.0,610.3 L511.9,609.7 L515.3,607.1 L517.8,604.7 L518.6,603.9 L520.8,600.6 L522.3,597.4 L523.0,594.2 L523.0,591.0 L522.3,587.7 L520.8,584.5 L518.6,581.3 L517.8,580.4 L515.3,578.1 L511.9,575.4 L511.0,574.8 L506.1,572.1 L504.9,571.6 L500.2,569.7 L495.8,568.4 L494.3,567.9 L488.5,566.7 L482.6,565.9 L476.7,565.5 L470.9,565.5 L465.0,565.9 L459.1,566.7 L453.3,567.9 L451.8,568.4 L447.4,569.7 L442.7,571.6 L441.5,572.1 L436.6,574.8 L435.7,575.4 L432.3,578.1 L429.8,580.4 L429.0,581.3 L426.8,584.5 L425.3,587.7 L424.6,591.0 L424.6,594.2 L425.3,597.4 L426.8,600.6 L429.0,603.9 L429.8,604.7 L432.3,607.1 L435.7,609.7 L436.6,610.3 L441.5,613.0 L442.7,613.5 L447.4,615.4 L451.8,616.8" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.38" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M469.6,615.7 L470.9,615.8 L476.7,615.8 L478.0,615.7 L482.6,615.3 L488.5,614.4 L494.3,613.0 L496.1,612.4 L500.2,611.0 L504.0,609.2 L506.1,608.1 L509.3,606.0 L511.9,603.8 L513.0,602.8 L515.5,599.5 L517.2,596.3 L517.8,593.8 L518.0,593.1 L518.0,589.9 L517.8,589.1 L517.2,586.6 L515.5,583.4 L513.0,580.2 L511.9,579.2 L509.3,577.0 L506.1,574.9 L504.0,573.7 L500.2,572.0 L496.1,570.5 L494.3,569.9 L488.5,568.5 L482.6,567.6 L478.0,567.3 L476.7,567.2 L470.9,567.2 L469.6,567.3 L465.0,567.6 L459.1,568.5 L453.3,569.9 L451.5,570.5 L447.4,572.0 L443.6,573.7 L441.5,574.9 L438.3,577.0 L435.7,579.2 L434.6,580.2 L432.1,583.4 L430.4,586.6 L429.8,589.1 L429.6,589.9 L429.6,593.1 L429.8,593.8 L430.4,596.3 L432.1,599.5 L434.6,602.8 L435.7,603.8 L438.3,606.0 L441.5,608.1 L443.6,609.2 L447.4,611.0 L451.5,612.4 L453.3,613.0 L459.1,614.4 L465.0,615.3 L469.6,615.7" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.44" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M467.0,611.3 L470.9,611.6 L476.7,611.6 L480.6,611.3 L482.6,611.1 L488.5,610.1 L494.3,608.4 L495.3,608.1 L500.2,605.9 L502.2,604.8 L506.1,602.2 L506.7,601.6 L509.7,598.4 L511.6,595.2 L511.9,594.1 L512.5,591.9 L512.5,588.7 L511.9,586.6 L511.6,585.5 L509.7,582.3 L506.7,579.0 L506.1,578.5 L502.2,575.8 L500.2,574.7 L495.3,572.6 L494.3,572.2 L488.5,570.6 L482.6,569.5 L480.6,569.4 L476.7,569.0 L470.9,569.0 L467.0,569.4 L465.0,569.5 L459.1,570.6 L453.3,572.2 L452.3,572.6 L447.4,574.7 L445.4,575.8 L441.5,578.5 L440.9,579.0 L437.9,582.3 L436.0,585.5 L435.7,586.6 L435.1,588.7 L435.1,591.9 L435.7,594.1 L436.0,595.2 L437.9,598.4 L440.9,601.6 L441.5,602.2 L445.4,604.8 L447.4,605.9 L452.3,608.1 L453.3,608.4 L459.1,610.1 L465.0,611.1 L467.0,611.3" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.51" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M468.7,606.9 L470.9,607.1 L476.7,607.1 L478.9,606.9 L482.6,606.5 L488.5,605.2 L493.1,603.7 L494.3,603.2 L499.3,600.4 L500.2,599.8 L503.0,597.2 L505.3,594.0 L506.1,592.0 L506.4,590.8 L506.4,587.5 L506.1,586.3 L505.3,584.3 L503.0,581.1 L500.2,578.5 L499.3,577.9 L494.3,575.1 L493.1,574.6 L488.5,573.1 L482.6,571.8 L478.9,571.4 L476.7,571.2 L470.9,571.2 L468.7,571.4 L465.0,571.8 L459.1,573.1 L454.5,574.6 L453.3,575.1 L448.3,577.9 L447.4,578.5 L444.6,581.1 L442.3,584.3 L441.5,586.3 L441.2,587.5 L441.2,590.8 L441.5,592.0 L442.3,594.0 L444.6,597.2 L447.4,599.8 L448.3,600.4 L453.3,603.2 L454.5,603.7 L459.1,605.2 L465.0,606.5 L468.7,606.9" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.57" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M458.4,599.2 L459.1,599.5 L465.0,601.1 L470.9,601.9 L476.7,601.9 L482.6,601.1 L488.5,599.5 L489.2,599.2 L494.3,596.4 L494.9,596.0 L497.8,592.8 L499.3,589.5 L499.3,586.3 L497.8,583.1 L494.9,579.9 L494.3,579.5 L489.2,576.6 L488.5,576.3 L482.6,574.7 L476.7,573.9 L470.9,573.9 L465.0,574.7 L459.1,576.3 L458.4,576.6 L453.3,579.5 L452.7,579.9 L449.8,583.1 L448.3,586.3 L448.3,589.5 L449.8,592.8 L452.7,596.0 L453.3,596.4 L458.4,599.2" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.63" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M467.3,594.7 L470.9,595.4 L476.7,595.4 L480.3,594.7 L482.6,594.1 L487.3,591.5 L488.5,590.3 L489.7,588.3 L489.7,585.1 L488.5,583.1 L487.3,581.8 L482.6,579.2 L480.3,578.6 L476.7,577.9 L470.9,577.9 L467.3,578.6 L465.0,579.2 L460.3,581.8 L459.1,583.1 L457.9,585.1 L457.9,588.3 L459.1,590.3 L460.3,591.5 L465.0,594.1 L467.3,594.7" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.69" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M452.1,647.0 L453.3,647.2 L459.1,647.9 L465.0,648.4 L470.9,648.6 L476.7,648.6 L482.6,648.4 L488.5,647.9 L494.3,647.2 L495.5,647.0 L500.2,646.4 L506.1,645.2 L511.7,643.8 L511.9,643.8 L517.8,642.1 L522.1,640.6 L523.7,640.0 L529.5,637.6 L530.0,637.4 L535.4,634.7 L536.4,634.1 L541.2,631.2 L541.7,630.9 L546.1,627.7 L547.1,626.8 L549.8,624.5 L552.9,621.2 L553.0,621.1 L555.5,618.0 L557.6,614.8 L558.8,612.2 L559.2,611.6 L560.4,608.3 L561.2,605.1 L561.6,601.9 L561.6,598.7 L561.2,595.4 L560.4,592.2 L559.2,589.0 L558.8,588.3 L557.6,585.8 L555.5,582.5 L553.0,579.4 L552.9,579.3 L549.8,576.1 L547.1,573.7 L546.1,572.9 L541.7,569.6 L541.2,569.4 L536.4,566.4 L535.4,565.9 L530.0,563.2 L529.5,563.0 L523.7,560.5 L522.1,560.0 L517.8,558.5 L511.9,556.8 L511.7,556.7 L506.1,555.3 L500.2,554.2 L495.5,553.5 L494.3,553.3 L488.5,552.6 L482.6,552.2 L476.7,552.0 L470.9,552.0 L465.0,552.2 L459.1,552.6 L453.3,553.3 L452.1,553.5 L447.4,554.2 L441.5,555.3 L435.9,556.7 L435.7,556.8 L429.8,558.5 L425.5,560.0 L423.9,560.5 L418.1,563.0 L417.6,563.2 L412.2,565.9 L411.2,566.4 L406.4,569.4 L405.9,569.6 L401.5,572.9 L400.5,573.7 L397.8,576.1 L394.7,579.3 L394.6,579.4 L392.1,582.5 L390.0,585.8 L388.8,588.3 L388.4,589.0 L387.2,592.2 L386.4,595.4 L386.0,598.7 L386.0,601.9 L386.4,605.1 L387.2,608.3 L388.4,611.6 L388.8,612.2 L390.0,614.8 L392.1,618.0 L394.6,621.1 L394.7,621.2 L397.8,624.5 L400.5,626.8 L401.5,627.7 L405.9,630.9 L406.4,631.2 L411.2,634.1 L412.2,634.7 L417.6,637.4 L418.1,637.6 L423.9,640.0 L425.5,640.6 L429.8,642.1 L435.7,643.8 L435.9,643.8 L441.5,645.2 L447.4,646.4 L452.1,647.0" fill="none" stroke="#000" stroke-width="0.45" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+</g>
+<line x1="244" y1="366.0" x2="714.5" y2="366.0" stroke="#0a0a0a" stroke-width="0.7" stroke-opacity="0.6"/>
+<text x="106" y="362.0" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">EUROPE &</text>
+<text x="106" y="378.0" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">CENTRAL ASIA</text>
+<text x="76" y="376.2" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="1.00">5</text>
+<line x1="92" x2="92" y1="354.0" y2="378.0" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<circle cx="714.5" cy="297.6" r="2.4" fill="#0a0a0a"/>
+<line x1="244" y1="405.9" x2="946.5" y2="405.9" stroke="#0a0a0a" stroke-width="0.7" stroke-opacity="0.6"/>
+<text x="106" y="401.9" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">EAST ASIA &</text>
+<text x="106" y="417.9" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">PACIFIC</text>
+<text x="76" y="416.1" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="1.00">3</text>
+<line x1="92" x2="92" y1="393.9" y2="417.9" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<circle cx="946.5" cy="360.0" r="2.4" fill="#0a0a0a"/>
+<line x1="244" y1="445.8" x2="453.5" y2="445.8" stroke="#0a0a0a" stroke-width="0.7" stroke-opacity="0.6"/>
+<text x="106" y="441.8" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">NORTH</text>
+<text x="106" y="457.8" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">AMERICA</text>
+<text x="76" y="456.0" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="1.00">1</text>
+<line x1="92" x2="92" y1="433.8" y2="457.8" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<circle cx="453.5" cy="426.3" r="2.4" fill="#0a0a0a"/>
+<line x1="244" y1="485.7" x2="830.5" y2="485.7" stroke="#0a0a0a" stroke-width="0.7" stroke-opacity="0.6"/>
+<text x="106" y="481.7" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">MIDDLE EAST &</text>
+<text x="106" y="497.7" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">NORTH AFRICA</text>
+<text x="76" y="495.9" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="1.00">2</text>
+<line x1="92" x2="92" y1="473.7" y2="497.7" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<circle cx="830.5" cy="452.2" r="2.4" fill="#0a0a0a"/>
+<text x="106" y="529.5" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">SOUTH ASIA</text>
+<text x="76" y="535.7" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="700" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="0.35">0</text>
+<line x1="92" x2="92" y1="513.5" y2="537.5" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.35"/>
+<text x="106" y="561.4" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">SUB-SAHARAN</text>
+<text x="106" y="577.4" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">AFRICA</text>
+<text x="76" y="575.6" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="700" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="0.35">0</text>
+<line x1="92" x2="92" y1="553.4" y2="577.4" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.35"/>
+<line x1="244" y1="605.3" x2="473.8" y2="605.3" stroke="#0a0a0a" stroke-width="0.7" stroke-opacity="0.6"/>
+<text x="106" y="601.3" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">LATIN AMERICA &</text>
+<text x="106" y="617.3" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">CARIBBEAN</text>
+<text x="76" y="615.5" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="1.00">1</text>
+<line x1="92" x2="92" y1="593.3" y2="617.3" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<circle cx="473.8" cy="585.8" r="2.4" fill="#0a0a0a"/>
+<line x1="16" x2="92" y1="625.3" y2="625.3" stroke="#0a0a0a" stroke-width="0.6" stroke-opacity="0.5"/>
+<text x="76" y="655.5" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a">12</text>
+<line x1="92" x2="92" y1="633.3" y2="657.3" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<text x="106" y="650.9" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a">TOTAL SOURCES</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Spain: 2 sources">Spain (2)</span>
+<span class="country-badge" style="background:#b56b5a12;color:#b56b5a;border:1px solid #b56b5a30" title="Qatar: 1 source">Qatar</span>
+<span class="country-badge" style="background:#b56b5a12;color:#b56b5a;border:1px solid #b56b5a30" title="Turkey: 1 source">Turkey</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Switzerland: 1 source">Switzerland</span>
+<span class="country-badge" style="background:#5a6b7a12;color:#5a6b7a;border:1px solid #5a6b7a30" title="United States: 1 source">United States</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Germany: 1 source">Germany</span>
+<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Brazil: 1 source">Brazil</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Italy: 1 source">Italy</span>
+<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="Singapore: 1 source">Singapore</span>
+<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="Japan: 1 source">Japan</span>
+<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="Vietnam: 1 source">Vietnam</span>
+</div>
+
+<div class="reader-note">This article draws on 12 sources in eight languages but relies almost entirely on WHO officials for scientific interpretation; no independent epidemiologists, no passengers or crew, and no officials from Saint Helena or South Africa—where potentially exposed individuals disembarked or were hospitalized—are quoted. The confirmed case count differs between WHO&#x27;s own outbreak report (seven) and wire services (eight), a discrepancy the article surfaces but cannot fully resolve. The language is largely restrained, though occasional descriptive choices like &#x27;remote&#x27; and &#x27;setting off&#x27; add a sense of drama beyond what the facts alone convey.</div>
+
+<div class="article-body">
+<p>The World Health Organization confirmed five hantavirus cases and three deaths linked to the Andes strain aboard the expedition cruise ship MV Hondius, while assessing the overall public health risk as low <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. The cluster, which sources variously report as seven <a href="#src-003" class="source-ref"><sup>[3]</sup></a> to eight confirmed cases <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-011" class="source-ref"><sup>[11]</sup></a>, originated with a Dutch couple who traveled through Chile, Argentina, and Uruguay on a birdwatching trip before boarding the vessel <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-005" class="source-ref"><sup>[5]</sup></a>. Passengers from 12 countries disembarked at the remote South Atlantic island of Saint Helena before the outbreak was identified, setting off a multinational contact-tracing operation <a href="#src-007" class="source-ref"><sup>[7]</sup></a><a href="#src-008" class="source-ref"><sup>[8]</sup></a>.</p>
+<p>WHO Director-General Tedros Adhanom Ghebreyesus stated: &quot;While this is a serious incident, WHO assesses the public health risk as low&quot; <a href="#src-001" class="source-ref"><sup>[1]</sup></a>.</p>
+</div>
+<p class="word-count">115 words</p>
+
+<h2>Perspectives &mdash; Position Clusters</h2>
+<div class="card-grid">
+<div class="card" id="pc-001">
+  <div class="card-header"><span class="card-actor">The hantavirus outbreak poses a low public health risk and will not trigger a large-scale epidemic</span></div>
+  <div class="card-position">WHO leadership consistently frames the outbreak as a serious but contained incident, emphasizing that the confined ship setting limits transmission chains, that member states have taken appropriate action, and that the virus behaves fundamentally differently from SARS-CoV-2.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">4 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
+</div>
+<div class="card" id="pc-002">
+  <div class="card-header"><span class="card-actor">Human-to-human transmission of the Andes hantavirus strain is possible among close contacts</span></div>
+  <div class="card-position">WHO epidemiologists acknowledge that unlike most hantaviruses, the Andes strain identified in this cluster can spread between people in close proximity, which elevates the urgency of contact tracing even as overall epidemic risk remains low.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">1 actor</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
+</div>
+<div class="card" id="pc-003">
+  <div class="card-header"><span class="card-actor">Tracing the geographic origin of infection through the index cases&#x27; South American travel is essential to understanding the outbreak</span></div>
+  <div class="card-position">Argentine authorities are reconstructing the pre-boarding itinerary of the initial victims—a Dutch couple who traveled through Chile, Argentina, and Uruguay on a birdwatching trip—to pinpoint where and how they contracted the virus from rodent reservoirs.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">2 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
+</div>
+<div class="card" id="pc-004">
+  <div class="card-header"><span class="card-actor">Urgent international contact tracing of disembarked passengers is the immediate operational priority</span></div>
+  <div class="card-position">Multiple national health authorities and the WHO are racing to locate passengers from 12 countries who disembarked at Saint Helena before the outbreak was identified, as part of a broader multinational contact-tracing operation that also involves tracking passengers who traveled onward to other destinations including the Canary Islands and the Netherlands.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">4 actors</a></span> &middot; <span>5 sources</span> &middot; <span>5 regions</span> &middot; <span>5 languages</span></p>
+</div>
+<div class="card" id="pc-005">
+  <div class="card-header"><span class="card-actor">The cruise operator has maintained ongoing communication with all passengers to monitor their health</span></div>
+  <div class="card-position">Oceanwide Expeditions asserts it has been in contact with every passenger since March 20, positioning the company as proactively managing the situation and fulfilling its duty of care.</div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">1 actor</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
+</div>
+</div>
+
+<section id="actors-section" class="actors">
+<h2>Actors</h2>
+<p class="actors-meta">10 actors quoted across this topic. Click a cluster card&rsquo;s actor count above to filter, or jump to a specific actor.</p>
+<button id="actors-show-all" type="button" hidden>Show all actors</button>
+<ol class="actor-list">
+<li id="actor-001" class="actor" data-clusters="cluster-pc-001">
+  <div class="actor-header"><strong>Tedros Adhanom Ghebreyeus</strong> <span class="actor-role">WHO Director-General</span> <span class="actor-type">international_org</span></div>
+  <div class="actor-positions"><p class="actor-position-line"><a href="#pc-001">Cluster 1</a>: Assesses the public health risk as low while confirming eight total cases and the distribution of diagnostic kits by Argentina. <em class="actor-verbatim">&ldquo;“While this is a serious incident, WHO assesses the public health risk as low,”&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
+</li>
+<li id="actor-002" class="actor" data-clusters="cluster-pc-003">
+  <div class="actor-header"><strong>Argentine authorities</strong> <span class="actor-role">Government of Argentina</span> <em class="actor-anonymous">(anonymous)</em> <span class="actor-type">government</span></div>
+  <div class="actor-positions"><p class="actor-position-line"><a href="#pc-003">Cluster 3</a>: Investigating the movements of the first two victims during their bird watching trip in South America. (<a href="#src-001">src-001</a>)</p></div>
+</li>
+<li id="actor-003" class="actor" data-clusters="cluster-pc-001">
+  <div class="actor-header"><strong>Abdirahman Mahamud</strong> <span class="actor-role">WHO’s director for health emergency alert and response operations</span> <span class="actor-type">international_org</span></div>
+  <div class="actor-positions"><p class="actor-position-line"><a href="#pc-001">Cluster 1</a>: States that the confined setting of the ship limits the risk of subsequent chains of transmission. <em class="actor-verbatim">&ldquo;“We don&#x27;t anticipate a large epidemic with the experience our member states have and the actions they have taken,”&rdquo;</em> (<a href="#src-002">src-002</a>)</p></div>
+</li>
+<li id="actor-004" class="actor" data-clusters="cluster-pc-001 cluster-pc-002">
+  <div class="actor-header"><strong>Maria Van Kerkhove</strong> <span class="actor-role">WHO’s director for epidemic and pandemic preparedness and prevention</span> <span class="actor-type">international_org</span></div>
+  <div class="actor-positions"><p class="actor-position-line"><a href="#pc-001">Cluster 1</a>: Clarifies that the virus does not spread like coronaviruses and does not represent the start of a new pandemic. <em class="actor-verbatim">&ldquo;“This is not SARS-CoV-2. This is not the start of a COVID pandemic,”&rdquo;</em> (<a href="#src-002">src-002</a>)</p><p class="actor-position-line"><a href="#pc-002">Cluster 2</a>: States that person-to-person spread of the suspected Andes hantavirus is possible among close contacts. (<a href="#src-004">src-004</a>)</p></div>
+</li>
+<li id="actor-006" class="actor" data-clusters="cluster-pc-004">
+  <div class="actor-header"><strong>World Health Organization</strong> <span class="actor-role">International health agency</span> <span class="actor-type">international_org</span></div>
+  <div class="actor-positions"><p class="actor-position-line"><a href="#pc-004">Cluster 4</a>: Urgent search for passengers on a specific flight from St. Helena to South Africa for contact tracing. (<a href="#src-007">src-007</a>)</p></div>
+</li>
+<li id="actor-007" class="actor" data-clusters="cluster-pc-003">
+  <div class="actor-header"><strong>Argentine Health Ministry</strong> <span class="actor-role">National health authority</span> <span class="actor-type">government</span></div>
+  <div class="actor-positions"><p class="actor-position-line"><a href="#pc-003">Cluster 3</a>: Reconstructing the travel itinerary of the deceased Dutch couple to identify the point of infection. (<a href="#src-005">src-005</a>)</p></div>
+</li>
+<li id="actor-008" class="actor" data-clusters="cluster-pc-004">
+  <div class="actor-header"><strong>Mónica García</strong> <span class="actor-role">Spanish Minister of Health</span> <span class="actor-type">government</span></div>
+  <div class="actor-positions"><p class="actor-position-line"><a href="#pc-004">Cluster 4</a>: Announced the tracking of 23 passengers who disembarked early and confirmed 14 Spanish passengers are currently asymptomatic. (<a href="#src-006">src-006</a>)</p></div>
+</li>
+<li id="actor-009" class="actor" data-clusters="cluster-pc-005">
+  <div class="actor-header"><strong>Oceanwide Expeditions</strong> <span class="actor-role">Cruise operator</span> <span class="actor-type">industry</span></div>
+  <div class="actor-positions"><p class="actor-position-line"><a href="#pc-005">Cluster 5</a>: Stated they have been in contact with all passengers since March 20 to monitor health. (<a href="#src-008">src-008</a>)</p></div>
+</li>
+<li id="actor-010" class="actor" data-clusters="cluster-pc-004">
+  <div class="actor-header"><strong>Italian Ministry of Health</strong> <span class="actor-role">National health authority</span> <span class="actor-type">government</span></div>
+  <div class="actor-positions"><p class="actor-position-line"><a href="#pc-004">Cluster 4</a></p></div>
+</li>
+<li id="actor-011" class="actor" data-clusters="cluster-pc-001 cluster-pc-004">
+  <div class="actor-header"><strong>US CDC</strong> <span class="actor-role">National public health agency</span> <span class="actor-type">government</span></div>
+  <div class="actor-positions"><p class="actor-position-line"><a href="#pc-001">Cluster 1</a>: Tracking US passengers from the vessel and assessing community transmission risk as low. (<a href="#src-012">src-012</a>)</p><p class="actor-position-line"><a href="#pc-004">Cluster 4</a>: Tracking US passengers from the vessel and assessing community transmission risk as low. (<a href="#src-012">src-012</a>)</p></div>
+</li>
+</ol>
+<script>
+(function() {
+  const list = document.querySelector('.actor-list');
+  const showAll = document.getElementById('actors-show-all');
+  if (!list || !showAll) return;
+  function applyFilter() {
+    const m = (window.location.hash || '').match(/^#cluster-(\S+)$/);
+    if (!m) {
+      list.querySelectorAll('.actor').forEach(li => { li.hidden = false; });
+      showAll.hidden = true;
+      return;
+    }
+    const target = 'cluster-' + m[1];
+    list.querySelectorAll('.actor').forEach(li => {
+      const tags = (li.dataset.clusters || '').split(/\s+/);
+      li.hidden = !tags.includes(target);
+    });
+    showAll.hidden = false;
+  }
+  showAll.addEventListener('click', () => {
+    history.pushState('', document.title, window.location.pathname);
+    applyFilter();
+  });
+  window.addEventListener('hashchange', applyFilter);
+  applyFilter();
+})();
+</script>
+</section>
+
+<h2>What's missing</h2>
+<ul class="missing-positions"><li><strong>affected_community</strong> — No passengers, crew members, or families of the deceased are quoted, leaving the human experience of quarantine, bereavement, and uncertainty entirely unrepresented.</li><li><strong>academia</strong> — No independent virologists, epidemiologists, or infectious-disease researchers outside the WHO provide an assessment of the Andes strain&#x27;s transmissibility or case-fatality risk, meaning all scientific interpretation comes from a single institutional source.</li><li><strong>civil_society</strong> — No passenger-rights organizations, public-health advocacy groups, or travel-safety watchdogs comment on the adequacy of shipboard protocols or the delayed contact tracing at Saint Helena.</li><li><strong>government</strong> — No officials from Saint Helena or South Africa—the two locations where potentially infected passengers disembarked and were hospitalized—offer their perspective on local preparedness or community exposure risk.</li></ul>
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">The total confirmed case count differs between sources: Al Jazeera (src-001) and Reuters Japan (src-011) report eight confirmed cases, while the official WHO Disease Outbreak News (src-003) reports seven cases and three deaths.</div>
+  <div class="divergence-resolution"><strong>Partially resolved:</strong> The corrected article now reflects both figures (&#x27;seven to eight confirmed cases&#x27;) with attribution to the respective sources, surfacing the discrepancy rather than presenting one figure as settled.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Turkish and some Portuguese sources suggest the outbreak&#x27;s transmission chain may have extended via a Johannesburg-bound flight (Airlink 4Z132), while WHO and Argentine sources focus on South American rodent-reservoir origin as the primary exposure event.</div>
+  <div class="divergence-resolution"><strong>Unresolved:</strong> The article focuses on the South American origin narrative and the Saint Helena disembarkation; the flight-contact-tracing angle (src-007) is mentioned only in the context of the broader contact-tracing operation and is not developed as a competing origin theory.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></div>
+  <div class="divergence-desc">Western and Latin American sources foreground the epidemiological investigation and contact tracing, while Anadolu Agency (src-002) foregrounds reassurance messaging and explicit COVID-19 comparisons, and Japanese coverage (src-011) highlights the presence of a Japanese national on board.</div>
+  <div class="divergence-resolution"><strong>Unresolved:</strong> The article does not incorporate the reassurance framing from src-002 (Van Kerkhove&#x27;s &#x27;This is not SARS-CoV-2&#x27; quote) or the national-citizen tracking angle from src-011, representing an emphasis divergence that the article does not address.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">No passengers, crew, families of the deceased, independent virologists, Saint Helena or South African officials, or civil-society voices are quoted anywhere in the source set, leaving the human and local-community dimensions entirely absent.</div>
+  <div class="divergence-resolution"><strong>Unresolved:</strong> This is a structural gap in the available source material; the article cannot address it without introducing sources not present in the dossier.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p class="bias-stats"><span><strong>5</strong> position clusters</span><span class="sep">&middot;</span><span><strong>10</strong> distinct actors</span><span class="sep">&middot;</span><span><strong>12</strong> sources</span><span class="sep">&middot;</span><span><strong>8</strong> languages</span></p>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">2 language bias findings</p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
+<div class="bias-finding">
+  <span class="bias-excerpt">setting off a multinational contact-tracing operation</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">emotionalizing</span>
+  <div class="bias-explanation">&#x27;Setting off&#x27; frames the disembarkation as a dramatic trigger event, adding urgency beyond what a neutral description such as &#x27;prompting&#x27; or &#x27;leading to&#x27; would convey.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">the remote South Atlantic island of Saint Helena</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Remote&#x27; characterizes Saint Helena&#x27;s geographic position in the article&#x27;s own voice without attribution or a specific metric (e.g., distance from nearest landmass), subtly amplifying the drama of the situation.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">4</span></div>
+<div class="bar-row"><span class="bar-label">es</span><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div><span class="bar-count">2</span></div>
+<div class="bar-row"><span class="bar-label">de</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">pt</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">it</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">zh</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">ja</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">vi</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="bar-count">1</span></div>
+</div>
+</div>
+</details>
+
+<h2>Coverage Gaps</h2>
+<div class="coverage-gap">No coverage from any of the 12 countries whose nationals were aboard the ship (e.g., European, North American, or Australasian outlets), despite these nations being directly affected by contact-tracing obligations.</div>
+<div class="coverage-gap">No perspectives from South American governments (Argentina, Chile, Uruguay) where the initial exposure likely occurred, even though Argentine authorities are actively investigating the outbreak&#x27;s origin.</div>
+<div class="coverage-gap">No voices from the cruise industry, the ship&#x27;s operator (Oceanwide Expeditions), or passenger advocacy groups, whose perspectives on shipboard health protocols and liability are directly relevant.</div>
+<div class="coverage-gap">No epidemiologists, infectious-disease researchers, or independent public health experts are quoted—every quoted actor is a WHO official, leaving the corpus without independent scientific assessment of the Andes strain&#x27;s human-to-human transmission risk.</div>
+<div class="coverage-gap">No perspectives from Saint Helena authorities or residents, despite the island being the disembarkation point and a potential site of local exposure.</div>
+<div class="coverage-gap">No direct statements or perspectives from the government of Saint Helena, despite it being the site where dozens of potentially infected passengers disembarked without initial contact tracing.</div>
+<div class="coverage-gap">Lack of coverage regarding the legal or liability implications for Oceanwide Expeditions, despite the confirmed deaths and the failure to implement contact tracing at the first port of disembarkation.</div>
+<div class="coverage-gap">Absence of reporting from South African local media regarding the clinical status of the patients hospitalized in Johannesburg or the local impact of the contact tracing for the Airlink flight.</div>
+
+<section id="sources-section" class="sources">
+<h2>Sources</h2>
+<p class="sources-meta">12 sources from 12 outlets across 8 languages.</p>
+<div class="sources-by-outlet">
+<details class="outlet-block" id="outlet-20-minutos" open>
+<summary><strong>20 Minutos</strong> <span class="outlet-meta">Spain &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-006" class="source">
+  <div class="source-header"><span class="source-id">[6]</span> <a class="source-headline" href="https://www.20minutos.es/internacional/ultima-hora-hantavirus-barco-canarias-directo-traslado-pasajeros-pacientes_6967337_6.html" target="_blank" rel="noopener">Hantavirus, última hora del brote en el crucero MV Hondius, en directo</a></div>
+  <div class="source-meta"><span>Spain</span> &middot; <span>es</span></div>
+  <p class="source-summary">Reports on the logistical preparations for the ship&#x27;s arrival in Tenerife, including medicalized transport and the tracking of Spanish nationals.</p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-008">Mónica García</a></div>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-al-jazeera" open>
+<summary><strong>Al Jazeera</strong> <span class="outlet-meta">Qatar &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-001" class="source">
+  <div class="source-header"><span class="source-id">[1]</span> <a class="source-headline" href="https://www.aljazeera.com/news/2026/5/7/who-confirms-five-cases-of-hantavirus-linked-to-cruise-ship?traffic_source=rss" target="_blank" rel="noopener">WHO confirms five cases of hantavirus linked to cruise ship</a></div>
+  <div class="source-meta"><span>Qatar</span> &middot; <span>en</span> &middot; <span>2026-05-07</span></div>
+  <p class="source-summary">The article reports the WHO&#x27;s confirmation of five hantavirus cases and three deaths linked to the Andes strain aboard the MV Hondius cruise ship. It details the travel history of the initial victims in Chile, Argentina, and Uruguay, and identifies 12 countries whose nationals may have been exposed before disembarking in Saint Helena.</p>
+  <p class="source-bias-note"><em>Qatar-funded, strong Global South coverage</em></p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Tedros Adhanom Ghebreyeus</a>, <a href="#actor-002">Argentine authorities</a></div>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-anadolu-agency" open>
+<summary><strong>Anadolu Agency</strong> <span class="outlet-meta">Turkey &middot; state_influenced</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-002" class="source">
+  <div class="source-header"><span class="source-id">[2]</span> <a class="source-headline" href="https://www.aa.com.tr/en/health/who-says-hantavirus-outbreak-on-cruise-ship-not-expected-to-trigger-large-epidemic/3930412" target="_blank" rel="noopener">WHO says hantavirus outbreak on cruise ship not expected to trigger large epidemic</a></div>
+  <div class="source-meta"><span>Turkey</span> &middot; <span>en</span> &middot; <span>2026-05-07</span></div>
+  <p class="source-summary">This report emphasizes the WHO&#x27;s stance that the outbreak is unlikely to trigger a large-scale epidemic, explicitly distinguishing it from the COVID-19 pandemic. It outlines recommended public health measures, including isolation for confirmed cases and up to 42 days of active monitoring for exposed individuals.</p>
+  <p class="source-bias-note"><em>Turkish state news agency</em></p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Abdirahman Mahamud</a>, <a href="#actor-004">Maria Van Kerkhove</a>, <a href="#actor-001">Tedros Adhanom Ghebreyeus</a></div>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-ara" open>
+<summary><strong>Ara</strong> <span class="outlet-meta">Spain &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-005" class="source">
+  <div class="source-header"><span class="source-id">[5]</span> <a class="source-headline" href="https://es.ara.cat/sociedad/salud/origen-brote-hantavirus-argentina-reconstruye-periplo-primeros-infectados_1_5729828.html" target="_blank" rel="noopener">“¿Cuál es el origen del brote de hantavirus?: Argentina reconstruye periplo de primeros infectados”</a></div>
+  <div class="source-meta"><span>Spain</span> &middot; <span>es</span></div>
+  <p class="source-summary">Details the Argentine government&#x27;s efforts to trace the index cases&#x27; travel history through Chile and Uruguay and their rodent-trapping operations in Ushuaia.</p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-007">Argentine Health Ministry</a></div>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-infomoney" open>
+<summary><strong>InfoMoney</strong> <span class="outlet-meta">Brazil &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-008" class="source">
+  <div class="source-header"><span class="source-id">[8]</span> <a class="source-headline" href="https://www.infomoney.com.br/mundo/paises-buscam-rastrear-passageiros-de-navio-de-cruzeiro-afetado-por-hantavirus/" target="_blank" rel="noopener">Países buscam rastrear passageiros de navio de crucero afetado por hantavirus</a></div>
+  <div class="source-meta"><span>Brazil</span> &middot; <span>pt</span></div>
+  <p class="source-summary">Focuses on the international scale of the contact tracing effort, noting that passengers from 12 different nations disembarked early at St. Helena.</p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-009">Oceanwide Expeditions</a></div>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-lianhe-zaobao" open>
+<summary><strong>Lianhe Zaobao</strong> <span class="outlet-meta">Singapore &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-010" class="source">
+  <div class="source-header"><span class="source-id">[10]</span> <a class="source-headline" href="https://www.zaobao.com.sg/news/world/story20260505-8999610" target="_blank" rel="noopener">什么是汉坦病毒？ - 联合早报</a></div>
+  <div class="source-meta"><span>Singapore</span> &middot; <span>zh</span></div>
+  <p class="source-summary">Explains the nature of the virus to a Southeast Asian audience and confirms the ship&#x27;s plan to head to the Canary Islands for medical screening.</p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-meteoweb" open>
+<summary><strong>MeteoWeb</strong> <span class="outlet-meta">Italy &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-009" class="source">
+  <div class="source-header"><span class="source-id">[9]</span> <a class="source-headline" href="https://www.meteoweb.eu/2026/05/hantavirus-sulla-nave-mv-hondius-la-precisazione-sugli-italiani-cosa-sta-monitorando-il-ministero-della-salute/1001930406/?amp=1" target="_blank" rel="noopener">Hantavirus sulla nave MV Hondius, la precisazione sugli italiani</a></div>
+  <div class="source-meta"><span>Italy</span> &middot; <span>it</span> &middot; <span>2026-05-01</span></div>
+  <p class="source-summary">Provides a specific national perspective from Italy, confirming the absence of Italian citizens on the vessel despite the global alert.</p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-010">Italian Ministry of Health</a></div>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-reuters-japan" open>
+<summary><strong>Reuters Japan</strong> <span class="outlet-meta">Japan &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-011" class="source">
+  <div class="source-header"><span class="source-id">[11]</span> <a class="source-headline" href="https://jp.reuters.com/world/us/TUAHOTCP3JLI7DPTB2ZZY65MPI-2026-05-06/" target="_blank" rel="noopener">クルーズ船から3人搬送、ハンタウイルス症例8人に アンデス株検出 | ロイター</a></div>
+  <div class="source-meta"><span>Japan</span> &middot; <span>ja</span></div>
+  <p class="source-summary">Reports on the evacuation of three suspected cases to the Netherlands and confirms the presence of a Japanese national on board.</p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Tedros Adhanom Ghebreyeus</a></div>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-stern" open>
+<summary><strong>Stern</strong> <span class="outlet-meta">Germany &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-007" class="source">
+  <div class="source-header"><span class="source-id">[7]</span> <a class="source-headline" href="https://www.stern.de/panorama/weltgeschehen/hantavirus--who-sucht-verzweifelt-nach-passagieren-eines-fluges-37375348.html" target="_blank" rel="noopener">Hantavirus: WHO sucht verzweifelt nach Passagieren eines Fluges</a></div>
+  <div class="source-meta"><span>Germany</span> &middot; <span>de</span></div>
+  <p class="source-summary">Highlights the urgent search for 83 passengers of Airlink flight 4Z132 who may have been exposed to a symptomatic passenger traveling to Johannesburg.</p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-006">World Health Organization</a></div>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-thanh-ni-n" open>
+<summary><strong>Thanh Niên</strong> <span class="outlet-meta">Vietnam &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-012" class="source">
+  <div class="source-header"><span class="source-id">[12]</span> <a class="source-headline" href="https://thanhnien.vn/3-tieu-bang-my-theo-doi-nguoi-ve-tu-du-thuyen-co-dich-virus-hanta-185260507101013173.htm" target="_blank" rel="noopener">3 tiểu bang Mỹ theo dõi người về từ du thuyền có dịch virus hanta</a></div>
+  <div class="source-meta"><span>Vietnam</span> &middot; <span>vi</span></div>
+  <p class="source-summary">Details the domestic response in the United States, specifically mentioning the monitoring of a resident in Arizona.</p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-011">US CDC</a></div>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-world-health-organization" open>
+<summary><strong>World Health Organization</strong> <span class="outlet-meta">Switzerland &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-003" class="source">
+  <div class="source-header"><span class="source-id">[3]</span> <a class="source-headline" href="https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON599" target="_blank" rel="noopener">Hantavirus cluster linked to cruise ship travel, Multi-country - WHO</a></div>
+  <div class="source-meta"><span>Switzerland</span> &middot; <span>en</span></div>
+  <p class="source-summary">Provides the official epidemiological breakdown of the cluster, confirming the timeline of the second case who died in South Africa after disembarking at Saint Helena.</p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-006">World Health Organization</a></div>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-wsjm" open>
+<summary><strong>WSJM</strong> <span class="outlet-meta">United States &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-004" class="source">
+  <div class="source-header"><span class="source-id">[4]</span> <a class="source-headline" href="https://www.wsjm.com/2026/05/05/some-human-to-human-transmission-possible-in-suspected-hantavirus-outbreak-aboard-cruise-ship-who-official/" target="_blank" rel="noopener">&#x27;Some human-to-human transmission&#x27; possible in suspected hantavirus outbreak aboard cruise ship: WHO official</a></div>
+  <div class="source-meta"><span>United States</span> &middot; <span>en</span> &middot; <span>2026-05-05</span></div>
+  <p class="source-summary">Focuses on the specific risk of person-to-person spread associated with the Andes strain, quoting a high-level WHO official.</p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-004">Maria Van Kerkhove</a></div>
+</li>
+</ol>
+</details>
+</div>
+</section>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>A novel global health emergency with three confirmed deaths and WHO involvement. The story has clear cross-regional implications as health authorities worldwide trace disembarked passengers. The identification of the Andes strain with human-to-human transmission capability elevates urgency. While source diversity is limited to East Asian and Middle Eastern outlets, the story&#x27;s inherent global health dimension and competing framings between WHO reassurance and public alarm justify treatment.</dd>
+<dt>QA Corrections</dt><dd><details class="qa-corrections-wrapper"><summary>QA Corrections &mdash; <strong>2 applied &middot; 2 retracted</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-applied">applied</span> The article body is cut off mid-sentence after &#x27;Tedros Adhanom Ghebreyesus stated: &#x27; — the verbatim quote from src-001 is &quot;\</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">WHO Director-General Tedros Adhanom Ghebreyesus stated: </blockquote><p class="qa-explanation">The article body is truncated mid-sentence after the attribution to Tedros Adhanom Ghebreyesus, leaving the quote incomplete. The verbatim quote available in src-001 is &quot;\</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Add a note that the case count is reported as eight in some sources (src-001, src-011) and seven in the official WHO Disease Outbreak News (src-003), and reflect this uncertainty in the body. Change &#x27;which has since grown to eight confirmed cases&#x27; to &#x27;which sources variously report as seven [src-003] to eight confirmed cases [src-001][src-011]&#x27;.</summary><div class="qa-detail"><span class="qa-problem-type">missing_divergence</span><blockquote class="qa-excerpt">The cluster, which has since grown to eight confirmed cases</blockquote><p class="qa-explanation">The article cites src-001 for eight confirmed cases, but src-003 (the official WHO Disease Outbreak News) reports seven cases and three deaths, not eight. The article presents eight as the settled figure without acknowledging the discrepancy between sources.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The framing that all passengers &#x27;disembarked at Saint Helena&#x27; is supported by src-007 and src-008 for the early-disembarkation group. The ship subsequently headed to Tenerife (src-010, src-006) and some cases were evacuated to the Netherlands (src-011), but the sentence specifically refers to the 12-country contact-tracing group who disembarked early at Saint Helena, which is accurate per src-008. No body change is warranted for this specific sentence; the broader ship itinerary context is a separate matter of completeness, not a factual error in the cited claim.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Passengers from 12 countries disembarked at the remote South Atlantic island of Saint Helena before the outbreak was identified</blockquote><p class="qa-explanation">Sources src-007 and src-008 indicate that passengers from 12 countries disembarked at Saint Helena, but the article conflates this with the broader contact-tracing operation. More precisely, src-008 states passengers from 12 nations disembarked early at St. Helena, which is consistent; however the article implies all disembarkation happened at Saint Helena, whereas src-011 and src-006 indicate the ship was heading to Tenerife (Canary Islands) and some passengers were evacuated to the Netherlands, suggesting not all disembarkation was at Saint Helena. This framing is misleading.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The Dutch nationality of the couple and their three-country itinerary are adequately supported by src-001 and src-005 together. No correction is needed.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">originated with a Dutch couple who traveled through Chile, Argentina, and Uruguay on a birdwatching trip before boarding the vessel [src-001][src-005]</blockquote><p class="qa-explanation">The sources describe the index cases as a Dutch couple on a birdwatching trip through South America, but src-005 specifies the Argentine investigation focused on Chile and Uruguay and rodent-trapping in Ushuaia (Argentina). The article&#x27;s claim that they traveled through all three countries is supported by src-001, so this is adequately sourced; however the article does not note that the couple&#x27;s nationality (Dutch) is confirmed only in src-005 and src-011, not explicitly in src-001 which refers to them as &#x27;the first two victims.&#x27; This is a minor issue and does not rise to a correction.</p></div></details></li></ul></details></dd>
+<dt class="pipeline-run">Pipeline Run</dt><dd class="pipeline-run">run-2026-05-07-90e6c98e &middot; 2026-05-07</dd>
+</dl>
+</div>
+
+<details class="glossary" style="margin-top: 2rem; border-top: 3px solid #000; padding-top: 1rem">
+<summary style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.5rem 0">About these labels</summary>
+<div style="margin-top: 0.75rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6">
+<p style="margin-bottom: 1rem; font-style: italic">Not every tag needs a definition &mdash; those listed below cover the full vocabulary used across the dossier.</p>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Divergence types</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></dt><dd style="margin-left: 0">Sources disagree on a verifiable fact: a date, number, name, or whether something happened.</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></dt><dd style="margin-left: 0">Sources describe the same event using different language or implied meaning. Example: one outlet calls a payment &ldquo;compensation,&rdquo; another calls it &ldquo;sanctions relief.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></dt><dd style="margin-left: 0">One or more sources report something that other sources leave out entirely.</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></dt><dd style="margin-left: 0">Sources cover the same event but give different aspects different weight or prominence. Example: one outlet leads with casualty figures; another treats them as a footnote to the political negotiations.</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Bias issues</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span></dt><dd style="margin-left: 0">A descriptive word that signals the writer&rsquo;s judgment rather than a neutral fact. Examples: &ldquo;staggering,&rdquo; &ldquo;sharp,&rdquo; &ldquo;dramatic.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">intensifier</span></dt><dd style="margin-left: 0">A word that amplifies a statement without adding information. Examples: &ldquo;very,&rdquo; &ldquo;extremely,&rdquo; &ldquo;deeply.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span></dt><dd style="margin-left: 0">Vocabulary carrying strong political or emotional connotations that a more neutral word would avoid. Examples: &ldquo;regime&rdquo; vs. &ldquo;government,&rdquo; &ldquo;crackdown&rdquo; vs. &ldquo;enforcement.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">hedging</span></dt><dd style="margin-left: 0">Phrases that soften or obscure a claim, making attribution less clear. Examples: &ldquo;some say,&rdquo; &ldquo;allegedly,&rdquo; &ldquo;reportedly.&rdquo;</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Stakeholder types</h3>
+<dl style="margin-bottom: 0">
+<dt style="font-weight: 700; margin-top: 0.5rem">academia</dt><dd style="margin-left: 0">Researchers, professors, think tanks, and university-based experts.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">affected_community</dt><dd style="margin-left: 0">People directly impacted by the events themselves &mdash; civilians, displaced persons, local populations. Voices from within the group, not their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">civil_society</dt><dd style="margin-left: 0">Non-state organizations representing collective interests (NGOs, human rights groups, trade unions, religious bodies).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">government</dt><dd style="margin-left: 0">Executive branch officials, ministries, heads of state, and their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">industry</dt><dd style="margin-left: 0">Private companies, trade associations, and commercial actors.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">international_org</dt><dd style="margin-left: 0">Multilateral bodies and their representatives (UN agencies, IMF, IAEA, Red Cross, regional alliances).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">judiciary</dt><dd style="margin-left: 0">Judges, courts, prosecutors, and legal bodies acting in their official capacity.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">legislature</dt><dd style="margin-left: 0">Parliament, Congress, or equivalent body. Kept separate from &ldquo;government&rdquo; because legislatures often hold positions that differ from their own executive branch.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">media</dt><dd style="margin-left: 0">Journalists, editorial boards, and outlets quoted for their position or analysis, not as sources of factual reporting.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">military</dt><dd style="margin-left: 0">Armed forces personnel, commanders, and defense ministries.</dd>
+</dl>
+</div>
+</details>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</footer>
+</div>
+</body>
+</html>
