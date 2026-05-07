@@ -1,0 +1,4 @@
+{
+  "published_from_date": "2026-05-07",
+  "_comment": "TPs with metadata.date earlier than this value are not published to the public site. Pre-cutoff TPs remain on disk locally for reference. Remove the field or delete this file to disable the cutoff."
+}

@@ -11,6 +11,68 @@ from pathlib import Path
 from xml.sax.saxutils import escape as xml_escape
 
 
+ROOT = Path(__file__).resolve().parent.parent
+
+
+def load_site_config() -> dict:
+    """Load `config/site_config.json` if it exists. Returns ``{}`` when the
+    file is missing — callers treat the absence as "no cutoff applied",
+    preserving backwards compatibility for local dev runs."""
+    config_path = ROOT / "config" / "site_config.json"
+    if not config_path.exists():
+        return {}
+    return json.loads(config_path.read_text(encoding="utf-8"))
+
+
+def _date_from_tp_filename(path: Path) -> str | None:
+    """Extract the YYYY-MM-DD date fragment from a `tp-YYYY-MM-DD-NNN.{json,html}`
+    filename. Returns ``None`` for filenames that don't match the pattern."""
+    parts = path.stem.split("-")
+    if len(parts) >= 4 and parts[0] == "tp":
+        date = "-".join(parts[1:4])
+        try:
+            datetime.strptime(date, "%Y-%m-%d")
+            return date
+        except ValueError:
+            return None
+    return None
+
+
+def filter_jsons_by_cutoff(
+    tp_jsons: list[Path], cutoff: str | None
+) -> tuple[list[Path], list[Path]]:
+    """Split ``tp_jsons`` into ``(kept, excluded)`` lists based on the
+    publication cutoff date. ``kept`` are TPs whose embedded date is
+    on-or-after ``cutoff``; ``excluded`` are everything earlier. With
+    ``cutoff=None`` everything is kept (no filter)."""
+    if not cutoff:
+        return list(tp_jsons), []
+    kept: list[Path] = []
+    excluded: list[Path] = []
+    for p in tp_jsons:
+        date = _date_from_tp_filename(p)
+        if date is not None and date < cutoff:
+            excluded.append(p)
+        else:
+            kept.append(p)
+    return kept, excluded
+
+
+def remove_pre_cutoff_reports(reports_dir: Path, cutoff: str | None) -> int:
+    """Remove ``tp-*.html`` files in ``reports_dir`` whose embedded date is
+    before ``cutoff``. Returns the count of files removed. No-op when
+    ``cutoff`` is ``None`` or no matching files exist."""
+    if not cutoff or not reports_dir.is_dir():
+        return 0
+    removed = 0
+    for p in reports_dir.glob("tp-*.html"):
+        date = _date_from_tp_filename(p)
+        if date is not None and date < cutoff:
+            p.unlink()
+            removed += 1
+    return removed
+
+
 def _format_date(date_str: str) -> str:
     """Format '2026-04-13' as 'April 13, 2026'."""
     dt = datetime.strptime(date_str, "%Y-%m-%d")
@@ -112,8 +174,17 @@ def _esc(text: str) -> str:
 # index.html
 # ---------------------------------------------------------------------------
 
-def build_card(meta: dict, index: int) -> str:
-    """Build an HTML card for one Topic Package."""
+def build_card(meta: dict, index: int, reports_dir: Path | None = None) -> str:
+    """Build an HTML card for one Topic Package.
+
+    When ``reports_dir`` is provided, follow-up references whose target
+    HTML does not exist in ``reports_dir`` are rendered as plain text
+    rather than as a hyperlink. This avoids dead links on the index when
+    the cutoff filter has removed the previous-coverage file (e.g. a
+    May-7 follow-up to a pre-cutoff May-5 TP). Callers that don't need
+    the existence check can omit ``reports_dir``; the link is rendered
+    unconditionally in that case.
+    """
     topic_num = f"TOPIC {index:02d} / {meta['id']}"
     follow_up_hint = ""
     follow_up = meta.get("follow_up")
@@ -123,10 +194,22 @@ def build_card(meta: dict, index: int) -> str:
         prev_tp_id = follow_up.get("previous_tp_id", "")
         formatted_date = _format_date(prev_date) if prev_date else ""
         prev_href = f"reports/{prev_tp_id}.html" if prev_tp_id else "#"
+        target_exists = True
+        if reports_dir is not None and prev_tp_id:
+            target_exists = (reports_dir / f"{prev_tp_id}.html").exists()
+        if target_exists:
+            headline_html = (
+                f'<a href="{_esc(prev_href)}" class="follow-up-link">'
+                f'&ldquo;{prev_headline}&rdquo;</a>'
+            )
+        else:
+            headline_html = (
+                f'<span class="follow-up-link">&ldquo;{prev_headline}&rdquo;</span>'
+            )
         follow_up_hint = (
             f'  <div class="follow-up-hint">'
             f'<span class="follow-up-label">Follow-up to:</span> '
-            f'<a href="{_esc(prev_href)}" class="follow-up-link">&ldquo;{prev_headline}&rdquo;</a> '
+            f'{headline_html} '
             f'<span class="follow-up-date">({formatted_date})</span>'
             f'</div>\n'
         )
@@ -145,22 +228,29 @@ def build_card(meta: dict, index: int) -> str:
 </article>"""
 
 
-def build_index(all_meta: list[dict]) -> str:
-    """Build the full index.html content."""
+def build_index(all_meta: list[dict], reports_dir: Path | None = None) -> str:
+    """Build the full index.html content.
+
+    ``reports_dir`` is forwarded to ``build_card`` so follow-up links
+    whose target HTML has been removed by the cutoff cleanup degrade
+    to plain text rather than rendering as dead anchors on the index.
+    """
     # Group by date descending
     by_date: dict[str, list[dict]] = {}
     for m in sorted(all_meta, key=lambda x: (x["date"], x["id"]), reverse=True):
         by_date.setdefault(m["date"], []).append(m)
 
     cards_html = ""
-    card_index = 0
     for date_str in sorted(by_date.keys(), reverse=True):
         date_entries = sorted(by_date[date_str], key=lambda x: x["id"])
         count = len(date_entries)
         cards_html += f'<div class="date-bar"><span>{_format_date(date_str).upper()}</span><span>{count} DOSSIER{"S" if count != 1 else ""}</span></div>\n'
+        # Reset per date — each day's first card reads TOPIC 01 regardless
+        # of how many cards earlier dates contributed.
+        card_index = 0
         for meta in date_entries:
             card_index += 1
-            cards_html += build_card(meta, card_index) + "\n"
+            cards_html += build_card(meta, card_index, reports_dir) + "\n"
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -472,6 +562,20 @@ def main() -> None:
         else:
             args = args[1:]
 
+    # Load site config (cutoff date lives here).
+    config = load_site_config()
+    cutoff = config.get("published_from_date") or None
+
+    # --date guard: refuse to publish a single date that pre-dates the cutoff.
+    if target_date and cutoff and target_date < cutoff:
+        print(
+            f"ERROR: Cutoff date in config/site_config.json is {cutoff}. "
+            f"Cannot publish TPs from {target_date} (before cutoff). "
+            f"Update config or remove the cutoff to proceed.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     # Ensure directories
     reports_dir.mkdir(parents=True, exist_ok=True)
 
@@ -493,6 +597,30 @@ def main() -> None:
         tp_jsons.extend(find_tp_files(output_dir, dd))
     if not tp_jsons:
         print(f"No tp-*.json files found in {output_dir}")
+        sys.exit(1)
+
+    # Apply publication cutoff: pre-cutoff TPs are not published. They stay on
+    # disk in `output/{date}/` for local reference but never reach the public
+    # site. Per D3 of TASK-PUBLISH-NUMBERING-AND-CUTOFF the cutoff covers
+    # index.html, reports/, and the RSS feed.
+    if cutoff:
+        tp_jsons, excluded = filter_jsons_by_cutoff(tp_jsons, cutoff)
+        if excluded:
+            print(
+                f"  Cutoff: {len(excluded)} TP(s) from before {cutoff} "
+                f"excluded from publication"
+            )
+        # One-shot cleanup: any pre-cutoff HTML still living in
+        # ``site/reports/`` from earlier deployment-test runs gets removed
+        # so the public site matches the cutoff.
+        removed = remove_pre_cutoff_reports(reports_dir, cutoff)
+        if removed:
+            print(
+                f"  Cleanup: removed {removed} pre-cutoff HTML file(s) from "
+                f"{reports_dir}"
+            )
+    if not tp_jsons:
+        print(f"No tp-*.json files found at-or-after cutoff in {output_dir}")
         sys.exit(1)
 
     print(f"Publishing {len(tp_jsons)} Topic Package(s) from {len(date_dirs)} date(s)")
@@ -524,7 +652,7 @@ def main() -> None:
     resolve_follow_up_links(reports_dir)
 
     # Step 3: Generate index.html
-    index_html = build_index(all_meta)
+    index_html = build_index(all_meta, reports_dir=reports_dir)
     index_path = site_dir / "index.html"
     index_path.write_text(index_html, encoding="utf-8")
     print(f"  Generated {index_path}")
