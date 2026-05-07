@@ -1,7 +1,7 @@
 # Independent Wire — Task Tracker
 
 **Created:** 2026-03-30
-**Updated:** 2026-05-05 (post-Researcher-Polish + Phase-0-Eval cleanup; latest commit 8f48804)
+**Updated:** 2026-05-07 (post Phase 2 of TASK-RESOLVE-ACTOR-ALIASES + post Render-Restructure-V2 + repo-root cleanup; latest commit aaef864 — preceding this V2-DOC-RECONCILE commit)
 **Purpose:** Living document — updated after each session
 
 ---
@@ -79,13 +79,46 @@ The V2 big-bang work-stream broke into eleven sequential CC tasks. Listed here f
 
 ---
 
+## Recently shipped (May 5–7 2026)
+
+The work that landed between the prior TASKS.md state (commit 8f48804) and this V2-DOC-RECONCILE pass.
+
+| Task | Description |
+|------|-------------|
+| TASK-RENDER-RESTRUCTURE-V2 | 5 atomic commits (`ced8981 → 0a4b120`) restructuring the rendered TP around five primary sections (Article, Positions, Actors, Sources, Bias-Card). Commit 0 propagated `editorial_independence` + `tier` from `config/sources.json`; Commit 1 thinned cluster cards to counts; Commit 2 added the first-class Actors-section with cluster-filterable list + JS shim; Commit 3 restructured Sources into a two-level outlet-grouped layout; Commit 4 made QA-Corrections collapsible. 464 tests green throughout. |
+| TASK-RESOLVE-ACTOR-ALIASES Phase 1 | New `ResolveActorAliasesStage` (Flash, structured output) introduced after `consolidate_actors` — identifies cross-variant name aliases (multilingual, paraphrased) and flags generic source-class labels. New `canonical_actors[]` and `actor_alias_mapping[]` Bus slots; `final_actors[]` preserved as audit. Three iterations of prompt evaluation, two diagnostic-smoke matrices (12-run + 30-run) culminating in the Y-config (Flash, `temp=1.0`, `reasoning="medium"`, `max_tokens=66000`) as production-stable. Folded into Phase-2 Commit 1. |
+| TASK-RESOLVE-ACTOR-ALIASES Phase 2 | Commit 1 (`c20459a`): consumer migration — every `canonical_actors[]` consumer (`PerspectiveStage`, `enrich_perspective_clusters`, `BiasLanguageStage`, `WriterStage`, render Actors-Section, render Sources-Section actor-refs) reads from the canonical slot. Writer becomes a first-class consumer so F2 dedup reaches the published article text. ARCH-V2-BUS-SCHEMA §7.2 (Strict-merge and actor ID gaps) added. Commit 3 (`6fe0258`): WriterStage docstring + residual `representation` references cleanup. **Commit 2 (Flash endpoint switch) BLOCKED** — `google/gemini-flash-latest` is not a valid OpenRouter model ID; awaiting Architect input on the actual identifier. 478 tests green. |
+| TASK-CLEANUP-COMPLETED-FILES | Repo-root cleanup — 8 completed TASK files + 3 V2 smoke logs moved to `docs/archive/`; obsolete `BRIEF-PERSPEKTIV-V2.md` stub deleted. No git operations (all targets gitignored). |
+| TASK-V2-DOC-RECONCILE (this commit) | Three atomic doc commits: §4A.1/§4B.7/§5.2 reconcile in ARCH-V2-BUS-SCHEMA (`3d9367f`), AGENT-INVENTORY/AGENT-IO-MAP V2-current alignment (`aaef864`), TASKS+ROADMAP+anglicization-scan (this commit). |
+
+---
+
 ## Active / Queued
 
-### Phase-1 LLM Plan-model sweep (next active workstream)
+### Next active workstream
 
 | Task | Status | Description |
 |------|--------|-------------|
-| TASK-EVAL-PHASE-1-PLAN-MODEL-SWEEP | 🔵 Active | 10-combination LLM Plan-model sweep against the 2026-05-05 baseline (Opus 4.6 with story-shape inline). Substrate: `output/2026-05-05/_state/run-2026-05-05-6189fcca/topic_buses.ResearcherHydratedPlanStage.{0,1,2}.json`. Combinations: Sonnet 4.6 × 2 reasoning settings, Gemini 3.1 Pro Preview × 4, DeepSeek V4 Pro × 4. Builds `scripts/eval_plan_stage.py` first (~80-120 lines). Total cost ~€1. Brief in `TASK-EVAL-PHASE-1-PLAN-MODEL-SWEEP.md` at repo root; snapshot path needs updating to 2026-05-05 before activation. |
+| Live-pipeline-run for next dossier date | 🔵 Active | First production run with the full Phase-2 stack (resolver Y-config + canonical_actors consumer migration + render restructure + outlet metadata propagation). Validates F2 dedup reaching the published text on a fresh real dossier. |
+
+### Queued (Architect priority order)
+
+| Task | Status | Description |
+|------|--------|-------------|
+| TASK-WEEKLY-OUTLET-AUDIT | 🔵 Queued | First instance of the weekly outlet-audit cadence — see `BACKLOG-WEEKLY-OUTLET-AUDIT.md` at repo root. Triages outlet metadata, alias mappings, and tier classifications against the live source pool. |
+| WP-OPUS-4.7-MIGRATION | 🔵 Queued | Opus 4.6 → 4.7 across all Opus-using agents (Editor, Researcher Plan, Perspective, Writer, Bias Language, Hydration Phase 2). `src/agent.py` refactor for `output_config.effort`. Per-agent effort-level eval before swap. Substantial workstream. |
+| WP-STRUCTURED-OUTPUTS-V2 | 🔵 Queued | After Researcher-Polish iteration 2 settles. Migration of `response_format` patterns where structured outputs improve robustness further. Research documented in `docs/RESEARCH-OPENROUTER-STRUCTURED-OUTPUTS.md`. |
+| TASK-FUTURE-RESEARCH-DEPTH | 🔵 Queued | Direct institutional source fetch via curated registry (RSS/API endpoints per source-category), bypassing LLM-Planner. Prerequisite: Researcher-Polish iteration 1 evaluated against challenger models. |
+| TASK-RESEARCHER-POLISH (iteration 2) | 🔵 Queued | Deterministic Pre-Plan stage that classifies story shape before the LLM plans. Deferred from iteration 1.5 — needs to be universally applicable, not just for the 6 shapes from iteration 1. |
+| WP-SPENDING-CAP-REDESIGN | 🔵 Queued | Pre-call spending cap rather than post-phase check. V2-10 came near €5 before tripping post-phase guard — pre-call check catches overruns earlier. |
+| WP-TOPIC-STAGE-PARALLELISATION | 🔵 Queued | Run multiple TopicBuses concurrently rather than serially. Architecturally trivial in V2 (no cross-TopicBus dependency); deferred for stability. |
+| Portfolio site (deniz-schwenk.github.io/portfolio) | 🔵 Queued | Public-facing portfolio surfacing the Independent Wire build. Not on the Independent Wire deployment surface. |
+
+### Deferred / catalogued
+
+| Task | Status | Description |
+|------|--------|-------------|
+| TASK-EVAL-PHASE-1-PLAN-MODEL-SWEEP | 🟡 Deferred | 10-combination LLM Plan-model sweep against the 2026-05-05 baseline (Opus 4.6 with story-shape inline). Combinations: Sonnet 4.6 × 2 reasoning settings, Gemini 3.1 Pro Preview × 4, DeepSeek V4 Pro × 4. Total cost ~€1. Brief in `docs/archive/TASK-RESOLVE-ACTOR-ALIASES.md` adjacent files; not actively running while the F2 work-stream and live-pipeline validation take priority. |
 
 ### Researcher-Polish
 

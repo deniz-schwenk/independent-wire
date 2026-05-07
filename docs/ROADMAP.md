@@ -1,9 +1,9 @@
 # Independent Wire — Open Source Roadmap
 
 **Created:** 2026-03-26
-**Updated:** 2026-05-05 (post-Researcher-Polish iteration 1 + Phase-0 Eval cleanup; latest commit 8f48804).
+**Updated:** 2026-05-07 (post Phase 2 of TASK-RESOLVE-ACTOR-ALIASES + render restructure; latest commit aaef864 — preceding this V2-DOC-RECONCILE commit).
 **Status:** Living document — strategic overview.
-**Basis:** Vision paper (March 2026) + PoC experience (Sessions 1–12) + Model Evals (Sessions 4–5) + Cost Optimization (Session 6) + Rendering + Website (Session 7) + V2 architecture (April–May 2026)
+**Basis:** Vision paper (March 2026) + PoC experience (Sessions 1–12) + Model Evals (Sessions 4–5) + Cost Optimization (Session 6) + Rendering + Website (Session 7) + V2 architecture (April–May 2026) + B-full canonical-actors migration + render restructure (May 2026)
 
 ---
 
@@ -68,15 +68,18 @@ Core framework operational. Pipeline produces Topic Packages with multilingual r
 
 ## H3 — Architecture, Polish, and Community
 
-### H3.1 — V2 Architecture (April–May 2026) ✅ Complete
+### H3.1 — V2 Architecture + post-V2 content-quality wave (April–May 2026) ✅ Complete
 
-**Goal:** make the pipeline architecturally clean enough that future content quality work can happen without fighting the structure.
+**Goal:** make the pipeline architecturally clean enough that future content quality work can happen without fighting the structure, then layer the first round of structural content-quality wins on top.
 
 V1 had aggregation surface as the source of all five S14/S15 bug classes (ID-consistency, aggregation duplications, pre-research artefacts surviving downstream, per-actor metadata grafted from wrong dimensions, editor-time selection_reason becoming false). V2 replaced aggregation with a **Bus + Stage architecture**: one RunBus, N TopicBuses, one stage list per variant, one render layer that filters by visibility metadata.
 
 | WP | Status |
 |----|--------|
-| WP-V2-BUS-ARCHITECTURE | ✅ Complete — V2-01 through V2-11b shipped April 30 – May 1 2026. V1 deleted in commit 19348f3. Source-level closed. Documentation reconciled in V2-DOC-RECONCILE (this commit). |
+| WP-V2-BUS-ARCHITECTURE | ✅ Complete — V2-01 through V2-11b shipped April 30 – May 1 2026. V1 deleted in commit 19348f3. Source-level closed. Documentation reconciled in V2-DOC-RECONCILE (May 7 2026). |
+| TASK-RENDER-RESTRUCTURE-V2 | ✅ Complete (May 5–7 2026, commits `ced8981 → 0a4b120`). Five atomic commits restructured the rendered TP around five primary sections (Article, Positions, Actors, Sources, Bias-Card). New first-class Actors section with cluster-filterable list; two-level outlet-grouped Sources section with per-outlet metadata propagation from `config/sources.json` (`editorial_independence`, `tier`, `bias_note`); collapsible QA-Corrections wrapper. |
+| TASK-RESOLVE-ACTOR-ALIASES Phase 1+2 | ✅ Complete (May 5–7 2026, commits `c20459a` and `6fe0258`). New cross-variant alias resolver agent with the verified Y-config (Flash, `temp=1.0`, `reasoning="medium"`, `max_tokens=66000`); new `canonical_actors[]` consumer-facing slot and `actor_alias_mapping[]` audit trail; `final_actors[]` becomes audit-only. **F2 (actor-name alias dedup) closed.** Every consumer (Perspective, enrich_perspective_clusters, BiasLanguage, Writer, render) migrated to `canonical_actors[]`. ARCH-V2-BUS-SCHEMA §7.2 documents the strict-merge pattern parallel to §7.1's strict-drop. |
+| Phase 2 Commit 2 (Flash endpoint switch) | ⚠️ Blocked — `google/gemini-flash-latest` is not a valid OpenRouter model ID. Reverted; awaiting Architect input on the actual identifier (alternatives: `google/gemini-2.5-flash`, `google/gemini-2.5-flash:latest`, both work but pin to a specific family version). |
 
 **Key architectural changes:**
 - Granular Bus slots with declared owner, visibility, and mirrors_from metadata.
@@ -98,18 +101,15 @@ V2 made the pipeline architecturally clean. The next emphasis is content depth a
 | TASK-RESEARCHER-POLISH (iteration 1) | ✅ shipped May 2-4 2026. Inline 6-shape Story-Shape-Targeting in Plan-INSTRUCTIONS for both production and hydrated variants (commit b2bec02). SYSTEM.md mini-touch on breadth + depth dual mandate. Researcher-Plan and Researcher-Hydrated-Plan now run on anthropic/claude-opus-4.6. Date context passed in (commit bd92e44). Per-query Story-Shape obligation (commit 0b03760). Authoritative cost €0.22/Plan-call. Six-axis smoke pass. | 1 session |
 | TASK-RESEARCHER-POLISH (iteration 2) | Deterministic Pre-Plan stage that classifies story shape before the LLM plans. Deferred — needs to be universally applicable, not just for the 6 shapes from iteration 1. | After iteration 1 evaluated |
 
-### H3.2.5 — Phase-1 LLM Plan-Model Sweep — next active workstream
+### H3.2.5 — Live-pipeline-run with the full Phase-2 stack — next active workstream
 
-With Researcher-Polish iteration 1 stable and the 2026-05-05 hydrated baseline producing publish-ready Topic Packages with all post-Phase-0 commits in place, the next workstream is a controlled LLM evaluation of Plan-model alternatives.
+With B-full canonical-actors migration shipped, the F2 alias-dedup work-stream closed at source level, and the render restructure live, the next milestone is the **first production run with the full Phase-2 stack** on a fresh dossier date. Validates that F2 dedup reaches the published article text (Writer cites canonical names rather than per-source variants), Actors-section anchors resolve correctly across topics, and the resolver Y-config produces stable canonical merges on real-world multilingual coverage.
 
-10-combination sweep against the Opus 4.6 baseline:
-- Sonnet 4.6 (effort none / xhigh) × 2
-- Gemini 3.1 Pro Preview (temp 1.0/0.7, effort minimal/xhigh) × 4
-- DeepSeek V4 Pro (temp 0.5/0.7, effort none/xhigh) × 4
+After the live-run validates the stack, the **weekly-outlet-audit cadence** (see `BACKLOG-WEEKLY-OUTLET-AUDIT.md` at repo root) becomes active — the alias mapping plus the propagated outlet metadata (`tier`, `editorial_independence`, `bias_note`) need a regular review loop to stay coherent with the live source pool.
 
-Substrate: `output/2026-05-05/_state/run-2026-05-05-6189fcca/topic_buses.ResearcherHydratedPlanStage.{0,1,2}.json`.
+### H3.2.6 — Phase-1 LLM Plan-Model Sweep — deferred
 
-Brief: `TASK-EVAL-PHASE-1-PLAN-MODEL-SWEEP.md` at repo root.
+Catalogued for future activation. 10-combination sweep against the 2026-05-05 baseline (Opus 4.6 with story-shape inline). Combinations: Sonnet 4.6 × 2 reasoning settings, Gemini 3.1 Pro Preview × 4, DeepSeek V4 Pro × 4. Substrate at `output/2026-05-05/_state/run-2026-05-05-6189fcca/topic_buses.ResearcherHydratedPlanStage.{0,1,2}.json`. Total cost ~€1. Not actively running while the live-pipeline-run validation and weekly-outlet-audit init take priority.
 
 ### H3.3 — Architecture-quality follow-ups (catalogued, queued)
 
