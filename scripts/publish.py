@@ -108,10 +108,23 @@ def find_tp_files(output_dir: Path, date: str | None = None) -> list[Path]:
 
 
 def ensure_html(json_path: Path, render_script: Path) -> Path | None:
-    """Ensure a TP HTML file exists, rendering it if necessary. Returns None on failure."""
+    """Ensure a TP HTML file exists and is up to date. Returns None on failure.
+
+    Renders the HTML if it doesn't exist, or if the JSON is newer than the
+    HTML (e.g. after a ``--reuse`` partial run that rewrote the JSON but
+    left the previous HTML on disk). mtime comparison is the same idiom
+    Make uses for source-vs-derivative freshness checks.
+    """
     html_path = json_path.with_suffix(".html")
-    if not html_path.exists():
-        print(f"  Rendering {json_path.name}...")
+    needs_render = (
+        not html_path.exists()
+        or json_path.stat().st_mtime > html_path.stat().st_mtime
+    )
+    if needs_render:
+        if html_path.exists():
+            print(f"  Re-rendering {json_path.name} (JSON newer than HTML)")
+        else:
+            print(f"  Rendering {json_path.name}...")
         result = subprocess.run(
             [sys.executable, str(render_script), str(json_path)],
             capture_output=True, text=True,

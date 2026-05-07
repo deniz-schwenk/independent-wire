@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -220,7 +221,100 @@ def test_load_site_config_returns_empty_when_missing(tmp_path, monkeypatch):
 
 
 # ---------------------------------------------------------------------------
-# 4. --date guard refuses pre-cutoff dates with a clear error
+# 4. ensure_html re-renders when JSON is newer than HTML
+# ---------------------------------------------------------------------------
+
+
+def _stub_render_script(tmp_path: Path) -> Path:
+    """Write a tiny stub renderer that emits HTML next to the input JSON.
+
+    The real ``scripts/render.py`` works fine, but the stub keeps these
+    tests isolated from render-layer changes — all we want to verify is
+    that ``ensure_html`` invokes the render subprocess at the right
+    times. The stub writes a file alongside the input so
+    ``html_path = json_path.with_suffix('.html')`` resolves correctly.
+    """
+    script = tmp_path / "stub_render.py"
+    script.write_text(
+        'import sys, pathlib\n'
+        'src = pathlib.Path(sys.argv[1])\n'
+        'dst = src.with_suffix(".html")\n'
+        'dst.write_text(f"<html>{src.read_text()}</html>", encoding="utf-8")\n',
+        encoding="utf-8",
+    )
+    return script
+
+
+def test_ensure_html_renders_when_html_missing(tmp_path):
+    publish = _load_publish_module()
+    render_script = _stub_render_script(tmp_path)
+    json_path = tmp_path / "tp-2026-05-08-001.json"
+    json_path.write_text("payload-v1", encoding="utf-8")
+
+    result = publish.ensure_html(json_path, render_script)
+
+    assert result is not None
+    html_path = json_path.with_suffix(".html")
+    assert html_path.exists()
+    assert "payload-v1" in html_path.read_text(encoding="utf-8")
+
+
+def test_ensure_html_rerenders_when_json_newer(tmp_path):
+    """Initial render → mark HTML as older → rewrite JSON → ensure_html
+    must re-render so the HTML reflects the new JSON content."""
+    publish = _load_publish_module()
+    render_script = _stub_render_script(tmp_path)
+    json_path = tmp_path / "tp-2026-05-08-001.json"
+    json_path.write_text("payload-v1", encoding="utf-8")
+
+    # First call renders the initial HTML.
+    publish.ensure_html(json_path, render_script)
+    html_path = json_path.with_suffix(".html")
+    assert "payload-v1" in html_path.read_text(encoding="utf-8")
+
+    # Force HTML mtime to be older than JSON mtime by an explicit margin.
+    # Using os.utime is faster and more reliable than time.sleep on
+    # filesystems with coarse mtime granularity.
+    os.utime(html_path, (1_000_000, 1_000_000))
+    # Update the JSON content with a fresh mtime.
+    json_path.write_text("payload-v2", encoding="utf-8")
+    os.utime(json_path, (2_000_000, 2_000_000))
+
+    result = publish.ensure_html(json_path, render_script)
+    assert result is not None
+    # Re-render means the HTML now reflects payload-v2.
+    assert "payload-v2" in html_path.read_text(encoding="utf-8")
+
+
+def test_ensure_html_skips_when_html_newer(tmp_path):
+    """When the HTML mtime is newer than JSON, ``ensure_html`` must
+    NOT invoke the renderer — the existing HTML is up to date."""
+    publish = _load_publish_module()
+    render_script = _stub_render_script(tmp_path)
+    json_path = tmp_path / "tp-2026-05-08-001.json"
+    json_path.write_text("payload-v1", encoding="utf-8")
+
+    # Initial render.
+    publish.ensure_html(json_path, render_script)
+    html_path = json_path.with_suffix(".html")
+    # Pin mtimes: HTML newer than JSON.
+    os.utime(json_path, (1_000_000, 1_000_000))
+    os.utime(html_path, (2_000_000, 2_000_000))
+
+    # Tampering with the HTML so we can detect any re-render: if
+    # ensure_html skips correctly, the tampered content survives.
+    html_path.write_text("MANUAL-TAMPER", encoding="utf-8")
+    os.utime(html_path, (2_000_000, 2_000_000))  # restore newer mtime
+
+    result = publish.ensure_html(json_path, render_script)
+    assert result is not None
+    assert html_path.read_text(encoding="utf-8") == "MANUAL-TAMPER", (
+        "HTML was unexpectedly re-rendered when it was newer than JSON"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 5. --date guard refuses pre-cutoff dates with a clear error
 # ---------------------------------------------------------------------------
 
 
