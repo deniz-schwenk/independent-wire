@@ -167,7 +167,7 @@ def extract_metadata(json_path: Path) -> dict:
         "headline": article.get("headline", ""),
         "subheadline": article.get("subheadline", ""),
         "summary": article.get("summary", ""),
-        "word_count": article.get("word_count", 0),
+        "word_count": article.get("word_count", len(article.get("body", "").split())),
         "sources_count": len(tp.get("sources", [])),
         "languages_count": len(bias.get("source", {}).get("by_language", {})),
         "stakeholders_count": (

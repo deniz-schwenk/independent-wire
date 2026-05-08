@@ -705,15 +705,17 @@ def _country_region_color(country: str) -> str:
 
 
 def build_source_map(tp: dict) -> str:
-    """Build evidence terrain SVG + country badge legend."""
-    bias = tp.get("bias_analysis", {})
-    # V2 render shape: bias_analysis.source.by_country (compose_bias_card).
-    # Older shapes used bias_analysis.source_balance.by_country; fall back.
-    by_country = (
-        bias.get("source", {}).get("by_country")
-        or bias.get("source_balance", {}).get("by_country")
-        or {}
-    )
+    """Build evidence terrain SVG + country badge legend.
+
+    by_country is rebuilt from tp.sources (post-prune) so the map's
+    'TOTAL SOURCES' figure stays in sync with the meta-bar header.
+    bias_analysis.source.by_country is computed pre-prune and would
+    diverge on dossiers where strict-drop pruning removed sources.
+    """
+    by_country: dict[str, int] = {}
+    for src in tp.get("sources", []):
+        country = src.get("country") or "Unknown"
+        by_country[country] = by_country.get(country, 0) + 1
 
     svg_html = render_evidence_terrain(by_country)
 
@@ -961,7 +963,7 @@ def build_actors_section(tp: dict) -> str:
         if not position_lines:
             position_lines = (
                 '<p class="actor-position-line actor-no-cluster">'
-                'Quoted in Sources but not assigned to any cluster.</p>'
+                'Mentioned in sources, no clustered position.</p>'
             )
 
         anon_html = (
