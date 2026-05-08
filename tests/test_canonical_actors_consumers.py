@@ -228,11 +228,12 @@ def test_bias_language_stage_reads_canonical_actors():
 
 
 # ---------------------------------------------------------------------------
-# 4. WriterStage receives canonical_actors[] and actor_alias_mapping[]
+# 4. WriterStage receives canonical_actors[] only; actor_alias_mapping and
+#    per-source actors_quoted are NOT in the Writer's substrate.
 # ---------------------------------------------------------------------------
 
 
-def test_writer_stage_passes_canonical_actors_and_alias_mapping(tmp_path: Path):
+def test_writer_stage_passes_canonical_actors_and_drops_alias_residue(tmp_path: Path):
     fake = FakeAgent(
         structured={
             "headline": "H", "subheadline": "S", "body": "B",
@@ -240,7 +241,14 @@ def test_writer_stage_passes_canonical_actors_and_alias_mapping(tmp_path: Path):
         }
     )
     tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
-    tb.final_sources = [{"id": "src-001", "country": "X", "language": "en"}]
+    tb.final_sources = [
+        {
+            "id": "src-001",
+            "country": "X",
+            "language": "en",
+            "actors_quoted": [{"name": "Russia's Defense Ministry"}],
+        }
+    ]
     tb.canonical_actors = [
         {"id": "actor-001", "name": "Russian Defense Ministry"},
     ]
@@ -257,23 +265,26 @@ def test_writer_stage_passes_canonical_actors_and_alias_mapping(tmp_path: Path):
 
     ctx = fake.calls[0]["context"]
     assert "actors" in ctx
-    assert "actor_aliases" in ctx
     assert ctx["actors"] == [
         {"id": "actor-001", "name": "Russian Defense Ministry"},
     ]
-    assert ctx["actor_aliases"] == [
-        {"alias_id": "actor-002", "alias_name": "Russia's Defense Ministry",
-         "canonical_id": "actor-001"},
-    ]
+    # actor_aliases removed: alias-mapping audit trail is consumed only by
+    # render layers, not by the Writer.
+    assert "actor_aliases" not in ctx
+    # Per-source actors_quoted is pre-consolidation residue and is dropped
+    # from the source projection before reaching the Writer.
+    assert "sources" in ctx
+    for src in ctx["sources"]:
+        assert "actors_quoted" not in src
 
 
-def test_writer_stage_reads_tuple_lists_canonical_actors_and_alias_mapping():
+def test_writer_stage_reads_tuple_excludes_actor_alias_mapping():
     from src.stage import get_stage_meta
 
     fake = FakeAgent()
     meta = get_stage_meta(WriterStage(fake))
     assert "canonical_actors" in meta.reads
-    assert "actor_alias_mapping" in meta.reads
+    assert "actor_alias_mapping" not in meta.reads
 
 
 # ---------------------------------------------------------------------------

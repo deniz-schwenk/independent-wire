@@ -1018,10 +1018,17 @@ class PerspectiveStage(_AgentStageBase):
 class WriterStage(_AgentStageBase):
     """Writer agent wrapper.
 
-    Reads `editor_selected_topic`, `final_sources`, `perspective_clusters_
-    synced`, `perspective_missing_positions`, `merged_coverage_gaps`. Plus
-    optional follow-up addendum loaded from `agents/writer/FOLLOWUP.md` when
-    `editor_selected_topic.follow_up_to` is truthy.
+    Reads `editor_selected_topic`, `final_sources`, `canonical_actors`,
+    `perspective_clusters_synced`, `perspective_missing_positions`,
+    `merged_coverage_gaps`. Plus optional follow-up addendum loaded from
+    `agents/writer/FOLLOWUP.md` when `editor_selected_topic.follow_up_to`
+    is truthy.
+
+    `canonical_actors` (populated upstream by resolve_actor_aliases via
+    strict-merge) is the Writer's single source of speaker truth. The
+    per-source `actors_quoted[]` field is dropped from the source projection
+    before reaching the Writer because that field is pre-consolidation
+    residue and re-introduces alias-name variant strings.
 
     Writes `writer_article`. The Writer agent has `tools=[]` configured at
     construction (V2-current). The Writer relies entirely on the pipeline-
@@ -1036,7 +1043,6 @@ class WriterStage(_AgentStageBase):
         "editor_selected_topic",
         "final_sources",
         "canonical_actors",
-        "actor_alias_mapping",
         "perspective_clusters_synced",
         "perspective_missing_positions",
         "merged_coverage_gaps",
@@ -1068,9 +1074,11 @@ class WriterStage(_AgentStageBase):
             "title": assignment.title,
             "selection_reason": assignment.selection_reason,
             "perspective_analysis": perspective_analysis,
-            "sources": list(topic_bus.final_sources),
+            "sources": [
+                {k: v for k, v in src.items() if k != "actors_quoted"}
+                for src in topic_bus.final_sources
+            ],
             "actors": list(topic_bus.canonical_actors),
-            "actor_aliases": list(topic_bus.actor_alias_mapping),
             "coverage_gaps": list(topic_bus.merged_coverage_gaps),
         }
 
