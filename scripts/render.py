@@ -12,6 +12,25 @@ from pathlib import Path
 from scripts.evidence_terrain import render_evidence_terrain
 from src.region_buckets import get_buckets, lookup_region
 
+# Canonical site base — drives og:url / og:image absolute links. Matches
+# `site/CNAME`. Local previews still work because relative asset paths in
+# the page body remain unchanged; only social-card crawlers consume the
+# absolute URLs.
+SITE_BASE = "https://independent-wire.org"
+
+# Read the small IW brand-mark SVG once at module load and inline it
+# into the footer. Inlining (rather than `<img src=...>`) is required so
+# the SVG inherits the host document's Google Fonts (Space Grotesk /
+# Space Mono); `<img>`-embedded SVGs render in an isolated browser
+# context that falls back to a system sans-serif. The XML processing
+# instruction is stripped because HTML5 doesn't accept PIs in the body.
+IW_SMALL_LIGHT_SVG = re.sub(
+    r"<\?xml[^?]*\?>\s*",
+    "",
+    (Path(__file__).resolve().parent.parent / "site" / "assets" / "iw-small-light.svg")
+    .read_text(encoding="utf-8"),
+).strip()
+
 COUNTRY_DISPLAY: dict[str, str] = {
     "United States": "US", "United Kingdom": "UK", "United Arab Emirates": "UAE",
     "Saudi Arabia": "S. Arabia", "South Korea": "S. Korea", "South Africa": "S. Africa",
@@ -505,11 +524,37 @@ details[open] summary::before {
 .dropped-outlet { color: var(--color-text); }
 .dropped-label { font-family: var(--font-sans); }
 
+/* Top bar — back-nav left, share button right */
+.top-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 1.5rem;
+}
+.top-bar .back-nav { margin-bottom: 0; }
+
+/* Share button */
+.share-btn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: transparent; color: #000;
+  border: 1.5px solid #000;
+  padding: 0.6rem 1rem;
+  min-height: 44px; min-width: 44px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+.share-btn:hover { background: #000; color: #fff; }
+.share-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+
 /* Footer */
 footer {
   margin-top: 3rem;
   padding-top: 1.5rem;
   border-top: 3px solid #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   color: #666;
@@ -518,6 +563,14 @@ footer {
   text-transform: uppercase;
   text-align: left;
 }
+footer .footer-text { flex: 1 1 auto; }
+footer .footer-text p { margin: 0; }
+footer .footer-mark {
+  flex: 0 0 auto;
+  width: 80px; height: 80px;
+  display: block;
+}
+footer .footer-mark svg { width: 100%; height: 100%; display: block; }
 footer a { color: #000; text-decoration: underline; }
 
 /* Responsive */
@@ -531,6 +584,8 @@ footer a { color: #000; text-decoration: underline; }
   .meta-number { font-size: 1.2rem; }
   .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .article-body { font-size: 1rem; }
+  footer { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
+  footer .footer-mark { width: 64px; height: 64px; }
 }
 """
 
@@ -542,6 +597,60 @@ def build_header(tp: dict) -> str:
         f'<h1>{_esc(article.get("headline", ""))}</h1>\n'
         f'<p class="subtitle">{_esc(article.get("subheadline", ""))}</p>\n'
         f'<p class="date">{_format_date(meta.get("date", ""))}</p>\n'
+    )
+
+
+def _truncate(text: str, n: int) -> str:
+    text = (text or "").strip().replace("\n", " ")
+    if len(text) <= n:
+        return text
+    return text[: max(0, n - 1)].rstrip() + "…"
+
+
+def build_meta_tags(tp: dict) -> str:
+    """Build Open Graph + Twitter Card meta tags for a TP page."""
+    article = tp.get("article", {})
+    tp_id = tp.get("id", "")
+    headline = article.get("headline", "Independent Wire")
+    description = _truncate(article.get("summary", ""), 200)
+    canonical = f"{SITE_BASE}/reports/{tp_id}.html"
+    image = f"{SITE_BASE}/assets/og-card.svg"
+    return (
+        f'<link rel="canonical" href="{_esc(canonical)}">\n'
+        f'<meta property="og:type" content="article">\n'
+        f'<meta property="og:site_name" content="Independent Wire">\n'
+        f'<meta property="og:title" content="{_esc(headline)}">\n'
+        f'<meta property="og:description" content="{_esc(description)}">\n'
+        f'<meta property="og:url" content="{_esc(canonical)}">\n'
+        f'<meta property="og:image" content="{_esc(image)}">\n'
+        f'<meta name="twitter:card" content="summary_large_image">\n'
+        f'<meta name="twitter:title" content="{_esc(headline)}">\n'
+        f'<meta name="twitter:description" content="{_esc(description)}">\n'
+        f'<meta name="twitter:image" content="{_esc(image)}">\n'
+    )
+
+
+def build_share_script() -> str:
+    """Inline Web Share API + clipboard fallback for `.share-btn` elements."""
+    return (
+        '<script>\n'
+        "document.querySelectorAll('.share-btn').forEach(btn => {\n"
+        "  btn.addEventListener('click', async () => {\n"
+        "    const url = btn.dataset.url;\n"
+        "    const title = btn.dataset.title;\n"
+        "    if (navigator.share) {\n"
+        "      try { await navigator.share({ title, url }); } catch (e) {}\n"
+        "    } else {\n"
+        "      try {\n"
+        "        await navigator.clipboard.writeText(url);\n"
+        "        const original = btn.textContent;\n"
+        "        btn.textContent = 'Copied';\n"
+        "        setTimeout(() => { btn.textContent = original; }, 1500);\n"
+        "      } catch (e) {}\n"
+        "    }\n"
+        "  });\n"
+        "});\n"
+        '</script>\n'
     )
 
 
@@ -591,8 +700,8 @@ def _country_region_color(country: str) -> str:
     """Return the bucket colour for a country, or grey for unbucketed."""
     bucket_key = lookup_region(country)
     if bucket_key is None:
-        return "#999999"
-    return get_buckets()[bucket_key].get("color", "#999999")
+        return "#6b7280"
+    return get_buckets()[bucket_key].get("color", "#6b7280")
 
 
 def build_source_map(tp: dict) -> str:
@@ -1597,10 +1706,13 @@ def build_glossary() -> str:
 def build_footer() -> str:
     return (
         '<footer>\n'
+        '<div class="footer-text">\n'
         '<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>\n'
         '<p>This content was produced by AI agents</p>\n'
         '<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>\n'
         '<p><a href="../feed.xml">RSS Feed</a></p>\n'
+        '</div>\n'
+        f'<div class="footer-mark" aria-label="Independent Wire">{IW_SMALL_LIGHT_SVG}</div>\n'
         '</footer>\n'
     )
 
@@ -1613,12 +1725,20 @@ def render(tp: dict) -> str:
     """Render a Topic Package dict to a self-contained HTML string."""
     css = build_css()
     headline = tp.get("article", {}).get("headline", "Independent Wire")
+    tp_id = tp.get("id", "")
+    canonical = f"{SITE_BASE}/reports/{tp_id}.html"
 
-    back_nav = '<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>\n'
+    top_bar = (
+        '<div class="top-bar">\n'
+        '<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>\n'
+        f'<button class="share-btn" data-url="{_esc(canonical)}" '
+        f'data-title="{_esc(headline)}">Share</button>\n'
+        '</div>\n'
+    )
     back_nav_bottom = '<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>\n'
 
     sections = [
-        back_nav,
+        top_bar,
         build_header(tp),
         build_follow_up_ref(tp),
         build_meta_bar(tp),
@@ -1648,12 +1768,14 @@ def render(tp: dict) -> str:
         f'<meta name="viewport" content="width=device-width, initial-scale=1">\n'
         f'<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">\n'
         f'<title>{_esc(headline)}</title>\n'
+        f'{build_meta_tags(tp)}'
         f'<style>\n{css}</style>\n'
         f'</head>\n'
         f'<body>\n'
         f'<div class="container">\n'
         f'{body}'
         f'</div>\n'
+        f'{build_share_script()}'
         f'</body>\n'
         f'</html>\n'
     )

@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Independent Wire</title>
+<link rel="canonical" href="https://independent-wire.org/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Independent Wire">
+<meta property="og:title" content="Independent Wire">
+<meta property="og:description" content="An independent newsroom — Open · Transparent · For everyone">
+<meta property="og:url" content="https://independent-wire.org/">
+<meta property="og:image" content="https://independent-wire.org/assets/og-card.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Independent Wire">
+<meta name="twitter:description" content="An independent newsroom — Open · Transparent · For everyone">
+<meta name="twitter:image" content="https://independent-wire.org/assets/og-card.svg">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="Independent Wire" href="feed.xml">
 <style>
@@ -41,7 +52,12 @@ header {
   margin-bottom: 2.5rem;
   padding-bottom: 1.5rem;
   border-bottom: 3px solid #000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
 }
+header .brand { flex: 1 1 auto; min-width: 0; }
 header h1 {
   font-family: var(--font-sans);
   font-size: 2rem;
@@ -58,6 +74,22 @@ header .tagline {
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
+
+/* Share button */
+.share-btn {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: transparent; color: #000;
+  border: 1.5px solid #000;
+  padding: 0.6rem 1rem;
+  min-height: 44px; min-width: 44px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+.share-btn:hover { background: #000; color: #fff; }
+.share-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
 
 /* Date bar */
 .date-bar {
@@ -202,6 +234,10 @@ footer {
   margin-top: 3rem;
   padding-top: 1.5rem;
   border-top: 3px solid #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   color: #666;
@@ -210,12 +246,21 @@ footer {
   text-transform: uppercase;
   text-align: left;
 }
+footer .footer-text { flex: 1 1 auto; }
+footer .footer-text p { margin: 0; }
+footer .footer-mark {
+  flex: 0 0 auto;
+  width: 80px; height: 80px;
+  display: block;
+}
+footer .footer-mark svg { width: 100%; height: 100%; display: block; }
 footer a {
   color: #000;
   text-decoration: underline;
 }
 
 @media (max-width: 768px) {
+  header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
   .meta-bar {
     flex-wrap: wrap;
   }
@@ -230,14 +275,19 @@ footer a {
   .tp-card h2 {
     font-size: 1.2rem;
   }
+  footer { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
+  footer .footer-mark { width: 64px; height: 64px; }
 }
 </style>
 </head>
 <body>
 <div class="container">
 <header>
-  <h1>Independent Wire</h1>
-  <p class="tagline">An independent newsroom &mdash; Open &middot; Transparent &middot; For everyone</p>
+  <div class="brand">
+    <h1>Independent Wire</h1>
+    <p class="tagline">An independent newsroom &mdash; Open &middot; Transparent &middot; For everyone</p>
+  </div>
+  <button class="share-btn" data-url="https://independent-wire.org/" data-title="Independent Wire">Share</button>
 </header>
 
 <main>
@@ -258,14 +308,14 @@ footer a {
 </article>
 <article class="tp-card">
   <span class="topic-id">TOPIC 02 / tp-2026-05-07-002</span>
-  <h2><a href="reports/tp-2026-05-07-002.html">Hantavirus Outbreak on MV Hondius Cruise Ship Kills Three as WHO Coordinates 12-Country Contact Tracing</a></h2>
-  <p class="subheadline">The WHO assesses public health risk as low, but the identification of the Andes strain—capable of human-to-human transmission—has triggered an urgent multinational effort to locate disembarked passengers.</p>
-  <p class="summary">While this is a serious incident, WHO assesses the public health risk as low</p>
+  <h2><a href="reports/tp-2026-05-07-002.html">Hantavirus Outbreak on MV Hondius Cruise Ship Kills Three as WHO Coordinates Contact Tracing Across 12 Countries</a></h2>
+  <p class="subheadline">The WHO assesses overall public health risk as low, but the identification of the Andes strain—capable of human-to-human transmission—has triggered an urgent multinational effort to locate disembarked passengers.</p>
+  <p class="summary">The WHO confirmed between five and eight hantavirus cases and three deaths linked to the expedition cruise ship MV Hondius, identifying the pathogen as the Andes strain—uniquely capable of human-to-human transmission. While WHO Director-General Tedros Adhanom Ghebreyesus assessed the overall public health risk as low and officials explicitly distinguished the outbreak from COVID-19, the identification of the Andes strain triggered urgent contact-tracing operations across at least 12 countries, including a search for 83 passengers on a specific flight from Saint Helena to Johannesburg.</p>
   <div class="meta-bar">
     <div class="meta-item"><span class="meta-number">12</span><span class="meta-label">Sources</span></div>
     <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
     <div class="meta-item"><span class="meta-number">10</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Divergences</span></div>
+    <div class="meta-item"><span class="meta-number">4</span><span class="meta-label">Divergences</span></div>
   </div>
   <div class="card-footer"><span>0 words &middot; May 7, 2026</span><a href="reports/tp-2026-05-07-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
 </article>
@@ -287,11 +337,37 @@ footer a {
 </main>
 
 <footer>
+<div class="footer-text">
 <p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
 <p>This content was produced by AI agents</p>
 <p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
 <p><a href="feed.xml">RSS Feed</a></p>
+</div>
+<div class="footer-mark" aria-label="Independent Wire"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1024" height="1024" fill="#fff"/>
+    <rect x="64" y="160" width="896" height="14" fill="#000"/>
+    <text x="512" y="700" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="800" font-size="640" letter-spacing="-40" fill="#000">IW</text>
+    <rect x="64" y="800" width="896" height="14" fill="#000"/>
+  </svg></div>
 </footer>
 </div>
+<script>
+document.querySelectorAll('.share-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const url = btn.dataset.url;
+    const title = btn.dataset.title;
+    if (navigator.share) {
+      try { await navigator.share({ title, url }); } catch (e) {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        const original = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.textContent = original; }, 1500);
+      } catch (e) {}
+    }
+  });
+});
+</script>
 </body>
 </html>

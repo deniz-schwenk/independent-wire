@@ -2,6 +2,7 @@
 """Independent Wire — Generate publication website from rendered Topic Packages."""
 
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -12,6 +13,25 @@ from xml.sax.saxutils import escape as xml_escape
 
 
 ROOT = Path(__file__).resolve().parent.parent
+
+# Canonical site base — drives og:url / og:image absolute links. Matches
+# `site/CNAME`. Local previews are unaffected because relative asset
+# paths in the body remain unchanged.
+SITE_BASE = "https://independent-wire.org"
+SITE_TITLE = "Independent Wire"
+SITE_TAGLINE = "An independent newsroom — Open · Transparent · For everyone"
+
+# Read the small IW brand-mark SVG once at module load and inline it
+# into the footer. `<img src=...>` would render in an isolated browser
+# context that doesn't inherit Google Fonts, so the IW glyph would fall
+# back to system sans-serif. Inlining lets the SVG inherit Space Grotesk
+# from the host document. The XML processing instruction is stripped
+# because HTML5 doesn't accept PIs in the body.
+IW_SMALL_LIGHT_SVG = re.sub(
+    r"<\?xml[^?]*\?>\s*",
+    "",
+    (ROOT / "site" / "assets" / "iw-small-light.svg").read_text(encoding="utf-8"),
+).strip()
 
 
 def load_site_config() -> dict:
@@ -265,12 +285,24 @@ def build_index(all_meta: list[dict], reports_dir: Path | None = None) -> str:
             card_index += 1
             cards_html += build_card(meta, card_index, reports_dir) + "\n"
 
+    og_image = f"{SITE_BASE}/assets/og-card.svg"
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Independent Wire</title>
+<title>{SITE_TITLE}</title>
+<link rel="canonical" href="{SITE_BASE}/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{SITE_TITLE}">
+<meta property="og:title" content="{SITE_TITLE}">
+<meta property="og:description" content="{SITE_TAGLINE}">
+<meta property="og:url" content="{SITE_BASE}/">
+<meta property="og:image" content="{og_image}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{SITE_TITLE}">
+<meta name="twitter:description" content="{SITE_TAGLINE}">
+<meta name="twitter:image" content="{og_image}">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="Independent Wire" href="feed.xml">
 <style>
@@ -308,7 +340,12 @@ header {{
   margin-bottom: 2.5rem;
   padding-bottom: 1.5rem;
   border-bottom: 3px solid #000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
 }}
+header .brand {{ flex: 1 1 auto; min-width: 0; }}
 header h1 {{
   font-family: var(--font-sans);
   font-size: 2rem;
@@ -325,6 +362,22 @@ header .tagline {{
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }}
+
+/* Share button */
+.share-btn {{
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: transparent; color: #000;
+  border: 1.5px solid #000;
+  padding: 0.6rem 1rem;
+  min-height: 44px; min-width: 44px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}}
+.share-btn:hover {{ background: #000; color: #fff; }}
+.share-btn:focus-visible {{ outline: 2px solid #000; outline-offset: 2px; }}
 
 /* Date bar */
 .date-bar {{
@@ -469,6 +522,10 @@ footer {{
   margin-top: 3rem;
   padding-top: 1.5rem;
   border-top: 3px solid #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   color: #666;
@@ -477,12 +534,21 @@ footer {{
   text-transform: uppercase;
   text-align: left;
 }}
+footer .footer-text {{ flex: 1 1 auto; }}
+footer .footer-text p {{ margin: 0; }}
+footer .footer-mark {{
+  flex: 0 0 auto;
+  width: 80px; height: 80px;
+  display: block;
+}}
+footer .footer-mark svg {{ width: 100%; height: 100%; display: block; }}
 footer a {{
   color: #000;
   text-decoration: underline;
 }}
 
 @media (max-width: 768px) {{
+  header {{ flex-direction: column; align-items: flex-start; gap: 0.75rem; }}
   .meta-bar {{
     flex-wrap: wrap;
   }}
@@ -497,14 +563,19 @@ footer a {{
   .tp-card h2 {{
     font-size: 1.2rem;
   }}
+  footer {{ flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }}
+  footer .footer-mark {{ width: 64px; height: 64px; }}
 }}
 </style>
 </head>
 <body>
 <div class="container">
 <header>
-  <h1>Independent Wire</h1>
-  <p class="tagline">An independent newsroom &mdash; Open &middot; Transparent &middot; For everyone</p>
+  <div class="brand">
+    <h1>Independent Wire</h1>
+    <p class="tagline">An independent newsroom &mdash; Open &middot; Transparent &middot; For everyone</p>
+  </div>
+  <button class="share-btn" data-url="{SITE_BASE}/" data-title="{SITE_TITLE}">Share</button>
 </header>
 
 <main>
@@ -512,12 +583,33 @@ footer a {{
 </main>
 
 <footer>
+<div class="footer-text">
 <p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
 <p>This content was produced by AI agents</p>
 <p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
 <p><a href="feed.xml">RSS Feed</a></p>
+</div>
+<div class="footer-mark" aria-label="Independent Wire">{IW_SMALL_LIGHT_SVG}</div>
 </footer>
 </div>
+<script>
+document.querySelectorAll('.share-btn').forEach(btn => {{
+  btn.addEventListener('click', async () => {{
+    const url = btn.dataset.url;
+    const title = btn.dataset.title;
+    if (navigator.share) {{
+      try {{ await navigator.share({{ title, url }}); }} catch (e) {{}}
+    }} else {{
+      try {{
+        await navigator.clipboard.writeText(url);
+        const original = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => {{ btn.textContent = original; }}, 1500);
+      }} catch (e) {{}}
+    }}
+  }});
+}});
+</script>
 </body>
 </html>"""
 

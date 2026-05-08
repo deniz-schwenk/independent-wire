@@ -413,10 +413,6 @@ def render_evidence_terrain(by_country: dict[str, int]) -> str:
     )
     parts.append(
         '<defs>'
-        '<radialGradient id="et-paper" cx="50%" cy="55%" r="75%">'
-        '<stop offset="0%" stop-color="#fafaf7"/>'
-        '<stop offset="100%" stop-color="#f1eee5"/>'
-        '</radialGradient>'
         # Clip terrain so high-source bump rings can't bleed into the
         # legend column.
         f'<clipPath id="et-terrain-clip">'
@@ -425,9 +421,11 @@ def render_evidence_terrain(by_country: dict[str, int]) -> str:
         f'</clipPath>'
         '</defs>'
     )
+    # Flat #f5f5f5 background — matches the reader-note panel directly
+    # below the map so the two read as one continuous block.
     parts.append(
         f'<rect x="0" y="0" width="{CANVAS_W}" height="{CANVAS_H}" '
-        f'fill="url(#et-paper)"/>'
+        f'fill="#f5f5f5"/>'
     )
 
     # Build per-region structures.
@@ -469,7 +467,7 @@ def render_evidence_terrain(by_country: dict[str, int]) -> str:
         field = r["field"]
         u_min, u_max = r["u_min"], r["u_max"]
         v_min, v_max = r["v_min"], r["v_max"]
-        color = buckets_meta.get(bucket_key, {}).get("color", "#999999")
+        color = buckets_meta.get(bucket_key, {}).get("color", "#6b7280")
 
         # 1. Soft regional wash on the upper slope.
         tint_level = peak * TINT_LEVEL_FACTOR

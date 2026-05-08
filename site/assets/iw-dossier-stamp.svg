@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1024" height="1024" fill="#fff"/>
+    <rect x="80" y="80" width="864" height="864" fill="#000"/>
+    <text x="512" y="640" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="800" font-size="500" letter-spacing="-30" fill="#fff">IW</text>
+    <rect x="180" y="768" width="664" height="3" fill="#fff"/>
+    <text class="tp-id" x="512" y="840" text-anchor="middle" font-family="Space Mono, monospace" font-size="42" font-weight="700" letter-spacing="6" fill="#fff">{tp_id}</text>
+  </svg>
