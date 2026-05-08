@@ -302,6 +302,34 @@ h2 {
 .cluster-counts a:hover { color: var(--color-text); }
 .card:target { background: var(--color-bg-subtle, #f5f5f4); }
 
+/* Cluster three-level actor sub-blocks (stated / reported / mentioned) */
+.cluster-tier { margin-top: 0.85rem; }
+.cluster-tier-label {
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+  color: var(--color-text-subtle); margin: 0 0 0.35rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.cluster-tier-actors {
+  list-style: none; padding: 0; margin: 0;
+  font-family: var(--font-sans);
+}
+.cluster-tier-actor {
+  font-size: 0.85rem; line-height: 1.5;
+  margin: 0.15rem 0; color: var(--color-text-secondary);
+}
+.cluster-tier-actor strong { color: var(--color-text); font-weight: 600; }
+.cluster-tier-actor a { color: inherit; text-decoration: underline; }
+.cluster-actor-role { color: var(--color-text-secondary); }
+.cluster-actor-type {
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--color-text-subtle); margin-left: 0.25rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.cluster-actor-srcs {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle);
+}
+
 /* Actors section */
 .actors h2 { margin-top: 2rem; }
 .actors-meta {
@@ -339,6 +367,12 @@ h2 {
 .actor-position-line a { color: inherit; text-decoration: underline; }
 .actor-verbatim { font-style: italic; }
 .actor-no-cluster { color: var(--color-text-subtle); font-size: 0.85rem; }
+.actor-position-tier {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-right: 0.15rem;
+}
 
 /* Missing voices */
 .missing-voice {
@@ -809,19 +843,85 @@ def _plural(n: int, singular: str, plural: str | None = None) -> str:
     return f"{n} {word}"
 
 
+_CLUSTER_TIERS: tuple[tuple[str, str], ...] = (
+    ("stated", "Stated"),
+    ("reported", "Reported"),
+    ("mentioned", "Mentioned"),
+)
+
+
+def _cluster_actor_entry(
+    actor: dict, cluster_source_ids: set[str]
+) -> str:
+    """Render a single actor entry inside a cluster sub-block.
+
+    Markup parallels the Actors-section header: name (anchor to the
+    Actors-section row), role, type-badge, and a list of source-id
+    anchors filtered to the cluster's source_ids. Source refs are
+    omitted when the actor has no quotes grounded in this cluster's
+    sources (typical for the ``mentioned`` tier, which can be carried
+    by action-alignment without an explicit quote).
+    """
+    aid = actor.get("id", "")
+    name = _esc(actor.get("name", ""))
+    role = _esc(actor.get("role", ""))
+    atype = _esc(actor.get("type", ""))
+    quote_sids: list[str] = []
+    seen_sids: set[str] = set()
+    for q in actor.get("quotes") or []:
+        if not isinstance(q, dict):
+            continue
+        sid = q.get("source_id")
+        if (
+            isinstance(sid, str)
+            and sid in cluster_source_ids
+            and sid not in seen_sids
+        ):
+            quote_sids.append(sid)
+            seen_sids.add(sid)
+    src_refs_html = ""
+    if quote_sids:
+        anchors = ", ".join(
+            f'<a href="#{_esc(sid)}">{_esc(sid)}</a>'
+            for sid in quote_sids
+        )
+        src_refs_html = f' <span class="cluster-actor-srcs">({anchors})</span>'
+    name_html = (
+        f'<a href="#{_esc(aid)}">{name}</a>' if aid else name
+    )
+    return (
+        f'<li class="cluster-tier-actor">'
+        f'<strong>{name_html}</strong> '
+        f'<span class="cluster-actor-role">{role}</span> '
+        f'<span class="cluster-actor-type">{atype}</span>'
+        f'{src_refs_html}'
+        f'</li>'
+    )
+
+
 def build_perspectives(tp: dict) -> str:
     """Render Perspective V2 position_clusters. One cluster = one card.
 
-    Cluster cards show the position label, a one-line summary, and a
+    Cluster cards show the position label, a one-line summary, three
+    optional actor sub-blocks (Stated / Reported / Mentioned), and a
     monospace counts row: ``{n_actors} · {n_sources} · {n_regions} ·
-    {n_languages}``. The actor count is wrapped in ``<a
+    {n_languages}``. The three sub-blocks partition the cluster's
+    ``actor_ids`` by evidentiary tier; an empty sub-list is omitted
+    entirely. The actor count is wrapped in ``<a
     href="#cluster-{id}">`` so a click filters the Actors-section to
-    this cluster's members. Per-actor data is rendered in the
-    Actors-section (see ``build_actors_section``), not inline.
+    this cluster's members.
     """
     clusters = tp.get("perspectives", {}).get("position_clusters", [])
     if not clusters:
         return ""
+    actors = tp.get("actors") or []
+    actor_index: dict[str, dict] = {}
+    for actor in actors:
+        if isinstance(actor, dict):
+            aid = actor.get("id")
+            if isinstance(aid, str) and aid:
+                actor_index[aid] = actor
+
     cards = []
     for c in clusters:
         if not isinstance(c, dict):
@@ -833,6 +933,30 @@ def build_perspectives(tp: dict) -> str:
         n_sources = int(c.get("n_sources", 0) or 0)
         n_regions = int(c.get("n_regions", 0) or 0)
         n_languages = int(c.get("n_languages", 0) or 0)
+        cluster_source_ids = {
+            sid for sid in (c.get("source_ids") or []) if isinstance(sid, str)
+        }
+
+        tier_blocks: list[str] = []
+        for tier_key, tier_label in _CLUSTER_TIERS:
+            tier_aids = [
+                a for a in (c.get(tier_key) or []) if isinstance(a, str)
+            ]
+            if not tier_aids:
+                continue
+            entries = [
+                _cluster_actor_entry(actor_index[aid], cluster_source_ids)
+                for aid in tier_aids
+                if aid in actor_index
+            ]
+            if not entries:
+                continue
+            tier_blocks.append(
+                f'  <div class="cluster-tier cluster-tier-{tier_key}">\n'
+                f'    <h4 class="cluster-tier-label">{tier_label}</h4>\n'
+                f'    <ul class="cluster-tier-actors">{"".join(entries)}</ul>\n'
+                f'  </div>\n'
+            )
 
         actors_label = _plural(n_actors, "actor")
         if cluster_id:
@@ -858,6 +982,7 @@ def build_perspectives(tp: dict) -> str:
             f'<div class="card" id="{_esc(cluster_id)}">\n'
             f'  <div class="card-header"><span class="card-actor">{_esc(label)}</span></div>\n'
             f'  <div class="card-position">{_esc(summary)}</div>\n'
+            f'{"".join(tier_blocks)}'
             f'  {counts_line}'
             f'</div>\n'
         )
@@ -903,20 +1028,38 @@ def build_actors_section(tp: dict) -> str:
 
     # Reverse: actor-id → list of cluster-ids the actor belongs to,
     # preserving the cluster order in which the agent emitted them.
+    # Also: actor-id → cluster-id → tier label (Stated/Reported/
+    # Mentioned), so the per-cluster position-line prefixes the actor's
+    # evidentiary tier within that cluster.
     actor_clusters: dict[str, list[str]] = {}
+    actor_cluster_tier: dict[tuple[str, str], str] = {}
+    tier_label_lookup = {key: label for key, label in _CLUSTER_TIERS}
     for c in clusters:
         if not isinstance(c, dict):
             continue
         cid = c.get("id")
+        if not isinstance(cid, str) or not cid:
+            continue
         for aid in c.get("actor_ids") or []:
             if not isinstance(aid, str):
                 continue
             actor_clusters.setdefault(aid, []).append(cid)
+        for tier_key, tier_label in _CLUSTER_TIERS:
+            for aid in c.get(tier_key) or []:
+                if isinstance(aid, str):
+                    actor_cluster_tier[(aid, cid)] = tier_label
 
     def _position_line(actor: dict, cluster_id: str) -> str:
-        cluster_label = f"Cluster {cluster_index.get(cluster_id, '?')}"
+        aid = actor.get("id", "")
+        cluster_label = f"cluster {cluster_index.get(cluster_id, '?')}"
         cluster_anchor = (
             f'<a href="#{_esc(cluster_id)}">{_esc(cluster_label)}</a>'
+        )
+        tier = actor_cluster_tier.get((aid, cluster_id))
+        prefix = (
+            f'<span class="actor-position-tier">{tier} in</span> '
+            if tier
+            else ""
         )
         # Pick the first quote whose source_id grounds this cluster.
         # Architect-neutral: a single position-line per cluster keeps
@@ -932,7 +1075,7 @@ def build_actors_section(tp: dict) -> str:
                 chosen = q
                 break
         if chosen is None:
-            return f'<p class="actor-position-line">{cluster_anchor}</p>'
+            return f'<p class="actor-position-line">{prefix}{cluster_anchor}</p>'
         position = _esc(chosen.get("position", "") or "")
         verbatim = chosen.get("verbatim")
         verbatim_html = ""
@@ -945,7 +1088,7 @@ def build_actors_section(tp: dict) -> str:
             f' (<a href="#{_esc(sid)}">{_esc(sid)}</a>)' if sid else ""
         )
         return (
-            f'<p class="actor-position-line">{cluster_anchor}: '
+            f'<p class="actor-position-line">{prefix}{cluster_anchor}: '
             f'{position}{verbatim_html}{src_anchor}</p>'
         )
 
@@ -963,7 +1106,7 @@ def build_actors_section(tp: dict) -> str:
         if not position_lines:
             position_lines = (
                 '<p class="actor-position-line actor-no-cluster">'
-                'Mentioned in sources, no clustered position.</p>'
+                'Actors with no positional alignment.</p>'
             )
 
         anon_html = (

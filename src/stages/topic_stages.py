@@ -541,6 +541,49 @@ def _build_actor_index(actors: list) -> dict[str, dict]:
     return out
 
 
+_SUBLIST_TIERS: tuple[str, ...] = ("stated", "reported", "mentioned")
+
+
+def _assert_partition_invariant(
+    cluster_id: str,
+    stated: list[str],
+    reported: list[str],
+    mentioned: list[str],
+    actor_ids_set: set[str],
+) -> None:
+    """Verify the three sub-lists partition ``actor_ids`` disjointly.
+
+    A violation here is a programming error in the validator itself, not
+    an agent error: by the time this check runs, the cross-tier dedup
+    and default-assign steps in
+    :func:`_enrich_position_clusters_logic` have repaired any
+    agent-side inconsistency. Used by both the validator and a unit
+    test that exercises the assertion shape with synthetic input.
+    """
+    stated_set = set(stated)
+    reported_set = set(reported)
+    mentioned_set = set(mentioned)
+    union = stated_set | reported_set | mentioned_set
+    if union != actor_ids_set:
+        raise AssertionError(
+            f"enrich_perspective_clusters: cluster {cluster_id} "
+            f"sub-list union {sorted(union)!r} != actor_ids "
+            f"{sorted(actor_ids_set)!r}"
+        )
+    if (
+        stated_set & reported_set
+        or stated_set & mentioned_set
+        or reported_set & mentioned_set
+    ):
+        raise AssertionError(
+            f"enrich_perspective_clusters: cluster {cluster_id} "
+            f"sub-lists are not pairwise-disjoint: "
+            f"stated={sorted(stated_set)!r} "
+            f"reported={sorted(reported_set)!r} "
+            f"mentioned={sorted(mentioned_set)!r}"
+        )
+
+
 def _enrich_position_clusters_logic(
     perspective_analysis: dict,
     final_sources: list,
@@ -561,12 +604,24 @@ def _enrich_position_clusters_logic(
       bucket (which reproduced the bias the system aims to surface and
       was arithmetically inconsistent against the post-prune source set)
 
-    Validation: every ``actor_ids`` entry the agent emitted must reference
-    an ID present in ``canonical_actors[]`` (the post-resolution actor
-    list); invalid IDs are dropped and a WARNING is logged so the smoke
-    run flags hallucinations. Aliased IDs that PerspectiveStage may have
-    referenced (rare — Perspective receives canonical_actors as input,
-    so this is a defensive guard) are also dropped here.
+    Validation, in two layers:
+
+    1. Every ``actor_ids`` entry must reference an ID present in
+       ``canonical_actors[]``. Invalid IDs are dropped with a warning.
+       The same filter applies to each of the three sub-lists
+       (``stated`` / ``reported`` / ``mentioned``).
+    2. The three sub-lists must partition ``actor_ids`` disjointly. The
+       validator repairs agent-side violations: an ID appearing in two
+       sub-lists is kept in the highest-evidentiary tier (priority
+       ``stated > reported > mentioned``); an ID present in
+       ``actor_ids`` but absent from all three sub-lists is
+       default-assigned to ``mentioned`` (the lowest tier — safest
+       default when classification was omitted). After repair, the
+       invariant
+       ``set(stated) | set(reported) | set(mentioned) == set(actor_ids)``
+       is asserted; pairwise-disjointness is also asserted. A violation
+       at this point is a programming error in the validator itself,
+       not an agent error.
     """
     import copy as _copy
 
@@ -622,7 +677,101 @@ def _enrich_position_clusters_logic(
                     aid,
                 )
 
+        valid_set = set(valid_actor_ids)
+
+        # Filter each sub-list against the validated actor_ids set:
+        # drop unknowns and per-sub-list duplicates. Sub-list ordering
+        # within each tier is preserved (insertion order from the agent).
+        filtered_tiers: dict[str, list[str]] = {}
+        for tier in _SUBLIST_TIERS:
+            raw = cluster.get(tier)
+            tier_list: list[str] = []
+            seen_in_tier: set[str] = set()
+            for aid in raw or []:
+                if not isinstance(aid, str):
+                    continue
+                if aid in seen_in_tier:
+                    continue
+                if aid not in valid_set:
+                    # Either unknown to canonical_actors (already warned
+                    # via the actor_ids loop above when it was in
+                    # actor_ids; warn again here when it appeared only
+                    # in a sub-list and not in actor_ids) or aliased out.
+                    if aid not in actor_index:
+                        logger.warning(
+                            "enrich_perspective_clusters: cluster %s "
+                            "sub-list %r referenced unknown actor_id %r; "
+                            "dropping",
+                            cluster["id"],
+                            tier,
+                            aid,
+                        )
+                    continue
+                tier_list.append(aid)
+                seen_in_tier.add(aid)
+            filtered_tiers[tier] = tier_list
+
+        # Resolve cross-tier duplicates: priority stated > reported >
+        # mentioned. An ID claimed by a higher-priority tier is stripped
+        # from any lower-priority tier it also appears in. Warn naming
+        # both tiers so reviewers can spot agent-side inconsistency.
+        assigned_to: dict[str, str] = {}
+        for tier in _SUBLIST_TIERS:
+            kept: list[str] = []
+            for aid in filtered_tiers[tier]:
+                prior_tier = assigned_to.get(aid)
+                if prior_tier is not None:
+                    logger.warning(
+                        "enrich_perspective_clusters: cluster %s actor "
+                        "%r appears in both %r and %r; keeping in %r "
+                        "(priority stated > reported > mentioned)",
+                        cluster["id"],
+                        aid,
+                        prior_tier,
+                        tier,
+                        prior_tier,
+                    )
+                    continue
+                kept.append(aid)
+                assigned_to[aid] = tier
+            filtered_tiers[tier] = kept
+
+        assigned: set[str] = set(assigned_to.keys())
+
+        # Default-assign unclassified actors to `mentioned`. An actor
+        # that survived the actor_ids validation but never appeared in
+        # any sub-list lands in the lowest evidentiary tier — the safest
+        # default when the agent omitted classification.
+        unclassified = [
+            aid for aid in valid_actor_ids if aid not in assigned
+        ]
+        if unclassified:
+            for aid in unclassified:
+                logger.warning(
+                    "enrich_perspective_clusters: cluster %s actor %r "
+                    "in actor_ids but absent from stated/reported/"
+                    "mentioned; defaulting to mentioned",
+                    cluster["id"],
+                    aid,
+                )
+            filtered_tiers["mentioned"].extend(unclassified)
+            assigned.update(unclassified)
+
+        # Invariant: the three sub-lists partition actor_ids disjointly.
+        # A violation here is a bug in this validator, not in the agent
+        # output (we just repaired any agent-side inconsistency above).
+        _assert_partition_invariant(
+            cluster["id"],
+            filtered_tiers["stated"],
+            filtered_tiers["reported"],
+            filtered_tiers["mentioned"],
+            valid_set,
+        )
+
         cluster["actor_ids"] = valid_actor_ids
+        cluster["stated"] = filtered_tiers["stated"]
+        cluster["reported"] = filtered_tiers["reported"]
+        cluster["mentioned"] = filtered_tiers["mentioned"]
         cluster["regions"] = sorted(regions_seen)
         cluster["languages"] = sorted(languages_seen)
         cluster["n_actors"] = len(valid_actor_ids)

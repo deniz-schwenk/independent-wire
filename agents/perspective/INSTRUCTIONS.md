@@ -15,15 +15,17 @@ For each cluster, write:
 - `position_label` — one thesis-like sentence stating the position itself. *"Iran is financially collapsing and near capitulation"* is the right shape. Not a topic phrase, not a question, not an actor's name — a claim.
 - `position_summary` — one or two sentences expanding what the position argues and the grounds on which it rests.
 
-Both fields are written in English regardless of the source languages.
-
 ## Assigning actors to clusters
 
-For each cluster, list the `actor-NNN` IDs from `canonical_actors[]` whose statements actually express the cluster's position. Inclusion is decided from the actor's own words — what they say in any of their `quotes[].position` or `quotes[].verbatim` entries — not from the sources that quote them. An actor whose source is cited in the cluster but whose own statements voice a different position is not an actor of this cluster.
+For each cluster, classify every actor whose relationship to the cluster's position is materially evident in the dossier into one of three levels. The three levels together form the cluster's `actor_ids[]`: every actor in `actor_ids[]` appears in exactly one of `stated`, `reported`, or `mentioned`, and no actor appears in more than one of the three for the same cluster.
 
-A single actor may appear in two clusters when they have voiced two genuinely distinct positions; this is correct and expected. Conversely, an actor's quoted source can feed a cluster (its source-id is in `source_ids`) without the actor themselves belonging to that cluster (their actor-id is not in `actor_ids`) — for example when the source's `summary` or another speaker in the same source carries the cluster's position.
+- **Stated** — the actor's own words express the cluster's position.
+- **Reported** — sources describe the actor as holding or advancing the cluster's position without direct quotation.
+- **Mentioned** — the actor's actions, as the sources describe them, align with the cluster's position without any statement or third-party attribution.
 
-An example of correct assignment: a source quotes both a foreign minister calling for restraint and an opposition deputy demanding escalation. The foreign minister's `actor-NNN` belongs only in the restraint cluster; the deputy's `actor-NNN` belongs only in the escalation cluster; the source's `id` may legitimately appear under both because both positions ground in it. An example of incorrect assignment: placing every actor quoted in a multi-position source into every cluster the source feeds. That is the leak this list is designed to prevent.
+An actor whose presence in the dossier carries no positional signal with respect to any cluster — they appear as background, as biographical context, or as a name passing through — does not appear in `actor_ids[]` of any cluster, and therefore in none of the three sub-lists.
+
+The same actor may appear in multiple clusters at different levels when the dossier carries genuinely distinct positions for them across those clusters. A source's `id` belonging to a cluster's `source_ids[]` does not by itself make every actor that source quotes a member of that cluster's `actor_ids[]`; the actor's relationship to this cluster's position must be evident in its own right, at one of the three levels above.
 
 ## Identifying missing perspectives
 
@@ -42,7 +44,10 @@ A single JSON object with exactly two top-level fields. Example:
       "position_label": "The new policy will stifle small-business innovation",
       "position_summary": "Industry voices argue that the compliance burden falls disproportionately on smaller firms and that the timeline leaves no room for phased adoption.",
       "source_ids": ["rsrc-003", "rsrc-007", "rsrc-011"],
-      "actor_ids": ["actor-004", "actor-009"]
+      "actor_ids": ["actor-004", "actor-009", "actor-012"],
+      "stated": ["actor-004"],
+      "reported": ["actor-009"],
+      "mentioned": ["actor-012"]
     }
   ],
   "missing_positions": [
@@ -56,10 +61,13 @@ A single JSON object with exactly two top-level fields. Example:
 
 Field notes:
 
-- `position_clusters[].position_label` — one thesis-like sentence stating the position. Not a topic phrase, not a question. English regardless of source language.
-- `position_clusters[].position_summary` — one or two sentences expanding the position. English regardless of source language.
-- `position_clusters[].source_ids` — the `rsrc-NNN` IDs of every source containing an actor expressing this cluster's position. A source may appear under multiple clusters when it quotes actors with different positions.
-- `position_clusters[].actor_ids` — the `actor-NNN` IDs from `canonical_actors[]` whose own statements voice this cluster's position. An actor may appear under multiple clusters when their statements across the dossier express genuinely distinct positions; an actor MAY NOT appear here merely because their source is cited in `source_ids`. Empty when the cluster's position is grounded only in source-level material (a `summary` or `title` claim no quoted actor states).
+- `position_clusters[].position_label` — one thesis-like sentence stating the position. Not a topic phrase, not a question.
+- `position_clusters[].position_summary` — one or two sentences expanding the position.
+- `position_clusters[].source_ids` — the `rsrc-NNN` IDs of every source containing material that grounds this cluster's position. A source may appear under multiple clusters when it carries multiple positions.
+- `position_clusters[].actor_ids` — the flat union of `stated`, `reported`, and `mentioned`.
+- `position_clusters[].stated` — `actor-NNN` IDs whose own words express the cluster's position.
+- `position_clusters[].reported` — `actor-NNN` IDs whose sources describe them as holding the cluster's position without direct quotation.
+- `position_clusters[].mentioned` — `actor-NNN` IDs whose actions, as the sources describe them, align with the cluster's position without any statement or third-party attribution.
 - `missing_positions[].type` — one of the ten actor-type enum values listed above.
 - `missing_positions[].description` — one concrete sentence naming what is missing and why it matters for this topic.
 

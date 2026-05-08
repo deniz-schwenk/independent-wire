@@ -168,20 +168,38 @@ PERSPECTIVE_SCHEMA = {
                         "items": {"type": "string"},
                     },
                     # actor_ids — `actor-NNN` references into the
-                    # `final_actors[]` input list. The agent decides
+                    # `canonical_actors[]` input list. The agent decides
                     # which actors voice this cluster's position;
                     # cluster→actor assignment is not derivable from
-                    # source membership alone (an actor's source can
-                    # appear in a cluster without the actor's own
-                    # statements voicing that cluster's claim).
+                    # source membership alone. The flat list is the
+                    # disjoint union of `stated`, `reported`, and
+                    # `mentioned` — the three sub-lists below partition
+                    # `actor_ids` by evidentiary tier.
                     "actor_ids": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                    },
+                    # Three-level partition of `actor_ids`. Every entry
+                    # in `actor_ids` appears in exactly one of these
+                    # three sub-lists; no entry appears in more than
+                    # one. Sub-lists may be empty when no actor falls
+                    # into that tier for the cluster.
+                    "stated": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                    },
+                    "reported": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                    },
+                    "mentioned": {
                         "type": "array",
                         "items": {"type": "string"},
                     },
                 },
                 "required": [
                     "position_label", "position_summary", "source_ids",
-                    "actor_ids",
+                    "actor_ids", "stated", "reported", "mentioned",
                 ],
                 "additionalProperties": False,
             },
