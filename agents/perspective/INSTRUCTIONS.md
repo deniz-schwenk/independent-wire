@@ -17,15 +17,15 @@ For each cluster, write:
 
 ## Assigning actors to clusters
 
-For each cluster, classify every actor whose relationship to the cluster's position is materially evident in the dossier into one of three levels. The three levels together form the cluster's `actor_ids[]`: every actor in `actor_ids[]` appears in exactly one of `stated`, `reported`, or `mentioned`, and no actor appears in more than one of the three for the same cluster.
+For each cluster, classify every actor whose relationship to the cluster's position is materially evident in the dossier into one of three sub-lists: `stated`, `reported`, or `mentioned`. The three sub-lists are pairwise disjoint — no actor appears in more than one of them for the same cluster. Read each actor's position as the dossier renders it and classify on the relationship the position represents — whether the actor is the source of the position, has the position attributed to them by the dossier, or aligns with the position through their own actions. The position string already records the source's attributional structure faithfully; lexical or grammatical markers in the position string do not need to be detected separately.
 
-- **Stated** — the actor's own words express the cluster's position.
-- **Reported** — sources describe the actor as holding or advancing the cluster's position without direct quotation.
-- **Mentioned** — the actor's actions, as the sources describe them, align with the cluster's position without any statement or third-party attribution.
+- **Stated** — the actor expresses the cluster's position. The actor is the source of the position.
+- **Reported** — the cluster's position is attributed to the actor by the dossier without the actor expressing it themselves. The position belongs to the actor as the dossier records it.
+- **Mentioned** — the actor's actions, as the dossier records them, align with the cluster's position. The alignment is in what the actor does, not in what is said about them or by them.
 
-An actor whose presence in the dossier carries no positional signal with respect to any cluster — they appear as background, as biographical context, or as a name passing through — does not appear in `actor_ids[]` of any cluster, and therefore in none of the three sub-lists.
+An actor whose presence in the dossier carries no positional signal with respect to any cluster — they appear as background, as biographical context, or as a name passing through — does not appear in any of the three sub-lists for any cluster.
 
-The same actor may appear in multiple clusters at different levels when the dossier carries genuinely distinct positions for them across those clusters. A source's `id` belonging to a cluster's `source_ids[]` does not by itself make every actor that source quotes a member of that cluster's `actor_ids[]`; the actor's relationship to this cluster's position must be evident in its own right, at one of the three levels above.
+The same actor may appear in multiple clusters at different levels when the dossier carries genuinely distinct positions for them across those clusters. A source's `id` belonging to a cluster's `source_ids[]` does not by itself place every actor that source quotes into one of that cluster's sub-lists; the actor's relationship to this cluster's position must be evident in its own right, at one of the three levels above.
 
 ## Identifying missing perspectives
 
@@ -44,7 +44,6 @@ A single JSON object with exactly two top-level fields. Example:
       "position_label": "The new policy will stifle small-business innovation",
       "position_summary": "Industry voices argue that the compliance burden falls disproportionately on smaller firms and that the timeline leaves no room for phased adoption.",
       "source_ids": ["rsrc-003", "rsrc-007", "rsrc-011"],
-      "actor_ids": ["actor-004", "actor-009", "actor-012"],
       "stated": ["actor-004"],
       "reported": ["actor-009"],
       "mentioned": ["actor-012"]
@@ -64,10 +63,9 @@ Field notes:
 - `position_clusters[].position_label` — one thesis-like sentence stating the position. Not a topic phrase, not a question.
 - `position_clusters[].position_summary` — one or two sentences expanding the position.
 - `position_clusters[].source_ids` — the `rsrc-NNN` IDs of every source containing material that grounds this cluster's position. A source may appear under multiple clusters when it carries multiple positions.
-- `position_clusters[].actor_ids` — the flat union of `stated`, `reported`, and `mentioned`.
-- `position_clusters[].stated` — `actor-NNN` IDs whose own words express the cluster's position.
-- `position_clusters[].reported` — `actor-NNN` IDs whose sources describe them as holding the cluster's position without direct quotation.
-- `position_clusters[].mentioned` — `actor-NNN` IDs whose actions, as the sources describe them, align with the cluster's position without any statement or third-party attribution.
+- `position_clusters[].stated` — `actor-NNN` IDs who express the cluster's position; the actor is the source of the position.
+- `position_clusters[].reported` — `actor-NNN` IDs to whom the dossier attributes the cluster's position, without their expressing it themselves.
+- `position_clusters[].mentioned` — `actor-NNN` IDs whose actions, as the dossier records them, align with the cluster's position.
 - `missing_positions[].type` — one of the ten actor-type enum values listed above.
 - `missing_positions[].description` — one concrete sentence naming what is missing and why it matters for this topic.
 
@@ -76,6 +74,6 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 # RULES
 
 1. Cluster by substance, not by topic. Two actors discussing the same situation but reaching opposite conclusions belong in different clusters; two actors in different countries or languages making the same claim belong in the same cluster.
-2. Every `source_ids` entry corresponds to a source actually present in the input `sources[]` that grounds the cluster's position — either in an `actors_quoted[]` entry or in the source's `summary`/`title`. Every `actor_ids` entry corresponds to an `actor-NNN` ID present in the input `canonical_actors[]`. Do not invent sources or actors, and do not assemble positions from outside knowledge.
+2. Every `source_ids` entry corresponds to a source actually present in the input `sources[]` that grounds the cluster's position — either in an `actors_quoted[]` entry or in the source's `summary`/`title`. Every entry in `stated`, `reported`, or `mentioned` corresponds to an `actor-NNN` ID present in the input `canonical_actors[]`. Do not invent sources or actors, and do not assemble positions from outside knowledge.
 3. `position_label` and `position_summary` are written in English regardless of the source languages.
 4. The agent's output describes positions in its own words. Do not paste actor `position` text into `position_label` or `position_summary`, do not translate `verbatim_quote` content, and do not reproduce article wording in the output.

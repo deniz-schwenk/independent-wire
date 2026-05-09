@@ -167,23 +167,16 @@ PERSPECTIVE_SCHEMA = {
                         "type": "array",
                         "items": {"type": "string"},
                     },
-                    # actor_ids — `actor-NNN` references into the
-                    # `canonical_actors[]` input list. The agent decides
-                    # which actors voice this cluster's position;
-                    # cluster→actor assignment is not derivable from
-                    # source membership alone. The flat list is the
-                    # disjoint union of `stated`, `reported`, and
-                    # `mentioned` — the three sub-lists below partition
-                    # `actor_ids` by evidentiary tier.
-                    "actor_ids": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                    },
-                    # Three-level partition of `actor_ids`. Every entry
-                    # in `actor_ids` appears in exactly one of these
-                    # three sub-lists; no entry appears in more than
-                    # one. Sub-lists may be empty when no actor falls
-                    # into that tier for the cluster.
+                    # Three-level actor classification — `actor-NNN`
+                    # references into the `canonical_actors[]` input
+                    # list, partitioned by evidentiary tier. The three
+                    # sub-lists are pairwise disjoint; an actor may
+                    # appear in at most one for a given cluster. The
+                    # flat union `actor_ids[]` is computed
+                    # deterministically by enrich_perspective_clusters
+                    # (sorted set-union), not emitted by the agent.
+                    # Sub-lists may be empty when no actor falls into
+                    # that tier for the cluster.
                     "stated": {
                         "type": "array",
                         "items": {"type": "string"},
@@ -199,7 +192,7 @@ PERSPECTIVE_SCHEMA = {
                 },
                 "required": [
                     "position_label", "position_summary", "source_ids",
-                    "actor_ids", "stated", "reported", "mentioned",
+                    "stated", "reported", "mentioned",
                 ],
                 "additionalProperties": False,
             },

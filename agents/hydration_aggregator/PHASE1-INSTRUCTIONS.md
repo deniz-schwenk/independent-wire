@@ -6,13 +6,17 @@ Summaries name specifics — concrete facts, figures, named actors, or unique fr
 
 ## Actor extraction
 
-An actor is a named person, organization, government body, or institution whose position or statement is described in the article text. For each actor in an article, record:
+An actor is a named entity whose own statement, claim, declaration, or substantively described action is recorded in the article. An entity recorded only as the recipient, addressee, audience, or contextual reference of someone else's words or actions — without contributing one of its own — is not an actor for this extraction, regardless of how prominently it is named.
+
+For each actor in an article, record:
 
 - `name` — the actor's name as given.
 - `role` — the actor's role or title.
 - `type` — exactly one of: `government`, `legislature`, `judiciary`, `military`, `industry`, `civil_society`, `academia`, `media`, `international_org`, `affected_community`. These ten values are exhaustive.
 - `position` — one sentence describing what the actor says or does in this article.
 - `verbatim_quote` — the actor's words exactly as they appear in the article, in the original language, with the article's quotation marks. `null` when the article only paraphrases.
+
+Render the actor's position using the article's own attributional language. Do not introduce qualification about the certainty, authority, or directness of the actor's statement that the article does not itself introduce. When the article attributes a statement directly, the position is rendered directly. When the article carries the statement through a chain of reporting, the position carries that chain only as the article itself carries it.
 
 When an article names no actor, the article's `actors_quoted` array is empty.
 

@@ -555,10 +555,10 @@ def _assert_partition_invariant(
 
     A violation here is a programming error in the validator itself, not
     an agent error: by the time this check runs, the cross-tier dedup
-    and default-assign steps in
-    :func:`_enrich_position_clusters_logic` have repaired any
-    agent-side inconsistency. Used by both the validator and a unit
-    test that exercises the assertion shape with synthetic input.
+    in :func:`_enrich_position_clusters_logic` has repaired any
+    agent-side inconsistency, and ``actor_ids`` is the derived sorted
+    union of the cleaned sub-lists. Used by both the validator and a
+    unit test that exercises the assertion shape with synthetic input.
     """
     stated_set = set(stated)
     reported_set = set(reported)
@@ -591,37 +591,36 @@ def _enrich_position_clusters_logic(
 ) -> dict:
     """Attach deterministic fields to the agent's raw cluster output.
 
-    Cluster→actor assignment is an agent decision (per-cluster
-    ``actor_ids[]`` emitted by PerspectiveStage), not a source-membership
-    fan-out — that prior leak loop is gone.
+    Cluster→actor assignment is an agent decision via three sub-lists
+    (``stated`` / ``reported`` / ``mentioned``) classified by evidentiary
+    tier. The flat ``actor_ids[]`` field is **derived** by this validator
+    from the cleaned sub-list union — the agent does not emit it. The
+    three sub-lists are the source of truth.
 
     What this stage adds, deterministically:
 
     - ``id`` — sequential ``pc-NNN``
     - ``regions`` / ``languages`` — derived from the cited sources
+    - ``actor_ids`` — ``sorted(set(stated) | set(reported) | set(mentioned))``
+      after sub-list cleaning
     - ``n_actors`` / ``n_sources`` / ``n_regions`` / ``n_languages`` —
-      objective counts replacing the prior ``representation``
-      bucket (which reproduced the bias the system aims to surface and
-      was arithmetically inconsistent against the post-prune source set)
+      objective counts
 
     Validation, in two layers:
 
-    1. Every ``actor_ids`` entry must reference an ID present in
-       ``canonical_actors[]``. Invalid IDs are dropped with a warning.
-       The same filter applies to each of the three sub-lists
-       (``stated`` / ``reported`` / ``mentioned``).
-    2. The three sub-lists must partition ``actor_ids`` disjointly. The
-       validator repairs agent-side violations: an ID appearing in two
-       sub-lists is kept in the highest-evidentiary tier (priority
-       ``stated > reported > mentioned``); an ID present in
-       ``actor_ids`` but absent from all three sub-lists is
-       default-assigned to ``mentioned`` (the lowest tier — safest
-       default when classification was omitted). After repair, the
-       invariant
-       ``set(stated) | set(reported) | set(mentioned) == set(actor_ids)``
-       is asserted; pairwise-disjointness is also asserted. A violation
-       at this point is a programming error in the validator itself,
-       not an agent error.
+    1. Each sub-list entry must reference an ID present in
+       ``canonical_actors[]``. Invalid IDs are dropped with a warning
+       naming the offending tier. Per-tier duplicates are deduped.
+    2. Cross-tier duplicates are repaired with priority ``stated >
+       reported > mentioned``: an ID claimed by a higher-priority tier
+       is stripped from any lower-priority tier. A warning fires naming
+       both tiers so reviewers can spot agent-side inconsistency.
+
+    After repair, the partition invariant
+    ``set(stated) | set(reported) | set(mentioned) == set(actor_ids)``
+    holds by construction (``actor_ids`` is computed from that union),
+    and pairwise-disjointness is asserted. A violation at the assertion
+    is a programming error in this validator itself.
     """
     import copy as _copy
 
@@ -655,33 +654,11 @@ def _enrich_position_clusters_logic(
             if language:
                 languages_seen.add(language)
 
-        # Validate agent-assigned actor_ids against the canonical
-        # canonical_actors[] list (post alias resolution). Invalid IDs
+        # Filter each sub-list against canonical_actors[]: drop unknowns
         # (hallucinations, stale references, or aliased IDs that
-        # disappeared post-merge) are dropped and logged so the smoke
-        # flags them.
-        raw_actor_ids = [
-            a for a in (cluster.get("actor_ids") or []) if isinstance(a, str)
-        ]
-        valid_actor_ids: list[str] = []
-        seen_aids: set[str] = set()
-        for aid in raw_actor_ids:
-            if aid in actor_index and aid not in seen_aids:
-                valid_actor_ids.append(aid)
-                seen_aids.add(aid)
-            elif aid not in actor_index:
-                logger.warning(
-                    "enrich_perspective_clusters: cluster %s referenced "
-                    "unknown actor_id %r; dropping",
-                    cluster["id"],
-                    aid,
-                )
-
-        valid_set = set(valid_actor_ids)
-
-        # Filter each sub-list against the validated actor_ids set:
-        # drop unknowns and per-sub-list duplicates. Sub-list ordering
-        # within each tier is preserved (insertion order from the agent).
+        # disappeared post-merge) and per-tier duplicates. Sub-list
+        # ordering within each tier is preserved (insertion order from
+        # the agent).
         filtered_tiers: dict[str, list[str]] = {}
         for tier in _SUBLIST_TIERS:
             raw = cluster.get(tier)
@@ -692,20 +669,15 @@ def _enrich_position_clusters_logic(
                     continue
                 if aid in seen_in_tier:
                     continue
-                if aid not in valid_set:
-                    # Either unknown to canonical_actors (already warned
-                    # via the actor_ids loop above when it was in
-                    # actor_ids; warn again here when it appeared only
-                    # in a sub-list and not in actor_ids) or aliased out.
-                    if aid not in actor_index:
-                        logger.warning(
-                            "enrich_perspective_clusters: cluster %s "
-                            "sub-list %r referenced unknown actor_id %r; "
-                            "dropping",
-                            cluster["id"],
-                            tier,
-                            aid,
-                        )
+                if aid not in actor_index:
+                    logger.warning(
+                        "enrich_perspective_clusters: cluster %s "
+                        "sub-list %r referenced unknown actor_id %r; "
+                        "dropping",
+                        cluster["id"],
+                        tier,
+                        aid,
+                    )
                     continue
                 tier_list.append(aid)
                 seen_in_tier.add(aid)
@@ -736,45 +708,30 @@ def _enrich_position_clusters_logic(
                 assigned_to[aid] = tier
             filtered_tiers[tier] = kept
 
-        assigned: set[str] = set(assigned_to.keys())
-
-        # Default-assign unclassified actors to `mentioned`. An actor
-        # that survived the actor_ids validation but never appeared in
-        # any sub-list lands in the lowest evidentiary tier — the safest
-        # default when the agent omitted classification.
-        unclassified = [
-            aid for aid in valid_actor_ids if aid not in assigned
-        ]
-        if unclassified:
-            for aid in unclassified:
-                logger.warning(
-                    "enrich_perspective_clusters: cluster %s actor %r "
-                    "in actor_ids but absent from stated/reported/"
-                    "mentioned; defaulting to mentioned",
-                    cluster["id"],
-                    aid,
-                )
-            filtered_tiers["mentioned"].extend(unclassified)
-            assigned.update(unclassified)
+        # Compute the deterministic flat union — actor_ids is now derived,
+        # not agent-emitted. Sorted for stable serialization across runs.
+        actor_ids = sorted(assigned_to.keys())
+        actor_ids_set = set(actor_ids)
 
         # Invariant: the three sub-lists partition actor_ids disjointly.
-        # A violation here is a bug in this validator, not in the agent
-        # output (we just repaired any agent-side inconsistency above).
+        # By construction (actor_ids is the union; cross-tier dedup
+        # stripped overlaps), the union equals actor_ids and tiers are
+        # pairwise disjoint. A violation here is a bug in this validator.
         _assert_partition_invariant(
             cluster["id"],
             filtered_tiers["stated"],
             filtered_tiers["reported"],
             filtered_tiers["mentioned"],
-            valid_set,
+            actor_ids_set,
         )
 
-        cluster["actor_ids"] = valid_actor_ids
+        cluster["actor_ids"] = actor_ids
         cluster["stated"] = filtered_tiers["stated"]
         cluster["reported"] = filtered_tiers["reported"]
         cluster["mentioned"] = filtered_tiers["mentioned"]
         cluster["regions"] = sorted(regions_seen)
         cluster["languages"] = sorted(languages_seen)
-        cluster["n_actors"] = len(valid_actor_ids)
+        cluster["n_actors"] = len(actor_ids)
         cluster["n_sources"] = len(source_ids)
         cluster["n_regions"] = len(regions_seen)
         cluster["n_languages"] = len(languages_seen)
@@ -794,12 +751,14 @@ async def enrich_perspective_clusters(
     in both production and hydrated variants.
 
     Reads `perspective_clusters` (raw shape from PerspectiveStage:
-    `[{position_label, position_summary, source_ids, actor_ids}]`),
-    `final_sources`, and `canonical_actors` (the post alias-resolution
-    actor list). Writes `perspective_clusters` enriched with `pc-NNN`,
-    validated `actor_ids` (joined against `canonical_actors`), regions,
-    languages, and the count summary `n_actors / n_sources / n_regions /
-    n_languages` computed against canonical-actor membership.
+    `[{position_label, position_summary, source_ids, stated, reported,
+    mentioned}]`), `final_sources`, and `canonical_actors` (the post
+    alias-resolution actor list). Writes `perspective_clusters` enriched
+    with `pc-NNN`, the three sub-lists cleaned against `canonical_actors`
+    and cross-tier-deduped, the derived flat `actor_ids` (the sorted
+    union of cleaned sub-lists), regions, languages, and the count
+    summary `n_actors / n_sources / n_regions / n_languages` computed
+    against canonical-actor membership.
 
     No-op when `perspective_clusters` is empty (PerspectiveStage may have
     failed or emitted nothing). The post-validator accepts the empty case

@@ -332,16 +332,16 @@ def test_enrich_perspective_clusters_assigns_pc_nnn_in_order():
 
 def test_enrich_perspective_clusters_no_longer_walks_actors_quoted():
     """The leak loop that fanned every source's actors_quoted into every
-    cluster citing the source is gone. cluster.actor_ids is the validated
-    agent-assigned mapping; regions and languages still derive from cited
-    sources deterministically.
+    cluster citing the source is gone. cluster.actor_ids is derived from
+    the agent-classified sub-lists; regions and languages still derive
+    from cited sources deterministically.
     """
     tb = TopicBus()
     tb.perspective_clusters = [
         {
             "position_label": "Pro",
             "source_ids": ["src-001", "src-002"],
-            "actor_ids": ["actor-001"],
+            "stated": ["actor-001"],
         },
     ]
     tb.final_sources = [
@@ -397,14 +397,14 @@ def test_enrich_perspective_clusters_count_fields_replace_representation():
         {
             "position_label": "Big",
             "source_ids": ["src-001", "src-002", "src-003"],
-            "actor_ids": ["actor-001", "actor-002"],
+            "stated": ["actor-001", "actor-002"],
         },
         {
             "position_label": "Med",
             "source_ids": ["src-004"],
-            "actor_ids": ["actor-003"],
+            "stated": ["actor-003"],
         },
-        {"position_label": "None", "source_ids": [], "actor_ids": []},
+        {"position_label": "None", "source_ids": [], "stated": []},
     ]
     tb.final_sources = [
         {"id": f"src-{i:03d}", "country": "X", "language": "en"} for i in range(1, 6)

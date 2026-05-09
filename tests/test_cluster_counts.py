@@ -28,7 +28,7 @@ def test_count_fields_populated_on_normal_cluster():
         {
             "position_label": "Pro",
             "source_ids": ["src-001", "src-002", "src-003"],
-            "actor_ids": ["actor-001", "actor-002"],
+            "stated": ["actor-001", "actor-002"],
         },
     ]
     tb.final_sources = [
@@ -97,14 +97,14 @@ def test_n_regions_and_n_languages_dedup():
 
 def test_n_actors_reflects_validated_actor_ids_only():
     """``n_actors`` matches the LENGTH of the validated ``actor_ids``
-    list, not the agent-emitted raw count. Hallucinations are excluded
-    from the count."""
+    list (the derived union of cleaned sub-lists). Hallucinations
+    (sub-list IDs not present in ``canonical_actors``) are excluded."""
     tb = TopicBus()
     tb.perspective_clusters = [
         {
             "position_label": "X",
             "source_ids": ["src-001"],
-            "actor_ids": ["actor-001", "actor-999", "actor-002"],
+            "stated": ["actor-001", "actor-999", "actor-002"],
         },
     ]
     tb.final_sources = [

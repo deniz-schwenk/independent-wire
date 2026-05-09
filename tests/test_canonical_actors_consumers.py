@@ -128,13 +128,14 @@ def test_perspective_stage_reads_tuple_lists_canonical_actors():
 def test_enrich_clusters_validates_actor_ids_against_canonical_only():
     """An actor_id present in final_actors but NOT in canonical_actors
     (i.e. an aliased ID) must be dropped — the validator now joins
-    against canonical_actors, not final_actors."""
+    against canonical_actors, not final_actors. ``actor_ids`` is derived
+    from the sub-list union after dropping unknowns."""
     tb = TopicBus()
     tb.perspective_clusters = [
         {
             "position_label": "X",
             "source_ids": ["src-001"],
-            "actor_ids": ["actor-001", "actor-002"],
+            "stated": ["actor-001", "actor-002"],
         },
     ]
     tb.final_sources = [{"id": "src-001", "country": "X", "language": "en"}]
@@ -160,7 +161,7 @@ def test_enrich_clusters_n_actors_reflects_canonical_membership():
         {
             "position_label": "X",
             "source_ids": ["src-001"],
-            "actor_ids": ["actor-001", "actor-002", "actor-003"],
+            "stated": ["actor-001", "actor-002", "actor-003"],
         },
     ]
     tb.final_sources = [{"id": "src-001", "country": "X", "language": "en"}]

@@ -407,16 +407,20 @@ class TopicBus(BaseModel):
     #
     # Each cluster element carries: `position_label`, `position_summary`,
     # `source_ids` (`src-NNN` references into `final_sources`), and the
-    # three-level actor classification — `actor_ids` (the flat union)
-    # plus `stated`, `reported`, `mentioned` (the disjoint partition).
-    # Every entry in `actor_ids` appears in exactly one of the three
-    # sub-lists; no entry appears in more than one. The sub-lists carry
-    # the evidentiary tier of each actor's relationship to the cluster's
-    # position: `stated` = the actor's own words; `reported` = sources
-    # describe the actor as holding the position; `mentioned` = the
-    # actor's actions align with the position without statement or
-    # third-party attribution. enrich_perspective_clusters validates the
-    # partition invariant and repairs agent-side inconsistency.
+    # three-level actor classification — `stated`, `reported`, and
+    # `mentioned`, the disjoint sub-lists agent-emitted and validated by
+    # enrich_perspective_clusters. The flat `actor_ids[]` field is
+    # **derived** by enrich_perspective_clusters as the sorted union of
+    # the three cleaned sub-lists (not agent-emitted); every entry in
+    # `actor_ids` appears in exactly one of the three sub-lists by
+    # construction. The sub-lists carry the evidentiary tier of each
+    # actor's relationship to the cluster's position: `stated` = the
+    # actor's own words; `reported` = sources describe the actor as
+    # holding the position; `mentioned` = the actor's actions align with
+    # the position without statement or third-party attribution.
+    # enrich_perspective_clusters drops unknown actor IDs, dedupes
+    # within and across tiers (priority stated > reported > mentioned),
+    # and asserts the pairwise-disjoint partition invariant.
     perspective_clusters: list = Slot(
         default_factory=list,
         visibility="internal",
@@ -460,12 +464,12 @@ class TopicBus(BaseModel):
     # 4B.8 Perspective-Sync phase — per-element mirror (1 slot).
     # Each cluster element mirrors the shape documented on
     # `perspective_clusters` above: `position_label`,
-    # `position_summary`, `source_ids`, plus the three-level actor
-    # classification (`actor_ids` flat union and `stated` / `reported`
-    # / `mentioned` partition). In hydrated, perspective_sync emits
-    # `position_cluster_updates` with merged `position_label` /
-    # `position_summary` text; the actor-id sub-lists pass through
-    # unchanged from the upstream `perspective_clusters` slot.
+    # `position_summary`, `source_ids`, the three sub-lists `stated` /
+    # `reported` / `mentioned`, and the derived flat `actor_ids[]`. In
+    # hydrated, perspective_sync emits `position_cluster_updates` with
+    # merged `position_label` / `position_summary` text; the sub-lists
+    # and derived `actor_ids[]` pass through unchanged from the upstream
+    # `perspective_clusters` slot.
     perspective_clusters_synced: list = Slot(
         default_factory=list,
         visibility=["tp", "mcp"],
