@@ -378,12 +378,14 @@ finalize_run = make_finalize_run()
 # ---------------------------------------------------------------------------
 
 
-HYDRATION_URL_CAP = 40
+HYDRATION_URL_CAP = 50
 """Maximum hydration URLs per editor assignment after diversity selection.
 
-Locked at 40 by the source-cap workpaket (2026-05-11) after the Curator smoke
-showed structural Curator behaviour produces 979-1004 cluster_assignments for
-hot topics, cascading into ~$2-3 of Phase-1 hydration cost per assignment."""
+V1 source-cap workpaket (2026-05-11) initially set this to 40 after the
+Curator smoke showed structural Curator behaviour produces 979-1004
+cluster_assignments for hot topics, cascading into ~$2-3 of Phase-1
+hydration cost per assignment. Bumped to 50 for the TP-001 re-run to
+allow slightly more outlet coverage on hot topics."""
 
 MAX_PER_OUTLET = 3
 """Hard per-outlet ceiling within the cap. Even when a single outlet

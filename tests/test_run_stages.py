@@ -770,7 +770,7 @@ def test_select_diverse_hydration_urls_single_outlet_cap_clipped():
 def test_select_diverse_hydration_urls_module_constants_default():
     """Defaults match the module-level constants — guards against silent
     drift if someone changes one without updating the other."""
-    assert HYDRATION_URL_CAP == 40
+    assert HYDRATION_URL_CAP == 50
     assert MAX_PER_OUTLET == 3
 
 
