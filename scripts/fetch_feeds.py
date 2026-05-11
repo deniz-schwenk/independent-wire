@@ -12,6 +12,7 @@ import sys
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import Optional
 
 import feedparser
 import httpx
@@ -49,6 +50,7 @@ def parse_rss_entries(feed_data, source: dict, cutoff: datetime) -> list[dict]:
     for entry in feed_data.entries:
         # Parse published date
         published = entry.get("published_parsed") or entry.get("updated_parsed")
+        entry_dt: datetime | None = None
         if published:
             from calendar import timegm
             entry_dt = datetime.fromtimestamp(timegm(published), tz=timezone.utc)
@@ -78,6 +80,7 @@ def parse_rss_entries(feed_data, source: dict, cutoff: datetime) -> list[dict]:
             "language": source.get("language", "en"),
             "region": source.get("region", ""),
             "feed_source": True,
+            "published_at": entry_dt.isoformat() if entry_dt else None,
         })
 
     return entries
@@ -101,6 +104,22 @@ async def fetch_rss(client: httpx.AsyncClient, source: dict, cutoff: datetime) -
         return []
 
 
+def _parse_gdelt_seendate(seendate: str) -> Optional[str]:
+    """Parse GDELT's compact ``YYYYMMDDTHHMMSSZ`` timestamp into ISO 8601.
+
+    Returns ``None`` if the input is empty or unparseable — the caller emits
+    ``published_at: None`` (selector contract: null, not missing key)."""
+    if not seendate:
+        return None
+    try:
+        dt = datetime.strptime(seendate, "%Y%m%dT%H%M%SZ").replace(
+            tzinfo=timezone.utc
+        )
+        return dt.isoformat()
+    except (ValueError, TypeError):
+        return None
+
+
 async def fetch_gdelt(client: httpx.AsyncClient, source: dict) -> list[dict]:
     """Fetch recent articles from the GDELT API."""
     try:
@@ -113,14 +132,16 @@ async def fetch_gdelt(client: httpx.AsyncClient, source: dict) -> list[dict]:
             title = art.get("title", "").strip()
             if not title:
                 continue
+            seendate = art.get("seendate", "")
             entries.append({
                 "title": title,
-                "summary": art.get("seendate", ""),
+                "summary": seendate,
                 "source_url": art.get("url", ""),
                 "source_name": art.get("domain", "GDELT"),
                 "language": art.get("language", "English"),
                 "region": "Global",
                 "feed_source": True,
+                "published_at": _parse_gdelt_seendate(seendate),
             })
         logger.info("GDELT: %d entries", len(entries))
         return entries
