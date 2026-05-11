@@ -75,12 +75,17 @@ def test_consolidate_actors_dedup_on_exact_name_match():
     assert a["name"] == "Donald Trump"
     assert a["source_ids"] == ["src-001", "src-002"]
     assert len(a["quotes"]) == 2
+    # evidence_type is None when the source actor entry does not carry
+    # the field (researcher-sourced actors; pre-migration hydration
+    # state files). Threaded through unchanged here.
     assert a["quotes"][0] == {
         "source_id": "src-001",
         "verbatim": "We will respond.",
         "position": "Threatens action",
+        "evidence_type": None,
     }
     assert a["quotes"][1]["verbatim"] is None
+    assert a["quotes"][1]["evidence_type"] is None
 
 
 def test_consolidate_actors_no_alias_resolution_per_F2():

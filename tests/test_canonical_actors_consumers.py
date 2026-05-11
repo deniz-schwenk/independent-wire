@@ -78,7 +78,10 @@ def _ro(rb: RunBus | None = None):
 # ---------------------------------------------------------------------------
 
 
-def test_perspective_stage_passes_canonical_actors_to_agent():
+def test_perspective_stage_passes_canonical_actor_pools_to_agent():
+    """Post-evidence-type migration: PerspectiveStage passes the three
+    evidence-partitioned pools to the agent instead of the unified
+    canonical_actors[] list."""
     fake = FakeAgent(
         structured={"position_clusters": [], "missing_positions": []}
     )
@@ -86,37 +89,42 @@ def test_perspective_stage_passes_canonical_actors_to_agent():
     tb.final_sources = [
         {"id": "src-001", "country": "US", "language": "en"},
     ]
-    tb.final_actors = [
-        {"id": "actor-001", "name": "Russia's Defense Ministry"},
-        {"id": "actor-002", "name": "Russian Defense Ministry"},
-    ]
-    tb.canonical_actors = [
+    tb.canonical_actors_stated = [
         {"id": "actor-001", "name": "Russian Defense Ministry"},
     ]
-    tb.actor_alias_mapping = [
-        {"alias_id": "actor-002", "alias_name": "Russia's Defense Ministry",
-         "canonical_id": "actor-001"},
+    tb.canonical_actors_reported = [
+        {"id": "actor-002", "name": "An anonymous official"},
     ]
+    tb.canonical_actors_mentioned = []
     stage = PerspectiveStage(fake)
     _run(stage, tb, _ro())
 
     ctx = fake.calls[0]["context"]
-    assert "canonical_actors" in ctx
-    assert "final_actors" not in ctx, (
-        "PerspectiveStage must read canonical_actors, not final_actors"
+    assert "canonical_actors_stated" in ctx
+    assert "canonical_actors_reported" in ctx
+    assert "canonical_actors_mentioned" in ctx
+    assert "canonical_actors" not in ctx, (
+        "Post-migration: PerspectiveStage must read the three pools, "
+        "not the unified canonical_actors list"
     )
-    assert len(ctx["canonical_actors"]) == 1
-    assert ctx["canonical_actors"][0]["name"] == "Russian Defense Ministry"
+    assert "final_actors" not in ctx
+    assert len(ctx["canonical_actors_stated"]) == 1
+    assert ctx["canonical_actors_stated"][0]["name"] == "Russian Defense Ministry"
+    assert len(ctx["canonical_actors_reported"]) == 1
+    assert ctx["canonical_actors_mentioned"] == []
 
 
-def test_perspective_stage_reads_tuple_lists_canonical_actors():
+def test_perspective_stage_reads_tuple_lists_canonical_actor_pools():
     from src.stage import get_stage_meta
 
     fake = FakeAgent(
         structured={"position_clusters": [], "missing_positions": []}
     )
     meta = get_stage_meta(PerspectiveStage(fake))
-    assert "canonical_actors" in meta.reads
+    assert "canonical_actors_stated" in meta.reads
+    assert "canonical_actors_reported" in meta.reads
+    assert "canonical_actors_mentioned" in meta.reads
+    assert "canonical_actors" not in meta.reads
     assert "final_actors" not in meta.reads
 
 

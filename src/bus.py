@@ -399,6 +399,49 @@ class TopicBus(BaseModel):
         optional_write=True,
     )
 
+    # 4B.4d Evidence-partitioned canonical-actor pools (3 slots).
+    # Written by `partition_canonical_actors_by_evidence` — runs after
+    # `resolve_actor_aliases` and before `PerspectiveStage`. The
+    # deterministic stage walks every canonical actor's `quotes[]` and
+    # splits the population into three pools by the per-quote
+    # `evidence_type` (`stated` / `reported` / `mentioned`) that
+    # Hydration-Phase-1 emits at extraction time.
+    #
+    # An actor appears in a pool only if at least one of their quotes
+    # carries the matching `evidence_type`. The pool entry mirrors the
+    # canonical_actor shape (`id`, `name`, `role`, `type`,
+    # `is_anonymous`) but filters `quotes[]` and `source_ids[]` to the
+    # subset matching that evidence_type. An actor with cross-form
+    # coverage in the dossier therefore appears in more than one pool,
+    # each entry holding the quote subset of the matching form.
+    #
+    # **Read/write contract:** `PerspectiveStage` reads the three pools
+    # (not `canonical_actors[]`) and assigns cluster membership
+    # pool-by-pool — the sub-list of origin equals the pool of origin.
+    # `enrich_perspective_clusters` validates that every ID in a
+    # cluster's `stated` sub-list appears in `canonical_actors_stated`,
+    # and analogously for `reported` / `mentioned`. All other consumers
+    # (Renderer, Bias-Card, Writer) continue to read the unified
+    # `canonical_actors[]` slot.
+    #
+    # `optional_write=True` — smoke runs that bypass the partition stage
+    # leave all three slots at their typed empty defaults.
+    canonical_actors_stated: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
+    canonical_actors_reported: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
+    canonical_actors_mentioned: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
+
     # 4B.5 Perspective phase (2 slots). perspective_clusters is written
     # twice: PerspectiveStage emits raw clusters, then enrich_perspective_
     # clusters (deterministic) attaches pc-NNN, actors, regions, languages,

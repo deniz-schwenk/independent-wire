@@ -213,9 +213,22 @@ def create_agents_hydrated() -> dict[str, Agent]:
             reasoning="none",
             output_schema=RESEARCHER_PLAN_SCHEMA,
         ),
+        # Hydration-Phase-1 model: production default is Gemini-3-Flash.
+        # The DeepSeek-V4-Pro spec immediately below is a comment-toggleable
+        # alternative used for the evidence-type-classification quality
+        # smoke (see TASK-EVIDENCE-TYPE-MIGRATION). Swap by commenting out
+        # the active block and uncommenting the alternative. Restore Flash
+        # as the default after the smoke unless the eval result switches
+        # production model.
+        # Hydration-Phase-1 model: production default is DeepSeek-V4-Pro
+        # (switched from Gemini-3-Flash per the evidence-type-classification
+        # dual-model smoke — DeepSeek showed cleaner attributional fidelity
+        # and correctly honoured the recipient-exclusion rule). The Flash
+        # spec below is preserved as a fallback / comparison-only
+        # alternative — see TASK-EVIDENCE-TYPE-MIGRATION A3 for rationale.
         "hydration_aggregator_phase1": Agent(
             name="hydration_aggregator_phase1",
-            model="google/gemini-3-flash-preview",
+            model="deepseek/deepseek-v4-pro",
             system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
             instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
             tools=[],
@@ -225,6 +238,22 @@ def create_agents_hydrated() -> dict[str, Agent]:
             reasoning="none",
             output_schema=HYDRATION_PHASE1_SCHEMA,
         ),
+        # --- Fallback / comparison only — see TASK-EVIDENCE-TYPE-MIGRATION
+        #     A3 for rationale. Swap by commenting out the active block
+        #     above and uncommenting the block below ---
+        # "hydration_aggregator_phase1": Agent(
+        #     name="hydration_aggregator_phase1",
+        #     model="google/gemini-3-flash-preview",
+        #     system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
+        #     instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
+        #     tools=[],
+        #     temperature=0.3,
+        #     max_tokens=32000,
+        #     provider="openrouter",
+        #     reasoning="none",
+        #     output_schema=HYDRATION_PHASE1_SCHEMA,
+        # ),
+        # --- END fallback alternative ---
         "hydration_aggregator_phase2": Agent(
             name="hydration_aggregator_phase2",
             model="anthropic/claude-opus-4.6",

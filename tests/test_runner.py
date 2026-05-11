@@ -105,14 +105,14 @@ def test_build_production_stages_returns_three_lists():
     assert run_stages, "run_stages should not be empty"
     assert topic_stages, "topic_stages should not be empty"
     assert post_run_stages == [], "production post_run_stages reserved for runner-built handlers"
-    assert len(topic_stages) == 21, f"expected 21 production topic-stages (V2-06b + prune + filter_media_actors_quoted + consolidate_actors + propagate_outlet_metadata + resolve_actor_aliases), got {len(topic_stages)}"
+    assert len(topic_stages) == 22, f"expected 22 production topic-stages (V2-06b + prune + filter_media_actors_quoted + consolidate_actors + propagate_outlet_metadata + resolve_actor_aliases + partition_canonical_actors_by_evidence), got {len(topic_stages)}"
 
 
 def test_build_hydrated_stages_returns_three_lists():
     agents = _fake_agent_dict(_HYDRATED_AGENTS)
     run_stages, topic_stages, post_run_stages = build_hydrated_stages(agents)
     assert run_stages, "run_stages should not be empty"
-    assert len(topic_stages) == 28, f"expected 28 hydrated topic-stages (V2-06b + prune + filter_media_actors_quoted + consolidate_actors + propagate_outlet_metadata + resolve_actor_aliases), got {len(topic_stages)}"
+    assert len(topic_stages) == 29, f"expected 29 hydrated topic-stages (V2-06b + prune + filter_media_actors_quoted + consolidate_actors + propagate_outlet_metadata + resolve_actor_aliases + partition_canonical_actors_by_evidence), got {len(topic_stages)}"
 
 
 def test_production_stage_names_unique():

@@ -124,6 +124,7 @@ def test_hydration_phase1_schema_accepts_null_verbatim_quote():
                         "role": "spokesperson",
                         "type": "government",
                         "position": "p",
+                        "evidence_type": "stated",
                         "verbatim_quote": None,
                     },
                 ],

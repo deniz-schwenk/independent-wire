@@ -309,6 +309,9 @@ def test_enrich_perspective_clusters_metadata():
         "perspective_clusters",
         "final_sources",
         "canonical_actors",
+        "canonical_actors_stated",
+        "canonical_actors_reported",
+        "canonical_actors_mentioned",
     )
     assert meta.writes == ("perspective_clusters",)
 
@@ -808,6 +811,88 @@ def test_assemble_hydration_dossier_builds_from_phase1_and_phase2():
     assert pre.sources[1]["id"] == "hydrate-rsrc-002"
     assert pre.preliminary_divergences == [{"description": "Casualty figures differ"}]
     assert pre.coverage_gaps == ["No civil-society voices"]
+
+
+def test_assemble_hydration_dossier_threads_evidence_type():
+    """Regression: evidence_type from Hydration-Phase-1's actors_quoted
+    must be threaded through onto the rebuilt source's actors_quoted
+    entry, otherwise the downstream partition stage receives all-None
+    evidence_types and defaults every actor to the `reported` pool."""
+    tb = TopicBus()
+    tb.hydration_fetch_results = [
+        {"url": "x", "status": "success", "outlet": "X"},
+    ]
+    tb.hydration_phase1_analyses = [
+        {
+            "article_index": 0,
+            "summary": "X summary",
+            "actors_quoted": [
+                {
+                    "name": "Alice",
+                    "role": "PM",
+                    "type": "government",
+                    "position": "stated_pos",
+                    "evidence_type": "stated",
+                    "verbatim_quote": None,
+                },
+                {
+                    "name": "Bob",
+                    "role": "Minister",
+                    "type": "government",
+                    "position": "reported_pos",
+                    "evidence_type": "reported",
+                    "verbatim_quote": None,
+                },
+                {
+                    "name": "Carol",
+                    "role": "Analyst",
+                    "type": "academia",
+                    "position": "mentioned_pos",
+                    "evidence_type": "mentioned",
+                    "verbatim_quote": None,
+                },
+            ],
+        },
+    ]
+    tb.hydration_phase2_corpus = HydrationPhase2Corpus()
+    tb_after = _run(assemble_hydration_dossier, tb, _ro())
+    aq = tb_after.hydration_pre_dossier.sources[0]["actors_quoted"]
+    et_by_name = {a["name"]: a.get("evidence_type") for a in aq}
+    assert et_by_name == {
+        "Alice": "stated",
+        "Bob": "reported",
+        "Carol": "mentioned",
+    }
+
+
+def test_assemble_hydration_dossier_normalises_unknown_evidence_type_to_none():
+    """An unexpected evidence_type value (model deviation from the
+    enum) is normalised to None rather than propagated, so the
+    partition stage's default-to-reported policy handles it cleanly."""
+    tb = TopicBus()
+    tb.hydration_fetch_results = [
+        {"url": "x", "status": "success", "outlet": "X"},
+    ]
+    tb.hydration_phase1_analyses = [
+        {
+            "article_index": 0,
+            "summary": "X",
+            "actors_quoted": [
+                {
+                    "name": "Alice",
+                    "role": "PM",
+                    "type": "government",
+                    "position": "p",
+                    "evidence_type": "speculated",  # out-of-enum
+                    "verbatim_quote": None,
+                },
+            ],
+        },
+    ]
+    tb.hydration_phase2_corpus = HydrationPhase2Corpus()
+    tb_after = _run(assemble_hydration_dossier, tb, _ro())
+    aq = tb_after.hydration_pre_dossier.sources[0]["actors_quoted"]
+    assert aq[0]["evidence_type"] is None
 
 
 def test_assemble_hydration_dossier_filters_failed_fetches():

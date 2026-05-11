@@ -963,7 +963,9 @@ class PerspectiveStage(_AgentStageBase):
     reads = (
         "editor_selected_topic",
         "final_sources",
-        "canonical_actors",
+        "canonical_actors_stated",
+        "canonical_actors_reported",
+        "canonical_actors_mentioned",
         "merged_preliminary_divergences",
         "merged_coverage_gaps",
     )
@@ -987,7 +989,15 @@ class PerspectiveStage(_AgentStageBase):
                 "title": assignment.title,
                 "selection_reason": assignment.selection_reason,
                 "sources": list(topic_bus.final_sources),
-                "canonical_actors": list(topic_bus.canonical_actors),
+                "canonical_actors_stated": list(
+                    topic_bus.canonical_actors_stated
+                ),
+                "canonical_actors_reported": list(
+                    topic_bus.canonical_actors_reported
+                ),
+                "canonical_actors_mentioned": list(
+                    topic_bus.canonical_actors_mentioned
+                ),
                 "preliminary_divergences": list(
                     topic_bus.merged_preliminary_divergences
                 ),

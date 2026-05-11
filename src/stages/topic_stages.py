@@ -414,6 +414,15 @@ async def consolidate_actors(
             verbatim = entry.get("verbatim_quote")
             if not isinstance(verbatim, str) or not verbatim:
                 verbatim = None
+            # evidence_type is emitted by Hydration-Phase-1 per the new
+            # extraction-time classification (stated / reported /
+            # mentioned). Researcher-Assemble sources do not yet carry
+            # this field; the downstream partition stage applies a
+            # default policy when the field is absent (see
+            # `partition_canonical_actors_by_evidence`).
+            evidence_type = entry.get("evidence_type")
+            if evidence_type not in ("stated", "reported", "mentioned"):
+                evidence_type = None
 
             record = by_name.get(name)
             if record is None:
@@ -436,6 +445,7 @@ async def consolidate_actors(
                     "source_id": sid,
                     "verbatim": verbatim,
                     "position": position,
+                    "evidence_type": evidence_type,
                 }
             )
 
@@ -451,6 +461,130 @@ async def consolidate_actors(
     )
 
     return topic_bus.model_copy(update={"final_actors": final_actors})
+
+
+# ---------------------------------------------------------------------------
+# 10d. partition_canonical_actors_by_evidence
+# ---------------------------------------------------------------------------
+
+
+_EVIDENCE_TIERS: tuple[str, ...] = ("stated", "reported", "mentioned")
+_EVIDENCE_DEFAULT: str = "reported"
+
+
+@topic_stage_def(
+    reads=("canonical_actors",),
+    writes=(
+        "canonical_actors_stated",
+        "canonical_actors_reported",
+        "canonical_actors_mentioned",
+    ),
+)
+async def partition_canonical_actors_by_evidence(
+    topic_bus: TopicBus, run_bus: RunBusReadOnly
+) -> TopicBus:
+    """Split ``canonical_actors[]`` into three evidence-tiered pools.
+
+    Hydration-Phase-1 classifies each actor's evidence relationship to
+    its article via the ``evidence_type`` field (`stated` / `reported` /
+    `mentioned`). ``consolidate_actors`` threads that field onto every
+    entry in ``canonical_actors[].quotes[]``. This stage walks each
+    canonical actor and splits the population into three pools by
+    quote evidence_type.
+
+    Pool entry shape (mirrors the canonical_actor entry, filtered):
+
+    - ``id``, ``name``, ``role``, ``type``, ``is_anonymous`` —
+      identity fields, unchanged.
+    - ``quotes`` — only the quote entries whose ``evidence_type``
+      matches the pool.
+    - ``source_ids`` — only the source IDs referenced by the filtered
+      quotes (kept consistent with the quote subset).
+
+    An actor with cross-form coverage in the dossier appears in
+    multiple pools, each entry holding the quote subset of the matching
+    form. An actor whose every quote has the same evidence_type appears
+    in exactly one pool.
+
+    **Missing evidence_type policy.** Researcher-Assemble sources do
+    not yet emit ``evidence_type``; quotes from those sources arrive
+    here with ``evidence_type == None``. Such quotes are
+    default-assigned to ``reported`` — the neutral middle tier — so the
+    pipeline operates in both production-only (researcher-sourced
+    actors flow through the ``reported`` pool) and hydrated (mixed)
+    runs. The default is logged once per topic with the tally of
+    defaulted quotes so reviewers can spot when researcher quotes
+    dominate a topic.
+    """
+    canonical_actors = list(topic_bus.canonical_actors or [])
+    if not canonical_actors:
+        return topic_bus
+
+    pools: dict[str, list[dict]] = {tier: [] for tier in _EVIDENCE_TIERS}
+    defaulted_quote_count = 0
+    total_quotes = 0
+
+    for actor in canonical_actors:
+        if not isinstance(actor, dict):
+            continue
+        # Bucket this actor's quotes by tier.
+        by_tier: dict[str, list[dict]] = {tier: [] for tier in _EVIDENCE_TIERS}
+        for quote in actor.get("quotes") or []:
+            if not isinstance(quote, dict):
+                continue
+            total_quotes += 1
+            tier = quote.get("evidence_type")
+            if tier not in _EVIDENCE_TIERS:
+                tier = _EVIDENCE_DEFAULT
+                defaulted_quote_count += 1
+            by_tier[tier].append(quote)
+
+        # Emit one pool entry per non-empty tier.
+        for tier in _EVIDENCE_TIERS:
+            tier_quotes = by_tier[tier]
+            if not tier_quotes:
+                continue
+            tier_source_ids: list[str] = []
+            for q in tier_quotes:
+                sid = q.get("source_id")
+                if isinstance(sid, str) and sid and sid not in tier_source_ids:
+                    tier_source_ids.append(sid)
+            pools[tier].append(
+                {
+                    "id": actor.get("id", ""),
+                    "name": actor.get("name", ""),
+                    "role": actor.get("role", ""),
+                    "type": actor.get("type", ""),
+                    "is_anonymous": bool(actor.get("is_anonymous", False)),
+                    "source_ids": tier_source_ids,
+                    "quotes": list(tier_quotes),
+                }
+            )
+
+    if defaulted_quote_count:
+        logger.info(
+            "partition_canonical_actors_by_evidence: defaulted %d/%d "
+            "quote(s) with missing evidence_type to %r tier",
+            defaulted_quote_count,
+            total_quotes,
+            _EVIDENCE_DEFAULT,
+        )
+    logger.info(
+        "partition_canonical_actors_by_evidence: pool sizes — "
+        "stated=%d, reported=%d, mentioned=%d (from %d canonical actor(s))",
+        len(pools["stated"]),
+        len(pools["reported"]),
+        len(pools["mentioned"]),
+        len(canonical_actors),
+    )
+
+    return topic_bus.model_copy(
+        update={
+            "canonical_actors_stated": pools["stated"],
+            "canonical_actors_reported": pools["reported"],
+            "canonical_actors_mentioned": pools["mentioned"],
+        }
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -588,14 +722,18 @@ def _enrich_position_clusters_logic(
     perspective_analysis: dict,
     final_sources: list,
     canonical_actors: list,
+    canonical_actors_stated: list | None = None,
+    canonical_actors_reported: list | None = None,
+    canonical_actors_mentioned: list | None = None,
 ) -> dict:
     """Attach deterministic fields to the agent's raw cluster output.
 
     Cluster→actor assignment is an agent decision via three sub-lists
     (``stated`` / ``reported`` / ``mentioned``) classified by evidentiary
-    tier. The flat ``actor_ids[]`` field is **derived** by this validator
-    from the cleaned sub-list union — the agent does not emit it. The
-    three sub-lists are the source of truth.
+    tier upstream by ``partition_canonical_actors_by_evidence``. The
+    flat ``actor_ids[]`` field is **derived** by this validator from
+    the cleaned sub-list union — the agent does not emit it. The three
+    sub-lists are the source of truth.
 
     What this stage adds, deterministically:
 
@@ -606,12 +744,24 @@ def _enrich_position_clusters_logic(
     - ``n_actors`` / ``n_sources`` / ``n_regions`` / ``n_languages`` —
       objective counts
 
-    Validation, in two layers:
+    Validation, in three layers:
 
     1. Each sub-list entry must reference an ID present in
-       ``canonical_actors[]``. Invalid IDs are dropped with a warning
-       naming the offending tier. Per-tier duplicates are deduped.
-    2. Cross-tier duplicates are repaired with priority ``stated >
+       ``canonical_actors[]`` (the unified list). Invalid IDs are
+       dropped with a warning naming the offending tier. Per-tier
+       duplicates are deduped.
+    2. **Pool-source consistency** — when the per-tier canonical pools
+       are populated (the post-partition_canonical_actors_by_evidence
+       path), each sub-list entry must additionally come from the
+       matching pool: ``cluster.stated`` IDs from
+       ``canonical_actors_stated``, ``cluster.reported`` from
+       ``canonical_actors_reported``, ``cluster.mentioned`` from
+       ``canonical_actors_mentioned``. A violation logs a warning and
+       drops the entry — the validator does NOT silently relocate the
+       actor to its correct pool's sub-list. The agent must not move an
+       actor across evidence levels; surface the violation so reviewers
+       see it.
+    3. Cross-tier duplicates are repaired with priority ``stated >
        reported > mentioned``: an ID claimed by a higher-priority tier
        is stripped from any lower-priority tier. A warning fires naming
        both tiers so reviewers can spot agent-side inconsistency.
@@ -621,6 +771,11 @@ def _enrich_position_clusters_logic(
     holds by construction (``actor_ids`` is computed from that union),
     and pairwise-disjointness is asserted. A violation at the assertion
     is a programming error in this validator itself.
+
+    The three pool arguments default to ``None`` for backward
+    compatibility with smokes or tests that bypass the partition stage
+    (the unified-list check still applies in that case; the pool-source
+    layer becomes a no-op when all three pools are empty/None).
     """
     import copy as _copy
 
@@ -629,6 +784,23 @@ def _enrich_position_clusters_logic(
 
     by_id = _build_source_index(final_sources)
     actor_index = _build_actor_index(canonical_actors)
+    # Pool-membership lookups. Empty/None pools mean "no pool check"
+    # (backward-compat for partition-stage-bypassed smokes).
+    pool_indices: dict[str, set[str]] = {
+        "stated": {
+            a["id"] for a in (canonical_actors_stated or [])
+            if isinstance(a, dict) and isinstance(a.get("id"), str)
+        },
+        "reported": {
+            a["id"] for a in (canonical_actors_reported or [])
+            if isinstance(a, dict) and isinstance(a.get("id"), str)
+        },
+        "mentioned": {
+            a["id"] for a in (canonical_actors_mentioned or [])
+            if isinstance(a, dict) and isinstance(a.get("id"), str)
+        },
+    }
+    pools_present = any(pool_indices.values())
 
     enriched = _copy.deepcopy(perspective_analysis)
     for cluster_idx, cluster in enumerate(
@@ -656,9 +828,11 @@ def _enrich_position_clusters_logic(
 
         # Filter each sub-list against canonical_actors[]: drop unknowns
         # (hallucinations, stale references, or aliased IDs that
-        # disappeared post-merge) and per-tier duplicates. Sub-list
-        # ordering within each tier is preserved (insertion order from
-        # the agent).
+        # disappeared post-merge) and per-tier duplicates. When the
+        # per-tier pools are populated, additionally enforce the
+        # pool-source consistency rule (an ID in cluster.stated must
+        # come from canonical_actors_stated, etc.). Sub-list ordering
+        # within each tier is preserved (insertion order from the agent).
         filtered_tiers: dict[str, list[str]] = {}
         for tier in _SUBLIST_TIERS:
             raw = cluster.get(tier)
@@ -677,6 +851,29 @@ def _enrich_position_clusters_logic(
                         cluster["id"],
                         tier,
                         aid,
+                    )
+                    continue
+                if pools_present and aid not in pool_indices[tier]:
+                    # Pool-source consistency violation: the agent placed
+                    # an actor in a sub-list whose origin pool does not
+                    # contain that actor. Drop and warn — do not silently
+                    # relocate. Per the architecture, the pool of origin
+                    # determines the sub-list of origin; this surfaces
+                    # agent-side cross-pool drift.
+                    in_pools = [
+                        other for other in _SUBLIST_TIERS
+                        if aid in pool_indices[other]
+                    ]
+                    logger.warning(
+                        "enrich_perspective_clusters: cluster %s "
+                        "sub-list %r contains actor_id %r which is not "
+                        "in canonical_actors_%s (actually present in: "
+                        "%s); dropping",
+                        cluster["id"],
+                        tier,
+                        aid,
+                        tier,
+                        in_pools or ["none"],
                     )
                     continue
                 tier_list.append(aid)
@@ -740,7 +937,14 @@ def _enrich_position_clusters_logic(
 
 
 @topic_stage_def(
-    reads=("perspective_clusters", "final_sources", "canonical_actors"),
+    reads=(
+        "perspective_clusters",
+        "final_sources",
+        "canonical_actors",
+        "canonical_actors_stated",
+        "canonical_actors_reported",
+        "canonical_actors_mentioned",
+    ),
     writes=("perspective_clusters",),
 )
 async def enrich_perspective_clusters(
@@ -752,13 +956,19 @@ async def enrich_perspective_clusters(
 
     Reads `perspective_clusters` (raw shape from PerspectiveStage:
     `[{position_label, position_summary, source_ids, stated, reported,
-    mentioned}]`), `final_sources`, and `canonical_actors` (the post
-    alias-resolution actor list). Writes `perspective_clusters` enriched
-    with `pc-NNN`, the three sub-lists cleaned against `canonical_actors`
-    and cross-tier-deduped, the derived flat `actor_ids` (the sorted
-    union of cleaned sub-lists), regions, languages, and the count
-    summary `n_actors / n_sources / n_regions / n_languages` computed
-    against canonical-actor membership.
+    mentioned}]`), `final_sources`, the unified `canonical_actors` (post
+    alias-resolution), and the three evidence-partitioned pools written
+    by `partition_canonical_actors_by_evidence`. Writes
+    `perspective_clusters` enriched with `pc-NNN`, the three sub-lists
+    cleaned against `canonical_actors` AND against the matching pool
+    (pool-source consistency check), cross-tier-deduped, the derived
+    flat `actor_ids` (the sorted union of cleaned sub-lists), regions,
+    languages, and the count summary `n_actors / n_sources / n_regions
+    / n_languages` computed against canonical-actor membership.
+
+    The three pool slots may be empty (e.g. legacy smokes that bypass
+    the partition stage); in that case the pool-source check becomes a
+    no-op and the validator falls back to the unified-list check alone.
 
     No-op when `perspective_clusters` is empty (PerspectiveStage may have
     failed or emitted nothing). The post-validator accepts the empty case
@@ -772,6 +982,9 @@ async def enrich_perspective_clusters(
         {"position_clusters": raw},
         list(topic_bus.final_sources or []),
         list(topic_bus.canonical_actors or []),
+        canonical_actors_stated=list(topic_bus.canonical_actors_stated or []),
+        canonical_actors_reported=list(topic_bus.canonical_actors_reported or []),
+        canonical_actors_mentioned=list(topic_bus.canonical_actors_mentioned or []),
     )
     return topic_bus.model_copy(
         update={
@@ -1277,12 +1490,21 @@ async def assemble_hydration_dossier(
             quote = actor.get("verbatim_quote")
             if not isinstance(quote, str) or not quote:
                 quote = None
+            # evidence_type is emitted by Hydration-Phase-1 per the
+            # extraction-time classification (stated / reported /
+            # mentioned). Thread it through onto the source's
+            # actors_quoted entry so consolidate_actors downstream
+            # picks it up; the partition stage relies on this.
+            evidence_type = actor.get("evidence_type")
+            if evidence_type not in ("stated", "reported", "mentioned"):
+                evidence_type = None
             actors_out.append(
                 {
                     "name": actor.get("name", ""),
                     "role": actor.get("role", ""),
                     "type": actor.get("type", ""),
                     "position": actor.get("position", ""),
+                    "evidence_type": evidence_type,
                     "verbatim_quote": quote,
                 }
             )
@@ -1508,7 +1730,9 @@ __all__ = [
     "mirror_qa_corrected",
     "mirror_perspective_synced",
     "normalize_pre_research",
+    "partition_canonical_actors_by_evidence",
     "propagate_outlet_metadata",
+    "prune_unused_sources_and_clusters",
     "renumber_sources",
     "validate_coverage_gaps_stage",
 ]

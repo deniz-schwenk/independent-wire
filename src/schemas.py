@@ -379,9 +379,13 @@ BIAS_DETECTOR_SCHEMA = {
 # Per-chunk article analysis. Each entry corresponds to one input article
 # and carries its index, a one-paragraph summary, and the actor-quoted list.
 # The actors_quoted shape mirrors RESEARCHER_ASSEMBLE_SCHEMA.sources[].actors_quoted[]
-# so Perspective reads both shapes interchangeably. verbatim_quote is
-# nullable per the prompt's "When the article only paraphrases, the field
-# is null" rule.
+# plus the Hydration-specific `evidence_type` field that classifies the
+# evidentiary relationship of each actor's position to the article
+# (stated / reported / mentioned). The downstream partition stage
+# `partition_canonical_actors_by_evidence` splits canonical_actors into
+# three evidence-tiered pools using this field. verbatim_quote is
+# nullable per the prompt's "When the article only paraphrases, the
+# field is null" rule.
 HYDRATION_PHASE1_SCHEMA = {
     "type": "object",
     "properties": {
@@ -401,11 +405,19 @@ HYDRATION_PHASE1_SCHEMA = {
                                 "role": {"type": "string"},
                                 "type": {"type": "string"},
                                 "position": {"type": "string"},
+                                # evidence_type classifies how the actor's
+                                # position reaches the article — see
+                                # PHASE1-INSTRUCTIONS.md "Classify each
+                                # actor's `evidence_type`..." section.
+                                "evidence_type": {
+                                    "type": "string",
+                                    "enum": ["stated", "reported", "mentioned"],
+                                },
                                 "verbatim_quote": {"type": ["string", "null"]},
                             },
                             "required": [
                                 "name", "role", "type", "position",
-                                "verbatim_quote",
+                                "evidence_type", "verbatim_quote",
                             ],
                             "additionalProperties": False,
                         },
