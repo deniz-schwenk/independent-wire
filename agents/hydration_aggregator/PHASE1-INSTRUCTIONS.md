@@ -13,10 +13,19 @@ For each actor in an article, record:
 - `name` — the actor's name as given.
 - `role` — the actor's role or title.
 - `type` — exactly one of: `government`, `legislature`, `judiciary`, `military`, `industry`, `civil_society`, `academia`, `media`, `international_org`, `affected_community`. These ten values are exhaustive.
-- `position` — one sentence describing what the actor says or does in this article.
+- `position` — one sentence describing what the actor says, holds, or does in this article.
+- `evidence_type` — exactly one of `stated`, `reported`, `mentioned`. Defined below.
 - `verbatim_quote` — the actor's words exactly as they appear in the article, in the original language, with the article's quotation marks. `null` when the article only paraphrases.
 
-Render the actor's position using the article's own attributional language. Do not introduce qualification about the certainty, authority, or directness of the actor's statement that the article does not itself introduce. When the article attributes a statement directly, the position is rendered directly. When the article carries the statement through a chain of reporting, the position carries that chain only as the article itself carries it.
+Classify each actor's `evidence_type` by how the position reaches the article:
+
+- **stated** — the actor's own words express the position. The article records the actor as the source of the statement.
+- **reported** — the article attributes the position to the actor through other parties or by referring to communications the article did not directly observe. The article does not record the actor's own words.
+- **mentioned** — the article describes the actor's action, decision, or conduct, and that action carries an implicit position. The article does not record the actor making a statement or being attributed with one.
+
+The classification turns on the actor's role in the article's record, not on the article's own meta-references to its reporting history. When the article writes that it has previously reported on a matter, that self-reference does not change the actor's role inside the article. The classification reads what the actor does in the present article record, not what the article's framing apparatus says about prior coverage.
+
+With `evidence_type` classifying the form of the position's arrival, the `position` field describes what the actor says, holds, or does — without duplicating the form into qualifying language. When the actor stated something, the position renders the substance directly. When the actor is reported, the position describes what is attributed without re-importing the attribution chain into the sentence.
 
 When an article names no actor, the article's `actors_quoted` array is empty.
 
@@ -36,6 +45,7 @@ A single JSON object with one top-level field, `article_analyses`. Example:
           "role": "German Federal Minister for Economic Affairs and Climate Action",
           "type": "government",
           "position": "Warns that prolonged disruption would force emergency fuel allocation across European refineries.",
+          "evidence_type": "stated",
           "verbatim_quote": "«Eine längere Unterbrechung würde uns zu einer Notfallzuteilung zwingen.»"
         }
       ]
@@ -49,6 +59,7 @@ A single JSON object with one top-level field, `article_analyses`. Example:
           "role": "Prime Minister of Pakistan",
           "type": "government",
           "position": "Urges the US to extend the inspection deadline, warning it threatens commercial shipping vital to Pakistan's economy.",
+          "evidence_type": "stated",
           "verbatim_quote": "«ہم امریکہ سے مہلت میں توسیع کا مطالبہ کرتے ہیں»"
         }
       ]
