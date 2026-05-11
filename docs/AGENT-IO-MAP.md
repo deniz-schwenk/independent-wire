@@ -78,6 +78,7 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
 - **Source:** `src/stages/run_stages.py::make_attach_hydration_urls_to_assignments`
 - **Reads (Bus):** `editor_assignments`, `run_date`, `curator_topics_unsliced` — RunBus
 - **Writes (Bus):** `editor_assignments` — RunBus, per-assignment `raw_data['hydration_urls']` enriched via token-overlap match against the Curator cluster set; reads `raw/{run_date}/feeds.json` + `config/sources.json` for URL list and country lookup.
+- **Cap (source-cap workpaket, 2026-05-11):** after token-overlap matching, the candidate URL list passes through `select_diverse_hydration_urls`, which applies a stratified round-robin selection over outlets with a hard cap of `HYDRATION_URL_CAP=40` URLs per assignment and a per-outlet ceiling of `MAX_PER_OUTLET=3`. Within an outlet, candidates are recency-sorted by `published_at` (desc, None last); when all candidates lack `published_at` — current operational state pre-`TASK-FETCH-FEEDS-PUBLISHED-AT` — order falls back to input order (Curator's `source_ids` order). The cap stops the cost cascade observed in the 2026-05-11 baseline where hot-topic Curator clusters of ~1000 findings cascaded into ~$2-3 of Phase-1 hydration per assignment.
 
 #### §2.6 select_topics
 

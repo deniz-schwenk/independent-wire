@@ -14,6 +14,8 @@ import pytest
 from src.bus import RunBus, TopicBus, WriterArticle
 from src.stage import StageError, StageInputError, get_stage_meta
 from src.stages.run_stages import (
+    HYDRATION_URL_CAP,
+    MAX_PER_OUTLET,
     MirrorMismatchError,
     RunInitConfig,
     TopicManifestEntry,
@@ -22,6 +24,7 @@ from src.stages.run_stages import (
     make_finalize_run,
     make_init_run,
     mirror_stage,
+    select_diverse_hydration_urls,
 )
 
 
@@ -614,3 +617,237 @@ def test_attach_hydration_urls_to_assignments_metadata():
         "editor_assignments", "run_date", "curator_topics_unsliced"
     )
     assert meta.writes == ("editor_assignments",)
+
+
+# ---------------------------------------------------------------------------
+# select_diverse_hydration_urls
+# ---------------------------------------------------------------------------
+
+
+def _cand(url: str, outlet: str, published_at: str | None = None, **extra) -> dict:
+    """Build a hydration-URL candidate dict for selector tests."""
+    return {"url": url, "outlet": outlet, "published_at": published_at, **extra}
+
+
+def test_select_diverse_hydration_urls_empty():
+    """Empty input → empty output, no crash."""
+    assert select_diverse_hydration_urls([]) == []
+
+
+def test_select_diverse_hydration_urls_under_cap_round_robin():
+    """4 candidates across 3 outlets, cap=40 → all returned, ordered
+    round-robin by outlet alphabetically (BBC → AFP no — alphabetic:
+    AFP, BBC, Reuters then back to AFP for outlet AFP's 2nd)."""
+    candidates = [
+        _cand("https://reuters.example/1", "Reuters", "2026-05-11T10:00Z"),
+        _cand("https://afp.example/1", "AFP", "2026-05-11T09:00Z"),
+        _cand("https://afp.example/2", "AFP", "2026-05-11T11:00Z"),
+        _cand("https://bbc.example/1", "BBC", "2026-05-11T08:00Z"),
+    ]
+    out = select_diverse_hydration_urls(candidates, cap=40, max_per_outlet=3)
+    assert len(out) == 4
+    # Pass 1: AFP (newest=11:00), BBC, Reuters; Pass 2: AFP (9:00)
+    assert [c["url"] for c in out] == [
+        "https://afp.example/2",
+        "https://bbc.example/1",
+        "https://reuters.example/1",
+        "https://afp.example/1",
+    ]
+
+
+def test_select_diverse_hydration_urls_distinct_outlets_above_cap():
+    """60 outlets × 1 URL each, cap=40 → 40 distinct outlets, picked in
+    alphabetic order of outlet name."""
+    candidates = [
+        _cand(f"https://o{i:02d}.example/1", f"Outlet-{i:02d}")
+        for i in range(60)
+    ]
+    out = select_diverse_hydration_urls(candidates, cap=40, max_per_outlet=3)
+    assert len(out) == 40
+    outlets = [c["outlet"] for c in out]
+    assert outlets == sorted(outlets)  # alphabetic pick order
+    assert len(set(outlets)) == 40  # all distinct
+
+
+def test_select_diverse_hydration_urls_max_per_outlet_hard_ceiling():
+    """5 outlets × 100 URLs each, cap=40 → returns 5×3=15 (max_per_outlet
+    binds before cap). Validates that the per-outlet ceiling applies
+    regardless of cap headroom."""
+    candidates = []
+    for outlet_idx in range(5):
+        outlet = f"Outlet-{outlet_idx}"
+        for url_idx in range(100):
+            candidates.append(_cand(
+                f"https://o{outlet_idx}.example/{url_idx}",
+                outlet,
+                f"2026-05-11T{url_idx:02d}:00Z" if url_idx < 24 else None,
+            ))
+    out = select_diverse_hydration_urls(candidates, cap=40, max_per_outlet=3)
+    assert len(out) == 15  # 5 outlets × 3 per outlet
+    by_outlet: dict[str, int] = {}
+    for c in out:
+        by_outlet[c["outlet"]] = by_outlet.get(c["outlet"], 0) + 1
+    assert all(n == 3 for n in by_outlet.values())
+    assert len(by_outlet) == 5
+
+
+def test_select_diverse_hydration_urls_partial_missing_published_at():
+    """Some candidates within an outlet have published_at=None → they
+    sort last within that outlet; selector does not crash."""
+    candidates = [
+        _cand("https://reuters.example/3", "Reuters", None),
+        _cand("https://reuters.example/1", "Reuters", "2026-05-11T10:00Z"),
+        _cand("https://reuters.example/2", "Reuters", "2026-05-11T11:00Z"),
+    ]
+    out = select_diverse_hydration_urls(candidates, cap=40, max_per_outlet=3)
+    assert len(out) == 3
+    # Within Reuters: 11:00 first (newest), 10:00 second, None last.
+    assert [c["url"] for c in out] == [
+        "https://reuters.example/2",
+        "https://reuters.example/1",
+        "https://reuters.example/3",
+    ]
+
+
+def test_select_diverse_hydration_urls_all_missing_published_at():
+    """All candidates within an outlet have published_at=None →
+    preserves input order (current operational state pre-
+    TASK-FETCH-FEEDS-PUBLISHED-AT); selector does not crash."""
+    candidates = [
+        _cand("https://reuters.example/3", "Reuters", None),
+        _cand("https://reuters.example/1", "Reuters", None),
+        _cand("https://reuters.example/2", "Reuters", None),
+    ]
+    out = select_diverse_hydration_urls(candidates, cap=40, max_per_outlet=3)
+    assert len(out) == 3
+    # Input order preserved → /3, /1, /2.
+    assert [c["url"] for c in out] == [
+        "https://reuters.example/3",
+        "https://reuters.example/1",
+        "https://reuters.example/2",
+    ]
+
+
+def test_select_diverse_hydration_urls_deterministic_outlet_order():
+    """Identical input shape across two outlets → alphabetic outlet
+    pick order is deterministic (does not depend on insertion order)."""
+    cand_a = [
+        _cand("https://bbc.example/1", "BBC"),
+        _cand("https://afp.example/1", "AFP"),
+    ]
+    cand_b = [
+        _cand("https://afp.example/1", "AFP"),
+        _cand("https://bbc.example/1", "BBC"),
+    ]
+    out_a = select_diverse_hydration_urls(cand_a, cap=40, max_per_outlet=3)
+    out_b = select_diverse_hydration_urls(cand_b, cap=40, max_per_outlet=3)
+    assert [c["outlet"] for c in out_a] == ["AFP", "BBC"]
+    assert [c["outlet"] for c in out_b] == ["AFP", "BBC"]
+
+
+def test_select_diverse_hydration_urls_single_outlet_cap_clipped():
+    """40 candidates all from one outlet, cap=40, max_per_outlet=3 →
+    returns 3 (the newest), not 40. The max_per_outlet ceiling binds
+    even when len(candidates) <= cap."""
+    candidates = [
+        _cand(
+            f"https://reuters.example/{i}",
+            "Reuters",
+            f"2026-05-11T{i:02d}:00Z",
+        )
+        for i in range(40)
+    ]
+    out = select_diverse_hydration_urls(candidates, cap=40, max_per_outlet=3)
+    assert len(out) == 3
+    # The 3 newest: indices 39, 38, 37.
+    assert [c["url"] for c in out] == [
+        "https://reuters.example/39",
+        "https://reuters.example/38",
+        "https://reuters.example/37",
+    ]
+
+
+def test_select_diverse_hydration_urls_module_constants_default():
+    """Defaults match the module-level constants — guards against silent
+    drift if someone changes one without updating the other."""
+    assert HYDRATION_URL_CAP == 40
+    assert MAX_PER_OUTLET == 3
+
+
+# ---------------------------------------------------------------------------
+# attach_hydration_urls_to_assignments — cap integration
+# ---------------------------------------------------------------------------
+
+
+def test_attach_hydration_urls_to_assignments_applies_cap(tmp_path: Path):
+    """End-to-end: cluster with 50 findings from many outlets → cap=40
+    + max_per_outlet=3 applies, output has ≤40 URLs and ≤3 per outlet."""
+    # 50 findings: 10 outlets × 5 URLs each.
+    feeds = []
+    for outlet_idx in range(10):
+        outlet = f"Outlet-{outlet_idx:02d}"
+        for url_idx in range(5):
+            feeds.append({
+                "source_name": outlet,
+                "source_url": f"https://o{outlet_idx:02d}.example/{url_idx}",
+                "language": "en",
+                "title": f"India trade deal coverage {outlet} {url_idx}",
+            })
+    countries = {f"Outlet-{i:02d}": "GB" for i in range(10)}
+    _seed_feeds_and_sources(tmp_path, "2026-04-30", feeds, countries=countries)
+    raw_dir, sources_path = _hyd_layout(tmp_path)
+    stage = make_attach_hydration_urls_to_assignments(
+        raw_dir=raw_dir, sources_path=sources_path
+    )
+
+    rb = _hydrated_run_bus()
+    rb.curator_topics_unsliced = [{
+        "title": "India trade deal signed",
+        "source_ids": [f"finding-{i}" for i in range(50)],
+    }]
+    rb.editor_assignments = [{
+        "id": "tp-1", "title": "India trade deal signed",
+        "topic_slug": "ind-trade", "priority": 5, "selection_reason": "r",
+    }]
+
+    out = asyncio.run(stage(rb))
+    urls = out.editor_assignments[0]["raw_data"]["hydration_urls"]
+    # 10 outlets × max 3 = 30; cap=40 doesn't bind first.
+    assert len(urls) == 30
+    by_outlet: dict[str, int] = {}
+    for u in urls:
+        by_outlet[u["outlet"]] = by_outlet.get(u["outlet"], 0) + 1
+    assert max(by_outlet.values()) == 3
+    assert len(by_outlet) == 10
+
+
+def test_attach_hydration_urls_to_assignments_cap_overrides(tmp_path: Path):
+    """Factory accepts cap / max_per_outlet overrides — tests can
+    inject low values without monkey-patching constants."""
+    feeds = [
+        {"source_name": "Reuters", "source_url": f"https://r.example/{i}",
+         "language": "en", "title": f"India trade {i}"}
+        for i in range(10)
+    ]
+    _seed_feeds_and_sources(
+        tmp_path, "2026-04-30", feeds, countries={"Reuters": "GB"},
+    )
+    raw_dir, sources_path = _hyd_layout(tmp_path)
+    stage = make_attach_hydration_urls_to_assignments(
+        raw_dir=raw_dir, sources_path=sources_path,
+        cap=5, max_per_outlet=2,
+    )
+    rb = _hydrated_run_bus()
+    rb.curator_topics_unsliced = [{
+        "title": "India trade deal signed",
+        "source_ids": [f"finding-{i}" for i in range(10)],
+    }]
+    rb.editor_assignments = [{
+        "id": "tp-1", "title": "India trade deal signed",
+        "topic_slug": "x", "priority": 5, "selection_reason": "r",
+    }]
+
+    out = asyncio.run(stage(rb))
+    urls = out.editor_assignments[0]["raw_data"]["hydration_urls"]
+    # 1 outlet × max_per_outlet=2 = 2 (well under cap=5).
+    assert len(urls) == 2

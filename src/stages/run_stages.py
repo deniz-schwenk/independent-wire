@@ -378,6 +378,20 @@ finalize_run = make_finalize_run()
 # ---------------------------------------------------------------------------
 
 
+HYDRATION_URL_CAP = 40
+"""Maximum hydration URLs per editor assignment after diversity selection.
+
+Locked at 40 by the source-cap workpaket (2026-05-11) after the Curator smoke
+showed structural Curator behaviour produces 979-1004 cluster_assignments for
+hot topics, cascading into ~$2-3 of Phase-1 hydration cost per assignment."""
+
+MAX_PER_OUTLET = 3
+"""Hard per-outlet ceiling within the cap. Even when a single outlet
+dominates the candidate set, no more than ``MAX_PER_OUTLET`` of its URLs
+survive selection — preserves outlet diversity in the degenerate case
+(e.g. wire-service-heavy clusters)."""
+
+
 _HYDRATION_STOPWORDS = frozenset({
     "the", "a", "an", "of", "in", "on", "and", "or", "to", "for", "as", "is",
     "by", "at", "with", "from", "after", "into", "that", "which", "it", "its",
@@ -456,9 +470,91 @@ def _build_hydration_urls_for_cluster(
     return urls
 
 
+def select_diverse_hydration_urls(
+    candidates: list[dict],
+    cap: int = HYDRATION_URL_CAP,
+    max_per_outlet: int = MAX_PER_OUTLET,
+) -> list[dict]:
+    """Stratified round-robin selection over outlets to cap hydration URLs.
+
+    Picks at most ``cap`` candidates with at most ``max_per_outlet`` from any
+    one outlet, alternating across outlets in alphabetical order. Within an
+    outlet, newer URLs (by ``published_at``) are picked first.
+
+    Args:
+        candidates: list of dicts, each with at minimum:
+            - ``url`` (str)
+            - ``outlet`` (str, used as the group key)
+            - ``published_at`` (ISO 8601 str or None, used for in-group
+              recency sorting)
+            Other keys pass through unchanged.
+        cap: maximum total URLs to return.
+        max_per_outlet: hard ceiling per outlet, applied regardless of
+          ``cap``. Even with ``cap >= len(candidates)``, no outlet
+          contributes more than this many URLs.
+
+    Returns:
+        List of selected candidates, length ``<= cap``, in pick order
+        (round-robin pass × outlet alphabetic). Deterministic.
+
+    Properties:
+        - ``len(candidates) <= cap`` does NOT short-circuit
+          ``max_per_outlet`` — both constraints always bind.
+        - If candidates have ``N`` unique outlets >= ``cap``, every
+          selected URL comes from a distinct outlet.
+        - Recency-tiebreak: within an outlet, newer URLs (by
+          ``published_at`` desc) come first.
+        - ``published_at = None`` sorts last within its outlet.
+        - If all candidates within an outlet have ``published_at = None``,
+          sort within that outlet is determined by input order
+          (caller-controlled, stable). This is the current operational
+          state — ``published_at`` is not yet persisted by
+          ``scripts/fetch_feeds.py``. When it is, recency-tiebreak
+          activates automatically with no selector change.
+    """
+    if not candidates:
+        return []
+
+    groups: dict[str, list[dict]] = {}
+    for c in candidates:
+        groups.setdefault(c.get("outlet", "") or "", []).append(c)
+
+    for outlet, group in groups.items():
+        # Partition: dated entries sorted desc, undated keep input order.
+        # Python's sort is stable, so undated entries' relative order
+        # is the caller's input order.
+        dated = sorted(
+            (c for c in group if c.get("published_at")),
+            key=lambda c: str(c.get("published_at")),
+            reverse=True,
+        )
+        undated = [c for c in group if not c.get("published_at")]
+        groups[outlet] = dated + undated
+
+    selected: list[dict] = []
+    pass_num = 0
+    while (
+        len(selected) < cap
+        and any(groups[o] for o in groups)
+        and pass_num < max_per_outlet
+    ):
+        pass_num += 1
+        for outlet in sorted(groups.keys()):
+            if not groups[outlet]:
+                continue
+            selected.append(groups[outlet].pop(0))
+            if len(selected) >= cap:
+                break
+
+    return selected
+
+
 def make_attach_hydration_urls_to_assignments(
     raw_dir: Optional[Path] = None,
     sources_path: Optional[Path] = None,
+    *,
+    cap: int = HYDRATION_URL_CAP,
+    max_per_outlet: int = MAX_PER_OUTLET,
 ) -> Callable:
     """Build the hydration-URL attachment stage with optional path overrides.
 
@@ -537,7 +633,7 @@ def make_attach_hydration_urls_to_assignments(
                 )
                 urls: list[dict] = []
             else:
-                urls = _build_hydration_urls_for_cluster(
+                candidates = _build_hydration_urls_for_cluster(
                     cluster, feeds, country_by_outlet
                 )
                 if tied_count > 1:
@@ -550,12 +646,28 @@ def make_attach_hydration_urls_to_assignments(
                         title,
                         cluster.get("title"),
                     )
+                urls = select_diverse_hydration_urls(
+                    candidates, cap=cap, max_per_outlet=max_per_outlet
+                )
+                outlet_counts: dict[str, int] = {}
+                for u in urls:
+                    o = u.get("outlet") or ""
+                    outlet_counts[o] = outlet_counts.get(o, 0) + 1
+                saturated = sorted(
+                    o for o, n in outlet_counts.items() if n >= max_per_outlet
+                )
                 logger.info(
                     "attach_hydration_urls_to_assignments: %s → cluster "
-                    "%r: %d URLs",
+                    "%r: %d candidates → %d selected (cap=%d, "
+                    "max_per_outlet=%d), %d unique outlets%s",
                     updated_assignment.get("id"),
                     cluster.get("title"),
+                    len(candidates),
                     len(urls),
+                    cap,
+                    max_per_outlet,
+                    len(outlet_counts),
+                    f", saturated={saturated}" if saturated else "",
                 )
             raw_data = dict(updated_assignment.get("raw_data") or {})
             raw_data["hydration_urls"] = urls
@@ -648,6 +760,8 @@ def make_topic_bus(
 
 
 __all__ = [
+    "HYDRATION_URL_CAP",
+    "MAX_PER_OUTLET",
     "MirrorMismatchError",
     "RunInitConfig",
     "TopicManifestEntry",
@@ -661,5 +775,6 @@ __all__ = [
     "make_init_run",
     "make_topic_bus",
     "mirror_stage",
+    "select_diverse_hydration_urls",
     "select_topics",
 ]
