@@ -1,5 +1,7 @@
 # Agent Prompt Inventory
 
+> Superseded by docs/AGENT-IO-MAP.md on 2026-05-11.
+
 Authoritative mapping of every prompt file under `agents/` to its agent-stage class, agent configuration, and lifecycle status. Updated whenever a prompt is added, archived, or its load site changes.
 
 **Scope:** this doc covers LLM-bearing agents only — every entry corresponds to a prompt file pair under `agents/{name}/` plus its registration in `scripts/run.py:create_agents`. Deterministic Python-only stages (`consolidate_actors`, `propagate_outlet_metadata`, `filter_media_actors_quoted`, `enrich_perspective_clusters`, `prune_unused_sources_and_clusters`, `mirror_perspective_synced`, `mirror_qa_corrected`, `compose_transparency_card`, `compute_source_balance`, `validate_coverage_gaps_stage`, etc.) are documented in `docs/AGENT-IO-MAP.md` (which is broader-scoped — every pipeline stage including those with no LLM call). The `ResolveActorAliasesStage` is included here because it bears an LLM-driven prompt; its Python wrapper is documented alongside the agent registration.

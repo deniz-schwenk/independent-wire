@@ -1,572 +1,373 @@
-# Agent IO Map (V2)
+# Agent I/O Map
+
+Pipeline-stage inventory mapping every V2 stage to its LLM configuration (for agent stages) and Bus I/O contract (for all stages). Authoritative against HEAD `345bdfb` on 2026-05-11.
+
+Sources of truth: `src/runner/stage_lists.py` (stage order), `scripts/run.py` (agent registrations), `src/agent_stages.py` (wrapper reads/writes), `src/stages/run_stages.py` + `src/stages/topic_stages.py` (deterministic stages), `src/bus.py` (slot definitions), `src/schemas.py` (LLM output schemas).
+
+## §1 Quick-Reference: LLM Configuration
 
-## Grundprinzip (Deniz, Session 6)
-
-> Für jeden Agent bestimmen: A) was braucht er, B) was soll er erzeugen. Den Rest leiten wir immer mit Python weiter. Wenn ein Agent "durchreicht", erzeugt er Tokens ohne Mehrwert.
-
-The V2 architecture hardens this principle into structural enforcement. Each agent reads from declared input Bus slots, emits its agent-local output, and the agent-stage wrapper in `src/agent_stages.py` writes only the originary fields into the Bus. Pipeline-derived fields (IDs, slugs, dates, counts, source enrichment, citation rewriting) are computed by deterministic stages in `src/stages/topic_stages.py` (per-topic) or `src/stages/run_stages.py` (per-run).
-
-A ✅ in the **Originär** column means only the LLM can produce the field (judgement, prose, classification). A ❌ would flag a leftover that should be moved to Python.
-
-Each section also lists **the deterministic stages** that read or write related slots, so the data routing is fully traceable.
-
-Last updated: 2026-05-05 (post-Researcher-Polish + Phase-0-Eval cleanup; latest commit 8f48804).
-
----
-
-## 1. Curator (Gemini 3 Flash, run-stage, 1×/Run)
-
-**Wrapper:** `src/agent_stages.py:CuratorStage`
-**Reads:** `run_bus.curator_findings`
-**Writes:** `run_bus.curator_topics_unsliced`, `run_bus.curator_topics`
-
-### INPUT (after `fetch_findings` deterministic run-stage populates `curator_findings`)
-
-```
-{
-  findings: [
-    {id: "finding-N", title, source_name, summary?}
-  ]
-}
-```
-
-### OUTPUT
-
-| Field | LLM emits | Originär? | Notes |
-| --- | --- | --- | --- |
-| `topics[].title` | ✅ | ✅ | Topic label (not headline) |
-| `topics[].relevance_score` | ✅ | ✅ | 1-10 editorial judgement |
-| `topics[].summary` | ✅ | ✅ | 1-3 sentences derived from input findings |
-| `cluster_assignments[]` | ✅ | ✅ | Flat `int|null` array, length matches `findings`. Each entry is the topic-index that finding maps to (or null for unclustered). |
-
-### Python adds (downstream of Curator, in `CuratorStage` wrapper before slot write)
-
-| Field | Where computed |
-| --- | --- |
-| `topics[].source_ids` (e.g. `["finding-3","finding-7"]`) | `CuratorStage` rebuilds from `cluster_assignments` (collapses cluster_assignments per topic) |
-| `topics[].geographic_coverage`, `languages`, `source_count`, `missing_regions`, `missing_languages`, `source_diversity`, `missing_perspectives` | `CuratorStage` enrichment helpers |
-
-### Variants
-- **Production:** `curator_topics_unsliced` is sliced to top-10 by `relevance_score` to produce `curator_topics` (Editor sees 10).
-- **Hydrated:** identical Curator stage — diverges only at the `attach_hydration_urls_to_assignments` run-stage that runs between Editor and `select_topics`.
-
-**Status:** ✅ Pass-through clean. No Python-derivable field in the LLM output. The Curator INSTRUCTIONS.md was sharpened in commit 8f48804 (STEPS step 5: explicit null-default; RULE 1: anchored to "concrete event, decision, conflict, or development").
-
----
-
-## 2. Editor (Opus 4.6, run-stage, 1×/Run)
-
-**Wrapper:** `src/agent_stages.py:EditorStage`
-**Reads:** `run_bus.curator_topics`, `run_bus.previous_coverage`
-**Writes:** `run_bus.editor_assignments`
-
-### INPUT
-
-```
-{
-  topics: [<Curator output, fully enriched>],
-  previous_coverage: [{tp_id, date, headline, slug, summary}]   # last ~7 days
-}
-```
-
-`previous_coverage` is populated at `init_run` time by a deterministic helper that scans `output/{date}/` directories.
-
-### OUTPUT
-
-| Field | LLM emits | Originär? | Notes |
-| --- | --- | --- | --- |
-| `[].title` | ✅ | ✅ | May refine the Curator title |
-| `[].priority` | ✅ | ✅ | 0-10. 0 = rejected (kept in output for transparency) |
-| `[].selection_reason` | ✅ | ✅ | Editorial reasoning. Forbidden from numeric/outlet-brand claims (Principle-1 fix). Cleaned via `strip_stale_quantifiers` helper at `compose_transparency_card` time. |
-| `[].follow_up` | ✅ | ✅ | Reference to a `previous_coverage` entry when applicable. |
-| `[].follow_up_reason` | ✅ | ✅ | Why this is a follow-up (when `follow_up` is set). |
-
-### Python adds (downstream of Editor, in `EditorStage` wrapper)
-
-| Field | Where computed |
-| --- | --- |
-| `[].id` | `EditorStage` derives from title slugification |
-| `[].topic_slug` | `EditorStage` |
-| `[].raw_data` | `EditorStage` carries forward Curator's source_ids + (in hydrated) hydration_urls |
-
-**Status:** ✅ Pass-through clean.
-
----
-
-## 3. attach_hydration_urls_to_assignments — deterministic run-stage (hydrated only)
-
-**Function:** `src/stages/run_stages.py:attach_hydration_urls_to_assignments`
-**Reads:** `run_bus.editor_assignments`, `run_bus.curator_topics_unsliced`
-**Writes:** `run_bus.editor_assignments[].raw_data.hydration_urls` (in-place mutation)
-
-For each editor assignment, walks `curator_topics_unsliced` to find the matching cluster (by token overlap on title), reads the cluster's source URLs from underlying findings, and attaches them to the assignment under `raw_data.hydration_urls`. This is a **run-stage** — it operates on the full assignments list (cross-topic), not on a single TopicBus.
-
-Helpers in `src/stages/run_stages.py`: `_hydration_tokens`, `_match_cluster`, `_load_country_lookup`, `_build_hydration_urls_for_cluster`.
-
-Production variant skips this stage entirely — the production stage list does not include it.
-
----
-
-## 4. select_topics — deterministic run-stage
-
-**Function:** `src/stages/run_stages.py:select_topics`
-**Reads:** `run_bus.editor_assignments`, `run_bus.max_produce`
-**Writes:** populates the list of selected assignments that the runner will instantiate as TopicBuses
-
-Sorts `editor_assignments` by priority desc, takes top `max_produce` (default 3), and produces the list. The runner then instantiates one TopicBus per selected assignment with `editor_selected_topic` populated.
-
----
-
-## 5. Hydration phase 1 — `hydration_aggregator_phase1` (Gemini 3 Flash, topic-stage, hydrated only)
-
-**Wrapper:** `src/agent_stages.py:HydrationPhase1Stage`
-**Reads:** `topic_bus.hydration_fetch_results` (filtered to `status="success"`)
-**Writes:** `topic_bus.hydration_phase1_analyses`
-
-### INPUT
-
-Successful fetch records: `[{url, title, outlet, language, country, extracted_text, ...}]`. The wrapper splits articles into chunks of 5–10 (`ceil(N/10)` chunks), runs phase-1 calls in parallel via `asyncio.gather`, and retries up to 2 times per chunk re-requesting only missing indices.
-
-### OUTPUT
-
-| Field | LLM emits | Originär? | Notes |
-| --- | --- | --- | --- |
-| `article_analyses[].article_index` | ✅ | ✅ | Chunk-local index (re-mapped to global by Python in `_merge_phase1_results`) |
-| `article_analyses[].summary` | ✅ | ✅ | Per-article extraction |
-| `article_analyses[].actors_quoted[]` | ✅ | ✅ | Five-field actor: `{name, role, type, position, verbatim_quote}`. Type validated against `_ACTOR_TYPE_ENUM` (10 values) by Python. |
-
-### Python adds (in `HydrationPhase1Stage` wrapper, internalised from V1 `hydration_aggregator.py` in V2-11a)
-
-| Step | Where computed |
-| --- | --- |
-| Chunk distribution | `_distribute_chunks` (private helper in `src/agent_stages.py`) |
-| Per-article preparation | `_prepare_article` |
-| Phase-1 call wrapper | `_call_phase1` |
-| Output validation (Rule 1, Rule 6) | `_validate_phase1_output` |
-| Cross-chunk index re-mapping | `_merge_phase1_results` |
-
-**Status:** ✅ Pass-through clean. Counting and indexing are entirely deterministic.
-
----
-
-## 6. Hydration phase 2 — `hydration_aggregator_phase2` (Opus 4.6, topic-stage, hydrated only)
-
-**Wrapper:** `src/agent_stages.py:HydrationPhase2Stage`
-**Reads:** `topic_bus.hydration_phase1_analyses`, `topic_bus.hydration_fetch_results` (for metadata)
-**Writes:** `topic_bus.hydration_phase2_corpus`
-
-### INPUT
-
-```
-{
-  assignment: {title, selection_reason},
-  article_analyses: [<phase 1 output>],
-  article_metadata: [{article_index, language, country, outlet}]   # built by Python
-}
-```
-
-### OUTPUT
-
-| Field | LLM emits | Originär? | Notes |
-| --- | --- | --- | --- |
-| `preliminary_divergences[]` | ✅ | ✅ | Cross-corpus contradictions, framing differences |
-| `coverage_gaps[]` | ✅ | ✅ | Pre-research gap statements (validated against final source pool downstream by `validate_coverage_gaps_stage`) |
-
-### Python adds
-
-| Step | Where computed |
-| --- | --- |
-| `article_metadata` input | `_build_article_metadata` (private helper in `src/agent_stages.py`) |
-| Phase-2 call wrapper | `_run_phase2_reducer` |
-
-**Status:** ✅ Pass-through clean.
-
----
-
-## 7. assemble_hydration_dossier — deterministic topic-stage (hydrated only)
-
-**Function:** `src/stages/topic_stages.py:assemble_hydration_dossier`
-**Reads:** `topic_bus.hydration_phase1_analyses`, `topic_bus.hydration_phase2_corpus`, `topic_bus.hydration_fetch_results`
-**Writes:** `topic_bus.hydration_pre_dossier`
-
-Combines phase 1 + phase 2 + fetch metadata into the pre-research dossier. Each source carries `hydrate-rsrc-NNN` IDs (later renumbered to `src-NNN` by `renumber_sources`). Calls the V2-11a-internalised `_build_coverage_summary` helper to populate the coverage statistics consumed by the hydrated researcher planner.
-
----
-
-## 8. Researcher Plan (Opus 4.6, topic-stage)
-
-**Production wrapper:** `src/agent_stages.py:ResearcherPlanStage`
-**Hydrated wrapper:** `src/agent_stages.py:ResearcherHydratedPlanStage`
-**Reads:** `topic_bus.editor_selected_topic`, plus (hydrated only) `topic_bus.hydration_pre_dossier`
-**Writes:** `topic_bus.researcher_plan_queries`
-
-The two wrappers differ only in input — hydrated reads the pre-dossier coverage summary to drive gap-aware queries; production plans cold from the assignment alone.
-
-### OUTPUT
-
-| Field | LLM emits | Originär? | Notes |
-| --- | --- | --- | --- |
-| `queries[].query` | ✅ | ✅ | Search query string |
-| `queries[].language` | ✅ | ✅ | ISO language code for the query |
-
-**Status:** ✅ Pass-through clean.
-
----
-
-## 9. researcher_search — deterministic topic-stage
-
-**Function:** `src/stages/topic_stages.py:make_researcher_search` (factory taking a `web_search_tool`)
-**Reads:** `topic_bus.researcher_plan_queries`
-**Writes:** `topic_bus.researcher_search_results`
-
-Executes each query via the registered web-search tool (Brave Search in production), deduplicates results across queries (`_deduplicate_search_results`), enriches with extracted URL dates (`_enrich_url_dates`, `_extract_date_from_url_local`).
-
-The factory pattern is used because the `web_search_tool` is injected — tests pass a fake.
-
----
-
-## 10. Researcher Assemble (Gemini 3 Flash, topic-stage)
-
-**Wrapper:** `src/agent_stages.py:ResearcherAssembleStage`
-**Reads:** `topic_bus.researcher_search_results`, `topic_bus.editor_selected_topic`
-**Writes:** `topic_bus.researcher_assemble_dossier`
-
-### OUTPUT
-
-| Field | LLM emits | Originär? | Notes |
-| --- | --- | --- | --- |
-| `sources[].id` | ✅ | (transitional) | LLM-emitted IDs use `research-rsrc-NNN` form. Python reassigns to `src-NNN` in `renumber_sources` topic-stage. |
-| `sources[].url, title, outlet, language, country` | ✅ | ✅ | Source metadata extracted from search results |
-| `sources[].summary` | ✅ | ✅ | Per-source summary |
-| `sources[].estimated_date` | ✅ | ✅ | Recency-aware (set to `None` if undeterminable) |
-| `sources[].actors_quoted[]` | ✅ | ✅ | Five-field actor shape with `verbatim_quote: null` (web-snippets cannot reliably yield direct quotes) |
-| `preliminary_divergences[]` | ✅ | ✅ | Cross-source contradictions |
-| `coverage_gaps[]` | ✅ | ✅ | Gap statements |
-
-**Status:** ✅ Pass-through clean (LLM-emitted `research-rsrc-NNN` IDs are normalised by Python downstream). `source.country` defaults to `'unknown'` (never null) per `assemble_hydration_dossier` defence-in-depth (commit 59f46fc).
-
----
-
-## 11. merge_sources / renumber_sources / normalize_pre_research — deterministic topic-stages
-
-**Functions:**
-- `src/stages/topic_stages.py:merge_sources`
-- `src/stages/topic_stages.py:renumber_sources`
-- `src/stages/topic_stages.py:normalize_pre_research`
-
-**`merge_sources`:** concatenates `hydration_pre_dossier.sources` (production: empty) and `researcher_assemble_dossier.sources` into `merged_sources_pre_renumber`. Also concatenates and dedupes the `preliminary_divergences[]` and `coverage_gaps[]` lists.
-
-**`renumber_sources`:** assigns final `src-001`, `src-002`, ... `src-NNN` IDs via `_build_source_index` and `_rewrite_ids_in_value`. Populates `final_sources` (the canonical source list) and `id_rename_map` (dictionary from pre-renumber IDs to `src-NNN`).
-
-**`normalize_pre_research`:** rewrites all `hydrate-rsrc-NNN` and `research-rsrc-NNN` references in `merged_preliminary_divergences` and `merged_coverage_gaps` to `src-NNN` via `id_rename_map`.
-
-After these three stages, every downstream consumer sees only `src-NNN`. This is the **ID normalisation invariant** documented in `docs/ARCH-V2-BUS-SCHEMA.md` §7.
-
-### prune_unused_sources_and_clusters — strict-drop deterministic topic-stage
-
-**Function:** `src/stages/topic_stages.py:prune_unused_sources_and_clusters`
-**Reads:** `topic_bus.final_sources`, `topic_bus.perspective_clusters_synced`,
-  `topic_bus.qa_divergences`, `topic_bus.merged_preliminary_divergences`,
-  `topic_bus.qa_corrected_article`, `topic_bus.writer_article`,
-  `topic_bus.bias_language_findings`, `topic_bus.coverage_gaps_validated`
-**Writes:** `topic_bus.final_sources`, `topic_bus.perspective_clusters_synced`
-
-Drops sources whose IDs are not referenced anywhere downstream — body, clusters, divergences, gaps, bias findings. Reference set is computed by helper `_collect_referenced_src_ids` which scans every slot that may carry an `src-NNN` token (string-form `[src-NNN]` regex over article bodies and prose; structured `source_ids[]` over collection slots).
-
-Drop rule (commit a8b40e3, strict): a source is dropped if its `id` is not in the reference set. No content-based reprieve — the previous heuristic kept any source with non-empty summary/actors_quoted, which let off-topic Researcher-Assembler-dumped findings survive.
-
-Cluster drop rule unchanged: a cluster is dropped only when both `actor_ids[]` and `source_ids[]` are empty (post Task C the cluster-shape field is `actor_ids[]`, not `actors[]`).
-
-Each drop logs an INFO line with id, outlet, and a 60-char summary snippet.
-
----
-
-## 11b. consolidate_actors — deterministic topic-stage
-
-**Function:** `src/stages/topic_stages.py:consolidate_actors`
-**Reads:** `topic_bus.final_sources`
-**Writes:** `topic_bus.final_actors`
-
-Flattens every `final_sources[].actors_quoted[]` entry into a single deduped list with stable `actor-NNN` IDs. Dedup is exact-string-match on `name` (multilingual / paraphrased variants of the same entity therefore appear separately — alias resolution happens in stage 11c below). For role/type conflicts the first-encountered values win. Each output entry carries one `quotes[].{source_id, verbatim, position}` record per source-membership; `verbatim` is `None` for paraphrased actors. Runs after `filter_media_actors_quoted` so `type=media` never enters the flat list.
-
-`final_actors[]` is audit-only post Phase 2 of TASK-RESOLVE-ACTOR-ALIASES — preserved in the rendered TP JSON for transparency, but not read by behaviour code (consumers read `canonical_actors[]` from stage 11c).
-
-Logs one INFO line per topic with the unique-actor / source-count tally.
-
----
-
-## 11c. resolve_actor_aliases (Gemini Flash, topic-stage)
-
-**Wrapper:** `src/agent_stages.py:ResolveActorAliasesStage`
-**Reads:** `topic_bus.final_actors`
-**Writes:** `topic_bus.canonical_actors`, `topic_bus.actor_alias_mapping`
-
-Cross-variant alias resolver. Reads the exact-string-match deduped `final_actors[]` from `consolidate_actors` and identifies entries whose `name` field is a multilingual or paraphrased variant of the same real-world entity ("Russian Defense Ministry" / "Russia's Defense Ministry" / "Министерство обороны России" all reference one institution).
-
-### OUTPUT
-
-| Field | LLM emits | Originär? | Notes |
-| --- | --- | --- | --- |
-| `aliases[].alias_id` | ✅ | ✅ | `actor-NNN` ID merged into another |
-| `aliases[].canonical_id` | ✅ | ✅ | `actor-NNN` ID the alias references |
-| `anonymous_flags[]` | ✅ | ✅ | `actor-NNN` IDs whose `name` is a generic source-class label |
-
-The wrapper applies first-source-wins canonical selection deterministically (smaller numeric ID wins; transitive closure via union-find) and writes:
-
-- `canonical_actors[]` — merged entries mirroring `final_actors[]` shape plus `is_anonymous: bool`. Aliased IDs disappear (gaps in the numeric sequence per ARCH-V2 §7.2).
-- `actor_alias_mapping[]` — audit trail `[{alias_id, alias_name, canonical_id}]` connecting pre- and post-resolution state.
-
-`final_actors[]` is preserved unchanged (non-destructive). Runs between `consolidate_actors` and `normalize_pre_research`.
-
-**Production config (Y, verified diagnostic-V2 30-run smoke):** `model=google/gemini-flash-latest`, `temperature=1.0`, `reasoning="medium"`, `max_tokens=66000`. The reasoning-enabled profile contradicts the prior fleet-level `reasoning=none` default for Flash and is task-specific — see ARCH-V2 §7.2 Engineering note.
-
-**Status:** ✅ Pass-through clean. Logs `resolve_actor_aliases: N aliases merged into M canonical actors, K flagged anonymous`.
-
----
-
-## 12. Perspective (Opus 4.6, topic-stage)
-
-**Wrapper:** `src/agent_stages.py:PerspectiveStage`
-**Reads:** `topic_bus.final_sources`, `topic_bus.canonical_actors`, `topic_bus.merged_preliminary_divergences`, `topic_bus.merged_coverage_gaps`, `topic_bus.editor_selected_topic`
-**Writes:** `topic_bus.perspective_clusters`, `topic_bus.perspective_missing_positions`
-
-### OUTPUT
-
-| Field | LLM emits | Originär? | Notes |
-| --- | --- | --- | --- |
-| `position_clusters[].position_label` | ✅ | ✅ | Short cluster label |
-| `position_clusters[].position_summary` | ✅ | ✅ | Cluster prose |
-| `position_clusters[].source_ids[]` | ✅ | ✅ | References to `src-NNN` IDs from `final_sources` |
-| `position_clusters[].actor_ids[]` | ✅ | ✅ | References to `actor-NNN` IDs from `canonical_actors`. Inclusion criterion: the actor's own statements voice the cluster's position. An actor's source feeding a cluster does NOT auto-include the actor. |
-| `missing_positions[]` | ✅ | ✅ | Stakeholder voices the dossier could not source |
-
-The `position_clusters[].id` (`pc-NNN`) is attached by `enrich_perspective_clusters`, not the agent. The prior `actors[]` field has been removed in favour of `actor_ids[]`. Phase 2 of TASK-RESOLVE-ACTOR-ALIASES migrated the agent-context input from `final_actors[]` to `canonical_actors[]`, so cluster→actor assignment now happens against the alias-resolved actor set.
-
-**Status:** ✅ Pass-through clean.
-
----
-
-## 13. enrich_perspective_clusters — deterministic topic-stage
-
-**Function:** `src/stages/topic_stages.py:enrich_perspective_clusters`
-**Reads:** `topic_bus.perspective_clusters`, `topic_bus.final_sources`, `topic_bus.canonical_actors`
-**Writes:** `topic_bus.perspective_clusters` (in-place enrichment)
-
-Attaches per-cluster `id` (`pc-NNN`), `regions[]`, `languages[]`, and the count fields `n_actors`, `n_sources`, `n_regions`, `n_languages`. Validates the agent-emitted `actor_ids[]` against `canonical_actors[]` (the post alias-resolution actor list): unknown IDs and aliased IDs are dropped and a WARNING is logged.
-
-The prior `representation` bucket and the `actors[]` fan-out from source membership have been removed (TASK-PERSPECTIVE-ACTOR-SCOPING). Cluster→actor mapping is now an agent decision; the count fields replace the bucket. Phase 2 of TASK-RESOLVE-ACTOR-ALIASES migrated the validation join from `final_actors[]` to `canonical_actors[]` so `n_actors` reflects post-merge counts.
-
-Helper logic in `src/stages/topic_stages.py:_enrich_position_clusters_logic`.
-
----
-
-## 14. mirror_perspective_synced — deterministic topic-stage (runs 1× production, 2× hydrated)
-
-**Function:** `src/stages/topic_stages.py:mirror_perspective_synced`
-**Reads:** `topic_bus.perspective_clusters`, `topic_bus.perspective_clusters_synced` (target)
-**Writes:** `topic_bus.perspective_clusters_synced`
-
-Empty-then-fill mirror, **per-element granularity** (per `docs/ARCH-V2-BUS-SCHEMA.md` §3.3 (b)). For each cluster in `perspective_clusters`: if a delta exists in `perspective_clusters_synced` (matched by `id`), apply delta fields on top of the source cluster. Otherwise copy source cluster verbatim.
-
-The stage is **idempotent** — running it twice in hydrated (once after `enrich_perspective_clusters` for 1:1 fill, once after `perspective_sync` for delta merge) produces the correct final state. Logic in `src/stages/run_stages.py:mirror_stage` (the generic mirror engine that reads `mirrors_from` schema metadata).
-
----
-
-## 15. Writer (Opus 4.6, topic-stage)
-
-**Wrapper:** `src/agent_stages.py:WriterStage`
-**Reads:** `topic_bus.final_sources`, `topic_bus.canonical_actors`, `topic_bus.actor_alias_mapping`, `topic_bus.perspective_clusters_synced`, `topic_bus.perspective_missing_positions`, `topic_bus.merged_coverage_gaps`, `topic_bus.editor_selected_topic`
-**Writes:** `topic_bus.writer_article`
-
-### INPUT
-
-The wrapper passes `final_sources` directly — Writer reads `src-NNN` IDs and emits `[src-NNN]` citations directly. Phase 2 of TASK-RESOLVE-ACTOR-ALIASES added `canonical_actors[]` (as `actors` in the Writer's context) plus `actor_alias_mapping[]` (as `actor_aliases`) so the Writer dereferences cluster `actor_ids[]` against canonical names rather than source-side `actors_quoted[]` variants. F2 dedup now reaches the published article text.
-
-### OUTPUT
-
-| Field | LLM emits | Originär? | Notes |
-| --- | --- | --- | --- |
-| `headline` | ✅ | ✅ | Article headline |
-| `subheadline` | ✅ | ✅ | One-sentence summary |
-| `body` | ✅ | ✅ | Article body. Citations inline as `[src-NNN]` referencing `final_sources` (post-V2-09e symmetric ID flow). |
-| `summary` | ✅ | ✅ | Newsletter-grade short summary |
-| `sources[].src_id` | ✅ | (transitional) | Schema field renamed from `rsrc_id` to `src_id` in V2-09e. WriterStage validates that emitted IDs match `final_sources`. |
-
-**Status:** ✅ Pass-through clean. `[src-NNN]` symmetry with QA verified by V2-09e + V2-10c smoke (all 5 V2-10b bugs closed).
-
-V2-09c2 disabled `tools=[web_search_tool]` for this agent to close `[web-N]` Bug-1 (Writer was citing search results bypassing the source pool). Writer now operates strictly within the dossier.
-
----
-
-## 16. QA-Analyze (Sonnet 4.6, topic-stage)
-
-**Wrapper:** `src/agent_stages.py:QaAnalyzeStage`
-**Reads:** `topic_bus.writer_article`, `topic_bus.final_sources`, `topic_bus.perspective_clusters_synced`
-**Writes:** `topic_bus.qa_problems_found`, `topic_bus.qa_corrections`, `topic_bus.qa_corrected_article`, `topic_bus.qa_divergences`
-
-### OUTPUT
-
-| Field | LLM emits | Originär? | Notes |
-| --- | --- | --- | --- |
-| `problems_found[]` | ✅ | ✅ | List of factual problems with article excerpt + explanation. Citations in `[src-NNN]` form symmetric with Writer (V2-09e). |
-| `qa_corrections[]` | ✅ | ✅ | Each item is a Correction object: `{proposed_correction: str, correction_needed: bool}`. The list is 1:1 length-equal with `problems_found` by index. Schema declaration order is load-bearing — Sonnet streams in order. The `qa_corrected_article` field is emitted iff `any(c.correction_needed)`; when all corrections are retractions (all false), the article is omitted and the `mirror_qa_corrected` stage backfills from `writer_article`. Schema rename `qa_proposed_corrections` → `qa_corrections` in commit e2e7efd; `--reuse` on pre-rename snapshots requires manual migration. |
-| `article` | ✅ (conditional) | ✅ | **Slot-level mirror semantics:** emitted only when `any(qa_corrections[i].correction_needed)`; omitted when all corrections are retractions (all false) or when `qa_corrections` is empty. `mirror_qa_corrected` fills from `writer_article` in the omit case. Citations in `[src-NNN]` form. Explanations in `problems_found` are constrained to one-to-three sentences (commit 813c4e4) and `max_tokens` lifted to 64000. |
-| `divergences[]` | ✅ | ✅ | Cross-source factual disagreements identified by QA. References to source IDs already in `src-NNN` form. |
-
-**Status:** ✅ Pass-through clean. Schema (`QA_ANALYZE_SCHEMA`) marks `article` as **optional** at the top level so strict-mode validation accepts outputs without an `article` field — the prerequisite for slot-level mirror semantics (§3.3 (a)).
-
----
-
-## 17. mirror_qa_corrected — deterministic topic-stage
-
-**Function:** `src/stages/topic_stages.py:mirror_qa_corrected`
-**Reads:** `topic_bus.writer_article`, `topic_bus.qa_corrected_article`
-**Writes:** `topic_bus.qa_corrected_article`
-
-Empty-then-fill mirror, **slot-level granularity** (`§3.3 (a)`). If `qa_corrected_article` is empty (QA omitted it because all corrections were retractions, or because no problems were found), fill all four fields from `writer_article`. If non-empty (QA emitted a corrected article because at least one correction had `correction_needed: true`), keep as-is.
-
-After this stage `qa_corrected_article` always has all four fields populated. Render layers read `qa_corrected_article` directly with no conditional fallback.
-
----
-
-## 18. compute_source_balance / validate_coverage_gaps_stage — deterministic topic-stages
-
-**Functions:**
-- `src/stages/topic_stages.py:compute_source_balance`
-- `src/stages/topic_stages.py:validate_coverage_gaps_stage` (delegates to `src/stages/_helpers.py:validate_coverage_gaps`)
-
-**`compute_source_balance`:** aggregates `final_sources` into `{by_country: {}, by_language: {}, represented: [], missing_from_dossier: []}`. Country names normalised via `normalise_country` helper (USA → United States, UK → United Kingdom, etc.). Language codes normalised via `normalise_language`. None-filter applied to `missing_from_dossier`.
-
-**`validate_coverage_gaps_stage`:** filters `merged_coverage_gaps` against the realised `source_balance` to drop gap statements empirically refuted by the final source pool (e.g. "no UK-language sources" when UK is present). Tokenisation-driven match via `_gap_tokens`.
-
----
-
-## 19. Bias Language (Opus 4.6, topic-stage)
-
-**Wrapper:** `src/agent_stages.py:BiasLanguageStage`
-**Reads:** `topic_bus.qa_corrected_article` (NOT `writer_article` — V2 always reads the corrected version), `topic_bus.final_sources`, `topic_bus.canonical_actors`, `topic_bus.perspective_clusters_synced`, plus the QA / coverage / divergence slots used by the deterministic bias-card builder
-**Writes:** `topic_bus.bias_language_findings`, `topic_bus.bias_reader_note`
-
-The deterministic bias-card builder (`_build_bias_card_for_agent_input`) reads `canonical_actors` to compute `distinct_actor_count` post Phase 2 of TASK-RESOLVE-ACTOR-ALIASES. The pre-Phase-2 implementation read `final_actors[]`, which inflated the count under multilingual coverage; the migration to `canonical_actors[]` collapses alias variants of the same entity into one count.
-
-### OUTPUT
-
-| Field | LLM emits | Originär? | Notes |
-| --- | --- | --- | --- |
-| `findings[].excerpt` | ✅ | ✅ | Quoted phrase from the article |
-| `findings[].issue` | ✅ | ✅ | Type of linguistic bias |
-| `findings[].explanation` | ✅ | ✅ | Why this is biased |
-| `reader_note` | ✅ | ✅ | One-paragraph reader-facing note |
-
-**Status:** ✅ Pass-through clean. Other bias dimensions (source, geographical, selection, framing) are derived at render time by `compose_bias_card` from existing slots — not separate agent calls. See `docs/ARCH-V2-BUS-SCHEMA.md` §4B.12.
-
----
-
-## 20. Perspective-Sync (Opus 4.6, topic-stage, hydrated only)
-
-**Wrapper:** `src/agent_stages.py:PerspectiveSyncStage`
-**Reads:** `topic_bus.perspective_clusters` (the source slot, not the synced target), `topic_bus.qa_corrected_article`, `topic_bus.qa_problems_found`, `topic_bus.qa_corrections`
-**Writes:** `topic_bus.perspective_clusters_synced` (delta-only — `mirror_perspective_synced` then merges)
-
-### OUTPUT
-
-| Field | LLM emits | Originär? | Notes |
-| --- | --- | --- | --- |
-| `cluster_updates[].id` | ✅ | ✅ | The `pc-NNN` ID of the cluster being updated |
-| `cluster_updates[].position_label` (optional) | ✅ | ✅ | Only when changed |
-| `cluster_updates[].position_summary` (optional) | ✅ | ✅ | Only when changed |
-
-**Status:** ✅ Pass-through clean. **Per-element mirror semantics:** the agent emits only changed clusters with only changed fields. The downstream `mirror_perspective_synced` stage merges deltas onto the existing `perspective_clusters_synced` (which has been 1:1-filled by the first invocation of the same mirror stage post-`enrich_perspective_clusters`).
-
----
-
-## 21. compose_transparency_card — deterministic topic-stage
-
-**Function:** `src/stages/topic_stages.py:compose_transparency_card`
-**Reads:** `topic_bus.editor_selected_topic`, `topic_bus.writer_article`, `topic_bus.qa_corrected_article`, `topic_bus.qa_problems_found`, `topic_bus.qa_corrections`, `run_bus.run_id`, `run_bus.run_date`
-**Writes:** `topic_bus.transparency_card`
-
-Aggregates the transparency block. `selection_reason` cleaned via `strip_stale_quantifiers` helper. `article_original` populated only if QA modified the article (mirror semantics: `qa_corrected_article != writer_article` element-wise). `pipeline_run` carries `run_id` and `date` from the read-only RunBus reference.
-
----
-
-## 22. Render and finalize — deterministic post-run stages
-
-**Render functions in `src/render.py`:**
-- `render_tp_public(topic_bus, run_bus) -> dict` — default Topic Package on disk
-- `render_mcp_response(topic_bus, run_bus) -> dict` — MCP server response shape
-- `render_rss_entry(topic_bus, run_bus) -> dict` — RSS feed entry
-- `render_internal_debug(topic_bus, run_bus) -> dict` — full debug snapshot, no filtering
-- `compose_bias_card(topic_bus) -> dict` — multi-slot derived view (Vision §4B.12)
-
-Render is selection. Filtering is generic via the schema-level `visibility` metadata (`tp`, `mcp`, `rss`, `internal`) on each Bus slot — see `src/bus.py` for the Pydantic model definitions.
-
-**`finalize_run`** (`src/stages/run_stages.py:make_finalize_run`): writes the final `run_stage_log` and `run_topic_manifest` summary entries into the RunBus and persists the run state to disk under `output/{date}/_state/{run_id}/`.
-
----
-
-## 23. Other deterministic helpers (no Bus interface)
-
-These live in `src/stages/_helpers.py` and are called by the deterministic topic-stages above:
-
-- `normalise_country(name)` — Country name normalisation. Backed by `_load_country_lookup` in `src/stages/run_stages.py`.
-- `normalise_language(code)` — ISO language code normalisation.
-- `validate_coverage_gaps(gaps, source_balance)` — Coverage-gap empirical validation logic.
-- `strip_stale_quantifiers(text)` — Removes outdated numeric/outlet-brand quantifiers from selection reasons.
-- `_gap_tokens(gap_text)` — Tokenisation for gap matching.
-
----
-
-## 24. Schema-driven JSON enforcement
-
-Every agent has its `output_schema` registered at agent-creation time in `scripts/run.py` (production) or `scripts/run.py:create_agents_hydrated` (hydrated). The schemas live in `src/schemas.py`:
-
-- `CURATOR_SCHEMA`
-- `EDITOR_SCHEMA`
-- `RESEARCHER_PLAN_SCHEMA`
-- `RESEARCHER_ASSEMBLE_SCHEMA`
-- `PERSPECTIVE_SCHEMA`
-- `WRITER_SCHEMA` (V2-09e: `sources[].src_id`)
-- `QA_ANALYZE_SCHEMA` (V2: `article` optional; mirror semantics; `qa_corrections` renamed in e2e7efd; Correction shape: `{proposed_correction: str, correction_needed: bool}`)
-- `BIAS_DETECTOR_SCHEMA`
-- `HYDRATION_PHASE1_SCHEMA`
-- `HYDRATION_PHASE2_SCHEMA`
-- `PERSPECTIVE_SYNC_SCHEMA`
-
-OpenRouter's `response_format` strict mode enforces schema compliance at decode time. Defense-in-depth: `_extract_dict` / `_extract_list` in `src/agent.py` provide fallback parsing for malformed responses (regex-strip, `json-repair` 4th-fallback). Any agent output that violates its schema raises a structured error — the runner does not silently accept partial output.
-
----
-
-## 25. Outlet Registry and source enrichment
-
-**Files:**
-- `config/outlet_registry.json` — community-contributable mapping of `{hostname → {outlet, country}}`. 118 entries as of 2026-05-05.
-- `src/outlet_registry.py` — `lookup_outlet(url)` with hostname normalisation; helper `register_outlet(hostname, outlet, country)`.
-
-**Hydration enrichment** in `src/hydration.py:_hydrate_one`:
-- After fetch, looks up the URL's hostname in the outlet registry.
-- Sets `record["country"]` from registry; defaults to `"unknown"` (never null) if no match.
-- Extracts `record["published_date"]` via three-tier fallback: trafilatura's metadata extraction → `Last-Modified` HTTP header → URL-pattern regex (`/YYYY/MM/DD/...` or `/YYYYMMDD/...`).
-
-**`assemble_hydration_dossier`** consumes both fields and propagates them into the `final_sources` slot:
-- `country` falls back to `"unknown"` (defence-in-depth) so a stale `--reuse` snapshot never propagates literal null.
-- `estimated_date` is the raw `record.get("published_date")` value — may be absent on regional outlets without discoverable pubdates (legitimate; outlets such as Armenpress, ArmInfo, EVN Report do not surface metadata).
-
-**Status:** The Hydrated variant achieves ~80-100% country coverage (registry lookup) and ~38-84% date coverage (depending on outlet mix per topic). Researcher-Assemble inherits the country-defaulting behaviour but emits dates only when reasonably extracted.
-
----
-
-## Summary: data-routing principle
-
-The V2 architecture makes data routing **structural rather than convention-based**:
-
-- Every Bus slot has exactly one **owner** (declared in `src/bus.py`).
-- Mirror-pattern slots have a `mirrors_from` schema attribute.
-- Visibility-driven render uses schema metadata.
-- Stage execution is logged in `run_bus.run_stage_log` with explicit `scope` (`"run"` or `"topic:{slug}"`).
-
-When something doesn't work as expected, three probes:
-
-1. **Which stage owns the slot?** Check the §X table above and `src/bus.py`.
-2. **Did the stage actually run?** Check `run_bus.run_stage_log`.
-3. **Is the slot's content originary or pass-through?** ✅ in this map = LLM-only; routing happens elsewhere.
+| Agent | Model | Temp | Reasoning | max_tokens |
+|---|---|---|---|---|
+| curator | `google/gemini-3-flash-preview` | 0.2 | none | 64000 |
+| editor | `anthropic/claude-opus-4.6` | 0.3 | none | default |
+| researcher_plan | `anthropic/claude-opus-4.6` | 0.5 | none | default |
+| researcher_assemble | `google/gemini-3-flash-preview` | 0.2 | none | default |
+| resolve_actor_aliases | `google/gemini-3-flash-preview` | 1.0 | medium | 66000 |
+| perspective | `anthropic/claude-opus-4.6` | 0.1 | none | default |
+| writer | `anthropic/claude-opus-4.6` | 0.3 | none | default |
+| qa_analyze | `anthropic/claude-sonnet-4.6` | 0.1 | none | 64000 |
+| bias_language | `anthropic/claude-opus-4.6` | 0.1 | none | default |
+| researcher_hydrated_plan | `anthropic/claude-opus-4.6` | 0.5 | none | 16384 |
+| hydration_aggregator_phase1 | `deepseek/deepseek-v4-pro` | 0.3 | none | 32000 |
+| hydration_aggregator_phase2 | `anthropic/claude-opus-4.6` | 0.1 | none | 32000 |
+| perspective_sync | `anthropic/claude-opus-4.6` | 0.1 | none | default |
+
+13 agents registered (`scripts/run.py::create_agents` + `create_agents_hydrated`). `hydration_aggregator_phase1` has a Flash fallback block commented out in `scripts/run.py` per TASK-EVIDENCE-TYPE-MIGRATION A3 — DeepSeek is the active production model. Two-file prompt convention: every agent has `agents/{name}/SYSTEM.md` + `INSTRUCTIONS.md`; researcher uses `PLAN-*.md` + `ASSEMBLE-*.md` and hydration uses `PHASE1-*.md` + `PHASE2-*.md`.
+
+## §2 Pipeline I/O Map
+
+Hydrated is treated as canonical. Stages that run in only one variant are flagged inline. The full ordered union is 35 unique stages (production: 27, hydrated: 34; `mirror_perspective_synced` counted once even though it dispatches twice in hydrated). Stage names are listed in dispatch order (hydrated first, then the one production-only stage placed at its production position).
+
+### Run-stages
+
+#### §2.1 init_run
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/run_stages.py::make_init_run`
+- **Reads (Bus):** (none)
+- **Writes (Bus):** `run_id`, `run_date`, `run_variant`, `max_produce`, `previous_coverage` — RunBus
+
+#### §2.2 fetch_findings
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/run_stages.py::make_fetch_findings`
+- **Reads (Bus):** `run_date` — RunBus
+- **Writes (Bus):** `curator_findings` — RunBus, loaded from `raw/{run_date}/feeds.json`
+
+#### §2.3 CuratorStage
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::CuratorStage`
+- **Model:** `google/gemini-3-flash-preview`
+- **Params:** temp=0.2, reasoning=none, max_tokens=64000
+- **Prompt:** `agents/curator/SYSTEM.md` + `INSTRUCTIONS.md`
+- **Reads (Bus):** `curator_findings` — RunBus
+- **Writes (Bus):**
+  - `curator_topics_unsliced` — RunBus, full sorted cluster list
+  - `curator_topics` — RunBus, top-N slice (default 10) for the Editor
+- **Originarity check:**
+  - Fields the LLM produces: clusters (`title`, `relevance_score`, `summary`) + per-finding `cluster_assignments`
+  - Fields the wrapper merges in deterministically: outlet/url/source_name reattached from `curator_findings` via `_rebuild_curator_source_ids` + `_enrich_curator_output` (source IDs known upstream are mapped back to raw finding records).
+
+#### §2.4 EditorStage
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::EditorStage`
+- **Model:** `anthropic/claude-opus-4.6`
+- **Params:** temp=0.3, reasoning=none, max_tokens=default
+- **Prompt:** `agents/editor/SYSTEM.md` + `INSTRUCTIONS.md`
+- **Reads (Bus):** `curator_topics`, `previous_coverage` — RunBus
+- **Writes (Bus):** `editor_assignments` — RunBus
+- **Originarity check:**
+  - Fields the LLM produces: `title`, `priority`, `selection_reason`, `follow_up_to`, `follow_up_reason`
+  - Fields the wrapper merges in deterministically: `id` (`tp-{date}-NNN`), `topic_slug`, `raw_data` (re-attached from the Curator-side cluster via title/slug match in `_attach_raw_data_from_curated`).
+
+#### §2.5 attach_hydration_urls_to_assignments (hydrated-only)
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/run_stages.py::make_attach_hydration_urls_to_assignments`
+- **Reads (Bus):** `editor_assignments`, `run_date`, `curator_topics_unsliced` — RunBus
+- **Writes (Bus):** `editor_assignments` — RunBus, per-assignment `raw_data['hydration_urls']` enriched via token-overlap match against the Curator cluster set; reads `raw/{run_date}/feeds.json` + `config/sources.json` for URL list and country lookup.
+
+#### §2.6 select_topics
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/run_stages.py::select_topics`
+- **Reads (Bus):** `editor_assignments`, `max_produce` — RunBus
+- **Writes (Bus):** `selected_assignments` — RunBus, priority-sorted (descending), source-count tiebreaker, sliced to `max_produce`.
+
+### Topic-stages
+
+#### §2.7 attach_hydration_urls (hydrated-only)
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::attach_hydration_urls`
+- **Reads (Bus):** `editor_selected_topic` — TopicBus
+- **Writes (Bus):** `hydration_urls` — TopicBus, lifted from `editor_selected_topic.raw_data['hydration_urls']`.
+
+#### §2.8 hydration_fetch (hydrated-only)
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::make_hydration_fetch`
+- **Reads (Bus):** `hydration_urls` — TopicBus
+- **Writes (Bus):** `hydration_fetch_results` — TopicBus, T1 fetched article records via `src.hydration.hydrate_urls` (or injected fetcher).
+
+#### §2.9 HydrationPhase1Stage (hydrated-only)
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::HydrationPhase1Stage`
+- **Model:** `deepseek/deepseek-v4-pro`
+- **Params:** temp=0.3, reasoning=none, max_tokens=32000
+- **Prompt:** `agents/hydration_aggregator/PHASE1-SYSTEM.md` + `PHASE1-INSTRUCTIONS.md`
+- **Reads (Bus):** `editor_selected_topic`, `hydration_fetch_results` (success-only) — TopicBus
+- **Writes (Bus):** `hydration_phase1_analyses` — TopicBus, per-article extraction sorted by global `article_index` 0..N-1.
+- **Originarity check:**
+  - Fields the LLM produces: per-article `summary`, `actors_quoted[]` (`name`, `role`, `type`, `position`, `verbatim_quote`, `evidence_type`)
+  - Fields the wrapper merges in deterministically: chunking + global-`article_index` rewrite in `_merge_phase1_results` (article_index is a routing key, not pass-through data). URL/outlet/language/country live on the fetch records, not in the LLM output.
+
+#### §2.10 HydrationPhase2Stage (hydrated-only)
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::HydrationPhase2Stage`
+- **Model:** `anthropic/claude-opus-4.6`
+- **Params:** temp=0.1, reasoning=none, max_tokens=32000
+- **Prompt:** `agents/hydration_aggregator/PHASE2-SYSTEM.md` + `PHASE2-INSTRUCTIONS.md`
+- **Reads (Bus):** `editor_selected_topic`, `hydration_phase1_analyses`, `hydration_fetch_results` — TopicBus
+- **Writes (Bus):** `hydration_phase2_corpus` — TopicBus (`preliminary_divergences[]` + `coverage_gaps[]`).
+- **Originarity check:**
+  - Fields the LLM produces: cross-article divergence + coverage-gap strings
+  - Fields the wrapper merges in deterministically: `article_metadata` (language/country/outlet by index) is supplied as context, not echoed; no pass-through fields detected.
+
+#### §2.11 assemble_hydration_dossier (hydrated-only)
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::assemble_hydration_dossier`
+- **Reads (Bus):** `hydration_fetch_results`, `hydration_phase1_analyses`, `hydration_phase2_corpus` — TopicBus
+- **Writes (Bus):** `hydration_pre_dossier` — TopicBus, sources carry `hydrate-rsrc-NNN` IDs plus `actors_quoted[].evidence_type` threaded from Phase 1; divergences + gaps copied from Phase 2.
+
+#### §2.12 ResearcherHydratedPlanStage (hydrated-only)
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::ResearcherHydratedPlanStage`
+- **Model:** `anthropic/claude-opus-4.6`
+- **Params:** temp=0.5, reasoning=none, max_tokens=16384
+- **Prompt:** `agents/researcher_hydrated/PLAN-SYSTEM.md` + `PLAN-INSTRUCTIONS.md`
+- **Reads (Bus):** `editor_selected_topic`, `hydration_pre_dossier` — TopicBus
+- **Writes (Bus):** `researcher_plan_queries` — TopicBus, gap-aware multilingual queries.
+- **Originarity check:**
+  - Fields the LLM produces: `query`, `language` per item
+  - Fields the wrapper merges in deterministically: `coverage_summary` (language/country/stakeholder counts) computed from the dossier and supplied as context. No pass-through fields detected.
+
+#### §2.13 ResearcherPlanStage (production-only)
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::ResearcherPlanStage`
+- **Model:** `anthropic/claude-opus-4.6`
+- **Params:** temp=0.5, reasoning=none, max_tokens=default
+- **Prompt:** `agents/researcher/PLAN-SYSTEM.md` + `PLAN-INSTRUCTIONS.md`
+- **Reads (Bus):** `editor_selected_topic` — TopicBus
+- **Writes (Bus):** `researcher_plan_queries` — TopicBus
+- **Originarity check:**
+  - Fields the LLM produces: `query`, `language` per item
+  - No pass-through fields detected.
+
+#### §2.14 researcher_search
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::make_researcher_search`
+- **Reads (Bus):** `researcher_plan_queries` — TopicBus
+- **Writes (Bus):** `researcher_search_results` — TopicBus, deduped Brave-search payloads with URL-date enrichment.
+
+#### §2.15 ResearcherAssembleStage
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::ResearcherAssembleStage`
+- **Model:** `google/gemini-3-flash-preview`
+- **Params:** temp=0.2, reasoning=none, max_tokens=default
+- **Prompt:** `agents/researcher/ASSEMBLE-SYSTEM.md` + `ASSEMBLE-INSTRUCTIONS.md`
+- **Reads (Bus):** `editor_selected_topic`, `researcher_search_results` — TopicBus
+- **Writes (Bus):** `researcher_assemble_dossier` — TopicBus
+- **Originarity check:**
+  - Fields the LLM produces: per-source `url`, `title`, `outlet`, `language`, `country`, `summary`, `actors_quoted[]`, plus `preliminary_divergences[]` and `coverage_gaps[]` strings
+  - Fields the wrapper merges in deterministically: `id` (`research-rsrc-NNN`), `estimated_date` (derived from URL when absent from the LLM output)
+  - URL/outlet/language/country are originary outputs (the agent extracts them from search-result text blocks), not pass-through copies. No flag.
+
+#### §2.16 merge_sources
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::merge_sources`
+- **Reads (Bus):** `hydration_pre_dossier`, `researcher_assemble_dossier` — TopicBus
+- **Writes (Bus):** `merged_sources_pre_renumber`, `merged_preliminary_divergences`, `merged_coverage_gaps` — TopicBus.
+
+#### §2.17 renumber_sources
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::renumber_sources`
+- **Reads (Bus):** `merged_sources_pre_renumber` — TopicBus
+- **Writes (Bus):** `final_sources`, `id_rename_map` — TopicBus, canonical `src-NNN` IDs assigned in array order.
+
+#### §2.18 filter_media_actors_quoted
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::filter_media_actors_quoted`
+- **Reads (Bus):** `final_sources` — TopicBus
+- **Writes (Bus):** `final_sources` — TopicBus, drops `type=media` entries from every `actors_quoted[]`.
+
+#### §2.19 propagate_outlet_metadata
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::propagate_outlet_metadata`
+- **Reads (Bus):** `final_sources` — TopicBus
+- **Writes (Bus):** `final_sources` — TopicBus, copies `tier` / `editorial_independence` / `bias_note` from `config/sources.json` per outlet match.
+
+#### §2.20 consolidate_actors
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::consolidate_actors`
+- **Reads (Bus):** `final_sources` — TopicBus
+- **Writes (Bus):** `final_actors` — TopicBus, flattened/deduped actor list keyed by `actor-NNN` with `quotes[].evidence_type` threaded from sources.
+
+#### §2.21 ResolveActorAliasesStage
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::ResolveActorAliasesStage`
+- **Model:** `google/gemini-3-flash-preview`
+- **Params:** temp=1.0, reasoning=medium, max_tokens=66000
+- **Prompt:** `agents/resolve_actor_aliases/SYSTEM.md` + `INSTRUCTIONS.md`
+- **Reads (Bus):** `final_actors` — TopicBus
+- **Writes (Bus):** `canonical_actors`, `actor_alias_mapping` — TopicBus
+- **Originarity check:**
+  - Fields the LLM produces: `aliases[]` (`alias_id`, `canonical_id`) + `anonymous_flags[]` (ID lists)
+  - Fields the wrapper merges in deterministically: union-find canonical selection (smaller numeric ID wins) in `_resolve_canonical_groups`; `source_ids` + `quotes` merging across aliased entries; `is_anonymous` flag. The wrapper materialises `canonical_actors[]` and `actor_alias_mapping[]` records; the LLM only supplies pair / flag hints.
+  - No pass-through fields detected.
+
+#### §2.22 partition_canonical_actors_by_evidence
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::partition_canonical_actors_by_evidence`
+- **Reads (Bus):** `canonical_actors` — TopicBus
+- **Writes (Bus):** `canonical_actors_stated`, `canonical_actors_reported`, `canonical_actors_mentioned` — TopicBus, three pools by per-quote `evidence_type` (missing → `reported` default policy).
+
+#### §2.23 normalize_pre_research
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::normalize_pre_research`
+- **Reads (Bus):** `merged_preliminary_divergences`, `merged_coverage_gaps`, `id_rename_map` — TopicBus
+- **Writes (Bus):** `merged_preliminary_divergences`, `merged_coverage_gaps` — TopicBus, agent-local IDs rewritten to canonical `src-NNN`.
+
+#### §2.24 PerspectiveStage
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::PerspectiveStage`
+- **Model:** `anthropic/claude-opus-4.6`
+- **Params:** temp=0.1, reasoning=none, max_tokens=default
+- **Prompt:** `agents/perspective/SYSTEM.md` + `INSTRUCTIONS.md`
+- **Reads (Bus):** `editor_selected_topic`, `final_sources`, `canonical_actors_stated`, `canonical_actors_reported`, `canonical_actors_mentioned`, `merged_preliminary_divergences`, `merged_coverage_gaps` — TopicBus
+- **Writes (Bus):** `perspective_clusters` (raw), `perspective_missing_positions` — TopicBus
+- **Originarity check:**
+  - Fields the LLM produces: `position_label`, `position_summary`, `source_ids[]` (`src-NNN` references), `stated[]` / `reported[]` / `mentioned[]` actor-id sub-lists, plus `missing_positions[]`
+  - Fields the wrapper merges in deterministically: none — enrichment runs in a separate downstream deterministic stage (`enrich_perspective_clusters`).
+  - `source_ids` and the three actor sub-lists carry IDs known upstream — these are reference selections, not pass-through field copies. No flag.
+
+#### §2.25 enrich_perspective_clusters
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::enrich_perspective_clusters`
+- **Reads (Bus):** `perspective_clusters`, `final_sources`, `canonical_actors`, `canonical_actors_stated`, `canonical_actors_reported`, `canonical_actors_mentioned` — TopicBus
+- **Writes (Bus):** `perspective_clusters` — TopicBus, attaches `pc-NNN`, cross-tier-deduped sub-lists, derived `actor_ids` (sorted union), regions, languages, count summary; enforces pool-source consistency.
+
+#### §2.26 mirror_perspective_synced
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::mirror_perspective_synced`
+- **Reads (Bus):** `perspective_clusters` — TopicBus
+- **Writes (Bus):** `perspective_clusters_synced` — TopicBus, per-element mirror. Dispatches twice in hydrated (after `enrich_perspective_clusters` as 1:1 copy, after `PerspectiveSyncStage` as element-delta merge); once in production (1:1 copy only).
+
+#### §2.27 WriterStage
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::WriterStage`
+- **Model:** `anthropic/claude-opus-4.6`
+- **Params:** temp=0.3, reasoning=none, max_tokens=default
+- **Prompt:** `agents/writer/SYSTEM.md` + `INSTRUCTIONS.md` (plus optional `FOLLOWUP.md` addendum when `editor_selected_topic.follow_up_to` is set)
+- **Reads (Bus):** `editor_selected_topic`, `final_sources`, `canonical_actors`, `perspective_clusters_synced`, `perspective_missing_positions`, `merged_coverage_gaps` — TopicBus
+- **Writes (Bus):** `writer_article` — TopicBus (`headline`, `subheadline`, `body`, `summary`)
+- **Originarity check:**
+  - Fields the LLM produces: `headline`, `subheadline`, `body`, `summary`, plus a `sources[].src_id` echo required by the schema
+  - Fields the wrapper merges in deterministically: none.
+  - `⚠` — `WRITER_SCHEMA.sources[].src_id` is required by the schema but the wrapper discards it on parse. Schema/wrapper drift; flagged as Open Item.
+
+#### §2.28 QaAnalyzeStage
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::QaAnalyzeStage`
+- **Model:** `anthropic/claude-sonnet-4.6`
+- **Params:** temp=0.1, reasoning=none, max_tokens=64000
+- **Prompt:** `agents/qa_analyze/SYSTEM.md` + `INSTRUCTIONS.md`
+- **Reads (Bus):** `writer_article`, `final_sources`, `perspective_clusters_synced`, `merged_preliminary_divergences` (plus `perspective_missing_positions` in context for divergence checks) — TopicBus
+- **Writes (Bus):** `qa_problems_found`, `qa_corrections`, `qa_corrected_article` (optional, mirror-pattern), `qa_divergences` — TopicBus
+- **Originarity check:**
+  - Fields the LLM produces: `problems_found[]`, `qa_corrections[]` (`proposed_correction`, `correction_needed`), optional `article` (post-correction headline/sub/body/summary), `divergences[]`
+  - Fields the wrapper merges in deterministically: mirror gate — `qa_corrected_article` is left empty when no entry warrants a body fix, then filled by `mirror_qa_corrected` downstream.
+  - No pass-through fields detected.
+
+#### §2.29 mirror_qa_corrected
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::mirror_qa_corrected`
+- **Reads (Bus):** `writer_article` — TopicBus
+- **Writes (Bus):** `qa_corrected_article` — TopicBus, slot-level empty-then-fill.
+
+#### §2.30 PerspectiveSyncStage (hydrated-only)
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::PerspectiveSyncStage`
+- **Model:** `anthropic/claude-opus-4.6`
+- **Params:** temp=0.1, reasoning=none, max_tokens=default
+- **Prompt:** `agents/perspective_sync/SYSTEM.md` + `INSTRUCTIONS.md`
+- **Reads (Bus):** `perspective_clusters`, `qa_corrected_article`, `qa_problems_found`, `qa_corrections` — TopicBus
+- **Writes (Bus):** `perspective_clusters_synced` — TopicBus (eligibility-gated: skipped when no correction entry warrants a body fix)
+- **Originarity check:**
+  - Fields the LLM produces: `position_cluster_updates[]` (deltas: `id`, `position_label`, `position_summary`)
+  - Fields the wrapper merges in deterministically: per-element merge over `perspective_clusters` via `_merge_perspective_deltas` (delta IDs are routing keys, not pass-through data).
+  - No pass-through fields detected.
+
+#### §2.31 compute_source_balance
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::compute_source_balance`
+- **Reads (Bus):** `final_sources` — TopicBus
+- **Writes (Bus):** `source_balance` — TopicBus, language/country counts + represented-countries set.
+
+#### §2.32 validate_coverage_gaps_stage
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::validate_coverage_gaps_stage`
+- **Reads (Bus):** `merged_coverage_gaps`, `source_balance` — TopicBus
+- **Writes (Bus):** `coverage_gaps_validated` — TopicBus, gaps falsified by `source_balance` dropped, near-duplicates collapsed.
+
+#### §2.33 BiasLanguageStage
+
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::BiasLanguageStage`
+- **Model:** `anthropic/claude-opus-4.6`
+- **Params:** temp=0.1, reasoning=none, max_tokens=default
+- **Prompt:** `agents/bias_detector/SYSTEM.md` + `INSTRUCTIONS.md`
+- **Reads (Bus):** `qa_corrected_article`, `final_sources`, `canonical_actors`, `perspective_clusters_synced`, `perspective_missing_positions`, `qa_problems_found`, `qa_corrections`, `qa_divergences`, `coverage_gaps_validated` — TopicBus
+- **Writes (Bus):** `bias_language_findings`, `bias_reader_note` — TopicBus
+- **Originarity check:**
+  - Fields the LLM produces: `language_bias.findings[]` (`excerpt`, `issue`, `explanation`), `reader_note`
+  - Fields the wrapper merges in deterministically: bias-card context assembled via `_build_bias_card_for_agent_input` and supplied as context (not echoed back).
+  - No pass-through fields detected.
+
+#### §2.34 prune_unused_sources_and_clusters
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::prune_unused_sources_and_clusters`
+- **Reads (Bus):** `final_sources`, `perspective_clusters_synced`, `writer_article`, `qa_corrected_article`, `qa_divergences`, `bias_language_findings`, `merged_preliminary_divergences`, `coverage_gaps_validated` — TopicBus
+- **Writes (Bus):** `final_sources`, `perspective_clusters_synced`, `prune_dropped_sources`, `prune_dropped_clusters` — TopicBus, strict-drop of unreferenced sources and empty-bodied clusters.
+
+#### §2.35 compose_transparency_card
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::compose_transparency_card`
+- **Reads (Bus):** `editor_selected_topic`, `qa_problems_found`, `qa_corrections`, `writer_article`, `qa_corrected_article`, `prune_dropped_sources`, `prune_dropped_clusters` — TopicBus (plus RunBus `run_id`, `run_date`)
+- **Writes (Bus):** `transparency_card` — TopicBus.
+
+## §3 Open Items
+
+- `⚠` `WRITER_SCHEMA.sources[].src_id` in `src/schemas.py` is a required output field but `WriterStage` (`src/agent_stages.py`) discards it on parse — only `headline`, `subheadline`, `body`, `summary` survive into the `WriterArticle` slot. Either drop the schema field (pure cleanup) or validate that the LLM-echoed `src_id` set matches the inline `[src-NNN]` citations in `body`. Current behaviour is silently lossy.
+
+## §4 Methodology
+
+Code is the source of truth for this map. Document generated against HEAD `345bdfb` on 2026-05-11. When models, parameters, or Bus slots change, this document is updated in the same commit as the code change. The two-file prompt convention for every agent under `agents/` (`SYSTEM.md` + `INSTRUCTIONS.md`, with researcher and hydration using phase-named pairs `PLAN-*.md` / `ASSEMBLE-*.md` / `PHASE1-*.md` / `PHASE2-*.md`) was previously documented in `docs/AGENT-INVENTORY.md`, now archived at `docs/archive/AGENT-INVENTORY-pre-2026-05-11.md`.
