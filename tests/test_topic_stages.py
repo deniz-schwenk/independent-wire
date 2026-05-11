@@ -7,6 +7,7 @@ Property-style tests for the source-id renumbering invariant.
 from __future__ import annotations
 
 import asyncio
+import re
 
 import pytest
 
@@ -32,6 +33,7 @@ from src.stages.run_stages import make_topic_bus, select_topics
 from src.stages.topic_stages import (
     assemble_hydration_dossier,
     attach_hydration_urls,
+    cleanup_stale_references,
     compose_transparency_card,
     compute_source_balance,
     enrich_perspective_clusters,
@@ -1335,9 +1337,14 @@ def test_prune_drops_unreferenced_source_with_full_content():
     )
 
 
-def test_prune_keeps_source_referenced_only_in_bias_findings():
-    """A source's id appearing inside a bias_language_finding's
-    excerpt/issue/explanation prose must be treated as referenced."""
+def test_prune_drops_source_referenced_only_in_bias_findings():
+    """Post-reorder, bias_language_findings is no longer scanned by
+    prune (the bias agent produces secondary commentary, not
+    source-authority; see ``_collect_referenced_src_ids`` docstring).
+    A source cited only in a bias finding's prose drops, even when an
+    inline ``[src-NNN]`` marker is present. The contract test
+    ``test_bias_and_gaps_emit_no_inline_src_markers`` ensures the bias
+    agent doesn't actually emit such markers."""
     tb = TopicBus()
     tb.final_sources = [
         {"id": "src-031", "outlet": "X", "summary": "", "actors_quoted": []},
@@ -1352,12 +1359,14 @@ def test_prune_keeps_source_referenced_only_in_bias_findings():
 
     tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
 
-    assert {s["id"] for s in tb_after.final_sources} == {"src-031"}
+    assert tb_after.final_sources == []
+    assert tb_after.prune_dropped_sources[0]["id"] == "src-031"
 
 
-def test_prune_keeps_source_referenced_only_in_coverage_gaps():
-    """A source whose id appears only in a coverage_gaps_validated entry
-    is referenced and must be kept."""
+def test_prune_drops_source_referenced_only_in_coverage_gaps():
+    """Post-reorder, coverage_gaps_validated is no longer scanned by
+    prune (descriptive commentary, not source-authority). A source
+    cited only in a gap description drops."""
     tb = TopicBus()
     tb.final_sources = [
         {"id": "src-050", "outlet": "Y", "summary": "", "actors_quoted": []},
@@ -1368,7 +1377,8 @@ def test_prune_keeps_source_referenced_only_in_coverage_gaps():
 
     tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
 
-    assert {s["id"] for s in tb_after.final_sources} == {"src-050"}
+    assert tb_after.final_sources == []
+    assert tb_after.prune_dropped_sources[0]["id"] == "src-050"
 
 
 def test_prune_keeps_source_referenced_only_in_writer_body_when_qa_article_is_empty():
@@ -1388,3 +1398,339 @@ def test_prune_keeps_source_referenced_only_in_writer_body_when_qa_article_is_em
     tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
 
     assert {s["id"] for s in tb_after.final_sources} == {"src-077"}
+
+
+# ---------------------------------------------------------------------------
+# cleanup_stale_references
+# ---------------------------------------------------------------------------
+
+
+def _cleanup_fixture_topic_bus() -> TopicBus:
+    """Build a TopicBus with 3 surviving sources and a mix of valid +
+    stale source-id references across every slot cleanup_stale_references
+    touches. Used by multiple tests below."""
+    tb = TopicBus()
+    # Three surviving sources after prune.
+    tb.final_sources = [
+        {"id": "src-001", "outlet": "BBC"},
+        {"id": "src-002", "outlet": "Reuters"},
+        {"id": "src-003", "outlet": "Al Jazeera"},
+    ]
+    # Actors:
+    # - actor-001 cites only valid sources → survives.
+    # - actor-002 cites a mix; surviving quotes are stated + reported.
+    # - actor-003 cites only stale sources → dropped entirely.
+    tb.canonical_actors = [
+        {
+            "id": "actor-001", "name": "Alice", "role": "diplomat", "type": "person",
+            "source_ids": ["src-001"],
+            "quotes": [
+                {"source_id": "src-001", "verbatim": "...", "position": "p",
+                 "evidence_type": "stated"},
+            ],
+        },
+        {
+            "id": "actor-002", "name": "Bob", "role": "analyst", "type": "person",
+            "source_ids": ["src-002", "src-999", "src-003"],
+            "quotes": [
+                {"source_id": "src-002", "verbatim": "x", "position": "p",
+                 "evidence_type": "stated"},
+                {"source_id": "src-999", "verbatim": "stale", "position": "p",
+                 "evidence_type": "mentioned"},
+                {"source_id": "src-003", "verbatim": "y", "position": "p",
+                 "evidence_type": "reported"},
+            ],
+        },
+        {
+            "id": "actor-003", "name": "Carol", "role": "minister", "type": "person",
+            "source_ids": ["src-998", "src-997"],
+            "quotes": [
+                {"source_id": "src-998", "verbatim": "z", "position": "p",
+                 "evidence_type": "stated"},
+            ],
+        },
+    ]
+    # Three partitioned pools mirroring partition_canonical_actors_by_evidence.
+    tb.canonical_actors_stated = [
+        {"id": "actor-001", "name": "Alice", "source_ids": ["src-001"],
+         "quotes": [{"source_id": "src-001", "evidence_type": "stated"}]},
+        {"id": "actor-002", "name": "Bob", "source_ids": ["src-002"],
+         "quotes": [{"source_id": "src-002", "evidence_type": "stated"}]},
+        {"id": "actor-003", "name": "Carol", "source_ids": ["src-998"],
+         "quotes": [{"source_id": "src-998", "evidence_type": "stated"}]},
+    ]
+    tb.canonical_actors_reported = [
+        {"id": "actor-002", "name": "Bob", "source_ids": ["src-003"],
+         "quotes": [{"source_id": "src-003", "evidence_type": "reported"}]},
+    ]
+    tb.canonical_actors_mentioned = [
+        # actor-002 had a mentioned quote, but the source (src-999) is stale →
+        # pool entry must drop because surviving filtered quotes no longer
+        # carry the mentioned tier.
+        {"id": "actor-002", "name": "Bob", "source_ids": ["src-999"],
+         "quotes": [{"source_id": "src-999", "evidence_type": "mentioned"}]},
+    ]
+    # Alias mapping: actor-003 was the canonical for alias actor-099.
+    # actor-003 drops → alias entry drops. actor-001 ↔ actor-088 stays.
+    tb.actor_alias_mapping = [
+        {"alias_id": "actor-088", "alias_name": "Alicia",
+         "canonical_id": "actor-001"},
+        {"alias_id": "actor-099", "alias_name": "Caroline",
+         "canonical_id": "actor-003"},  # canonical dropped
+    ]
+    # Perspective clusters:
+    # - pc-001: all valid → kept (actor-001 + 002).
+    # - pc-002: only stale src → dropped.
+    # - pc-003: mixed src + actor-003 (dropped) → kept but filtered.
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "position_label": "L1", "position_summary": "s1",
+         "source_ids": ["src-001", "src-002"],
+         "actor_ids": ["actor-001", "actor-002"],
+         "stated": ["actor-001", "actor-002"], "reported": [], "mentioned": []},
+        {"id": "pc-002", "position_label": "L2", "position_summary": "s2",
+         "source_ids": ["src-998", "src-999"],
+         "actor_ids": ["actor-003"],
+         "stated": ["actor-003"], "reported": [], "mentioned": []},
+        {"id": "pc-003", "position_label": "L3", "position_summary": "s3",
+         "source_ids": ["src-003", "src-999"],
+         "actor_ids": ["actor-002", "actor-003"],
+         "stated": ["actor-003"], "reported": ["actor-002"], "mentioned": []},
+    ]
+    # Divergences and gaps.
+    tb.merged_preliminary_divergences = [
+        {"id": "div-001", "topic": "T1", "source_ids": ["src-001", "src-002"]},
+        {"id": "div-002", "topic": "T2", "source_ids": ["src-998"]},  # all stale → drop
+    ]
+    tb.merged_coverage_gaps = [
+        {"description": "g1", "source_ids": ["src-003"]},
+        {"description": "g2", "source_ids": ["src-997"]},  # stale → drop
+    ]
+    tb.qa_divergences = [
+        {"id": "qad-001", "claim": "c1", "source_ids": ["src-001", "src-997"]},
+        {"id": "qad-002", "claim": "c2", "source_ids": ["src-996"]},  # stale → drop
+    ]
+    return tb
+
+
+def test_cleanup_stale_references_filters_all_slots():
+    """End-to-end filter: actors, alias mapping, clusters, divergences,
+    gaps, and qa_divergences all get filtered against cited_src_ids."""
+    tb = _cleanup_fixture_topic_bus()
+    out = _run(cleanup_stale_references, tb, _ro())
+
+    # canonical_actors: actor-003 dropped (all sources stale).
+    assert [a["id"] for a in out.canonical_actors] == ["actor-001", "actor-002"]
+    # actor-002 source_ids and quotes filtered to surviving sources.
+    bob = [a for a in out.canonical_actors if a["id"] == "actor-002"][0]
+    assert set(bob["source_ids"]) == {"src-002", "src-003"}
+    assert {q["source_id"] for q in bob["quotes"]} == {"src-002", "src-003"}
+
+    # perspective_clusters_synced: pc-002 dropped (all sources stale).
+    cluster_ids = [c["id"] for c in out.perspective_clusters_synced]
+    assert cluster_ids == ["pc-001", "pc-003"]
+    pc003 = [c for c in out.perspective_clusters_synced if c["id"] == "pc-003"][0]
+    assert pc003["source_ids"] == ["src-003"]
+    # actor-003 dropped from cluster actor_ids and from the stated sub-list.
+    assert pc003["actor_ids"] == ["actor-002"]
+    assert pc003["stated"] == []
+    assert pc003["reported"] == ["actor-002"]
+
+    # divergences/gaps: stale-only entries dropped; mixed entries filtered.
+    assert [d["id"] for d in out.merged_preliminary_divergences] == ["div-001"]
+    assert [g["description"] for g in out.merged_coverage_gaps] == ["g1"]
+    qad = out.qa_divergences
+    assert [q["id"] for q in qad] == ["qad-001"]
+    assert qad[0]["source_ids"] == ["src-001"]  # src-997 filtered out
+
+
+def test_cleanup_alias_mapping_drops_when_canonical_dropped():
+    """An alias whose canonical_id points at a dropped actor must be
+    removed from actor_alias_mapping."""
+    tb = _cleanup_fixture_topic_bus()
+    out = _run(cleanup_stale_references, tb, _ro())
+
+    canonical_ids = {e["canonical_id"] for e in out.actor_alias_mapping}
+    assert "actor-003" not in canonical_ids, "alias pointing at dropped canonical survived"
+    # The surviving alias (actor-088 → actor-001) is kept.
+    assert any(
+        e["canonical_id"] == "actor-001" for e in out.actor_alias_mapping
+    )
+    assert len(out.actor_alias_mapping) == 1
+
+
+def test_cleanup_pools_drop_when_actor_dropped_and_when_tier_no_longer_present():
+    """An actor dropped from canonical_actors must be absent from all
+    three pools. An actor surviving canonical_actors but with no
+    quotes left in a given tier must be absent from that tier's pool."""
+    tb = _cleanup_fixture_topic_bus()
+    out = _run(cleanup_stale_references, tb, _ro())
+
+    # actor-003 dropped from canonical_actors → absent from every pool.
+    for pool_attr in (
+        "canonical_actors_stated",
+        "canonical_actors_reported",
+        "canonical_actors_mentioned",
+    ):
+        pool = getattr(out, pool_attr)
+        assert all(a.get("id") != "actor-003" for a in pool), (
+            f"dropped actor-003 still present in {pool_attr}"
+        )
+
+    # actor-002 had one mentioned quote on src-999 (stale) → after
+    # cleanup, no mentioned quotes survive, so the pool entry drops.
+    assert all(a.get("id") != "actor-002" for a in out.canonical_actors_mentioned)
+    # actor-002 still has stated + reported tiers in its surviving
+    # quotes, so its entries in those pools are kept.
+    assert any(a.get("id") == "actor-002" for a in out.canonical_actors_stated)
+    assert any(a.get("id") == "actor-002" for a in out.canonical_actors_reported)
+
+
+def test_cleanup_no_op_when_no_stale_refs():
+    """Empty input slots and zero stale references → no drops, no crash."""
+    tb = TopicBus()
+    tb.final_sources = [{"id": "src-001", "outlet": "X"}]
+    tb.canonical_actors = [
+        {
+            "id": "actor-001", "name": "A", "role": "", "type": "",
+            "source_ids": ["src-001"],
+            "quotes": [{"source_id": "src-001", "verbatim": "",
+                        "position": "", "evidence_type": "stated"}],
+        },
+    ]
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "source_ids": ["src-001"], "actor_ids": ["actor-001"],
+         "stated": ["actor-001"], "reported": [], "mentioned": []},
+    ]
+    # All other slots left as empty defaults.
+    out = _run(cleanup_stale_references, tb, _ro())
+
+    assert len(out.canonical_actors) == 1
+    assert len(out.perspective_clusters_synced) == 1
+    assert out.actor_alias_mapping == []
+    assert out.merged_preliminary_divergences == []
+    assert out.merged_coverage_gaps == []
+    assert out.qa_divergences == []
+
+
+def test_cleanup_after_prune_smoke_state_has_zero_stale_actor_refs():
+    """Smoke: drive prune + cleanup over the V2 2026-05-11 TP-001
+    pre-prune state and assert the rendered TP would have zero actors
+    with stale source_ids. Uses the existing baseline state on disk."""
+    import json as _json
+    from pathlib import Path as _Path
+    bus_path = _Path(
+        "output/2026-05-11/_state/run-2026-05-11-722571ae/"
+        "topic_buses.BiasLanguageStage.0.json"
+    )
+    if not bus_path.exists():
+        pytest.skip("baseline state file not present")
+    state = _json.loads(bus_path.read_text(encoding="utf-8"))
+
+    tb = TopicBus.model_validate(state)
+    tb_pruned = _run(prune_unused_sources_and_clusters, tb, _ro())
+    tb_clean = _run(cleanup_stale_references, tb_pruned, _ro())
+
+    cited_src_ids = {
+        s["id"] for s in tb_clean.final_sources
+        if isinstance(s, dict) and isinstance(s.get("id"), str)
+    }
+
+    # Zero actors with stale source_ids after cleanup.
+    stale_actors = [
+        a for a in tb_clean.canonical_actors
+        if isinstance(a, dict)
+        and not (set(a.get("source_ids") or []) <= cited_src_ids)
+    ]
+    assert stale_actors == [], (
+        f"{len(stale_actors)} actor(s) still have stale source_ids after cleanup"
+    )
+
+    # Sanity: actor count should be much lower than 100 (V2 baseline
+    # has 100 actors pre-cleanup; expected ≤ 20 by the task brief).
+    assert len(tb_clean.canonical_actors) <= 30, (
+        f"unexpected actor count {len(tb_clean.canonical_actors)} after cleanup"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Contract: bias findings and gap entries do not emit inline [src-NNN] markers
+# ---------------------------------------------------------------------------
+
+
+_INLINE_SRC_RE = re.compile(r"\[src-\d+\]")
+
+
+def _scan_for_src_markers(items: list, fields: tuple[str, ...]) -> list[str]:
+    """Return any inline [src-NNN] tokens found in the named fields of
+    a list of dicts (and in any plain-string entries)."""
+    hits: list[str] = []
+    for item in items or []:
+        if isinstance(item, str):
+            hits.extend(_INLINE_SRC_RE.findall(item))
+        elif isinstance(item, dict):
+            for field in fields:
+                v = item.get(field)
+                if isinstance(v, str):
+                    hits.extend(_INLINE_SRC_RE.findall(v))
+    return hits
+
+
+def test_bias_and_gaps_emit_no_inline_src_markers():
+    """Contract test: the bias agent and coverage-gap validator produce
+    secondary commentary, not source-authority. Their prose must never
+    carry inline ``[src-NNN]`` markers. Verified against the
+    V2 2026-05-11 TP-001 baseline state. If a future prompt change
+    reintroduces such markers, this fails loudly — at which point
+    either roll back the prompt change, or consciously restore the
+    bias/gaps citation harvest in ``_collect_referenced_src_ids``."""
+    import json as _json
+    from pathlib import Path as _Path
+    bus_path = _Path(
+        "output/2026-05-11/_state/run-2026-05-11-722571ae/"
+        "topic_buses.BiasLanguageStage.0.json"
+    )
+    if not bus_path.exists():
+        pytest.skip("baseline state file not present")
+    bus = _json.loads(bus_path.read_text(encoding="utf-8"))
+
+    bias_hits = _scan_for_src_markers(
+        bus.get("bias_language_findings") or [],
+        ("excerpt", "issue", "explanation"),
+    )
+    gaps_hits = _scan_for_src_markers(
+        bus.get("coverage_gaps_validated") or [],
+        ("description", "explanation", "gap"),
+    )
+
+    assert bias_hits == [], (
+        f"bias_language_findings carry inline [src-NNN] markers: {bias_hits}. "
+        "Prompt change has reintroduced source-authority commentary; either "
+        "roll back the prompt or restore the harvest in "
+        "_collect_referenced_src_ids and revisit the prune-reorder design."
+    )
+    assert gaps_hits == [], (
+        f"coverage_gaps_validated carry inline [src-NNN] markers: {gaps_hits}. "
+        "See bias-marker assertion message above."
+    )
+
+
+def test_bias_and_gaps_contract_test_fails_on_positive_case():
+    """Adversarial check: synthesise a bus state where bias_language_findings
+    DOES carry an inline ``[src-NNN]`` marker and assert the scan flags it.
+    Codifies that the contract test above isn't trivially-passing on
+    empty data."""
+    synthetic_bias = [
+        {"excerpt": "..", "issue": "loaded_term",
+         "explanation": "framing flagged in [src-031]; see source."},
+    ]
+    synthetic_gaps = [
+        "No Hezbollah voice; [src-099] partially covers the angle.",
+    ]
+    bias_hits = _scan_for_src_markers(
+        synthetic_bias, ("excerpt", "issue", "explanation")
+    )
+    gaps_hits = _scan_for_src_markers(
+        synthetic_gaps, ("description", "explanation", "gap")
+    )
+    assert bias_hits == ["[src-031]"]
+    assert gaps_hits == ["[src-099]"]

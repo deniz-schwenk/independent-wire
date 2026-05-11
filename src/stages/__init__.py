@@ -24,6 +24,7 @@ from src.stages.run_stages import (
 from src.stages.topic_stages import (
     assemble_hydration_dossier,
     attach_hydration_urls,
+    cleanup_stale_references,
     compose_transparency_card,
     compute_source_balance,
     consolidate_actors,
@@ -49,6 +50,7 @@ __all__ = [
     "assemble_hydration_dossier",
     "attach_hydration_urls",
     "attach_hydration_urls_to_assignments",
+    "cleanup_stale_references",
     "compose_transparency_card",
     "compute_source_balance",
     "consolidate_actors",

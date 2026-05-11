@@ -1140,10 +1140,17 @@ def _collect_referenced_src_ids(topic_bus: TopicBus) -> set[str]:
     - ``merged_preliminary_divergences[i].source_ids[]``
     - ``qa_corrected_article`` and ``writer_article`` (body/headline/
       subheadline/summary), via inline ``[src-NNN]`` citations
-    - ``bias_language_findings[i]`` excerpt + issue + explanation prose
-      (any inline ``[src-NNN]`` citation echoed from the article)
-    - ``coverage_gaps_validated[i]`` strings (any inline ``[src-NNN]``
-      reference)
+
+    ``bias_language_findings`` and ``coverage_gaps_validated`` are
+    intentionally NOT scanned. The bias agent and the gap validator
+    produce secondary commentary on the article, not source-authority,
+    and empirically (verified on the 2026-05-11 V1+V2 baselines) emit
+    no inline ``[src-NNN]`` markers in their prose. Scanning them would
+    create a circular dependency that prevents moving prune earlier in
+    the topic chain (where ``bias_language_findings`` and
+    ``coverage_gaps_validated`` do not yet exist). The contract test
+    ``test_bias_and_gaps_emit_no_inline_src_markers`` ensures a future
+    prompt change reintroducing inline src-markers fails loudly.
 
     Items that fail the expected shape are skipped with a
     ``logger.warning`` rather than crashing the stage — the schema is V2
@@ -1177,34 +1184,6 @@ def _collect_referenced_src_ids(topic_bus: TopicBus) -> set[str]:
             if isinstance(value, str):
                 referenced.update(_SRC_CITATION_RE.findall(value))
 
-    # Bias language findings can echo article excerpts that include citations.
-    for finding in topic_bus.bias_language_findings or []:
-        if not isinstance(finding, dict):
-            logger.warning(
-                "prune: unexpected non-dict item in bias_language_findings: %r",
-                type(finding),
-            )
-            continue
-        for key in ("excerpt", "issue", "explanation"):
-            text = finding.get(key) or ""
-            if isinstance(text, str):
-                referenced.update(_SRC_CITATION_RE.findall(text))
-
-    # coverage_gaps_validated entries are descriptive strings; they may
-    # still contain inline [src-NNN] references when the gap names a
-    # specific source-coverage shortfall.
-    for gap in topic_bus.coverage_gaps_validated or []:
-        if isinstance(gap, str):
-            referenced.update(_SRC_CITATION_RE.findall(gap))
-        elif isinstance(gap, dict):
-            for key in ("description", "explanation", "gap"):
-                text = gap.get(key) or ""
-                if isinstance(text, str):
-                    referenced.update(_SRC_CITATION_RE.findall(text))
-            for sid in gap.get("source_ids") or []:
-                if isinstance(sid, str):
-                    referenced.add(sid)
-
     return referenced
 
 
@@ -1215,9 +1194,7 @@ def _collect_referenced_src_ids(topic_bus: TopicBus) -> set[str]:
         "writer_article",
         "qa_corrected_article",
         "qa_divergences",
-        "bias_language_findings",
         "merged_preliminary_divergences",
-        "coverage_gaps_validated",
     ),
     writes=(
         "final_sources",
@@ -1234,13 +1211,15 @@ async def prune_unused_sources_and_clusters(
     Source drop rule (strict): a source is dropped when its ``id`` is not
     referenced anywhere downstream. The reference set spans
     ``perspective_clusters_synced``, ``qa_divergences``,
-    ``merged_preliminary_divergences``, the article bodies
-    (``qa_corrected_article`` first, ``writer_article`` fallback),
-    ``bias_language_findings``, and ``coverage_gaps_validated`` —
+    ``merged_preliminary_divergences``, and the article bodies
+    (``qa_corrected_article`` first, ``writer_article`` fallback) —
     see :func:`_collect_referenced_src_ids` for the full list.
-    Content (summary, actors_quoted) is no longer a keep-reprieve: if
-    the synthesis stack chose not to use a source, it is off-topic and
-    drops out of the published TP.
+    ``bias_language_findings`` and ``coverage_gaps_validated`` are NOT
+    scanned (secondary commentary, not source-authority; see
+    ``_collect_referenced_src_ids`` docstring). Content (summary,
+    actors_quoted) is no longer a keep-reprieve: if the synthesis stack
+    chose not to use a source, it is off-topic and drops out of the
+    published TP.
 
     A cluster is dropped when both ``actor_ids`` and ``source_ids`` are
     empty — a cluster the agent emitted but for which neither a speaker
@@ -1313,6 +1292,252 @@ async def prune_unused_sources_and_clusters(
             "perspective_clusters_synced": kept_clusters,
             "prune_dropped_sources": dropped_sources,
             "prune_dropped_clusters": dropped_clusters,
+        }
+    )
+
+
+# ---------------------------------------------------------------------------
+# 19b. cleanup_stale_references
+# ---------------------------------------------------------------------------
+
+
+@topic_stage_def(
+    reads=(
+        "final_sources",
+        "canonical_actors",
+        "canonical_actors_stated",
+        "canonical_actors_reported",
+        "canonical_actors_mentioned",
+        "actor_alias_mapping",
+        "perspective_clusters_synced",
+        "merged_preliminary_divergences",
+        "merged_coverage_gaps",
+        "qa_divergences",
+    ),
+    writes=(
+        "canonical_actors",
+        "canonical_actors_stated",
+        "canonical_actors_reported",
+        "canonical_actors_mentioned",
+        "actor_alias_mapping",
+        "perspective_clusters_synced",
+        "merged_preliminary_divergences",
+        "merged_coverage_gaps",
+        "qa_divergences",
+    ),
+)
+async def cleanup_stale_references(
+    topic_bus: TopicBus, run_bus: RunBusReadOnly
+) -> TopicBus:
+    """Filter every actor, alias, perspective cluster, divergence, and
+    coverage-gap entry whose source-id references no longer exist after
+    ``prune_unused_sources_and_clusters``. Pure deterministic stage.
+
+    Runs immediately after prune, before ``compute_source_balance``.
+    Without this step, downstream stages compute against the pre-prune
+    state and the rendered TP carries actors with stale ``source_ids``,
+    alias entries pointing at dropped actors, and bias/balance counters
+    that don't match ``len(final_sources)``.
+
+    Filter rules (applied in dependency order):
+
+    - ``canonical_actors[]``: filter ``source_ids[]`` and ``quotes[]``
+      to entries referencing ``cited_src_ids``. Drop the actor entirely
+      if ``source_ids[]`` becomes empty after filtering.
+    - ``canonical_actors_stated / _reported / _mentioned``: drop any
+      pool entry whose actor was dropped from ``canonical_actors[]``,
+      or whose surviving filtered quotes no longer carry the pool's
+      ``evidence_type``.
+    - ``actor_alias_mapping[]``: drop entries where ``canonical_id``
+      references an actor that no longer exists.
+    - ``perspective_clusters_synced[]``: filter ``source_ids[]``
+      against ``cited_src_ids``; filter ``actor_ids[]`` and the three
+      pool sub-lists (``stated`` / ``reported`` / ``mentioned``)
+      against surviving actor IDs; drop clusters whose
+      ``source_ids[]`` becomes empty. ``prune`` already drops the
+      narrower "both actor_ids and source_ids empty" case; this stage
+      is stricter on the source_ids dimension, so a cluster with
+      surviving actors but no surviving sources is dropped here.
+    - ``merged_preliminary_divergences[]`` / ``merged_coverage_gaps[]``
+      / ``qa_divergences[]``: filter any ``source_ids[]`` field
+      against ``cited_src_ids``; drop entries whose source_ids list
+      becomes empty.
+    """
+    final_sources = list(topic_bus.final_sources or [])
+    cited_src_ids: set[str] = {
+        s.get("id") for s in final_sources
+        if isinstance(s, dict) and isinstance(s.get("id"), str)
+    }
+    cited_src_ids.discard("")
+
+    # --- canonical_actors ----------------------------------------------------
+    cleaned_actors: list[dict] = []
+    surviving_actor_ids: set[str] = set()
+    surviving_actor_evidence: dict[str, set[str]] = {}
+    dropped_actor_count = 0
+    for actor in topic_bus.canonical_actors or []:
+        if not isinstance(actor, dict):
+            cleaned_actors.append(actor)
+            continue
+        filtered_quotes: list[dict] = []
+        filtered_evidence_types: set[str] = set()
+        for q in actor.get("quotes") or []:
+            if not isinstance(q, dict):
+                continue
+            sid = q.get("source_id")
+            if isinstance(sid, str) and sid in cited_src_ids:
+                filtered_quotes.append(q)
+                et = q.get("evidence_type")
+                if et in ("stated", "reported", "mentioned"):
+                    filtered_evidence_types.add(et)
+        filtered_src_ids = [
+            sid for sid in (actor.get("source_ids") or [])
+            if isinstance(sid, str) and sid in cited_src_ids
+        ]
+        if not filtered_src_ids:
+            dropped_actor_count += 1
+            continue
+        new_actor = dict(actor)
+        new_actor["source_ids"] = filtered_src_ids
+        new_actor["quotes"] = filtered_quotes
+        cleaned_actors.append(new_actor)
+        aid = new_actor.get("id")
+        if isinstance(aid, str):
+            surviving_actor_ids.add(aid)
+            # Surviving evidence_types include the partition default
+            # ("reported" when missing) so the pool-membership filter
+            # below mirrors partition_canonical_actors_by_evidence.
+            if not filtered_evidence_types and filtered_quotes:
+                filtered_evidence_types.add("reported")
+            surviving_actor_evidence[aid] = filtered_evidence_types
+
+    # --- canonical_actors_{stated,reported,mentioned} ------------------------
+    def _filter_pool(pool: list, tier: str) -> list:
+        out: list = []
+        for entry in pool or []:
+            if not isinstance(entry, dict):
+                out.append(entry)
+                continue
+            aid = entry.get("id")
+            if not isinstance(aid, str) or aid not in surviving_actor_ids:
+                continue
+            # Drop if the actor's surviving quotes no longer carry this tier.
+            if tier not in surviving_actor_evidence.get(aid, set()):
+                continue
+            new_entry = dict(entry)
+            new_entry["source_ids"] = [
+                sid for sid in (entry.get("source_ids") or [])
+                if isinstance(sid, str) and sid in cited_src_ids
+            ]
+            new_entry["quotes"] = [
+                q for q in (entry.get("quotes") or [])
+                if isinstance(q, dict)
+                and q.get("source_id") in cited_src_ids
+            ]
+            out.append(new_entry)
+        return out
+
+    cleaned_stated = _filter_pool(topic_bus.canonical_actors_stated or [], "stated")
+    cleaned_reported = _filter_pool(topic_bus.canonical_actors_reported or [], "reported")
+    cleaned_mentioned = _filter_pool(topic_bus.canonical_actors_mentioned or [], "mentioned")
+
+    # --- actor_alias_mapping -------------------------------------------------
+    cleaned_aliases: list = []
+    dropped_alias_count = 0
+    for entry in topic_bus.actor_alias_mapping or []:
+        if not isinstance(entry, dict):
+            cleaned_aliases.append(entry)
+            continue
+        canonical_id = entry.get("canonical_id")
+        if not isinstance(canonical_id, str) or canonical_id not in surviving_actor_ids:
+            dropped_alias_count += 1
+            continue
+        cleaned_aliases.append(entry)
+
+    # --- perspective_clusters_synced ----------------------------------------
+    cleaned_clusters: list = []
+    dropped_cluster_count = 0
+    for cluster in topic_bus.perspective_clusters_synced or []:
+        if not isinstance(cluster, dict):
+            cleaned_clusters.append(cluster)
+            continue
+        filtered_src = [
+            sid for sid in (cluster.get("source_ids") or [])
+            if isinstance(sid, str) and sid in cited_src_ids
+        ]
+        if not filtered_src:
+            dropped_cluster_count += 1
+            continue
+        filtered_actor_ids = [
+            aid for aid in (cluster.get("actor_ids") or [])
+            if isinstance(aid, str) and aid in surviving_actor_ids
+        ]
+        new_cluster = dict(cluster)
+        new_cluster["source_ids"] = filtered_src
+        new_cluster["actor_ids"] = filtered_actor_ids
+        for sublist_key in ("stated", "reported", "mentioned"):
+            sub = cluster.get(sublist_key)
+            if isinstance(sub, list):
+                new_cluster[sublist_key] = [
+                    aid for aid in sub
+                    if isinstance(aid, str) and aid in surviving_actor_ids
+                ]
+        cleaned_clusters.append(new_cluster)
+
+    # --- divergence / gap slots ---------------------------------------------
+    def _filter_src_id_collection(items: list, label: str) -> tuple[list, int]:
+        kept: list = []
+        dropped = 0
+        for item in items or []:
+            if not isinstance(item, dict):
+                kept.append(item)
+                continue
+            filtered = [
+                sid for sid in (item.get("source_ids") or [])
+                if isinstance(sid, str) and sid in cited_src_ids
+            ]
+            if not filtered:
+                dropped += 1
+                continue
+            new_item = dict(item)
+            new_item["source_ids"] = filtered
+            kept.append(new_item)
+        return kept, dropped
+
+    cleaned_prelim_divs, dropped_prelim = _filter_src_id_collection(
+        topic_bus.merged_preliminary_divergences or [], "merged_preliminary_divergences"
+    )
+    cleaned_gaps, dropped_gaps = _filter_src_id_collection(
+        topic_bus.merged_coverage_gaps or [], "merged_coverage_gaps"
+    )
+    cleaned_qa_divs, dropped_qa_divs = _filter_src_id_collection(
+        topic_bus.qa_divergences or [], "qa_divergences"
+    )
+
+    logger.info(
+        "cleanup_stale_references: dropped %d actor(s), %d alias(es), %d "
+        "cluster(s), %d prelim-divergence(s), %d gap(s), %d qa-divergence(s) "
+        "(post-prune cited_src_ids=%d)",
+        dropped_actor_count,
+        dropped_alias_count,
+        dropped_cluster_count,
+        dropped_prelim,
+        dropped_gaps,
+        dropped_qa_divs,
+        len(cited_src_ids),
+    )
+
+    return topic_bus.model_copy(
+        update={
+            "canonical_actors": cleaned_actors,
+            "canonical_actors_stated": cleaned_stated,
+            "canonical_actors_reported": cleaned_reported,
+            "canonical_actors_mentioned": cleaned_mentioned,
+            "actor_alias_mapping": cleaned_aliases,
+            "perspective_clusters_synced": cleaned_clusters,
+            "merged_preliminary_divergences": cleaned_prelim_divs,
+            "merged_coverage_gaps": cleaned_gaps,
+            "qa_divergences": cleaned_qa_divs,
         }
     )
 
@@ -1720,6 +1945,7 @@ def make_researcher_search(web_search_tool: Any) -> Callable:
 __all__ = [
     "assemble_hydration_dossier",
     "attach_hydration_urls",
+    "cleanup_stale_references",
     "compose_transparency_card",
     "compute_source_balance",
     "consolidate_actors",
