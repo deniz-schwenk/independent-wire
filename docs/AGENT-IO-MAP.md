@@ -323,42 +323,51 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
   - Fields the wrapper merges in deterministically: per-element merge over `perspective_clusters` via `_merge_perspective_deltas` (delta IDs are routing keys, not pass-through data).
   - No pass-through fields detected.
 
-#### §2.31 compute_source_balance
+#### §2.31 prune_unused_sources_and_clusters
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::prune_unused_sources_and_clusters`
+- **Reads (Bus):** `final_sources`, `perspective_clusters_synced`, `writer_article`, `qa_corrected_article`, `qa_divergences`, `merged_preliminary_divergences` — TopicBus
+- **Writes (Bus):** `final_sources`, `perspective_clusters_synced`, `prune_dropped_sources`, `prune_dropped_clusters` — TopicBus, strict-drop of unreferenced sources and empty-bodied clusters.
+- **Position note (2026-05-12 reorder):** prune was moved earlier in the chain — formerly between BiasLanguageStage and compose_transparency_card — so that `compute_source_balance`, `validate_coverage_gaps_stage`, and `BiasLanguageStage` operate on the post-prune source set. The `bias_language_findings` and `coverage_gaps_validated` reads were dropped from the citation harvest in the same change; the bias agent and the gap validator produce secondary commentary, not source-authority, and empirically (V1+V2 2026-05-11 baselines) emit no inline `[src-NNN]` markers. The contract test `test_bias_and_gaps_emit_no_inline_src_markers` codifies this assumption — a future prompt change reintroducing markers fails loudly.
+
+#### §2.32 cleanup_stale_references
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/topic_stages.py::cleanup_stale_references`
+- **Reads (Bus):** `final_sources`, `canonical_actors`, `canonical_actors_stated`, `canonical_actors_reported`, `canonical_actors_mentioned`, `actor_alias_mapping`, `perspective_clusters_synced`, `merged_preliminary_divergences`, `merged_coverage_gaps`, `qa_divergences` — TopicBus
+- **Writes (Bus):** `canonical_actors`, `canonical_actors_stated`, `canonical_actors_reported`, `canonical_actors_mentioned`, `actor_alias_mapping`, `perspective_clusters_synced`, `merged_preliminary_divergences`, `merged_coverage_gaps`, `qa_divergences` — TopicBus, filtered against the post-prune `cited_src_ids` set.
+- **Filter rules:** per-actor `source_ids[]` and `quotes[]` filtered to surviving sources (actor dropped if `source_ids[]` becomes empty); the three evidence-partitioned pools drop actors that were dropped or that no longer have surviving quotes carrying that pool's `evidence_type`; alias entries whose `canonical_id` references a dropped actor are removed; cluster `source_ids[]` / `actor_ids[]` / `stated`/`reported`/`mentioned` sub-lists filtered against surviving sources + actors (cluster dropped if `source_ids[]` becomes empty); divergence and gap entries with empty surviving `source_ids[]` are dropped.
+
+#### §2.33 compute_source_balance
 
 - **Kind:** deterministic (Python)
 - **Source:** `src/stages/topic_stages.py::compute_source_balance`
 - **Reads (Bus):** `final_sources` — TopicBus
-- **Writes (Bus):** `source_balance` — TopicBus, language/country counts + represented-countries set.
+- **Writes (Bus):** `source_balance` — TopicBus, language/country counts + represented-countries set. Now operates on post-prune, post-cleanup `final_sources` so counts match what the rendered TP shows.
 
-#### §2.32 validate_coverage_gaps_stage
+#### §2.34 validate_coverage_gaps_stage
 
 - **Kind:** deterministic (Python)
 - **Source:** `src/stages/topic_stages.py::validate_coverage_gaps_stage`
 - **Reads (Bus):** `merged_coverage_gaps`, `source_balance` — TopicBus
-- **Writes (Bus):** `coverage_gaps_validated` — TopicBus, gaps falsified by `source_balance` dropped, near-duplicates collapsed.
+- **Writes (Bus):** `coverage_gaps_validated` — TopicBus, gaps falsified by `source_balance` dropped, near-duplicates collapsed. Now operates on cleaned `merged_coverage_gaps` (post-`cleanup_stale_references`) and the post-prune `source_balance`.
 
-#### §2.33 BiasLanguageStage
+#### §2.35 BiasLanguageStage
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::BiasLanguageStage`
 - **Model:** `anthropic/claude-opus-4.6`
 - **Params:** temp=0.1, reasoning=none, max_tokens=default
 - **Prompt:** `agents/bias_detector/SYSTEM.md` + `INSTRUCTIONS.md`
-- **Reads (Bus):** `qa_corrected_article`, `final_sources`, `canonical_actors`, `perspective_clusters_synced`, `perspective_missing_positions`, `qa_problems_found`, `qa_corrections`, `qa_divergences`, `coverage_gaps_validated` — TopicBus
+- **Reads (Bus):** `qa_corrected_article`, `final_sources`, `canonical_actors`, `perspective_clusters_synced`, `perspective_missing_positions`, `qa_problems_found`, `qa_corrections`, `qa_divergences`, `coverage_gaps_validated` — TopicBus. All inputs are post-prune + post-cleanup, so the `reader_note` source/country counts match what the rendered TP carries.
 - **Writes (Bus):** `bias_language_findings`, `bias_reader_note` — TopicBus
 - **Originarity check:**
   - Fields the LLM produces: `language_bias.findings[]` (`excerpt`, `issue`, `explanation`), `reader_note`
   - Fields the wrapper merges in deterministically: bias-card context assembled via `_build_bias_card_for_agent_input` and supplied as context (not echoed back).
   - No pass-through fields detected.
 
-#### §2.34 prune_unused_sources_and_clusters
-
-- **Kind:** deterministic (Python)
-- **Source:** `src/stages/topic_stages.py::prune_unused_sources_and_clusters`
-- **Reads (Bus):** `final_sources`, `perspective_clusters_synced`, `writer_article`, `qa_corrected_article`, `qa_divergences`, `bias_language_findings`, `merged_preliminary_divergences`, `coverage_gaps_validated` — TopicBus
-- **Writes (Bus):** `final_sources`, `perspective_clusters_synced`, `prune_dropped_sources`, `prune_dropped_clusters` — TopicBus, strict-drop of unreferenced sources and empty-bodied clusters.
-
-#### §2.35 compose_transparency_card
+#### §2.36 compose_transparency_card
 
 - **Kind:** deterministic (Python)
 - **Source:** `src/stages/topic_stages.py::compose_transparency_card`
