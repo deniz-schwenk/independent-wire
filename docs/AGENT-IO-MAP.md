@@ -8,7 +8,7 @@ Sources of truth: `src/runner/stage_lists.py` (stage order), `scripts/run.py` (a
 
 | Agent | Model | Temp | Reasoning | max_tokens |
 |---|---|---|---|---|
-| curator | `google/gemini-3-flash-preview` | 0.2 | none | 64000 |
+| curator | `google/gemini-3-flash-preview` | 1.0 | none | 64000 |
 | editor | `anthropic/claude-opus-4.6` | 0.3 | none | default |
 | researcher_plan | `anthropic/claude-opus-4.6` | 0.5 | none | default |
 | researcher_assemble | `google/gemini-3-flash-preview` | 0.2 | none | default |

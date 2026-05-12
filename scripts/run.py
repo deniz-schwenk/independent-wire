@@ -84,7 +84,14 @@ def create_agents() -> dict[str, Agent]:
             system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
             instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
             tools=[],
-            temperature=0.2,
+            # temperature=1.0 (interim swap, was 0.2): per
+            # docs/AUDIT-CURATOR-2026-05-11.md §3+§5 the over-clustering
+            # pathology shrinks from top_cluster_size≈1004 (81.3 % off-topic)
+            # to ≈137 (53.3 % off-topic) at identical latency (~22 s) and cost
+            # (~$0.08), with no architectural change. Pre-flight smoke
+            # 2026-05-12 (scripts/smoke_curator_preprod_2026-05-12.py)
+            # confirmed regime: top=79, off%=46.84, n_clusters=14, $0.08.
+            temperature=1.0,
             provider="openrouter",
             reasoning="none",
             # The S13 envelope {topics, cluster_assignments} pushes the array to
