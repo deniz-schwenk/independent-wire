@@ -26,7 +26,7 @@ Sources of truth: `src/runner/stage_lists.py` (stage order), `scripts/run.py` (a
 
 ## §2 Pipeline I/O Map
 
-Hydrated is treated as canonical. Stages that run in only one variant are flagged inline. The full ordered union is 35 unique stages (production: 27, hydrated: 34; `mirror_perspective_synced` counted once even though it dispatches twice in hydrated). Stage names are listed in dispatch order (hydrated first, then the one production-only stage placed at its production position).
+Hydrated is treated as canonical. Stages that run in only one variant are flagged inline. The full ordered union is 36 unique stages (production: 28, hydrated: 35; `mirror_perspective_synced` counted once even though it dispatches twice in hydrated). Stage names are listed in dispatch order (hydrated first, then the one production-only stage placed at its production position).
 
 ### Run-stages
 
@@ -58,6 +58,21 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
 - **Originarity check:**
   - Fields the LLM produces: clusters (`title`, `relevance_score`, `summary`) + per-finding `cluster_assignments`
   - Fields the wrapper merges in deterministically: outlet/url/source_name reattached from `curator_findings` via `_rebuild_curator_source_ids` + `_enrich_curator_output` (source IDs known upstream are mapped back to raw finding records).
+
+#### §2.3b measure_cluster_coherence
+
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/coherence.py::make_measure_cluster_coherence`
+- **Model (embedding, pinned):** `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` (~50 languages, mean-pooled 384-dim)
+- **Library (pinned):** `fastembed==0.8.0`
+- **Reads (Bus):** `curator_findings`, `curator_topics_unsliced`, `run_date` — RunBus
+- **Writes (Bus):** `curator_coherence_scores` — RunBus
+- **Passive contract:** `curator_findings` and `curator_topics_unsliced` are byte-identical post-stage (load-bearing test `tests/test_coherence_stage.py::test_passthrough_byte_identical`). The stage measures and reports; it does not filter.
+- **Output shape:** per-cluster aggregates (mean/median/p10/p25/p75/p90/min/max), threshold-band counts at `THRESHOLD_BANDS = (0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.70)`, per-finding cosine-similarity score against the cluster's own `title + summary` headline embedding.
+- **Side effect:** writes `docs/coherence-filter/{run_date}.md` (daily Markdown report). Toggleable via `write_report=False` for tests.
+- **Performance budget (TASK-COHERENCE-FILTER-PASSIVE):** ≤20 s wall-clock and ≤500 MB peak memory on the V1-baseline 1201-finding workload. Current MacBook hardware runs at ~30 s wall / ~1 GB RSS Δ — over the budget and pending the Mac Mini migration per architect rollback (`docs/ADR-COHERENCE-STAGE-DEPENDENCY.md`).
+- **Dependency cost:** ~351 MB total install + cached model weights — see `docs/ADR-COHERENCE-STAGE-DEPENDENCY.md` for the fourth-dependency rationale (raised from the original 200 MB ceiling).
+- **Calibration (V1 baseline):** `docs/coherence-filter/_calibration-v1-baseline.md`. Best F1 against the dynamic regex from `src/curator_metrics.py` is 0.591 at threshold 0.20 (the 1004-finding Iran cluster).
 
 #### §2.4 EditorStage
 

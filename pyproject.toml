@@ -21,6 +21,13 @@ dependencies = [
     "feedparser",
     "json-repair",
     "pydantic>=2.0",
+    # Multilingual sentence embeddings for CoherenceStage (passive cluster-
+    # coherence measurement, see docs/ADR-COHERENCE-STAGE-DEPENDENCY.md).
+    # Version-pinned because fastembed >=0.6 switched paraphrase-multilingual-
+    # MiniLM-L12-v2 from CLS-token to mean-pooled output — any version change
+    # would silently shift every coherence score. Model name pinned in
+    # src/stages/coherence.py::MODEL_NAME for the same reason.
+    "fastembed==0.8.0",
 ]
 
 [project.optional-dependencies]

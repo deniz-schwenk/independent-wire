@@ -6,6 +6,10 @@ Run-scoped stages live in `run_stages`; topic-scoped stages will live in
 topic-level mirror stages.
 """
 
+from src.stages.coherence import (
+    make_measure_cluster_coherence,
+    measure_cluster_coherence,
+)
 from src.stages.run_stages import (
     MirrorMismatchError,
     RunInitConfig,
@@ -65,8 +69,10 @@ __all__ = [
     "make_finalize_run",
     "make_hydration_fetch",
     "make_init_run",
+    "make_measure_cluster_coherence",
     "make_researcher_search",
     "make_topic_bus",
+    "measure_cluster_coherence",
     "merge_sources",
     "mirror_perspective_synced",
     "mirror_qa_corrected",

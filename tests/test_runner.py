@@ -134,7 +134,13 @@ def test_hydrated_stage_names_repeat_only_for_double_mirror():
 
 def test_hydrated_run_stages_extends_production_with_hydration_attach():
     """The hydrated variant runs an extra ``attach_hydration_urls_to_assignments``
-    run-stage between Editor and select_topics."""
+    run-stage between Editor and select_topics.
+
+    Both variants run ``measure_cluster_coherence`` between Curator and
+    Editor (TASK-COHERENCE-FILTER-PASSIVE) — passive observability stage
+    that measures embedding-based finding↔cluster coherence and does not
+    mutate upstream slots.
+    """
     prod_agents = _fake_agent_dict(_PRODUCTION_AGENTS)
     hyd_agents = _fake_agent_dict(_HYDRATED_AGENTS)
     prod_run, _, _ = build_production_stages(prod_agents)
@@ -142,11 +148,13 @@ def test_hydrated_run_stages_extends_production_with_hydration_attach():
     prod_names = [_stage_label(s) for s in prod_run]
     hyd_names = [_stage_label(s) for s in hyd_run]
     assert prod_names == [
-        "init_run", "fetch_findings", "CuratorStage", "EditorStage",
+        "init_run", "fetch_findings", "CuratorStage",
+        "measure_cluster_coherence", "EditorStage",
         "select_topics",
     ]
     assert hyd_names == [
-        "init_run", "fetch_findings", "CuratorStage", "EditorStage",
+        "init_run", "fetch_findings", "CuratorStage",
+        "measure_cluster_coherence", "EditorStage",
         "attach_hydration_urls_to_assignments", "select_topics",
     ]
 

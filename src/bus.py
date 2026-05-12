@@ -235,6 +235,25 @@ class _RunBusFields(BaseModel):
     curator_topics_unsliced: list = Slot(default_factory=list, visibility="internal")
     curator_topics: list = Slot(default_factory=list, visibility="internal")
 
+    # 4A.2b Coherence-measure phase (1 slot). Written by the deterministic
+    # CoherenceStage (src/stages/coherence.py) between CuratorStage and
+    # EditorStage. Passive mode: stage measures embedding-based finding↔
+    # cluster cosine similarity and reports per-cluster aggregates plus
+    # threshold-band counts. Does not mutate curator_findings or
+    # curator_topics_unsliced (passthrough contract — see test
+    # tests/test_coherence_stage.py::test_passthrough_byte_identical).
+    # Internal: the slot exists to feed downstream calibration; whether
+    # to render coherence in the final TP is a separate decision per
+    # TASK-COHERENCE-FILTER-PASSIVE §"Out of scope". optional_write=True
+    # because partial runs that skip the stage leave it at its empty
+    # default. See docs/ADR-COHERENCE-STAGE-DEPENDENCY.md for the
+    # dependency-cost rationale.
+    curator_coherence_scores: dict = Slot(
+        default_factory=dict,
+        visibility="internal",
+        optional_write=True,
+    )
+
     # 4A.3 Editor phase (2 slots — including previous_coverage as the 11th run-scoped slot)
     previous_coverage: list = Slot(
         default_factory=list,

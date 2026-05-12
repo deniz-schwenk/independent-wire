@@ -53,6 +53,7 @@ def test_runbus_constructs_with_all_typed_empty_defaults():
         "curator_findings": [],
         "curator_topics_unsliced": [],
         "curator_topics": [],
+        "curator_coherence_scores": {},
         "previous_coverage": [],
         "editor_assignments": [],
         "selected_assignments": [],
@@ -314,11 +315,12 @@ def test_runbus_slot_count_regression_guard():
     """Hard-coded expectation. Any change in slot count without architect approval
     fails this test and forces review. Source of truth: ARCH-V2-BUS-SCHEMA §4A.
 
-    Expected: 12 slots across 3 phases plus selection (4A.1 metadata=6,
-    4A.2 curator=3, 4A.3 editor=2, selection=1 — selected_assignments
-    written by select_topics per ARCH §5.1 stage 4).
+    Expected: 13 slots across 4 phases plus selection (4A.1 metadata=6,
+    4A.2 curator=3, 4A.2b coherence=1, 4A.3 editor=2, selection=1).
+    The coherence slot was added in TASK-COHERENCE-FILTER-PASSIVE; see
+    docs/ADR-COHERENCE-STAGE-DEPENDENCY.md.
     """
-    assert len(RunBus.model_fields) == 12
+    assert len(RunBus.model_fields) == 13
 
 
 def test_topicbus_slot_count_regression_guard():
