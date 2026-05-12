@@ -67,6 +67,18 @@ PROVIDER_DEFAULTS: dict[str, dict[str, str | None]] = {
         "base_url": "https://ollama.com/v1",
         "api_key_env": "OLLAMA_API_KEY",
     },
+    # DeepSeek direct API. No env-var default — callers pass an explicit
+    # ``api_key`` or ``api_key_file``. Used by scripts/curator_shadow.py
+    # to measure native DeepSeek serving (vs OpenRouter-routed). Provider-
+    # specific knobs (``thinking.type``, ``reasoning_effort``) are passed
+    # via ``extra_body_override``; the OpenRouter-specific ``reasoning``
+    # and ``provider.require_parameters`` injections in
+    # ``_call_with_retry`` are gated on ``provider == "openrouter"`` so
+    # they do not fire here.
+    "deepseek": {
+        "base_url": "https://api.deepseek.com",
+        "api_key_env": None,
+    },
 }
 
 
@@ -137,6 +149,7 @@ class Agent:
         provider: str = "openrouter",
         base_url: str | None = None,
         api_key: str | None = None,
+        api_key_file: str | None = None,
         reasoning: str | bool | None = None,
         extra_body_override: dict | None = None,
         output_schema: dict | None = None,
@@ -167,8 +180,19 @@ class Agent:
         defaults = PROVIDER_DEFAULTS.get(provider, PROVIDER_DEFAULTS["openrouter"])
         self.base_url = base_url or defaults["base_url"]
 
-        # Resolve API key: explicit > env var > provider default > error
+        # Resolve API key: explicit > file > env var > provider default > error
         resolved_key = api_key
+        if not resolved_key and api_key_file:
+            key_path = Path(api_key_file)
+            if not key_path.exists():
+                raise ValueError(
+                    f"Agent '{name}': api_key_file not found: {api_key_file}"
+                )
+            resolved_key = key_path.read_text(encoding="utf-8").strip()
+            if not resolved_key:
+                raise ValueError(
+                    f"Agent '{name}': api_key_file is empty: {api_key_file}"
+                )
         if not resolved_key:
             env_var = defaults.get("api_key_env")
             if env_var:
