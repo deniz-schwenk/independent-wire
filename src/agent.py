@@ -33,6 +33,16 @@ class AgentResult:
     cost_usd: float = 0.0
     model: str = ""
     duration_seconds: float = 0.0
+    # Provider routing fingerprint surfaced by OpenRouter on the final
+    # response. Empty string when the provider does not report it (e.g.
+    # non-OpenRouter providers or older response shapes). Captured from
+    # ``response.provider`` on the last chat-completions call in the
+    # tool-call loop.
+    provider: str = ""
+    # OpenRouter / OpenAI response id of the last chat-completions call.
+    # Useful for reproducibility — pairing a logged result with a
+    # provider-side trace.
+    response_id: str = ""
 
 logger = logging.getLogger(__name__)
 
@@ -707,6 +717,8 @@ class Agent:
         duration = time.monotonic() - start_time
         content = resp_message.content or ""
         model_used = response.model if hasattr(response, "model") else self.model
+        provider_served = getattr(response, "provider", "") or ""
+        response_id = getattr(response, "id", "") or ""
 
         # Parse structured output if schema was requested, with retry
         structured = None
@@ -764,4 +776,6 @@ class Agent:
             cost_usd=total_cost_usd,
             model=model_used,
             duration_seconds=round(duration, 2),
+            provider=provider_served,
+            response_id=response_id,
         )
