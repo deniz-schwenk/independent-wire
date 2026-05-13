@@ -83,27 +83,72 @@ def _label_with_regex(findings: list[dict], cluster: dict) -> dict[str, bool]:
     return labels
 
 
-def _load_manual_labels(path: Path, cluster_index: int) -> Optional[dict[str, bool]]:
-    """Read ``cluster_index, source_id, label`` rows where label is one of
-    ``on``/``off``/``1``/``0``. Returns ``None`` if the file is absent."""
+def _load_manual_labels(path: Path) -> Optional[dict[str, bool]]:
+    """Read manual-label CSV rows. Schema per TASK-COHERENCE-MANUAL-LABELS-V1:
+
+        finding_id, is_on_topic, reasoning_note
+
+    Returns ``{finding_id: is_on_topic_bool}`` or ``None`` if the file is
+    absent. The CSV is target-cluster scoped by construction — the caller
+    filters by intersecting with the target cluster's ``source_ids``.
+    """
     if not path.exists():
         return None
     labels: dict[str, bool] = {}
     with path.open(newline="", encoding="utf-8") as fh:
         reader = csv.DictReader(fh)
         for row in reader:
-            try:
-                ci = int(row["cluster_index"])
-            except (KeyError, ValueError):
+            sid = (row.get("finding_id") or "").strip()
+            raw_label = (row.get("is_on_topic") or "").strip().lower()
+            if not sid or raw_label not in {"1", "0"}:
                 continue
-            if ci != cluster_index:
-                continue
-            sid = row.get("source_id", "").strip()
-            raw_label = row.get("label", "").strip().lower()
-            if not sid or raw_label not in {"on", "off", "1", "0"}:
-                continue
-            labels[sid] = raw_label in {"on", "1"}
+            labels[sid] = raw_label == "1"
     return labels or None
+
+
+def _agreement_matrix(
+    regex_labels: dict[str, bool],
+    manual_labels: dict[str, bool],
+) -> dict:
+    """2×2 confusion of regex vs manual on the manual-labelled subset.
+
+    Cells:
+      - ``rr_on_mm_on``  — regex on,  manual on  (agree, both on-topic)
+      - ``rr_off_mm_off`` — regex off, manual off (agree, both off-topic)
+      - ``rr_on_mm_off`` — regex on,  manual off (regex over-counts)
+      - ``rr_off_mm_on`` — regex off, manual on  (regex under-counts)
+    """
+    cells = {
+        "rr_on_mm_on": [],
+        "rr_off_mm_off": [],
+        "rr_on_mm_off": [],
+        "rr_off_mm_on": [],
+    }
+    n = 0
+    for sid, mm in manual_labels.items():
+        if sid not in regex_labels:
+            continue
+        rr = regex_labels[sid]
+        if rr and mm:
+            cells["rr_on_mm_on"].append(sid)
+        elif (not rr) and (not mm):
+            cells["rr_off_mm_off"].append(sid)
+        elif rr and (not mm):
+            cells["rr_on_mm_off"].append(sid)
+        else:
+            cells["rr_off_mm_on"].append(sid)
+        n += 1
+    agreement = (
+        len(cells["rr_on_mm_on"]) + len(cells["rr_off_mm_off"])
+    ) / n if n else 0.0
+    return {
+        "n": n,
+        "agreement": agreement,
+        "rr_on_mm_on": cells["rr_on_mm_on"],
+        "rr_off_mm_off": cells["rr_off_mm_off"],
+        "rr_on_mm_off": cells["rr_on_mm_off"],
+        "rr_off_mm_on": cells["rr_off_mm_on"],
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -207,6 +252,8 @@ def write_calibration_report(
     regex_roc: list[dict],
     manual_roc: Optional[list[dict]] = None,
     manual_labels_path: Optional[Path] = None,
+    agreement: Optional[dict] = None,
+    scores_by_sid: Optional[dict[str, float]] = None,
 ) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     target_cluster = topics[target_cluster_idx]
@@ -302,6 +349,23 @@ def write_calibration_report(
             "heuristic is validated for this dataset."
         )
         lines.append("")
+        # Confusion matrix at best-F1 threshold for manual labels
+        if manual_roc and scores_by_sid is not None:
+            best = max(manual_roc, key=lambda r: r["f1"])
+            lines.append(
+                f"#### Confusion matrix at F1-optimal manual threshold "
+                f"({best['threshold']:.2f})"
+            )
+            lines.append("")
+            lines.append("|  | predicted-keep | predicted-drop |")
+            lines.append("|---|---:|---:|")
+            lines.append(
+                f"| manual on  | {best['tp']} (TP) | {best['fn']} (FN) |"
+            )
+            lines.append(
+                f"| manual off | {best['fp']} (FP) | {best['tn']} (TN) |"
+            )
+            lines.append("")
     else:
         lines.append("### Manual-label ROC")
         lines.append("")
@@ -309,6 +373,57 @@ def write_calibration_report(
             f"Manual validation is pending. No CSV found at "
             f"`{manual_labels_path or DEFAULT_MANUAL_LABELS}`. Once labels "
             "exist, re-run this script to add a parallel ROC."
+        )
+        lines.append("")
+
+    if agreement is not None:
+        lines.append("## Agreement matrix: regex vs manual labels")
+        lines.append("")
+        lines.append(
+            f"On the {agreement['n']}-finding manual-label subset, regex "
+            f"and manual judgement **agree on "
+            f"{len(agreement['rr_on_mm_on']) + len(agreement['rr_off_mm_off'])}"
+            f"/{agreement['n']} findings ({agreement['agreement']:.1%})**."
+        )
+        lines.append("")
+        lines.append("|  | manual on | manual off |")
+        lines.append("|---|---:|---:|")
+        lines.append(
+            f"| regex on  | {len(agreement['rr_on_mm_on'])} (both on) | "
+            f"{len(agreement['rr_on_mm_off'])} (regex over-counts) |"
+        )
+        lines.append(
+            f"| regex off | {len(agreement['rr_off_mm_on'])} (regex under-counts) | "
+            f"{len(agreement['rr_off_mm_off'])} (both off) |"
+        )
+        lines.append("")
+        if agreement["rr_on_mm_off"]:
+            lines.append("**Regex says on-topic, manual says off-topic:**")
+            for sid in agreement["rr_on_mm_off"]:
+                idx = _finding_index_from_source_id(sid)
+                tl = ""
+                if idx is not None and 0 <= idx < len(findings):
+                    tl = (findings[idx].get("title") or "")[:160]
+                lines.append(f"- `{sid}` — {tl}")
+            lines.append("")
+        if agreement["rr_off_mm_on"]:
+            lines.append("**Regex says off-topic, manual says on-topic:**")
+            for sid in agreement["rr_off_mm_on"]:
+                idx = _finding_index_from_source_id(sid)
+                tl = ""
+                if idx is not None and 0 <= idx < len(findings):
+                    tl = (findings[idx].get("title") or "")[:160]
+                lines.append(f"- `{sid}` — {tl}")
+            lines.append("")
+        lines.append(
+            "Reading: regex agrees with manual labels in the majority. "
+            "Disagreements are the heuristic's failure modes — regex "
+            "over-counts when peripheral lexical matches creep into the "
+            "vocabulary; regex under-counts when on-topic findings phrase "
+            "the topic in vocabulary that didn't make the regex tokens. "
+            "The agreement rate tells the architect how much trust to "
+            "place in the daily regex-only comparator on the coherence "
+            "report."
         )
         lines.append("")
 
@@ -408,9 +523,24 @@ def main() -> None:
     regex_roc = _roc_table(scores_by_sid, regex_labels)
 
     manual_labels_path = Path(args.manual_labels)
-    manual_labels = _load_manual_labels(manual_labels_path, target_idx)
+    manual_labels = _load_manual_labels(manual_labels_path)
+    # CSV is target-cluster scoped by construction (TASK-COHERENCE-
+    # MANUAL-LABELS-V1) — filter to the subset that the target cluster
+    # actually contains, so agreement and ROC are computed on the
+    # well-defined intersection.
+    target_source_id_set = {sid for sid in (target_cluster.get("source_ids") or [])}
+    if manual_labels is not None:
+        manual_labels = {
+            sid: label for sid, label in manual_labels.items()
+            if sid in target_source_id_set
+        }
+        if not manual_labels:
+            manual_labels = None
     manual_roc = (
         _roc_table(scores_by_sid, manual_labels) if manual_labels else None
+    )
+    agreement = (
+        _agreement_matrix(regex_labels, manual_labels) if manual_labels else None
     )
 
     write_calibration_report(
@@ -423,6 +553,8 @@ def main() -> None:
         regex_roc=regex_roc,
         manual_roc=manual_roc,
         manual_labels_path=manual_labels_path,
+        agreement=agreement,
+        scores_by_sid=scores_by_sid,
     )
     print(f"Wrote {args.output}")
 

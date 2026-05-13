@@ -3,8 +3,8 @@
 - Source state: `output/2026-05-11-v1-baseline/_state/run-2026-05-11-722571ae/run_bus.CuratorStage.json`
 - Model: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
 - fastembed version (pinned): `0.8.0`
-- Wall: 30.91 s
-- RSS Δ: 1093 MB
+- Wall: 32.19 s
+- RSS Δ: 948 MB
 - Clusters scored: 14
 - Findings scored: 1116
 
@@ -79,9 +79,51 @@ Best F1 at threshold 0.20: precision=0.568, recall=0.616, F1=0.591
 
 Regex is the heuristic baseline per the brief: ~5–10% FP/FN, directional not absolute. The regex is derived from the target cluster's own title + summary, then matched against each finding's title + summary + description.
 
-### Manual-label ROC
+### ROC against manual labels (`docs/coherence-filter/_manual-labels-2026-05-11.csv`)
 
-Manual validation is pending. No CSV found at `docs/coherence-filter/_manual-labels-2026-05-11.csv`. Once labels exist, re-run this script to add a parallel ROC.
+| threshold | TP | FP | FN | TN | precision | recall | F1 |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0.20 | 3 | 8 | 1 | 38 | 0.273 | 0.750 | 0.400 |
+| 0.25 | 2 | 5 | 2 | 41 | 0.286 | 0.500 | 0.364 |
+| 0.30 | 1 | 2 | 3 | 44 | 0.333 | 0.250 | 0.286 |
+| 0.35 | 1 | 0 | 3 | 46 | 1.000 | 0.250 | 0.400 ← |
+| 0.40 | 1 | 0 | 3 | 46 | 1.000 | 0.250 | 0.400 |
+| 0.45 | 1 | 0 | 3 | 46 | 1.000 | 0.250 | 0.400 |
+| 0.50 | 1 | 0 | 3 | 46 | 1.000 | 0.250 | 0.400 |
+| 0.55 | 1 | 0 | 3 | 46 | 1.000 | 0.250 | 0.400 |
+| 0.60 | 0 | 0 | 4 | 46 | 0.000 | 0.000 | 0.000 |
+| 0.70 | 0 | 0 | 4 | 46 | 0.000 | 0.000 | 0.000 |
+
+Best F1 at threshold 0.35: precision=1.000, recall=0.250, F1=0.400
+
+Manual labels are the ground-truth reference. When regex and manual ROCs agree on the best-F1 threshold, the regex heuristic is validated for this dataset.
+
+#### Confusion matrix at F1-optimal manual threshold (0.35)
+
+|  | predicted-keep | predicted-drop |
+|---|---:|---:|
+| manual on  | 1 (TP) | 3 (FN) |
+| manual off | 0 (FP) | 46 (TN) |
+
+## Agreement matrix: regex vs manual labels
+
+On the 50-finding manual-label subset, regex and manual judgement **agree on 43/50 findings (86.0%)**.
+
+|  | manual on | manual off |
+|---|---:|---:|
+| regex on  | 4 (both on) | 7 (regex over-counts) |
+| regex off | 0 (regex under-counts) | 39 (both off) |
+
+**Regex says on-topic, manual says off-topic:**
+- `finding-291` — Plot to coerce girl into carrying out terrorist attack in Islamabad thwarted, CM Bugti says
+- `finding-478` — India news: Cut fuel use, gold buys and foreign trips, says Modi, as no end in sight to Iran war
+- `finding-77` — Israeli soldier killed in Hezbollah drone attack near Lebanon border
+- `finding-75` — Hezbollah using fibre optic drones to evade Israeli jamming
+- `finding-272` — A Year After Op Sindoor, Pak Army Chief's Unprovoked Threat To India
+- `finding-422` — Modi urges Indians to work from home and limit foreign travel as Iran war continues
+- `finding-271` — Stock Market Highlights, Sensex Today: Sensex Falls 1,312 Points, Nifty Down 360 As Oil Prices Rally
+
+Reading: regex agrees with manual labels in the majority. Disagreements are the heuristic's failure modes — regex over-counts when peripheral lexical matches creep into the vocabulary; regex under-counts when on-topic findings phrase the topic in vocabulary that didn't make the regex tokens. The agreement rate tells the architect how much trust to place in the daily regex-only comparator on the coherence report.
 
 ## Reading guide
 
