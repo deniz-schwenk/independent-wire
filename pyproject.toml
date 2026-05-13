@@ -35,6 +35,11 @@ telegram = ["python-telegram-bot>=20.0"]
 search-brave = []              # Brave uses only httpx (already a core dep)
 search-duckduckgo = ["duckduckgo-search"]
 dev = ["pytest", "pytest-asyncio"]
+# Eval-only dependencies. Used by scripts/eval_clustering.py and the
+# embedding/clustering evaluation harnesses. Not imported by any module under
+# src/ — production import graph is unaffected. scikit-learn is also a
+# transitive dep of hdbscan and fastembed.
+eval = ["hdbscan>=0.8.40", "scikit-learn>=1.3"]
 
 [project.urls]
 Homepage = "https://independent-wire.org"
