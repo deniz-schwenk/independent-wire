@@ -61,6 +61,24 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
 - **Performance budget (TASK-EMBED-PRE-CLUSTER-STAGE):** embedding ~9 s (bounded by the existing coherence-stage cost; re-uses cached model weights), clustering <1 s for ~1200 findings on commodity CPU. Measured smoke totals: 60–82 s including JSON load + asyncio dispatch.
 - **Dependency cost:** scikit-learn 46 MB + scipy 97 MB + joblib 2.4 MB + threadpoolctl 0.1 MB = +146 MB site-packages — see `docs/ADR-COHERENCE-STAGE-DEPENDENCY-ADDENDUM-2026-05-15.md` for the ceiling-raise rationale (400 MB → 600 MB).
 
+#### §2.2c gravitational_assign — **declared but NOT YET WIRED**
+
+- **Status:** Stage callable + RunBus slot declared at `TASK-GRAVITATIONAL-ASSIGN-STAGE.md`. NOT added to `build_production_stages` / `build_hydrated_stages` in `src/runner/stage_lists.py`; absence of this stage in production stage logs is currently expected. Wiring belongs to the later integration brief in the triple-stage Curator sequence (`docs/ADR-CURATOR-TRIPLE-STAGE.md`).
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/gravitational_assign.py::make_gravitational_assign`
+- **Model (embedding, pinned):** `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` — shared singleton with §2.2b and §2.3b via `src/stages/coherence.py::_get_default_embedder` (one ONNX session per process)
+- **Library (similarity):** `numpy` — cosine similarity on L2-normalised vectors is a single matrix dot product; no sklearn dependency
+- **Algorithm:** cosine threshold + top-K with deterministic tie-break (similarity descending, topic-index ascending). Implemented via `np.lexsort` for stability under future numpy / sklearn changes.
+- **Reads (Bus):** `curator_findings`, `curator_topics_unsliced` — RunBus
+- **Writes (Bus):** `curator_topic_assignments` — RunBus
+- **Pass-through:** the stage does not mutate either upstream slot — load-bearing test `tests/test_gravitational_assign_stage.py::test_passthrough_byte_identical`.
+- **Pinned constants (calibrated):** `GRAVITATIONAL_THRESHOLD = 0.30`, `PER_FINDING_CAP = 3`, tie-break `similarity desc, topic-index asc`. Calibrated against the 504-label ground-truth set on 2026-05-15 — pooled F1 = 0.768 (V1 headlines), inside the F1 ≥ 0.75 plateau spanning T=0.30–0.40. Centroid-cross-check peak F1 = 0.855 at T=0.50 confirms V1 headlines carry signal. See `docs/gravitational-assign/_calibration-2026-05-15.md` for the full defence.
+- **Output shape:** topics list mirrors `curator_topics_unsliced` element-for-element (matched by `topic_index`); each topic carries its `assignments[]` of `{source_id, similarity}`. Flat `orphans[]` list — one entry per finding with no above-threshold match, recording `best_similarity` and `best_topic_index` for transparency. Assignments within a topic sorted by similarity descending with finding-index ascending tie-break; orphans sorted by source_id ascending.
+- **Smoke (2026-05-15):** `docs/gravitational-assign/smoke-2026-05-15/`. Combined orphan rate across labelled days exactly matches calibration (49.7 % on 2026-05-11 + 2026-05-13 pooled). 2026-05-13 per-cluster confusion matrices at threshold 0.30: Iran-war F1 0.778, Trump-Xi F1 0.880, Sudan F1 0.600.
+- **Calibration is provisional** pending Brief 4. V1 Curator headlines are tighter than the eventual Stage-2 output is expected to be; the integration brief recalibrates against real Stage-2 topic-centres.
+- **Performance budget (TASK-GRAVITATIONAL-ASSIGN-STAGE):** embedding ~9 s for ~1200 findings + ~0.1 s for 10–20 topic-centres; similarity matrix + selection <0.1 s. Memory ~50 MB for the float matrix. Smoke wall observed: 39–82 s (dominated by fastembed across the three eval datasets).
+- **Dependency cost:** none new — numpy + fastembed already production deps.
+
 #### §2.3 CuratorStage
 
 - **Kind:** agent (LLM)

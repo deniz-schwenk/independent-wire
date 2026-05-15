@@ -1,0 +1,150 @@
+{
+  "threshold": 0.3,
+  "cap": 3,
+  "tie_break_rule": "similarity desc, topic-index asc",
+  "results": [
+    {
+      "date": "2026-05-08",
+      "n_findings": 1401,
+      "n_topics": 12,
+      "n_findings_assigned": 604,
+      "n_orphans": 797,
+      "orphan_pct": 56.89,
+      "mean_assignments_per_finding": 0.591,
+      "assignments_per_finding_histogram": {
+        "0": 797,
+        "1": 420,
+        "2": 144,
+        "3": 40,
+        "4+": 0
+      },
+      "per_cluster_confusion": [],
+      "stage_wall_seconds": 36.846,
+      "smoke_wall_seconds": 36.849
+    },
+    {
+      "date": "2026-05-11",
+      "n_findings": 1201,
+      "n_topics": 14,
+      "n_findings_assigned": 613,
+      "n_orphans": 588,
+      "orphan_pct": 48.96,
+      "mean_assignments_per_finding": 0.7019,
+      "assignments_per_finding_histogram": {
+        "0": 588,
+        "1": 429,
+        "2": 138,
+        "3": 46,
+        "4+": 0
+      },
+      "per_cluster_confusion": [
+        {
+          "cluster_idx": 0,
+          "cluster_label": "Iran mega-cluster",
+          "n_labels": 250,
+          "n_labels_on_topic": 17,
+          "n_predicted_on_topic": 20,
+          "tp": 11,
+          "fp": 9,
+          "fn": 6,
+          "tn": 224,
+          "precision": 0.55,
+          "recall": 0.6471,
+          "f1": 0.5946
+        },
+        {
+          "cluster_idx": 1,
+          "cluster_label": "Hantavirus",
+          "n_labels": 8,
+          "n_labels_on_topic": 3,
+          "n_predicted_on_topic": 4,
+          "tp": 3,
+          "fp": 1,
+          "fn": 0,
+          "tn": 4,
+          "precision": 0.75,
+          "recall": 1.0,
+          "f1": 0.8571
+        },
+        {
+          "cluster_idx": 3,
+          "cluster_label": "Russia-Ukraine",
+          "n_labels": 31,
+          "n_labels_on_topic": 17,
+          "n_predicted_on_topic": 20,
+          "tp": 17,
+          "fp": 3,
+          "fn": 0,
+          "tn": 11,
+          "precision": 0.85,
+          "recall": 1.0,
+          "f1": 0.9189
+        }
+      ],
+      "stage_wall_seconds": 34.835,
+      "smoke_wall_seconds": 34.836
+    },
+    {
+      "date": "2026-05-13",
+      "n_findings": 1405,
+      "n_topics": 16,
+      "n_findings_assigned": 698,
+      "n_orphans": 707,
+      "orphan_pct": 50.32,
+      "mean_assignments_per_finding": 0.7794,
+      "assignments_per_finding_histogram": {
+        "0": 707,
+        "1": 407,
+        "2": 185,
+        "3": 106,
+        "4+": 0
+      },
+      "per_cluster_confusion": [
+        {
+          "cluster_idx": 1,
+          "cluster_label": "Iran-war",
+          "n_labels": 130,
+          "n_labels_on_topic": 37,
+          "n_predicted_on_topic": 35,
+          "tp": 28,
+          "fp": 7,
+          "fn": 9,
+          "tn": 86,
+          "precision": 0.8,
+          "recall": 0.7568,
+          "f1": 0.7778
+        },
+        {
+          "cluster_idx": 0,
+          "cluster_label": "Trump-Xi",
+          "n_labels": 45,
+          "n_labels_on_topic": 11,
+          "n_predicted_on_topic": 14,
+          "tp": 11,
+          "fp": 3,
+          "fn": 0,
+          "tn": 31,
+          "precision": 0.7857,
+          "recall": 1.0,
+          "f1": 0.88
+        },
+        {
+          "cluster_idx": 11,
+          "cluster_label": "Sudan",
+          "n_labels": 40,
+          "n_labels_on_topic": 3,
+          "n_predicted_on_topic": 7,
+          "tp": 3,
+          "fp": 4,
+          "fn": 0,
+          "tn": 33,
+          "precision": 0.4286,
+          "recall": 1.0,
+          "f1": 0.6
+        }
+      ],
+      "stage_wall_seconds": 39.123,
+      "smoke_wall_seconds": 39.124
+    }
+  ]
+}
