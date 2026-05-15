@@ -583,6 +583,288 @@ def _assign_ids_and_slugs(
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
+# Top-K-by-Centroid compression helpers — shared with CuratorTopicDiscoveryStage
+# (Brief 4 of docs/ADR-CURATOR-TRIPLE-STAGE.md).
+# ---------------------------------------------------------------------------
+
+
+SAMPLE_TITLES_PER_CLUSTER: int = 8
+"""Top-K-by-Centroid compression parameter for
+CuratorTopicDiscoveryStage. Pinned per TASK-CURATOR-TOPIC-DISCOVERY-
+STAGE §"Top-K-by-Centroid compression": K=8 balances signal density
+(≥5 titles to make a cluster's theme unambiguous) against tail
+contamination (≥15 starts pulling in noisy tail titles) and total
+input token budget (~250 clusters × 8 titles × ~20 tokens ≈ 40 K).
+The cap binds only for clusters with >K findings; smaller clusters
+pass through complete. Recalibration is a one-line change."""
+
+
+def _topic_discovery_finding_text(finding: dict) -> str:
+    """Same concatenation rule as Brief 1's pre_cluster and Brief 2's
+    gravitational_assign — keeps finding embeddings comparable across
+    the three stages sharing the fastembed singleton."""
+    return (
+        (finding.get("title") or "")
+        + " "
+        + (finding.get("summary") or "")
+        + " "
+        + (finding.get("description") or "")
+    ).strip()
+
+
+def _top_k_by_centroid(
+    finding_indices: list[int],
+    finding_matrix: "np.ndarray",  # type: ignore[name-defined]
+    k: int,
+) -> list[tuple[int, float]]:
+    """Pure function — pick the ``k`` finding-indices closest to the
+    cluster centroid. Returns ``[(finding_index, similarity), ...]``
+    sorted by similarity descending with finding-index ascending as
+    the deterministic tie-break.
+
+    The cluster centroid is the mean of the cluster's finding
+    embeddings, re-L2-normalised. Cosine similarity to the centroid is
+    a single dot product per finding (vectors are already
+    L2-normalised). If the cluster has ``≤ k`` findings, all are
+    returned (no compression) — same ordering rule applies.
+
+    Single-finding clusters: the centroid equals the lone vector, so
+    cosine similarity is 1.0 and the function returns one entry.
+
+    Test-friendly: the embedder is passed in as the matrix already, so
+    fakes can construct deterministic vectors without going through
+    fastembed."""
+    import numpy as np
+
+    n = len(finding_indices)
+    if n == 0:
+        return []
+    sub = finding_matrix[finding_indices]
+    centroid = sub.mean(axis=0)
+    norm = float(np.linalg.norm(centroid))
+    if norm > 0:
+        centroid = centroid / norm
+    sims = sub @ centroid  # (n,) cosine similarities
+
+    # Sort by (sim desc, finding-index asc). The same np.lexsort
+    # pattern Brief 2 uses for tie-break determinism — primary key
+    # passed LAST.
+    fi_arr = np.asarray(finding_indices, dtype=np.int64)
+    order = np.lexsort((fi_arr, -sims))
+    keep = min(k, n)
+    selected = [(int(fi_arr[order[i]]), float(sims[order[i]])) for i in range(keep)]
+    return selected
+
+
+def _compress_pre_clusters_to_llm_input(
+    pre_clusters: list[dict],
+    findings: list[dict],
+    finding_matrix: "np.ndarray",  # type: ignore[name-defined]
+    *,
+    k: int = SAMPLE_TITLES_PER_CLUSTER,
+) -> list[dict]:
+    """Build the ``micro_clusters[]`` array the new Curator prompt
+    consumes. One entry per pre-cluster, in input order — the wrapper
+    does not re-sort.
+
+    Each entry: ``{id, size, sample_titles[]}``. ``sample_titles[]`` is
+    the top-K-by-centroid sample drawn from the cluster's findings,
+    titles only, in similarity-descending order with finding-index
+    ascending tie-break. Findings whose ``title`` is empty after
+    strip() are filtered out of the selection pool; if the entire
+    cluster has no usable titles the entry still appears in the input
+    with a single placeholder marker so the cluster is not silently
+    dropped from the LLM's view."""
+    PLACEHOLDER = "(no titles available)"
+    micro_clusters: list[dict] = []
+    for cluster in pre_clusters:
+        source_ids = cluster.get("source_ids") or []
+        # Resolve finding-NNN references and filter to non-empty titles
+        candidates: list[int] = []
+        for sid in source_ids:
+            try:
+                fi = int(str(sid).split("finding-")[-1])
+            except (ValueError, IndexError):
+                continue
+            if not (0 <= fi < len(findings)):
+                continue
+            if not (findings[fi].get("title") or "").strip():
+                continue
+            candidates.append(fi)
+
+        if not candidates:
+            micro_clusters.append({
+                "id": cluster.get("id", ""),
+                "size": int(cluster.get("size", 0)),
+                "sample_titles": [PLACEHOLDER],
+            })
+            continue
+
+        selected = _top_k_by_centroid(candidates, finding_matrix, k)
+        sample_titles = [findings[fi].get("title", "") for fi, _ in selected]
+        micro_clusters.append({
+            "id": cluster.get("id", ""),
+            "size": int(cluster.get("size", 0)),
+            "sample_titles": sample_titles,
+        })
+    return micro_clusters
+
+
+class CuratorTopicDiscoveryStage(_AgentStageBase):
+    """New LLM Topic-Discovery stage — Brief 4 of the triple-stage
+    Curator (docs/ADR-CURATOR-TRIPLE-STAGE.md).
+
+    Reads ``curator_findings`` and ``curator_pre_clusters`` (Brief 1's
+    output). Compresses each micro-cluster into a top-K-by-centroid
+    sample of titles, hands the compressed input to the LLM, and writes
+    the discovered ``{topics: [{title, summary}]}`` to
+    ``curator_discovered_topics``. No per-finding assignment, no
+    relevance_score — assignment is Brief 2's job; enrichment is Brief
+    5's job.
+
+    The fastembed singleton is shared with the coherence stage, the
+    pre-cluster stage, and the gravitational-assign stage (one ONNX
+    session per process). Tests inject a fake embedder via the
+    ``embedder`` keyword and a fake agent via the ``agent`` keyword;
+    production omits both — singleton + production constants.
+
+    NOT yet added to ``build_production_stages`` /
+    ``build_hydrated_stages``. Brief 5 wires it and removes the old
+    ``CuratorStage`` at the same time."""
+
+    stage_kind = "run"
+    reads = ("curator_findings", "curator_pre_clusters")
+    writes = ("curator_discovered_topics",)
+    agent_role = "curator_topic_discovery"
+
+    def __init__(
+        self,
+        agent: Agent,
+        *,
+        embedder: Any = None,
+        sample_titles_per_cluster: int = SAMPLE_TITLES_PER_CLUSTER,
+    ) -> None:
+        self.agent = agent
+        self._embedder = embedder
+        self.k = sample_titles_per_cluster
+
+    def _get_embedder(self):
+        if self._embedder is not None:
+            return self._embedder
+        # Lazy import to avoid pulling fastembed at module import time
+        from src.stages.coherence import _get_default_embedder
+
+        return _get_default_embedder()
+
+    async def __call__(self, run_bus: RunBus) -> RunBus:
+        import time
+
+        import numpy as np
+
+        from src.stages.coherence import _cosine_normalized
+
+        findings = list(run_bus.curator_findings or [])
+        pre_clusters_record = run_bus.curator_pre_clusters or {}
+        pre_clusters = list(pre_clusters_record.get("clusters") or [])
+        run_date = run_bus.run_date or ""
+
+        agent_name = getattr(self.agent, "name", self.agent_role)
+        model_name = getattr(self.agent, "model", "")
+        temperature = getattr(self.agent, "temperature", None)
+        max_tokens = getattr(self.agent, "max_tokens", None)
+        reasoning = getattr(self.agent, "reasoning", None)
+
+        meta_common: dict[str, Any] = {
+            "agent_name": agent_name,
+            "model_name": model_name,
+            "params": {
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+                "reasoning": reasoning,
+            },
+            "sample_titles_per_cluster": self.k,
+        }
+
+        # Empty pre-clusters → no LLM call, empty record
+        if not pre_clusters:
+            run_bus.curator_discovered_topics = {
+                **meta_common,
+                "wall_seconds": 0.0,
+                "llm_cost_usd": 0.0,
+                "tokens_used": 0,
+                "n_micro_clusters_input": 0,
+                "n_topics": 0,
+                "topics": [],
+            }
+            logger.info(
+                "CuratorTopicDiscoveryStage: 0 pre-clusters → no LLM call"
+            )
+            return run_bus
+
+        t0 = time.monotonic()
+        emb = self._get_embedder()
+
+        # Embed every finding once — cluster lookups operate on the
+        # finding-index matrix. Empty-title findings still occupy a
+        # row so finding-index → row-index is the identity (the
+        # filter happens inside _compress_pre_clusters_to_llm_input).
+        finding_texts = [_topic_discovery_finding_text(f) for f in findings]
+        finding_matrix = _cosine_normalized(emb.embed_batch(finding_texts))
+
+        micro_clusters_input = _compress_pre_clusters_to_llm_input(
+            pre_clusters, findings, finding_matrix, k=self.k
+        )
+
+        message = (
+            "Discover today's topics from the supplied micro-clusters. "
+            "Output JSON: {topics: [{title, summary}]}."
+        )
+        context = {
+            "run_date": run_date,
+            "micro_clusters": micro_clusters_input,
+        }
+        result = await self.agent.run(message, context=context)
+
+        parsed = _parse_agent_output(result)
+        if isinstance(parsed, dict):
+            topics_raw = parsed.get("topics", []) or []
+        elif isinstance(parsed, list):
+            # Defensive: fall back if the LLM emits a bare list
+            topics_raw = parsed
+        else:
+            topics_raw = []
+
+        topics_clean: list[dict] = []
+        for entry in topics_raw:
+            if not isinstance(entry, dict):
+                continue
+            title = (entry.get("title") or "").strip()
+            summary = (entry.get("summary") or "").strip()
+            if not title:
+                continue
+            topics_clean.append({"title": title, "summary": summary})
+
+        wall = time.monotonic() - t0
+
+        run_bus.curator_discovered_topics = {
+            **meta_common,
+            "wall_seconds": round(wall, 3),
+            "llm_cost_usd": float(getattr(result, "cost_usd", 0.0) or 0.0),
+            "tokens_used": int(getattr(result, "tokens_used", 0) or 0),
+            "n_micro_clusters_input": len(micro_clusters_input),
+            "n_topics": len(topics_clean),
+            "topics": topics_clean,
+        }
+        logger.info(
+            "CuratorTopicDiscoveryStage: %d micro-clusters → %d topics "
+            "(%.2fs, $%.4f)",
+            len(micro_clusters_input), len(topics_clean), wall,
+            float(getattr(result, "cost_usd", 0.0) or 0.0),
+        )
+        return run_bus
+
+
 class CuratorStage(_AgentStageBase):
     """Curator agent wrapper.
 
@@ -2154,6 +2436,7 @@ class ResolveActorAliasesStage(_AgentStageBase):
 __all__ = [
     "BiasLanguageStage",
     "CuratorStage",
+    "CuratorTopicDiscoveryStage",
     "EditorStage",
     "HydrationPhase1Stage",
     "HydrationPhase2Stage",
@@ -2164,5 +2447,9 @@ __all__ = [
     "ResearcherHydratedPlanStage",
     "ResearcherPlanStage",
     "ResolveActorAliasesStage",
+    "SAMPLE_TITLES_PER_CLUSTER",
     "WriterStage",
+    "_compress_pre_clusters_to_llm_input",
+    "_top_k_by_centroid",
+    "_topic_discovery_finding_text",
 ]

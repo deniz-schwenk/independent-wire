@@ -24,6 +24,7 @@ from src.runner.stage_lists import (
 from src.schemas import (
     BIAS_DETECTOR_SCHEMA,
     CURATOR_SCHEMA,
+    CURATOR_TOPIC_DISCOVERY_SCHEMA,
     EDITOR_SCHEMA,
     HYDRATION_PHASE1_SCHEMA,
     HYDRATION_PHASE2_SCHEMA,
@@ -102,6 +103,23 @@ def create_agents() -> dict[str, Agent]:
             # entirely. 64k gives steady-state headroom.
             max_tokens=64000,
             output_schema=CURATOR_SCHEMA,
+        ),
+        # New Topic-Discovery Curator — Brief 4 of the triple-stage Curator
+        # sequence (docs/ADR-CURATOR-TRIPLE-STAGE.md). Reads pre-clusters
+        # from Brief 1, discovers topics. No per-finding assignment. The
+        # old "curator" registration above stays until Brief 5 cuts over.
+        "curator_topic_discovery": Agent(
+            name="curator_topic_discovery",
+            model="google/gemini-3-flash-preview",
+            system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
+            tools=[],
+            temperature=0.2,
+            provider="openrouter",
+            reasoning="none",
+            # Output is ~10–30 topics × ~350 chars ≈ 3K tokens; 2× cushion.
+            max_tokens=8000,
+            output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
         ),
         "editor": Agent(
             name="editor",

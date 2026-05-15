@@ -56,6 +56,7 @@ def test_runbus_constructs_with_all_typed_empty_defaults():
         "curator_coherence_scores": {},
         "curator_pre_clusters": {},
         "curator_topic_assignments": {},
+        "curator_discovered_topics": {},
         "previous_coverage": [],
         "editor_assignments": [],
         "selected_assignments": [],
@@ -317,15 +318,16 @@ def test_runbus_slot_count_regression_guard():
     """Hard-coded expectation. Any change in slot count without architect approval
     fails this test and forces review. Source of truth: ARCH-V2-BUS-SCHEMA §4A.
 
-    Expected: 15 slots across 6 phases plus selection (4A.1 metadata=6,
+    Expected: 16 slots across 7 phases plus selection (4A.1 metadata=6,
     4A.2 curator=3, 4A.2b coherence=1, 4A.2c pre-cluster=1,
-    4A.2d gravitational-assign=1, 4A.3 editor=2, selection=1). The
-    coherence slot was added in TASK-COHERENCE-FILTER-PASSIVE; the
-    pre-cluster slot was added in TASK-EMBED-PRE-CLUSTER-STAGE; the
-    gravitational-assign slot was added in TASK-GRAVITATIONAL-ASSIGN-
-    STAGE — see docs/ADR-CURATOR-TRIPLE-STAGE.md.
+    4A.2d gravitational-assign=1, 4A.2e topic-discovery=1, 4A.3 editor=2,
+    selection=1). The coherence slot was added in TASK-COHERENCE-FILTER-
+    PASSIVE; the pre-cluster slot was added in TASK-EMBED-PRE-CLUSTER-
+    STAGE; the gravitational-assign slot was added in TASK-GRAVITATIONAL-
+    ASSIGN-STAGE; the topic-discovery slot was added in TASK-CURATOR-
+    TOPIC-DISCOVERY-STAGE — see docs/ADR-CURATOR-TRIPLE-STAGE.md.
     """
-    assert len(RunBus.model_fields) == 15
+    assert len(RunBus.model_fields) == 16
 
 
 def test_topicbus_slot_count_regression_guard():

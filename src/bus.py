@@ -340,6 +340,44 @@ class _RunBusFields(BaseModel):
         optional_write=True,
     )
 
+    # 4A.2e Curator Topic-Discovery phase (1 slot). Written by the new
+    # CuratorTopicDiscoveryStage (src/agent_stages.py) — Brief 4 of the
+    # triple-stage Curator sequence (docs/ADR-CURATOR-TRIPLE-STAGE.md).
+    # The new Curator does ONLY topic discovery: it reads the
+    # micro-clusters produced by Brief 1, the wrapper compresses each
+    # cluster into a top-K-by-centroid sample of titles
+    # (SAMPLE_TITLES_PER_CLUSTER = 8 — pinned in the stage source), and
+    # calls the LLM to discover the day's topics from that compressed
+    # input. No per-finding assignment, no source_ids, no
+    # relevance_score.
+    #
+    # Output shape — flat array `topics: [{title, summary}]`. Run-level
+    # metadata: model_name, params (temperature, max_tokens, reasoning),
+    # sample_titles_per_cluster (K), wall_seconds, llm_cost_usd,
+    # tokens_used, n_micro_clusters_input, n_topics. Brief 5 reads this
+    # slot, attaches `source_ids` via the Gravitational-Assignment
+    # stage, and folds the deterministic enrichment (geographic_coverage,
+    # languages, source_count, missing_regions, missing_languages,
+    # source_diversity) on top to produce `curator_topics_unsliced` in
+    # the final wired pipeline.
+    #
+    # `optional_write=True` — an empty pre-cluster run produces zero
+    # topics; the empty case is legitimate.
+    #
+    # **Wiring status (TASK-CURATOR-TOPIC-DISCOVERY-STAGE):** declared
+    # but NOT yet added to build_production_stages /
+    # build_hydrated_stages. Brief 5 wires it (and removes the old
+    # CuratorStage at the same time). Between Brief 4 and Brief 5 the
+    # production pipeline is NOT safe to run live — the old
+    # CuratorStage reads the new prompts in agents/curator/ which no
+    # longer match its schema. Tests stay green because they mock the
+    # LLM.
+    curator_discovered_topics: dict = Slot(
+        default_factory=dict,
+        visibility="internal",
+        optional_write=True,
+    )
+
     # 4A.3 Editor phase (2 slots — including previous_coverage as the 11th run-scoped slot)
     previous_coverage: list = Slot(
         default_factory=list,
