@@ -1,0 +1,60 @@
+{
+  "results": [
+    {
+      "date": "2026-05-08",
+      "n_findings": 1401,
+      "n_clusters": 246,
+      "max_cluster_size": 100,
+      "pathology_flag": false,
+      "stage_wall_seconds": 71.849,
+      "stage_rss_delta_mb": 878.2,
+      "smoke_wall_seconds": 72.735,
+      "eval_n_clusters": 246,
+      "eval_max_cluster_size": 100,
+      "n_clusters_delta_pct": 0.0,
+      "within_15pct_tolerance": true
+    },
+    {
+      "date": "2026-05-11",
+      "n_findings": 1201,
+      "n_clusters": 241,
+      "max_cluster_size": 66,
+      "pathology_flag": false,
+      "stage_wall_seconds": 60.753,
+      "stage_rss_delta_mb": 0.0,
+      "smoke_wall_seconds": 60.754,
+      "eval_n_clusters": 241,
+      "eval_max_cluster_size": 66,
+      "n_clusters_delta_pct": 0.0,
+      "within_15pct_tolerance": true
+    },
+    {
+      "date": "2026-05-13",
+      "n_findings": 1405,
+      "n_clusters": 279,
+      "max_cluster_size": 77,
+      "pathology_flag": false,
+      "stage_wall_seconds": 82.105,
+      "stage_rss_delta_mb": 0.0,
+      "smoke_wall_seconds": 82.106,
+      "eval_n_clusters": 279,
+      "eval_max_cluster_size": 77,
+      "n_clusters_delta_pct": 0.0,
+      "within_15pct_tolerance": true
+    }
+  ],
+  "reference": {
+    "2026-05-08": {
+      "n_clusters": 246,
+      "max_cluster_size": 100
+    },
+    "2026-05-11": {
+      "n_clusters": 241,
+      "max_cluster_size": 66
+    },
+    "2026-05-13": {
+      "n_clusters": 279,
+      "max_cluster_size": 77
+    }
+  }
+}

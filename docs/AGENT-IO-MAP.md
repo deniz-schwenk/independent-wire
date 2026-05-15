@@ -44,6 +44,23 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
 - **Reads (Bus):** `run_date` — RunBus
 - **Writes (Bus):** `curator_findings` — RunBus, loaded from `raw/{run_date}/feeds.json`
 
+#### §2.2b pre_cluster_findings — **declared but NOT YET WIRED**
+
+- **Status:** Stage callable + RunBus slot declared at `TASK-EMBED-PRE-CLUSTER-STAGE.md`. NOT added to `build_production_stages` / `build_hydrated_stages` in `src/runner/stage_lists.py`; absence of this stage in production stage logs is currently expected. Wiring belongs to the later integration brief in the triple-stage Curator sequence (`docs/ADR-CURATOR-TRIPLE-STAGE.md`).
+- **Kind:** deterministic (Python)
+- **Source:** `src/stages/pre_cluster.py::make_pre_cluster_findings`
+- **Model (embedding, pinned):** `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` — shared singleton with §2.3b via `src/stages/coherence.py::_get_default_embedder` (one ONNX session per process)
+- **Library (clustering, pinned):** `scikit-learn>=1.3` (floor pin) — promoted in `docs/ADR-COHERENCE-STAGE-DEPENDENCY-ADDENDUM-2026-05-15.md`
+- **Algorithm:** Agglomerative clustering, `distance_threshold=0.7`, `linkage='average'`, `metric='cosine'` — calibrated by `docs/CLUSTERING-EVAL-2026-05-14.md::agg-permissive`
+- **Reads (Bus):** `curator_findings` — RunBus
+- **Writes (Bus):** `curator_pre_clusters` — RunBus
+- **Pass-through:** the stage does not mutate `curator_findings` — load-bearing test `tests/test_pre_cluster_stage.py::test_passthrough_curator_findings_byte_identical`.
+- **Output shape:** one dict per micro-cluster — `id` (`mc-NNN`), `size`, `source_ids[]` (`finding-NNN` referencing `run_bus.curator_findings[NNN]`). Sorted size desc with smallest-finding-index tie-break. Run-level metadata: model name, fastembed version, algorithm, library + version, params, wall, RSS Δ, n_findings_clustered, n_clusters.
+- **No persisted embeddings.** Stage 2 (LLM topic-discovery) doesn't need them; the gravitational-assignment stage in Brief 2 re-embeds in its own pass.
+- **Smoke (2026-05-15):** bit-identical reproduction of `agg-permissive` on the three eval datasets — `docs/pre-cluster/smoke-2026-05-15/`. 2026-05-08: 246/100, 2026-05-11: 241/66, 2026-05-13: 279/77 (all Δ=+0.0 % on cluster count).
+- **Performance budget (TASK-EMBED-PRE-CLUSTER-STAGE):** embedding ~9 s (bounded by the existing coherence-stage cost; re-uses cached model weights), clustering <1 s for ~1200 findings on commodity CPU. Measured smoke totals: 60–82 s including JSON load + asyncio dispatch.
+- **Dependency cost:** scikit-learn 46 MB + scipy 97 MB + joblib 2.4 MB + threadpoolctl 0.1 MB = +146 MB site-packages — see `docs/ADR-COHERENCE-STAGE-DEPENDENCY-ADDENDUM-2026-05-15.md` for the ceiling-raise rationale (400 MB → 600 MB).
+
 #### §2.3 CuratorStage
 
 - **Kind:** agent (LLM)
