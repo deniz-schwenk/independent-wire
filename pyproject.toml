@@ -28,6 +28,15 @@ dependencies = [
     # would silently shift every coherence score. Model name pinned in
     # src/stages/coherence.py::MODEL_NAME for the same reason.
     "fastembed==0.8.0",
+    # Agglomerative clustering for the Embed-Pre-Cluster stage (deterministic
+    # micro-cluster formation, see docs/ADR-CURATOR-TRIPLE-STAGE.md and the
+    # footprint addendum docs/ADR-COHERENCE-STAGE-DEPENDENCY-ADDENDUM-
+    # 2026-05-15.md). Brings in scipy (+97 MB), joblib (+2 MB),
+    # threadpoolctl (negligible) as transitive deps. Floor-pinned at 1.3 —
+    # the cosine-metric path used here is stable across recent releases;
+    # a floor pin lets routine point releases through without an upper
+    # bound that would block CI on every minor sklearn upgrade.
+    "scikit-learn>=1.3",
 ]
 
 [project.optional-dependencies]
@@ -36,10 +45,13 @@ search-brave = []              # Brave uses only httpx (already a core dep)
 search-duckduckgo = ["duckduckgo-search"]
 dev = ["pytest", "pytest-asyncio"]
 # Eval-only dependencies. Used by scripts/eval_clustering.py and the
-# embedding/clustering evaluation harnesses. Not imported by any module under
-# src/ — production import graph is unaffected. scikit-learn is also a
-# transitive dep of hdbscan and fastembed.
-eval = ["hdbscan>=0.8.40", "scikit-learn>=1.3"]
+# embedding/clustering evaluation harnesses. hdbscan is not imported by
+# any module under src/ — production import graph is unaffected.
+# scikit-learn is now a production dependency (see
+# docs/ADR-COHERENCE-STAGE-DEPENDENCY-ADDENDUM-2026-05-15.md) and is
+# also a transitive dep of hdbscan, so the explicit eval-side
+# declaration would be redundant.
+eval = ["hdbscan>=0.8.40"]
 
 [project.urls]
 Homepage = "https://independent-wire.org"
