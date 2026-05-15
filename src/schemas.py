@@ -47,6 +47,37 @@ CURATOR_SCHEMA = {
     "additionalProperties": False,
 }
 
+# ---------------------------------------------------------- Curator — Topic Discovery
+# Brief 4 of the triple-stage Curator sequence (docs/ADR-CURATOR-TRIPLE-STAGE.md).
+# The new Curator does ONLY topic discovery — no finding assignment, no
+# relevance_score. The output is a flat list of {title, summary} pairs,
+# nothing else. Strict mode enforces this contract — the model cannot
+# silently invent `cluster_assignments`, `source_ids`, `relevance_score`,
+# or anything else legacy.
+#
+# Consumed by the new `curator_topic_discovery` agent registration. The
+# old `curator` agent registration (using CURATOR_SCHEMA above) stays
+# until Brief 5 cuts over.
+CURATOR_TOPIC_DISCOVERY_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "topics": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "title": {"type": "string"},
+                    "summary": {"type": "string"},
+                },
+                "required": ["title", "summary"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    "required": ["topics"],
+    "additionalProperties": False,
+}
+
 # ---------------------------------------------------------------- Editor
 # Editor prompt emits a top-level array. Wrapped here to satisfy strict
 # mode's "no top-level array" rule. Pipeline unwraps before consuming.
