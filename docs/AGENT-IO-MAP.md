@@ -79,6 +79,25 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
 - **Performance budget (TASK-GRAVITATIONAL-ASSIGN-STAGE):** embedding ~9 s for ~1200 findings + ~0.1 s for 10–20 topic-centres; similarity matrix + selection <0.1 s. Memory ~50 MB for the float matrix. Smoke wall observed: 39–82 s (dominated by fastembed across the three eval datasets).
 - **Dependency cost:** none new — numpy + fastembed already production deps.
 
+#### §2.2d CuratorTopicDiscoveryStage — **declared but NOT YET WIRED**
+
+- **Status:** Stage class + RunBus slot + JSON schema + agent registration declared at `TASK-CURATOR-TOPIC-DISCOVERY-STAGE.md`. NOT added to `build_production_stages` / `build_hydrated_stages` in `src/runner/stage_lists.py`; the absence of this stage in production stage logs is currently expected. Brief 5 of the triple-stage Curator sequence wires it AND removes the old `CuratorStage` at the same time. **Between Brief 4 and Brief 5 the production pipeline is not safe to run live** — the old `CuratorStage` reads the new prompts in `agents/curator/` which no longer match its schema. Tests stay green because they mock the LLM.
+- **Kind:** agent (LLM)
+- **Source:** `src/agent_stages.py::CuratorTopicDiscoveryStage`
+- **Agent:** `curator_topic_discovery` (registered in `scripts/run.py`)
+- **Model:** `google/gemini-3-flash-preview`
+- **Params:** temp=0.2, reasoning=`none`, max_tokens=8000
+- **Prompt:** `agents/curator/SYSTEM.md` + `INSTRUCTIONS.md` (new prompts committed in the PE round preceding Brief 4)
+- **Output schema (strict):** `CURATOR_TOPIC_DISCOVERY_SCHEMA` in `src/schemas.py` — `{topics: [{title, summary}]}`. `additionalProperties: false` at every level so the LLM cannot silently invent legacy fields (`cluster_assignments`, `relevance_score`, `source_ids`).
+- **Compression (deterministic, K-pinned):** `SAMPLE_TITLES_PER_CLUSTER = 8`. For each pre-cluster: embed members via the shared fastembed singleton (one ONNX session, shared with §2.2b, §2.2c, §2.3b), compute the cluster centroid, pick the top-K findings by cosine similarity to centroid (sim desc, finding-index asc tie-break), extract titles. Clusters with size ≤ K pass through complete; clusters with empty titles get a placeholder marker.
+- **Reads (Bus):** `curator_findings`, `curator_pre_clusters` — RunBus
+- **Writes (Bus):** `curator_discovered_topics` — RunBus
+- **Pass-through:** the stage does not mutate either upstream slot — load-bearing test `tests/test_curator_topic_discovery_stage.py::test_passthrough_upstream_slots_byte_identical`.
+- **Output shape:** `{model_name, params, sample_titles_per_cluster, wall_seconds, llm_cost_usd, tokens_used, n_micro_clusters_input, n_topics, topics: [{title, summary}]}`. Topics are emitted in the LLM's order; Brief 5 attaches `source_ids` (via `gravitational_assign`) and runs the deterministic enrichment on top to produce the final `curator_topics_unsliced`.
+- **Smoke (2026-05-16):** `docs/curator-topic-discovery/smoke-2026-05-16/` runs the stage end-to-end against the three eval-anchor state files with real LLM + real fastembed. Result: 15 / 15 / 18 topics across the three days, $0.057 total LLM cost, 30–33 K tokens per call. Topics are specific stories (named actors, named events), zero category-shapes, zero catch-all titles. The V1 pathology decomposition is visible: the 1004-finding Iran mega-cluster from 2026-05-11 splits into multiple specific Iran-war angles.
+- **Performance budget (TASK-CURATOR-TOPIC-DISCOVERY-STAGE):** embedding ~9 s (shared singleton, already cached after the run started); compression <1 s; LLM 15–60 s. Smoke observed: ~75 s topic-discovery wall (LLM-dominated, no breach).
+- **Dependency cost:** none new — fastembed + numpy + openai are existing production deps. The agent registration adds one more entry to `create_agents()`; the legacy `curator` registration stays until Brief 5 removes it.
+
 #### §2.3 CuratorStage
 
 - **Kind:** agent (LLM)
