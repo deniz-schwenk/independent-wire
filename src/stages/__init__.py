@@ -10,6 +10,10 @@ from src.stages.coherence import (
     make_measure_cluster_coherence,
     measure_cluster_coherence,
 )
+from src.stages.pre_cluster import (
+    make_pre_cluster_findings,
+    pre_cluster_findings,
+)
 from src.stages.run_stages import (
     MirrorMismatchError,
     RunInitConfig,
@@ -70,6 +74,7 @@ __all__ = [
     "make_hydration_fetch",
     "make_init_run",
     "make_measure_cluster_coherence",
+    "make_pre_cluster_findings",
     "make_researcher_search",
     "make_topic_bus",
     "measure_cluster_coherence",
@@ -79,6 +84,7 @@ __all__ = [
     "mirror_stage",
     "normalize_pre_research",
     "partition_canonical_actors_by_evidence",
+    "pre_cluster_findings",
     "propagate_outlet_metadata",
     "prune_unused_sources_and_clusters",
     "renumber_sources",

@@ -54,6 +54,7 @@ def test_runbus_constructs_with_all_typed_empty_defaults():
         "curator_topics_unsliced": [],
         "curator_topics": [],
         "curator_coherence_scores": {},
+        "curator_pre_clusters": {},
         "previous_coverage": [],
         "editor_assignments": [],
         "selected_assignments": [],
@@ -315,12 +316,13 @@ def test_runbus_slot_count_regression_guard():
     """Hard-coded expectation. Any change in slot count without architect approval
     fails this test and forces review. Source of truth: ARCH-V2-BUS-SCHEMA §4A.
 
-    Expected: 13 slots across 4 phases plus selection (4A.1 metadata=6,
-    4A.2 curator=3, 4A.2b coherence=1, 4A.3 editor=2, selection=1).
-    The coherence slot was added in TASK-COHERENCE-FILTER-PASSIVE; see
-    docs/ADR-COHERENCE-STAGE-DEPENDENCY.md.
+    Expected: 14 slots across 5 phases plus selection (4A.1 metadata=6,
+    4A.2 curator=3, 4A.2b coherence=1, 4A.2c pre-cluster=1, 4A.3 editor=2,
+    selection=1). The coherence slot was added in TASK-COHERENCE-FILTER-
+    PASSIVE; the pre-cluster slot was added in TASK-EMBED-PRE-CLUSTER-
+    STAGE — see docs/ADR-CURATOR-TRIPLE-STAGE.md.
     """
-    assert len(RunBus.model_fields) == 13
+    assert len(RunBus.model_fields) == 14
 
 
 def test_topicbus_slot_count_regression_guard():

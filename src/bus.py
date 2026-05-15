@@ -254,6 +254,41 @@ class _RunBusFields(BaseModel):
         optional_write=True,
     )
 
+    # 4A.2c Embed-pre-cluster phase (1 slot). Written by the deterministic
+    # pre_cluster_findings stage (src/stages/pre_cluster.py) — runs
+    # AFTER fetch_findings and BEFORE CuratorStage in the eventual
+    # triple-stage Curator architecture (docs/ADR-CURATOR-TRIPLE-STAGE.md).
+    # Embeds every curator_finding via the fastembed singleton shared
+    # with coherence.py and groups them via Agglomerative clustering
+    # with parameters calibrated by docs/CLUSTERING-EVAL-2026-05-14.md:
+    # distance_threshold=0.7, linkage='average', metric='cosine'.
+    #
+    # Output shape — one cluster entry per micro-cluster, sorted by size
+    # descending with smallest-finding-index tie-break. Each entry:
+    # `id` (`mc-NNN`), `size`, `source_ids[]` (`finding-NNN` referencing
+    # run_bus.curator_findings[NNN] — same convention as
+    # curator_coherence_scores). Run-level metadata mirrors the
+    # coherence slot: model_name, fastembed_version, algorithm,
+    # algorithm_library, algorithm_library_version, params, wall_seconds,
+    # rss_delta_mb, n_findings_clustered, n_clusters.
+    #
+    # No persisted embeddings — Stage 2 (LLM topic-discovery) doesn't
+    # need them; the Gravitational-Assignment stage re-embeds in its
+    # own pass. JSON-serialisability of the state files matters more
+    # than marginal duplicate compute.
+    #
+    # optional_write=True — a run that produces no findings produces
+    # no clusters; the empty case is legitimate.
+    #
+    # Wiring status (TASK-EMBED-PRE-CLUSTER-STAGE): declared but NOT
+    # yet added to build_production_stages / build_hydrated_stages. The
+    # later integration brief in the triple-stage sequence wires it.
+    curator_pre_clusters: dict = Slot(
+        default_factory=dict,
+        visibility="internal",
+        optional_write=True,
+    )
+
     # 4A.3 Editor phase (2 slots — including previous_coverage as the 11th run-scoped slot)
     previous_coverage: list = Slot(
         default_factory=list,
