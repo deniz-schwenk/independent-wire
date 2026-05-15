@@ -1,58 +1,52 @@
 # TASK
 
-You receive a list of findings (news headlines and short summaries from many outlets). Group findings that report the same event, decision, conflict, or development into topics. Score each topic on a 1–10 newsworthiness scale, write a brief summary of each topic, and record which finding belongs to which topic.
+You receive a `run_date` and a `micro_clusters[]` array — typically 200 to 280 entries — each carrying an `id`, a `size` (the total finding count for the cluster), and `sample_titles[]` (a sample of titles from that cluster, in their original languages). Read across the micro-clusters and discover the day's topics: the stories the day's coverage is collectively about. Produce a flat list of topics, each with a `title` and a `summary`.
 
-# STEPS
+## Reading micro-clusters
 
-1. Read every finding in `findings`. Each has `id`, `title`, `source_name`, and an optional `summary`.
-2. Cluster findings that report the same underlying event or development into a single topic. Findings about the same policy decision or incident belong together regardless of outlet or wording.
-3. For each topic, write a `title` (a descriptive label, not a headline) and a 1–3 sentence `summary` drawn only from the input findings.
-4. Score each topic's newsworthiness on a 1–10 scale using the criteria below. Sort topics by score, descending.
-5. Produce a `cluster_assignments` array — one entry per finding in input order — where each entry is the index of the topic the finding belongs to, or `null`. A finding belongs to a topic only if it reports the same event, decision, or conflict — not if it merely shares a region or actor type. When in doubt, `null` is the correct answer.
+Each `size` is the total number of findings the cluster contains, not the length of `sample_titles[]`. A cluster of size 50 with 8 sample titles still represents 50 findings. The sample titles are evidence for what the cluster is about, not an inventory of everything in it.
 
-## Newsworthiness criteria
+Cluster sizes are uneven. Most clusters are small (1 to 5 findings); some are large (50 or more). A large cluster usually signals a major story — many outlets converging on the same event. A small cluster may be a niche story, an isolated story, or noise; the sample titles decide which.
 
-- **Global significance** — how many people are materially affected; whether the impact crosses borders.
-- **Immediacy** — happening now versus slowly developing.
-- **Consequence** — whether this changes policy, markets, safety, or rights.
-- **Underreported weight** — a story from an underreported region with two sources may outrank a saturated story with ten sources from one country.
+Titles are multilingual — English, German, Russian, Arabic, Persian, Korean, Hebrew, and others in their original language as published. Two clusters whose sample titles describe the same event in different languages are evidence of cross-lingual coverage of one story. Read across languages and recognize the same story when its coverage spans them.
 
-Use the full range. Most topics fall between 3 and 7. Reserve 8–10 for events with immediate global consequence. Use 1–2 for minor or purely local stories. Aim for 10–20 topics per run.
+## Topic granularity
+
+A topic is a story the day's coverage is about, not a category. "Iran-US peace negotiations stall as regional tensions escalate" is a topic; "Middle East news" is a category. The test: a topic can be summarized as something specific that happened, decided, or developed; a category cannot.
+
+Multiple micro-clusters covering the same story merge into one topic. A single isolated cluster covering a standalone story becomes its own topic. A cluster that is plausibly noise — niche, isolated, no thematic pattern with anything else — may not become a topic at all.
+
+When coverage of a topic diverges across regions, languages, or media systems, the summary names that divergence without taking sides.
 
 # OUTPUT FORMAT
 
-A single JSON object with two top-level fields: `topics` (sorted by `relevance_score` descending) and `cluster_assignments` (a flat array with exactly one entry per input finding).
+A single JSON object with one top-level field, `topics`. Example:
 
 ```json
 {
   "topics": [
     {
-      "title": "Mid-sized cities expand bike-share networks",
-      "relevance_score": 5,
-      "summary": "Several municipal transit authorities announced new docking stations and electric bicycles for their public bike-share programs."
+      "title": "Iran-US peace negotiations stall as regional tensions escalate",
+      "summary": "Iranian rejection of US proposals coincides with reports of Saudi-Iranian backchannel diplomacy and accounts of Israeli airstrike preparations. Coverage spans Western, Iranian state, and Gulf regional media with sharply diverging framings."
     },
     {
-      "title": "Open-source database project releases version 8",
-      "relevance_score": 3,
-      "summary": "The maintainers published a major release with revised query syntax and a migration guide for existing users."
+      "title": "Open-source database project releases version 8 with revised query syntax",
+      "summary": "The maintainers published a major release alongside a migration guide for existing users. Coverage is concentrated in English-language technology press."
     }
-  ],
-  "cluster_assignments": [0, 1, 0, null, 1, 0]
+  ]
 }
 ```
 
 Field notes:
 
-- `topics[].title` — descriptive topic label, not a headline. The Editor writes the headline downstream.
-- `topics[].relevance_score` — integer between 1 and 10.
-- `topics[].summary` — 1–3 sentences. Information must come only from the input findings.
-- `cluster_assignments` — array of integers and/or `null`, exactly one entry per finding in the input, in the same order. Each integer is a 0-based index into `topics[]`.
+- `topics[]` — between 10 and 30 entries per run. The number follows the day's coverage; single-story days produce fewer, news-rich days more.
+- `topics[].title` — declarative, source-neutral, about 6 to 14 words. The register is description-of-story — names events and actors plainly, not headline punch ("Iran's defiance grows") or analyst voice ("a sobering reminder that…").
+- `topics[].summary` — 2 to 4 sentences. What happened, who is involved, and where coverage diverges across regions, languages, or media systems. Plain factual register throughout.
 
 Output only the JSON object. No commentary, no markdown fences, no preamble.
 
 # RULES
 
-1. Every topic has a specific subject — a concrete event, decision, conflict, or development that the findings collectively report on. No catch-all groupings such as "Other News" or "Miscellaneous Updates."
-2. Summaries contain only information present in the input findings. Do not add background, historical context, or claims the findings themselves do not state.
-3. `cluster_assignments` has exactly one entry per input finding, in input order. A finding that fits no topic uses `null` — never an omitted slot.
-4. Volume is not significance. Many sources from one country do not outrank fewer sources covering an event of broader consequence.
+1. A topic is a specific story — a concrete event, decision, conflict, or development the day's coverage collectively reports on. Catch-all groupings such as "Other News" or "Miscellaneous Developments" are not topics.
+2. Summaries draw only from information present in the micro-clusters' sample titles.
+3. Multiple micro-clusters covering the same story merge into one topic; one isolated cluster covering a standalone story may become its own topic.
