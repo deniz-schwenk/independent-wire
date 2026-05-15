@@ -10,6 +10,10 @@ from src.stages.coherence import (
     make_measure_cluster_coherence,
     measure_cluster_coherence,
 )
+from src.stages.gravitational_assign import (
+    gravitational_assign,
+    make_gravitational_assign,
+)
 from src.stages.pre_cluster import (
     make_pre_cluster_findings,
     pre_cluster_findings,
@@ -66,11 +70,13 @@ __all__ = [
     "fetch_findings",
     "filter_media_actors_quoted",
     "finalize_run",
+    "gravitational_assign",
     "hydration_fetch",
     "init_run",
     "make_attach_hydration_urls_to_assignments",
     "make_fetch_findings",
     "make_finalize_run",
+    "make_gravitational_assign",
     "make_hydration_fetch",
     "make_init_run",
     "make_measure_cluster_coherence",

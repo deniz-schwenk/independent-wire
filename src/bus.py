@@ -289,6 +289,57 @@ class _RunBusFields(BaseModel):
         optional_write=True,
     )
 
+    # 4A.2d Gravitational-assignment phase (1 slot). Written by the
+    # deterministic gravitational_assign stage (src/stages/
+    # gravitational_assign.py) — runs AFTER the eventual Stage-2 LLM
+    # Curator and BEFORE the Editor in the triple-stage Curator
+    # architecture (docs/ADR-CURATOR-TRIPLE-STAGE.md). Embeds every
+    # curator_finding and every topic's `title + summary` via the
+    # shared fastembed singleton, computes the per-(finding, topic)
+    # cosine-similarity matrix, and assigns each finding to every
+    # topic whose similarity meets GRAVITATIONAL_THRESHOLD — capped at
+    # PER_FINDING_CAP topics per finding. Findings that match no topic
+    # become orphans.
+    #
+    # Output shape — topics list mirrors curator_topics_unsliced
+    # element-for-element (matched by topic_index), each carrying its
+    # own assignments[]; orphans[] is a flat list. Each assignment is
+    # `{source_id, similarity}` with source_ids in the `finding-NNN`
+    # convention used by curator_pre_clusters and
+    # curator_coherence_scores. Assignments within a topic are sorted
+    # by similarity descending with finding-index ascending tie-break;
+    # orphans are sorted by source_id ascending; topics carry their
+    # input topic_index so renderers can match.
+    #
+    # **Tie-break rule** when the cap binds: similarity desc,
+    # topic-index asc. Documented and tested — see TIE_BREAK_RULE in
+    # the stage module and the deliberate-tie test in
+    # tests/test_gravitational_assign_stage.py.
+    #
+    # Run-level metadata mirrors curator_pre_clusters: model_name,
+    # fastembed_version, algorithm, library + version, params
+    # (threshold, cap, tie-break), wall, RSS Δ, n_topics, n_findings,
+    # n_findings_assigned, n_orphans, mean_assignments_per_finding.
+    #
+    # `optional_write=True` — a run with no topics produces all-
+    # orphans; a run with no findings produces an empty record. Both
+    # are legitimate empty cases.
+    #
+    # **Wiring status (TASK-GRAVITATIONAL-ASSIGN-STAGE):** declared but
+    # NOT yet added to build_production_stages /
+    # build_hydrated_stages. The integration brief later in the
+    # triple-stage sequence wires it.
+    #
+    # **Calibration is provisional** — the threshold and cap pinned in
+    # this brief were calibrated against V1 Curator headlines as
+    # topic-centre proxies. The integration brief recalibrates against
+    # Brief 4's real Stage-2 topic-centre output.
+    curator_topic_assignments: dict = Slot(
+        default_factory=dict,
+        visibility="internal",
+        optional_write=True,
+    )
+
     # 4A.3 Editor phase (2 slots — including previous_coverage as the 11th run-scoped slot)
     previous_coverage: list = Slot(
         default_factory=list,
