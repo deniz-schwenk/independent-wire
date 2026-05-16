@@ -13,16 +13,12 @@ from typing import Any
 import pytest
 
 from src.agent_stages import (
-    CuratorStage,
     EditorStage,
     ResearcherPlanStage,
     _assign_ids_and_slugs,
     _attach_raw_data_from_curated,
     _enrich_curator_output,
     _parse_agent_output,
-    _prepare_curator_input,
-    _rebuild_curator_source_ids,
-    _recover_truncated_cluster_assignments,
     _slugify,
     _unwrap_list,
 )
@@ -75,15 +71,6 @@ def _ro(rb: RunBus | None = None):
 # ---------------------------------------------------------------------------
 
 
-def test_curator_stage_metadata():
-    stage = CuratorStage(FakeAgent())
-    meta = get_stage_meta(stage)
-    assert meta.name == "CuratorStage"
-    assert meta.kind == "run"
-    assert meta.reads == ("curator_findings",)
-    assert meta.writes == ("curator_topics_unsliced", "curator_topics")
-
-
 def test_editor_stage_metadata():
     stage = EditorStage(FakeAgent())
     meta = get_stage_meta(stage)
@@ -101,117 +88,6 @@ def test_researcher_plan_stage_metadata():
     assert meta.reads == ("editor_selected_topic",)
     assert meta.writes == ("researcher_plan_queries",)
 
-
-# ---------------------------------------------------------------------------
-# CuratorStage — happy path
-# ---------------------------------------------------------------------------
-
-
-def test_curator_stage_happy_path(tmp_path: Path):
-    """Realistic Curator output: S13 envelope with two topics + cluster
-    assignments. Wrapper rebuilds source_ids, enriches, sorts, slices."""
-    raw_findings = [
-        {"title": "Strait fees imposed", "source_url": "https://r.example/1",
-         "source_name": "Reuters", "region": "North America", "language": "en"},
-        {"title": "Tehran calls move coercion", "source_url": "https://t.example/2",
-         "source_name": "Tasnim", "region": "Middle East", "language": "fa"},
-        {"title": "European reaction muted", "source_url": "https://l.example/3",
-         "source_name": "Le Monde", "region": "Europe", "language": "fr"},
-    ]
-    fake = FakeAgent(
-        structured={
-            "topics": [
-                {"title": "US transit fees", "relevance_score": 9},
-                {"title": "Iranian reaction", "relevance_score": 7},
-            ],
-            "cluster_assignments": [0, 1, 0],
-        }
-    )
-    sources_path = tmp_path / "sources.json"
-    sources_path.write_text(
-        json.dumps({"feeds": [
-            {"name": "Reuters", "tier": "tier1", "editorial_independence": "independent"},
-        ]}),
-        encoding="utf-8",
-    )
-
-    rb = RunBus()
-    rb.curator_findings = raw_findings
-
-    stage = CuratorStage(fake, max_topics=10, sources_json_path=sources_path)
-    rb_after = _run(stage, rb)
-
-    # Two topics, sorted by relevance_score desc — order preserved (already sorted)
-    assert len(rb_after.curator_topics_unsliced) == 2
-    assert rb_after.curator_topics_unsliced[0]["title"] == "US transit fees"
-    # source_ids rebuilt from cluster_assignments
-    assert rb_after.curator_topics_unsliced[0]["source_ids"] == [
-        "finding-0",
-        "finding-2",
-    ]
-    assert rb_after.curator_topics_unsliced[1]["source_ids"] == ["finding-1"]
-    # Enrichment fields populated
-    assert "geographic_coverage" in rb_after.curator_topics_unsliced[0]
-    assert "languages" in rb_after.curator_topics_unsliced[0]
-    assert rb_after.curator_topics_unsliced[0]["source_count"] == 2
-    # Top-N slice (max_topics=10, only 2 topics → both kept)
-    assert rb_after.curator_topics == rb_after.curator_topics_unsliced
-
-    # Agent was called once with the prepared input
-    assert len(fake.calls) == 1
-    assert fake.calls[0]["context"]["findings"][0]["title"] == "Strait fees imposed"
-
-
-def test_curator_stage_max_topics_slices():
-    fake = FakeAgent(
-        structured={
-            "topics": [
-                {"title": f"t{i}", "relevance_score": 10 - i} for i in range(8)
-            ],
-            "cluster_assignments": [None] * 0,  # no findings
-        }
-    )
-    rb = RunBus()
-    rb.curator_findings = []
-    stage = CuratorStage(fake, max_topics=3)
-    rb_after = _run(stage, rb)
-    assert len(rb_after.curator_topics_unsliced) == 8
-    assert len(rb_after.curator_topics) == 3
-    # Sorted by relevance_score desc
-    assert rb_after.curator_topics[0]["title"] == "t0"
-    assert rb_after.curator_topics[2]["title"] == "t2"
-
-
-def test_curator_stage_legacy_top_level_list_shape():
-    """Older prompts emit a top-level array of topics with source_ids
-    already attached. _rebuild_curator_source_ids passes through."""
-    fake = FakeAgent(
-        structured=[
-            {"title": "A", "source_ids": ["finding-0"], "relevance_score": 5},
-        ]
-    )
-    rb = RunBus()
-    rb.curator_findings = [
-        {"title": "f0", "source_url": "x", "source_name": "Reuters"},
-    ]
-    stage = CuratorStage(fake)
-    rb_after = _run(stage, rb)
-    assert rb_after.curator_topics_unsliced[0]["source_ids"] == ["finding-0"]
-
-
-def test_curator_stage_empty_output_post_validates_to_failure():
-    """Agent returns empty parsed output → both write slots are []. Combined
-    with V2-02 post-validation, this raises StagePostconditionError."""
-    fake = FakeAgent(structured=None, content="")
-    rb = RunBus()
-    rb.curator_findings = []
-    stage = CuratorStage(fake)
-    rb_after = _run(stage, rb)
-    assert rb_after.curator_topics_unsliced == []
-    assert rb_after.curator_topics == []
-    # Post-validator catches the empty writes
-    with pytest.raises(StagePostconditionError):
-        validate_postconditions(stage, rb, rb_after)
 
 
 # ---------------------------------------------------------------------------
@@ -426,146 +302,6 @@ def test_researcher_plan_wrappers_pass_run_date_into_context():
     ctx_hy = fake_hy.calls[0]["context"]
     assert ctx_hy.get("today") == "2026-05-02"
 
-
-# ---------------------------------------------------------------------------
-# Helper: _prepare_curator_input
-# ---------------------------------------------------------------------------
-
-
-def test_prepare_curator_input_url_dedup():
-    findings = [
-        {"title": "A", "source_url": "https://x.example/1"},
-        {"title": "Duplicate of A", "source_url": "https://x.example/1"},  # dropped
-        {"title": "B", "source_url": "https://y.example/2"},
-    ]
-    out = _prepare_curator_input(findings)
-    assert len(out) == 2
-    titles = [e["title"] for e in out]
-    assert titles == ["A", "B"]
-
-
-def test_prepare_curator_input_skips_empty_titles():
-    findings = [
-        {"title": "", "source_url": "https://x.example/1"},  # dropped
-        {"title": "B", "source_url": "https://y.example/2"},
-    ]
-    out = _prepare_curator_input(findings)
-    assert len(out) == 1
-
-
-def test_prepare_curator_input_summary_inclusion_logic():
-    """Summary included only if it differs from title and title doesn't
-    start with the first 50 chars of summary (V1 heuristic: when the title
-    already contains the summary's lead, the summary is redundant)."""
-    findings = [
-        # Identical → skipped
-        {"title": "Hello", "summary": "Hello"},
-        # Different content → included
-        {"title": "Short title", "summary": "Different content entirely"},
-        # Title starts with summary[:50] → skipped (the title already
-        # carries the summary's prefix as its lead).
-        {
-            "title": "short summary content followed by extra detail",
-            "summary": "short summary content",
-        },
-    ]
-    out = _prepare_curator_input(findings)
-    assert "summary" not in out[0]
-    assert out[1]["summary"] == "Different content entirely"
-    assert "summary" not in out[2]
-
-
-# ---------------------------------------------------------------------------
-# Helper: _rebuild_curator_source_ids
-# ---------------------------------------------------------------------------
-
-
-def test_rebuild_curator_source_ids_happy_path():
-    result = AgentResult(
-        content="",
-        structured={
-            "topics": [{"title": "T1"}, {"title": "T2"}],
-            "cluster_assignments": [0, 1, 0, None],
-        },
-    )
-    findings = [{"title": f"f{i}"} for i in range(4)]
-    out = _rebuild_curator_source_ids(result, findings)
-    assert out[0]["source_ids"] == ["finding-0", "finding-2"]
-    assert out[1]["source_ids"] == ["finding-1"]
-
-
-def test_rebuild_curator_source_ids_length_mismatch():
-    """cluster_assignments shorter than findings → process overlap, warn."""
-    result = AgentResult(
-        content="",
-        structured={
-            "topics": [{"title": "T"}],
-            "cluster_assignments": [0],  # only one entry, 3 findings
-        },
-    )
-    findings = [{"title": f"f{i}"} for i in range(3)]
-    out = _rebuild_curator_source_ids(result, findings)
-    assert out[0]["source_ids"] == ["finding-0"]
-
-
-def test_rebuild_curator_source_ids_out_of_range_skipped():
-    result = AgentResult(
-        content="",
-        structured={
-            "topics": [{"title": "T"}],
-            "cluster_assignments": [0, 5, 0],  # index 5 is OOR
-        },
-    )
-    findings = [{"title": f"f{i}"} for i in range(3)]
-    out = _rebuild_curator_source_ids(result, findings)
-    assert out[0]["source_ids"] == ["finding-0", "finding-2"]
-
-
-def test_rebuild_curator_source_ids_legacy_shape():
-    """Top-level list of topics-with-source_ids passes through."""
-    result = AgentResult(
-        content="",
-        structured=[
-            {"title": "Legacy", "source_ids": ["finding-0"]},
-        ],
-    )
-    out = _rebuild_curator_source_ids(result, [{"title": "f0"}])
-    assert out == [{"title": "Legacy", "source_ids": ["finding-0"]}]
-
-
-def test_rebuild_curator_source_ids_truncation_recovery():
-    """Dict has topics but cluster_assignments is None — regex-recover from
-    raw content."""
-    raw_content = json.dumps(
-        {
-            "topics": [{"title": "T"}],
-            "cluster_assignments": [0, 1, None, 0],
-        }
-    )
-    result = AgentResult(
-        content=raw_content,
-        structured={
-            "topics": [{"title": "T1"}, {"title": "T2"}],
-            "cluster_assignments": None,  # repaired-out by JSON repair
-        },
-    )
-    findings = [{"title": f"f{i}"} for i in range(4)]
-    out = _rebuild_curator_source_ids(result, findings)
-    # After regex recovery, source_ids reflect [0, 1, None, 0] → finding-0,
-    # finding-3 belong to topic 0; finding-1 to topic 1.
-    assert out[0]["source_ids"] == ["finding-0", "finding-3"]
-    assert out[1]["source_ids"] == ["finding-1"]
-
-
-def test_recover_truncated_cluster_assignments_handles_partial_array():
-    """Standalone helper: partial trailing array recovers up to n_findings."""
-    content = '{"topics":[],"cluster_assignments":[0, null, 2'
-    out = _recover_truncated_cluster_assignments(content, n_findings=5)
-    assert out == [0, None, 2]
-
-
-def test_recover_truncated_cluster_assignments_returns_none_when_key_absent():
-    assert _recover_truncated_cluster_assignments('{"topics":[]}', 5) is None
 
 
 # ---------------------------------------------------------------------------

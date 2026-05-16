@@ -23,7 +23,6 @@ from src.runner.stage_lists import (
 )
 from src.schemas import (
     BIAS_DETECTOR_SCHEMA,
-    CURATOR_SCHEMA,
     CURATOR_TOPIC_DISCOVERY_SCHEMA,
     EDITOR_SCHEMA,
     HYDRATION_PHASE1_SCHEMA,
@@ -79,35 +78,11 @@ def create_agents() -> dict[str, Agent]:
         #     temperature=0.2,
         #     provider="openrouter",
         # ),
-        "curator": Agent(
-            name="curator",
-            model="google/gemini-3-flash-preview",
-            system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
-            tools=[],
-            # temperature=1.0 (interim swap, was 0.2): per
-            # docs/AUDIT-CURATOR-2026-05-11.md §3+§5 the over-clustering
-            # pathology shrinks from top_cluster_size≈1004 (81.3 % off-topic)
-            # to ≈137 (53.3 % off-topic) at identical latency (~22 s) and cost
-            # (~$0.08), with no architectural change. Pre-flight smoke
-            # 2026-05-12 (scripts/smoke_curator_preprod_2026-05-12.py)
-            # confirmed regime: top=79, off%=46.84, n_clusters=14, $0.08.
-            temperature=1.0,
-            provider="openrouter",
-            reasoning="none",
-            # The S13 envelope {topics, cluster_assignments} pushes the array to
-            # the end of the JSON. With ~1400 findings, the flat cluster_assignments
-            # alone needs ~5–10k tokens; topics + envelope add another ~5k. The
-            # 32k default truncates mid-array, and _extract_dict's prose-extraction
-            # discards everything after the last `}`, dropping cluster_assignments
-            # entirely. 64k gives steady-state headroom.
-            max_tokens=64000,
-            output_schema=CURATOR_SCHEMA,
-        ),
-        # New Topic-Discovery Curator — Brief 4 of the triple-stage Curator
-        # sequence (docs/ADR-CURATOR-TRIPLE-STAGE.md). Reads pre-clusters
-        # from Brief 1, discovers topics. No per-finding assignment. The
-        # old "curator" registration above stays until Brief 5 cuts over.
+        # Triple-stage Curator — Brief 5 cutover removed the legacy
+        # single-pass "curator" agent. "curator_topic_discovery" is
+        # the only Curator-side LLM in the new architecture; the
+        # gravitational-assign and assemble stages are deterministic
+        # Python and need no agent.
         "curator_topic_discovery": Agent(
             name="curator_topic_discovery",
             model="google/gemini-3-flash-preview",

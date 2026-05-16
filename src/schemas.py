@@ -21,32 +21,6 @@ Strict mode (``response_format.json_schema.strict: true``) implies:
 
 from __future__ import annotations
 
-# ---------------------------------------------------------------- Curator
-CURATOR_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "topics": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "title": {"type": "string"},
-                    "relevance_score": {"type": "integer"},
-                    "summary": {"type": "string"},
-                },
-                "required": ["title", "relevance_score", "summary"],
-                "additionalProperties": False,
-            },
-        },
-        "cluster_assignments": {
-            "type": "array",
-            "items": {"type": ["integer", "null"]},
-        },
-    },
-    "required": ["topics", "cluster_assignments"],
-    "additionalProperties": False,
-}
-
 # ---------------------------------------------------------- Curator — Topic Discovery
 # Brief 4 of the triple-stage Curator sequence (docs/ADR-CURATOR-TRIPLE-STAGE.md).
 # The new Curator does ONLY topic discovery — no finding assignment, no
@@ -55,9 +29,9 @@ CURATOR_SCHEMA = {
 # silently invent `cluster_assignments`, `source_ids`, `relevance_score`,
 # or anything else legacy.
 #
-# Consumed by the new `curator_topic_discovery` agent registration. The
-# old `curator` agent registration (using CURATOR_SCHEMA above) stays
-# until Brief 5 cuts over.
+# Consumed by the `curator_topic_discovery` agent registration. The
+# legacy single-pass `curator` agent + `CURATOR_SCHEMA` were removed
+# in the Brief 5 cutover.
 CURATOR_TOPIC_DISCOVERY_SCHEMA = {
     "type": "object",
     "properties": {

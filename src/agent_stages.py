@@ -14,13 +14,20 @@ Sync, and the two Hydration phases ship in V2-06.
 
 V1 references for the deterministic post-processing each wrapper folds in:
 - _slugify                          src/pipeline.py:25-47
-- _prepare_curator_input            src/pipeline.py:1499-1546
-- _recover_truncated_cluster_       src/pipeline.py:1548-1596
-  assignments
-- _rebuild_curator_source_ids       src/pipeline.py:1598-1696
 - _enrich_curator_output            src/pipeline.py:1698-1792
 - _attach_raw_data_from_curated     src/pipeline.py:1928-1988
 - editorial_conference id/slug      src/pipeline.py:2042-2102
+
+Brief 5 cutover removed three helpers tied to the single-pass V1
+``CuratorStage``: ``_prepare_curator_input``,
+``_recover_truncated_cluster_assignments``, ``_rebuild_curator_source_ids``.
+The triple-stage Curator (pre-cluster → discovery → gravitational →
+assemble) doesn't need them — input compression is the pre-cluster
+top-K-by-centroid step, and source-id attachment is the gravitational-
+assign output. The five V1-era calibration scripts that imported them
+(``smoke_curator``, ``smoke_curator_preprod_2026-05-12``,
+``curator_shadow``, ``audit_v4pro_variance``, ``eval_curator_models``)
+were deleted in the same commit.
 """
 
 from __future__ import annotations
@@ -161,190 +168,6 @@ def _slugify(title: str) -> str:
         s = s.strip("-_")
     return s
 
-
-# ---------------------------------------------------------------------------
-# Curator helpers (V1 src/pipeline.py:1499-1792)
-# ---------------------------------------------------------------------------
-
-
-def _prepare_curator_input(raw_findings: list[dict]) -> list[dict]:
-    """Compress findings for the Curator. URL dedup + strip non-input fields
-    + summary-vs-title heuristic. V1: src/pipeline.py:1499-1546."""
-    seen_urls: set[str] = set()
-    unique: list[dict] = []
-    for f in raw_findings:
-        url = f.get("source_url", "")
-        if url and url in seen_urls:
-            continue
-        if url:
-            seen_urls.add(url)
-        unique.append(f)
-
-    url_dupes = len(raw_findings) - len(unique)
-    if url_dupes:
-        logger.info("Curator prep: removed %d URL duplicates", url_dupes)
-
-    compressed: list[dict] = []
-    for i, f in enumerate(unique):
-        title = f.get("title", "").strip()
-        if not title:
-            continue
-        entry: dict = {
-            "id": f"finding-{i}",
-            "title": title,
-            "source_name": f.get("source_name", ""),
-        }
-        summary = f.get("summary", "").strip()
-        if (
-            summary
-            and summary.lower() != title.lower()
-            and not title.lower().startswith(summary.lower()[:50])
-        ):
-            entry["summary"] = summary
-        compressed.append(entry)
-
-    logger.info(
-        "Curator prep: %d raw → %d unique → %d with titles (compressed)",
-        len(raw_findings),
-        len(unique),
-        len(compressed),
-    )
-    return compressed
-
-
-def _recover_truncated_cluster_assignments(
-    content: str, n_findings: int
-) -> Optional[list]:
-    """Regex-recover `cluster_assignments` from raw Curator content when
-    bracket-balance JSON repair dropped the partial trailing array.
-    V1: src/pipeline.py:1548-1596."""
-    if not content:
-        return None
-    m = re.search(r'"cluster_assignments"\s*:\s*\[', content)
-    if not m:
-        return None
-    pos = m.end()
-    n = len(content)
-    entries: list = []
-    while pos < n and len(entries) < n_findings:
-        while pos < n and content[pos] in " \n\t\r":
-            pos += 1
-        if pos >= n:
-            break
-        ch = content[pos]
-        if ch == "]":
-            break
-        if ch == ",":
-            pos += 1
-            continue
-        if content.startswith("null", pos):
-            entries.append(None)
-            pos += 4
-            continue
-        m2 = re.match(r"-?\d+", content[pos:])
-        if m2:
-            entries.append(int(m2.group()))
-            pos += m2.end()
-            continue
-        break
-    return entries
-
-
-def _rebuild_curator_source_ids(
-    result: Any, raw_findings: list[dict]
-) -> list[dict]:
-    """Extract Curator topics and rebuild source_ids deterministically.
-
-    Handles three shapes:
-    - S13 envelope `{topics, cluster_assignments}` (canonical)
-    - Truncation-recovery: dict carries topics but null cluster_assignments
-      (Gemini Flash mid-array truncation + bracket-balance JSON repair)
-    - Legacy top-level list of topics with source_ids already attached
-
-    V1: src/pipeline.py:1598-1696. Verbatim port.
-    """
-    parsed = _parse_agent_output(result)
-
-    # Truncation recovery: dict has `topics` but `cluster_assignments` is
-    # missing or None. Re-extract the array from raw content via regex.
-    if (
-        isinstance(parsed, dict)
-        and isinstance(parsed.get("topics"), list)
-        and parsed.get("cluster_assignments") is None
-    ):
-        recovered = _recover_truncated_cluster_assignments(
-            getattr(result, "content", "") or "", len(raw_findings)
-        )
-        if recovered is not None:
-            logger.warning(
-                "Curator cluster_assignments dropped by JSON repair; "
-                "recovered %d entries via regex (expected %d)",
-                len(recovered),
-                len(raw_findings),
-            )
-            parsed["cluster_assignments"] = recovered
-
-    new_shape = (
-        isinstance(parsed, dict)
-        and isinstance(parsed.get("topics"), list)
-        and isinstance(parsed.get("cluster_assignments"), list)
-    )
-    if not new_shape:
-        # Legacy: top-level list of topics with source_ids attached.
-        if isinstance(parsed, list):
-            return parsed
-        return []
-
-    topics_in: list = parsed.get("topics") or []
-    topics: list[dict] = [t for t in topics_in if isinstance(t, dict)]
-    for t in topics:
-        t["source_ids"] = []
-
-    n_findings = len(raw_findings)
-    n_topics = len(topics)
-    assignments: list = parsed.get("cluster_assignments") or []
-    n_assignments = len(assignments)
-
-    if n_assignments != n_findings:
-        logger.warning(
-            "Curator cluster_assignments length=%d does not match findings "
-            "length=%d; processing the overlap only",
-            n_assignments,
-            n_findings,
-        )
-
-    overlap = min(n_assignments, n_findings)
-    for finding_index in range(overlap):
-        topic_index = assignments[finding_index]
-        if topic_index is None:
-            continue
-        if not isinstance(topic_index, int):
-            logger.warning(
-                "Curator cluster_assignments[%d]=%r is not an int|null; skipping",
-                finding_index,
-                topic_index,
-            )
-            continue
-        if not (0 <= topic_index < n_topics):
-            logger.warning(
-                "Curator cluster_assignments[%d]=%d is out of range "
-                "(have %d topics); skipping",
-                finding_index,
-                topic_index,
-                n_topics,
-            )
-            continue
-        topics[topic_index]["source_ids"].append(f"finding-{finding_index}")
-
-    for ti, t in enumerate(topics):
-        if not t["source_ids"]:
-            logger.info(
-                "Curator topic %d ('%s') has no cluster_assignments — "
-                "empty source_ids; unlikely to survive Editor",
-                ti,
-                t.get("title", "?"),
-            )
-    return topics
 
 
 def _enrich_curator_output(
@@ -579,11 +402,6 @@ def _assign_ids_and_slugs(
 
 
 # ---------------------------------------------------------------------------
-# Wrapper: CuratorStage  (run-stage)
-# ---------------------------------------------------------------------------
-
-
-# ---------------------------------------------------------------------------
 # Top-K-by-Centroid compression helpers — shared with CuratorTopicDiscoveryStage
 # (Brief 4 of docs/ADR-CURATOR-TRIPLE-STAGE.md).
 # ---------------------------------------------------------------------------
@@ -729,9 +547,10 @@ class CuratorTopicDiscoveryStage(_AgentStageBase):
     ``embedder`` keyword and a fake agent via the ``agent`` keyword;
     production omits both — singleton + production constants.
 
-    NOT yet added to ``build_production_stages`` /
-    ``build_hydrated_stages``. Brief 5 wires it and removes the old
-    ``CuratorStage`` at the same time."""
+    Wired into ``build_production_stages`` and ``build_hydrated_stages``
+    (Brief 5 cutover). The legacy single-pass ``CuratorStage`` and the
+    passive ``measure_cluster_coherence`` were both removed at the
+    same time."""
 
     stage_kind = "run"
     reads = ("curator_findings", "curator_pre_clusters")
@@ -863,63 +682,6 @@ class CuratorTopicDiscoveryStage(_AgentStageBase):
             float(getattr(result, "cost_usd", 0.0) or 0.0),
         )
         return run_bus
-
-
-class CuratorStage(_AgentStageBase):
-    """Curator agent wrapper.
-
-    Reads `curator_findings`. Calls Curator with compressed prepared input.
-    Post-processes via _rebuild_curator_source_ids + _enrich_curator_output,
-    sorts by relevance_score desc, slices to max_topics. Writes
-    curator_topics_unsliced (full sorted list) and curator_topics (top-N).
-    """
-
-    stage_kind = "run"
-    reads = ("curator_findings",)
-    writes = ("curator_topics_unsliced", "curator_topics")
-    agent_role = "curator"
-
-    DEFAULT_MAX_TOPICS = 10
-
-    def __init__(
-        self,
-        agent: Agent,
-        *,
-        max_topics: int = DEFAULT_MAX_TOPICS,
-        sources_json_path: Path | None = None,
-    ) -> None:
-        self.agent = agent
-        self.max_topics = max_topics
-        self.sources_json_path = sources_json_path
-
-    async def __call__(self, run_bus: RunBus) -> RunBus:
-        raw_findings = list(run_bus.curator_findings or [])
-        prepared = _prepare_curator_input(raw_findings)
-
-        message = (
-            "Review these findings. Cluster related findings into topics. "
-            "Score each topic's newsworthiness on a 1-10 scale."
-        )
-        result = await self.agent.run(message, context={"findings": prepared})
-
-        topics = _rebuild_curator_source_ids(result, raw_findings)
-        topics = _enrich_curator_output(
-            topics, raw_findings, sources_json_path=self.sources_json_path
-        )
-        topics.sort(key=lambda t: t.get("relevance_score", 0), reverse=True)
-        topics_top_n = topics[: self.max_topics]
-
-        logger.info(
-            "Curator: %d topics, slicing to top %d",
-            len(topics),
-            self.max_topics,
-        )
-        return run_bus.model_copy(
-            update={
-                "curator_topics_unsliced": topics,
-                "curator_topics": topics_top_n,
-            }
-        )
 
 
 # ---------------------------------------------------------------------------
@@ -2435,7 +2197,6 @@ class ResolveActorAliasesStage(_AgentStageBase):
 
 __all__ = [
     "BiasLanguageStage",
-    "CuratorStage",
     "CuratorTopicDiscoveryStage",
     "EditorStage",
     "HydrationPhase1Stage",

@@ -54,8 +54,11 @@ def _load_run_module():
 def test_create_agents_hydrated_returns_all_required_agents():
     run = _load_run_module()
     agents = run.create_agents_hydrated()
+    # Triple-stage Curator cutover (docs/ADR-CURATOR-TRIPLE-STAGE.md):
+    # the legacy single-pass "curator" agent is removed; the new
+    # Curator-side LLM is "curator_topic_discovery".
     expected = {
-        "curator", "editor",
+        "curator_topic_discovery", "editor",
         "researcher_plan", "researcher_assemble",
         "researcher_hydrated_plan",
         "hydration_aggregator_phase1", "hydration_aggregator_phase2",
@@ -71,7 +74,8 @@ def test_create_agents_hydrated_wires_all_schemas():
     run = _load_run_module()
     agents = run.create_agents_hydrated()
     schema_required = [
-        "curator", "editor", "researcher_plan", "researcher_assemble",
+        "curator_topic_discovery", "editor", "researcher_plan",
+        "researcher_assemble",
         "researcher_hydrated_plan",
         "hydration_aggregator_phase1", "hydration_aggregator_phase2",
         "perspective", "writer", "qa_analyze", "bias_language",
@@ -213,8 +217,13 @@ def _patch_runner(run_module, run_bus_factory=None):
 
 def _patch_create_agents(run_module):
     """Avoid the heavy real Agent construction (which loads prompt files)."""
+    # Triple-stage Curator (docs/ADR-CURATOR-TRIPLE-STAGE.md): legacy
+    # "curator" agent is gone; "curator_topic_discovery" is the new
+    # Curator-side LLM. Gravitational assignment + assemble are
+    # deterministic Python and don't need an agent.
     fake_agents = {k: MagicMock(name=k) for k in [
-        "curator", "editor", "researcher_plan", "researcher_assemble",
+        "curator_topic_discovery",
+        "editor", "researcher_plan", "researcher_assemble",
         "resolve_actor_aliases",
         "perspective", "writer", "qa_analyze", "bias_language",
         "researcher_hydrated_plan",
