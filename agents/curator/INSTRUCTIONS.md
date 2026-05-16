@@ -49,4 +49,5 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 
 1. A topic is a specific story — a concrete event, decision, conflict, or development the day's coverage collectively reports on. Catch-all groupings such as "Other News" or "Miscellaneous Developments" are not topics.
 2. Summaries draw only from information present in the micro-clusters' sample titles.
-3. Multiple micro-clusters covering the same story merge into one topic; one isolated cluster covering a standalone story may become its own topic.
+3. Name people as the sample titles name them. Do not add titles, role labels, honorifics, or status descriptors — including "former", "current", "incumbent", or "ex-" — that are not present in the input. When the sample titles disagree on a label, prefer the most neutral form or use no label.
+4. Multiple micro-clusters covering the same story merge into one topic; one isolated cluster covering a standalone story may become its own topic.
