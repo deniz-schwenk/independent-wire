@@ -1,0 +1,401 @@
+{
+  "topic_index": 9,
+  "topic_title": "Barcelona wins La Liga title after victory over Real Madrid",
+  "topic_summary": "Barcelona fans celebrated in Plaça Catalunya after the team defeated their rivals to secure the Spanish league championship. The victory comes amid news of Hansi Flick leading the team through the match despite personal loss.",
+  "source_count": 42,
+  "geographic_coverage": [
+    "East Asia",
+    "Europe",
+    "Latin America",
+    "Middle East",
+    "Southeast Asia"
+  ],
+  "languages": [
+    "de",
+    "en",
+    "es",
+    "pt",
+    "ru"
+  ],
+  "n_findings": 42,
+  "findings": [
+    {
+      "source_id": "finding-538",
+      "title": "Barcelona takes La Liga title after beating Real Madrid",
+      "summary": "Barcelona won their 29th Spanish league title after beating Madrid 2-0 on Sunday.",
+      "description": "",
+      "language": "en",
+      "outlet": "Le Monde",
+      "text": "Barcelona takes La Liga title after beating Real Madrid | Barcelona won their 29th Spanish league title after beating Madrid 2-0 on Sunday."
+    },
+    {
+      "source_id": "finding-593",
+      "title": "«Барселона» стала чемпионом Испании по футболу. У главного тренера команды в этот день умер отец",
+      "summary": "Футбольный клуб «Барселона» из Каталонии досрочно стал чемпионом Испании, выиграв со счетом 2:0 в матче с основным соперником — мадридским «Реалом».",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "«Барселона» стала чемпионом Испании по футболу. У главного тренера команды в этот день умер отец | Футбольный клуб «Барселона» из Каталонии досрочно стал чемпионом Испании, выиграв со счетом 2:0 в матче с основным соперником — мадридским «Реалом»."
+    },
+    {
+      "source_id": "finding-252",
+      "title": "Barcelona humilla al Real Madrid y es campeón de LaLiga: Flick dirigió Clásico pese a muerte de su padre",
+      "summary": "Con goles de Marcus Rashford y Ferran Torres, el Barcelona campeón de LaLiga selló su coronación ante el Real Madrid en un Clásico marcado por bajas, tensión interna y tarjetas.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Barcelona humilla al Real Madrid y es campeón de LaLiga: Flick dirigió Clásico pese a muerte de su padre | Con goles de Marcus Rashford y Ferran Torres, el Barcelona campeón de LaLiga selló su coronación ante el Real Madrid en un Clásico marcado por bajas, tensión interna y tarjetas."
+    },
+    {
+      "source_id": "finding-905",
+      "title": "Barcelona castiga Real Madrid e celebra t�tulo espanhol em cima do rival",
+      "summary": "O Barcelona viveu no domingo (10) uma das mais memor�veis jornadas de sua rivalidade centen�ria com o Real Madrid. A equipe catal� alcan�ou seu 29� t�tulo do Campeonato Espanhol, o primeiro deles obtido com uma vit�ria sobre o arquirrival: 2 a 0, gols de Rashford e Ferr�n Torres.\nLeia mais (05/10/2026 - 17h55)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Barcelona castiga Real Madrid e celebra t�tulo espanhol em cima do rival | O Barcelona viveu no domingo (10) uma das mais memor�veis jornadas de sua rivalidade centen�ria com o Real Madrid. A equipe catal� alcan�ou seu 29� t�tulo do Campeonato Espanhol, o primeiro deles obtido com uma vit�ria sobre o arquirrival: 2 a 0, gols de Rashford e Ferr�n Torres.\nLeia mais (05/10/2026 - 17h55)"
+    },
+    {
+      "source_id": "finding-249",
+      "title": "‘Nunca olvidaré esto. Fue un día duro’: Flick celebra título del Barcelona el mismo día que murió su padre",
+      "summary": "Hansi Flick ganó LaLiga con Barcelona tras vencer al Real Madrid en el Clásico, horas después de la muerte de su padre previo al partido.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "‘Nunca olvidaré esto. Fue un día duro’: Flick celebra título del Barcelona el mismo día que murió su padre | Hansi Flick ganó LaLiga con Barcelona tras vencer al Real Madrid en el Clásico, horas después de la muerte de su padre previo al partido."
+    },
+    {
+      "source_id": "finding-14",
+      "title": "Fans celebrate as Barcelona clinches LaLiga title",
+      "summary": "Barcelona fans filled the streets in wild celebration after a convincing 2-0 El Clasico win over Real Madrid.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Fans celebrate as Barcelona clinches LaLiga title | Barcelona fans filled the streets in wild celebration after a convincing 2-0 El Clasico win over Real Madrid."
+    },
+    {
+      "source_id": "finding-701",
+      "title": "Los aficionados del Barcelona inundan de pasión y tintan de azulgrana Plaça Catalunya en su celebración del título de Liga",
+      "summary": "Miles de seguidores del Barça se emplazaron en la mítica plaza de la Ciudad Condal en lugar de la fuente de Canaletas por las obras de La Rambla para festejar el campeonato liguero con bengalas y fuegos artificiales",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Los aficionados del Barcelona inundan de pasión y tintan de azulgrana Plaça Catalunya en su celebración del título de Liga | Miles de seguidores del Barça se emplazaron en la mítica plaza de la Ciudad Condal en lugar de la fuente de Canaletas por las obras de La Rambla para festejar el campeonato liguero con bengalas y fuegos artificiales"
+    },
+    {
+      "source_id": "finding-1036",
+      "title": "Otra larga noche de celebración barcelonista",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "Otra larga noche de celebración barcelonista"
+    },
+    {
+      "source_id": "finding-211",
+      "title": "Sada Cruzeiro vence Vôlei Renata e é decacampeão da Superliga",
+      "summary": "O Sada Cruzeiro conquistou o título da Superliga 2025/2026. A conquista da equipe mineira foi confirmada na manhã deste domingo (10), no ginásio do Ibirapuera em São Paulo.\n\nO time venceu o Vôlei Renata Campinas por três sets a zero (25 a 14, 27 a 25 e 25 a 21). Esse foi o décimo título brasileiro para o Sada Cruzeiro.\n\nEsta foi a quarta final entre os dois rivais em um ano. O Sada Cruzeiro venceu a Superliga masculina anterior e o Vôlei Renata foi campeão do Sul-Americano de clubes e da Copa...",
+      "description": "",
+      "language": "pt",
+      "outlet": "Agencia Brasil",
+      "text": "Sada Cruzeiro vence Vôlei Renata e é decacampeão da Superliga | O Sada Cruzeiro conquistou o título da Superliga 2025/2026. A conquista da equipe mineira foi confirmada na manhã deste domingo (10), no ginásio do Ibirapuera em São Paulo.\n\nO time venceu o Vôlei Renata Campinas por três sets a zero (25 a 14, 27 a 25 e 25 a 21). Esse foi o décimo título brasileiro para o Sada Cruzeiro.\n\nEsta foi a quarta final entre os dois rivais em um ano. O Sada Cruzeiro venceu a Superliga masculina anterior e o Vôlei Renata foi campeão do Sul-Americano de clubes e da Copa..."
+    },
+    {
+      "source_id": "finding-947",
+      "title": "Una autora ganará por primera vez el premio a Mejor obra española de Comic Barcelona",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "Una autora ganará por primera vez el premio a Mejor obra española de Comic Barcelona"
+    },
+    {
+      "source_id": "finding-661",
+      "title": "De la defensa alta a un ataque coral: siete datos clave del Barcelona campeón de Liga",
+      "summary": "Los azulgrana han sido el equipo más goleador y el menos goleado de la Liga y pueden igualar el récord de los 100 puntos",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "De la defensa alta a un ataque coral: siete datos clave del Barcelona campeón de Liga | Los azulgrana han sido el equipo más goleador y el menos goleado de la Liga y pueden igualar el récord de los 100 puntos"
+    },
+    {
+      "source_id": "finding-261",
+      "title": "A horas del Clásico vs. Real Madrid: Muere padre de Hansi Flick, DT del Barcelona; dirigirá partido pese a duelo",
+      "summary": "El técnico del FC Barcelona, Hansi Flick, dirigirá el partido contra el Real Madrid tras el fallecimiento de su padre, mientras el club catalán busca acercarse al título de LaLiga.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "A horas del Clásico vs. Real Madrid: Muere padre de Hansi Flick, DT del Barcelona; dirigirá partido pese a duelo | El técnico del FC Barcelona, Hansi Flick, dirigirá el partido contra el Real Madrid tras el fallecimiento de su padre, mientras el club catalán busca acercarse al título de LaLiga."
+    },
+    {
+      "source_id": "finding-219",
+      "title": "Brasil derrota Argentina e é campeão Sul-Americano Sub-17 feminino",
+      "summary": "Na noite deste sábado (9), a Seleção Feminina Sub-17 de futebol venceu a Argentina por 3 a 2 e conquistou o título do Sul-Americano. A partida ocorreu no Estádio Defensores del Chaco, em Assunção, no Paraguai. Esta foi a primeira vez que a Amarelinha foi campeã sob comando da técnica Rilany Silva.\n\nApesar da Argentina abrir o placar aos 4 minutos de jogo, o Brasil sempre foi superior durante toda a partida. E empatou conseguiu o empate ainda no primeiro tempo com gol de Gamonal, aos 28 minuto...",
+      "description": "",
+      "language": "pt",
+      "outlet": "Agencia Brasil",
+      "text": "Brasil derrota Argentina e é campeão Sul-Americano Sub-17 feminino | Na noite deste sábado (9), a Seleção Feminina Sub-17 de futebol venceu a Argentina por 3 a 2 e conquistou o título do Sul-Americano. A partida ocorreu no Estádio Defensores del Chaco, em Assunção, no Paraguai. Esta foi a primeira vez que a Amarelinha foi campeã sob comando da técnica Rilany Silva.\n\nApesar da Argentina abrir o placar aos 4 minutos de jogo, o Brasil sempre foi superior durante toda a partida. E empatou conseguiu o empate ainda no primeiro tempo com gol de Gamonal, aos 28 minuto..."
+    },
+    {
+      "source_id": "finding-24",
+      "title": "What next for Real Madrid after Barcelona’s La Liga and Clasico triumph?",
+      "summary": "Barca sealed their La Liga title defence in the best way possible on Sunday, but where do Real go now, after their loss?",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "What next for Real Madrid after Barcelona’s La Liga and Clasico triumph? | Barca sealed their La Liga title defence in the best way possible on Sunday, but where do Real go now, after their loss?"
+    },
+    {
+      "source_id": "finding-215",
+      "title": "Brasil ganha bronze na Copa do Mundo de canoagem",
+      "summary": "O Brasil voltou ao pódio no último dia da etapa de Szeged da Copa do Mundo de Canoagem Velocidade, na Hungria. Neste domingo (10), Gabriel Assunção e Jacky Godmann garantiram a medalha de bronze na prova do C2 500 metros masculino.\n\nA dupla brasileira completou a final A em 1min37s16 e assegurou lugar entre os melhores da prova. O ouro ficou com os atletas neutros Zakhar Petrov e Ivan Shtyl. A prata foi conquistada pelos italianos Gabriele Casadei e Carlo Tacchini.\n\nNotícias relacionadas:Isaq...",
+      "description": "",
+      "language": "pt",
+      "outlet": "Agencia Brasil",
+      "text": "Brasil ganha bronze na Copa do Mundo de canoagem | O Brasil voltou ao pódio no último dia da etapa de Szeged da Copa do Mundo de Canoagem Velocidade, na Hungria. Neste domingo (10), Gabriel Assunção e Jacky Godmann garantiram a medalha de bronze na prova do C2 500 metros masculino.\n\nA dupla brasileira completou a final A em 1min37s16 e assegurou lugar entre os melhores da prova. O ouro ficou com os atletas neutros Zakhar Petrov e Ivan Shtyl. A prata foi conquistada pelos italianos Gabriele Casadei e Carlo Tacchini.\n\nNotícias relacionadas:Isaq..."
+    },
+    {
+      "source_id": "finding-704",
+      "title": "Rafa Jódar, apretando los dientes: noche de extremos ante Arnaldi, pero con final feliz",
+      "summary": "El madrileño supera un duelo dividido en dos, muy favorable al principio y muy adverso después: 6-1, 4-6 y 6-3, tras 2h 01m. Se medirá en los octavos con Tien",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Rafa Jódar, apretando los dientes: noche de extremos ante Arnaldi, pero con final feliz | El madrileño supera un duelo dividido en dos, muy favorable al principio y muy adverso después: 6-1, 4-6 y 6-3, tras 2h 01m. Se medirá en los octavos con Tien"
+    },
+    {
+      "source_id": "finding-997",
+      "title": "¿Y ahora qué en el Real Madrid?: ¿Mourinho?, cambios y fichajes",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "¿Y ahora qué en el Real Madrid?: ¿Mourinho?, cambios y fichajes"
+    },
+    {
+      "source_id": "finding-238",
+      "title": "¡Heroica remontada! Rayadas golea a Pachuca y jugará la gran final de Liga MX Femenil ante América",
+      "summary": "¡Partidazo en el 'Gigante de Acero'! Las Rayadas de Monterrey revirtieron un complicado marcador global ante Pachuca y están en la gran final de la Liga MX Femenil.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "¡Heroica remontada! Rayadas golea a Pachuca y jugará la gran final de Liga MX Femenil ante América | ¡Partidazo en el 'Gigante de Acero'! Las Rayadas de Monterrey revirtieron un complicado marcador global ante Pachuca y están en la gran final de la Liga MX Femenil."
+    },
+    {
+      "source_id": "finding-213",
+      "title": "Brasil conquista sete medalhas no Grand Slam de Astana no Cazaquistão",
+      "summary": "No último dia de competição de judô de Astana, no Cazaquistão, neste domingo (10) , Guilherme Schimidt (-90kg) foi prata, Beatriz Freitas (-78kg) e Leonardo Gonçalves (-100kg) ficaram com o bronze. Com esses resultados, o Brasil fecha o Grand Slam com 7 pódios.\n\nA primeira medalha do dia foi conquistada por Schimidt. Depois de vencer três lutas, ele chegou a sua primeira final internacional após a mudança de categoria do -81kg para o -90kg.\n\nNotícias relacionadas:Brasil fatura três bronzes no...",
+      "description": "",
+      "language": "pt",
+      "outlet": "Agencia Brasil",
+      "text": "Brasil conquista sete medalhas no Grand Slam de Astana no Cazaquistão | No último dia de competição de judô de Astana, no Cazaquistão, neste domingo (10) , Guilherme Schimidt (-90kg) foi prata, Beatriz Freitas (-78kg) e Leonardo Gonçalves (-100kg) ficaram com o bronze. Com esses resultados, o Brasil fecha o Grand Slam com 7 pódios.\n\nA primeira medalha do dia foi conquistada por Schimidt. Depois de vencer três lutas, ele chegou a sua primeira final internacional após a mudança de categoria do -81kg para o -90kg.\n\nNotícias relacionadas:Brasil fatura três bronzes no..."
+    },
+    {
+      "source_id": "finding-702",
+      "title": "Toca fingir eternidad en el Real Madrid",
+      "summary": "El año se perdió cuando las estrellas no es que renunciaran a la calidad, sino a las ganas de exhibirla por cuestiones personales",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Toca fingir eternidad en el Real Madrid | El año se perdió cuando las estrellas no es que renunciaran a la calidad, sino a las ganas de exhibirla por cuestiones personales"
+    },
+    {
+      "source_id": "finding-973",
+      "title": "Joao Cancelo se convierte en el primer jugador en ganar las cuatro grandes ligas europeas",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "Joao Cancelo se convierte en el primer jugador en ganar las cuatro grandes ligas europeas"
+    },
+    {
+      "source_id": "finding-243",
+      "title": "El rey cederá su corona: Pachuca domina a Toluca y se clasifica a semifinales de Liga MX",
+      "summary": "Pachuca se instala en las semifinales de la Liga MX. Dominó en el trámite del partido al Toluca bicampeón en el Estadio Hidalgo 'Huracán'.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "El rey cederá su corona: Pachuca domina a Toluca y se clasifica a semifinales de Liga MX | Pachuca se instala en las semifinales de la Liga MX. Dominó en el trámite del partido al Toluca bicampeón en el Estadio Hidalgo 'Huracán'."
+    },
+    {
+      "source_id": "finding-331",
+      "title": "Union Berlin's Eta celebrates first win as Bundesliga's first female head coach",
+      "summary": "",
+      "description": "",
+      "language": "en",
+      "outlet": "CNA",
+      "text": "Union Berlin's Eta celebrates first win as Bundesliga's first female head coach"
+    },
+    {
+      "source_id": "finding-703",
+      "title": "En el nombre de Lamine Yamal, la gran estrella de la Liga del Barça",
+      "summary": "El azulgrana, de 18 años, se mueve entre la exigencia máxima por ser el mejor jugador de todos y una personalidad que le sitúa siempre en el foco mediático",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "En el nombre de Lamine Yamal, la gran estrella de la Liga del Barça | El azulgrana, de 18 años, se mueve entre la exigencia máxima por ser el mejor jugador de todos y una personalidad que le sitúa siempre en el foco mediático"
+    },
+    {
+      "source_id": "finding-17",
+      "title": "Timberwolves win, tie playoff series after Spurs’ Wembanyama ejected",
+      "summary": "Edwards&#039;s 36 points give Minnesota 114-109 win and tie the Western Conference semifinals 2-2 against San Antonio Spurs.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Timberwolves win, tie playoff series after Spurs’ Wembanyama ejected | Edwards&#039;s 36 points give Minnesota 114-109 win and tie the Western Conference semifinals 2-2 against San Antonio Spurs."
+    },
+    {
+      "source_id": "finding-707",
+      "title": "Video | El Mundial más caro de la historia: entradas hasta cuatro veces más que el precio de Qatar",
+      "summary": "Aficionados denuncian los precios elevados en Estados Unidos: la FIFA cobra hasta 2.000 dólares por una entrada a la final",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Video | El Mundial más caro de la historia: entradas hasta cuatro veces más que el precio de Qatar | Aficionados denuncian los precios elevados en Estados Unidos: la FIFA cobra hasta 2.000 dólares por una entrada a la final"
+    },
+    {
+      "source_id": "finding-255",
+      "title": "¡Las ‘Águilas’ son finalistas! América vence a Toluca y buscará su tercer título de Liga MX Femenil",
+      "summary": "América venció 4-3 a Toluca y avanzó a la final de la Liga MX Femenil Clausura 2026 con un contundente global de 11-4.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "¡Las ‘Águilas’ son finalistas! América vence a Toluca y buscará su tercer título de Liga MX Femenil | América venció 4-3 a Toluca y avanzó a la final de la Liga MX Femenil Clausura 2026 con un contundente global de 11-4."
+    },
+    {
+      "source_id": "finding-655",
+      "title": "Victory Day celebrations in Europe marred by pro-Ukraine provocations (VIDEOS)",
+      "summary": "Scuffles broke out in several European cities as Ukrainian nationals and pro-Kiev activists tried to disrupt Victory Day celebrations Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Victory Day celebrations in Europe marred by pro-Ukraine provocations (VIDEOS) | Scuffles broke out in several European cities as Ukrainian nationals and pro-Kiev activists tried to disrupt Victory Day celebrations Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-722",
+      "title": "Iván Ferreiro, en su gira para celebrar 35 años en la música: “Ahora mi yo del pasado me cae mejor”",
+      "summary": "Un abarrotado Coliseum de A Coruña recibió este sábado la segunda parada de ‘Hoy x ayer’, el ‘tour’ con el que el gallego repasa su trayectoria musical, tanto al frente de Piratas como en solitario",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Iván Ferreiro, en su gira para celebrar 35 años en la música: “Ahora mi yo del pasado me cae mejor” | Un abarrotado Coliseum de A Coruña recibió este sábado la segunda parada de ‘Hoy x ayer’, el ‘tour’ con el que el gallego repasa su trayectoria musical, tanto al frente de Piratas como en solitario"
+    },
+    {
+      "source_id": "finding-909",
+      "title": "'Adolesc�ncia' � a grande vencedora do Bafta, maior premia��o da TV brit�nica",
+      "summary": "A miniss�rie \"Adolesc�ncia\" venceu quatro categorias do British Academy Film Awards, o Bafta, maior premia��o da TV no Reino Unido, que entregou seus pr�mios neste domingo, dia 10.\nLeia mais (05/10/2026 - 17h03)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "'Adolesc�ncia' � a grande vencedora do Bafta, maior premia��o da TV brit�nica | A miniss�rie \"Adolesc�ncia\" venceu quatro categorias do British Academy Film Awards, o Bafta, maior premia��o da TV no Reino Unido, que entregou seus pr�mios neste domingo, dia 10.\nLeia mais (05/10/2026 - 17h03)"
+    },
+    {
+      "source_id": "finding-218",
+      "title": "Gabrielzinho leva dois ouros e Brasil vai ao pódio 19 vezes em Berlim",
+      "summary": "A Seleção Brasileira de natação paralímpica foi ao pódio cinco vezes neste sábado (9) no encerramento da etapa de Berlim, na Alemanha, do World Series. Nas últimas finais do evento, o mineiro Gabriel Araújo, Gabrielzinho, faturou dois ouros.\n\nA delegação ganhou também as pratas do catarinense Talisson Glock e do mineiro Arthur Xavier e o bronze da carioca Lídia Cruz.\n\nNotícias relacionadas:Gabrielzinho lidera natação paralímpica do Brasil no circuito mundial.Gabrielzinho concorre ao Laureus d...",
+      "description": "",
+      "language": "pt",
+      "outlet": "Agencia Brasil",
+      "text": "Gabrielzinho leva dois ouros e Brasil vai ao pódio 19 vezes em Berlim | A Seleção Brasileira de natação paralímpica foi ao pódio cinco vezes neste sábado (9) no encerramento da etapa de Berlim, na Alemanha, do World Series. Nas últimas finais do evento, o mineiro Gabriel Araújo, Gabrielzinho, faturou dois ouros.\n\nA delegação ganhou também as pratas do catarinense Talisson Glock e do mineiro Arthur Xavier e o bronze da carioca Lídia Cruz.\n\nNotícias relacionadas:Gabrielzinho lidera natação paralímpica do Brasil no circuito mundial.Gabrielzinho concorre ao Laureus d..."
+    },
+    {
+      "source_id": "finding-663",
+      "title": "Cierre este edificio, presidente",
+      "summary": "Carta abierta al jefe del Gobierno español sobre la Jefatura de Policía de Barcelona, sede de torturas durante la dictadura franquista",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Cierre este edificio, presidente | Carta abierta al jefe del Gobierno español sobre la Jefatura de Policía de Barcelona, sede de torturas durante la dictadura franquista"
+    },
+    {
+      "source_id": "finding-230",
+      "title": "Gran final de ‘La Mansión VIP’ HOY: ¿Quién fue el ganador de la primera temporada del reality?",
+      "summary": "Después de casi un mes de competencia, la primera temporada de 'La Mansión VIP' llegó a su gran final.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Gran final de ‘La Mansión VIP’ HOY: ¿Quién fue el ganador de la primera temporada del reality? | Después de casi un mes de competencia, la primera temporada de 'La Mansión VIP' llegó a su gran final."
+    },
+    {
+      "source_id": "finding-734",
+      "title": "Jorge Martín gana un año y medio después en MotoGP con un triunfo sideral en el GP de Francia",
+      "summary": "El piloto madrileño firma otra remontada y un fin de semana redondo en Le Mans el día en que Aprilia coloca por primera vez a tres de sus motos en el podio",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Jorge Martín gana un año y medio después en MotoGP con un triunfo sideral en el GP de Francia | El piloto madrileño firma otra remontada y un fin de semana redondo en Le Mans el día en que Aprilia coloca por primera vez a tres de sus motos en el podio"
+    },
+    {
+      "source_id": "finding-555",
+      "title": "Einen Monat vor der WM: Wie ist die Stimmung in Mexiko?",
+      "summary": "Heute in einem Monat ist Anpfiff für die größte Fußball-WM aller Zeiten, doch von Fußball-Fieber ist vielerorts noch nichts zu spüren. Wie ist die Stimmung im Co-Gastgeberland Mexiko? Von Jenny Barke.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "Einen Monat vor der WM: Wie ist die Stimmung in Mexiko? | Heute in einem Monat ist Anpfiff für die größte Fußball-WM aller Zeiten, doch von Fußball-Fieber ist vielerorts noch nichts zu spüren. Wie ist die Stimmung im Co-Gastgeberland Mexiko? Von Jenny Barke."
+    },
+    {
+      "source_id": "finding-1041",
+      "title": "Molina, baja para cierre de campaña en el Atleti, pero previsiblemente llegará al Mundial",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "Molina, baja para cierre de campaña en el Atleti, pero previsiblemente llegará al Mundial"
+    },
+    {
+      "source_id": "finding-958",
+      "title": "España resalta la coordinación ante el hantavirus al agradecer a Guterres su apoyo",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "España resalta la coordinación ante el hantavirus al agradecer a Guterres su apoyo"
+    },
+    {
+      "source_id": "finding-1060",
+      "title": "Jorge Martin wins French MotoGP and Ogura ends Japan's drought",
+      "summary": "Jorge Martin overtook MotoGP championship leader Marco Bezzecchi on the penultimate lap to win the French Grand Prix on Sunday, while Ai Ogura secured Japan's first podium finish…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Jorge Martin wins French MotoGP and Ogura ends Japan's drought | Jorge Martin overtook MotoGP championship leader Marco Bezzecchi on the penultimate lap to win the French Grand Prix on Sunday, while Ai Ogura secured Japan's first podium finish…"
+    },
+    {
+      "source_id": "finding-1037",
+      "title": "Olivia Rodrigo y Lamine Yamal revolucionan el Clásico con su inesperado momentazo: el gesto que ha incendiado las redes",
+      "summary": "La cantante estadounidense acudió como invitada de Spotify al Barça-Real Madrid y terminó protagonizando una escena viral con el futbolista azulgrana",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "Olivia Rodrigo y Lamine Yamal revolucionan el Clásico con su inesperado momentazo: el gesto que ha incendiado las redes | La cantante estadounidense acudió como invitada de Spotify al Barça-Real Madrid y terminó protagonizando una escena viral con el futbolista azulgrana"
+    },
+    {
+      "source_id": "finding-706",
+      "title": "El Girona, lastrado por su falta de gol, visita al Rayo con la esperanza de despegarse del descenso",
+      "summary": "El equipo dirigido por Míchel, con un punto de ventaja sobre la zona roja, recupera a Abel Ruiz tras quedarse solo con Stuani como nueve puro después de perder a su máximo goleador Vanat hace un mes, cuando sumó su última victoria",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "El Girona, lastrado por su falta de gol, visita al Rayo con la esperanza de despegarse del descenso | El equipo dirigido por Míchel, con un punto de ventaja sobre la zona roja, recupera a Abel Ruiz tras quedarse solo con Stuani como nueve puro después de perder a su máximo goleador Vanat hace un mes, cuando sumó su última victoria"
+    },
+    {
+      "source_id": "finding-870",
+      "title": "Ingressos, Ir�, viol�ncia: extracampo domina notici�rio a um m�s da Copa do Mundo",
+      "summary": "Durante o recente Congresso da Fifa (Federa��o Internacional de Futebol), o chefe da entidade, Gianni Infantino, deixou claro que, mesmo com a Copa do Mundo �s portas, aspectos de dentro das quatro linhas n�o est�o em primeiro plano.\nLeia mais (05/10/2026 - 23h00)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Ingressos, Ir�, viol�ncia: extracampo domina notici�rio a um m�s da Copa do Mundo | Durante o recente Congresso da Fifa (Federa��o Internacional de Futebol), o chefe da entidade, Gianni Infantino, deixou claro que, mesmo com a Copa do Mundo �s portas, aspectos de dentro das quatro linhas n�o est�o em primeiro plano.\nLeia mais (05/10/2026 - 23h00)"
+    },
+    {
+      "source_id": "finding-891",
+      "title": "'Tr�s Gra�as': Luc�lia morre atropelada",
+      "summary": "A �ltima semana de 'Tr�s Gra�as' promete muitas emo��es. No pen�ltimo cap�tulo, que ir� ao ar na quinta-feira (14), Luc�lia (Daphne Bozaski) ter� um fim tr�gico.\nLeia mais (05/10/2026 - 21h07)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "'Tr�s Gra�as': Luc�lia morre atropelada | A �ltima semana de 'Tr�s Gra�as' promete muitas emo��es. No pen�ltimo cap�tulo, que ir� ao ar na quinta-feira (14), Luc�lia (Daphne Bozaski) ter� um fim tr�gico.\nLeia mais (05/10/2026 - 21h07)"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "wall_seconds": 129.17,
+  "llm_cost_usd": 0.00607745,
+  "n_findings": 1401,
+  "n_micro_clusters": 246,
+  "n_discovered_topics": 15,
+  "n_topics_after_assemble": 15,
+  "n_orphans": 752,
+  "agent_name": "curator_topic_discovery",
+  "agent_model": "google/gemini-3-flash-preview"
+}

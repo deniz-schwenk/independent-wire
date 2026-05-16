@@ -1,0 +1,413 @@
+{
+  "audit_date": "2026-05-16",
+  "datasets": [
+    "2026-05-08",
+    "2026-05-11",
+    "2026-05-13"
+  ],
+  "cross_day_aggregate": {
+    "n_findings_audited": 2542,
+    "n_off_topic": 1769,
+    "weighted_off_topic_pct": 69.59,
+    "simple_mean_off_topic_pct_per_topic": 69.43,
+    "n_topics_audited": 30
+  },
+  "per_day": [
+    {
+      "date": "2026-05-08",
+      "n_topics_audited": 10,
+      "n_topics_in_top_k": 10,
+      "n_findings_audited": 785,
+      "n_off_topic": 539,
+      "weighted_off_topic_pct": 68.66,
+      "simple_mean_off_topic_pct": 69.38,
+      "topics": [
+        {
+          "topic_index": 0,
+          "topic_title": "US and Iran maintain diplomatic dialogue despite exchange of fire in Strait of Hormuz",
+          "source_count": 195,
+          "n_labeled": 195,
+          "on_topic": 88,
+          "off_topic": 107,
+          "off_topic_pct": 54.87,
+          "qualitative_note": "Strong direct-match core on US-Iran Hormuz exchange, ASEAN response, tanker seizures, oil prices (88 of 195). Drift dominated by Russia-Ukraine ceasefire (parallel topic-01), Trump-Lula (parallel topic-02), Pope-Rubio (parallel topic-09), and broader Trump foreign-policy / Cuba sanctions / China summit prep.",
+          "csv_file": "_data/2026-05-08/topic-00.audit.csv"
+        },
+        {
+          "topic_index": 1,
+          "topic_title": "Russia and Ukraine trade accusations over Victory Day ceasefire violations",
+          "source_count": 163,
+          "n_labeled": 163,
+          "on_topic": 37,
+          "off_topic": 126,
+          "off_topic_pct": 77.3,
+          "qualitative_note": "Strong direct-match core on Victory Day ceasefire violations + Russia parade scale-back + Zelensky-Yerevan + Russia-Armenia indignation (37 of 163). Drift dominated by general Russia-Ukraine war news (cumulative casualty counts, oil refinery strikes, NPP attacks, air defense) plus the parallel US-Iran Hormuz topic which the embedding conflated with \"ceasefire violation\" framing.",
+          "csv_file": "_data/2026-05-08/topic-01.audit.csv"
+        },
+        {
+          "topic_index": 2,
+          "topic_title": "Donald Trump and Lula da Silva meet at White House to relink US-Brazil relations",
+          "source_count": 77,
+          "n_labeled": 77,
+          "on_topic": 12,
+          "off_topic": 65,
+          "off_topic_pct": 84.42,
+          "qualitative_note": "\"Trump + foreign-policy / Trump + trade\" semantic-field drift dominates — pulled in Trump-Iran, Trump-EU tariffs, Trump-Xi prep, Trump-Cuba, Rubio-Meloni, Rubio-Pope, US trade court (which is its own topic-07), domestic Trump miscellany. 12 of 77 specifically about the Lula meeting.",
+          "csv_file": "_data/2026-05-08/topic-02.audit.csv"
+        },
+        {
+          "topic_index": 3,
+          "topic_title": "South African Constitutional Court orders Parliament to revisit Cyril Ramaphosa impeachment",
+          "source_count": 75,
+          "n_labeled": 75,
+          "on_topic": 5,
+          "off_topic": 70,
+          "off_topic_pct": 93.33,
+          "qualitative_note": "Severe \"court/parliament/political-prosecution\" semantic-field drift across continents — pulled in court / impeachment / corruption stories from Brazil (STF), Korea, Nigeria, Spain, Mexico, Bulgaria, India, Italy. 5 of 75 about Ramaphosa impeachment.",
+          "csv_file": "_data/2026-05-08/topic-03.audit.csv"
+        },
+        {
+          "topic_index": 4,
+          "topic_title": "Hantavirus outbreak on cruise ship MV Hondius triggers international health response",
+          "source_count": 56,
+          "n_labeled": 56,
+          "on_topic": 47,
+          "off_topic": 9,
+          "off_topic_pct": 16.07,
+          "qualitative_note": "Clean cluster — 47 of 56 directly on-topic. Multilingual coverage tight to the MV Hondius story including WHO response, Tenerife docking, Argentina background. Drift limited to whale/maritime/measles/crisis-roundup edge cases.",
+          "csv_file": "_data/2026-05-08/topic-04.audit.csv"
+        },
+        {
+          "topic_index": 5,
+          "topic_title": "Internal crisis hits Real Madrid following training ground altercation",
+          "source_count": 49,
+          "n_labeled": 49,
+          "on_topic": 8,
+          "off_topic": 41,
+          "off_topic_pct": 83.67,
+          "qualitative_note": "Spanish-language source-region homogeneity (El País, Infobae) plus \"Spanish-football-crisis\" semantic field pulled in unrelated La Liga / Copa Libertadores / Premier League / Spanish politics stories. 9 of 49 actually about Valverde/Tchouameni altercation.",
+          "csv_file": "_data/2026-05-08/topic-05.audit.csv"
+        },
+        {
+          "topic_index": 6,
+          "topic_title": "Tamil Nadu government formation proceeds with support for Vijay's TVK party",
+          "source_count": 47,
+          "n_labeled": 47,
+          "on_topic": 12,
+          "off_topic": 35,
+          "off_topic_pct": 74.47,
+          "qualitative_note": "\"Government formation / elections / political alliances\" semantic-field drift on a global scale — pulled in UK local elections, AfD German polls, Congo, DRC, Romania, Korea, Bukele, Tennessee redistricting, Kerala, West Bengal, Mexican alliances. 12 of 47 are actually about Tamil Nadu TVK government formation.",
+          "csv_file": "_data/2026-05-08/topic-06.audit.csv"
+        },
+        {
+          "topic_index": 7,
+          "topic_title": "US trade court strikes down Donald Trump's 10 percent universal tariffs",
+          "source_count": 47,
+          "n_labeled": 47,
+          "on_topic": 21,
+          "off_topic": 26,
+          "off_topic_pct": 55.32,
+          "qualitative_note": "Strong direct-match core (21 of 47) — every wire covered the trade-court ruling + Trump's EU July-4 ultimatum. Drift into adjacent Trump stories: Iran ceasefire, Cuba sanctions, World Cup tickets, Trump-Lula bilateral meeting. \"Trump + trade\" semantic field pulled in non-tariff Trump items.",
+          "csv_file": "_data/2026-05-08/topic-07.audit.csv"
+        },
+        {
+          "topic_index": 8,
+          "topic_title": "China sentences former defense ministers to death with reprieve for corruption",
+          "source_count": 43,
+          "n_labeled": 43,
+          "on_topic": 4,
+          "off_topic": 39,
+          "off_topic_pct": 90.7,
+          "qualitative_note": "Extreme off-topic drift — broad \"court / sentence / military / crime\" semantic field pulled in unrelated criminal-justice stories from Brazil, Korea, Bahrain, Spain, India, Russia, Turkey, Vietnam. Only 4 of 43 findings about the specific Wei Fenghe / Li Shangfu case.",
+          "csv_file": "_data/2026-05-08/topic-08.audit.csv"
+        },
+        {
+          "topic_index": 9,
+          "topic_title": "Pope Leo XIV marks first anniversary amid tensions with US administration",
+          "source_count": 33,
+          "n_labeled": 33,
+          "on_topic": 12,
+          "off_topic": 21,
+          "off_topic_pct": 63.64,
+          "qualitative_note": "Anniversary/centenary semantic-field drift — V-Day commemorations (Victory Day, Europe Day, WWII), David Attenborough's 100th, Harlem Globetrotters centenary all attracted to the \"first anniversary\" anchor. 11 of 33 directly about Pope Leo's first year + Rubio meeting.",
+          "csv_file": "_data/2026-05-08/topic-09.audit.csv"
+        }
+      ],
+      "meta": {
+        "wall_seconds": 129.17,
+        "llm_cost_usd": 0.00607745,
+        "n_findings": 1401,
+        "n_micro_clusters": 246,
+        "n_discovered_topics": 15,
+        "n_topics_after_assemble": 15,
+        "n_orphans": 752,
+        "agent_name": "curator_topic_discovery",
+        "agent_model": "google/gemini-3-flash-preview"
+      }
+    },
+    {
+      "date": "2026-05-11",
+      "n_topics_audited": 10,
+      "n_topics_in_top_k": 10,
+      "n_findings_audited": 792,
+      "n_off_topic": 540,
+      "weighted_off_topic_pct": 68.18,
+      "simple_mean_off_topic_pct": 66.06,
+      "topics": [
+        {
+          "topic_index": 0,
+          "topic_title": "Russia and Ukraine accuse each other of violating US-brokered ceasefire",
+          "source_count": 155,
+          "n_labeled": 155,
+          "on_topic": 22,
+          "off_topic": 133,
+          "off_topic_pct": 85.81,
+          "qualitative_note": "22 of 155 directly about the US-brokered 3-day Russia-Ukraine truce + Vovchansk axis + Kallas critique of Putin's calls. Massive drift: parallel Iran-US peace topic (topic-01), Schröder mediator (topic-02), Latvia drone DefMin (topic-08), general Russia-Ukraine war coverage (cumulative casualties, sanctions, EU politics, Schengen reactions).",
+          "csv_file": "_data/2026-05-11/topic-00.audit.csv"
+        },
+        {
+          "topic_index": 1,
+          "topic_title": "Donald Trump rejects Iran's response to US peace proposal as unacceptable",
+          "source_count": 144,
+          "n_labeled": 144,
+          "on_topic": 71,
+          "off_topic": 73,
+          "off_topic_pct": 50.69,
+          "qualitative_note": "Strong direct-match core (~65 of 144) on Trump-rejects-Iran-peace + Iran response + oil-price reaction + Hormuz negotiations + war commentary. Drift: parallel Russia-Ukraine ceasefire (topic-00), Trump-China visit (topic-06), Iran spy executions, broader Middle East war news, multi-topic news briefs.",
+          "csv_file": "_data/2026-05-11/topic-01.audit.csv"
+        },
+        {
+          "topic_index": 2,
+          "topic_title": "Vladimir Putin proposes Gerhard Schröder as mediator for Ukraine negotiations",
+          "source_count": 134,
+          "n_labeled": 134,
+          "on_topic": 12,
+          "off_topic": 122,
+          "off_topic_pct": 91.04,
+          "qualitative_note": "Tight Schröder-mediator core (12 of 134) — the specific proposal/reaction signal is unambiguous and multilingual. Massive drift: pulled in the entire Russia-Ukraine war news bundle (ceasefire violations from topic-00, Victory Day, troop counts, sanctions, peace-talk meta, German politics, EU foreign-policy news, even Iran-US peace).",
+          "csv_file": "_data/2026-05-11/topic-02.audit.csv"
+        },
+        {
+          "topic_index": 3,
+          "topic_title": "South Korean vessel damaged by explosion in the Strait of Hormuz",
+          "source_count": 70,
+          "n_labeled": 70,
+          "on_topic": 28,
+          "off_topic": 42,
+          "off_topic_pct": 60.0,
+          "qualitative_note": "Strong SK-vessel + Hormuz multinational mission core (28 of 70) — Yonhap wire duplicates plus international Hormuz reactions. Drift mix: parallel Iran-US peace topic (topic-01), SK domestic politics (NK ties, opposition editorials, NATO defense), and unrelated SK news (football, Korean history, USP).",
+          "csv_file": "_data/2026-05-11/topic-03.audit.csv"
+        },
+        {
+          "topic_index": 4,
+          "topic_title": "Hantavirus outbreak on MV Hondius cruise ship triggers international health alerts",
+          "source_count": 65,
+          "n_labeled": 65,
+          "on_topic": 56,
+          "off_topic": 9,
+          "off_topic_pct": 13.85,
+          "qualitative_note": "Clean MV Hondius cluster (56 of 65) — direct multilingual coverage including evacuations, WHO, national tracking, 2018 Argentina background, British paratrooper response. Drift limited to whale/shipping/measles edge cases and unrelated transport stories.",
+          "csv_file": "_data/2026-05-11/topic-04.audit.csv"
+        },
+        {
+          "topic_index": 5,
+          "topic_title": "Emmanuel Macron visits Kenya for Africa Forward economic summit",
+          "source_count": 48,
+          "n_labeled": 48,
+          "on_topic": 10,
+          "off_topic": 38,
+          "off_topic_pct": 79.17,
+          "qualitative_note": "Tight Macron-Kenya summit core (10 of 48). Drift dominated by unrelated Kenya domestic news (Finance Bill, IEBC, doctors, EVs) + parallel France news (Macron-Hormuz, French cinema, Philippe campagne) + global \"summit / visit / minister\" semantic field.",
+          "csv_file": "_data/2026-05-11/topic-05.audit.csv"
+        },
+        {
+          "topic_index": 6,
+          "topic_title": "Donald Trump prepares for state visit to China amid trade tensions",
+          "source_count": 46,
+          "n_labeled": 46,
+          "on_topic": 22,
+          "off_topic": 24,
+          "off_topic_pct": 52.17,
+          "qualitative_note": "Good direct-match core (22 of 46) on Trump's Beijing trip, Bessent-Seoul pre-summit, Xi-leverage analysis, Iran-as-summit-topic angle. Drift dominated by parallel Trump-rejects-Iran-peace topic (topic-01) and unrelated China stories (Turkmenistan, Caucasus, Taiwan-WHO).",
+          "csv_file": "_data/2026-05-11/topic-06.audit.csv"
+        },
+        {
+          "topic_index": 7,
+          "topic_title": "Narges Mohammadi released from Iranian prison for medical treatment",
+          "source_count": 45,
+          "n_labeled": 45,
+          "on_topic": 8,
+          "off_topic": 37,
+          "off_topic_pct": 82.22,
+          "qualitative_note": "Tight Mohammadi cluster (8 of 45) with multilingual coverage. Drift from \"released from prison / Iran activist / Iran-US peace proposal\" semantic field — pulled in Thaksin parole, Polish Ziobro asylum-flight, Iran peace-proposal news, court notices, and unrelated Iran/Hezbollah news.",
+          "csv_file": "_data/2026-05-11/topic-07.audit.csv"
+        },
+        {
+          "topic_index": 8,
+          "topic_title": "Latvian Defense Minister resigns following Ukrainian drone incursions",
+          "source_count": 43,
+          "n_labeled": 43,
+          "on_topic": 8,
+          "off_topic": 35,
+          "off_topic_pct": 81.4,
+          "qualitative_note": "Tight direct core (8 of 43) on Latvia Spruds resignation + Estonia drone-control warning. Drift dominated by broader Ukraine war / drone news / Schröder mediator + Baltic / Schengen-region politics that share \"defense minister\" or \"drone\" vocabulary.",
+          "csv_file": "_data/2026-05-11/topic-08.audit.csv"
+        },
+        {
+          "topic_index": 9,
+          "topic_title": "Barcelona wins La Liga title after victory over Real Madrid",
+          "source_count": 42,
+          "n_labeled": 42,
+          "on_topic": 15,
+          "off_topic": 27,
+          "off_topic_pct": 64.29,
+          "qualitative_note": "Spanish-football core (15 of 42) clear and consistent; drift dominated by \"sports / final / championship\" semantic field pulling in Brazilian volleyball, Liga MX, MotoGP, NBA, tennis, judo, World Cup prep, and a Bafta entertainment story.",
+          "csv_file": "_data/2026-05-11/topic-09.audit.csv"
+        }
+      ],
+      "meta": {
+        "wall_seconds": 112.18,
+        "llm_cost_usd": 0.017836,
+        "n_findings": 1201,
+        "n_micro_clusters": 241,
+        "n_discovered_topics": 15,
+        "n_topics_after_assemble": 15,
+        "n_orphans": 635,
+        "agent_name": "curator_topic_discovery",
+        "agent_model": "google/gemini-3-flash-preview"
+      }
+    },
+    {
+      "date": "2026-05-13",
+      "n_topics_audited": 10,
+      "n_topics_in_top_k": 10,
+      "n_findings_audited": 965,
+      "n_off_topic": 690,
+      "weighted_off_topic_pct": 71.5,
+      "simple_mean_off_topic_pct": 72.85,
+      "topics": [
+        {
+          "topic_index": 0,
+          "topic_title": "Escalating costs and military risks threaten Middle East truce between US and Iran",
+          "source_count": 162,
+          "n_labeled": 162,
+          "on_topic": 62,
+          "off_topic": 100,
+          "off_topic_pct": 61.73,
+          "qualitative_note": "Strong Iran-war / cost / UAE-Saudi-strikes core (~62 of 162) — Pentagon $29B, Hegseth grilling, UAE/Saudi covert strikes, Iran negotiation terms, Hormuz UN resolution, oil-price impact. Drift dominated by parallel Trump-China summit (topic-02), Russia-Ukraine ceasefire (topic-01), Golden Dome missile-defense items, Israel-Lebanon (topic-08), Mohammadi, and broader US politics.",
+          "csv_file": "_data/2026-05-13/topic-00.audit.csv"
+        },
+        {
+          "topic_index": 1,
+          "topic_title": "Ukraine and Russia exchange long-range drone strikes on energy and military infrastructure",
+          "source_count": 137,
+          "n_labeled": 137,
+          "on_topic": 34,
+          "off_topic": 103,
+          "off_topic_pct": 75.18,
+          "qualitative_note": "Strong direct-match core (~34 of 137) on Ukrainian deep strikes + Russian drone attacks + Kryvyi Rih casualties + ceasefire-end framing. Drift dominated by broader Russia-Ukraine war coverage (cumulative casualties, Sarmat ICBM tests, Kupiansk frontline, sanctions, hybrid ops) + parallel Iran-Hormuz / Trump-China / Yermak topics, plus Sumy/Greenland/Bosnia/Nigeria airstrike items that share \"drone / strike / war\" semantic field.",
+          "csv_file": "_data/2026-05-13/topic-01.audit.csv"
+        },
+        {
+          "topic_index": 2,
+          "topic_title": "Donald Trump arrives in China for high-stakes summit with Xi Jinping",
+          "source_count": 125,
+          "n_labeled": 125,
+          "on_topic": 77,
+          "off_topic": 48,
+          "off_topic_pct": 38.4,
+          "qualitative_note": "Very strong Trump-China-summit core (~78 of 125) — direct multilingual coverage of the trip, US delegation, China prep, Taiwan/Iran/trade agenda, Nvidia + Hegseth additions, Bessent pre-summit. Drift: parallel Iran-US war coverage, unrelated China stories, Trump-Cuba/Venezuela/Mexico, Trump-tariff court rulings.",
+          "csv_file": "_data/2026-05-13/topic-02.audit.csv"
+        },
+        {
+          "topic_index": 3,
+          "topic_title": "Anti-corruption probe in Ukraine targets former presidential aide Andriy Yermak",
+          "source_count": 107,
+          "n_labeled": 107,
+          "on_topic": 7,
+          "off_topic": 100,
+          "off_topic_pct": 93.46,
+          "qualitative_note": "Tight Yermak NABU/SAP core (7 of 107). Massive drift: \"corruption / sanctions / Russia-Ukraine war / spies / Russian internal crackdowns\" semantic field swept in the entire weekly Ukraine-war coverage, plus 1MDB Jho Low, Kash Patel FBI, Sarkozy Libya, Villarejo, Binance Smerkis, Bolsonaro Moraes, Mexican narcs, and Russian dissident/journalist arrests.",
+          "csv_file": "_data/2026-05-13/topic-03.audit.csv"
+        },
+        {
+          "topic_index": 4,
+          "topic_title": "Emmanuel Macron seeks renewed partnerships during Africa Forward summit in Kenya",
+          "source_count": 89,
+          "n_labeled": 89,
+          "on_topic": 22,
+          "off_topic": 67,
+          "off_topic_pct": 75.28,
+          "qualitative_note": "Strong Africa-Forward-summit core (22 of 89) — multilingual coverage of Macron, Ruto, Guterres, Tinubu, $27bn investment. Drift dominated by \"Africa / Africa-Europe / DRC / Mali / global South\" semantic field that swept in Sudan, Chad, Uganda, Somalia, DRC M23, Trump-Xi parallel coverage, COP31 climate.",
+          "csv_file": "_data/2026-05-13/topic-04.audit.csv"
+        },
+        {
+          "topic_index": 5,
+          "topic_title": "Massive protests in Argentina against university funding cuts by Javier Milei",
+          "source_count": 84,
+          "n_labeled": 84,
+          "on_topic": 7,
+          "off_topic": 77,
+          "off_topic_pct": 91.67,
+          "qualitative_note": "Tight core (7 of 84) on Argentina university protest. Drift dominated by \"protest / education / cuts / Latin American politics\" semantic field that pulled in Brazilian labor protests, Spanish housing/PSOE/PP politics, Mexican stories, Eurovision Israel protests, Venezuelan crisis, and an unrelated grab-bag of Spanish-language wire copy.",
+          "csv_file": "_data/2026-05-13/topic-05.audit.csv"
+        },
+        {
+          "topic_index": 6,
+          "topic_title": "Nunes Marques takes office as President of Brazil's Superior Electoral Court",
+          "source_count": 81,
+          "n_labeled": 81,
+          "on_topic": 7,
+          "off_topic": 74,
+          "off_topic_pct": 91.36,
+          "qualitative_note": "7 of 81 directly about the Nunes Marques TSE inauguration. Massive drift: pulled in the entire Brazilian political news bundle (Lula's blusinhas tax, Bolsonaro factions, Moraes impeachment, USP raid, PT internal politics), plus parallel Starmer / Real Madrid / FDA / Mexico political news because of \"takes office / new chief / leadership change\" semantic field.",
+          "csv_file": "_data/2026-05-13/topic-06.audit.csv"
+        },
+        {
+          "topic_index": 7,
+          "topic_title": "Keir Starmer faces internal pressure and calls for resignation in the UK",
+          "source_count": 70,
+          "n_labeled": 70,
+          "on_topic": 23,
+          "off_topic": 47,
+          "off_topic_pct": 67.14,
+          "qualitative_note": "Strong Starmer-resignation core (23 of 70) — multilingual, multiple takes on King's Speech context. Drift: \"resign / leadership / succession\" semantic field pulled in Marty Makary FDA, Ramaphosa, Air India CEO, Penrith rugby coach, German coalition, Brazilian PT politics, Microsoft Israel.",
+          "csv_file": "_data/2026-05-13/topic-07.audit.csv"
+        },
+        {
+          "topic_index": 8,
+          "topic_title": "Israel and Lebanon exchange fire as ceasefire efforts remain strained",
+          "source_count": 56,
+          "n_labeled": 56,
+          "on_topic": 15,
+          "off_topic": 41,
+          "off_topic_pct": 73.21,
+          "qualitative_note": "15 of 56 directly about Israel-Lebanon strikes + Hezbollah drones + paramedic casualties + UAE-Lebanon designations. Drift dominated by Israel-Eurovision controversy, Gaza-Hamas legal news, Iran-US war news, Sudan, West Bank.",
+          "csv_file": "_data/2026-05-13/topic-08.audit.csv"
+        },
+        {
+          "topic_index": 9,
+          "topic_title": "South Korea and Australia consider joining naval missions in the Strait of Hormuz",
+          "source_count": 54,
+          "n_labeled": 54,
+          "on_topic": 21,
+          "off_topic": 33,
+          "off_topic_pct": 61.11,
+          "qualitative_note": "Strong Hormuz-mission core (21 of 54) on SK phased contributions + Australia UK-France mission + UN resolution + tanker transits. Drift: parallel Trump-China-summit topic (topic-02), unrelated SK economy/defense/AI stories, Russia ICBM, Argentine/Latin American items.",
+          "csv_file": "_data/2026-05-13/topic-09.audit.csv"
+        }
+      ],
+      "meta": {
+        "wall_seconds": 127.64,
+        "llm_cost_usd": 0.0077893,
+        "n_findings": 1405,
+        "n_micro_clusters": 279,
+        "n_discovered_topics": 18,
+        "n_topics_after_assemble": 18,
+        "n_orphans": 642,
+        "agent_name": "curator_topic_discovery",
+        "agent_model": "google/gemini-3-flash-preview"
+      }
+    }
+  ]
+}

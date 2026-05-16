@@ -1,0 +1,5942 @@
+[
+  {
+    "title": "US and Iran maintain diplomatic dialogue despite exchange of fire in Strait of Hormuz",
+    "summary": "Donald Trump and Iranian officials have signaled a preference for continued diplomacy even after an exchange of missile and drone fire in the Strait of Hormuz. The clashes, which included the seizure of an oil tanker by Iran and reports of a Chinese tanker being attacked, have caused a spike in global oil prices and prompted ASEAN leaders to call for a joint response to the regional fallout.",
+    "source_ids": [
+      "finding-1171",
+      "finding-805",
+      "finding-666",
+      "finding-1369",
+      "finding-372",
+      "finding-703",
+      "finding-986",
+      "finding-8",
+      "finding-0",
+      "finding-554",
+      "finding-979",
+      "finding-1225",
+      "finding-633",
+      "finding-617",
+      "finding-501",
+      "finding-19",
+      "finding-564",
+      "finding-553",
+      "finding-933",
+      "finding-981",
+      "finding-32",
+      "finding-383",
+      "finding-751",
+      "finding-1169",
+      "finding-311",
+      "finding-328",
+      "finding-384",
+      "finding-62",
+      "finding-566",
+      "finding-745",
+      "finding-709",
+      "finding-556",
+      "finding-86",
+      "finding-1398",
+      "finding-616",
+      "finding-1347",
+      "finding-595",
+      "finding-33",
+      "finding-664",
+      "finding-1399",
+      "finding-368",
+      "finding-765",
+      "finding-1344",
+      "finding-39",
+      "finding-23",
+      "finding-81",
+      "finding-60",
+      "finding-30",
+      "finding-552",
+      "finding-760",
+      "finding-870",
+      "finding-377",
+      "finding-1394",
+      "finding-502",
+      "finding-28",
+      "finding-1200",
+      "finding-77",
+      "finding-662",
+      "finding-17",
+      "finding-737",
+      "finding-56",
+      "finding-588",
+      "finding-570",
+      "finding-389",
+      "finding-705",
+      "finding-439",
+      "finding-498",
+      "finding-1349",
+      "finding-934",
+      "finding-376",
+      "finding-1201",
+      "finding-656",
+      "finding-869",
+      "finding-734",
+      "finding-726",
+      "finding-1237",
+      "finding-296",
+      "finding-34",
+      "finding-511",
+      "finding-713",
+      "finding-41",
+      "finding-26",
+      "finding-500",
+      "finding-746",
+      "finding-61",
+      "finding-303",
+      "finding-1213",
+      "finding-362",
+      "finding-27",
+      "finding-488",
+      "finding-530",
+      "finding-719",
+      "finding-482",
+      "finding-584",
+      "finding-532",
+      "finding-1061",
+      "finding-764",
+      "finding-42",
+      "finding-1119",
+      "finding-953",
+      "finding-392",
+      "finding-117",
+      "finding-1210",
+      "finding-1166",
+      "finding-6",
+      "finding-503",
+      "finding-38",
+      "finding-52",
+      "finding-24",
+      "finding-818",
+      "finding-603",
+      "finding-66",
+      "finding-137",
+      "finding-283",
+      "finding-680",
+      "finding-569",
+      "finding-29",
+      "finding-25",
+      "finding-741",
+      "finding-47",
+      "finding-322",
+      "finding-1340",
+      "finding-330",
+      "finding-1343",
+      "finding-959",
+      "finding-571",
+      "finding-1134",
+      "finding-1072",
+      "finding-1393",
+      "finding-736",
+      "finding-557",
+      "finding-1106",
+      "finding-165",
+      "finding-115",
+      "finding-1260",
+      "finding-1396",
+      "finding-1098",
+      "finding-1333",
+      "finding-1334",
+      "finding-159",
+      "finding-364",
+      "finding-492",
+      "finding-106",
+      "finding-547",
+      "finding-710",
+      "finding-1342",
+      "finding-1359",
+      "finding-31",
+      "finding-618",
+      "finding-590",
+      "finding-100",
+      "finding-393",
+      "finding-594",
+      "finding-884",
+      "finding-45",
+      "finding-748",
+      "finding-13",
+      "finding-395",
+      "finding-161",
+      "finding-1400",
+      "finding-871",
+      "finding-1097",
+      "finding-167",
+      "finding-956",
+      "finding-346",
+      "finding-773",
+      "finding-58",
+      "finding-1353",
+      "finding-274",
+      "finding-952",
+      "finding-74",
+      "finding-79",
+      "finding-1341",
+      "finding-960",
+      "finding-351",
+      "finding-955",
+      "finding-750",
+      "finding-526",
+      "finding-397",
+      "finding-992",
+      "finding-720",
+      "finding-1101",
+      "finding-740",
+      "finding-135",
+      "finding-1357",
+      "finding-431",
+      "finding-258",
+      "finding-103",
+      "finding-958",
+      "finding-1338",
+      "finding-659",
+      "finding-1209",
+      "finding-767",
+      "finding-36",
+      "finding-518"
+    ],
+    "geographic_coverage": [
+      "Africa",
+      "Central Asia",
+      "East Asia",
+      "Europe",
+      "International",
+      "Latin America",
+      "Middle East",
+      "North America",
+      "South Asia"
+    ],
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "fr",
+      "it",
+      "pt",
+      "ru",
+      "tr"
+    ],
+    "source_count": 195,
+    "missing_regions": [
+      "Pacific",
+      "Southeast Asia"
+    ],
+    "missing_languages": [
+      "vi"
+    ],
+    "source_diversity": [
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Clarin",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Vanguard Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Le Monde",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Axios",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Clarin",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "The Conversation",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Axios",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Responsible Statecraft",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "The Conversation",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Foreign Policy",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Middle East Eye",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "The Conversation",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "The Diplomat",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Middle East Eye",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "NPR",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "IPS News",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Responsible Statecraft",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "The Diplomat",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Novaya Gazeta Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "IPS News",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "The Diplomat",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "ANSA",
+        "tier": 1,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Middle East Eye",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Moscow Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "NPR",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "CrisisWatch (ICG)",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Foreign Policy",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NPR",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "The Conversation",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Indian Express",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "The Conversation",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Tiempo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "CrisisWatch (ICG)",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "CrisisWatch (ICG)",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "CrisisWatch (ICG)",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Axios",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "The Conversation",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Tiempo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Middle East Eye",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Middle East Eye",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "CrisisWatch (ICG)",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Moscow Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "CrisisWatch (ICG)",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "The Diplomat",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      }
+    ],
+    "missing_perspectives": "No sources from: Pacific, Southeast Asia. No coverage in: vi"
+  },
+  {
+    "title": "Russia and Ukraine trade accusations over Victory Day ceasefire violations",
+    "summary": "As Russia commemorates the 81st anniversary of the defeat of Nazi Germany, both Moscow and Kyiv have accused each other of breaching a holiday ceasefire. Ukraine reports over 140 strikes and 10 assaults by Russian forces, while Russian officials claim they are conducting retaliatory strikes and expressed indignation over Volodymyr Zelensky's diplomatic activities in Yerevan.",
+    "source_ids": [
+      "finding-503",
+      "finding-13",
+      "finding-38",
+      "finding-547",
+      "finding-584",
+      "finding-161",
+      "finding-659",
+      "finding-705",
+      "finding-741",
+      "finding-15",
+      "finding-1359",
+      "finding-750",
+      "finding-772",
+      "finding-734",
+      "finding-742",
+      "finding-1396",
+      "finding-1134",
+      "finding-710",
+      "finding-759",
+      "finding-713",
+      "finding-135",
+      "finding-736",
+      "finding-1190",
+      "finding-680",
+      "finding-580",
+      "finding-150",
+      "finding-778",
+      "finding-5",
+      "finding-726",
+      "finding-156",
+      "finding-953",
+      "finding-163",
+      "finding-743",
+      "finding-706",
+      "finding-36",
+      "finding-594",
+      "finding-884",
+      "finding-749",
+      "finding-137",
+      "finding-159",
+      "finding-738",
+      "finding-19",
+      "finding-739",
+      "finding-56",
+      "finding-952",
+      "finding-748",
+      "finding-723",
+      "finding-162",
+      "finding-701",
+      "finding-731",
+      "finding-1234",
+      "finding-689",
+      "finding-747",
+      "finding-740",
+      "finding-708",
+      "finding-746",
+      "finding-155",
+      "finding-42",
+      "finding-716",
+      "finding-719",
+      "finding-154",
+      "finding-732",
+      "finding-728",
+      "finding-553",
+      "finding-372",
+      "finding-311",
+      "finding-566",
+      "finding-758",
+      "finding-164",
+      "finding-142",
+      "finding-158",
+      "finding-157",
+      "finding-140",
+      "finding-527",
+      "finding-617",
+      "finding-501",
+      "finding-979",
+      "finding-168",
+      "finding-633",
+      "finding-720",
+      "finding-528",
+      "finding-86",
+      "finding-1369",
+      "finding-666",
+      "finding-1169",
+      "finding-707",
+      "finding-146",
+      "finding-718",
+      "finding-147",
+      "finding-1379",
+      "finding-711",
+      "finding-144",
+      "finding-0",
+      "finding-733",
+      "finding-564",
+      "finding-136",
+      "finding-148",
+      "finding-23",
+      "finding-8",
+      "finding-1322",
+      "finding-700",
+      "finding-1213",
+      "finding-703",
+      "finding-1086",
+      "finding-717",
+      "finding-139",
+      "finding-745",
+      "finding-552",
+      "finding-771",
+      "finding-138",
+      "finding-595",
+      "finding-724",
+      "finding-702",
+      "finding-554",
+      "finding-1075",
+      "finding-1141",
+      "finding-134",
+      "finding-1347",
+      "finding-709",
+      "finding-656",
+      "finding-721",
+      "finding-603",
+      "finding-362",
+      "finding-1225",
+      "finding-328",
+      "finding-805",
+      "finding-33",
+      "finding-167",
+      "finding-959",
+      "finding-669",
+      "finding-664",
+      "finding-755",
+      "finding-752",
+      "finding-744",
+      "finding-169",
+      "finding-729",
+      "finding-166",
+      "finding-160",
+      "finding-1171",
+      "finding-779",
+      "finding-946",
+      "finding-679",
+      "finding-1097",
+      "finding-1386",
+      "finding-518",
+      "finding-722",
+      "finding-502",
+      "finding-762",
+      "finding-760",
+      "finding-569",
+      "finding-61",
+      "finding-1341",
+      "finding-767",
+      "finding-34",
+      "finding-1399",
+      "finding-751",
+      "finding-737",
+      "finding-29",
+      "finding-616",
+      "finding-149",
+      "finding-902",
+      "finding-986",
+      "finding-1191"
+    ],
+    "geographic_coverage": [
+      "Africa",
+      "Central Asia",
+      "East Asia",
+      "Europe",
+      "International",
+      "Latin America",
+      "Middle East",
+      "North America",
+      "Pacific",
+      "South Asia"
+    ],
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "fr",
+      "it",
+      "pt",
+      "ru",
+      "tr"
+    ],
+    "source_count": 163,
+    "missing_regions": [
+      "Southeast Asia"
+    ],
+    "missing_languages": [
+      "vi"
+    ],
+    "source_diversity": [
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Novaya Gazeta Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "The Conversation",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Moscow Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Moscow Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Novaya Gazeta Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Der Spiegel",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Novaya Gazeta Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Novaya Gazeta Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Moscow Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Axios",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Vanguard Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Le Monde",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Politico Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Novaya Gazeta Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Moscow Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "ABC News Australia",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Moscow Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Moscow Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Moscow Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Responsible Statecraft",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "ANSA",
+        "tier": 1,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Novaya Gazeta Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Tiempo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Politico Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "NPR",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "CrisisWatch (ICG)",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "The Conversation",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Press TV",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Axios",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Clarin",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      }
+    ],
+    "missing_perspectives": "No sources from: Southeast Asia. No coverage in: vi"
+  },
+  {
+    "title": "Donald Trump and Lula da Silva meet at White House to relink US-Brazil relations",
+    "summary": "Donald Trump and Lula da Silva held a private meeting in the Oval Office aimed at pragmatically relinking the relationship between the United States and Brazil. While both leaders characterized the meeting as successful, observers noted lingering tensions regarding trade tariffs and regional security.",
+    "source_ids": [
+      "finding-869",
+      "finding-330",
+      "finding-511",
+      "finding-1072",
+      "finding-1226",
+      "finding-1393",
+      "finding-1066",
+      "finding-1038",
+      "finding-1087",
+      "finding-1061",
+      "finding-57",
+      "finding-131",
+      "finding-103",
+      "finding-1088",
+      "finding-283",
+      "finding-52",
+      "finding-1169",
+      "finding-303",
+      "finding-482",
+      "finding-488",
+      "finding-1098",
+      "finding-392",
+      "finding-100",
+      "finding-383",
+      "finding-1366",
+      "finding-550",
+      "finding-1051",
+      "finding-577",
+      "finding-567",
+      "finding-458",
+      "finding-1096",
+      "finding-992",
+      "finding-1213",
+      "finding-1171",
+      "finding-777",
+      "finding-665",
+      "finding-896",
+      "finding-377",
+      "finding-55",
+      "finding-278",
+      "finding-556",
+      "finding-302",
+      "finding-593",
+      "finding-336",
+      "finding-1343",
+      "finding-296",
+      "finding-613",
+      "finding-469",
+      "finding-372",
+      "finding-555",
+      "finding-557",
+      "finding-4",
+      "finding-481",
+      "finding-1357",
+      "finding-1043",
+      "finding-473",
+      "finding-532",
+      "finding-86",
+      "finding-331",
+      "finding-41",
+      "finding-985",
+      "finding-1225",
+      "finding-491",
+      "finding-515",
+      "finding-638",
+      "finding-1219",
+      "finding-596",
+      "finding-624",
+      "finding-667",
+      "finding-981",
+      "finding-1035",
+      "finding-1399",
+      "finding-805",
+      "finding-818",
+      "finding-291",
+      "finding-143",
+      "finding-272"
+    ],
+    "geographic_coverage": [
+      "East Asia",
+      "Europe",
+      "International",
+      "Latin America",
+      "Middle East",
+      "North America",
+      "South Asia"
+    ],
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "fr",
+      "pt",
+      "tr"
+    ],
+    "source_count": 77,
+    "missing_regions": [
+      "Africa",
+      "Central Asia",
+      "Pacific",
+      "Southeast Asia"
+    ],
+    "missing_languages": [
+      "it",
+      "ru",
+      "vi"
+    ],
+    "source_diversity": [
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "The Conversation",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Tiempo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NPR",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Tiempo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Foreign Policy",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Axios",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Clarin",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Le Monde",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Financial Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Clarin",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "The Conversation",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      }
+    ],
+    "missing_perspectives": "No sources from: Africa, Central Asia, Pacific, Southeast Asia. No coverage in: it, ru, vi"
+  },
+  {
+    "title": "South African Constitutional Court orders Parliament to revisit Cyril Ramaphosa impeachment",
+    "summary": "The Constitutional Court of South Africa has ruled that Parliament acted unlawfully when it blocked impeachment proceedings against Cyril Ramaphosa. The decision has led to renewed calls for the president's resignation and warnings from political allies about the precedent of using judicial rulings for political vendettas.",
+    "source_ids": [
+      "finding-174",
+      "finding-585",
+      "finding-962",
+      "finding-506",
+      "finding-208",
+      "finding-1108",
+      "finding-1018",
+      "finding-1093",
+      "finding-800",
+      "finding-1088",
+      "finding-233",
+      "finding-251",
+      "finding-1090",
+      "finding-253",
+      "finding-1373",
+      "finding-262",
+      "finding-67",
+      "finding-339",
+      "finding-1382",
+      "finding-725",
+      "finding-194",
+      "finding-1128",
+      "finding-69",
+      "finding-799",
+      "finding-496",
+      "finding-810",
+      "finding-359",
+      "finding-884",
+      "finding-1152",
+      "finding-1077",
+      "finding-905",
+      "finding-967",
+      "finding-250",
+      "finding-1029",
+      "finding-707",
+      "finding-965",
+      "finding-1140",
+      "finding-483",
+      "finding-461",
+      "finding-935",
+      "finding-363",
+      "finding-658",
+      "finding-1358",
+      "finding-1044",
+      "finding-808",
+      "finding-1367",
+      "finding-239",
+      "finding-326",
+      "finding-875",
+      "finding-424",
+      "finding-1067",
+      "finding-1043",
+      "finding-201",
+      "finding-608",
+      "finding-454",
+      "finding-809",
+      "finding-238",
+      "finding-1084",
+      "finding-340",
+      "finding-1051",
+      "finding-294",
+      "finding-930",
+      "finding-1123",
+      "finding-1015",
+      "finding-604",
+      "finding-568",
+      "finding-230",
+      "finding-928",
+      "finding-1039",
+      "finding-817",
+      "finding-1380",
+      "finding-187",
+      "finding-899",
+      "finding-1053",
+      "finding-700"
+    ],
+    "geographic_coverage": [
+      "Africa",
+      "East Asia",
+      "Europe",
+      "International",
+      "Latin America",
+      "Middle East",
+      "South Asia"
+    ],
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "fr",
+      "it",
+      "pt",
+      "ru",
+      "tr"
+    ],
+    "source_count": 75,
+    "missing_regions": [
+      "Central Asia",
+      "North America",
+      "Pacific",
+      "Southeast Asia"
+    ],
+    "missing_languages": [
+      "vi"
+    ],
+    "source_diversity": [
+      {
+        "name": "AllAfrica",
+        "tier": 4,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Vanguard Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Daily Nation",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Tiempo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Premium Times Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Agencia Brasil",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Middle East Eye",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Politico Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "AllAfrica",
+        "tier": 4,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Middle East Eye",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Vanguard Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Agencia Brasil",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Vanguard Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Premium Times Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "AllAfrica",
+        "tier": 4,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "ANSA",
+        "tier": 1,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Premium Times Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "ANSA",
+        "tier": 1,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Premium Times Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Politico Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "AllAfrica",
+        "tier": 4,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      }
+    ],
+    "missing_perspectives": "No sources from: Central Asia, North America, Pacific, Southeast Asia. No coverage in: vi"
+  },
+  {
+    "title": "Hantavirus outbreak on cruise ship MV Hondius triggers international health response",
+    "summary": "The World Health Organization and national health agencies are monitoring a hantavirus outbreak linked to the cruise ship MV Hondius. While cases have been confirmed in the UK and suspected in Spain, health officials have emphasized that the virus does not represent the start of a new pandemic, despite the US raising emergency alert levels.",
+    "source_ids": [
+      "finding-619",
+      "finding-365",
+      "finding-1179",
+      "finding-1350",
+      "finding-308",
+      "finding-635",
+      "finding-670",
+      "finding-786",
+      "finding-988",
+      "finding-691",
+      "finding-548",
+      "finding-782",
+      "finding-108",
+      "finding-531",
+      "finding-536",
+      "finding-1132",
+      "finding-48",
+      "finding-507",
+      "finding-9",
+      "finding-683",
+      "finding-1227",
+      "finding-682",
+      "finding-83",
+      "finding-332",
+      "finding-343",
+      "finding-537",
+      "finding-861",
+      "finding-948",
+      "finding-783",
+      "finding-766",
+      "finding-1095",
+      "finding-569",
+      "finding-1094",
+      "finding-1370",
+      "finding-1284",
+      "finding-784",
+      "finding-534",
+      "finding-785",
+      "finding-206",
+      "finding-50",
+      "finding-1086",
+      "finding-648",
+      "finding-932",
+      "finding-573",
+      "finding-831",
+      "finding-404",
+      "finding-892",
+      "finding-1075",
+      "finding-1107",
+      "finding-403",
+      "finding-692",
+      "finding-1196",
+      "finding-1335",
+      "finding-106",
+      "finding-923",
+      "finding-877"
+    ],
+    "geographic_coverage": [
+      "Africa",
+      "East Asia",
+      "Europe",
+      "International",
+      "Latin America",
+      "Middle East",
+      "North America",
+      "South Asia",
+      "Southeast Asia"
+    ],
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "fr",
+      "pt",
+      "tr",
+      "vi"
+    ],
+    "source_count": 56,
+    "missing_regions": [
+      "Central Asia",
+      "Pacific"
+    ],
+    "missing_languages": [
+      "it",
+      "ru"
+    ],
+    "source_diversity": [
+      {
+        "name": "Axios",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "WHO",
+        "tier": 1,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Le Monde",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Clarin",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Der Spiegel",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "El Tiempo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NPR",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Tiempo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "VnExpress",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Daily Nation",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "NPR",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "CNA",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "CNA",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Der Spiegel",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "CrisisWatch (ICG)",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      }
+    ],
+    "missing_perspectives": "No sources from: Central Asia, Pacific. No coverage in: it, ru"
+  },
+  {
+    "title": "Internal crisis hits Real Madrid following training ground altercation",
+    "summary": "Real Madrid is facing a reputational crisis following a physical altercation between Federico Valverde and Aurelien Tchouameni. The club is reportedly searching for a 'topo' (mole) who leaked details of the fight and subsequent emergency meetings to the press ahead of the upcoming Clásico.",
+    "source_ids": [
+      "finding-1144",
+      "finding-321",
+      "finding-792",
+      "finding-811",
+      "finding-1328",
+      "finding-947",
+      "finding-790",
+      "finding-789",
+      "finding-882",
+      "finding-791",
+      "finding-798",
+      "finding-877",
+      "finding-1158",
+      "finding-853",
+      "finding-996",
+      "finding-1102",
+      "finding-787",
+      "finding-872",
+      "finding-1141",
+      "finding-1192",
+      "finding-885",
+      "finding-347",
+      "finding-1039",
+      "finding-1067",
+      "finding-840",
+      "finding-1118",
+      "finding-1335",
+      "finding-1125",
+      "finding-1136",
+      "finding-1074",
+      "finding-1149",
+      "finding-1165",
+      "finding-1182",
+      "finding-242",
+      "finding-837",
+      "finding-1043",
+      "finding-1000",
+      "finding-1162",
+      "finding-785",
+      "finding-500",
+      "finding-836",
+      "finding-1223",
+      "finding-45",
+      "finding-1181",
+      "finding-844",
+      "finding-265",
+      "finding-1189",
+      "finding-1167",
+      "finding-862"
+    ],
+    "geographic_coverage": [
+      "East Asia",
+      "Europe",
+      "International",
+      "Latin America",
+      "Middle East",
+      "Pacific"
+    ],
+    "languages": [
+      "en",
+      "es",
+      "pt",
+      "tr"
+    ],
+    "source_count": 49,
+    "missing_regions": [
+      "Africa",
+      "Central Asia",
+      "North America",
+      "South Asia",
+      "Southeast Asia"
+    ],
+    "missing_languages": [
+      "de",
+      "fr",
+      "it",
+      "ru",
+      "vi"
+    ],
+    "source_diversity": [
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "ABC News Australia",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "CrisisWatch (ICG)",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Agencia Brasil",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "IPS News",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      }
+    ],
+    "missing_perspectives": "No sources from: Africa, Central Asia, North America, South Asia, Southeast Asia. No coverage in: de, fr, it, ru, vi"
+  },
+  {
+    "title": "Tamil Nadu government formation proceeds with support for Vijay's TVK party",
+    "summary": "Political shifts in Tamil Nadu see the Left and VCK parties extending support to Vijay's TVK for government formation. The development has caused friction within the Congress party and its existing alliance with the DMK.",
+    "source_ids": [
+      "finding-353",
+      "finding-1248",
+      "finding-589",
+      "finding-357",
+      "finding-1265",
+      "finding-352",
+      "finding-370",
+      "finding-355",
+      "finding-1264",
+      "finding-354",
+      "finding-558",
+      "finding-1246",
+      "finding-1373",
+      "finding-1282",
+      "finding-356",
+      "finding-1283",
+      "finding-428",
+      "finding-442",
+      "finding-614",
+      "finding-837",
+      "finding-966",
+      "finding-366",
+      "finding-299",
+      "finding-272",
+      "finding-1318",
+      "finding-1263",
+      "finding-676",
+      "finding-661",
+      "finding-1204",
+      "finding-1250",
+      "finding-253",
+      "finding-942",
+      "finding-627",
+      "finding-129",
+      "finding-990",
+      "finding-220",
+      "finding-1005",
+      "finding-12",
+      "finding-1363",
+      "finding-1367",
+      "finding-1358",
+      "finding-1242",
+      "finding-1055",
+      "finding-657",
+      "finding-821",
+      "finding-64",
+      "finding-1093"
+    ],
+    "geographic_coverage": [
+      "Africa",
+      "East Asia",
+      "Europe",
+      "International",
+      "Latin America",
+      "Middle East",
+      "North America",
+      "South Asia",
+      "Southeast Asia"
+    ],
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "fr",
+      "pt",
+      "tr",
+      "vi"
+    ],
+    "source_count": 47,
+    "missing_regions": [
+      "Central Asia",
+      "Pacific"
+    ],
+    "missing_languages": [
+      "it",
+      "ru"
+    ],
+    "source_diversity": [
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Indian Express",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Indian Express",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Indian Express",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Indian Express",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "VnExpress",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "VnExpress",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Axios",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Vanguard Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "VnExpress",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Indian Express",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "The Diplomat",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Indian Express",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Financial Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Clarin",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Daily Nation",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Indian Express",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Middle East Eye",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Tiempo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      }
+    ],
+    "missing_perspectives": "No sources from: Central Asia, Pacific. No coverage in: it, ru"
+  },
+  {
+    "title": "US trade court strikes down Donald Trump's 10 percent universal tariffs",
+    "summary": "A US trade court has ruled that the 10 percent global tariffs imposed by Donald Trump are illegal. The ruling comes as Trump issues an ultimatum to European trade partners to reach an agreement by July 4 and prepares for a high-stakes summit with Xi Jinping in Beijing.",
+    "source_ids": [
+      "finding-613",
+      "finding-593",
+      "finding-1219",
+      "finding-55",
+      "finding-638",
+      "finding-1035",
+      "finding-469",
+      "finding-481",
+      "finding-473",
+      "finding-665",
+      "finding-302",
+      "finding-875",
+      "finding-291",
+      "finding-596",
+      "finding-491",
+      "finding-667",
+      "finding-712",
+      "finding-515",
+      "finding-550",
+      "finding-1229",
+      "finding-1384",
+      "finding-1087",
+      "finding-1097",
+      "finding-330",
+      "finding-629",
+      "finding-1072",
+      "finding-522",
+      "finding-4",
+      "finding-283",
+      "finding-745",
+      "finding-1216",
+      "finding-979",
+      "finding-1051",
+      "finding-567",
+      "finding-633",
+      "finding-58",
+      "finding-501",
+      "finding-595",
+      "finding-869",
+      "finding-557",
+      "finding-131",
+      "finding-957",
+      "finding-960",
+      "finding-656",
+      "finding-981",
+      "finding-1224",
+      "finding-1199"
+    ],
+    "geographic_coverage": [
+      "Africa",
+      "Central Asia",
+      "East Asia",
+      "Europe",
+      "International",
+      "Latin America",
+      "Middle East",
+      "North America"
+    ],
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "pt",
+      "ru"
+    ],
+    "source_count": 47,
+    "missing_regions": [
+      "Pacific",
+      "South Asia",
+      "Southeast Asia"
+    ],
+    "missing_languages": [
+      "fr",
+      "it",
+      "tr",
+      "vi"
+    ],
+    "source_diversity": [
+      {
+        "name": "Axios",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Le Monde",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Politico Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Tiempo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Financial Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Vanguard Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Le Monde",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Clarin",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "InSight Crime",
+        "tier": 3,
+        "editorial_independence": "independent"
+      }
+    ],
+    "missing_perspectives": "No sources from: Pacific, South Asia, Southeast Asia. No coverage in: fr, it, tr, vi"
+  },
+  {
+    "title": "China sentences former defense ministers to death with reprieve for corruption",
+    "summary": "Chinese state media announced that former defense ministers have been handed suspended death sentences following corruption investigations. The move is framed by the party as a demonstration that disloyalty and graft will not be tolerated within the high command of the military.",
+    "source_ids": [
+      "finding-1202",
+      "finding-675",
+      "finding-521",
+      "finding-1109",
+      "finding-116",
+      "finding-586",
+      "finding-105",
+      "finding-449",
+      "finding-456",
+      "finding-997",
+      "finding-67",
+      "finding-69",
+      "finding-1029",
+      "finding-955",
+      "finding-251",
+      "finding-202",
+      "finding-725",
+      "finding-461",
+      "finding-379",
+      "finding-148",
+      "finding-1303",
+      "finding-539",
+      "finding-1134",
+      "finding-393",
+      "finding-1382",
+      "finding-127",
+      "finding-1346",
+      "finding-1400",
+      "finding-95",
+      "finding-1053",
+      "finding-225",
+      "finding-1108",
+      "finding-1257",
+      "finding-1176",
+      "finding-972",
+      "finding-243",
+      "finding-905",
+      "finding-109",
+      "finding-1269",
+      "finding-1084",
+      "finding-808",
+      "finding-414",
+      "finding-541"
+    ],
+    "geographic_coverage": [
+      "Africa",
+      "Central Asia",
+      "East Asia",
+      "Europe",
+      "International",
+      "Latin America",
+      "Middle East",
+      "South Asia",
+      "Southeast Asia"
+    ],
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "pt",
+      "ru",
+      "tr",
+      "vi"
+    ],
+    "source_count": 43,
+    "missing_regions": [
+      "North America",
+      "Pacific"
+    ],
+    "missing_languages": [
+      "fr",
+      "it"
+    ],
+    "source_diversity": [
+      {
+        "name": "The Diplomat",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Middle East Eye",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Middle East Eye",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Eurasianet",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Agencia Brasil",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Daily Nation",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "VnExpress",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Politico Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Foreign Policy",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "The Conversation",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Daily Nation",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Indian Express",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Vanguard Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Agencia Brasil",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "VnExpress",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "CNA",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      }
+    ],
+    "missing_perspectives": "No sources from: North America, Pacific. No coverage in: fr, it"
+  },
+  {
+    "title": "Pope Leo XIV marks first anniversary amid tensions with US administration",
+    "summary": "As Pope Leo XIV completes his first year in office, analysts describe him as a moral antagonist to the global far-right. Tensions were noted during a meeting with Marco Rubio, reflecting a rift between the Vatican and the White House over the ongoing war in the Middle East.",
+    "source_ids": [
+      "finding-590",
+      "finding-650",
+      "finding-818",
+      "finding-835",
+      "finding-640",
+      "finding-532",
+      "finding-1048",
+      "finding-383",
+      "finding-6",
+      "finding-781",
+      "finding-651",
+      "finding-1237",
+      "finding-1166",
+      "finding-1104",
+      "finding-1319",
+      "finding-843",
+      "finding-1154",
+      "finding-750",
+      "finding-706",
+      "finding-221",
+      "finding-659",
+      "finding-578",
+      "finding-1111",
+      "finding-1396",
+      "finding-351",
+      "finding-862",
+      "finding-694",
+      "finding-758",
+      "finding-680",
+      "finding-1360",
+      "finding-392",
+      "finding-15",
+      "finding-107"
+    ],
+    "geographic_coverage": [
+      "Africa",
+      "East Asia",
+      "Europe",
+      "International",
+      "Latin America",
+      "Middle East",
+      "North America",
+      "South Asia",
+      "Southeast Asia"
+    ],
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "fr",
+      "pt",
+      "ru",
+      "vi"
+    ],
+    "source_count": 33,
+    "missing_regions": [
+      "Central Asia",
+      "Pacific"
+    ],
+    "missing_languages": [
+      "it",
+      "tr"
+    ],
+    "source_diversity": [
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Le Monde",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Japan Today",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "VnExpress",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Kyiv Independent",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Daily Nation",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "NPR",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "The Conversation",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Der Spiegel",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      }
+    ],
+    "missing_perspectives": "No sources from: Central Asia, Pacific. No coverage in: it, tr"
+  },
+  {
+    "title": "Labour Party suffers significant losses in UK local elections as Nigel Farage gains",
+    "summary": "Early results from British local elections show a major defeat for the Labour Party and a surge for Nigel Farage's political movement. Keir Starmer has stated he will not resign despite the results, which Farage described as a historic shift in British politics.",
+    "source_ids": [
+      "finding-990",
+      "finding-11",
+      "finding-657",
+      "finding-12",
+      "finding-559",
+      "finding-806",
+      "finding-636",
+      "finding-563",
+      "finding-1363",
+      "finding-1345",
+      "finding-1387",
+      "finding-627",
+      "finding-628",
+      "finding-96",
+      "finding-672",
+      "finding-545",
+      "finding-356",
+      "finding-668",
+      "finding-1373",
+      "finding-549",
+      "finding-754",
+      "finding-1093",
+      "finding-170",
+      "finding-212",
+      "finding-655",
+      "finding-676",
+      "finding-678",
+      "finding-1337",
+      "finding-558",
+      "finding-614",
+      "finding-1204"
+    ],
+    "geographic_coverage": [
+      "Africa",
+      "East Asia",
+      "Europe",
+      "International",
+      "Latin America",
+      "Middle East",
+      "North America",
+      "South Asia"
+    ],
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "fr"
+    ],
+    "source_count": 31,
+    "missing_regions": [
+      "Central Asia",
+      "Pacific",
+      "Southeast Asia"
+    ],
+    "missing_languages": [
+      "it",
+      "pt",
+      "ru",
+      "tr",
+      "vi"
+    ],
+    "source_diversity": [
+      {
+        "name": "Clarin",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Le Monde",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Foreign Policy",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Politico Europe",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Financial Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Financial Times",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "NDTV",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "El Tiempo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Ukrinform",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Daily Nation",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "CrisisWatch (ICG)",
+        "tier": 3,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Axios",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "The Diplomat",
+        "tier": 3,
+        "editorial_independence": "independent"
+      }
+    ],
+    "missing_perspectives": "No sources from: Central Asia, Pacific, Southeast Asia. No coverage in: it, pt, ru, tr, vi"
+  },
+  {
+    "title": "Bank of Mexico concludes interest rate cut cycle at 6.5 percent",
+    "summary": "Banxico has ended its cycle of interest rate reductions, leaving the reference rate at 6.5 percent. The decision was made as inflation in Mexico showed signs of slowing to 4.45 percent in April, though some board members voted against the final cut.",
+    "source_ids": [
+      "finding-1160",
+      "finding-271",
+      "finding-297",
+      "finding-259",
+      "finding-325",
+      "finding-344",
+      "finding-290",
+      "finding-300",
+      "finding-1146",
+      "finding-313",
+      "finding-1172",
+      "finding-841",
+      "finding-1118",
+      "finding-349",
+      "finding-318",
+      "finding-893",
+      "finding-982",
+      "finding-998",
+      "finding-256",
+      "finding-678",
+      "finding-1073",
+      "finding-307",
+      "finding-234",
+      "finding-244",
+      "finding-798",
+      "finding-289"
+    ],
+    "geographic_coverage": [
+      "Africa",
+      "Europe",
+      "Latin America"
+    ],
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "pt",
+      "tr"
+    ],
+    "source_count": 26,
+    "missing_regions": [
+      "Central Asia",
+      "East Asia",
+      "International",
+      "Middle East",
+      "North America",
+      "Pacific",
+      "South Asia",
+      "Southeast Asia"
+    ],
+    "missing_languages": [
+      "fr",
+      "it",
+      "ru",
+      "vi"
+    ],
+    "source_diversity": [
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Clarin",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Tagesschau",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Folha de S.Paulo",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Premium Times Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Agencia Brasil",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      }
+    ],
+    "missing_perspectives": "No sources from: Central Asia, East Asia, International, Middle East, North America, Pacific, South Asia, Southeast Asia. No coverage in: fr, it, ru, vi"
+  },
+  {
+    "title": "K-pop group BTS begins successful concert residency in Mexico City",
+    "summary": "BTS performed the first of three sold-out concerts at the Estadio GNP Seguros in Mexico City. The group's arrival included a visit to the National Palace to meet with Claudia Sheinbaum, while local authorities managed significant traffic and logistical challenges surrounding the event.",
+    "source_ids": [
+      "finding-345",
+      "finding-1180",
+      "finding-280",
+      "finding-333",
+      "finding-327",
+      "finding-295",
+      "finding-323",
+      "finding-310",
+      "finding-337",
+      "finding-840",
+      "finding-455",
+      "finding-281",
+      "finding-314",
+      "finding-292",
+      "finding-1133",
+      "finding-1167",
+      "finding-1172",
+      "finding-476",
+      "finding-422",
+      "finding-912",
+      "finding-287",
+      "finding-274",
+      "finding-349",
+      "finding-1317",
+      "finding-798"
+    ],
+    "geographic_coverage": [
+      "East Asia",
+      "Europe",
+      "Latin America",
+      "Southeast Asia"
+    ],
+    "languages": [
+      "en",
+      "es",
+      "tr",
+      "vi"
+    ],
+    "source_count": 25,
+    "missing_regions": [
+      "Africa",
+      "Central Asia",
+      "International",
+      "Middle East",
+      "North America",
+      "Pacific",
+      "South Asia"
+    ],
+    "missing_languages": [
+      "de",
+      "fr",
+      "it",
+      "pt",
+      "ru"
+    ],
+    "source_diversity": [
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Yonhap",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "El Financiero",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "VnExpress",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      }
+    ],
+    "missing_perspectives": "No sources from: Africa, Central Asia, International, Middle East, North America, Pacific, South Asia. No coverage in: de, fr, it, pt, ru"
+  },
+  {
+    "title": "Mount Dukono eruption in Indonesia kills three hikers",
+    "summary": "A volcanic eruption at Mount Dukono has resulted in the deaths of three hikers, including two Singaporeans. Indonesian rescue teams are searching for additional missing persons as the region remains on high alert for further volcanic activity.",
+    "source_ids": [
+      "finding-114",
+      "finding-378",
+      "finding-14",
+      "finding-587",
+      "finding-538",
+      "finding-46",
+      "finding-505",
+      "finding-206",
+      "finding-175",
+      "finding-976",
+      "finding-186",
+      "finding-1372",
+      "finding-172",
+      "finding-1106",
+      "finding-184",
+      "finding-1119",
+      "finding-891",
+      "finding-887",
+      "finding-520",
+      "finding-1155"
+    ],
+    "geographic_coverage": [
+      "Africa",
+      "East Asia",
+      "Europe",
+      "International",
+      "Latin America",
+      "Middle East",
+      "South Asia"
+    ],
+    "languages": [
+      "en",
+      "es",
+      "fr",
+      "tr"
+    ],
+    "source_count": 20,
+    "missing_regions": [
+      "Central Asia",
+      "North America",
+      "Pacific",
+      "Southeast Asia"
+    ],
+    "missing_languages": [
+      "de",
+      "it",
+      "pt",
+      "ru",
+      "vi"
+    ],
+    "source_diversity": [
+      {
+        "name": "South China Morning Post",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "Dawn",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Al Jazeera",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Anadolu Agency",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Daily Nation",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "AllAfrica",
+        "tier": 4,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Vanguard Nigeria",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "AllAfrica",
+        "tier": 4,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RFI",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "AllAfrica",
+        "tier": 4,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "AllAfrica",
+        "tier": 4,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Hurriyet",
+        "tier": 2,
+        "editorial_independence": "state_influenced"
+      },
+      {
+        "name": "El Pais",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "BBC World",
+        "tier": 1,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      }
+    ],
+    "missing_perspectives": "No sources from: Central Asia, North America, Pacific, Southeast Asia. No coverage in: de, it, pt, ru, vi"
+  },
+  {
+    "title": "Naturalist David Attenborough celebrates 100th birthday",
+    "summary": "Global tributes have been paid to broadcaster and naturalist David Attenborough as he reaches his 100th birthday. Coverage across multiple languages celebrates his role in creating the modern nature documentary genre and his lifelong commitment to wildlife conservation.",
+    "source_ids": [
+      "finding-578",
+      "finding-591",
+      "finding-704",
+      "finding-697",
+      "finding-542",
+      "finding-1111",
+      "finding-758",
+      "finding-759"
+    ],
+    "geographic_coverage": [
+      "Europe",
+      "International",
+      "Latin America",
+      "North America"
+    ],
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "ru"
+    ],
+    "source_count": 8,
+    "missing_regions": [
+      "Africa",
+      "Central Asia",
+      "East Asia",
+      "Middle East",
+      "Pacific",
+      "South Asia",
+      "Southeast Asia"
+    ],
+    "missing_languages": [
+      "fr",
+      "it",
+      "pt",
+      "tr",
+      "vi"
+    ],
+    "source_diversity": [
+      {
+        "name": "NPR",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "DW News",
+        "tier": 2,
+        "editorial_independence": "publicly_funded_autonomous"
+      },
+      {
+        "name": "Meduza",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Der Spiegel",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Guardian World",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "Infobae",
+        "tier": 2,
+        "editorial_independence": "independent"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      },
+      {
+        "name": "RT",
+        "tier": 2,
+        "editorial_independence": "state_directed"
+      }
+    ],
+    "missing_perspectives": "No sources from: Africa, Central Asia, East Asia, Middle East, Pacific, South Asia, Southeast Asia. No coverage in: fr, it, pt, tr, vi"
+  }
+]

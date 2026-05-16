@@ -1,0 +1,719 @@
+{
+  "topic_index": 2,
+  "topic_title": "Donald Trump and Lula da Silva meet at White House to relink US-Brazil relations",
+  "topic_summary": "Donald Trump and Lula da Silva held a private meeting in the Oval Office aimed at pragmatically relinking the relationship between the United States and Brazil. While both leaders characterized the meeting as successful, observers noted lingering tensions regarding trade tariffs and regional security.",
+  "source_count": 77,
+  "geographic_coverage": [
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East",
+    "North America",
+    "South Asia"
+  ],
+  "languages": [
+    "de",
+    "en",
+    "es",
+    "fr",
+    "pt",
+    "tr"
+  ],
+  "n_findings": 77,
+  "findings": [
+    {
+      "source_id": "finding-869",
+      "title": "Trump y Lula dan por relanzada la relación de Estados Unidos y Brasil tras su encuentro",
+      "summary": "Los dos mandatarios se han reunido durante cerca de tres horas en la Casa Blanca para pasar página en sus desencuentros sobre la guerra en Irán, el caso Bolsonaro o las investigaciones de Washington a las prácticas comerciales brasileñas",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Trump y Lula dan por relanzada la relación de Estados Unidos y Brasil tras su encuentro | Los dos mandatarios se han reunido durante cerca de tres horas en la Casa Blanca para pasar página en sus desencuentros sobre la guerra en Irán, el caso Bolsonaro o las investigaciones de Washington a las prácticas comerciales brasileñas"
+    },
+    {
+      "source_id": "finding-330",
+      "title": "Trump y Lula se reúnen: ¿De qué hablaron los presidentes en medio de tensión por aranceles?",
+      "summary": "El presidente Donald Trump aseguró  que el encuentro con Lula da Silva en la Casa Blanca 'transcurrió muy bien'.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Trump y Lula se reúnen: ¿De qué hablaron los presidentes en medio de tensión por aranceles? | El presidente Donald Trump aseguró  que el encuentro con Lula da Silva en la Casa Blanca 'transcurrió muy bien'."
+    },
+    {
+      "source_id": "finding-511",
+      "title": "Trump and Lula's private Oval Office meeting signals lingering strain - and effort to avoid tension",
+      "summary": "The US and Brazilian presidents did not appear together publicly, but traded compliments after their talks.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Trump and Lula's private Oval Office meeting signals lingering strain - and effort to avoid tension | The US and Brazilian presidents did not appear together publicly, but traded compliments after their talks."
+    },
+    {
+      "source_id": "finding-1072",
+      "title": "Tarifas, guerra, Copa e 'amor � primeira vista': entenda a reuni�o de Lula e Trump",
+      "summary": "Os presidentes do Brasil, Luiz In�cio Lula da Silva (PT), e dos Estados Unidos, Donald Trump, reuniram-se nesta quinta-feira (7) na Casa Branca. Durante tr�s horas, os chefes de Estado falaram sobre combate ao crime organizado, tarifas, minerais cr�ticos e rela��o das big techs.\nLeia mais (05/07/2026 - 21h25)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Tarifas, guerra, Copa e 'amor � primeira vista': entenda a reuni�o de Lula e Trump | Os presidentes do Brasil, Luiz In�cio Lula da Silva (PT), e dos Estados Unidos, Donald Trump, reuniram-se nesta quinta-feira (7) na Casa Branca. Durante tr�s horas, os chefes de Estado falaram sobre combate ao crime organizado, tarifas, minerais cr�ticos e rela��o das big techs.\nLeia mais (05/07/2026 - 21h25)"
+    },
+    {
+      "source_id": "finding-1226",
+      "title": "Brazil's Lula sees reset in relations with U.S. after talks with Trump",
+      "summary": "Brazilian President Luiz Inacio Lula da Silva said on Thursday that three hours of White House talks with U.S. President Donald Trump had helped to ‌stabilize Brazil-U.S. relations…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Brazil's Lula sees reset in relations with U.S. after talks with Trump | Brazilian President Luiz Inacio Lula da Silva said on Thursday that three hours of White House talks with U.S. President Donald Trump had helped to ‌stabilize Brazil-U.S. relations…"
+    },
+    {
+      "source_id": "finding-1393",
+      "title": "Trump and Lula at the White House: a relationship built on pragmatism and a broader regional calculus",
+      "summary": "Bilateral meeting between both presidents sent a clear signal to Lula’s domestic audience: the relationship with Washington is not broken, and it does not require a Bolsonaro to fix it.",
+      "description": "",
+      "language": "en",
+      "outlet": "The Conversation",
+      "text": "Trump and Lula at the White House: a relationship built on pragmatism and a broader regional calculus | Bilateral meeting between both presidents sent a clear signal to Lula’s domestic audience: the relationship with Washington is not broken, and it does not require a Bolsonaro to fix it."
+    },
+    {
+      "source_id": "finding-1066",
+      "title": "'Ningu�m saber� o que ocorreu', diz leitor sobre encontro de Lula e Trump a portas fechadas",
+      "summary": "Encontro na Casa Branca\n\"Lula se re�ne com Trump na Casa Branca, em Washington\" (Mundo, 7/5). O le�o que ruge nos palanques dos Sem Terra no Brasil l� fora vira um lobinho mau. Reuni�o a portas fechadas significa que nunca ningu�m saber� o que ocorreu.\nJair Pereira (Medianeira, PR)\nLeia mais (05/07/2026 - 22h00)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "'Ningu�m saber� o que ocorreu', diz leitor sobre encontro de Lula e Trump a portas fechadas | Encontro na Casa Branca\n\"Lula se re�ne com Trump na Casa Branca, em Washington\" (Mundo, 7/5). O le�o que ruge nos palanques dos Sem Terra no Brasil l� fora vira um lobinho mau. Reuni�o a portas fechadas significa que nunca ningu�m saber� o que ocorreu.\nJair Pereira (Medianeira, PR)\nLeia mais (05/07/2026 - 22h00)"
+    },
+    {
+      "source_id": "finding-1038",
+      "title": "Ap�s encontro, Trump diz que Lula � um 'homem bom, cara esperto'",
+      "summary": "O presidente dos Estados Unidos, Donald Trump, definiu seu hom�logo do Brasil, Luiz In�cio Lula da Silva (PT), como um \"homem bom\" e \"um cara esperto\".\nLeia mais (05/07/2026 - 23h13)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Ap�s encontro, Trump diz que Lula � um 'homem bom, cara esperto' | O presidente dos Estados Unidos, Donald Trump, definiu seu hom�logo do Brasil, Luiz In�cio Lula da Silva (PT), como um \"homem bom\" e \"um cara esperto\".\nLeia mais (05/07/2026 - 23h13)"
+    },
+    {
+      "source_id": "finding-1087",
+      "title": "Lula prop�e grupo de trabalho com EUA para resolver impasse sobre tarifas",
+      "summary": "Ap�s encontro com o presidente dos Estados Unidos, Donald Trump, o presidente Luiz In�cio Lula da Silva afirmou nesta quinta-feira (7) que sugeriu a cria��o de um grupo entre os dois pa�ses para resolver quest�es ligadas �s tarifas e � investiga��o comercial aberta pelos americanos em 2025.\nLeia mais (05/07/2026 - 20h00)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Lula prop�e grupo de trabalho com EUA para resolver impasse sobre tarifas | Ap�s encontro com o presidente dos Estados Unidos, Donald Trump, o presidente Luiz In�cio Lula da Silva afirmou nesta quinta-feira (7) que sugeriu a cria��o de um grupo entre os dois pa�ses para resolver quest�es ligadas �s tarifas e � investiga��o comercial aberta pelos americanos em 2025.\nLeia mais (05/07/2026 - 20h00)"
+    },
+    {
+      "source_id": "finding-1061",
+      "title": "Esquerda v� bolsonarismo isolado ap�s encontro Lula-Trump, e direita minimiza",
+      "summary": "Aliados do presidente Lula (PT) avaliam que a visita do petista ao presidente dos Estados Unidos, Donald Trump, deve isolar o bolsonarismo, grupo pol�tico que busca manter proximidade com o americano. Membros da direita, por sua vez, minimizam o encontro realizado entre os dois l�deres nesta quinta (7).\nLeia mais (05/07/2026 - 22h12)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Esquerda v� bolsonarismo isolado ap�s encontro Lula-Trump, e direita minimiza | Aliados do presidente Lula (PT) avaliam que a visita do petista ao presidente dos Estados Unidos, Donald Trump, deve isolar o bolsonarismo, grupo pol�tico que busca manter proximidade com o americano. Membros da direita, por sua vez, minimizam o encontro realizado entre os dois l�deres nesta quinta (7).\nLeia mais (05/07/2026 - 22h12)"
+    },
+    {
+      "source_id": "finding-57",
+      "title": "Brazilian President Lula reveals Trump’s lack of intent to militarily intervene in Cuba",
+      "summary": "'I heard—and I hope the translation was correct—him say that he is not thinking about invading Cuba,' Lula says, following meeting with US President Donald Trump at White House",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Brazilian President Lula reveals Trump’s lack of intent to militarily intervene in Cuba | 'I heard—and I hope the translation was correct—him say that he is not thinking about invading Cuba,' Lula says, following meeting with US President Donald Trump at White House"
+    },
+    {
+      "source_id": "finding-131",
+      "title": "Lula won’t sideline China or anyone in rare earths, tells Trump refining stays in Brazil",
+      "summary": "Brazilian President Luiz Inacio Lula da Silva told US President Donald Trump on Thursday that his country’s rare earth reserves are open to investment from China and any other nation willing to process the minerals on Brazilian soil, resisting pressure to side with Washington in its contest with Beijing over critical mineral supply chains.\n“We have no preference. What we want is to share with whoever wants to invest in Brazil,” Lula said at a press conference at the Brazilian embassy in...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "Lula won’t sideline China or anyone in rare earths, tells Trump refining stays in Brazil | Brazilian President Luiz Inacio Lula da Silva told US President Donald Trump on Thursday that his country’s rare earth reserves are open to investment from China and any other nation willing to process the minerals on Brazilian soil, resisting pressure to side with Washington in its contest with Beijing over critical mineral supply chains.\n“We have no preference. What we want is to share with whoever wants to invest in Brazil,” Lula said at a press conference at the Brazilian embassy in..."
+    },
+    {
+      "source_id": "finding-103",
+      "title": "Trump invites Boeing, Mastercard CEOs to join China trip next week: sources",
+      "summary": "The administration of US President Donald Trump is inviting American CEOs from Boeing, Mastercard, Citigroup and other major corporations to join his delegation to China next week, according to multiple sources.\nTrump is visiting China on May 14 and 15 after his scheduled visit for March 31 was postponed following the US-Israeli strikes on Iran. Boeing, Mastercard and Citigroup declined to comment, but sources said several CEOs had received invitations from the White House.\nA full list of...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "Trump invites Boeing, Mastercard CEOs to join China trip next week: sources | The administration of US President Donald Trump is inviting American CEOs from Boeing, Mastercard, Citigroup and other major corporations to join his delegation to China next week, according to multiple sources.\nTrump is visiting China on May 14 and 15 after his scheduled visit for March 31 was postponed following the US-Israeli strikes on Iran. Boeing, Mastercard and Citigroup declined to comment, but sources said several CEOs had received invitations from the White House.\nA full list of..."
+    },
+    {
+      "source_id": "finding-1088",
+      "title": "Alcolumbre pede agenda com Lula para restabelecer rela��o ap�s derrota de Messias",
+      "summary": "O presidente do Senado, Davi Alcolumbre (Uni�o Brasil-AP), manifestou a emiss�rios do governo o desejo de conversar pessoalmente com o presidente Lula (PT). A ideia � reconstruir pontes ap�s a Casa impor ao petista uma derrota hist�rica na �ltima semana, rejeitando a indica��o do advogado-geral da Uni�o, Jorge Messias, ao STF (Supremo Tribunal Federal).\nLeia mais (05/07/2026 - 19h49)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Alcolumbre pede agenda com Lula para restabelecer rela��o ap�s derrota de Messias | O presidente do Senado, Davi Alcolumbre (Uni�o Brasil-AP), manifestou a emiss�rios do governo o desejo de conversar pessoalmente com o presidente Lula (PT). A ideia � reconstruir pontes ap�s a Casa impor ao petista uma derrota hist�rica na �ltima semana, rejeitando a indica��o do advogado-geral da Uni�o, Jorge Messias, ao STF (Supremo Tribunal Federal).\nLeia mais (05/07/2026 - 19h49)"
+    },
+    {
+      "source_id": "finding-283",
+      "title": "Trump pone bajo la lupa a los 53 consulados mexicanos en EU; ordena revisiones y analiza posibles cierres",
+      "summary": "El Departamento de Estado de EU evalúa los 53 consulados mexicanos en su territorio como parte de la política exterior impulsada por Donald Trump.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Trump pone bajo la lupa a los 53 consulados mexicanos en EU; ordena revisiones y analiza posibles cierres | El Departamento de Estado de EU evalúa los 53 consulados mexicanos en su territorio como parte de la política exterior impulsada por Donald Trump."
+    },
+    {
+      "source_id": "finding-52",
+      "title": "Trump says China visit to proceed as planned, expects 'amazing' meeting with counterpart Xi",
+      "summary": "'It's going to be, I think, quite amazing. He's been a friend of mine. I've gotten along with him very well over the years,' says Donald Trump",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Trump says China visit to proceed as planned, expects 'amazing' meeting with counterpart Xi | 'It's going to be, I think, quite amazing. He's been a friend of mine. I've gotten along with him very well over the years,' says Donald Trump"
+    },
+    {
+      "source_id": "finding-1169",
+      "title": "Zelenski destaca las \"fructíferas\" negociaciones en EEUU y espera ya en Kiev a los representantes de Trump",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "Zelenski destaca las \"fructíferas\" negociaciones en EEUU y espera ya en Kiev a los representantes de Trump"
+    },
+    {
+      "source_id": "finding-303",
+      "title": "No quiere ‘regaño’ de Trump: Esteban Moctezuma niega reunión con demócratas sobre petróleo a Cuba",
+      "summary": "Cuba pasa por una de sus peores crisis energética de la historia debido a que el presidente Donald Trump amenazó con imponer aranceles a los países que vendan petróleo a la isla.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "No quiere ‘regaño’ de Trump: Esteban Moctezuma niega reunión con demócratas sobre petróleo a Cuba | Cuba pasa por una de sus peores crisis energética de la historia debido a que el presidente Donald Trump amenazó con imponer aranceles a los países que vendan petróleo a la isla."
+    },
+    {
+      "source_id": "finding-482",
+      "title": "(LEAD) Trump could ask Xi for suggestions on engagement with Kim during upcoming summit: Campbell",
+      "summary": "WASHINGTON, May 7 (Yonhap) -- U.S. President Donald Trump could ask for Chinese ...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "(LEAD) Trump could ask Xi for suggestions on engagement with Kim during upcoming summit: Campbell | WASHINGTON, May 7 (Yonhap) -- U.S. President Donald Trump could ask for Chinese ..."
+    },
+    {
+      "source_id": "finding-488",
+      "title": "Trump could ask Xi for suggestions on engagement with Kim during upcoming summit: ex-U.S. official",
+      "summary": "WASHINGTON, May 7 (Yonhap) -- U.S. President Donald Trump could ask for Chinese ...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "Trump could ask Xi for suggestions on engagement with Kim during upcoming summit: ex-U.S. official | WASHINGTON, May 7 (Yonhap) -- U.S. President Donald Trump could ask for Chinese ..."
+    },
+    {
+      "source_id": "finding-1098",
+      "title": "Congresistas de EE. UU. tras retiro de visas a miembros de diario La Nación de Costa Rica: ‘Este país defendía la libertad de prensa; Trump la ataca’",
+      "summary": "Miembros del Comité para Asuntos Exteriores cuestionan al secretario de Estado, Marco Rubio, por retiro de los documentos.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Tiempo",
+      "text": "Congresistas de EE. UU. tras retiro de visas a miembros de diario La Nación de Costa Rica: ‘Este país defendía la libertad de prensa; Trump la ataca’ | Miembros del Comité para Asuntos Exteriores cuestionan al secretario de Estado, Marco Rubio, por retiro de los documentos."
+    },
+    {
+      "source_id": "finding-392",
+      "title": "Where are the flash points in next week's Trump-Xi talks?",
+      "summary": "Donald Trump is poised to be the first US president visiting China in almost a decade, but an uneasy trade truce and tensions over Iran and Taiwan loom over his trip next week.\nAll eyes will be on Trump’s talks with Chinese leader Xi Jinping. Analysts said with an advance team already in Beijing, Trump’s travel will likely proceed even without an end to hostilities in the Middle East.\nWhat’s on the agenda for the leaders of the world’s two biggest economies?\n‘Board of Trade’\nUS officials will...",
+      "description": "",
+      "language": "en",
+      "outlet": "Dawn",
+      "text": "Where are the flash points in next week's Trump-Xi talks? | Donald Trump is poised to be the first US president visiting China in almost a decade, but an uneasy trade truce and tensions over Iran and Taiwan loom over his trip next week.\nAll eyes will be on Trump’s talks with Chinese leader Xi Jinping. Analysts said with an advance team already in Beijing, Trump’s travel will likely proceed even without an end to hostilities in the Middle East.\nWhat’s on the agenda for the leaders of the world’s two biggest economies?\n‘Board of Trade’\nUS officials will..."
+    },
+    {
+      "source_id": "finding-100",
+      "title": "Trump’s Beijing trip, Iran war diplomacy, tech earnings",
+      "summary": "US President Donald Trump will bring a scaled-back group of chief executive officers with him on a trip to Beijing next week, reflecting limited expectations for a summit that may be overshadowed by the war on Iran.\nThe White House considered inviting about a dozen business leaders on the May 14-15 trip, compared with the 29 high-profile executives on Trump’s last visit in 2017, Reuters said, citing unidentified people briefed on preparations. Nvidia, Apple and Boeing are among the companies...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "Trump’s Beijing trip, Iran war diplomacy, tech earnings | US President Donald Trump will bring a scaled-back group of chief executive officers with him on a trip to Beijing next week, reflecting limited expectations for a summit that may be overshadowed by the war on Iran.\nThe White House considered inviting about a dozen business leaders on the May 14-15 trip, compared with the 29 high-profile executives on Trump’s last visit in 2017, Reuters said, citing unidentified people briefed on preparations. Nvidia, Apple and Boeing are among the companies..."
+    },
+    {
+      "source_id": "finding-383",
+      "title": "Vatican's careful words on pope-Rubio meeting imply deep tensions with Trump, say analysts",
+      "summary": "A Vatican statement after Pope Leo’s meeting with US Secretary of State Marco Rubio, which said the two had pledged to improve bilateral relations, was a recognition of unprecedented tensions, insiders and analysts said.\nRubio’s meeting on Thursday with Pope Leo, the first US pope, garnered wide public attention as President Donald Trump has repeatedly attacked the pontiff over the US-Israeli war on Iran.\nThe Vatican statement after the 45-minute encounter, the first between the pope and a Tr...",
+      "description": "",
+      "language": "en",
+      "outlet": "Dawn",
+      "text": "Vatican's careful words on pope-Rubio meeting imply deep tensions with Trump, say analysts | A Vatican statement after Pope Leo’s meeting with US Secretary of State Marco Rubio, which said the two had pledged to improve bilateral relations, was a recognition of unprecedented tensions, insiders and analysts said.\nRubio’s meeting on Thursday with Pope Leo, the first US pope, garnered wide public attention as President Donald Trump has repeatedly attacked the pontiff over the US-Israeli war on Iran.\nThe Vatican statement after the 45-minute encounter, the first between the pope and a Tr..."
+    },
+    {
+      "source_id": "finding-1366",
+      "title": "Visite d'Etat de Brice Clotaire Oligui Nguema à Luanda: le ciel est désormais bleu sur le Gabon et l’Angola",
+      "summary": "Après environ trois ans de brouille diplomatique, suite au coup d'État de 2023, les deux pays renouent et renforcent leur coopération bilatérale. Acte fort, le président gabonais, Brice Clotaire Oligui Nguema effectue depuis mercredi une visite d’État en Angola, la toute première du genre pour le tombeur du régime des Bongo. Retour sur la coopération bilatérale compliquée entre ces deux pays.",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "Visite d'Etat de Brice Clotaire Oligui Nguema à Luanda: le ciel est désormais bleu sur le Gabon et l’Angola | Après environ trois ans de brouille diplomatique, suite au coup d'État de 2023, les deux pays renouent et renforcent leur coopération bilatérale. Acte fort, le président gabonais, Brice Clotaire Oligui Nguema effectue depuis mercredi une visite d’État en Angola, la toute première du genre pour le tombeur du régime des Bongo. Retour sur la coopération bilatérale compliquée entre ces deux pays."
+    },
+    {
+      "source_id": "finding-550",
+      "title": "Trump walks back threat to rip up part of EU trade deal but tells bloc to ratify by 4 July",
+      "summary": "US president expresses impatience at speed of EU’s implementation and warns of ‘much higher’ tariffsUS trade court rules against Trump’s 10% global tariffsBusiness live – latest updatesDonald Trump has walked back from his threat to tear up part of the US trade deal with the EU by hiking tariffs on car imports.The US president has given the EU until 4 July to implement its side of the deal, reducing tariffs to zero on most American imports, warning that the bloc would face “much higher” tarif...",
+      "description": "",
+      "language": "en",
+      "outlet": "Guardian World",
+      "text": "Trump walks back threat to rip up part of EU trade deal but tells bloc to ratify by 4 July | US president expresses impatience at speed of EU’s implementation and warns of ‘much higher’ tariffsUS trade court rules against Trump’s 10% global tariffsBusiness live – latest updatesDonald Trump has walked back from his threat to tear up part of the US trade deal with the EU by hiking tariffs on car imports.The US president has given the EU until 4 July to implement its side of the deal, reducing tariffs to zero on most American imports, warning that the bloc would face “much higher” tarif..."
+    },
+    {
+      "source_id": "finding-1051",
+      "title": "STF e Supremo dos EUA refletem avan�o da tens�o pol�tica sobre o Judici�rio",
+      "summary": "H� 15 anos, a imponente Biblioteca do Congresso, em Washington, abrigou o Di�logo Judicial Brasil-EUA, reunindo membros do Supremo Tribunal Federal e da Suprema Corte americana, al�m de juristas convidados.\nLeia mais (05/07/2026 - 23h00)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "STF e Supremo dos EUA refletem avan�o da tens�o pol�tica sobre o Judici�rio | H� 15 anos, a imponente Biblioteca do Congresso, em Washington, abrigou o Di�logo Judicial Brasil-EUA, reunindo membros do Supremo Tribunal Federal e da Suprema Corte americana, al�m de juristas convidados.\nLeia mais (05/07/2026 - 23h00)"
+    },
+    {
+      "source_id": "finding-577",
+      "title": "Trump's Truth Social lays bare narrow obsessions of an extremely online president",
+      "summary": "The bulk of the president's social media posts don't make news. But taken together they show what's on his mind as he leads the nation through war and domestic turmoil.",
+      "description": "",
+      "language": "en",
+      "outlet": "NPR",
+      "text": "Trump's Truth Social lays bare narrow obsessions of an extremely online president | The bulk of the president's social media posts don't make news. But taken together they show what's on his mind as he leads the nation through war and domestic turmoil."
+    },
+    {
+      "source_id": "finding-567",
+      "title": "We sued the Trump administration for these immigration records",
+      "summary": "The Guardian wanted to know who, exactly, would be pulled into the mass-deportation dragnet of Trump’s second termDonald Trump entered his second term promising “mass deportations”. He also promised he’d target the “worst of the worst”. The Guardian wanted to know who, exactly, would be pulled into this deportation dragnet.That question led us to “Record of Deportable/Inadmissible Alien” forms, also known as I-213 forms. Immigration agents fill out these forms each time they make an arrest, a...",
+      "description": "",
+      "language": "en",
+      "outlet": "Guardian World",
+      "text": "We sued the Trump administration for these immigration records | The Guardian wanted to know who, exactly, would be pulled into the mass-deportation dragnet of Trump’s second termDonald Trump entered his second term promising “mass deportations”. He also promised he’d target the “worst of the worst”. The Guardian wanted to know who, exactly, would be pulled into this deportation dragnet.That question led us to “Record of Deportable/Inadmissible Alien” forms, also known as I-213 forms. Immigration agents fill out these forms each time they make an arrest, a..."
+    },
+    {
+      "source_id": "finding-458",
+      "title": "Lee's special envoy meets Costa Rican president-elect, discusses bilateral ties",
+      "summary": "SEOUL, May 8 (Yonhap) -- A special envoy for President Lee Jae Myung has met Cos...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "Lee's special envoy meets Costa Rican president-elect, discusses bilateral ties | SEOUL, May 8 (Yonhap) -- A special envoy for President Lee Jae Myung has met Cos..."
+    },
+    {
+      "source_id": "finding-1096",
+      "title": "El desgarrador relato de un joven de 18 años deportado a Honduras tras crecer en Estados Unidos: 'Dijeron que Donald Trump ya no me quería en el país'",
+      "summary": "Axel Archaga Ríos fue expulsado por el ICE tras un control de tránsito, luego de vivir desde la infancia en EE. UU. tras entrar con su madre en 2014.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Tiempo",
+      "text": "El desgarrador relato de un joven de 18 años deportado a Honduras tras crecer en Estados Unidos: 'Dijeron que Donald Trump ya no me quería en el país' | Axel Archaga Ríos fue expulsado por el ICE tras un control de tránsito, luego de vivir desde la infancia en EE. UU. tras entrar con su madre en 2014."
+    },
+    {
+      "source_id": "finding-992",
+      "title": "Secret�rio de Estado dos EUA encontra Meloni para amenizar crise com Trump",
+      "summary": "A primeira-ministra da It�lia, Giorgia Meloni, recebeu nesta sexta-feira (8) o secret�rio de Estado dos Estados Unidos, Marco Rubio, em um momento de desgaste entre Roma e o governo do presidente Donald Trump. O principal motivo da tens�o � a guerra no Ir�.\nLeia mais (05/08/2026 - 09h06)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Secret�rio de Estado dos EUA encontra Meloni para amenizar crise com Trump | A primeira-ministra da It�lia, Giorgia Meloni, recebeu nesta sexta-feira (8) o secret�rio de Estado dos Estados Unidos, Marco Rubio, em um momento de desgaste entre Roma e o governo do presidente Donald Trump. O principal motivo da tens�o � a guerra no Ir�.\nLeia mais (05/08/2026 - 09h06)"
+    },
+    {
+      "source_id": "finding-1213",
+      "title": "Global perceptions of U.S. under Trump worse than Russia, survey finds",
+      "summary": "Global perceptions of the U.S. have deteriorated for a second consecutive year and are now worse ‌than views of Russia, an annual study on democracy published on Friday…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Global perceptions of U.S. under Trump worse than Russia, survey finds | Global perceptions of the U.S. have deteriorated for a second consecutive year and are now worse ‌than views of Russia, an annual study on democracy published on Friday…"
+    },
+    {
+      "source_id": "finding-1171",
+      "title": "EN VIVO | Irán dilata su respuesta a la propuesta de Estados Unidos mientras crece la tensión en el estrecho de Ormuz",
+      "summary": "El presidente Donald Trump afirmó que Washington mantiene negociaciones con Teherán pese al nuevo intercambio de ataques registrado en el paso marítimo, un episodio que volvió a tensar el frágil alto el fuego",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "EN VIVO | Irán dilata su respuesta a la propuesta de Estados Unidos mientras crece la tensión en el estrecho de Ormuz | El presidente Donald Trump afirmó que Washington mantiene negociaciones con Teherán pese al nuevo intercambio de ataques registrado en el paso marítimo, un episodio que volvió a tensar el frágil alto el fuego"
+    },
+    {
+      "source_id": "finding-777",
+      "title": "Trump pulled plug on ‘Project Freedom’ after Saudi snub – NBC",
+      "summary": "Saudi Arabia reportedly refused to let the US use its airspace and bases for ‘Project Freedom’, forcing Trump to pause the operation Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Trump pulled plug on ‘Project Freedom’ after Saudi snub – NBC | Saudi Arabia reportedly refused to let the US use its airspace and bases for ‘Project Freedom’, forcing Trump to pause the operation Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-665",
+      "title": "US-Handelsgericht erklärt Trumps weltweite Zölle für unzulässig",
+      "summary": "Neuer Rückschlag für den Präsidenten: Ein US-Handelsgericht hat Trumps globalen Zehn-Prozent-Zoll für unrechtmäßig erklärt. Grundlage dafür war ein Gesetz aus dem Jahr 1974, das laut Gericht falsch ausgelegt wurde.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "US-Handelsgericht erklärt Trumps weltweite Zölle für unzulässig | Neuer Rückschlag für den Präsidenten: Ein US-Handelsgericht hat Trumps globalen Zehn-Prozent-Zoll für unrechtmäßig erklärt. Grundlage dafür war ein Gesetz aus dem Jahr 1974, das laut Gericht falsch ausgelegt wurde."
+    },
+    {
+      "source_id": "finding-896",
+      "title": "Ünlü oyuncudan kriz çıkaran Trump paylaşımı: Keşke",
+      "summary": "Hollywood'un yıldız oyuncusu Mark Hamill, ABD Başkanı Donald Trump'ı mezarda gösteren yapay zekâ görselini paylaştı. Hamill paylaşımında yalnızca \"keşke\" ifadesini kullanırken Beyaz Saray, ünlü oyuncuyu “hasta bir birey” sözleriyle hedef aldı.",
+      "description": "",
+      "language": "tr",
+      "outlet": "Hurriyet",
+      "text": "Ünlü oyuncudan kriz çıkaran Trump paylaşımı: Keşke | Hollywood'un yıldız oyuncusu Mark Hamill, ABD Başkanı Donald Trump'ı mezarda gösteren yapay zekâ görselini paylaştı. Hamill paylaşımında yalnızca \"keşke\" ifadesini kullanırken Beyaz Saray, ünlü oyuncuyu “hasta bir birey” sözleriyle hedef aldı."
+    },
+    {
+      "source_id": "finding-377",
+      "title": "‘Saudi pressure’ led US to pause Hormuz project: NBC",
+      "summary": "WASHINGTON: US President Donald Trump’s decision to pause a US operation to escort commercial ships through the Strait of Hormuz reportedly followed pressure from Saudi Arabia, according to an NBC News report citing two US officials.\nThe operation, dubbed Project Freedom, was unexpectedly announced by Trump on social media on Sunday and began on Monday. However, US allies in the Gulf were reportedly surprised by the announcement.\nAccording to the officials, Saudi Arabia — one of Washington’s ...",
+      "description": "",
+      "language": "en",
+      "outlet": "Dawn",
+      "text": "‘Saudi pressure’ led US to pause Hormuz project: NBC | WASHINGTON: US President Donald Trump’s decision to pause a US operation to escort commercial ships through the Strait of Hormuz reportedly followed pressure from Saudi Arabia, according to an NBC News report citing two US officials.\nThe operation, dubbed Project Freedom, was unexpectedly announced by Trump on social media on Sunday and began on Monday. However, US allies in the Gulf were reportedly surprised by the announcement.\nAccording to the officials, Saudi Arabia — one of Washington’s ..."
+    },
+    {
+      "source_id": "finding-55",
+      "title": "US trade court says Trump's 10% global tariffs are illegal",
+      "summary": "Three-judge panel says proclamation Trump signed to impose work-around duties is 'invalid, and the tariffs imposed on plaintiffs are unauthorized by law'",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "US trade court says Trump's 10% global tariffs are illegal | Three-judge panel says proclamation Trump signed to impose work-around duties is 'invalid, and the tariffs imposed on plaintiffs are unauthorized by law'"
+    },
+    {
+      "source_id": "finding-278",
+      "title": "Vaya oposición: el PAN, enayusado; el PRI, trumpista number one",
+      "summary": "Ante Isabel Díaz Ayuso, presidenta de la Comunidad de Madrid, que bendice al mismo Trump que ha criminalizado a mexicanos trabajadores en Estados Unidos, que impone aranceles y denuesta a autoridades, el PAN hace caravanas.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Vaya oposición: el PAN, enayusado; el PRI, trumpista number one | Ante Isabel Díaz Ayuso, presidenta de la Comunidad de Madrid, que bendice al mismo Trump que ha criminalizado a mexicanos trabajadores en Estados Unidos, que impone aranceles y denuesta a autoridades, el PAN hace caravanas."
+    },
+    {
+      "source_id": "finding-556",
+      "title": "Iran mocks Trump’s ‘Project Freedom’ as adversaries wrestle over talks to end war",
+      "summary": "President indicated that deal had materialised but truth was that Saudi Arabia had stopped US use of its basesMiddle East crisis – live updatesWhen Donald Trump abruptly pulled the plug on “Project Freedom”, the scheme to open the strait of Hormuz, barely a day after it had been announced, he gave the impression that an opportunity for a peace deal had materialised that could not be missed.To the surprise of nobody who has been following the US’s recent adventures in geopolitics, Trump’s spin...",
+      "description": "",
+      "language": "en",
+      "outlet": "Guardian World",
+      "text": "Iran mocks Trump’s ‘Project Freedom’ as adversaries wrestle over talks to end war | President indicated that deal had materialised but truth was that Saudi Arabia had stopped US use of its basesMiddle East crisis – live updatesWhen Donald Trump abruptly pulled the plug on “Project Freedom”, the scheme to open the strait of Hormuz, barely a day after it had been announced, he gave the impression that an opportunity for a peace deal had materialised that could not be missed.To the surprise of nobody who has been following the US’s recent adventures in geopolitics, Trump’s spin..."
+    },
+    {
+      "source_id": "finding-302",
+      "title": "Dan ‘revés’ judicial a Trump: Tribunal de EU bloquea su arancel global del 10% por ser ilegal",
+      "summary": "Un tribunal de EU bloqueó la imposición de un arancel global del 10% a la mayoría de las importaciones; Trump usó incorrectamente una ley.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Dan ‘revés’ judicial a Trump: Tribunal de EU bloquea su arancel global del 10% por ser ilegal | Un tribunal de EU bloqueó la imposición de un arancel global del 10% a la mayoría de las importaciones; Trump usó incorrectamente una ley."
+    },
+    {
+      "source_id": "finding-593",
+      "title": "US court deals fresh blow to Trump's 10% global tariff policy",
+      "summary": "A US federal court said President Donald Trump overstepped his authority when he invoked a section of a 1974 trade law to enact the 10% global tariff policy.",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "US court deals fresh blow to Trump's 10% global tariff policy | A US federal court said President Donald Trump overstepped his authority when he invoked a section of a 1974 trade law to enact the 10% global tariff policy."
+    },
+    {
+      "source_id": "finding-336",
+      "title": "Sheinbaum ‘se la voltea’ a Trump y exige extradición de 4 personas por huachicol: ‘No han enviado a nadie’",
+      "summary": "La presidenta Sheinbaum recordó que ha pedido a Estados Unidos el envío de cuatro personas relacionadas con el huachicol.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Sheinbaum ‘se la voltea’ a Trump y exige extradición de 4 personas por huachicol: ‘No han enviado a nadie’ | La presidenta Sheinbaum recordó que ha pedido a Estados Unidos el envío de cuatro personas relacionadas con el huachicol."
+    },
+    {
+      "source_id": "finding-1343",
+      "title": "What’s in Trump’s New Counterterrorism Strategy?",
+      "summary": "The White House ignores the threat of far-right groups.",
+      "description": "",
+      "language": "en",
+      "outlet": "Foreign Policy",
+      "text": "What’s in Trump’s New Counterterrorism Strategy? | The White House ignores the threat of far-right groups."
+    },
+    {
+      "source_id": "finding-296",
+      "title": "‘Ahorita no, joven’: EU descarta, por ahora, una acción militar contra Cuba pese a amenazas de Trump",
+      "summary": "Estados Unidos no está contemplando una acción militar inminente contra La Habana pese a las amenazas reiteradas del presidente Donald Trump.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "‘Ahorita no, joven’: EU descarta, por ahora, una acción militar contra Cuba pese a amenazas de Trump | Estados Unidos no está contemplando una acción militar inminente contra La Habana pese a las amenazas reiteradas del presidente Donald Trump."
+    },
+    {
+      "source_id": "finding-613",
+      "title": "Trade court strikes down Trump 10% universal tariffs",
+      "summary": "The Court of International Trade on Thursday ruled that President Trump's newest round of tariffs were illegal — but the duties will keep collecting for most importers while the administration appeals.​​​​​​​​​​​​​​​​Why it matters: It is yet another legal setback for the White House's trade policy — this time ruling against the suite of tariffs that officials imposed to replace those struck down by the Supreme Court.State of play: Trump turned to Section 122 — a never-before-used provision o...",
+      "description": "",
+      "language": "en",
+      "outlet": "Axios",
+      "text": "Trade court strikes down Trump 10% universal tariffs | The Court of International Trade on Thursday ruled that President Trump's newest round of tariffs were illegal — but the duties will keep collecting for most importers while the administration appeals.​​​​​​​​​​​​​​​​Why it matters: It is yet another legal setback for the White House's trade policy — this time ruling against the suite of tariffs that officials imposed to replace those struck down by the Supreme Court.State of play: Trump turned to Section 122 — a never-before-used provision o..."
+    },
+    {
+      "source_id": "finding-469",
+      "title": "(2nd LD) U.S. trade court rules against Trump's 10 pct global tariffs",
+      "summary": "WASHINGTON/SEOUL, May 8 (Yonhap) -- The U.S. trade court ruled Thursday against ...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "(2nd LD) U.S. trade court rules against Trump's 10 pct global tariffs | WASHINGTON/SEOUL, May 8 (Yonhap) -- The U.S. trade court ruled Thursday against ..."
+    },
+    {
+      "source_id": "finding-372",
+      "title": "US and Iran exchange fire, but Trump says ceasefire still in effect",
+      "summary": "The United States and Iran exchanged fire on Thursday in the most serious test yet of their month-long ceasefire, but Iran said the situation returned to normal while the US said it did not want to escalate.\nThe renewed hostilities broke out as Washington was awaiting Iran’s response to a US proposal that would stop the fighting but leave the most contentious issues, such as Iran’s nuclear programme, unresolved for now.\nIran’s military said the US targeted two ships entering the Strait of Hor...",
+      "description": "",
+      "language": "en",
+      "outlet": "Dawn",
+      "text": "US and Iran exchange fire, but Trump says ceasefire still in effect | The United States and Iran exchanged fire on Thursday in the most serious test yet of their month-long ceasefire, but Iran said the situation returned to normal while the US said it did not want to escalate.\nThe renewed hostilities broke out as Washington was awaiting Iran’s response to a US proposal that would stop the fighting but leave the most contentious issues, such as Iran’s nuclear programme, unresolved for now.\nIran’s military said the US targeted two ships entering the Strait of Hor..."
+    },
+    {
+      "source_id": "finding-555",
+      "title": "Trump shelved ‘Project Freedom’ after Saudis refused use of bases and airspace",
+      "summary": "Riyadh told White House it would deny access for operation to provide tankers military escort through strait of HormuzMiddle East crisis – live updatesA refusal by Saudi Arabia to allow the US to use its bases and airspace to provide a military escort for oil tankers passing through the strait of Hormuz lay behind Donald Trump’s decision to shelve the plan days after it had been launched.Riyadh told the White House it would not allow its Prince Sultan airbase to be used to mount the operation...",
+      "description": "",
+      "language": "en",
+      "outlet": "Guardian World",
+      "text": "Trump shelved ‘Project Freedom’ after Saudis refused use of bases and airspace | Riyadh told White House it would deny access for operation to provide tankers military escort through strait of HormuzMiddle East crisis – live updatesA refusal by Saudi Arabia to allow the US to use its bases and airspace to provide a military escort for oil tankers passing through the strait of Hormuz lay behind Donald Trump’s decision to shelve the plan days after it had been launched.Riyadh told the White House it would not allow its Prince Sultan airbase to be used to mount the operation..."
+    },
+    {
+      "source_id": "finding-557",
+      "title": "Trump ally Roger Stone condemned for providing lobbying services to Myanmar’s military junta",
+      "summary": "Stone being paid $50,000 a month to ‘rebuild’ relations between Washington and Myanmar’s military-backed governmentThe US lobbyist Roger Stone, a longtime friend and ally of Donald Trump, has been condemned for accepting $50,000 a month to “rebuild” relations between Washington and Myanmar’s military-backed government.Myanmar’s leaders have been internationally isolated since seizing power in a coup in 2021, and have repeatedly been accused of atrocities that may amount to war crimes. Activis...",
+      "description": "",
+      "language": "en",
+      "outlet": "Guardian World",
+      "text": "Trump ally Roger Stone condemned for providing lobbying services to Myanmar’s military junta | Stone being paid $50,000 a month to ‘rebuild’ relations between Washington and Myanmar’s military-backed governmentThe US lobbyist Roger Stone, a longtime friend and ally of Donald Trump, has been condemned for accepting $50,000 a month to “rebuild” relations between Washington and Myanmar’s military-backed government.Myanmar’s leaders have been internationally isolated since seizing power in a coup in 2021, and have repeatedly been accused of atrocities that may amount to war crimes. Activis..."
+    },
+    {
+      "source_id": "finding-4",
+      "title": "Trump says he would not pay $1,000 to watch US at World Cup",
+      "summary": "FIFA have come in for criticism for the inflated prices of tickets at World Cup 2026 in US, Canada and Mexico.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Trump says he would not pay $1,000 to watch US at World Cup | FIFA have come in for criticism for the inflated prices of tickets at World Cup 2026 in US, Canada and Mexico."
+    },
+    {
+      "source_id": "finding-481",
+      "title": "U.S. trade court rules against Trump's 10 pct global tariffs",
+      "summary": "WASHINGTON, May 7 (Yonhap) -- The U.S. trade court ruled Thursday against Presid...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "U.S. trade court rules against Trump's 10 pct global tariffs | WASHINGTON, May 7 (Yonhap) -- The U.S. trade court ruled Thursday against Presid..."
+    },
+    {
+      "source_id": "finding-1357",
+      "title": "Mondial 2026: des dirigeants de la Fédération sénégalaise privés de visa américain",
+      "summary": "À près d’un mois du début du Mondial de football aux États-Unis, au Mexique et au Canada, c’est la douche froide pour certains officiels, membres de la Fédération sénégalaise de football. L'ambassade des États-Unis a rejeté plusieurs demandes de visa. Les Lions de la Teranga risquent de se rendre à la Coupe du monde sans plusieurs dirigeants. La Fédération tente le tout pour le tout pour convaincre les autorités consulaires américaines de revoir leur décision.",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "Mondial 2026: des dirigeants de la Fédération sénégalaise privés de visa américain | À près d’un mois du début du Mondial de football aux États-Unis, au Mexique et au Canada, c’est la douche froide pour certains officiels, membres de la Fédération sénégalaise de football. L'ambassade des États-Unis a rejeté plusieurs demandes de visa. Les Lions de la Teranga risquent de se rendre à la Coupe du monde sans plusieurs dirigeants. La Fédération tente le tout pour le tout pour convaincre les autorités consulaires américaines de revoir leur décision."
+    },
+    {
+      "source_id": "finding-1043",
+      "title": "Aliados de Fl�vio admitem desgaste com Ciro Nogueira e se dividem sobre rea��o",
+      "summary": "Integrantes da campanha de Fl�vio Bolsonaro (PL-RJ) admitem que a opera��o da Pol�cia Federal sobre o Banco Master que atingiu o presidente do PP, senador Ciro Nogueira (PI), tem efeito sobre a direita na disputa presidencial, dado que o partido � cotado para ocupar a vaga de vice na chapa e o pol�tico foi bra�o direito de Jair Bolsonaro (PL).\nLeia mais (05/07/2026 - 23h00)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Aliados de Fl�vio admitem desgaste com Ciro Nogueira e se dividem sobre rea��o | Integrantes da campanha de Fl�vio Bolsonaro (PL-RJ) admitem que a opera��o da Pol�cia Federal sobre o Banco Master que atingiu o presidente do PP, senador Ciro Nogueira (PI), tem efeito sobre a direita na disputa presidencial, dado que o partido � cotado para ocupar a vaga de vice na chapa e o pol�tico foi bra�o direito de Jair Bolsonaro (PL).\nLeia mais (05/07/2026 - 23h00)"
+    },
+    {
+      "source_id": "finding-473",
+      "title": "(LEAD) U.S. trade court rules against Trump's 10 pct global tariffs",
+      "summary": "WASHINGTON, May 7 (Yonhap) -- The U.S. trade court ruled Thursday against Presid...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "(LEAD) U.S. trade court rules against Trump's 10 pct global tariffs | WASHINGTON, May 7 (Yonhap) -- The U.S. trade court ruled Thursday against Presid..."
+    },
+    {
+      "source_id": "finding-532",
+      "title": "Marco Rubio meets Pope Leo amid tensions with Trump over Iran war",
+      "summary": "Leo, the first American pontiff, drew Trump's ire after becoming a firm critic of the war and the administration's hardline immigration policies.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Marco Rubio meets Pope Leo amid tensions with Trump over Iran war | Leo, the first American pontiff, drew Trump's ire after becoming a firm critic of the war and the administration's hardline immigration policies."
+    },
+    {
+      "source_id": "finding-86",
+      "title": "Why China-Russia ties are ‘better than alliance’ and immune to US containment efforts",
+      "summary": "China-Russia ties can withstand any potential containment efforts despite Washington’s long-standing hopes of driving a wedge between the two, a senior Chinese policy adviser has said, citing deep-seated US-Russia “contradictions” within what he called a “great triangle” of relations.\nWu Dahui, deputy director of the Russian Research Institute at Tsinghua University, said while China and Russia were not formally allies, their relationship was “better than an alliance” and took the form of...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "Why China-Russia ties are ‘better than alliance’ and immune to US containment efforts | China-Russia ties can withstand any potential containment efforts despite Washington’s long-standing hopes of driving a wedge between the two, a senior Chinese policy adviser has said, citing deep-seated US-Russia “contradictions” within what he called a “great triangle” of relations.\nWu Dahui, deputy director of the Russian Research Institute at Tsinghua University, said while China and Russia were not formally allies, their relationship was “better than an alliance” and took the form of..."
+    },
+    {
+      "source_id": "finding-331",
+      "title": "Antonio Mohamed afirma que caos en la Selección fue un malentendido: ‘Que se concentren en lo suyo’",
+      "summary": "Antonio Mohamed habló sobre la polémica entre Toluca, Chivas y la Selección Mexicana por Alexis Vega y Jesús Gallardo después del triunfo ante LAFC en la Concachampions.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Antonio Mohamed afirma que caos en la Selección fue un malentendido: ‘Que se concentren en lo suyo’ | Antonio Mohamed habló sobre la polémica entre Toluca, Chivas y la Selección Mexicana por Alexis Vega y Jesús Gallardo después del triunfo ante LAFC en la Concachampions."
+    },
+    {
+      "source_id": "finding-41",
+      "title": "Italian premier, top US diplomat hold talks in Rome amid strains in transatlantic ties under Trump",
+      "summary": "US secretary of state also meets Italian foreign minister during visit",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Italian premier, top US diplomat hold talks in Rome amid strains in transatlantic ties under Trump | US secretary of state also meets Italian foreign minister during visit"
+    },
+    {
+      "source_id": "finding-985",
+      "title": "Javier Milei y sus medidas, EN VIVO: el Presidente reúne hoy al Gabinete en otro respaldo a Adorni, que vuelve a mostrarse hiperactivo en medio del escándalo por sus viajes y propiedades",
+      "summary": "La reunión de ministros será a las 14, aunque antes Adorni visitará una planta automotriz y brindará una conferencia de prensa en la Casa Rosada.Seguí todas las novedades sobre las medidas del gobierno de Javier Milei en la cobertura minuto a minuto de Clarín.",
+      "description": "",
+      "language": "es",
+      "outlet": "Clarin",
+      "text": "Javier Milei y sus medidas, EN VIVO: el Presidente reúne hoy al Gabinete en otro respaldo a Adorni, que vuelve a mostrarse hiperactivo en medio del escándalo por sus viajes y propiedades | La reunión de ministros será a las 14, aunque antes Adorni visitará una planta automotriz y brindará una conferencia de prensa en la Casa Rosada.Seguí todas las novedades sobre las medidas del gobierno de Javier Milei en la cobertura minuto a minuto de Clarín."
+    },
+    {
+      "source_id": "finding-1225",
+      "title": "U.S. and Iran exchange fire; Trump calls it a 'love tap'",
+      "summary": "The United States and Iran exchanged fire on Thursday in the most serious test yet of their month-long ceasefire, but Iran said ‌the situation returned to normal while…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "U.S. and Iran exchange fire; Trump calls it a 'love tap' | The United States and Iran exchanged fire on Thursday in the most serious test yet of their month-long ceasefire, but Iran said ‌the situation returned to normal while…"
+    },
+    {
+      "source_id": "finding-491",
+      "title": "Trump threatens 'much higher' tariffs on EU if it fails to fulfill trade deal by July 4",
+      "summary": "WASHINGTON, May 7 (Yonhap) -- U.S. President Donald Trump threatened Thursday to...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "Trump threatens 'much higher' tariffs on EU if it fails to fulfill trade deal by July 4 | WASHINGTON, May 7 (Yonhap) -- U.S. President Donald Trump threatened Thursday to..."
+    },
+    {
+      "source_id": "finding-515",
+      "title": "Trump gives EU ultimatum deadline to approve trade deal with US",
+      "summary": "Trump's deadline to the European Union came as a trade court ruled his global tariff policy violated US law.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Trump gives EU ultimatum deadline to approve trade deal with US | Trump's deadline to the European Union came as a trade court ruled his global tariff policy violated US law."
+    },
+    {
+      "source_id": "finding-638",
+      "title": "US trade court rules against Trump's global 10% tariff",
+      "summary": "The Court of International Trade ruling, which was 2-1 against Trump's 10% global tariff, ordered defendants to implement the decision within five days, and for the importers who sued to receive refunds.",
+      "description": "",
+      "language": "en",
+      "outlet": "Le Monde",
+      "text": "US trade court rules against Trump's global 10% tariff | The Court of International Trade ruling, which was 2-1 against Trump's 10% global tariff, ordered defendants to implement the decision within five days, and for the importers who sued to receive refunds."
+    },
+    {
+      "source_id": "finding-1219",
+      "title": "U.S. trade court rules against Trump's 10% global tariffs",
+      "summary": "The U.S. trade court on Thursday ruled against President Donald Trump's latest 10% global tariffs, finding they were not ‌justified under a 1970s trade law. However, the court…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "U.S. trade court rules against Trump's 10% global tariffs | The U.S. trade court on Thursday ruled against President Donald Trump's latest 10% global tariffs, finding they were not ‌justified under a 1970s trade law. However, the court…"
+    },
+    {
+      "source_id": "finding-596",
+      "title": "Trump gives EU until July 4 to implement trade deal",
+      "summary": "Trump has threatened to impose higher tariffs on the bloc if it doesn't implement the trade deal agreed last year by his deadline.",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "Trump gives EU until July 4 to implement trade deal | Trump has threatened to impose higher tariffs on the bloc if it doesn't implement the trade deal agreed last year by his deadline."
+    },
+    {
+      "source_id": "finding-624",
+      "title": "Trump sons back $1bn vehicle targeting sectors championed by US president",
+      "summary": "Eric Trump and Donald Trump Jr invest in entity channelling money into companies in AI and drone industries",
+      "description": "",
+      "language": "en",
+      "outlet": "Financial Times",
+      "text": "Trump sons back $1bn vehicle targeting sectors championed by US president | Eric Trump and Donald Trump Jr invest in entity channelling money into companies in AI and drone industries"
+    },
+    {
+      "source_id": "finding-667",
+      "title": "Trump setzt der EU ein Ultimatum für den vereinbarten Zoll-Deal",
+      "summary": "US-Präsident Trump hat die Europäische Union zur Umsetzung eines im vergangenen Jahr vereinbarten Handelsabkommens aufgefordert. Sollte dies nicht bis zum 4. Juli geschehen, droht er mit neuen Strafzöllen.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "Trump setzt der EU ein Ultimatum für den vereinbarten Zoll-Deal | US-Präsident Trump hat die Europäische Union zur Umsetzung eines im vergangenen Jahr vereinbarten Handelsabkommens aufgefordert. Sollte dies nicht bis zum 4. Juli geschehen, droht er mit neuen Strafzöllen."
+    },
+    {
+      "source_id": "finding-981",
+      "title": "Guerra entre Estados Unidos, Israel e Irán, EN VIVO: en medio del alto el fuego, Emiratos Árabes respondió a un ataque con misiles y drones y el régimen persa incautó otro buque petrolero",
+      "summary": "En este contexto, el presidente norteamericano Donald Trump amenazó a Irán con más ataques si el acuerdo de paz no se firma “rápido”.Seguí todas las novedades sobre la guerra entre Estados Unidos, Israel e Irán en la cobertura minuto a minuto de Clarín.",
+      "description": "",
+      "language": "es",
+      "outlet": "Clarin",
+      "text": "Guerra entre Estados Unidos, Israel e Irán, EN VIVO: en medio del alto el fuego, Emiratos Árabes respondió a un ataque con misiles y drones y el régimen persa incautó otro buque petrolero | En este contexto, el presidente norteamericano Donald Trump amenazó a Irán con más ataques si el acuerdo de paz no se firma “rápido”.Seguí todas las novedades sobre la guerra entre Estados Unidos, Israel e Irán en la cobertura minuto a minuto de Clarín."
+    },
+    {
+      "source_id": "finding-1035",
+      "title": "Tribunal nos EUA se manifesta contra tarifas globais de 10% impostas por Trump",
+      "summary": "A corte de com�rcio dos Estados Unidos decidiu nesta quinta-feira (7) contra as �ltimas tarifas globais de 10% impostas pelo presidente Donald Trump. O tribunal concluiu que as tarifas n�o se justificam segundo a lei comercial da d�cada de 1970 utilizada pelo republicano para amparar a medida.\nLeia mais (05/08/2026 - 00h00)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Tribunal nos EUA se manifesta contra tarifas globais de 10% impostas por Trump | A corte de com�rcio dos Estados Unidos decidiu nesta quinta-feira (7) contra as �ltimas tarifas globais de 10% impostas pelo presidente Donald Trump. O tribunal concluiu que as tarifas n�o se justificam segundo a lei comercial da d�cada de 1970 utilizada pelo republicano para amparar a medida.\nLeia mais (05/08/2026 - 00h00)"
+    },
+    {
+      "source_id": "finding-1399",
+      "title": "Trump administration claiming a ‘win’ against Iran – here’s a report card",
+      "summary": "This conflict is fast becoming a catestrophic US failure which could define Trump’s second presidency.",
+      "description": "",
+      "language": "en",
+      "outlet": "The Conversation",
+      "text": "Trump administration claiming a ‘win’ against Iran – here’s a report card | This conflict is fast becoming a catestrophic US failure which could define Trump’s second presidency."
+    },
+    {
+      "source_id": "finding-805",
+      "title": "Última hora de la guerra de Estados Unidos e Israel contra Irán, en directo | Trump asegura que mantiene en vigor la tregua y el diálogo con Irán tras el intercambio de fuego en Ormuz",
+      "summary": "Teherán acusa a EE UU de realizar una acción militar “cada vez que se acerca una solución diplomática” al conflicto | El petróleo vuelve a superar los 100 dólares | Hezbolá dispara cohetes contra el norte de Israel en respuesta al asesinato del jefe de su fuerza de élite",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Última hora de la guerra de Estados Unidos e Israel contra Irán, en directo | Trump asegura que mantiene en vigor la tregua y el diálogo con Irán tras el intercambio de fuego en Ormuz | Teherán acusa a EE UU de realizar una acción militar “cada vez que se acerca una solución diplomática” al conflicto | El petróleo vuelve a superar los 100 dólares | Hezbolá dispara cohetes contra el norte de Israel en respuesta al asesinato del jefe de su fuerza de élite"
+    },
+    {
+      "source_id": "finding-818",
+      "title": "León XIV: el primer año de un papa de centro",
+      "summary": "Las enganchadas con Trump han dado prominencia a un pontífice que comenzaban a llamar “el americano impasible”",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "León XIV: el primer año de un papa de centro | Las enganchadas con Trump han dado prominencia a un pontífice que comenzaban a llamar “el americano impasible”"
+    },
+    {
+      "source_id": "finding-291",
+      "title": "Trump da ultimátum a Europa: Impondrá más aranceles si no aprueban acuerdo comercial antes del 4 de julio",
+      "summary": "El presidente de Estados Unidos amagó con imponer tasas arancelarias más altas a importaciones de la UE ante el retraso del Parlamento Europeo para ratificar el acuerdo comercial.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Trump da ultimátum a Europa: Impondrá más aranceles si no aprueban acuerdo comercial antes del 4 de julio | El presidente de Estados Unidos amagó con imponer tasas arancelarias más altas a importaciones de la UE ante el retraso del Parlamento Europeo para ratificar el acuerdo comercial."
+    },
+    {
+      "source_id": "finding-143",
+      "title": "Zelensky expects Trump representatives in Kyiv in late spring or early summer",
+      "summary": "Ukrainian President Volodymyr Zelensky has said that U.S. President Donald Trump's envoys are expected to visit Kyiv at the turn of spring and summer.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Zelensky expects Trump representatives in Kyiv in late spring or early summer | Ukrainian President Volodymyr Zelensky has said that U.S. President Donald Trump's envoys are expected to visit Kyiv at the turn of spring and summer."
+    },
+    {
+      "source_id": "finding-272",
+      "title": "Realineamientos",
+      "summary": "El director del FBI, Kash Patel, mostró la forma como el gobierno de Trump ha reorganizado las fuerzas para la lucha contra el crimen organizado.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Realineamientos | El director del FBI, Kash Patel, mostró la forma como el gobierno de Trump ha reorganizado las fuerzas para la lucha contra el crimen organizado."
+    }
+  ]
+}
