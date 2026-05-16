@@ -20,7 +20,7 @@ from typing import Any, Callable, Optional
 
 from src.agent_stages import (
     BiasLanguageStage,
-    CuratorStage,
+    CuratorTopicDiscoveryStage,
     EditorStage,
     HydrationPhase1Stage,
     HydrationPhase2Stage,
@@ -35,6 +35,7 @@ from src.agent_stages import (
 )
 from src.stages import (
     RunInitConfig,
+    assemble_curator_topics,
     assemble_hydration_dossier,
     attach_hydration_urls,
     attach_hydration_urls_to_assignments,
@@ -45,17 +46,18 @@ from src.stages import (
     enrich_perspective_clusters,
     fetch_findings,
     filter_media_actors_quoted,
+    gravitational_assign,
     init_run,
     make_attach_hydration_urls_to_assignments,
     make_hydration_fetch,
     make_init_run,
     make_researcher_search,
-    measure_cluster_coherence,
     merge_sources,
     mirror_perspective_synced,
     mirror_qa_corrected,
     normalize_pre_research,
     partition_canonical_actors_by_evidence,
+    pre_cluster_findings,
     propagate_outlet_metadata,
     prune_unused_sources_and_clusters,
     renumber_sources,
@@ -104,9 +106,9 @@ def build_production_stages(
     Returns ``(run_stages, topic_stages, post_run_stages)``.
 
     :param agents: Dict from ``scripts/run.py:create_agents()``. Required
-        keys: ``curator``, ``editor``, ``researcher_plan``,
-        ``researcher_assemble``, ``perspective``, ``writer``, ``qa_analyze``,
-        ``bias_language``.
+        keys: ``curator_topic_discovery`` (new triple-stage Curator),
+        ``editor``, ``researcher_plan``, ``researcher_assemble``,
+        ``perspective``, ``writer``, ``qa_analyze``, ``bias_language``.
     :param web_search_tool: Tool injected into the researcher_search
         deterministic stage. Tests pass a fake; production passes the
         Brave-search tool.
@@ -118,11 +120,19 @@ def build_production_stages(
     :param output_dir: Optional override for the ``init_run`` config's
         ``output_dir`` (drives previous-coverage scanning).
     """
+    # Triple-stage Curator architecture (docs/ADR-CURATOR-TRIPLE-STAGE.md):
+    # the old single-pass CuratorStage and the passive
+    # measure_cluster_coherence are both replaced by the four-stage
+    # decomposition pre_cluster → topic-discovery → gravitational-assign
+    # → assemble_curator_topics. The Editor's input slot
+    # (curator_topics) shape is preserved — only the writer changes.
     run_stages = [
         _init_run_for("production", max_produce, output_dir),
         fetch_findings,
-        CuratorStage(agents["curator"]),
-        measure_cluster_coherence,
+        pre_cluster_findings,
+        CuratorTopicDiscoveryStage(agents["curator_topic_discovery"]),
+        gravitational_assign,
+        assemble_curator_topics,
         EditorStage(agents["editor"]),
         select_topics,
     ]
@@ -201,11 +211,16 @@ def build_hydrated_stages(
     to ``assignment.raw_data['hydration_urls']`` so the topic-stage
     ``attach_hydration_urls`` can lift them to the TopicBus slot.
     """
+    # Triple-stage Curator architecture, identical to production
+    # (see docs/ADR-CURATOR-TRIPLE-STAGE.md). The hydrated variant
+    # diverges from production only in the topic-stage chain.
     run_stages = [
         _init_run_for("hydrated", max_produce, output_dir),
         fetch_findings,
-        CuratorStage(agents["curator"]),
-        measure_cluster_coherence,
+        pre_cluster_findings,
+        CuratorTopicDiscoveryStage(agents["curator_topic_discovery"]),
+        gravitational_assign,
+        assemble_curator_topics,
         EditorStage(agents["editor"]),
         attach_hydration_urls_to_assignments,
         select_topics,
@@ -257,8 +272,10 @@ def build_hydrated_stages(
 _PRODUCTION_RUN_NAMES = (
     "init_run",
     "fetch_findings",
-    "CuratorStage",
-    "measure_cluster_coherence",
+    "pre_cluster_findings",
+    "CuratorTopicDiscoveryStage",
+    "gravitational_assign",
+    "assemble_curator_topics",
     "EditorStage",
     "select_topics",
 )
@@ -266,8 +283,10 @@ _PRODUCTION_RUN_NAMES = (
 _HYDRATED_RUN_NAMES = (
     "init_run",
     "fetch_findings",
-    "CuratorStage",
-    "measure_cluster_coherence",
+    "pre_cluster_findings",
+    "CuratorTopicDiscoveryStage",
+    "gravitational_assign",
+    "assemble_curator_topics",
     "EditorStage",
     "attach_hydration_urls_to_assignments",
     "select_topics",

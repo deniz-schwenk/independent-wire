@@ -71,7 +71,12 @@ def _fake_agent_dict(keys: list[str]) -> dict:
 
 
 _PRODUCTION_AGENTS = [
-    "curator", "editor", "researcher_plan", "researcher_assemble",
+    # Triple-stage Curator (docs/ADR-CURATOR-TRIPLE-STAGE.md): the old
+    # single-pass "curator" agent is gone; "curator_topic_discovery" is
+    # the new LLM stage. Gravitational assignment + assemble are
+    # deterministic Python and don't need an agent.
+    "curator_topic_discovery",
+    "editor", "researcher_plan", "researcher_assemble",
     "resolve_actor_aliases",
     "perspective", "writer", "qa_analyze", "bias_language",
 ]
@@ -147,14 +152,21 @@ def test_hydrated_run_stages_extends_production_with_hydration_attach():
     hyd_run, _, _ = build_hydrated_stages(hyd_agents)
     prod_names = [_stage_label(s) for s in prod_run]
     hyd_names = [_stage_label(s) for s in hyd_run]
+    # Triple-stage Curator (docs/ADR-CURATOR-TRIPLE-STAGE.md). The
+    # old single-pass CuratorStage + passive measure_cluster_coherence
+    # are replaced by the four-stage decomposition:
+    # pre_cluster → topic-discovery → gravitational-assign → assemble.
     assert prod_names == [
-        "init_run", "fetch_findings", "CuratorStage",
-        "measure_cluster_coherence", "EditorStage",
-        "select_topics",
+        "init_run", "fetch_findings",
+        "pre_cluster_findings", "CuratorTopicDiscoveryStage",
+        "gravitational_assign", "assemble_curator_topics",
+        "EditorStage", "select_topics",
     ]
     assert hyd_names == [
-        "init_run", "fetch_findings", "CuratorStage",
-        "measure_cluster_coherence", "EditorStage",
+        "init_run", "fetch_findings",
+        "pre_cluster_findings", "CuratorTopicDiscoveryStage",
+        "gravitational_assign", "assemble_curator_topics",
+        "EditorStage",
         "attach_hydration_urls_to_assignments", "select_topics",
     ]
 

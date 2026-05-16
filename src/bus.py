@@ -235,19 +235,16 @@ class _RunBusFields(BaseModel):
     curator_topics_unsliced: list = Slot(default_factory=list, visibility="internal")
     curator_topics: list = Slot(default_factory=list, visibility="internal")
 
-    # 4A.2b Coherence-measure phase (1 slot). Written by the deterministic
-    # CoherenceStage (src/stages/coherence.py) between CuratorStage and
-    # EditorStage. Passive mode: stage measures embedding-based finding↔
-    # cluster cosine similarity and reports per-cluster aggregates plus
-    # threshold-band counts. Does not mutate curator_findings or
-    # curator_topics_unsliced (passthrough contract — see test
-    # tests/test_coherence_stage.py::test_passthrough_byte_identical).
-    # Internal: the slot exists to feed downstream calibration; whether
-    # to render coherence in the final TP is a separate decision per
-    # TASK-COHERENCE-FILTER-PASSIVE §"Out of scope". optional_write=True
-    # because partial runs that skip the stage leave it at its empty
-    # default. See docs/ADR-COHERENCE-STAGE-DEPENDENCY.md for the
-    # dependency-cost rationale.
+    # 4A.2b Coherence-measure phase (legacy, 1 slot). Originally
+    # written by the passive measure_cluster_coherence stage
+    # (TASK-COHERENCE-FILTER-PASSIVE; see
+    # docs/ADR-COHERENCE-STAGE-DEPENDENCY.md). The Brief 5
+    # triple-stage Curator cutover (docs/ADR-CURATOR-TRIPLE-STAGE.md)
+    # removed the stage callable; the slot is left declared in case a
+    # future calibration brief revives a passive-coherence stage on
+    # the new topic-centres. No writer in the production pipeline as
+    # of Brief 5. optional_write=True keeps the empty-default
+    # path valid for every run.
     curator_coherence_scores: dict = Slot(
         default_factory=dict,
         visibility="internal",
@@ -280,9 +277,10 @@ class _RunBusFields(BaseModel):
     # optional_write=True — a run that produces no findings produces
     # no clusters; the empty case is legitimate.
     #
-    # Wiring status (TASK-EMBED-PRE-CLUSTER-STAGE): declared but NOT
-    # yet added to build_production_stages / build_hydrated_stages. The
-    # later integration brief in the triple-stage sequence wires it.
+    # **Wiring status:** WIRED (Brief 5 cutover,
+    # docs/ADR-CURATOR-TRIPLE-STAGE.md). Runs after fetch_findings,
+    # before CuratorTopicDiscoveryStage in build_production_stages /
+    # build_hydrated_stages.
     curator_pre_clusters: dict = Slot(
         default_factory=dict,
         visibility="internal",
@@ -325,15 +323,16 @@ class _RunBusFields(BaseModel):
     # orphans; a run with no findings produces an empty record. Both
     # are legitimate empty cases.
     #
-    # **Wiring status (TASK-GRAVITATIONAL-ASSIGN-STAGE):** declared but
-    # NOT yet added to build_production_stages /
-    # build_hydrated_stages. The integration brief later in the
-    # triple-stage sequence wires it.
+    # **Wiring status:** WIRED (Brief 5 cutover,
+    # docs/ADR-CURATOR-TRIPLE-STAGE.md). Runs after
+    # CuratorTopicDiscoveryStage, before assemble_curator_topics in
+    # build_production_stages / build_hydrated_stages.
     #
-    # **Calibration is provisional** — the threshold and cap pinned in
-    # this brief were calibrated against V1 Curator headlines as
-    # topic-centre proxies. The integration brief recalibrates against
-    # Brief 4's real Stage-2 topic-centre output.
+    # **Calibration is provisional** — the threshold and cap pinned
+    # against V1-headline topic-centres on 2026-05-15
+    # (docs/gravitational-assign/_calibration-2026-05-15.md). Brief 5b
+    # recalibrates against the new architecture's topic-centres after
+    # the post-Brief-5 re-labeling pass produces fresh ground truth.
     curator_topic_assignments: dict = Slot(
         default_factory=dict,
         visibility="internal",
@@ -364,14 +363,12 @@ class _RunBusFields(BaseModel):
     # `optional_write=True` — an empty pre-cluster run produces zero
     # topics; the empty case is legitimate.
     #
-    # **Wiring status (TASK-CURATOR-TOPIC-DISCOVERY-STAGE):** declared
-    # but NOT yet added to build_production_stages /
-    # build_hydrated_stages. Brief 5 wires it (and removes the old
-    # CuratorStage at the same time). Between Brief 4 and Brief 5 the
-    # production pipeline is NOT safe to run live — the old
-    # CuratorStage reads the new prompts in agents/curator/ which no
-    # longer match its schema. Tests stay green because they mock the
-    # LLM.
+    # **Wiring status:** WIRED (Brief 5 cutover,
+    # docs/ADR-CURATOR-TRIPLE-STAGE.md). Runs after
+    # pre_cluster_findings, before gravitational_assign in
+    # build_production_stages / build_hydrated_stages. The legacy
+    # CuratorStage + its CURATOR_SCHEMA + the curator agent
+    # registration were removed at the same time.
     curator_discovered_topics: dict = Slot(
         default_factory=dict,
         visibility="internal",

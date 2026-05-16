@@ -117,11 +117,15 @@ def _make_rb(
     topics: list[dict],
     run_date: str = "2026-05-15",
 ) -> RunBus:
+    """Brief 5 cutover: topic-centres come from curator_discovered_topics
+    (Brief 4) rather than curator_topics_unsliced (legacy V1). Wrap the
+    topics list in the discovered-topics record shape so the stage reads
+    it through its new input slot."""
     return RunBus(
         run_id="run-2026-05-15-test-grav",
         run_date=run_date,
         curator_findings=findings,
-        curator_topics_unsliced=topics,
+        curator_discovered_topics={"topics": topics},
     )
 
 
@@ -180,9 +184,9 @@ def test_passthrough_byte_identical():
     ]
     rb = _make_rb(findings=findings, topics=topics)
     findings_snapshot = copy.deepcopy(rb.curator_findings)
-    topics_snapshot = copy.deepcopy(rb.curator_topics_unsliced)
+    discovered_snapshot = copy.deepcopy(rb.curator_discovered_topics)
     findings_json = json.dumps(findings_snapshot, sort_keys=True)
-    topics_json = json.dumps(topics_snapshot, sort_keys=True)
+    discovered_json = json.dumps(discovered_snapshot, sort_keys=True)
 
     stage = make_gravitational_assign(
         embedder=ThreeTopicEmbedder(), threshold=0.5, cap=2
@@ -190,7 +194,10 @@ def test_passthrough_byte_identical():
     rb_out = _run_stage(stage, rb)
 
     assert json.dumps(rb_out.curator_findings, sort_keys=True) == findings_json
-    assert json.dumps(rb_out.curator_topics_unsliced, sort_keys=True) == topics_json
+    assert (
+        json.dumps(rb_out.curator_discovered_topics, sort_keys=True)
+        == discovered_json
+    )
     # JSON-serialisable
     json.dumps(rb_out.curator_topic_assignments)
 
@@ -400,7 +407,13 @@ def test_empty_findings_empty_record():
             raise AssertionError("embedder must not be called when no findings")
 
     stage = make_gravitational_assign(embedder=_CrashEmbedder())
-    out = _run_stage(stage, _make_rb(findings=[], topics=topics))
+    rb_input = RunBus(
+        run_id="r",
+        run_date="2026-05-16",
+        curator_findings=[],
+        curator_discovered_topics={"topics": topics},
+    )
+    out = _run_stage(stage, rb_input)
     ca = out.curator_topic_assignments
     assert ca["n_findings"] == 0
     assert ca["n_orphans"] == 0
@@ -494,7 +507,7 @@ def test_multilingual_assignment_real_model():
 def test_stage_metadata():
     meta = get_stage_meta(gravitational_assign)
     assert meta.kind == "run"
-    assert set(meta.reads) == {"curator_findings", "curator_topics_unsliced"}
+    assert set(meta.reads) == {"curator_findings", "curator_discovered_topics"}
     assert meta.writes == ("curator_topic_assignments",)
 
 

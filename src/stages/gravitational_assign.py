@@ -218,12 +218,20 @@ def make_gravitational_assign(
     closure_cap = cap
 
     @run_stage_def(
-        reads=("curator_findings", "curator_topics_unsliced"),
+        reads=("curator_findings", "curator_discovered_topics"),
         writes=("curator_topic_assignments",),
     )
     async def gravitational_assign(run_bus: RunBus) -> RunBus:
         findings = list(run_bus.curator_findings or [])
-        topics = list(run_bus.curator_topics_unsliced or [])
+        # Brief 5 cutover: topic-centres come from Brief 4's
+        # curator_discovered_topics now, not from the legacy
+        # curator_topics_unsliced (which is written by
+        # assemble_curator_topics AFTER this stage runs in the new
+        # pipeline order). The topic-shape contract is unchanged —
+        # title + summary fields are present in both.
+        topics = list(
+            (run_bus.curator_discovered_topics or {}).get("topics") or []
+        )
 
         emb = closure_embedder if closure_embedder is not None else _get_default_embedder()
         model_name = getattr(emb, "model_name", MODEL_NAME)
