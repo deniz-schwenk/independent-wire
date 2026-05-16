@@ -61,3 +61,6 @@ BRIEF-*.md
 PROMPT-ENGINEER-*.md
 _pre_v2_archive/
 V2-*-SMOKE-LOG.md
+
+# Sweep harness embedding cache (binary, regeneratable)
+docs/gravitational-recalibration-*/_cache/
