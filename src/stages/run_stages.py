@@ -690,6 +690,115 @@ attach_hydration_urls_to_assignments = make_attach_hydration_urls_to_assignments
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
+# assemble_curator_topics — integration stage for the triple-stage Curator
+# (Brief 5 of docs/ADR-CURATOR-TRIPLE-STAGE.md)
+# ---------------------------------------------------------------------------
+
+
+DEFAULT_MAX_TOPICS: int = 10
+"""Number of topics passed downstream to the Editor in
+``curator_topics``. Moves over from the V1 ``CuratorStage`` constant —
+the Editor's input window is unchanged by the cutover."""
+
+
+@run_stage_def(
+    reads=(
+        "curator_findings",
+        "curator_discovered_topics",
+        "curator_topic_assignments",
+    ),
+    writes=("curator_topics_unsliced", "curator_topics"),
+)
+async def assemble_curator_topics(run_bus: RunBus) -> RunBus:
+    """Bridge Brief 4's slim ``{topics: [{title, summary}]}`` and Brief
+    2's per-topic gravitational assignments into the enriched Editor
+    input. Deterministic, no LLM.
+
+    Reads:
+        - ``curator_findings``           — raw findings, for enrichment lookup
+        - ``curator_discovered_topics``  — Brief 4 LLM output, title + summary per topic
+        - ``curator_topic_assignments``  — Brief 2 gravitational output, per-topic source_ids
+
+    Writes:
+        - ``curator_topics_unsliced``    — full enriched list (Editor reads downstream)
+        - ``curator_topics``             — top-N sliced for Editor consumption
+
+    Per-topic shape mirrors the V1 ``CuratorStage`` output the Editor
+    expects today: ``{title, summary, source_ids, geographic_coverage,
+    languages, source_count, missing_regions, missing_languages,
+    source_diversity, missing_perspectives}``. ``relevance_score`` is
+    no longer emitted — the Editor's ``priority`` is the editorial
+    relevance judgement, not a Curator-side score.
+
+    Topic-to-assignment mapping is **positional** — discovered_topics[i]
+    matches topic_assignments.topics[i]. Both slots index topics by
+    the same ``topic_index``. Topics with zero assignments are kept
+    in the output with ``source_count = 0`` so the Editor sees them
+    and writes a rejection reason — transparency over silent drop.
+
+    Sort + slice: topics ordered by ``source_count`` descending with
+    title ascending as the deterministic tie-break, then sliced to
+    ``DEFAULT_MAX_TOPICS`` for the Editor window.
+    """
+    # Lazy import — _enrich_curator_output is a V1-port helper that
+    # belongs to agent_stages.py's history; the run-stage module
+    # shouldn't pull the whole agent_stages module at import time.
+    from src.agent_stages import _enrich_curator_output
+
+    discovered_record = run_bus.curator_discovered_topics or {}
+    discovered = list(discovered_record.get("topics") or [])
+    assignments_record = run_bus.curator_topic_assignments or {}
+    assignment_topics = list(assignments_record.get("topics") or [])
+    raw_findings = list(run_bus.curator_findings or [])
+
+    # Positional index — topic_index → list[source_id]
+    assignments_by_index: dict[int, list[str]] = {}
+    for atopic in assignment_topics:
+        ti = atopic.get("topic_index")
+        if ti is None:
+            continue
+        sids = [
+            a.get("source_id")
+            for a in (atopic.get("assignments") or [])
+            if a.get("source_id")
+        ]
+        assignments_by_index[int(ti)] = sids
+
+    # Build per-topic dicts in discovered order
+    topics: list[dict] = []
+    for i, t in enumerate(discovered):
+        topics.append({
+            "title": t.get("title", ""),
+            "summary": t.get("summary", ""),
+            "source_ids": assignments_by_index.get(i, []),
+        })
+
+    # Deterministic enrichment — adds geographic_coverage, languages,
+    # source_count, missing_regions, missing_languages, source_diversity,
+    # missing_perspectives. Mutates each topic dict in place; returns
+    # the same list for convenience.
+    topics = _enrich_curator_output(topics, raw_findings)
+
+    # Sort by source_count desc, title asc tiebreak (deterministic)
+    topics_sorted = sorted(
+        topics,
+        key=lambda t: (-t.get("source_count", 0), t.get("title", "")),
+    )
+    topics_top_n = topics_sorted[:DEFAULT_MAX_TOPICS]
+
+    logger.info(
+        "assemble_curator_topics: %d discovered, %d assignments-by-index, "
+        "slicing %d → top %d for Editor",
+        len(discovered), len(assignments_by_index), len(topics_sorted),
+        min(DEFAULT_MAX_TOPICS, len(topics_sorted)),
+    )
+    return run_bus.model_copy(update={
+        "curator_topics_unsliced": topics_sorted,
+        "curator_topics": topics_top_n,
+    })
+
+
 @run_stage_def(
     reads=("editor_assignments", "max_produce"),
     writes=("selected_assignments",),
@@ -762,11 +871,13 @@ def make_topic_bus(
 
 
 __all__ = [
+    "DEFAULT_MAX_TOPICS",
     "HYDRATION_URL_CAP",
     "MAX_PER_OUTLET",
     "MirrorMismatchError",
     "RunInitConfig",
     "TopicManifestEntry",
+    "assemble_curator_topics",
     "attach_hydration_urls_to_assignments",
     "fetch_findings",
     "finalize_run",

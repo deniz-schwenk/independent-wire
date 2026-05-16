@@ -6,10 +6,6 @@ Run-scoped stages live in `run_stages`; topic-scoped stages will live in
 topic-level mirror stages.
 """
 
-from src.stages.coherence import (
-    make_measure_cluster_coherence,
-    measure_cluster_coherence,
-)
 from src.stages.gravitational_assign import (
     gravitational_assign,
     make_gravitational_assign,
@@ -21,6 +17,7 @@ from src.stages.pre_cluster import (
 from src.stages.run_stages import (
     MirrorMismatchError,
     RunInitConfig,
+    assemble_curator_topics,
     attach_hydration_urls_to_assignments,
     fetch_findings,
     finalize_run,
@@ -59,6 +56,7 @@ from src.stages.topic_stages import (
 __all__ = [
     "MirrorMismatchError",
     "RunInitConfig",
+    "assemble_curator_topics",
     "assemble_hydration_dossier",
     "attach_hydration_urls",
     "attach_hydration_urls_to_assignments",
@@ -79,11 +77,9 @@ __all__ = [
     "make_gravitational_assign",
     "make_hydration_fetch",
     "make_init_run",
-    "make_measure_cluster_coherence",
     "make_pre_cluster_findings",
     "make_researcher_search",
     "make_topic_bus",
-    "measure_cluster_coherence",
     "merge_sources",
     "mirror_perspective_synced",
     "mirror_qa_corrected",
