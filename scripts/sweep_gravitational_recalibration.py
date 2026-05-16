@@ -716,18 +716,267 @@ def write_outputs(rows: list[dict], per_day: dict[str, dict], audit_n_findings: 
     print(f"Wrote {(OUT_ROOT / 'sweep.json').relative_to(REPO_ROOT)}")
 
 
+# ── Phase 2: qualitative samples ──────────────────────────────────────────
+SAMPLE_CONFIGS: list[tuple[float, str]] = [
+    (0.55, "V1"),
+    (0.55, "V2"),
+    (0.50, "V2"),
+]
+
+# Per brief Phase-2 selection: gravity trap, borderline, clean — all from
+# 2026-05-11 so the architect compares like-with-like across configs.
+SAMPLE_TOPICS: list[tuple[str, int, str]] = [
+    ("2026-05-11", 2, "gravity-trap-putin-schroeder"),
+    ("2026-05-11", 1, "borderline-trump-iran-peace"),
+    ("2026-05-11", 4, "clean-hantavirus"),
+]
+
+
+def _load_bundle_findings_with_text(date: str, bundle_idx: int) -> list[dict]:
+    """Topic bundle's findings list, already enriched with title/summary/
+    description and outlet metadata by the audit harness."""
+    return _load_bundle(date, bundle_idx)["findings"]
+
+
+def _load_audit_csv_with_notes(date: str, bundle_idx: int) -> dict[str, dict]:
+    """{finding_id: {is_on_topic, reasoning_note}} for labeled rows
+    only — preserves the auditor's per-finding trace."""
+    path = DATA_ROOT / date / f"topic-{bundle_idx:02d}.audit.csv"
+    out: dict[str, dict] = {}
+    with path.open(newline="", encoding="utf-8") as fh:
+        r = csv.DictReader(fh)
+        for row in r:
+            label = (row.get("is_on_topic") or "").strip()
+            if label not in ("0", "1"):
+                continue
+            out[row["finding_id"].strip()] = {
+                "is_on_topic": int(label),
+                "reasoning_note": (row.get("reasoning_note") or "").strip(),
+            }
+    return out
+
+
+def render_sample(
+    per_day: dict[str, dict],
+    config: tuple[float, str],
+    date: str,
+    bundle_idx: int,
+    slug: str,
+) -> str:
+    T, V = config
+    day = per_day[date]
+    sim_mat = day["sim_v1"] if V == "V1" else day["sim_v2"]
+
+    audited = next(a for a in day["audited"] if a["bundle_idx"] == bundle_idx)
+    topic_idx = audited["topic_idx"]
+    sim_col = sim_mat[:, topic_idx]
+
+    findings = _load_bundle_findings_with_text(date, bundle_idx)
+    labels = _load_audit_csv_with_notes(date, bundle_idx)
+    bundle = _load_bundle(date, bundle_idx)
+
+    rows_table: list[dict] = []
+    on_full = 0
+    on_retained = 0
+    off_retained = 0
+    for f in findings:
+        sid = f["source_id"]
+        lab = labels.get(sid)
+        if lab is None:
+            continue  # unlabeled — should not happen, audit covers all
+        fi = _finding_idx_from_id(sid)
+        sim = float(sim_col[fi])
+        retained = sim >= T
+        if lab["is_on_topic"] == 1:
+            on_full += 1
+        if retained:
+            if lab["is_on_topic"] == 1:
+                on_retained += 1
+            else:
+                off_retained += 1
+        rows_table.append(
+            {
+                "finding_id": sid,
+                "lang": f.get("language", ""),
+                "outlet": (f.get("outlet") or "")[:38],
+                "title": (f.get("title") or "")[:90],
+                "sim": sim,
+                "retained": retained,
+                "label": lab["is_on_topic"],
+                "reasoning_note": lab["reasoning_note"],
+            }
+        )
+
+    n_retained = on_retained + off_retained
+    off_pct = (100.0 * off_retained / n_retained) if n_retained else 0.0
+    n_dropped = len(rows_table) - n_retained
+    recall = (on_retained / on_full) if on_full else 0.0
+    precision = (on_retained / n_retained) if n_retained else 0.0
+
+    out: list[str] = []
+    out.append(f"# {bundle['topic_title']}")
+    out.append("")
+    out.append(f"**Configuration:** T = {T:.2f}, V = {V}  ")
+    out.append(f"**Date:** {date} · bundle topic-{bundle_idx:02d}  ")
+    out.append(f"**Slug:** {slug}")
+    out.append("")
+    out.append("## Topic")
+    out.append("")
+    out.append(f"> {bundle.get('topic_summary', '').strip() or '_(no summary)_'}")
+    out.append("")
+    out.append(f"- Original `source_count` (production, T=0.30 V1): **{bundle['source_count']}**")
+    out.append(f"- Audit labels: on = **{on_full}**, off = **{len(rows_table) - on_full}**, total = **{len(rows_table)}**, baseline off % = **{100.0 * (len(rows_table) - on_full) / len(rows_table):.1f}%**")
+    out.append("")
+    out.append(f"## At this configuration (T = {T:.2f}, V = {V})")
+    out.append("")
+    out.append(f"- Retained (sim ≥ {T:.2f}): **{n_retained}** of {len(rows_table)}")
+    out.append(f"- Dropped: **{n_dropped}**")
+    out.append(f"- On-topic retained: **{on_retained}** / {on_full} (recall = **{recall:.3f}**)")
+    out.append(f"- Off-topic retained: **{off_retained}** (off % of retained = **{off_pct:.1f}%**, precision = **{precision:.3f}**)")
+    out.append("")
+    out.append("## Findings")
+    out.append("")
+    out.append(
+        "Sorted by similarity descending. **Kept** = sim ≥ threshold (assigned at this config). "
+        "**Drop** = sim < threshold (would orphan or move to another topic). The audit `label` "
+        "and `reasoning_note` are unchanged across configs — they describe the finding, not the cut."
+    )
+    out.append("")
+    out.append("| # | sim | kept | label | lang | outlet | title | reasoning |")
+    out.append("|---:|---:|:--:|:--:|:--|:--|:--|:--|")
+    rows_sorted = sorted(rows_table, key=lambda r: -r["sim"])
+    for i, r in enumerate(rows_sorted, start=1):
+        kept = "✅" if r["retained"] else "·"
+        # Per CLAUDE.md no-emoji rule, use plain text instead
+        kept = "yes" if r["retained"] else "no"
+        label = "on" if r["label"] == 1 else "off"
+        # Escape pipe characters in titles/reasoning to keep table valid
+        title_e = r["title"].replace("|", "\\|")
+        reason_e = r["reasoning_note"].replace("|", "\\|")
+        outlet_e = r["outlet"].replace("|", "\\|")
+        out.append(
+            f"| {i} | {r['sim']:.3f} | {kept} | {label} | {r['lang']} | {outlet_e} | {title_e} | {reason_e} |"
+        )
+    out.append("")
+    return "\n".join(out)
+
+
+def render_all_samples() -> None:
+    """Render the 9 Phase-2 sample files."""
+    samples_root = OUT_ROOT / "samples"
+    samples_root.mkdir(parents=True, exist_ok=True)
+
+    # Only prepare the days we actually need (Phase 2 is 2026-05-11 only,
+    # but day-prep reads cached embeddings so all three days cost nothing).
+    per_day: dict[str, dict] = {}
+    for date in DATASETS:
+        per_day[date] = prepare_day(date)
+
+    rendered = 0
+    for T, V in SAMPLE_CONFIGS:
+        config_slug = f"T={T:.2f}-{V}"
+        config_dir = samples_root / config_slug
+        config_dir.mkdir(parents=True, exist_ok=True)
+        for date, bundle_idx, slug in SAMPLE_TOPICS:
+            md = render_sample(per_day, (T, V), date, bundle_idx, slug)
+            path = config_dir / f"{slug}.md"
+            path.write_text(md, encoding="utf-8")
+            rendered += 1
+            print(f"  wrote {path.relative_to(REPO_ROOT)}")
+
+    # Index + comparison table — lets the architect skim before reading files
+    index = ["# Phase 2 qualitative samples", ""]
+    index.append(
+        "Per brief Phase 2 — three topics from 2026-05-11 rendered across the three "
+        "top configurations from Phase 1. Same topics across all configurations so "
+        "the architect compares like-with-like."
+    )
+    index.append("")
+    index.append("## Configurations")
+    index.append("")
+    for T, V in SAMPLE_CONFIGS:
+        index.append(f"- `T={T:.2f}-{V}/`")
+    index.append("")
+    index.append("## Topics (same in every configuration)")
+    index.append("")
+    for date, bi, slug in SAMPLE_TOPICS:
+        b = _load_bundle(date, bi)
+        labs = _load_audit_csv_with_notes(date, bi)
+        off_baseline = sum(1 for v in labs.values() if v["is_on_topic"] == 0)
+        on_baseline = sum(1 for v in labs.values() if v["is_on_topic"] == 1)
+        baseline_pct = (
+            100.0 * off_baseline / (on_baseline + off_baseline)
+            if (on_baseline + off_baseline)
+            else 0.0
+        )
+        index.append(
+            f"- **{slug}** — {date} · topic-{bi:02d} — {b['topic_title']} "
+            f"(baseline: {b['source_count']} findings, "
+            f"{off_baseline} off-topic, **{baseline_pct:.1f}% off**)"
+        )
+    index.append("")
+
+    # ── Comparison table ──
+    index.append("## Comparison table (all 9 samples)")
+    index.append("")
+    index.append("| Topic | Config | Retained | On | Off | Off % | Recall | Precision |")
+    index.append("|---|---|---:|---:|---:|---:|---:|---:|")
+    for date, bi, slug in SAMPLE_TOPICS:
+        bundle = _load_bundle(date, bi)
+        labs = _load_audit_csv_with_notes(date, bi)
+        on_full = sum(1 for v in labs.values() if v["is_on_topic"] == 1)
+        day = per_day[date]
+        topic_idx = next(
+            a["topic_idx"] for a in day["audited"] if a["bundle_idx"] == bi
+        )
+        for T, V in SAMPLE_CONFIGS:
+            sim_mat = day["sim_v1"] if V == "V1" else day["sim_v2"]
+            sim_col = sim_mat[:, topic_idx]
+            on_r = 0
+            off_r = 0
+            for sid, lab in labs.items():
+                fi = _finding_idx_from_id(sid)
+                if float(sim_col[fi]) >= T:
+                    if lab["is_on_topic"] == 1:
+                        on_r += 1
+                    else:
+                        off_r += 1
+            n_r = on_r + off_r
+            off_pct = (100.0 * off_r / n_r) if n_r else 0.0
+            recall = (on_r / on_full) if on_full else 0.0
+            precision = (on_r / n_r) if n_r else 0.0
+            index.append(
+                f"| {slug} | T={T:.2f} {V} | {n_r} | {on_r} | {off_r} | "
+                f"{off_pct:.1f}% | {recall:.3f} | {precision:.3f} |"
+            )
+    index.append("")
+
+    index.append("## Files")
+    index.append("")
+    for T, V in SAMPLE_CONFIGS:
+        for date, bi, slug in SAMPLE_TOPICS:
+            index.append(f"- [`T={T:.2f}-{V}/{slug}.md`]({f'T={T:.2f}-{V}'}/{slug}.md)")
+    index.append("")
+    (samples_root / "README.md").write_text("\n".join(index), encoding="utf-8")
+    print(f"  wrote {(samples_root / 'README.md').relative_to(REPO_ROOT)}")
+    print(f"\nRendered {rendered} sample files + 1 index.")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument(
-        "subcommand", choices=("sweep", "render"), nargs="?", default="sweep"
+        "subcommand",
+        choices=("sweep", "render", "samples"),
+        nargs="?",
+        default="sweep",
     )
     args = ap.parse_args()
 
     if args.subcommand == "render":
-        # Render-only path: still needs day prep (sim matrices), but the
-        # cache will service the embeds without LLM/fastembed cost.
         rows, per_day, n = run_sweep()
         write_outputs(rows, per_day, n)
+    elif args.subcommand == "samples":
+        render_all_samples()
     else:
         rows, per_day, n = run_sweep()
         write_outputs(rows, per_day, n)
