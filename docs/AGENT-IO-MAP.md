@@ -44,9 +44,9 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
 - **Reads (Bus):** `run_date` — RunBus
 - **Writes (Bus):** `curator_findings` — RunBus, loaded from `raw/{run_date}/feeds.json`
 
-#### §2.2b pre_cluster_findings — **declared but NOT YET WIRED**
+#### §2.2b pre_cluster_findings — **wired**
 
-- **Status:** Stage callable + RunBus slot declared at `TASK-EMBED-PRE-CLUSTER-STAGE.md`. NOT added to `build_production_stages` / `build_hydrated_stages` in `src/runner/stage_lists.py`; absence of this stage in production stage logs is currently expected. Wiring belongs to the later integration brief in the triple-stage Curator sequence (`docs/ADR-CURATOR-TRIPLE-STAGE.md`).
+- **Status:** WIRED (Brief 5 cutover, `docs/ADR-CURATOR-TRIPLE-STAGE.md`). Runs after `fetch_findings`, before `CuratorTopicDiscoveryStage` (§2.2d) in both `build_production_stages` and `build_hydrated_stages`.
 - **Kind:** deterministic (Python)
 - **Source:** `src/stages/pre_cluster.py::make_pre_cluster_findings`
 - **Model (embedding, pinned):** `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` — shared singleton with §2.3b via `src/stages/coherence.py::_get_default_embedder` (one ONNX session per process)
@@ -61,9 +61,9 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
 - **Performance budget (TASK-EMBED-PRE-CLUSTER-STAGE):** embedding ~9 s (bounded by the existing coherence-stage cost; re-uses cached model weights), clustering <1 s for ~1200 findings on commodity CPU. Measured smoke totals: 60–82 s including JSON load + asyncio dispatch.
 - **Dependency cost:** scikit-learn 46 MB + scipy 97 MB + joblib 2.4 MB + threadpoolctl 0.1 MB = +146 MB site-packages — see `docs/ADR-COHERENCE-STAGE-DEPENDENCY-ADDENDUM-2026-05-15.md` for the ceiling-raise rationale (400 MB → 600 MB).
 
-#### §2.2c gravitational_assign — **declared but NOT YET WIRED**
+#### §2.2c gravitational_assign — **wired**
 
-- **Status:** Stage callable + RunBus slot declared at `TASK-GRAVITATIONAL-ASSIGN-STAGE.md`. NOT added to `build_production_stages` / `build_hydrated_stages` in `src/runner/stage_lists.py`; absence of this stage in production stage logs is currently expected. Wiring belongs to the later integration brief in the triple-stage Curator sequence (`docs/ADR-CURATOR-TRIPLE-STAGE.md`).
+- **Status:** WIRED (Brief 5 cutover, `docs/ADR-CURATOR-TRIPLE-STAGE.md`). Runs after `CuratorTopicDiscoveryStage` (§2.2d) and before `assemble_curator_topics` (§2.2e) in both `build_production_stages` and `build_hydrated_stages`. The Brief 5 reroute changed the topic-centre input slot from `curator_topics_unsliced` (legacy V1) to `curator_discovered_topics` (the new Curator's output).
 - **Kind:** deterministic (Python)
 - **Source:** `src/stages/gravitational_assign.py::make_gravitational_assign`
 - **Model (embedding, pinned):** `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` — shared singleton with §2.2b and §2.3b via `src/stages/coherence.py::_get_default_embedder` (one ONNX session per process)
@@ -79,9 +79,9 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
 - **Performance budget (TASK-GRAVITATIONAL-ASSIGN-STAGE):** embedding ~9 s for ~1200 findings + ~0.1 s for 10–20 topic-centres; similarity matrix + selection <0.1 s. Memory ~50 MB for the float matrix. Smoke wall observed: 39–82 s (dominated by fastembed across the three eval datasets).
 - **Dependency cost:** none new — numpy + fastembed already production deps.
 
-#### §2.2d CuratorTopicDiscoveryStage — **declared but NOT YET WIRED**
+#### §2.2d CuratorTopicDiscoveryStage — **wired**
 
-- **Status:** Stage class + RunBus slot + JSON schema + agent registration declared at `TASK-CURATOR-TOPIC-DISCOVERY-STAGE.md`. NOT added to `build_production_stages` / `build_hydrated_stages` in `src/runner/stage_lists.py`; the absence of this stage in production stage logs is currently expected. Brief 5 of the triple-stage Curator sequence wires it AND removes the old `CuratorStage` at the same time. **Between Brief 4 and Brief 5 the production pipeline is not safe to run live** — the old `CuratorStage` reads the new prompts in `agents/curator/` which no longer match its schema. Tests stay green because they mock the LLM.
+- **Status:** WIRED (Brief 5 cutover, `docs/ADR-CURATOR-TRIPLE-STAGE.md`). The only Curator-side LLM in the new architecture. Runs after `pre_cluster_findings` (§2.2b) and before `gravitational_assign` (§2.2c) in both `build_production_stages` and `build_hydrated_stages`. The legacy single-pass `CuratorStage`, the `curator` agent registration, and the `CURATOR_SCHEMA` were removed in the same cutover commits.
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::CuratorTopicDiscoveryStage`
 - **Agent:** `curator_topic_discovery` (registered in `scripts/run.py`)
@@ -96,37 +96,28 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
 - **Output shape:** `{model_name, params, sample_titles_per_cluster, wall_seconds, llm_cost_usd, tokens_used, n_micro_clusters_input, n_topics, topics: [{title, summary}]}`. Topics are emitted in the LLM's order; Brief 5 attaches `source_ids` (via `gravitational_assign`) and runs the deterministic enrichment on top to produce the final `curator_topics_unsliced`.
 - **Smoke (2026-05-16):** `docs/curator-topic-discovery/smoke-2026-05-16/` runs the stage end-to-end against the three eval-anchor state files with real LLM + real fastembed. Result: 15 / 15 / 18 topics across the three days, $0.057 total LLM cost, 30–33 K tokens per call. Topics are specific stories (named actors, named events), zero category-shapes, zero catch-all titles. The V1 pathology decomposition is visible: the 1004-finding Iran mega-cluster from 2026-05-11 splits into multiple specific Iran-war angles.
 - **Performance budget (TASK-CURATOR-TOPIC-DISCOVERY-STAGE):** embedding ~9 s (shared singleton, already cached after the run started); compression <1 s; LLM 15–60 s. Smoke observed: ~75 s topic-discovery wall (LLM-dominated, no breach).
-- **Dependency cost:** none new — fastembed + numpy + openai are existing production deps. The agent registration adds one more entry to `create_agents()`; the legacy `curator` registration stays until Brief 5 removes it.
+- **Dependency cost:** none new — fastembed + numpy + openai are existing production deps. Adds the `curator_topic_discovery` entry to `create_agents()`; the legacy `curator` registration was removed in the same Brief 5 cutover.
 
-#### §2.3 CuratorStage
+#### §2.2e assemble_curator_topics — **wired**
 
-- **Kind:** agent (LLM)
-- **Source:** `src/agent_stages.py::CuratorStage`
-- **Model:** `google/gemini-3-flash-preview`
-- **Params:** temp=0.2, reasoning=none, max_tokens=64000
-- **Prompt:** `agents/curator/SYSTEM.md` + `INSTRUCTIONS.md`
-- **Reads (Bus):** `curator_findings` — RunBus
-- **Writes (Bus):**
-  - `curator_topics_unsliced` — RunBus, full sorted cluster list
-  - `curator_topics` — RunBus, top-N slice (default 10) for the Editor
-- **Originarity check:**
-  - Fields the LLM produces: clusters (`title`, `relevance_score`, `summary`) + per-finding `cluster_assignments`
-  - Fields the wrapper merges in deterministically: outlet/url/source_name reattached from `curator_findings` via `_rebuild_curator_source_ids` + `_enrich_curator_output` (source IDs known upstream are mapped back to raw finding records).
+- **Status:** WIRED (Brief 5 cutover, `docs/ADR-CURATOR-TRIPLE-STAGE.md`). Runs after `gravitational_assign` (§2.2c), before `EditorStage` (§2.4) in both `build_production_stages` and `build_hydrated_stages`.
+- **Kind:** deterministic (Python). No LLM.
+- **Source:** `src/stages/run_stages.py::assemble_curator_topics`
+- **Reads (Bus):** `curator_findings`, `curator_discovered_topics` (§2.2d), `curator_topic_assignments` (§2.2c) — RunBus
+- **Writes (Bus):** `curator_topics_unsliced`, `curator_topics` — RunBus (same slot shape the legacy `CuratorStage` wrote; Editor input is unchanged)
+- **Behaviour:** integration glue. Attaches `source_ids[]` by positional `topic_index` match between `curator_discovered_topics.topics[i]` and `curator_topic_assignments.topics[i]`, calls `src/agent_stages.py::_enrich_curator_output` to derive `geographic_coverage`, `languages`, `source_count`, `missing_regions`, `missing_languages`, `missing_perspectives`, `source_diversity`, sorts by `source_count` descending with title ascending tie-break, slices to `DEFAULT_MAX_TOPICS = 10` for `curator_topics`.
+- **Transparency:** topics with zero assignments (gravitational found no above-threshold findings) surface with `source_count = 0` rather than silently drop — the Editor sees the whole list and writes a rejection reason.
+- **No new dependencies.**
 
-#### §2.3b measure_cluster_coherence
+#### §2.3 ~~CuratorStage~~ — REMOVED (Brief 5 cutover)
 
-- **Kind:** deterministic (Python)
-- **Source:** `src/stages/coherence.py::make_measure_cluster_coherence`
-- **Model (embedding, pinned):** `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` (~50 languages, mean-pooled 384-dim)
-- **Library (pinned):** `fastembed==0.8.0`
-- **Reads (Bus):** `curator_findings`, `curator_topics_unsliced`, `run_date` — RunBus
-- **Writes (Bus):** `curator_coherence_scores` — RunBus
-- **Passive contract:** `curator_findings` and `curator_topics_unsliced` are byte-identical post-stage (load-bearing test `tests/test_coherence_stage.py::test_passthrough_byte_identical`). The stage measures and reports; it does not filter.
-- **Output shape:** per-cluster aggregates (mean/median/p10/p25/p75/p90/min/max), threshold-band counts at `THRESHOLD_BANDS = (0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.70)`, per-finding cosine-similarity score against the cluster's own `title + summary` headline embedding.
-- **Side effect:** writes `docs/coherence-filter/{run_date}.md` (daily Markdown report). Toggleable via `write_report=False` for tests.
-- **Performance budget (TASK-COHERENCE-FILTER-PASSIVE):** ≤20 s wall-clock and ≤500 MB peak memory on the V1-baseline 1201-finding workload. Current MacBook hardware runs at ~30 s wall / ~1 GB RSS Δ — over the budget and pending the Mac Mini migration per architect rollback (`docs/ADR-COHERENCE-STAGE-DEPENDENCY.md`).
-- **Dependency cost:** ~351 MB total install + cached model weights — see `docs/ADR-COHERENCE-STAGE-DEPENDENCY.md` for the fourth-dependency rationale (raised from the original 200 MB ceiling).
-- **Calibration (V1 baseline):** `docs/coherence-filter/_calibration-v1-baseline.md`. Best F1 against the dynamic regex from `src/curator_metrics.py` is 0.591 at threshold 0.20 (the 1004-finding Iran cluster).
+The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR-TRIPLE-STAGE.md`). Its functionality is decomposed across §2.2b / §2.2c / §2.2d / §2.2e. Five V1-era calibration scripts that imported `CuratorStage`'s helpers (`smoke_curator`, `smoke_curator_preprod_2026-05-12`, `curator_shadow`, `audit_v4pro_variance`, `eval_curator_models`) were deleted in the same commit. Filename references to historical `run_bus.CuratorStage.json` state files persist in scripts that read those files (historical state names do not auto-rename).
+
+#### §2.3b measure_cluster_coherence — REMOVED FROM PRODUCTION (source retained for fastembed singleton)
+
+- **Status:** Stage callable removed in the Brief 5 cutover (`docs/ADR-CURATOR-TRIPLE-STAGE.md`). The **source file `src/stages/coherence.py` is retained** because three production stages (§2.2b, §2.2c, §2.2d) import the fastembed singleton + `_cosine_normalised` helper from it — one ONNX session per process across all consumers. The legacy `curator_coherence_scores` RunBus slot is left declared (no writer) in case a future calibration brief revives a passive-coherence stage on the new topic-centres.
+- **What was removed:** `make_measure_cluster_coherence` factory, the module-level `measure_cluster_coherence` instance, `write_daily_report` + its histogram helpers, the stage-only Bus-write tests in `tests/test_coherence_stage.py`.
+- **What stays:** `MODEL_NAME` (`sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`), `FASTEMBED_VERSION_REQUIRED` (`0.8.0`), `DEFAULT_BATCH_SIZE`, `FastembedEmbedder`, `Embedder` protocol, `_get_default_embedder` (the singleton), `_cosine_normalized`. Singleton-surface tests in `tests/test_coherence_stage.py` cover these.
 
 #### §2.4 EditorStage
 

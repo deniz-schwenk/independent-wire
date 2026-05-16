@@ -1,0 +1,505 @@
+{
+  "agent": "curator_topic_discovery",
+  "model": "google/gemini-3-flash-preview",
+  "total_llm_cost_usd": 0.057291999999999996,
+  "results": [
+    {
+      "date": "2026-05-08",
+      "n_findings": 1401,
+      "n_micro_clusters": 246,
+      "n_discovered_topics": 16,
+      "n_topics_after_assemble": 16,
+      "n_old_topics": 12,
+      "n_orphans": 731,
+      "orphan_pct": 52.18,
+      "llm_cost_usd": 0.019154,
+      "wall_seconds": 122.942,
+      "status_descriptor_counts_new": {
+        "former": 1,
+        "current": 0,
+        "incumbent": 0,
+        "ex-": 0
+      },
+      "status_descriptor_counts_old": {
+        "former": 1,
+        "current": 0,
+        "incumbent": 0,
+        "ex-": 0
+      },
+      "status_descriptor_total_new": 1,
+      "status_descriptor_total_old": 1,
+      "side_by_side": [
+        {
+          "new_title": "US and Iran maintain diplomatic dialogue despite exchange of fire in Strait of Hormuz",
+          "new_source_count": 189,
+          "matched_old_title": "US and Iran exchange fire in Strait of Hormuz amid fragile ceasefire",
+          "match_score": 0.269,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Russia and Ukraine trade accusations over Victory Day ceasefire violations",
+          "new_source_count": 160,
+          "matched_old_title": "Russia scales back Victory Day celebrations amid Ukrainian drone strikes",
+          "match_score": 0.165,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "ASEAN leaders meet to address energy crisis and regional fallout from Iran war",
+          "new_source_count": 94,
+          "matched_old_title": "US and Iran exchange fire in Strait of Hormuz amid fragile ceasefire",
+          "match_score": 0.118,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Lula and Trump meet at White House to relanzar US-Brazil relations",
+          "new_source_count": 70,
+          "matched_old_title": "Trump and Lula meet at White House to reset US-Brazil relations",
+          "match_score": 0.32,
+          "match_label": "title-only"
+        },
+        {
+          "new_title": "South African court orders Parliament to revisit Ramaphosa impeachment proceedings",
+          "new_source_count": 62,
+          "matched_old_title": "South Africa's Constitutional Court orders review of Ramaphosa impeachment",
+          "match_score": 0.167,
+          "match_label": "title-only"
+        },
+        {
+          "new_title": "Hantavirus outbreak on cruise ship triggers international health response",
+          "new_source_count": 59,
+          "matched_old_title": "Hantavirus outbreak on cruise ship triggers global health response",
+          "match_score": 0.362,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "China sentences former defense ministers to death with reprieve",
+          "new_source_count": 52,
+          "matched_old_title": "China sentences former defense ministers to death for corruption",
+          "match_score": 0.263,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "US trade court strikes down Trump's 10 percent universal tariffs",
+          "new_source_count": 44,
+          "matched_old_title": "US trade court strikes down Trump's 10% global tariffs",
+          "match_score": 0.28,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Tamil Nadu government formation proceeds as Congress aligns with Vijay",
+          "new_source_count": 43,
+          "matched_old_title": "Actor-politician Vijay poised to form government in Tamil Nadu",
+          "match_score": 0.123,
+          "match_label": "title-only"
+        },
+        {
+          "new_title": "BTS concludes successful first concert in Mexico City at Estadio GNP Seguros",
+          "new_source_count": 35,
+          "matched_old_title": "",
+          "match_score": 0.0,
+          "match_label": "no-match"
+        },
+        {
+          "new_title": "Mexico's central bank ends interest rate cut cycle at 6.5 percent",
+          "new_source_count": 34,
+          "matched_old_title": "",
+          "match_score": 0.0,
+          "match_label": "no-match"
+        },
+        {
+          "new_title": "Labour suffers heavy losses to Nigel Farage's party in UK local elections",
+          "new_source_count": 29,
+          "matched_old_title": "Reform UK makes major gains in English local elections as Labour suffers losses",
+          "match_score": 0.201,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Pope Leo XIV marks first year in office amid Vatican-White House tensions",
+          "new_source_count": 29,
+          "matched_old_title": "Trump and Lula meet at White House to reset US-Brazil relations",
+          "match_score": 0.042,
+          "match_label": "title-only"
+        },
+        {
+          "new_title": "Real Madrid faces internal crisis following player altercation and injury",
+          "new_source_count": 27,
+          "matched_old_title": "Somalia faces worsening food crisis with millions at risk of hunger",
+          "match_score": 0.047,
+          "match_label": "title-only"
+        },
+        {
+          "new_title": "Mount Dukono eruption in Indonesia kills three hikers",
+          "new_source_count": 20,
+          "matched_old_title": "Mount Dukono eruption in Indonesia kills hikers",
+          "match_score": 0.429,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Naturalist David Attenborough celebrates 100th birthday",
+          "new_source_count": 8,
+          "matched_old_title": "",
+          "match_score": 0.0,
+          "match_label": "no-match"
+        }
+      ],
+      "old_topics_with_no_new_match": [
+        "Two men convicted in UK for spying for Hong Kong"
+      ],
+      "source_count_stats_new": {
+        "n": 16,
+        "min": 8,
+        "median": 44,
+        "mean": 59.69,
+        "max": 189
+      },
+      "source_count_stats_old": {
+        "n": 12,
+        "min": 0,
+        "median": 2,
+        "mean": 6.83,
+        "max": 32
+      },
+      "qualitative": [
+        "- More topics (16) than the old pipeline (12).",
+        "- 1 new-pipeline topic(s) still carry a status-descriptor flag (rule-3 patch did not fully suppress the bias; surface as known limitation per VISION \u00a710).",
+        "- Mean source_count per topic (59.69) is more than 2\u00d7 the old pipeline's (6.83) \u2014 large catch-all topics may be surviving."
+      ]
+    },
+    {
+      "date": "2026-05-11",
+      "n_findings": 1201,
+      "n_micro_clusters": 241,
+      "n_discovered_topics": 15,
+      "n_topics_after_assemble": 15,
+      "n_old_topics": 14,
+      "n_orphans": 622,
+      "orphan_pct": 51.79,
+      "llm_cost_usd": 0.01789,
+      "wall_seconds": 108.806,
+      "status_descriptor_counts_new": {
+        "former": 0,
+        "current": 0,
+        "incumbent": 0,
+        "ex-": 0
+      },
+      "status_descriptor_counts_old": {
+        "former": 2,
+        "current": 1,
+        "incumbent": 0,
+        "ex-": 0
+      },
+      "status_descriptor_total_new": 0,
+      "status_descriptor_total_old": 3,
+      "side_by_side": [
+        {
+          "new_title": "Russia and Ukraine accuse each other of violating US-brokered ceasefire",
+          "new_source_count": 163,
+          "matched_old_title": "Russia-Ukraine Victory Day ceasefire violations and peace talk proposals",
+          "match_score": 0.183,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Donald Trump rejects Iran's response to US peace proposal as unacceptable",
+          "new_source_count": 145,
+          "matched_old_title": "Stalled US-Iran peace negotiations and escalating regional tensions",
+          "match_score": 0.131,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "European Union prepares new sanctions against Russia and Israeli settlers",
+          "new_source_count": 77,
+          "matched_old_title": "Russia-Ukraine Victory Day ceasefire violations and peace talk proposals",
+          "match_score": 0.149,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Nobel laureate Narges Mohammadi released from Iranian prison for medical treatment",
+          "new_source_count": 73,
+          "matched_old_title": "Stalled US-Iran peace negotiations and escalating regional tensions",
+          "match_score": 0.037,
+          "match_label": "source-only"
+        },
+        {
+          "new_title": "Hantavirus outbreak on MV Hondius cruise ship triggers international health alarm",
+          "new_source_count": 65,
+          "matched_old_title": "Global hantavirus outbreak linked to MV Hondius cruise ship",
+          "match_score": 0.217,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Latvian Defense Minister resigns following Ukrainian drone incursions",
+          "new_source_count": 56,
+          "matched_old_title": "Latvian Defense Minister resigns over Ukrainian drone incursions",
+          "match_score": 0.332,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "South Korean vessel damaged by explosion in the Strait of Hormuz",
+          "new_source_count": 52,
+          "matched_old_title": "Israeli settler violence and human rights abuses in the West Bank",
+          "match_score": 0.033,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Barcelona secures La Liga title with victory over Real Madrid",
+          "new_source_count": 51,
+          "matched_old_title": "Barcelona clinches La Liga title with El Clasico victory",
+          "match_score": 0.216,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Emmanuel Macron visits Kenya for Africa Forward economic summit",
+          "new_source_count": 46,
+          "matched_old_title": "Macron's 'Africa Forward' summit in Kenya and French-African relations",
+          "match_score": 0.21,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Keir Starmer faces leadership challenge following local election losses",
+          "new_source_count": 46,
+          "matched_old_title": "Keir Starmer's leadership crisis following UK local election losses",
+          "match_score": 0.292,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Chad military airstrikes against jihadists reportedly cause civilian casualties",
+          "new_source_count": 42,
+          "matched_old_title": "Stalled US-Iran peace negotiations and escalating regional tensions",
+          "match_score": 0.019,
+          "match_label": "source-only"
+        },
+        {
+          "new_title": "Donald Trump prepares for state visit to China amid trade and regional tensions",
+          "new_source_count": 41,
+          "matched_old_title": "Trump's upcoming state visit to China and trade negotiations",
+          "match_score": 0.198,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Tamil Nadu government formation as Vijay meets MK Stalin",
+          "new_source_count": 31,
+          "matched_old_title": "Stalled US-Iran peace negotiations and escalating regional tensions",
+          "match_score": 0.018,
+          "match_label": "source-only"
+        },
+        {
+          "new_title": "Narendra Modi urges Indians to reduce fuel and gold consumption due to Iran war",
+          "new_source_count": 20,
+          "matched_old_title": "Indian Prime Minister Modi's austerity measures amid energy crisis",
+          "match_score": 0.073,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Sara Duterte impeached by Philippine lawmakers for a second time",
+          "new_source_count": 19,
+          "matched_old_title": "Impeachment of Philippine Vice President Sara Duterte",
+          "match_score": 0.138,
+          "match_label": "source+title"
+        }
+      ],
+      "old_topics_with_no_new_match": [
+        "Release of former Thai Prime Minister Thaksin Shinawatra",
+        "Gaza documentary 'Doctors Under Attack' wins BAFTA after BBC rejection",
+        "AI advancements and safety regulations in global tech"
+      ],
+      "source_count_stats_new": {
+        "n": 15,
+        "min": 19,
+        "median": 51,
+        "mean": 61.8,
+        "max": 163
+      },
+      "source_count_stats_old": {
+        "n": 14,
+        "min": 2,
+        "median": 8,
+        "mean": 79.71,
+        "max": 1004
+      },
+      "qualitative": [
+        "- Status-descriptor count is zero on the new pipeline \u2014 rule-3 patch held."
+      ]
+    },
+    {
+      "date": "2026-05-13",
+      "n_findings": 1405,
+      "n_micro_clusters": 279,
+      "n_discovered_topics": 18,
+      "n_topics_after_assemble": 18,
+      "n_old_topics": 16,
+      "n_orphans": 667,
+      "orphan_pct": 47.47,
+      "llm_cost_usd": 0.020248,
+      "wall_seconds": 125.879,
+      "status_descriptor_counts_new": {
+        "former": 1,
+        "current": 0,
+        "incumbent": 0,
+        "ex-": 0
+      },
+      "status_descriptor_counts_old": {
+        "former": 0,
+        "current": 0,
+        "incumbent": 0,
+        "ex-": 0
+      },
+      "status_descriptor_total_new": 1,
+      "status_descriptor_total_old": 0,
+      "side_by_side": [
+        {
+          "new_title": "Escalating costs and regional risks threaten Iran-US peace negotiations",
+          "new_source_count": 164,
+          "matched_old_title": "US-Israel War with Iran and Global Energy Crisis",
+          "match_score": 0.141,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Ukraine and Russia exchange long-range drone strikes on energy and military targets",
+          "new_source_count": 154,
+          "matched_old_title": "US-Israel War with Iran and Global Energy Crisis",
+          "match_score": 0.096,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Donald Trump arrives in China for high-stakes summit with Xi Jinping",
+          "new_source_count": 125,
+          "matched_old_title": "Trump-Xi Summit in Beijing",
+          "match_score": 0.122,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Corruption probe into Zelensky's former chief of staff Andrei Yermak escalates",
+          "new_source_count": 99,
+          "matched_old_title": "US-Israel War with Iran and Global Energy Crisis",
+          "match_score": 0.037,
+          "match_label": "source-only"
+        },
+        {
+          "new_title": "Massive protests in Argentina over Javier Milei's university budget cuts",
+          "new_source_count": 91,
+          "matched_old_title": "Argentina Protests Over University Funding Cuts",
+          "match_score": 0.213,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Emmanuel Macron seeks renewed partnerships during Africa Forward summit in Kenya",
+          "new_source_count": 86,
+          "matched_old_title": "Africa Forward Summit and French-African Relations",
+          "match_score": 0.121,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Nunes Marques takes office as President of Brazil's Superior Electoral Court",
+          "new_source_count": 68,
+          "matched_old_title": "Africa Forward Summit and French-African Relations",
+          "match_score": 0.021,
+          "match_label": "source-only"
+        },
+        {
+          "new_title": "Israel intensifies strikes in Lebanon following ceasefire violations",
+          "new_source_count": 57,
+          "matched_old_title": "US-Israel War with Iran and Global Energy Crisis",
+          "match_score": 0.066,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Keir Starmer resists calls to resign as UK Prime Minister",
+          "new_source_count": 51,
+          "matched_old_title": "Political Leadership Crisis in the United Kingdom",
+          "match_score": 0.026,
+          "match_label": "source-only"
+        },
+        {
+          "new_title": "Israel qualifies for Eurovision final amid protests and boycotts over Gaza",
+          "new_source_count": 41,
+          "matched_old_title": "Eurovision Song Contest Boycotts and Protests",
+          "match_score": 0.134,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Outbreak of hantavirus on cruise ship prompts global health warnings",
+          "new_source_count": 41,
+          "matched_old_title": "Hantavirus Outbreak on MV Hondius Cruise Ship",
+          "match_score": 0.198,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Trump's proposed 'Golden Dome' missile defense system estimated at $1.2 trillion",
+          "new_source_count": 36,
+          "matched_old_title": "Trump-Xi Summit in Beijing",
+          "match_score": 0.052,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Yoweri Museveni sworn in for seventh term as President of Uganda",
+          "new_source_count": 36,
+          "matched_old_title": "Africa Forward Summit and French-African Relations",
+          "match_score": 0.057,
+          "match_label": "source-only"
+        },
+        {
+          "new_title": "OpenAI CEO Sam Altman testifies in high-stakes trial against Elon Musk",
+          "new_source_count": 32,
+          "matched_old_title": "OpenAI vs. Elon Musk High-Stakes Legal Trial",
+          "match_score": 0.232,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "India implements austerity measures and fuel saving drive amid Iran crisis",
+          "new_source_count": 26,
+          "matched_old_title": "US-Israel War with Iran and Global Energy Crisis",
+          "match_score": 0.078,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "Cannes Film Festival 2026 opens with honors for Peter Jackson",
+          "new_source_count": 22,
+          "matched_old_title": "US-Israel War with Iran and Global Energy Crisis",
+          "match_score": 0.033,
+          "match_label": "source+title"
+        },
+        {
+          "new_title": "US FDA Commissioner Marty Makary resigns following pressure from Trump",
+          "new_source_count": 21,
+          "matched_old_title": "Trump-Xi Summit in Beijing",
+          "match_score": 0.036,
+          "match_label": "title-only"
+        },
+        {
+          "new_title": "NBA players Jason Collins and Brandon Clarke die on the same day",
+          "new_source_count": 17,
+          "matched_old_title": "Death of NBA Veteran Jason Collins",
+          "match_score": 0.092,
+          "match_label": "title-only"
+        }
+      ],
+      "old_topics_with_no_new_match": [
+        "Renewed Russian Disruption of Ukraine Ceasefire",
+        "Death of Memphis Grizzlies Forward Brandon Clarke",
+        "Mass Airstrike in Zamfara State, Nigeria",
+        "Security Dislodgements and Unrest in Sudan",
+        "Russian Sarmat ICBM Test and Deployment Plans",
+        "Samsung Electronics Wage Dispute and Impending Strike",
+        "South Africa Asylum Policy Victory"
+      ],
+      "source_count_stats_new": {
+        "n": 18,
+        "min": 17,
+        "median": 51,
+        "mean": 64.83,
+        "max": 164
+      },
+      "source_count_stats_old": {
+        "n": 16,
+        "min": 4,
+        "median": 19,
+        "mean": 28.5,
+        "max": 180
+      },
+      "qualitative": [
+        "- 1 new-pipeline topic(s) still carry a status-descriptor flag (rule-3 patch did not fully suppress the bias; surface as known limitation per VISION \u00a710).",
+        "- Mean source_count per topic (64.83) is more than 2\u00d7 the old pipeline's (28.5) \u2014 large catch-all topics may be surviving."
+      ]
+    }
+  ]
+}
