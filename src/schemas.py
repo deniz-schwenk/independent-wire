@@ -52,6 +52,41 @@ CURATOR_TOPIC_DISCOVERY_SCHEMA = {
     "additionalProperties": False,
 }
 
+# ---------------------------------------------------------------- Cluster Assignment (Hypothesis 2)
+# LLM-based cluster→topic assignment stage — TASK-CLUSTER-LLM-ASSIGNMENT.
+# Mirrors the agent's OUTPUT FORMAT exactly: a flat array of one entry
+# per cluster that belongs to at least one topic, each entry recording
+# the cluster ID and the 0-based topic indices it was assigned to.
+# Clusters with no topic membership are omitted from the array; Python
+# subtracts them deterministically from the input cluster set to produce
+# the orphan list. ``minItems: 1`` on ``topic_indices`` enforces the
+# prompt's "at most once; multi-assignment is one entry with multiple
+# topic_indices" contract — an empty topic_indices array is a contract
+# violation, not the orphan signal.
+CLUSTER_ASSIGNMENT_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "assignments": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cluster_id": {"type": "string"},
+                    "topic_indices": {
+                        "type": "array",
+                        "items": {"type": "integer", "minimum": 0},
+                        "minItems": 1,
+                    },
+                },
+                "required": ["cluster_id", "topic_indices"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    "required": ["assignments"],
+    "additionalProperties": False,
+}
+
 # ---------------------------------------------------------------- Editor
 # Editor prompt emits a top-level array. Wrapped here to satisfy strict
 # mode's "no top-level array" rule. Pipeline unwraps before consuming.

@@ -1,16 +1,22 @@
 """Tests for OpenRouter structured-output schemas in src.schemas.
 
-Covers the three Phase-5 schemas wired up in TASK-HYDRATED-ACTIVATION:
+Covers the Phase-5 schemas wired up in TASK-HYDRATED-ACTIVATION:
 - HYDRATION_PHASE1_SCHEMA
 - HYDRATION_PHASE2_SCHEMA
 - PERSPECTIVE_SYNC_SCHEMA (sanity check; was correct pre-task)
+
+Plus the LLM-cluster-assignment schema from TASK-CLUSTER-LLM-
+ASSIGNMENT:
+- CLUSTER_ASSIGNMENT_SCHEMA
 
 The project does not depend on the ``jsonschema`` package (no new
 dependencies are added by this task), so a minimal recursive validator
 covers the JSON Schema features actually used here: ``type`` (single or
 union), ``properties``, ``required``, ``items``, ``additionalProperties:
-false``. That subset is sufficient for the schemas under test and matches
-the strict-mode rules OpenRouter enforces server-side.
+false``, plus ``minimum`` and ``minItems`` (added for
+CLUSTER_ASSIGNMENT_SCHEMA's non-empty-non-negative ``topic_indices``
+contract). That subset is sufficient for the schemas under test and
+matches the strict-mode rules OpenRouter enforces server-side.
 """
 
 from __future__ import annotations
@@ -18,6 +24,7 @@ from __future__ import annotations
 import pytest
 
 from src.schemas import (
+    CLUSTER_ASSIGNMENT_SCHEMA,
     HYDRATION_PHASE1_SCHEMA,
     HYDRATION_PHASE2_SCHEMA,
     PERSPECTIVE_SYNC_SCHEMA,
@@ -58,6 +65,12 @@ def _validate(instance, schema, path: str = "$") -> None:
     if "type" in schema and not _check_type(instance, schema["type"]):
         raise SchemaError(f"{path}: expected type {schema['type']!r}, got {type(instance).__name__}")
 
+    if "minimum" in schema and isinstance(instance, (int, float)) and not isinstance(instance, bool):
+        if instance < schema["minimum"]:
+            raise SchemaError(
+                f"{path}: value {instance!r} below minimum {schema['minimum']!r}"
+            )
+
     if isinstance(instance, dict):
         properties = schema.get("properties", {})
         required = schema.get("required", [])
@@ -73,6 +86,10 @@ def _validate(instance, schema, path: str = "$") -> None:
                 _validate(value, properties[key], f"{path}.{key}")
 
     if isinstance(instance, list):
+        if "minItems" in schema and len(instance) < schema["minItems"]:
+            raise SchemaError(
+                f"{path}: array length {len(instance)} below minItems {schema['minItems']}"
+            )
         item_schema = schema.get("items")
         if item_schema is not None:
             for i, item in enumerate(instance):
@@ -158,3 +175,75 @@ def test_perspective_sync_schema_already_correct():
         ],
     }
     _validate(output, PERSPECTIVE_SYNC_SCHEMA)
+
+
+# -- CLUSTER_ASSIGNMENT_SCHEMA -----------------------------------------------
+# TASK-CLUSTER-LLM-ASSIGNMENT: assignment of micro-clusters to topics.
+
+
+def test_cluster_assignment_schema_happy_path():
+    payload = {
+        "assignments": [
+            {"cluster_id": "mc-003", "topic_indices": [0]},
+            {"cluster_id": "mc-007", "topic_indices": [0, 4]},
+            {"cluster_id": "mc-012", "topic_indices": [2]},
+        ]
+    }
+    _validate(payload, CLUSTER_ASSIGNMENT_SCHEMA)
+
+
+def test_cluster_assignment_schema_accepts_empty_assignments():
+    """Zero clusters got assigned → valid shape; the orphan list
+    downstream subsumes all input clusters."""
+    _validate({"assignments": []}, CLUSTER_ASSIGNMENT_SCHEMA)
+
+
+def test_cluster_assignment_schema_rejects_extra_top_level_field():
+    payload = {
+        "assignments": [{"cluster_id": "mc-001", "topic_indices": [0]}],
+        "spurious": "rejected",
+    }
+    with pytest.raises(SchemaError):
+        _validate(payload, CLUSTER_ASSIGNMENT_SCHEMA)
+
+
+def test_cluster_assignment_schema_rejects_extra_per_entry_field():
+    payload = {
+        "assignments": [
+            {
+                "cluster_id": "mc-001",
+                "topic_indices": [0],
+                "extra": "rejected",
+            }
+        ]
+    }
+    with pytest.raises(SchemaError):
+        _validate(payload, CLUSTER_ASSIGNMENT_SCHEMA)
+
+
+def test_cluster_assignment_schema_rejects_empty_topic_indices():
+    """A cluster row must have at least one topic — orphan-ness is
+    expressed by omitting the cluster entirely, not by an empty
+    topic_indices array."""
+    payload = {"assignments": [{"cluster_id": "mc-001", "topic_indices": []}]}
+    with pytest.raises(SchemaError):
+        _validate(payload, CLUSTER_ASSIGNMENT_SCHEMA)
+
+
+def test_cluster_assignment_schema_rejects_negative_topic_index():
+    payload = {
+        "assignments": [{"cluster_id": "mc-001", "topic_indices": [-1]}]
+    }
+    with pytest.raises(SchemaError):
+        _validate(payload, CLUSTER_ASSIGNMENT_SCHEMA)
+
+
+def test_cluster_assignment_schema_rejects_missing_cluster_id():
+    payload = {"assignments": [{"topic_indices": [0]}]}
+    with pytest.raises(SchemaError):
+        _validate(payload, CLUSTER_ASSIGNMENT_SCHEMA)
+
+
+def test_cluster_assignment_schema_rejects_missing_assignments_key():
+    with pytest.raises(SchemaError):
+        _validate({}, CLUSTER_ASSIGNMENT_SCHEMA)
