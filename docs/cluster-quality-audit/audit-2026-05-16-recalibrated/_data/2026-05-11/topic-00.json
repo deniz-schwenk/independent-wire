@@ -1,0 +1,203 @@
+{
+  "topic_index": 0,
+  "topic_title": "Russia and Ukraine accuse each other of violating US-brokered ceasefire",
+  "topic_summary": "Both nations have traded allegations of breaking a three-day truce, with reports of continued fighting on the Vovchansk axis. International observers and media outlets are analyzing the fragility of the ceasefire amid ongoing accusations of bad faith from both Moscow and Kyiv.",
+  "original_source_count": 155,
+  "recalibrated_source_count": 17,
+  "n_assigned_at_T_0.55_V1": 17,
+  "geographic_coverage": [
+    "Africa",
+    "Central Asia",
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East",
+    "North America",
+    "South Asia",
+    "Southeast Asia"
+  ],
+  "languages": [
+    "de",
+    "en",
+    "es",
+    "fr",
+    "it",
+    "pt",
+    "ru",
+    "tr"
+  ],
+  "n_findings": 17,
+  "findings": [
+    {
+      "source_id": "finding-18",
+      "title": "Things are not going so well for Russia",
+      "summary": "Stalled advance in Ukraine and economic woes are not the only worries for the Kremlin - also a distant ‘near abroad&#039;.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Things are not going so well for Russia | Stalled advance in Ukraine and economic woes are not the only worries for the Kremlin - also a distant ‘near abroad&#039;.",
+      "similarity_to_topic_centre": 0.5998
+    },
+    {
+      "source_id": "finding-21",
+      "title": "Russia and Ukraine accuse the other of ceasefire violations",
+      "summary": "Russia and Ukraine accuse the other of ceasefire violations.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Russia and Ukraine accuse the other of ceasefire violations | Russia and Ukraine accuse the other of ceasefire violations.",
+      "similarity_to_topic_centre": 0.8412
+    },
+    {
+      "source_id": "finding-131",
+      "title": "Ukraine and Russia accuse each other of breaking US-brokered ceasefire",
+      "summary": "Russia and Ukraine swapped accusations of breaking a US-brokered ceasefire on Sunday, with both sides claiming to have suffered casualties in drone and artillery strikes over the past 24 hours.\nUkraine’s President Volodymyr Zelensky said that Russia was neither observing the truce nor “even particularly trying to”, adding there had been no calm in front-line areas despite a lull in large-scale attacks and pledged that Ukraine would retaliate for any aggression shown by Moscow.\n“Yesterday and...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "Ukraine and Russia accuse each other of breaking US-brokered ceasefire | Russia and Ukraine swapped accusations of breaking a US-brokered ceasefire on Sunday, with both sides claiming to have suffered casualties in drone and artillery strikes over the past 24 hours.\nUkraine’s President Volodymyr Zelensky said that Russia was neither observing the truce nor “even particularly trying to”, adding there had been no calm in front-line areas despite a lull in large-scale attacks and pledged that Ukraine would retaliate for any aggression shown by Moscow.\n“Yesterday and...",
+      "similarity_to_topic_centre": 0.9201
+    },
+    {
+      "source_id": "finding-263",
+      "title": "Rusia acusa a Ucrania de romper la tregua de tres días mediada por Estados Unidos",
+      "summary": "El alto el fuego entre Rusia y Ucrania aplicaría del sábado 9 al lunes 11 de mayo.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Rusia acusa a Ucrania de romper la tregua de tres días mediada por Estados Unidos | El alto el fuego entre Rusia y Ucrania aplicaría del sábado 9 al lunes 11 de mayo.",
+      "similarity_to_topic_centre": 0.8012
+    },
+    {
+      "source_id": "finding-426",
+      "title": "Putin says he thinks Ukraine conflict 'coming to an end'",
+      "summary": "The Russian leader sees potential for Ukraine negotiations, but condemns the West's backing for President Zelensky.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Putin says he thinks Ukraine conflict 'coming to an end' | The Russian leader sees potential for Ukraine negotiations, but condemns the West's backing for President Zelensky.",
+      "similarity_to_topic_centre": 0.5729
+    },
+    {
+      "source_id": "finding-444",
+      "title": "EU’s Kallas criticises Putin’s ‘very cynical’ Ukraine ceasefire calls and rejects suggestion of Schröder as mediator – Europe live",
+      "summary": "EU’s foreign policy chief and the ex-Estonian PM dismiss Putin’s suggestion that former German chancellor could coordinate talksMeanwhile, Poland’s former justice minister Zbigniew Ziobro, wanted by Polish authorities with allegations of over 20 criminal charges, moved to the US over the weekend, leaving Hungary where he held political asylum granted by the previous government of Viktor Orbán.Ziobro was one of the most prominent faces of the PiS government and played a central role in its con...",
+      "description": "",
+      "language": "en",
+      "outlet": "Guardian World",
+      "text": "EU’s Kallas criticises Putin’s ‘very cynical’ Ukraine ceasefire calls and rejects suggestion of Schröder as mediator – Europe live | EU’s foreign policy chief and the ex-Estonian PM dismiss Putin’s suggestion that former German chancellor could coordinate talksMeanwhile, Poland’s former justice minister Zbigniew Ziobro, wanted by Polish authorities with allegations of over 20 criminal charges, moved to the US over the weekend, leaving Hungary where he held political asylum granted by the previous government of Viktor Orbán.Ziobro was one of the most prominent faces of the PiS government and played a central role in its con...",
+      "similarity_to_topic_centre": 0.5663
+    },
+    {
+      "source_id": "finding-602",
+      "title": "«Немного подтолкнули мы его». Зеленский заявил, что сейчас Путин «наконец готов к реальным встречам»",
+      "summary": "Владимир Зеленский во второй день трехдневного перемирия заявил, что массированных атак со стороны России не было, а Владимир Путин «сам говорит, что наконец готов к реальным встречам».",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "«Немного подтолкнули мы его». Зеленский заявил, что сейчас Путин «наконец готов к реальным встречам» | Владимир Зеленский во второй день трехдневного перемирия заявил, что массированных атак со стороны России не было, а Владимир Путин «сам говорит, что наконец готов к реальным встречам».",
+      "similarity_to_topic_centre": 0.5543
+    },
+    {
+      "source_id": "finding-606",
+      "title": "Война. 1537-й день. Украина и Россия обвиняют друг друга в нарушениях перемирия. Западные СМИ считают сокращенный парад признаком слабости Путина",
+      "summary": "«Медуза» с 24 февраля 2022 года в прямом эфире рассказывает о российско-украинской войне. Мы ежедневно публикуем ваши письма, потому что уверены: о войне нужно продолжать говорить. Поделитесь с нами мыслями о войне. Какие чувства вы испытываете? Как война влияет на вашу жизнь и ваше отношение к миру? Если у вас есть история, связанная с войной, — расскажите ее. Форма для обратной связи — в конце этой статьи. Обзор предыдущего дня можно прочитать тут.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Война. 1537-й день. Украина и Россия обвиняют друг друга в нарушениях перемирия. Западные СМИ считают сокращенный парад признаком слабости Путина | «Медуза» с 24 февраля 2022 года в прямом эфире рассказывает о российско-украинской войне. Мы ежедневно публикуем ваши письма, потому что уверены: о войне нужно продолжать говорить. Поделитесь с нами мыслями о войне. Какие чувства вы испытываете? Как война влияет на вашу жизнь и ваше отношение к миру? Если у вас есть история, связанная с войной, — расскажите ее. Форма для обратной связи — в конце этой статьи. Обзор предыдущего дня можно прочитать тут.",
+      "similarity_to_topic_centre": 0.6691
+    },
+    {
+      "source_id": "finding-619",
+      "title": "Ukraine gives Russia POW exchange list, seeks US guarantees for deal, Zelensky says",
+      "summary": "\"We expect the American side to be active in ensuring the implementation of this agreement,\" President Volodymyr Zelensky said.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Ukraine gives Russia POW exchange list, seeks US guarantees for deal, Zelensky says | \"We expect the American side to be active in ensuring the implementation of this agreement,\" President Volodymyr Zelensky said.",
+      "similarity_to_topic_centre": 0.6289
+    },
+    {
+      "source_id": "finding-623",
+      "title": "As Victory Day ceasefire draws to a close, Russian attacks kill 3 civilians, injure 16",
+      "summary": "During the ceasefire, there were no large-scale airstrikes, though the Ukrainian Air Force reported Russian drone launches and the firing of one Iskander-M ballistic missile from occupied Crimea.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "As Victory Day ceasefire draws to a close, Russian attacks kill 3 civilians, injure 16 | During the ceasefire, there were no large-scale airstrikes, though the Ukrainian Air Force reported Russian drone launches and the firing of one Iskander-M ballistic missile from occupied Crimea.",
+      "similarity_to_topic_centre": 0.6448
+    },
+    {
+      "source_id": "finding-630",
+      "title": "Ukraine war latest: Putin says he believes war in Ukraine almost over",
+      "summary": "Key developments on May 9-10:Putin says he believes war in Ukraine almost over&apos;Victory will be ours,&apos; Putin tells Victory Day parade without any tanksRussia breaks 3-day ceasefire as strikes kill 1, injure 19 across UkraineKremlin says it expects US envoys Witkoff, Kushner, &apos;quite",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Ukraine war latest: Putin says he believes war in Ukraine almost over | Key developments on May 9-10:Putin says he believes war in Ukraine almost over&apos;Victory will be ours,&apos; Putin tells Victory Day parade without any tanksRussia breaks 3-day ceasefire as strikes kill 1, injure 19 across UkraineKremlin says it expects US envoys Witkoff, Kushner, &apos;quite",
+      "similarity_to_topic_centre": 0.6156
+    },
+    {
+      "source_id": "finding-633",
+      "title": "Is Russia still a superpower? | Ukraine This Week",
+      "summary": "For the first time in nearly two decades, Russia&#x2019;s Victory Day parade on Red Square was held without heavy military equipment, officially due to security concerns linked to Ukrainian drone attacks. In the latest episode of Ukraine This Week, Kateryna Hodunova examines whether Russia can still be considered",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Is Russia still a superpower? | Ukraine This Week | For the first time in nearly two decades, Russia&#x2019;s Victory Day parade on Red Square was held without heavy military equipment, officially due to security concerns linked to Ukrainian drone attacks. In the latest episode of Ukraine This Week, Kateryna Hodunova examines whether Russia can still be considered",
+      "similarity_to_topic_centre": 0.5556
+    },
+    {
+      "source_id": "finding-641",
+      "title": "Ukraine violated Victory Day ceasefire over 16,000 times – Russian MOD",
+      "summary": "The Ukrainian military has violated the Victory Day ceasefire more than 16,000 times, the Russian Defense Ministry has said Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Ukraine violated Victory Day ceasefire over 16,000 times – Russian MOD | The Ukrainian military has violated the Victory Day ceasefire more than 16,000 times, the Russian Defense Ministry has said Read Full Article at RT.com",
+      "similarity_to_topic_centre": 0.6751
+    },
+    {
+      "source_id": "finding-651",
+      "title": "The Soviet sacrifice in WWII: What is often left out in the West",
+      "summary": "Moscow repeatedly pleaded for the opening of a second front years before D-Day, while Soviet forces largely fought Nazi Germany alone Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "The Soviet sacrifice in WWII: What is often left out in the West | Moscow repeatedly pleaded for the opening of a second front years before D-Day, while Soviet forces largely fought Nazi Germany alone Read Full Article at RT.com",
+      "similarity_to_topic_centre": 0.5618
+    },
+    {
+      "source_id": "finding-666",
+      "title": "Rusia y Ucrania se acusan mutuamente de haber violado el alto el fuego",
+      "summary": "Al menos tres civiles han muerto en bombardeos cerca del frente, en Jersón y Zaporiyia. Moscú y Kiev sí han suspendido sus ataques a larga distancia",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Rusia y Ucrania se acusan mutuamente de haber violado el alto el fuego | Al menos tres civiles han muerto en bombardeos cerca del frente, en Jersón y Zaporiyia. Moscú y Kiev sí han suspendido sus ataques a larga distancia",
+      "similarity_to_topic_centre": 0.7474
+    },
+    {
+      "source_id": "finding-804",
+      "title": "New report documents how Central Asian states abet Russian sanctions-busting",
+      "summary": "Georgia is Russia’s primary route in Caucasus.",
+      "description": "",
+      "language": "en",
+      "outlet": "Eurasianet",
+      "text": "New report documents how Central Asian states abet Russian sanctions-busting | Georgia is Russia’s primary route in Caucasus.",
+      "similarity_to_topic_centre": 0.5727
+    },
+    {
+      "source_id": "finding-1064",
+      "title": "Russia and Ukraine accuse each other of violating 3-day truce",
+      "summary": "Russia and Ukraine swapped accusations of breaking a U.S.-brokered ceasefire on Sunday, with both sides claiming to have suffered casualties in drone and artillery strikes over the past…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Russia and Ukraine accuse each other of violating 3-day truce | Russia and Ukraine swapped accusations of breaking a U.S.-brokered ceasefire on Sunday, with both sides claiming to have suffered casualties in drone and artillery strikes over the past…",
+      "similarity_to_topic_centre": 0.9186
+    }
+  ]
+}

@@ -1,0 +1,218 @@
+{
+  "topic_index": 4,
+  "topic_title": "Emmanuel Macron seeks renewed partnerships during Africa Forward summit in Kenya",
+  "topic_summary": "The French President met with African leaders in Nairobi to discuss immigration, regional conflicts in the DRC and Mali, and a move away from colonial-era ties. The summit featured major deal announcements and a speech by António Guterres highlighting African leadership, though Macron's onstage remarks drew some criticism.",
+  "original_source_count": 89,
+  "recalibrated_source_count": 19,
+  "n_assigned_at_T_0.55_V1": 19,
+  "geographic_coverage": [
+    "Africa",
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East",
+    "South Asia"
+  ],
+  "languages": [
+    "de",
+    "en",
+    "es",
+    "fr",
+    "pt",
+    "tr"
+  ],
+  "n_findings": 19,
+  "findings": [
+    {
+      "source_id": "finding-77",
+      "title": "French president’s onstage outburst in Kenya overshadows Africa bid",
+      "summary": "French President Emmanuel Macron is facing backlash after he interrupted a panel at the Africa Forward Summit in Kenya to demand silence from the audience.\nMacron stormed the stage to rebuke audience members for what he called a “total lack of respect”, accusing them of disrupting speakers during a presentation by artists and young entrepreneurs. He had earlier described himself as a “Pan-Africanist” during a news conference.\nThe summit is meant to showcase France’s new policy for the contine...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "French president’s onstage outburst in Kenya overshadows Africa bid | French President Emmanuel Macron is facing backlash after he interrupted a panel at the Africa Forward Summit in Kenya to demand silence from the audience.\nMacron stormed the stage to rebuke audience members for what he called a “total lack of respect”, accusing them of disrupting speakers during a presentation by artists and young entrepreneurs. He had earlier described himself as a “Pan-Africanist” during a news conference.\nThe summit is meant to showcase France’s new policy for the contine...",
+      "similarity_to_topic_centre": 0.7243
+    },
+    {
+      "source_id": "finding-163",
+      "title": "Africa: Ruto Calls for Win-Win Africa-France Partnership At Nairobi Summit",
+      "summary": "[Capital FM] Nairobi -- President William Ruto has called for a win-win partnership between Africa and France built on mutual respect and shared responsibility.",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "Africa: Ruto Calls for Win-Win Africa-France Partnership At Nairobi Summit | [Capital FM] Nairobi -- President William Ruto has called for a win-win partnership between Africa and France built on mutual respect and shared responsibility.",
+      "similarity_to_topic_centre": 0.6586
+    },
+    {
+      "source_id": "finding-167",
+      "title": "Ethiopia: French Companies Expand Presence in Ethiopia, Despite Security Concerns",
+      "summary": "[RFI] The Africa Forward summit, currently under way in the Kenyan capital Nairobi, reflects France's efforts to reposition itself on the continent. An increasing number of French companies are choosing to set up operations in neighbouring Ethiopia - attracted by a market of more than 120 million people, despite a deteriorating security situation.",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "Ethiopia: French Companies Expand Presence in Ethiopia, Despite Security Concerns | [RFI] The Africa Forward summit, currently under way in the Kenyan capital Nairobi, reflects France's efforts to reposition itself on the continent. An increasing number of French companies are choosing to set up operations in neighbouring Ethiopia - attracted by a market of more than 120 million people, despite a deteriorating security situation.",
+      "similarity_to_topic_centre": 0.5866
+    },
+    {
+      "source_id": "finding-179",
+      "title": "Africa: Guterres Highlights Africa's Leadership in Speech to Summit in Nairobi",
+      "summary": "[UN News] Africa continues to advance and demands investment at scale, justice in global systems, and partnerships grounded in respect, UN Secretary-General Ant&#xf3;nio Guterres said on Tuesday.",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "Africa: Guterres Highlights Africa's Leadership in Speech to Summit in Nairobi | [UN News] Africa continues to advance and demands investment at scale, justice in global systems, and partnerships grounded in respect, UN Secretary-General Ant&#xf3;nio Guterres said on Tuesday.",
+      "similarity_to_topic_centre": 0.6547
+    },
+    {
+      "source_id": "finding-192",
+      "title": "Eliud Kipchoge’s Nairobi run with Macron: The French connection",
+      "summary": "Athlete talks of 23 years of discipline, revisits World Championship glory in Paris after race...",
+      "description": "",
+      "language": "en",
+      "outlet": "Daily Nation",
+      "text": "Eliud Kipchoge’s Nairobi run with Macron: The French connection | Athlete talks of 23 years of discipline, revisits World Championship glory in Paris after race...",
+      "similarity_to_topic_centre": 0.5668
+    },
+    {
+      "source_id": "finding-203",
+      "title": "Africa is not a continent waiting for solutions: António Guterres",
+      "summary": "",
+      "description": "",
+      "language": "en",
+      "outlet": "Daily Nation",
+      "text": "Africa is not a continent waiting for solutions: António Guterres",
+      "similarity_to_topic_centre": 0.5628
+    },
+    {
+      "source_id": "finding-210",
+      "title": "At Africa Forward Summit, Tinubu calls for reform of global financial architecture",
+      "summary": "The Africa/France summit, co-hosted by Presidents Emmanuel Macron of France and William Ruto of Kenya, brought together leaders and top officials from more than 30 countries across the continent.\nThe post At Africa Forward Summit, Tinubu calls for reform of global financial architecture appeared first on Premium Times Nigeria.",
+      "description": "",
+      "language": "en",
+      "outlet": "Premium Times Nigeria",
+      "text": "At Africa Forward Summit, Tinubu calls for reform of global financial architecture | The Africa/France summit, co-hosted by Presidents Emmanuel Macron of France and William Ruto of Kenya, brought together leaders and top officials from more than 30 countries across the continent.\nThe post At Africa Forward Summit, Tinubu calls for reform of global financial architecture appeared first on Premium Times Nigeria.",
+      "similarity_to_topic_centre": 0.5861
+    },
+    {
+      "source_id": "finding-495",
+      "title": "Guterres highlights Africa’s leadership in speech to summit in Nairobi",
+      "summary": "Africa continues to advance and demands investment at scale, justice in global systems, and partnerships grounded in respect, UN Secretary-General António Guterres said on Tuesday.",
+      "description": "",
+      "language": "en",
+      "outlet": "UN News",
+      "text": "Guterres highlights Africa’s leadership in speech to summit in Nairobi | Africa continues to advance and demands investment at scale, justice in global systems, and partnerships grounded in respect, UN Secretary-General António Guterres said on Tuesday.",
+      "similarity_to_topic_centre": 0.5786
+    },
+    {
+      "source_id": "finding-520",
+      "title": "France seeks to move beyond colonial ties by meeting African leaders in Kenya",
+      "summary": "In a first since these meetings started in the 1970s, this move reflects a change in France's thinking.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "France seeks to move beyond colonial ties by meeting African leaders in Kenya | In a first since these meetings started in the 1970s, this move reflects a change in France's thinking.",
+      "similarity_to_topic_centre": 0.7153
+    },
+    {
+      "source_id": "finding-574",
+      "title": "Emmanuel Macron wants dialogue with Rwanda and DRC",
+      "summary": "“If now everyone is rushing to isolate Rwanda simply because the Americans have done so, there is little chance of persuading Rwanda to adopt a cooperative policy.” In an exclusive interview with FRANCE 24, RFI and TV5Monde, French President Emmanuel Macron called for dialogue with Rwanda and DR Congo",
+      "description": "",
+      "language": "en",
+      "outlet": "France 24",
+      "text": "Emmanuel Macron wants dialogue with Rwanda and DRC | “If now everyone is rushing to isolate Rwanda simply because the Americans have done so, there is little chance of persuading Rwanda to adopt a cooperative policy.” In an exclusive interview with FRANCE 24, RFI and TV5Monde, French President Emmanuel Macron called for dialogue with Rwanda and DR Congo",
+      "similarity_to_topic_centre": 0.7411
+    },
+    {
+      "source_id": "finding-575",
+      "title": "Deals and new partnerships at Africa-France summit",
+      "summary": "In tonight's edition, sovereignty was the buzzword of Kenyan President William Ruto at the close of the Africa Forward summit in Nairobi. Also, in the biggest change on the ground in months,  Rwanda-backed M23 rebels have retreated from seized territory in the DRC. And as the war in Iran continues to disrupt exports around the world, Zimbabwe's horticulture industry is also struggling with rising shipping costs, which are threatening vital exports.",
+      "description": "",
+      "language": "en",
+      "outlet": "France 24",
+      "text": "Deals and new partnerships at Africa-France summit | In tonight's edition, sovereignty was the buzzword of Kenyan President William Ruto at the close of the Africa Forward summit in Nairobi. Also, in the biggest change on the ground in months,  Rwanda-backed M23 rebels have retreated from seized territory in the DRC. And as the war in Iran continues to disrupt exports around the world, Zimbabwe's horticulture industry is also struggling with rising shipping costs, which are threatening vital exports.",
+      "similarity_to_topic_centre": 0.6098
+    },
+    {
+      "source_id": "finding-577",
+      "title": "Emmanuel Macron’s speaks about France's policies in Sahel countries",
+      "summary": "\"I think we should have had that challenging dialogue sooner. And perhaps in such cases, we should have rethought our military presence sooner.\" In his interview with FRANCE 24, RFI and TV5Monde, French President Emmanuel Macron reflected on the state of relations between France and the Sahel countries. Here's a part of his interview.",
+      "description": "",
+      "language": "en",
+      "outlet": "France 24",
+      "text": "Emmanuel Macron’s speaks about France's policies in Sahel countries | \"I think we should have had that challenging dialogue sooner. And perhaps in such cases, we should have rethought our military presence sooner.\" In his interview with FRANCE 24, RFI and TV5Monde, French President Emmanuel Macron reflected on the state of relations between France and the Sahel countries. Here's a part of his interview.",
+      "similarity_to_topic_centre": 0.6157
+    },
+    {
+      "source_id": "finding-579",
+      "title": "Mali, immigration and DR Congo: Five key takeaways from Macron's interview with FRANCE 24",
+      "summary": "French President Emmanuel Macron on Tuesday spoke to FRANCE 24 at the close of the Africa Forward Summit in Nairobi, Kenya. Here’s what you need to know about how Macron sees France’s changing relationship with African nations.",
+      "description": "",
+      "language": "en",
+      "outlet": "France 24",
+      "text": "Mali, immigration and DR Congo: Five key takeaways from Macron's interview with FRANCE 24 | French President Emmanuel Macron on Tuesday spoke to FRANCE 24 at the close of the Africa Forward Summit in Nairobi, Kenya. Here’s what you need to know about how Macron sees France’s changing relationship with African nations.",
+      "similarity_to_topic_centre": 0.7746
+    },
+    {
+      "source_id": "finding-582",
+      "title": "Watch: Macron speaks to FRANCE 24 as Africa Forward Summit wraps up",
+      "summary": "",
+      "description": "",
+      "language": "en",
+      "outlet": "France 24",
+      "text": "Watch: Macron speaks to FRANCE 24 as Africa Forward Summit wraps up",
+      "similarity_to_topic_centre": 0.6907
+    },
+    {
+      "source_id": "finding-641",
+      "title": "At Nairobi summit, France makes push to invest in Africa",
+      "summary": "Paris declared its ambition to invest in the continent at the Africa Forward Summit, which opened on May 11 in the heart of the Kenyan capital. Competition, however, is fierce across these dynamic markets.",
+      "description": "",
+      "language": "en",
+      "outlet": "Le Monde",
+      "text": "At Nairobi summit, France makes push to invest in Africa | Paris declared its ambition to invest in the continent at the Africa Forward Summit, which opened on May 11 in the heart of the Kenyan capital. Competition, however, is fierce across these dynamic markets.",
+      "similarity_to_topic_centre": 0.585
+    },
+    {
+      "source_id": "finding-791",
+      "title": "France wants to dominate Africa – activist",
+      "summary": "France is seeking to regain influence in Africa through new partnerships, P.L.O. Lumumba has told RT Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "France wants to dominate Africa – activist | France is seeking to regain influence in Africa through new partnerships, P.L.O. Lumumba has told RT Read Full Article at RT.com",
+      "similarity_to_topic_centre": 0.5729
+    },
+    {
+      "source_id": "finding-1239",
+      "title": "Macron unveils $27 billion investment in Africa at partnership summit in Kenya",
+      "summary": "French President Emmanuel Macron announced new investments in Africa as a partnership summit closed on Tuesday in Kenya with calls for mutual respect and new, revamped ties that…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Macron unveils $27 billion investment in Africa at partnership summit in Kenya | French President Emmanuel Macron announced new investments in Africa as a partnership summit closed on Tuesday in Kenya with calls for mutual respect and new, revamped ties that…",
+      "similarity_to_topic_centre": 0.6498
+    },
+    {
+      "source_id": "finding-1367",
+      "title": "Après le sommet de Nairobi, Emmanuel Macron fait escale en Éthiopie, un pays «ami»",
+      "summary": "Au lendemain du sommet Afrique-France de Nairobi, Emmanuel Macron fait escale ce mercredi 13 mai 2026 en Éthiopie. Un pays « ami », où il rencontrera le Premier ministre Abiy Ahmed, à quelques semaines des élections générales dans le pays et se rendra au siège de l’Union africaine.",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "Après le sommet de Nairobi, Emmanuel Macron fait escale en Éthiopie, un pays «ami» | Au lendemain du sommet Afrique-France de Nairobi, Emmanuel Macron fait escale ce mercredi 13 mai 2026 en Éthiopie. Un pays « ami », où il rencontrera le Premier ministre Abiy Ahmed, à quelques semaines des élections générales dans le pays et se rendra au siège de l’Union africaine.",
+      "similarity_to_topic_centre": 0.7262
+    },
+    {
+      "source_id": "finding-1377",
+      "title": "Sommet Africa Forward à Nairobi: une pluie d'annonces et un partenariat «renouvelé» avec la France",
+      "summary": "Le sommet Africa Forward, co-organisé par la France et le Kenya à Nairobi, a pris fin mardi 12 mai 2026. Après une première journée consacrée aux chefs d'entreprises, une trentaine de chefs d'États et de gouvernements du continent se sont réunis mardi aux côtés du président français, Emmanuel Macron, et de son homologue kényan, William Ruto. La journée a débouché sur une pluie d'annonces côté business et sur quelques gestes politiques. Voici ce qu'il faut retenir du sommet.",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "Sommet Africa Forward à Nairobi: une pluie d'annonces et un partenariat «renouvelé» avec la France | Le sommet Africa Forward, co-organisé par la France et le Kenya à Nairobi, a pris fin mardi 12 mai 2026. Après une première journée consacrée aux chefs d'entreprises, une trentaine de chefs d'États et de gouvernements du continent se sont réunis mardi aux côtés du président français, Emmanuel Macron, et de son homologue kényan, William Ruto. La journée a débouché sur une pluie d'annonces côté business et sur quelques gestes politiques. Voici ce qu'il faut retenir du sommet.",
+      "similarity_to_topic_centre": 0.6944
+    }
+  ]
+}

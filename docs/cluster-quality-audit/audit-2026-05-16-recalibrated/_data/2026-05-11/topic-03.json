@@ -1,0 +1,109 @@
+{
+  "topic_index": 3,
+  "topic_title": "South Korean vessel damaged by explosion in the Strait of Hormuz",
+  "topic_summary": "The South Korean government is investigating a strike on an HMM vessel in the Strait of Hormuz, with officials debating whether to join a US-led maritime mission. While the main opposition party has criticized the government for not explicitly naming Iran as the perpetrator, Seoul has stated that attacks on civilian ships will not be tolerated.",
+  "original_source_count": 70,
+  "recalibrated_source_count": 8,
+  "n_assigned_at_T_0.55_V1": 8,
+  "geographic_coverage": [
+    "Africa",
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East",
+    "South Asia",
+    "Southeast Asia"
+  ],
+  "languages": [
+    "de",
+    "en",
+    "es",
+    "fr",
+    "it",
+    "pt"
+  ],
+  "n_findings": 8,
+  "findings": [
+    {
+      "source_id": "finding-322",
+      "title": "South Korea condemns attack on cargo ship in Strait of Hormuz, vows response",
+      "summary": "",
+      "description": "",
+      "language": "en",
+      "outlet": "CNA",
+      "text": "South Korea condemns attack on cargo ship in Strait of Hormuz, vows response",
+      "similarity_to_topic_centre": 0.6355
+    },
+    {
+      "source_id": "finding-340",
+      "title": "(2nd LD) Cheong Wa Dae says any attack on civilian ships in Hormuz cannot be tolerated",
+      "summary": "SEOUL, May 11 (Yonhap) -- The presidential office said Monday that any attacks o...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "(2nd LD) Cheong Wa Dae says any attack on civilian ships in Hormuz cannot be tolerated | SEOUL, May 11 (Yonhap) -- The presidential office said Monday that any attacks o...",
+      "similarity_to_topic_centre": 0.5733
+    },
+    {
+      "source_id": "finding-346",
+      "title": "HMM to repair cargo ship damaged in Strait of Hormuz",
+      "summary": "SEOUL, May 11 (Yonhap) -- South Korean shipping company HMM has begun preparatio...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "HMM to repair cargo ship damaged in Strait of Hormuz | SEOUL, May 11 (Yonhap) -- South Korean shipping company HMM has begun preparatio...",
+      "similarity_to_topic_centre": 0.5549
+    },
+    {
+      "source_id": "finding-347",
+      "title": "(LEAD) Cheong Wa Dae says any attack on civilian ships in Hormuz cannot be tolerated",
+      "summary": "SEOUL, May 11 (Yonhap) -- The presidential office said Monday that any attacks o...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "(LEAD) Cheong Wa Dae says any attack on civilian ships in Hormuz cannot be tolerated | SEOUL, May 11 (Yonhap) -- The presidential office said Monday that any attacks o...",
+      "similarity_to_topic_centre": 0.5763
+    },
+    {
+      "source_id": "finding-353",
+      "title": "Cheong Wa Dae says any attack on civilian ships in Hormuz cannot be tolerated",
+      "summary": "SEOUL, May 11 (Yonhap) -- The presidential office said Monday that any attacks o...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "Cheong Wa Dae says any attack on civilian ships in Hormuz cannot be tolerated | SEOUL, May 11 (Yonhap) -- The presidential office said Monday that any attacks o...",
+      "similarity_to_topic_centre": 0.5609
+    },
+    {
+      "source_id": "finding-356",
+      "title": "(URGENT) Cheong Wa Dae says any attack on civilian ships in Hormuz cannot be tolerated",
+      "summary": "(END)",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "(URGENT) Cheong Wa Dae says any attack on civilian ships in Hormuz cannot be tolerated | (END)",
+      "similarity_to_topic_centre": 0.6279
+    },
+    {
+      "source_id": "finding-404",
+      "title": "(News Focus) Confirmed strike on vessel may reshape Seoul's stance on joining U.S.-led Hormuz mission: experts",
+      "summary": "SEOUL, May 10 (Yonhap) -- The confirmed strike by unidentified objects on a Sout...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "(News Focus) Confirmed strike on vessel may reshape Seoul's stance on joining U.S.-led Hormuz mission: experts | SEOUL, May 10 (Yonhap) -- The confirmed strike by unidentified objects on a Sout...",
+      "similarity_to_topic_centre": 0.6895
+    },
+    {
+      "source_id": "finding-407",
+      "title": "(3rd LD) Seoul concludes 'external strike' caused explosion on HMM vessel in Hormuz",
+      "summary": "SEOUL, May 10 (Yonhap) -- A South Korean investigation team has concluded that a...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "(3rd LD) Seoul concludes 'external strike' caused explosion on HMM vessel in Hormuz | SEOUL, May 10 (Yonhap) -- A South Korean investigation team has concluded that a...",
+      "similarity_to_topic_centre": 0.6196
+    }
+  ]
+}

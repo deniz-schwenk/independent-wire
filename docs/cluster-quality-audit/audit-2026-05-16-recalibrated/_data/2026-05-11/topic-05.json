@@ -1,0 +1,116 @@
+{
+  "topic_index": 5,
+  "topic_title": "Emmanuel Macron visits Kenya for Africa Forward economic summit",
+  "topic_summary": "The French president is in Nairobi to discuss strategic partnerships and diversify alliances through an Africa-France economic summit. The visit focuses on defense industry cooperation, healthcare, and the changing geopolitical landscape in the region.",
+  "original_source_count": 48,
+  "recalibrated_source_count": 9,
+  "n_assigned_at_T_0.55_V1": 9,
+  "geographic_coverage": [
+    "Africa",
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East"
+  ],
+  "languages": [
+    "de",
+    "en",
+    "es",
+    "fr",
+    "pt"
+  ],
+  "n_findings": 9,
+  "findings": [
+    {
+      "source_id": "finding-20",
+      "title": "Kenya hosts France’s Macron: Why the relationship matters to both",
+      "summary": "Nairobi&#039;s partnership with Paris has sparked criticism, with many worried Kenya&#039;s interests will be subordinated.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Kenya hosts France’s Macron: Why the relationship matters to both | Nairobi&#039;s partnership with Paris has sparked criticism, with many worried Kenya&#039;s interests will be subordinated.",
+      "similarity_to_topic_centre": 0.7524
+    },
+    {
+      "source_id": "finding-185",
+      "title": "Kenya: France to Host African Summit in Kenya, in Bid to 'Diversify Alliances'",
+      "summary": "[RFI] Paris - France is bringing together French and African business and political leaders in Nairobi, Kenya, on Monday at the Africa Forward summit - the first time it has staged such an event in an English-speaking country.",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "Kenya: France to Host African Summit in Kenya, in Bid to 'Diversify Alliances' | [RFI] Paris - France is bringing together French and African business and political leaders in Nairobi, Kenya, on Monday at the Africa Forward summit - the first time it has staged such an event in an English-speaking country.",
+      "similarity_to_topic_centre": 0.734
+    },
+    {
+      "source_id": "finding-193",
+      "title": "Kenya: Kenya, France Sign 11 Deals As Ruto Pushes 'Looking Forward' Partnership Agenda",
+      "summary": "[Capital FM] Nairobi -- Kenya and France have signed 11 agreements aimed at deepening cooperation across strategic sectors, following bilateral talks between President William Ruto and French President Emmanuel Macron at State House Nairobi.",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "Kenya: Kenya, France Sign 11 Deals As Ruto Pushes 'Looking Forward' Partnership Agenda | [Capital FM] Nairobi -- Kenya and France have signed 11 agreements aimed at deepening cooperation across strategic sectors, following bilateral talks between President William Ruto and French President Emmanuel Macron at State House Nairobi.",
+      "similarity_to_topic_centre": 0.5636
+    },
+    {
+      "source_id": "finding-489",
+      "title": "France turns to Africa for strategic partnerships",
+      "summary": "Following a withdrawal from the Sahel region, France is seeking to expand its geostrategic influence in Africa by seeking new allies. The first Africa Summit in Kenya is intended to mark a fresh start.",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "France turns to Africa for strategic partnerships | Following a withdrawal from the Sahel region, France is seeking to expand its geostrategic influence in Africa by seeking new allies. The first Africa Summit in Kenya is intended to mark a fresh start.",
+      "similarity_to_topic_centre": 0.6526
+    },
+    {
+      "source_id": "finding-525",
+      "title": "In Nairobi, Macron ends a decade of turmoil in France-Africa relations",
+      "summary": "Coming to power having promised to rebuild the relationship between France and its former colonies, Emmanuel Macron had to face a series of crises, particularly in the Sahel region. In the English-speaking part of the continent, Paris struggled to find its place.",
+      "description": "",
+      "language": "en",
+      "outlet": "Le Monde",
+      "text": "In Nairobi, Macron ends a decade of turmoil in France-Africa relations | Coming to power having promised to rebuild the relationship between France and its former colonies, Emmanuel Macron had to face a series of crises, particularly in the Sahel region. In the English-speaking part of the continent, Paris struggled to find its place.",
+      "similarity_to_topic_centre": 0.6762
+    },
+    {
+      "source_id": "finding-549",
+      "title": "Afrika-Gipfel in Kenia: Macron sucht neue Partner",
+      "summary": "Bislang hat sich Frankreich stark auf Westafrika fokussiert. Präsident Macron will seine Strategie jetzt ändern - auch mit Blick auf den Einfluss Chinas und Russlands in Afrika. Heute beginnt in Nairobi ein wichtiger Gipfel. Von Karin Bensch.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "Afrika-Gipfel in Kenia: Macron sucht neue Partner | Bislang hat sich Frankreich stark auf Westafrika fokussiert. Präsident Macron will seine Strategie jetzt ändern - auch mit Blick auf den Einfluss Chinas und Russlands in Afrika. Heute beginnt in Nairobi ein wichtiger Gipfel. Von Karin Bensch.",
+      "similarity_to_topic_centre": 0.802
+    },
+    {
+      "source_id": "finding-819",
+      "title": "Tinubu arrives in Kenya for Africa Forward Summit",
+      "summary": "President Bola Tinubu arrived at the Jomo Kenyatta International Airport, Nairobi, Kenya, early Monday to participate in the Africa Forward Summit focused on investment and sustainable development across Africa.\nThe post Tinubu arrives in Kenya for Africa Forward Summit appeared first on Vanguard News.",
+      "description": "",
+      "language": "en",
+      "outlet": "Vanguard Nigeria",
+      "text": "Tinubu arrives in Kenya for Africa Forward Summit | President Bola Tinubu arrived at the Jomo Kenyatta International Airport, Nairobi, Kenya, early Monday to participate in the Africa Forward Summit focused on investment and sustainable development across Africa.\nThe post Tinubu arrives in Kenya for Africa Forward Summit appeared first on Vanguard News.",
+      "similarity_to_topic_centre": 0.5606
+    },
+    {
+      "source_id": "finding-1051",
+      "title": "Changing geopolitics are in focus as France's Macron kicks off Kenya visit for an Africa summit",
+      "summary": "French President Emmanuel Macron kicked off a visit to Kenya on Sunday ahead of the Africa Forward Summit, a gathering meant to showcase France’s new policy for the…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Changing geopolitics are in focus as France's Macron kicks off Kenya visit for an Africa summit | French President Emmanuel Macron kicked off a visit to Kenya on Sunday ahead of the Africa Forward Summit, a gathering meant to showcase France’s new policy for the…",
+      "similarity_to_topic_centre": 0.6713
+    },
+    {
+      "source_id": "finding-1174",
+      "title": "Africa Forward à Nairobi, un sommet coorganisé par Kenya et France à l’accent très économique",
+      "summary": "La président du Kenya, William Ruto, et celui de la France, Emmanuel Macron, coorganisent les 11 et 12 mai 2026 à Nairobi un sommet Afrique-France, le premier dans un pays anglophone, baptisé « Africa Forward » (« En avant l'Afrique ») et résolument tourné vers l'économie et les investissements. Présentation.",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "Africa Forward à Nairobi, un sommet coorganisé par Kenya et France à l’accent très économique | La président du Kenya, William Ruto, et celui de la France, Emmanuel Macron, coorganisent les 11 et 12 mai 2026 à Nairobi un sommet Afrique-France, le premier dans un pays anglophone, baptisé « Africa Forward » (« En avant l'Afrique ») et résolument tourné vers l'économie et les investissements. Présentation.",
+      "similarity_to_topic_centre": 0.7582
+    }
+  ]
+}

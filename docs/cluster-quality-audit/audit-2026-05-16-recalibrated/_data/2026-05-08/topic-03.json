@@ -1,0 +1,70 @@
+{
+  "topic_index": 3,
+  "topic_title": "South African Constitutional Court orders Parliament to revisit Cyril Ramaphosa impeachment",
+  "topic_summary": "The Constitutional Court of South Africa has ruled that Parliament acted unlawfully when it blocked impeachment proceedings against Cyril Ramaphosa. The decision has led to renewed calls for the president's resignation and warnings from political allies about the precedent of using judicial rulings for political vendettas.",
+  "original_source_count": 75,
+  "recalibrated_source_count": 4,
+  "n_assigned_at_T_0.55_V1": 4,
+  "geographic_coverage": [
+    "Africa",
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East",
+    "South Asia"
+  ],
+  "languages": [
+    "de",
+    "en",
+    "es",
+    "fr",
+    "it",
+    "pt",
+    "ru",
+    "tr"
+  ],
+  "n_findings": 4,
+  "findings": [
+    {
+      "source_id": "finding-174",
+      "title": "South Africa: South Africa Constitutional Court Rules Parliament Unlawfully Blocked Ramaphosa Impeachment Bid",
+      "summary": "[Capital FM] South Africa's Constitutional Court has ruled that Parliament acted unconstitutionally when it halted efforts to initiate impeachment proceedings against President Cyril Ramaphosa in 2022.",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "South Africa: South Africa Constitutional Court Rules Parliament Unlawfully Blocked Ramaphosa Impeachment Bid | [Capital FM] South Africa's Constitutional Court has ruled that Parliament acted unconstitutionally when it halted efforts to initiate impeachment proceedings against President Cyril Ramaphosa in 2022.",
+      "similarity_to_topic_centre": 0.9061
+    },
+    {
+      "source_id": "finding-506",
+      "title": "South Africa president faces call to resign after court ruling",
+      "summary": "The Constitutional Court says MPs were was wrong to block impeachment proceedings against Cyril Ramaphosa.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "South Africa president faces call to resign after court ruling | The Constitutional Court says MPs were was wrong to block impeachment proceedings against Cyril Ramaphosa.",
+      "similarity_to_topic_centre": 0.5643
+    },
+    {
+      "source_id": "finding-585",
+      "title": "South Africa Constitutional Court orders Parliament to revisit Ramaphosa impeachment proceedings",
+      "summary": "Cyril Ramaphosa's presidency is on the line, as lawmakers will now have to reconsider whether there are grounds to impeach him over the scandal dubbed \"Farmgate.\"",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "South Africa Constitutional Court orders Parliament to revisit Ramaphosa impeachment proceedings | Cyril Ramaphosa's presidency is on the line, as lawmakers will now have to reconsider whether there are grounds to impeach him over the scandal dubbed \"Farmgate.\"",
+      "similarity_to_topic_centre": 0.8927
+    },
+    {
+      "source_id": "finding-962",
+      "title": "S’Africa court overturns vote quashing impeachment proceedings against Ramaphosa",
+      "summary": "South Africa's Constitutional Court on Friday overturned a vote in parliament that had quashed the opening of impeachment proceedings against President Cyril Ramaphosa over a cash-heist scandal.\nThe post S&#8217;Africa court overturns vote quashing impeachment proceedings against Ramaphosa appeared first on Vanguard News.",
+      "description": "",
+      "language": "en",
+      "outlet": "Vanguard Nigeria",
+      "text": "S’Africa court overturns vote quashing impeachment proceedings against Ramaphosa | South Africa's Constitutional Court on Friday overturned a vote in parliament that had quashed the opening of impeachment proceedings against President Cyril Ramaphosa over a cash-heist scandal.\nThe post S&#8217;Africa court overturns vote quashing impeachment proceedings against Ramaphosa appeared first on Vanguard News.",
+      "similarity_to_topic_centre": 0.7996
+    }
+  ]
+}

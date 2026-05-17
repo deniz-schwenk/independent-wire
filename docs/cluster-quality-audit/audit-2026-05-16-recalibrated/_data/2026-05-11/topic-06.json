@@ -1,0 +1,178 @@
+{
+  "topic_index": 6,
+  "topic_title": "Donald Trump prepares for state visit to China amid trade tensions",
+  "topic_summary": "China has confirmed dates for a state visit by Donald Trump to Beijing, where he is expected to meet with Xi Jinping. Discussions are anticipated to focus on tariffs, trade growth, and the ongoing crisis in Iran.",
+  "original_source_count": 46,
+  "recalibrated_source_count": 15,
+  "n_assigned_at_T_0.55_V1": 15,
+  "geographic_coverage": [
+    "Africa",
+    "Central Asia",
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East",
+    "North America",
+    "South Asia",
+    "Southeast Asia"
+  ],
+  "languages": [
+    "en",
+    "es",
+    "pt"
+  ],
+  "n_findings": 15,
+  "findings": [
+    {
+      "source_id": "finding-51",
+      "title": "China, US to hold trade talks in South Korea ahead of expected Trump visit to Beijing",
+      "summary": "Top negotiators to meet in Seoul following latest round of consultations in Paris",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "China, US to hold trade talks in South Korea ahead of expected Trump visit to Beijing | Top negotiators to meet in Seoul following latest round of consultations in Paris",
+      "similarity_to_topic_centre": 0.6651
+    },
+    {
+      "source_id": "finding-87",
+      "title": "China readies for Trump visit amid rebound in trade growth",
+      "summary": "Chinese Vice-Premier He Lifeng and US Treasury Secretary Scott Bessent will meet for trade talks in Seoul on Wednesday, probably to iron out final details before a presidential summit in Beijing the following day.\nThe discussions would focus on “economic and trade issues of mutual concern”, China’s Ministry of Commerce said on Sunday. The country also confirmed that US President Donald Trump will make a state visit from Wednesday to Friday, the first by a US president in almost nine years.\nTr...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "China readies for Trump visit amid rebound in trade growth | Chinese Vice-Premier He Lifeng and US Treasury Secretary Scott Bessent will meet for trade talks in Seoul on Wednesday, probably to iron out final details before a presidential summit in Beijing the following day.\nThe discussions would focus on “economic and trade issues of mutual concern”, China’s Ministry of Commerce said on Sunday. The country also confirmed that US President Donald Trump will make a state visit from Wednesday to Friday, the first by a US president in almost nine years.\nTr...",
+      "similarity_to_topic_centre": 0.8299
+    },
+    {
+      "source_id": "finding-116",
+      "title": "China confirms dates for President Donald Trump’s state visit to Beijing",
+      "summary": "US President Donald Trump will pay a state visit to China from May 13 to 15, at the invitation of President Xi Jinping, the foreign ministry in Beijing said on Monday.\nIt will be the first visit to China by a US president in almost nine years and comes at a time of heightened tensions between the two countries over a range of issues.\nIt also coincides with the fragile US-Iran ceasefire and the blockade of the Strait of Hormuz, which is pushing up energy costs and weighing on the global...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "China confirms dates for President Donald Trump’s state visit to Beijing | US President Donald Trump will pay a state visit to China from May 13 to 15, at the invitation of President Xi Jinping, the foreign ministry in Beijing said on Monday.\nIt will be the first visit to China by a US president in almost nine years and comes at a time of heightened tensions between the two countries over a range of issues.\nIt also coincides with the fragile US-Iran ceasefire and the blockade of the Strait of Hormuz, which is pushing up energy costs and weighing on the global...",
+      "similarity_to_topic_centre": 0.9194
+    },
+    {
+      "source_id": "finding-119",
+      "title": "Trump’s China return: what’s changed since his ‘friendly’ 2017 visit",
+      "summary": "Nine years after his lavish first visit to China as US president, Donald Trump is scheduled to head back to Beijing on May 13-15. With tensions over tariffs, Taiwan and tech rivalry still simmering, the summit will test whether the world’s two biggest powers can stabilise their fractious relationship.\nWhat to expect\nPragmatic deals over grand resets\nDon’t look for a historic breakthrough. The focus is expected to be on extending the trade truce, locking in fresh Chinese purchases of American...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "Trump’s China return: what’s changed since his ‘friendly’ 2017 visit | Nine years after his lavish first visit to China as US president, Donald Trump is scheduled to head back to Beijing on May 13-15. With tensions over tariffs, Taiwan and tech rivalry still simmering, the summit will test whether the world’s two biggest powers can stabilise their fractious relationship.\nWhat to expect\nPragmatic deals over grand resets\nDon’t look for a historic breakthrough. The focus is expected to be on extending the trade truce, locking in fresh Chinese purchases of American...",
+      "similarity_to_topic_centre": 0.7396
+    },
+    {
+      "source_id": "finding-235",
+      "title": "EU y China negocian previo a la reunión entre Trump y Xi Jinping: Pactan reunión comercial en Corea del Sur",
+      "summary": "EU y China tendrán negociaciones comerciales antes de la cumbre entre Trump y Xi Jinping.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "EU y China negocian previo a la reunión entre Trump y Xi Jinping: Pactan reunión comercial en Corea del Sur | EU y China tendrán negociaciones comerciales antes de la cumbre entre Trump y Xi Jinping.",
+      "similarity_to_topic_centre": 0.6656
+    },
+    {
+      "source_id": "finding-260",
+      "title": "Visita incómoda de Trump a China: Los temas que tensan la reunión con Xi Jinping",
+      "summary": "Analistas consideran que China no dará el mismo recibimiento grandioso que le dio a Trump en 2017.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Visita incómoda de Trump a China: Los temas que tensan la reunión con Xi Jinping | Analistas consideran que China no dará el mismo recibimiento grandioso que le dio a Trump en 2017.",
+      "similarity_to_topic_centre": 0.7083
+    },
+    {
+      "source_id": "finding-277",
+      "title": "Iran War Could Make Trump's Trip To China A Bit Chillier Than His Last Visit",
+      "summary": "Trump will arrive in Beijing on the night of May 13.",
+      "description": "",
+      "language": "en",
+      "outlet": "NDTV",
+      "text": "Iran War Could Make Trump's Trip To China A Bit Chillier Than His Last Visit | Trump will arrive in Beijing on the night of May 13.",
+      "similarity_to_topic_centre": 0.6607
+    },
+    {
+      "source_id": "finding-428",
+      "title": "Trump's China visit set to test fragile truce",
+      "summary": "The first US presidential visit to China in almost 10 years will test a fragile tariff truce.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Trump's China visit set to test fragile truce | The first US presidential visit to China in almost 10 years will test a fragile tariff truce.",
+      "similarity_to_topic_centre": 0.7354
+    },
+    {
+      "source_id": "finding-519",
+      "title": "Trump to press China’s Xi about Iran war at summit",
+      "summary": "US president arrives in Beijing on Wednesday for his second in-person meeting with Chinese leader",
+      "description": "",
+      "language": "en",
+      "outlet": "Financial Times",
+      "text": "Trump to press China’s Xi about Iran war at summit | US president arrives in Beijing on Wednesday for his second in-person meeting with Chinese leader",
+      "similarity_to_topic_centre": 0.7411
+    },
+    {
+      "source_id": "finding-634",
+      "title": "China confirms dates for Trump state visit",
+      "summary": "Beijing has confirmed that US President Donald Trump will visit China this week for talks with President Xi Jinping Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "China confirms dates for Trump state visit | Beijing has confirmed that US President Donald Trump will visit China this week for talks with President Xi Jinping Read Full Article at RT.com",
+      "similarity_to_topic_centre": 0.9303
+    },
+    {
+      "source_id": "finding-708",
+      "title": "Los chinos hablan sobre la visita de Trump: “No le doy la bienvenida porque ha iniciado guerras”",
+      "summary": "Algunos ciudadanos del gigante asiático miran con recelo el inminente viaje del estadounidense a Pekín, mientras otros consideran positivo el encuentro con Xi Jinping",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Los chinos hablan sobre la visita de Trump: “No le doy la bienvenida porque ha iniciado guerras” | Algunos ciudadanos del gigante asiático miran con recelo el inminente viaje del estadounidense a Pekín, mientras otros consideran positivo el encuentro con Xi Jinping",
+      "similarity_to_topic_centre": 0.7274
+    },
+    {
+      "source_id": "finding-953",
+      "title": "China se muestra dispuesta a lograr una \"mayor estabilidad\" global de cara al encuentro entre Xi y Trump",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "China se muestra dispuesta a lograr una \"mayor estabilidad\" global de cara al encuentro entre Xi y Trump",
+      "similarity_to_topic_centre": 0.5842
+    },
+    {
+      "source_id": "finding-1023",
+      "title": "De Nixon a Trump: los viajes presidenciales de EE.UU. a China en más de medio siglo",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "De Nixon a Trump: los viajes presidenciales de EE.UU. a China en más de medio siglo",
+      "similarity_to_topic_centre": 0.6354
+    },
+    {
+      "source_id": "finding-1042",
+      "title": "Xi y Trump medirán este jueves en Pekín sus diferencias, con Irán y los aranceles de fondo",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "Xi y Trump medirán este jueves en Pekín sus diferencias, con Irán y los aranceles de fondo",
+      "similarity_to_topic_centre": 0.6666
+    },
+    {
+      "source_id": "finding-1161",
+      "title": "Taiwan is looming over this week's Trump and Xi summit",
+      "summary": "Although the current war with Iran dominates global attention, a more dangerous situation — between two nuclear-armed powers — continues to worsen: the confrontation between the United States and China over Taiwan. While widely recognized, this confrontation has been overshadowed in dealings between Beijing and Washington, where disputes over issues like trade, technology, and fentanyl predominate. These disputes, while serious, are far less likely to prove catastrophic than the current slide...",
+      "description": "",
+      "language": "en",
+      "outlet": "Responsible Statecraft",
+      "text": "Taiwan is looming over this week's Trump and Xi summit | Although the current war with Iran dominates global attention, a more dangerous situation — between two nuclear-armed powers — continues to worsen: the confrontation between the United States and China over Taiwan. While widely recognized, this confrontation has been overshadowed in dealings between Beijing and Washington, where disputes over issues like trade, technology, and fentanyl predominate. These disputes, while serious, are far less likely to prove catastrophic than the current slide...",
+      "similarity_to_topic_centre": 0.5577
+    }
+  ]
+}

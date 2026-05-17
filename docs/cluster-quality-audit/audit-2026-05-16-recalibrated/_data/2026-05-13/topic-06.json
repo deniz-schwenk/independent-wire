@@ -1,0 +1,100 @@
+{
+  "topic_index": 6,
+  "topic_title": "Nunes Marques takes office as President of Brazil's Superior Electoral Court",
+  "topic_summary": "Kassio Nunes Marques has assumed the presidency of the TSE, emphasizing the defense of freedom of expression and the integrity of electronic voting machines. His appointment is closely watched by allies of Jair Bolsonaro, given his previous votes regarding the former president's eligibility.",
+  "original_source_count": 81,
+  "recalibrated_source_count": 7,
+  "n_assigned_at_T_0.55_V1": 7,
+  "geographic_coverage": [
+    "Africa",
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "North America",
+    "South Asia",
+    "Southeast Asia"
+  ],
+  "languages": [
+    "de",
+    "en",
+    "es",
+    "pt",
+    "ru",
+    "tr",
+    "vi"
+  ],
+  "n_findings": 7,
+  "findings": [
+    {
+      "source_id": "finding-230",
+      "title": "Desafio do TSE é conter uso ilegal de IA na eleição, diz Nunes Marques",
+      "summary": "O presidente do Tribunal Superior Eleitoral (TSE), ministro Kassio Nunes Marques, disse nesta terça-feira (12) que o tribunal terá o desafio de combater o uso inadequado da inteligência artificial nas eleições de outubro. \n\nNo início da noite de hoje, o ministro tomou posse como presidente da Corte e vai comandar o pleito eleitoral, que elegerá o presidente da República, deputados federais, estaduais, distritais, governadores e senadores. \n\nNotícias relacionadas:Nunes Marques toma posse na pr...",
+      "description": "",
+      "language": "pt",
+      "outlet": "Agencia Brasil",
+      "text": "Desafio do TSE é conter uso ilegal de IA na eleição, diz Nunes Marques | O presidente do Tribunal Superior Eleitoral (TSE), ministro Kassio Nunes Marques, disse nesta terça-feira (12) que o tribunal terá o desafio de combater o uso inadequado da inteligência artificial nas eleições de outubro. \n\nNo início da noite de hoje, o ministro tomou posse como presidente da Corte e vai comandar o pleito eleitoral, que elegerá o presidente da República, deputados federais, estaduais, distritais, governadores e senadores. \n\nNotícias relacionadas:Nunes Marques toma posse na pr...",
+      "similarity_to_topic_centre": 0.576
+    },
+    {
+      "source_id": "finding-233",
+      "title": "Nunes Marques toma posse na presidência do TSE; Mendonça será vice",
+      "summary": "O ministro Kassio Nunes Marques tomou posse nesta terça-feira (12) no cargo de presidente do Tribunal Superior Eleitoral (TSE), órgão responsável pela organização das eleições presidenciais de outubro.\n\nEle assumiu o cargo deixado pela ministra Cármen Lúcia, que encerrou seu mandato de dois anos à frente da Corte. O ministro André Mendonça foi empossado na vice-presidência. \n\nNotícias relacionadas:Dino manda TSE analisar possível uso de emendas em campanha eleitoral.A cerimônia foi acompanhad...",
+      "description": "",
+      "language": "pt",
+      "outlet": "Agencia Brasil",
+      "text": "Nunes Marques toma posse na presidência do TSE; Mendonça será vice | O ministro Kassio Nunes Marques tomou posse nesta terça-feira (12) no cargo de presidente do Tribunal Superior Eleitoral (TSE), órgão responsável pela organização das eleições presidenciais de outubro.\n\nEle assumiu o cargo deixado pela ministra Cármen Lúcia, que encerrou seu mandato de dois anos à frente da Corte. O ministro André Mendonça foi empossado na vice-presidência. \n\nNotícias relacionadas:Dino manda TSE analisar possível uso de emendas em campanha eleitoral.A cerimônia foi acompanhad...",
+      "similarity_to_topic_centre": 0.8581
+    },
+    {
+      "source_id": "finding-1009",
+      "title": "Kassio, que agora preside TSE, foi a favor de manter Bolsonaro eleg�vel; relembre votos",
+      "summary": "O ministro do STF (Supremo Tribunal Federal) Kassio Nunes Marques, indicado pelo ex-presidente Jair Bolsonaro em 2020, deu votos divergentes da maioria da corte em casos emblem�ticos, como a inelegibilidade do ex-presidente e as investiga��es sobre os acampamentos de janeiro.\nLeia mais (05/12/2026 - 23h03)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Kassio, que agora preside TSE, foi a favor de manter Bolsonaro eleg�vel; relembre votos | O ministro do STF (Supremo Tribunal Federal) Kassio Nunes Marques, indicado pelo ex-presidente Jair Bolsonaro em 2020, deu votos divergentes da maioria da corte em casos emblem�ticos, como a inelegibilidade do ex-presidente e as investiga��es sobre os acampamentos de janeiro.\nLeia mais (05/12/2026 - 23h03)",
+      "similarity_to_topic_centre": 0.6716
+    },
+    {
+      "source_id": "finding-1057",
+      "title": "Presidente do PT insiste, mas Pacheco diz que n�o pretende ser candidato ao Governo de Minas",
+      "summary": "O senador Rodrigo Pacheco (PSB-MG) afirmou ao presidente do PT, Edinho Silva, que n�o pretende ser candidato ao governo de Minas Gerais nas elei��es deste ano. Segundo relatou a pessoas pr�ximas, o parlamentar disse que deve deixar a pol�tica para se dedicar ao direito e alegou quest�es pessoais, de sa�de e familiares para tomar a decis�o.\nLeia mais (05/12/2026 - 20h18)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Presidente do PT insiste, mas Pacheco diz que n�o pretende ser candidato ao Governo de Minas | O senador Rodrigo Pacheco (PSB-MG) afirmou ao presidente do PT, Edinho Silva, que n�o pretende ser candidato ao governo de Minas Gerais nas elei��es deste ano. Segundo relatou a pessoas pr�ximas, o parlamentar disse que deve deixar a pol�tica para se dedicar ao direito e alegou quest�es pessoais, de sa�de e familiares para tomar a decis�o.\nLeia mais (05/12/2026 - 20h18)",
+      "similarity_to_topic_centre": 0.5698
+    },
+    {
+      "source_id": "finding-1059",
+      "title": "Kassio toma posse no TSE, critica 'excessos' e defende urnas e liberdade de express�o",
+      "summary": "O ministro Kassio Nunes Marques, do STF (Supremo Tribunal Federal), tomou posse nesta ter�a-feira (12) como presidente do TSE (Tribunal Superior Eleitoral), defendeu ser fundamental que a corte respeite a liberdade de express�o e criticou o que chamou de \"excessos incompat�veis com o Estado democr�tico de Direito\". Ele ter� Andr� Mendon�a como vice.\nLeia mais (05/12/2026 - 20h01)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Kassio toma posse no TSE, critica 'excessos' e defende urnas e liberdade de express�o | O ministro Kassio Nunes Marques, do STF (Supremo Tribunal Federal), tomou posse nesta ter�a-feira (12) como presidente do TSE (Tribunal Superior Eleitoral), defendeu ser fundamental que a corte respeite a liberdade de express�o e criticou o que chamou de \"excessos incompat�veis com o Estado democr�tico de Direito\". Ele ter� Andr� Mendon�a como vice.\nLeia mais (05/12/2026 - 20h01)",
+      "similarity_to_topic_centre": 0.6469
+    },
+    {
+      "source_id": "finding-1064",
+      "title": "Fl�vio Bolsonaro diz que n�o recusaria cumprimentar Lula: 'Se passar perto, n�o tenho problema'",
+      "summary": "Pr�-candidato ao Pal�cio do Planalto, o senador Fl�vio Bolsonaro (PL-RJ) afirmou que n�o se recusaria a cumprimentar o presidente Lula (PT) caso encontre o petista durante a cerim�nia de posse do ministro Kassio Nunes Marques na presid�ncia do TSE (Tribunal Superior Eleitoral) nesta ter�a-feira (12).\nLeia mais (05/12/2026 - 19h31)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Fl�vio Bolsonaro diz que n�o recusaria cumprimentar Lula: 'Se passar perto, n�o tenho problema' | Pr�-candidato ao Pal�cio do Planalto, o senador Fl�vio Bolsonaro (PL-RJ) afirmou que n�o se recusaria a cumprimentar o presidente Lula (PT) caso encontre o petista durante a cerim�nia de posse do ministro Kassio Nunes Marques na presid�ncia do TSE (Tribunal Superior Eleitoral) nesta ter�a-feira (12).\nLeia mais (05/12/2026 - 19h31)",
+      "similarity_to_topic_centre": 0.5627
+    },
+    {
+      "source_id": "finding-1067",
+      "title": "Kassio toma posse na presid�ncia do TSE; veja ao vivo",
+      "summary": "O ministro Kassio Nunes Marques, 53, toma posse na presid�ncia do TSE (Tribunal Superior Eleitoral) nesta ter�a-feira (12). O magistrado assume o posto deixado por C�rmen L�cia, que antecipou sua sa�da para facilitar a organiza��o das elei��es de outubro.\nLeia mais (05/12/2026 - 19h08)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Kassio toma posse na presid�ncia do TSE; veja ao vivo | O ministro Kassio Nunes Marques, 53, toma posse na presid�ncia do TSE (Tribunal Superior Eleitoral) nesta ter�a-feira (12). O magistrado assume o posto deixado por C�rmen L�cia, que antecipou sua sa�da para facilitar a organiza��o das elei��es de outubro.\nLeia mais (05/12/2026 - 19h08)",
+      "similarity_to_topic_centre": 0.6871
+    }
+  ]
+}

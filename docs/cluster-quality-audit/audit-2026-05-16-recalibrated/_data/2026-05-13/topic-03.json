@@ -1,0 +1,91 @@
+{
+  "topic_index": 3,
+  "topic_title": "Anti-corruption probe in Ukraine targets former presidential aide Andriy Yermak",
+  "topic_summary": "Ukrainian anti-corruption authorities have named Andriy Yermak and several others as suspects in a money laundering and corruption investigation involving millions of dollars. Prosecutors are seeking his arrest with a high bail amount, marking a significant escalation in domestic legal challenges for the administration.",
+  "original_source_count": 107,
+  "recalibrated_source_count": 6,
+  "n_assigned_at_T_0.55_V1": 6,
+  "geographic_coverage": [
+    "Africa",
+    "Central Asia",
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East",
+    "North America",
+    "South Asia"
+  ],
+  "languages": [
+    "de",
+    "en",
+    "es",
+    "fr",
+    "pt",
+    "ru",
+    "tr"
+  ],
+  "n_findings": 6,
+  "findings": [
+    {
+      "source_id": "finding-9",
+      "title": "Zelenskyy’s ex-chief of staff appears in court in money-laundering case",
+      "summary": "Andriy Yermak is suspected in an alleged $10.5m money-laundering scheme involving a luxury real estate development.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Zelenskyy’s ex-chief of staff appears in court in money-laundering case | Andriy Yermak is suspected in an alleged $10.5m money-laundering scheme involving a luxury real estate development.",
+      "similarity_to_topic_centre": 0.6117
+    },
+    {
+      "source_id": "finding-507",
+      "title": "Zelensky's ex-chief of staff in court as Ukraine corruption probe escalates",
+      "summary": "Andriy Yermak was named by Ukraine's two anti-corruption agencies as a suspect in a money-laundering scheme.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Zelensky's ex-chief of staff in court as Ukraine corruption probe escalates | Andriy Yermak was named by Ukraine's two anti-corruption agencies as a suspect in a money-laundering scheme.",
+      "similarity_to_topic_centre": 0.7556
+    },
+    {
+      "source_id": "finding-737",
+      "title": "Антикоррупционная прокуратура Украины потребовала ареста Андрея Ермака — с возможностью выйти под залог в четыре миллиона долларов",
+      "summary": "Глава Специализированной антикоррупционной прокуратуры (САП) Украины Александр Клименко заявил, что ведомство будет просить суд избрать для бывшего главы офиса президента Андрея Ермака меру пресечения в виде ареста. Об этом он объявил на брифинге, его слова приводит «Громадське».",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Антикоррупционная прокуратура Украины потребовала ареста Андрея Ермака — с возможностью выйти под залог в четыре миллиона долларов | Глава Специализированной антикоррупционной прокуратуры (САП) Украины Александр Клименко заявил, что ведомство будет просить суд избрать для бывшего главы офиса президента Андрея Ермака меру пресечения в виде ареста. Об этом он объявил на брифинге, его слова приводит «Громадське».",
+      "similarity_to_topic_centre": 0.6521
+    },
+    {
+      "source_id": "finding-741",
+      "title": "Антикоррупционное бюро Украины: подозреваемыми по делу об отмывании 10 миллионов долларов стали еще шесть человек. По нему проходит и Андрей Ермак",
+      "summary": "Фигурантами по делу о легализации 460 миллионов гривен (около 10,5 миллиона долларов) в рамках элитного строительства под Киевом проходят еще шесть человек, сообщили Национальное антикоррупционное бюро (НАБУ) и Специализированная антикоррупционная прокуратура Украины (САП).",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Антикоррупционное бюро Украины: подозреваемыми по делу об отмывании 10 миллионов долларов стали еще шесть человек. По нему проходит и Андрей Ермак | Фигурантами по делу о легализации 460 миллионов гривен (около 10,5 миллиона долларов) в рамках элитного строительства под Киевом проходят еще шесть человек, сообщили Национальное антикоррупционное бюро (НАБУ) и Специализированная антикоррупционная прокуратура Украины (САП).",
+      "similarity_to_topic_centre": 0.6572
+    },
+    {
+      "source_id": "finding-750",
+      "title": "Прокуратура Украины потребует арестовать Андрея Ермака с возможностью выйти под залог. Бывшему главе Офиса президента Украины сообщили о подозрении по делу о коррупции. Главное",
+      "summary": "Прокуратура Украины потребовала арестовать бывшего главу Офиса президента Андрея Ермака по делу о легализации коррупционных средств с возможностью выхода под залог в $4,1 млн. 12 мая суд заслушал прокурора, а 13 мая примет решение о мере пресечения. По версии НАБУ и САП, фигуранты расследования с 2021 по 2025 год отмыли более 460 млн гривен через строительство элитного коттеджного комплекса «Династия» под Киевом, связанного со схемами в «Энергоатоме».  Все, что нужно знать о новых обвинениях ...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Novaya Gazeta Europe",
+      "text": "Прокуратура Украины потребует арестовать Андрея Ермака с возможностью выйти под залог. Бывшему главе Офиса президента Украины сообщили о подозрении по делу о коррупции. Главное | Прокуратура Украины потребовала арестовать бывшего главу Офиса президента Андрея Ермака по делу о легализации коррупционных средств с возможностью выхода под залог в $4,1 млн. 12 мая суд заслушал прокурора, а 13 мая примет решение о мере пресечения. По версии НАБУ и САП, фигуранты расследования с 2021 по 2025 год отмыли более 460 млн гривен через строительство элитного коттеджного комплекса «Династия» под Киевом, связанного со схемами в «Энергоатоме».  Все, что нужно знать о новых обвинениях ...",
+      "similarity_to_topic_centre": 0.6902
+    },
+    {
+      "source_id": "finding-789",
+      "title": "Who is the ‘mystery partner’ in ex-Zelensky aide’s alleged money laundering scheme?",
+      "summary": "The NABU indictment of former Zelensky chief of staff Andrey Yermak marks a major blow to the Ukrainian leader’s grip on power Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Who is the ‘mystery partner’ in ex-Zelensky aide’s alleged money laundering scheme? | The NABU indictment of former Zelensky chief of staff Andrey Yermak marks a major blow to the Ukrainian leader’s grip on power Read Full Article at RT.com",
+      "similarity_to_topic_centre": 0.6017
+    }
+  ]
+}

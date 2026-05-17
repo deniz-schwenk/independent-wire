@@ -1,0 +1,111 @@
+{
+  "topic_index": 7,
+  "topic_title": "Narges Mohammadi released from Iranian prison for medical treatment",
+  "topic_summary": "The Nobel Peace Prize winner has been granted bail and transferred to a hospital in Tehran due to health concerns. Her release follows international pressure and reports of a medical crisis while she was in custody.",
+  "original_source_count": 45,
+  "recalibrated_source_count": 8,
+  "n_assigned_at_T_0.55_V1": 8,
+  "geographic_coverage": [
+    "Africa",
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East",
+    "North America",
+    "South Asia",
+    "Southeast Asia"
+  ],
+  "languages": [
+    "de",
+    "en",
+    "es",
+    "fr",
+    "pt",
+    "ru",
+    "tr"
+  ],
+  "n_findings": 8,
+  "findings": [
+    {
+      "source_id": "finding-123",
+      "title": "Jailed Iran Nobel laureate Narges Mohammadi transferred to hospital after medical crisis",
+      "summary": "Nobel Peace laureate and activist Narges Mohammadi has been transferred to a Tehran hospital more than a week after collapsing in prison, her foundation said on Sunday.\nHer transfer comes after days of pleading by her family and others who described her condition as critical. Her foundation said she has been granted a prison sentence suspension on bail. It was not clear for how long her sentence is suspended, the foundation said.\nMohammadi had been imprisoned since December in Zanjan prison. ...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "Jailed Iran Nobel laureate Narges Mohammadi transferred to hospital after medical crisis | Nobel Peace laureate and activist Narges Mohammadi has been transferred to a Tehran hospital more than a week after collapsing in prison, her foundation said on Sunday.\nHer transfer comes after days of pleading by her family and others who described her condition as critical. Her foundation said she has been granted a prison sentence suspension on bail. It was not clear for how long her sentence is suspended, the foundation said.\nMohammadi had been imprisoned since December in Zanjan prison. ...",
+      "similarity_to_topic_centre": 0.7959
+    },
+    {
+      "source_id": "finding-417",
+      "title": "Ailing Iranian Nobel laureate given bail and hospital transfer",
+      "summary": "Iranian authorities granted human rights activist Narges Mohammadi bail amid growing concern over her poor health in prison.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Ailing Iranian Nobel laureate given bail and hospital transfer | Iranian authorities granted human rights activist Narges Mohammadi bail amid growing concern over her poor health in prison.",
+      "similarity_to_topic_centre": 0.8285
+    },
+    {
+      "source_id": "finding-451",
+      "title": "Nobel laureate’s smuggled memoir details beatings and neglect in Iranian prisons",
+      "summary": "Writing by Narges Mohammadi, arrested 14 times for activism, offers a disturbing insight into treatmentIn an exclusive extract of writing smuggled from prison in Iran, the Nobel peace prize laureate Narges Mohammadi has described the “torture” of solitary confinement, and her systematic medical neglect by the prison system.The writing from the past decade will be part of a soon to be published memoir that gives a rare and alarming insight into the treatment of Mohammadi, who is in critical co...",
+      "description": "",
+      "language": "en",
+      "outlet": "Guardian World",
+      "text": "Nobel laureate’s smuggled memoir details beatings and neglect in Iranian prisons | Writing by Narges Mohammadi, arrested 14 times for activism, offers a disturbing insight into treatmentIn an exclusive extract of writing smuggled from prison in Iran, the Nobel peace prize laureate Narges Mohammadi has described the “torture” of solitary confinement, and her systematic medical neglect by the prison system.The writing from the past decade will be part of a soon to be published memoir that gives a rare and alarming insight into the treatment of Mohammadi, who is in critical co...",
+      "similarity_to_topic_centre": 0.6522
+    },
+    {
+      "source_id": "finding-464",
+      "title": "Nobel laureate Narges Mohammadi transferred to a Tehran hospital, her foundation says",
+      "summary": "Nobel Peace laureate and activist Narges Mohammadi has been transferred to a Tehran hospital more than a week after collapsing in prison, her foundation said Sunday.",
+      "description": "",
+      "language": "en",
+      "outlet": "NPR",
+      "text": "Nobel laureate Narges Mohammadi transferred to a Tehran hospital, her foundation says | Nobel Peace laureate and activist Narges Mohammadi has been transferred to a Tehran hospital more than a week after collapsing in prison, her foundation said Sunday.",
+      "similarity_to_topic_centre": 0.6826
+    },
+    {
+      "source_id": "finding-483",
+      "title": "Iranian Nobel winner Mohammadi moved to Tehran hospital",
+      "summary": "Human rights activist and Nobel Peace Prize laureate Narges Mohammadi has been released on bail and transferred to Tehran, her foundation said, amid alarm about her health.",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "Iranian Nobel winner Mohammadi moved to Tehran hospital | Human rights activist and Nobel Peace Prize laureate Narges Mohammadi has been released on bail and transferred to Tehran, her foundation said, amid alarm about her health.",
+      "similarity_to_topic_centre": 0.8347
+    },
+    {
+      "source_id": "finding-530",
+      "title": "Iran releases Nobel Peace Prize winner Narges Mohammadi over health concerns",
+      "summary": "On Sunday, Mohammadi, winner of the 2023 Nobel Peace Prize, was released on bail and sent to Tehran for medical treatment after 10 days of hospitalization in Zanjan, northern Iran, where she had been serving her sentence.",
+      "description": "",
+      "language": "en",
+      "outlet": "Le Monde",
+      "text": "Iran releases Nobel Peace Prize winner Narges Mohammadi over health concerns | On Sunday, Mohammadi, winner of the 2023 Nobel Peace Prize, was released on bail and sent to Tehran for medical treatment after 10 days of hospitalization in Zanjan, northern Iran, where she had been serving her sentence.",
+      "similarity_to_topic_centre": 0.926
+    },
+    {
+      "source_id": "finding-730",
+      "title": "Narges Mohammadi, Nobel de la Paz, abandona la cárcel para recibir tratamiento médico en Irán",
+      "summary": "Las autoridades también han concedido una suspensión bajo fianza de su condena a la activista, que sufrió un infarto hace dos semanas",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Narges Mohammadi, Nobel de la Paz, abandona la cárcel para recibir tratamiento médico en Irán | Las autoridades también han concedido una suspensión bajo fianza de su condena a la activista, que sufrió un infarto hace dos semanas",
+      "similarity_to_topic_centre": 0.8432
+    },
+    {
+      "source_id": "finding-884",
+      "title": "Vencedora do Nobel da Paz � libertada sob fian�a e levada para hospital no Ir�",
+      "summary": "A vencedora do Pr�mio Nobel da Paz Narges Mohammadi, 54, foi transferida para um hospital em Teer� e teve a suspens�o tempor�ria de sua pena concedida \"em troca de uma fian�a consider�vel\" , informou neste domingo (10) a funda��o administrada por sua fam�lia.\nLeia mais (05/10/2026 - 22h19)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Vencedora do Nobel da Paz � libertada sob fian�a e levada para hospital no Ir� | A vencedora do Pr�mio Nobel da Paz Narges Mohammadi, 54, foi transferida para um hospital em Teer� e teve a suspens�o tempor�ria de sua pena concedida \"em troca de uma fian�a consider�vel\" , informou neste domingo (10) a funda��o administrada por sua fam�lia.\nLeia mais (05/10/2026 - 22h19)",
+      "similarity_to_topic_centre": 0.7233
+    }
+  ]
+}

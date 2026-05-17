@@ -1,0 +1,55 @@
+{
+  "topic_index": 9,
+  "topic_title": "South Korea and Australia consider joining naval missions in the Strait of Hormuz",
+  "topic_summary": "South Korea is reviewing phased contributions to a US-led freedom of navigation initiative, while Australia has announced it will join a mission led by the UK and France. The moves come as international pressure mounts to secure shipping lanes against blockades and maritime incidents linked to regional tensions.",
+  "original_source_count": 54,
+  "recalibrated_source_count": 3,
+  "n_assigned_at_T_0.55_V1": 3,
+  "geographic_coverage": [
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East",
+    "Southeast Asia"
+  ],
+  "languages": [
+    "en",
+    "es",
+    "ru",
+    "vi"
+  ],
+  "n_findings": 3,
+  "findings": [
+    {
+      "source_id": "finding-63",
+      "title": "Australia backs UK-France led mission in Strait of Hormuz",
+      "summary": "Australia backs UK-France led mission in Strait of Hormuz\n\n    \n    \n\n        \n    \n                Australian defence minister Richard Marles said Australia will join a multinational mission aimed at protecting freedom of navigation through the Strait of Hormuz after holding talks with defence counterparts from more than 40 countries.\n\nMarles said the “independent and strictly defensive” mission would be led by the United Kingdom and France.\n\nMarles announced that Australia would contribute ...",
+      "description": "",
+      "language": "en",
+      "outlet": "Middle East Eye",
+      "text": "Australia backs UK-France led mission in Strait of Hormuz | Australia backs UK-France led mission in Strait of Hormuz\n\n    \n    \n\n        \n    \n                Australian defence minister Richard Marles said Australia will join a multinational mission aimed at protecting freedom of navigation through the Strait of Hormuz after holding talks with defence counterparts from more than 40 countries.\n\nMarles said the “independent and strictly defensive” mission would be led by the United Kingdom and France.\n\nMarles announced that Australia would contribute ...",
+      "similarity_to_topic_centre": 0.6863
+    },
+    {
+      "source_id": "finding-72",
+      "title": "South Korea signals ‘phased’ support for US-led Hormuz mission after ship attack",
+      "summary": "South Korea was reviewing a phased contribution to efforts to ensure safe navigation through the Strait of Hormuz, Defence Minister Ahn Gyu-back said on Wednesday, signalling support steps short of military participation.\nAhn told a press conference with South Korean reporters in Washington that he had conveyed Seoul’s position at a meeting with US Secretary of Defence Pete Hegseth on Monday.\n“We said at about this level that, fundamentally, we will participate as a responsible member of the...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "South Korea signals ‘phased’ support for US-led Hormuz mission after ship attack | South Korea was reviewing a phased contribution to efforts to ensure safe navigation through the Strait of Hormuz, Defence Minister Ahn Gyu-back said on Wednesday, signalling support steps short of military participation.\nAhn told a press conference with South Korean reporters in Washington that he had conveyed Seoul’s position at a meeting with US Secretary of Defence Pete Hegseth on Monday.\n“We said at about this level that, fundamentally, we will participate as a responsible member of the...",
+      "similarity_to_topic_centre": 0.7203
+    },
+    {
+      "source_id": "finding-402",
+      "title": "Seoul mulling possible role in U.S. freedom of navigation initiative in Hormuz: security adviser",
+      "summary": "SEOUL, May 13 (Yonhap) -- South Korea is reviewing a possible role in a U.S. ini...",
+      "description": "",
+      "language": "en",
+      "outlet": "Yonhap",
+      "text": "Seoul mulling possible role in U.S. freedom of navigation initiative in Hormuz: security adviser | SEOUL, May 13 (Yonhap) -- South Korea is reviewing a possible role in a U.S. ini...",
+      "similarity_to_topic_centre": 0.5998
+    }
+  ]
+}

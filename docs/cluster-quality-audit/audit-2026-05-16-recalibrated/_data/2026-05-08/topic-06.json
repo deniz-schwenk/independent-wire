@@ -1,0 +1,61 @@
+{
+  "topic_index": 6,
+  "topic_title": "Tamil Nadu government formation proceeds with support for Vijay's TVK party",
+  "topic_summary": "Political shifts in Tamil Nadu see the Left and VCK parties extending support to Vijay's TVK for government formation. The development has caused friction within the Congress party and its existing alliance with the DMK.",
+  "original_source_count": 47,
+  "recalibrated_source_count": 3,
+  "n_assigned_at_T_0.55_V1": 3,
+  "geographic_coverage": [
+    "Africa",
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East",
+    "North America",
+    "South Asia",
+    "Southeast Asia"
+  ],
+  "languages": [
+    "de",
+    "en",
+    "es",
+    "fr",
+    "pt",
+    "tr",
+    "vi"
+  ],
+  "n_findings": 3,
+  "findings": [
+    {
+      "source_id": "finding-353",
+      "title": "Tamil Nadu Government Formation LIVE:  Left, VCK To Extend Support To TVK, Vijay Likely To Meet Governor Today: Sources",
+      "summary": "Tamil Nadu New Chief Minister Announcement LIVE Updates",
+      "description": "",
+      "language": "en",
+      "outlet": "NDTV",
+      "text": "Tamil Nadu Government Formation LIVE:  Left, VCK To Extend Support To TVK, Vijay Likely To Meet Governor Today: Sources | Tamil Nadu New Chief Minister Announcement LIVE Updates",
+      "similarity_to_topic_centre": 0.7816
+    },
+    {
+      "source_id": "finding-589",
+      "title": "India news: Tamil Nadu government takes shape after impasse",
+      "summary": "Actor-politician Joseph Vijay's TVK party appears poised to form the next Tamil Nadu government after garnering support from other parties, ending days of political uncertainty. DW has the latest.",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "India news: Tamil Nadu government takes shape after impasse | Actor-politician Joseph Vijay's TVK party appears poised to form the next Tamil Nadu government after garnering support from other parties, ending days of political uncertainty. DW has the latest.",
+      "similarity_to_topic_centre": 0.7579
+    },
+    {
+      "source_id": "finding-1248",
+      "title": "Tamil Nadu Government Formation LIVE Updates: VCK, Left to support Vijay; TVK chief to meet Governor shortly",
+      "summary": "",
+      "description": "",
+      "language": "en",
+      "outlet": "Indian Express",
+      "text": "Tamil Nadu Government Formation LIVE Updates: VCK, Left to support Vijay; TVK chief to meet Governor shortly",
+      "similarity_to_topic_centre": 0.7679
+    }
+  ]
+}

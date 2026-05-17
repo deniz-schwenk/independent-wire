@@ -1,0 +1,75 @@
+{
+  "topic_index": 5,
+  "topic_title": "Internal crisis hits Real Madrid following training ground altercation",
+  "topic_summary": "Real Madrid is facing a reputational crisis following a physical altercation between Federico Valverde and Aurelien Tchouameni. The club is reportedly searching for a 'topo' (mole) who leaked details of the fight and subsequent emergency meetings to the press ahead of the upcoming Clásico.",
+  "original_source_count": 49,
+  "recalibrated_source_count": 5,
+  "n_assigned_at_T_0.55_V1": 5,
+  "geographic_coverage": [
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East",
+    "Pacific"
+  ],
+  "languages": [
+    "en",
+    "es",
+    "pt",
+    "tr"
+  ],
+  "n_findings": 5,
+  "findings": [
+    {
+      "source_id": "finding-321",
+      "title": "Crisis en el Real Madrid: Federico Valverde sufre lesión tras pelea con Tchouaméni a días del Clásico",
+      "summary": "La pelea entre Federico Valverde y Aurélien Tchouaméni aumentó la crisis del Real Madrid previo al Clásico contra Barcelona. El uruguayo sufrió una lesión y estará fuera varios días.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Crisis en el Real Madrid: Federico Valverde sufre lesión tras pelea con Tchouaméni a días del Clásico | La pelea entre Federico Valverde y Aurélien Tchouaméni aumentó la crisis del Real Madrid previo al Clásico contra Barcelona. El uruguayo sufrió una lesión y estará fuera varios días.",
+      "similarity_to_topic_centre": 0.7026
+    },
+    {
+      "source_id": "finding-792",
+      "title": "Real Madrid: del poder de la amistad al club de la lucha y las filtraciones",
+      "summary": "La temporada estalla con la plantilla fulminando el último favor que suplicaron en el vestuario Arbeloa y Florentino: que se acabase con dignidad. Ni eso",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Real Madrid: del poder de la amistad al club de la lucha y las filtraciones | La temporada estalla con la plantilla fulminando el último favor que suplicaron en el vestuario Arbeloa y Florentino: que se acabase con dignidad. Ni eso",
+      "similarity_to_topic_centre": 0.6714
+    },
+    {
+      "source_id": "finding-811",
+      "title": "Cómo vivir ELCLÁSICO en el territorio del rival",
+      "summary": "El FC Barcelona y el Real Madrid se disputan el título liguero en el partido más visto del mundo. Dos peñas, una culé en Madrid y otra madridista en Cambrils (Tarragona) cuentan cómo vivirán, en la distancia, el encuentro más decisivo de la temporada",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Cómo vivir ELCLÁSICO en el territorio del rival | El FC Barcelona y el Real Madrid se disputan el título liguero en el partido más visto del mundo. Dos peñas, una culé en Madrid y otra madridista en Cambrils (Tarragona) cuentan cómo vivirán, en la distancia, el encuentro más decisivo de la temporada",
+      "similarity_to_topic_centre": 0.6252
+    },
+    {
+      "source_id": "finding-1144",
+      "title": "El Real Madrid busca al ‘topo’ que filtró las peleas para detener la crisis deportiva y reputacional: “Ha habido un gabinete de crisis como no se recuerda”",
+      "summary": "El club estudia una dura sanción para Valverde y Tchouaméni, pero también prioriza saber de dónde sale la información del vestuario",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "El Real Madrid busca al ‘topo’ que filtró las peleas para detener la crisis deportiva y reputacional: “Ha habido un gabinete de crisis como no se recuerda” | El club estudia una dura sanción para Valverde y Tchouaméni, pero también prioriza saber de dónde sale la información del vestuario",
+      "similarity_to_topic_centre": 0.7948
+    },
+    {
+      "source_id": "finding-1328",
+      "title": "Dressing room fight leaves Real Madrid captain in hospital",
+      "summary": "Teammates Federico Valverde and Aurélien Tchouaméni are involved in an altercation at Real Madrid training that left skipper Valverde in hospital with a head trauma.",
+      "description": "",
+      "language": "en",
+      "outlet": "ABC News Australia",
+      "text": "Dressing room fight leaves Real Madrid captain in hospital | Teammates Federico Valverde and Aurélien Tchouaméni are involved in an altercation at Real Madrid training that left skipper Valverde in hospital with a head trauma.",
+      "similarity_to_topic_centre": 0.6133
+    }
+  ]
+}

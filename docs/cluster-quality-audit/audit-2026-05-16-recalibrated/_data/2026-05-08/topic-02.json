@@ -1,0 +1,148 @@
+{
+  "topic_index": 2,
+  "topic_title": "Donald Trump and Lula da Silva meet at White House to relink US-Brazil relations",
+  "topic_summary": "Donald Trump and Lula da Silva held a private meeting in the Oval Office aimed at pragmatically relinking the relationship between the United States and Brazil. While both leaders characterized the meeting as successful, observers noted lingering tensions regarding trade tariffs and regional security.",
+  "original_source_count": 77,
+  "recalibrated_source_count": 12,
+  "n_assigned_at_T_0.55_V1": 12,
+  "geographic_coverage": [
+    "East Asia",
+    "Europe",
+    "International",
+    "Latin America",
+    "Middle East",
+    "North America",
+    "South Asia"
+  ],
+  "languages": [
+    "de",
+    "en",
+    "es",
+    "fr",
+    "pt",
+    "tr"
+  ],
+  "n_findings": 12,
+  "findings": [
+    {
+      "source_id": "finding-57",
+      "title": "Brazilian President Lula reveals Trump’s lack of intent to militarily intervene in Cuba",
+      "summary": "'I heard—and I hope the translation was correct—him say that he is not thinking about invading Cuba,' Lula says, following meeting with US President Donald Trump at White House",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Brazilian President Lula reveals Trump’s lack of intent to militarily intervene in Cuba | 'I heard—and I hope the translation was correct—him say that he is not thinking about invading Cuba,' Lula says, following meeting with US President Donald Trump at White House",
+      "similarity_to_topic_centre": 0.593
+    },
+    {
+      "source_id": "finding-131",
+      "title": "Lula won’t sideline China or anyone in rare earths, tells Trump refining stays in Brazil",
+      "summary": "Brazilian President Luiz Inacio Lula da Silva told US President Donald Trump on Thursday that his country’s rare earth reserves are open to investment from China and any other nation willing to process the minerals on Brazilian soil, resisting pressure to side with Washington in its contest with Beijing over critical mineral supply chains.\n“We have no preference. What we want is to share with whoever wants to invest in Brazil,” Lula said at a press conference at the Brazilian embassy in...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "Lula won’t sideline China or anyone in rare earths, tells Trump refining stays in Brazil | Brazilian President Luiz Inacio Lula da Silva told US President Donald Trump on Thursday that his country’s rare earth reserves are open to investment from China and any other nation willing to process the minerals on Brazilian soil, resisting pressure to side with Washington in its contest with Beijing over critical mineral supply chains.\n“We have no preference. What we want is to share with whoever wants to invest in Brazil,” Lula said at a press conference at the Brazilian embassy in...",
+      "similarity_to_topic_centre": 0.573
+    },
+    {
+      "source_id": "finding-330",
+      "title": "Trump y Lula se reúnen: ¿De qué hablaron los presidentes en medio de tensión por aranceles?",
+      "summary": "El presidente Donald Trump aseguró  que el encuentro con Lula da Silva en la Casa Blanca 'transcurrió muy bien'.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Trump y Lula se reúnen: ¿De qué hablaron los presidentes en medio de tensión por aranceles? | El presidente Donald Trump aseguró  que el encuentro con Lula da Silva en la Casa Blanca 'transcurrió muy bien'.",
+      "similarity_to_topic_centre": 0.8152
+    },
+    {
+      "source_id": "finding-511",
+      "title": "Trump and Lula's private Oval Office meeting signals lingering strain - and effort to avoid tension",
+      "summary": "The US and Brazilian presidents did not appear together publicly, but traded compliments after their talks.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Trump and Lula's private Oval Office meeting signals lingering strain - and effort to avoid tension | The US and Brazilian presidents did not appear together publicly, but traded compliments after their talks.",
+      "similarity_to_topic_centre": 0.8093
+    },
+    {
+      "source_id": "finding-869",
+      "title": "Trump y Lula dan por relanzada la relación de Estados Unidos y Brasil tras su encuentro",
+      "summary": "Los dos mandatarios se han reunido durante cerca de tres horas en la Casa Blanca para pasar página en sus desencuentros sobre la guerra en Irán, el caso Bolsonaro o las investigaciones de Washington a las prácticas comerciales brasileñas",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Trump y Lula dan por relanzada la relación de Estados Unidos y Brasil tras su encuentro | Los dos mandatarios se han reunido durante cerca de tres horas en la Casa Blanca para pasar página en sus desencuentros sobre la guerra en Irán, el caso Bolsonaro o las investigaciones de Washington a las prácticas comerciales brasileñas",
+      "similarity_to_topic_centre": 0.9017
+    },
+    {
+      "source_id": "finding-1038",
+      "title": "Ap�s encontro, Trump diz que Lula � um 'homem bom, cara esperto'",
+      "summary": "O presidente dos Estados Unidos, Donald Trump, definiu seu hom�logo do Brasil, Luiz In�cio Lula da Silva (PT), como um \"homem bom\" e \"um cara esperto\".\nLeia mais (05/07/2026 - 23h13)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Ap�s encontro, Trump diz que Lula � um 'homem bom, cara esperto' | O presidente dos Estados Unidos, Donald Trump, definiu seu hom�logo do Brasil, Luiz In�cio Lula da Silva (PT), como um \"homem bom\" e \"um cara esperto\".\nLeia mais (05/07/2026 - 23h13)",
+      "similarity_to_topic_centre": 0.6555
+    },
+    {
+      "source_id": "finding-1061",
+      "title": "Esquerda v� bolsonarismo isolado ap�s encontro Lula-Trump, e direita minimiza",
+      "summary": "Aliados do presidente Lula (PT) avaliam que a visita do petista ao presidente dos Estados Unidos, Donald Trump, deve isolar o bolsonarismo, grupo pol�tico que busca manter proximidade com o americano. Membros da direita, por sua vez, minimizam o encontro realizado entre os dois l�deres nesta quinta (7).\nLeia mais (05/07/2026 - 22h12)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Esquerda v� bolsonarismo isolado ap�s encontro Lula-Trump, e direita minimiza | Aliados do presidente Lula (PT) avaliam que a visita do petista ao presidente dos Estados Unidos, Donald Trump, deve isolar o bolsonarismo, grupo pol�tico que busca manter proximidade com o americano. Membros da direita, por sua vez, minimizam o encontro realizado entre os dois l�deres nesta quinta (7).\nLeia mais (05/07/2026 - 22h12)",
+      "similarity_to_topic_centre": 0.6296
+    },
+    {
+      "source_id": "finding-1066",
+      "title": "'Ningu�m saber� o que ocorreu', diz leitor sobre encontro de Lula e Trump a portas fechadas",
+      "summary": "Encontro na Casa Branca\n\"Lula se re�ne com Trump na Casa Branca, em Washington\" (Mundo, 7/5). O le�o que ruge nos palanques dos Sem Terra no Brasil l� fora vira um lobinho mau. Reuni�o a portas fechadas significa que nunca ningu�m saber� o que ocorreu.\nJair Pereira (Medianeira, PR)\nLeia mais (05/07/2026 - 22h00)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "'Ningu�m saber� o que ocorreu', diz leitor sobre encontro de Lula e Trump a portas fechadas | Encontro na Casa Branca\n\"Lula se re�ne com Trump na Casa Branca, em Washington\" (Mundo, 7/5). O le�o que ruge nos palanques dos Sem Terra no Brasil l� fora vira um lobinho mau. Reuni�o a portas fechadas significa que nunca ningu�m saber� o que ocorreu.\nJair Pereira (Medianeira, PR)\nLeia mais (05/07/2026 - 22h00)",
+      "similarity_to_topic_centre": 0.6957
+    },
+    {
+      "source_id": "finding-1072",
+      "title": "Tarifas, guerra, Copa e 'amor � primeira vista': entenda a reuni�o de Lula e Trump",
+      "summary": "Os presidentes do Brasil, Luiz In�cio Lula da Silva (PT), e dos Estados Unidos, Donald Trump, reuniram-se nesta quinta-feira (7) na Casa Branca. Durante tr�s horas, os chefes de Estado falaram sobre combate ao crime organizado, tarifas, minerais cr�ticos e rela��o das big techs.\nLeia mais (05/07/2026 - 21h25)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Tarifas, guerra, Copa e 'amor � primeira vista': entenda a reuni�o de Lula e Trump | Os presidentes do Brasil, Luiz In�cio Lula da Silva (PT), e dos Estados Unidos, Donald Trump, reuniram-se nesta quinta-feira (7) na Casa Branca. Durante tr�s horas, os chefes de Estado falaram sobre combate ao crime organizado, tarifas, minerais cr�ticos e rela��o das big techs.\nLeia mais (05/07/2026 - 21h25)",
+      "similarity_to_topic_centre": 0.7755
+    },
+    {
+      "source_id": "finding-1087",
+      "title": "Lula prop�e grupo de trabalho com EUA para resolver impasse sobre tarifas",
+      "summary": "Ap�s encontro com o presidente dos Estados Unidos, Donald Trump, o presidente Luiz In�cio Lula da Silva afirmou nesta quinta-feira (7) que sugeriu a cria��o de um grupo entre os dois pa�ses para resolver quest�es ligadas �s tarifas e � investiga��o comercial aberta pelos americanos em 2025.\nLeia mais (05/07/2026 - 20h00)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Lula prop�e grupo de trabalho com EUA para resolver impasse sobre tarifas | Ap�s encontro com o presidente dos Estados Unidos, Donald Trump, o presidente Luiz In�cio Lula da Silva afirmou nesta quinta-feira (7) que sugeriu a cria��o de um grupo entre os dois pa�ses para resolver quest�es ligadas �s tarifas e � investiga��o comercial aberta pelos americanos em 2025.\nLeia mais (05/07/2026 - 20h00)",
+      "similarity_to_topic_centre": 0.6425
+    },
+    {
+      "source_id": "finding-1226",
+      "title": "Brazil's Lula sees reset in relations with U.S. after talks with Trump",
+      "summary": "Brazilian President Luiz Inacio Lula da Silva said on Thursday that three hours of White House talks with U.S. President Donald Trump had helped to ‌stabilize Brazil-U.S. relations…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Brazil's Lula sees reset in relations with U.S. after talks with Trump | Brazilian President Luiz Inacio Lula da Silva said on Thursday that three hours of White House talks with U.S. President Donald Trump had helped to ‌stabilize Brazil-U.S. relations…",
+      "similarity_to_topic_centre": 0.7643
+    },
+    {
+      "source_id": "finding-1393",
+      "title": "Trump and Lula at the White House: a relationship built on pragmatism and a broader regional calculus",
+      "summary": "Bilateral meeting between both presidents sent a clear signal to Lula’s domestic audience: the relationship with Washington is not broken, and it does not require a Bolsonaro to fix it.",
+      "description": "",
+      "language": "en",
+      "outlet": "The Conversation",
+      "text": "Trump and Lula at the White House: a relationship built on pragmatism and a broader regional calculus | Bilateral meeting between both presidents sent a clear signal to Lula’s domestic audience: the relationship with Washington is not broken, and it does not require a Bolsonaro to fix it.",
+      "similarity_to_topic_centre": 0.7487
+    }
+  ]
+}
