@@ -1,0 +1,14 @@
+{
+  "date": "2026-05-13",
+  "run": 2,
+  "wall_seconds": 75.929,
+  "cost_usd": 0.0073427,
+  "tokens_used": 92107,
+  "n_clusters_input": 279,
+  "n_clusters_assigned": 31,
+  "n_clusters_orphan": 248,
+  "n_multi_assignments": 1,
+  "n_findings_assigned": 514,
+  "n_orphans": 891,
+  "schema_failure": null
+}

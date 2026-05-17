@@ -1,0 +1,2666 @@
+{
+  "model_name": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "fastembed_version": "0.8.0",
+  "algorithm": "agglomerative",
+  "algorithm_library": "scikit-learn",
+  "algorithm_library_version": "1.8.0",
+  "params": {
+    "distance_threshold": 0.7,
+    "linkage": "average",
+    "metric": "cosine"
+  },
+  "wall_seconds": 33.629,
+  "rss_delta_mb": 0.0,
+  "n_findings_clustered": 1201,
+  "n_clusters": 241,
+  "clusters": [
+    {
+      "id": "mc-000",
+      "size": 66,
+      "source_ids": [
+        "finding-18",
+        "finding-21",
+        "finding-47",
+        "finding-56",
+        "finding-131",
+        "finding-132",
+        "finding-133",
+        "finding-134",
+        "finding-145",
+        "finding-147",
+        "finding-148",
+        "finding-150",
+        "finding-152",
+        "finding-153",
+        "finding-154",
+        "finding-155",
+        "finding-158",
+        "finding-263",
+        "finding-426",
+        "finding-444",
+        "finding-479",
+        "finding-486",
+        "finding-490",
+        "finding-496",
+        "finding-521",
+        "finding-528",
+        "finding-559",
+        "finding-563",
+        "finding-578",
+        "finding-588",
+        "finding-589",
+        "finding-596",
+        "finding-597",
+        "finding-599",
+        "finding-602",
+        "finding-605",
+        "finding-606",
+        "finding-607",
+        "finding-608",
+        "finding-609",
+        "finding-610",
+        "finding-617",
+        "finding-618",
+        "finding-619",
+        "finding-621",
+        "finding-623",
+        "finding-625",
+        "finding-627",
+        "finding-628",
+        "finding-630",
+        "finding-631",
+        "finding-633",
+        "finding-641",
+        "finding-645",
+        "finding-646",
+        "finding-649",
+        "finding-651",
+        "finding-666",
+        "finding-667",
+        "finding-803",
+        "finding-804",
+        "finding-955",
+        "finding-1044",
+        "finding-1064",
+        "finding-1167",
+        "finding-1193"
+      ]
+    },
+    {
+      "id": "mc-001",
+      "size": 61,
+      "source_ids": [
+        "finding-0",
+        "finding-3",
+        "finding-9",
+        "finding-19",
+        "finding-27",
+        "finding-28",
+        "finding-29",
+        "finding-31",
+        "finding-32",
+        "finding-34",
+        "finding-39",
+        "finding-41",
+        "finding-44",
+        "finding-46",
+        "finding-58",
+        "finding-59",
+        "finding-62",
+        "finding-65",
+        "finding-67",
+        "finding-69",
+        "finding-70",
+        "finding-76",
+        "finding-81",
+        "finding-121",
+        "finding-129",
+        "finding-135",
+        "finding-212",
+        "finding-245",
+        "finding-246",
+        "finding-251",
+        "finding-276",
+        "finding-288",
+        "finding-304",
+        "finding-323",
+        "finding-412",
+        "finding-449",
+        "finding-450",
+        "finding-468",
+        "finding-472",
+        "finding-484",
+        "finding-507",
+        "finding-532",
+        "finding-548",
+        "finding-558",
+        "finding-564",
+        "finding-573",
+        "finding-598",
+        "finding-635",
+        "finding-637",
+        "finding-639",
+        "finding-643",
+        "finding-644",
+        "finding-664",
+        "finding-816",
+        "finding-822",
+        "finding-823",
+        "finding-897",
+        "finding-1021",
+        "finding-1052",
+        "finding-1180",
+        "finding-1182"
+      ]
+    },
+    {
+      "id": "mc-002",
+      "size": 55,
+      "source_ids": [
+        "finding-4",
+        "finding-35",
+        "finding-38",
+        "finding-89",
+        "finding-106",
+        "finding-162",
+        "finding-175",
+        "finding-216",
+        "finding-259",
+        "finding-281",
+        "finding-298",
+        "finding-325",
+        "finding-373",
+        "finding-408",
+        "finding-411",
+        "finding-416",
+        "finding-427",
+        "finding-430",
+        "finding-445",
+        "finding-447",
+        "finding-448",
+        "finding-470",
+        "finding-474",
+        "finding-475",
+        "finding-499",
+        "finding-523",
+        "finding-524",
+        "finding-540",
+        "finding-562",
+        "finding-570",
+        "finding-572",
+        "finding-577",
+        "finding-592",
+        "finding-616",
+        "finding-636",
+        "finding-642",
+        "finding-656",
+        "finding-662",
+        "finding-709",
+        "finding-746",
+        "finding-753",
+        "finding-832",
+        "finding-861",
+        "finding-958",
+        "finding-961",
+        "finding-979",
+        "finding-993",
+        "finding-1003",
+        "finding-1017",
+        "finding-1055",
+        "finding-1084",
+        "finding-1119",
+        "finding-1127",
+        "finding-1189",
+        "finding-1196"
+      ]
+    },
+    {
+      "id": "mc-003",
+      "size": 29,
+      "source_ids": [
+        "finding-2",
+        "finding-7",
+        "finding-11",
+        "finding-40",
+        "finding-42",
+        "finding-52",
+        "finding-63",
+        "finding-64",
+        "finding-68",
+        "finding-71",
+        "finding-74",
+        "finding-75",
+        "finding-77",
+        "finding-79",
+        "finding-122",
+        "finding-415",
+        "finding-471",
+        "finding-534",
+        "finding-547",
+        "finding-640",
+        "finding-665",
+        "finding-779",
+        "finding-856",
+        "finding-990",
+        "finding-1008",
+        "finding-1028",
+        "finding-1155",
+        "finding-1156",
+        "finding-1162"
+      ]
+    },
+    {
+      "id": "mc-004",
+      "size": 29,
+      "source_ids": [
+        "finding-14",
+        "finding-24",
+        "finding-210",
+        "finding-211",
+        "finding-213",
+        "finding-215",
+        "finding-218",
+        "finding-219",
+        "finding-238",
+        "finding-243",
+        "finding-249",
+        "finding-252",
+        "finding-255",
+        "finding-261",
+        "finding-538",
+        "finding-593",
+        "finding-661",
+        "finding-701",
+        "finding-702",
+        "finding-704",
+        "finding-705",
+        "finding-870",
+        "finding-904",
+        "finding-905",
+        "finding-940",
+        "finding-963",
+        "finding-997",
+        "finding-1036",
+        "finding-1041"
+      ]
+    },
+    {
+      "id": "mc-005",
+      "size": 29,
+      "source_ids": [
+        "finding-103",
+        "finding-322",
+        "finding-332",
+        "finding-333",
+        "finding-335",
+        "finding-338",
+        "finding-340",
+        "finding-347",
+        "finding-349",
+        "finding-353",
+        "finding-356",
+        "finding-359",
+        "finding-360",
+        "finding-361",
+        "finding-364",
+        "finding-365",
+        "finding-366",
+        "finding-368",
+        "finding-369",
+        "finding-371",
+        "finding-375",
+        "finding-399",
+        "finding-400",
+        "finding-401",
+        "finding-402",
+        "finding-403",
+        "finding-404",
+        "finding-407",
+        "finding-1032"
+      ]
+    },
+    {
+      "id": "mc-006",
+      "size": 27,
+      "source_ids": [
+        "finding-217",
+        "finding-438",
+        "finding-669",
+        "finding-714",
+        "finding-848",
+        "finding-849",
+        "finding-854",
+        "finding-860",
+        "finding-862",
+        "finding-864",
+        "finding-871",
+        "finding-872",
+        "finding-875",
+        "finding-876",
+        "finding-878",
+        "finding-881",
+        "finding-887",
+        "finding-889",
+        "finding-902",
+        "finding-903",
+        "finding-921",
+        "finding-925",
+        "finding-926",
+        "finding-931",
+        "finding-941",
+        "finding-974",
+        "finding-988"
+      ]
+    },
+    {
+      "id": "mc-007",
+      "size": 23,
+      "source_ids": [
+        "finding-25",
+        "finding-51",
+        "finding-87",
+        "finding-109",
+        "finding-116",
+        "finding-119",
+        "finding-235",
+        "finding-260",
+        "finding-277",
+        "finding-282",
+        "finding-428",
+        "finding-502",
+        "finding-519",
+        "finding-520",
+        "finding-634",
+        "finding-708",
+        "finding-801",
+        "finding-806",
+        "finding-915",
+        "finding-953",
+        "finding-1023",
+        "finding-1042",
+        "finding-1161"
+      ]
+    },
+    {
+      "id": "mc-008",
+      "size": 21,
+      "source_ids": [
+        "finding-20",
+        "finding-166",
+        "finding-168",
+        "finding-177",
+        "finding-180",
+        "finding-181",
+        "finding-185",
+        "finding-189",
+        "finding-193",
+        "finding-489",
+        "finding-525",
+        "finding-537",
+        "finding-549",
+        "finding-819",
+        "finding-1051",
+        "finding-1166",
+        "finding-1170",
+        "finding-1171",
+        "finding-1174",
+        "finding-1184",
+        "finding-1186"
+      ]
+    },
+    {
+      "id": "mc-009",
+      "size": 19,
+      "source_ids": [
+        "finding-49",
+        "finding-136",
+        "finding-137",
+        "finding-138",
+        "finding-139",
+        "finding-141",
+        "finding-143",
+        "finding-144",
+        "finding-146",
+        "finding-151",
+        "finding-157",
+        "finding-481",
+        "finding-545",
+        "finding-550",
+        "finding-620",
+        "finding-624",
+        "finding-632",
+        "finding-652",
+        "finding-653"
+      ]
+    },
+    {
+      "id": "mc-010",
+      "size": 19,
+      "source_ids": [
+        "finding-240",
+        "finding-253",
+        "finding-658",
+        "finding-659",
+        "finding-673",
+        "finding-693",
+        "finding-697",
+        "finding-740",
+        "finding-944",
+        "finding-960",
+        "finding-992",
+        "finding-1001",
+        "finding-1013",
+        "finding-1018",
+        "finding-1020",
+        "finding-1029",
+        "finding-1030",
+        "finding-1033",
+        "finding-1034"
+      ]
+    },
+    {
+      "id": "mc-011",
+      "size": 18,
+      "source_ids": [
+        "finding-36",
+        "finding-339",
+        "finding-370",
+        "finding-663",
+        "finding-715",
+        "finding-771",
+        "finding-772",
+        "finding-773",
+        "finding-774",
+        "finding-775",
+        "finding-776",
+        "finding-777",
+        "finding-778",
+        "finding-809",
+        "finding-847",
+        "finding-952",
+        "finding-1078",
+        "finding-1087"
+      ]
+    },
+    {
+      "id": "mc-012",
+      "size": 16,
+      "source_ids": [
+        "finding-15",
+        "finding-82",
+        "finding-453",
+        "finding-454",
+        "finding-456",
+        "finding-473",
+        "finding-522",
+        "finding-527",
+        "finding-531",
+        "finding-557",
+        "finding-668",
+        "finding-975",
+        "finding-1056",
+        "finding-1190",
+        "finding-1191",
+        "finding-1194"
+      ]
+    },
+    {
+      "id": "mc-013",
+      "size": 16,
+      "source_ids": [
+        "finding-244",
+        "finding-722",
+        "finding-737",
+        "finding-851",
+        "finding-888",
+        "finding-890",
+        "finding-891",
+        "finding-900",
+        "finding-911",
+        "finding-924",
+        "finding-939",
+        "finding-947",
+        "finding-972",
+        "finding-977",
+        "finding-1037",
+        "finding-1165"
+      ]
+    },
+    {
+      "id": "mc-014",
+      "size": 16,
+      "source_ids": [
+        "finding-442",
+        "finding-458",
+        "finding-508",
+        "finding-509",
+        "finding-514",
+        "finding-543",
+        "finding-567",
+        "finding-603",
+        "finding-612",
+        "finding-786",
+        "finding-788",
+        "finding-820",
+        "finding-830",
+        "finding-874",
+        "finding-932",
+        "finding-1181"
+      ]
+    },
+    {
+      "id": "mc-015",
+      "size": 13,
+      "source_ids": [
+        "finding-6",
+        "finding-22",
+        "finding-117",
+        "finding-123",
+        "finding-417",
+        "finding-451",
+        "finding-464",
+        "finding-482",
+        "finding-483",
+        "finding-530",
+        "finding-730",
+        "finding-884",
+        "finding-1047"
+      ]
+    },
+    {
+      "id": "mc-016",
+      "size": 13,
+      "source_ids": [
+        "finding-156",
+        "finding-163",
+        "finding-236",
+        "finding-247",
+        "finding-434",
+        "finding-569",
+        "finding-784",
+        "finding-852",
+        "finding-901",
+        "finding-966",
+        "finding-971",
+        "finding-1019",
+        "finding-1035"
+      ]
+    },
+    {
+      "id": "mc-017",
+      "size": 12,
+      "source_ids": [
+        "finding-196",
+        "finding-214",
+        "finding-755",
+        "finding-811",
+        "finding-812",
+        "finding-859",
+        "finding-866",
+        "finding-867",
+        "finding-869",
+        "finding-893",
+        "finding-914",
+        "finding-980"
+      ]
+    },
+    {
+      "id": "mc-018",
+      "size": 11,
+      "source_ids": [
+        "finding-83",
+        "finding-97",
+        "finding-312",
+        "finding-316",
+        "finding-504",
+        "finding-685",
+        "finding-934",
+        "finding-1129",
+        "finding-1158",
+        "finding-1198",
+        "finding-1200"
+      ]
+    },
+    {
+      "id": "mc-019",
+      "size": 11,
+      "source_ids": [
+        "finding-98",
+        "finding-126",
+        "finding-127",
+        "finding-130",
+        "finding-320",
+        "finding-350",
+        "finding-379",
+        "finding-405",
+        "finding-406",
+        "finding-1109",
+        "finding-1133"
+      ]
+    },
+    {
+      "id": "mc-020",
+      "size": 11,
+      "source_ids": [
+        "finding-460",
+        "finding-688",
+        "finding-721",
+        "finding-728",
+        "finding-739",
+        "finding-764",
+        "finding-766",
+        "finding-789",
+        "finding-798",
+        "finding-899",
+        "finding-917"
+      ]
+    },
+    {
+      "id": "mc-021",
+      "size": 10,
+      "source_ids": [
+        "finding-5",
+        "finding-45",
+        "finding-270",
+        "finding-278",
+        "finding-422",
+        "finding-478",
+        "finding-638",
+        "finding-895",
+        "finding-1089",
+        "finding-1125"
+      ]
+    },
+    {
+      "id": "mc-022",
+      "size": 10,
+      "source_ids": [
+        "finding-16",
+        "finding-37",
+        "finding-86",
+        "finding-95",
+        "finding-318",
+        "finding-414",
+        "finding-533",
+        "finding-711",
+        "finding-943",
+        "finding-1043"
+      ]
+    },
+    {
+      "id": "mc-023",
+      "size": 10,
+      "source_ids": [
+        "finding-183",
+        "finding-237",
+        "finding-718",
+        "finding-720",
+        "finding-732",
+        "finding-898",
+        "finding-950",
+        "finding-976",
+        "finding-981",
+        "finding-1007"
+      ]
+    },
+    {
+      "id": "mc-024",
+      "size": 10,
+      "source_ids": [
+        "finding-342",
+        "finding-348",
+        "finding-354",
+        "finding-355",
+        "finding-374",
+        "finding-388",
+        "finding-389",
+        "finding-390",
+        "finding-394",
+        "finding-395"
+      ]
+    },
+    {
+      "id": "mc-025",
+      "size": 9,
+      "source_ids": [
+        "finding-26",
+        "finding-50",
+        "finding-57",
+        "finding-78",
+        "finding-491",
+        "finding-561",
+        "finding-657",
+        "finding-1176",
+        "finding-1197"
+      ]
+    },
+    {
+      "id": "mc-026",
+      "size": 9,
+      "source_ids": [
+        "finding-72",
+        "finding-257",
+        "finding-300",
+        "finding-420",
+        "finding-511",
+        "finding-515",
+        "finding-546",
+        "finding-817",
+        "finding-910"
+      ]
+    },
+    {
+      "id": "mc-027",
+      "size": 9,
+      "source_ids": [
+        "finding-140",
+        "finding-581",
+        "finding-752",
+        "finding-756",
+        "finding-792",
+        "finding-1148",
+        "finding-1149",
+        "finding-1150",
+        "finding-1157"
+      ]
+    },
+    {
+      "id": "mc-028",
+      "size": 9,
+      "source_ids": [
+        "finding-239",
+        "finding-248",
+        "finding-254",
+        "finding-256",
+        "finding-258",
+        "finding-284",
+        "finding-765",
+        "finding-908",
+        "finding-1010"
+      ]
+    },
+    {
+      "id": "mc-029",
+      "size": 9,
+      "source_ids": [
+        "finding-280",
+        "finding-584",
+        "finding-681",
+        "finding-726",
+        "finding-796",
+        "finding-844",
+        "finding-922",
+        "finding-935",
+        "finding-942"
+      ]
+    },
+    {
+      "id": "mc-030",
+      "size": 9,
+      "source_ids": [
+        "finding-678",
+        "finding-682",
+        "finding-727",
+        "finding-768",
+        "finding-920",
+        "finding-945",
+        "finding-969",
+        "finding-1096",
+        "finding-1172"
+      ]
+    },
+    {
+      "id": "mc-031",
+      "size": 9,
+      "source_ids": [
+        "finding-687",
+        "finding-829",
+        "finding-833",
+        "finding-846",
+        "finding-892",
+        "finding-928",
+        "finding-996",
+        "finding-1039",
+        "finding-1040"
+      ]
+    },
+    {
+      "id": "mc-032",
+      "size": 8,
+      "source_ids": [
+        "finding-93",
+        "finding-128",
+        "finding-272",
+        "finding-289",
+        "finding-294",
+        "finding-328",
+        "finding-552",
+        "finding-810"
+      ]
+    },
+    {
+      "id": "mc-033",
+      "size": 8,
+      "source_ids": [
+        "finding-113",
+        "finding-319",
+        "finding-435",
+        "finding-469",
+        "finding-758",
+        "finding-853",
+        "finding-1054",
+        "finding-1063"
+      ]
+    },
+    {
+      "id": "mc-034",
+      "size": 8,
+      "source_ids": [
+        "finding-228",
+        "finding-477",
+        "finding-695",
+        "finding-710",
+        "finding-731",
+        "finding-863",
+        "finding-948",
+        "finding-1177"
+      ]
+    },
+    {
+      "id": "mc-035",
+      "size": 8,
+      "source_ids": [
+        "finding-336",
+        "finding-363",
+        "finding-376",
+        "finding-377",
+        "finding-378",
+        "finding-391",
+        "finding-396",
+        "finding-1117"
+      ]
+    },
+    {
+      "id": "mc-036",
+      "size": 7,
+      "source_ids": [
+        "finding-33",
+        "finding-159",
+        "finding-600",
+        "finding-614",
+        "finding-629",
+        "finding-648",
+        "finding-1026"
+      ]
+    },
+    {
+      "id": "mc-037",
+      "size": 7,
+      "source_ids": [
+        "finding-85",
+        "finding-92",
+        "finding-96",
+        "finding-101",
+        "finding-102",
+        "finding-114",
+        "finding-1104"
+      ]
+    },
+    {
+      "id": "mc-038",
+      "size": 7,
+      "source_ids": [
+        "finding-194",
+        "finding-703",
+        "finding-785",
+        "finding-794",
+        "finding-1168",
+        "finding-1173",
+        "finding-1178"
+      ]
+    },
+    {
+      "id": "mc-039",
+      "size": 7,
+      "source_ids": [
+        "finding-199",
+        "finding-202",
+        "finding-204",
+        "finding-206",
+        "finding-956",
+        "finding-1053",
+        "finding-1163"
+      ]
+    },
+    {
+      "id": "mc-040",
+      "size": 7,
+      "source_ids": [
+        "finding-292",
+        "finding-306",
+        "finding-386",
+        "finding-393",
+        "finding-452",
+        "finding-526",
+        "finding-1110"
+      ]
+    },
+    {
+      "id": "mc-041",
+      "size": 7,
+      "source_ids": [
+        "finding-334",
+        "finding-351",
+        "finding-834",
+        "finding-836",
+        "finding-837",
+        "finding-838",
+        "finding-839"
+      ]
+    },
+    {
+      "id": "mc-042",
+      "size": 7,
+      "source_ids": [
+        "finding-518",
+        "finding-566",
+        "finding-575",
+        "finding-716",
+        "finding-747",
+        "finding-842",
+        "finding-967"
+      ]
+    },
+    {
+      "id": "mc-043",
+      "size": 7,
+      "source_ids": [
+        "finding-544",
+        "finding-611",
+        "finding-626",
+        "finding-676",
+        "finding-750",
+        "finding-780",
+        "finding-984"
+      ]
+    },
+    {
+      "id": "mc-044",
+      "size": 6,
+      "source_ids": [
+        "finding-13",
+        "finding-23",
+        "finding-73",
+        "finding-230",
+        "finding-770",
+        "finding-909"
+      ]
+    },
+    {
+      "id": "mc-045",
+      "size": 6,
+      "source_ids": [
+        "finding-110",
+        "finding-324",
+        "finding-352",
+        "finding-362",
+        "finding-421",
+        "finding-1095"
+      ]
+    },
+    {
+      "id": "mc-046",
+      "size": 6,
+      "source_ids": [
+        "finding-120",
+        "finding-604",
+        "finding-671",
+        "finding-707",
+        "finding-896",
+        "finding-1123"
+      ]
+    },
+    {
+      "id": "mc-047",
+      "size": 6,
+      "source_ids": [
+        "finding-268",
+        "finding-283",
+        "finding-1072",
+        "finding-1079",
+        "finding-1081",
+        "finding-1088"
+      ]
+    },
+    {
+      "id": "mc-048",
+      "size": 6,
+      "source_ids": [
+        "finding-654",
+        "finding-886",
+        "finding-919",
+        "finding-938",
+        "finding-995",
+        "finding-1080"
+      ]
+    },
+    {
+      "id": "mc-049",
+      "size": 6,
+      "source_ids": [
+        "finding-672",
+        "finding-675",
+        "finding-831",
+        "finding-1011",
+        "finding-1027",
+        "finding-1101"
+      ]
+    },
+    {
+      "id": "mc-050",
+      "size": 6,
+      "source_ids": [
+        "finding-790",
+        "finding-858",
+        "finding-880",
+        "finding-912",
+        "finding-918",
+        "finding-1112"
+      ]
+    },
+    {
+      "id": "mc-051",
+      "size": 5,
+      "source_ids": [
+        "finding-10",
+        "finding-512",
+        "finding-529",
+        "finding-691",
+        "finding-936"
+      ]
+    },
+    {
+      "id": "mc-052",
+      "size": 5,
+      "source_ids": [
+        "finding-100",
+        "finding-124",
+        "finding-307",
+        "finding-759",
+        "finding-1066"
+      ]
+    },
+    {
+      "id": "mc-053",
+      "size": 5,
+      "source_ids": [
+        "finding-142",
+        "finding-149",
+        "finding-594",
+        "finding-954",
+        "finding-1192"
+      ]
+    },
+    {
+      "id": "mc-054",
+      "size": 5,
+      "source_ids": [
+        "finding-174",
+        "finding-182",
+        "finding-1151",
+        "finding-1152",
+        "finding-1153"
+      ]
+    },
+    {
+      "id": "mc-055",
+      "size": 5,
+      "source_ids": [
+        "finding-197",
+        "finding-201",
+        "finding-818",
+        "finding-824",
+        "finding-828"
+      ]
+    },
+    {
+      "id": "mc-056",
+      "size": 5,
+      "source_ids": [
+        "finding-229",
+        "finding-233",
+        "finding-555",
+        "finding-689",
+        "finding-1065"
+      ]
+    },
+    {
+      "id": "mc-057",
+      "size": 5,
+      "source_ids": [
+        "finding-266",
+        "finding-694",
+        "finding-865",
+        "finding-923",
+        "finding-1091"
+      ]
+    },
+    {
+      "id": "mc-058",
+      "size": 5,
+      "source_ids": [
+        "finding-271",
+        "finding-358",
+        "finding-367",
+        "finding-498",
+        "finding-500"
+      ]
+    },
+    {
+      "id": "mc-059",
+      "size": 5,
+      "source_ids": [
+        "finding-275",
+        "finding-419",
+        "finding-433",
+        "finding-962",
+        "finding-986"
+      ]
+    },
+    {
+      "id": "mc-060",
+      "size": 5,
+      "source_ids": [
+        "finding-321",
+        "finding-462",
+        "finding-565",
+        "finding-843",
+        "finding-882"
+      ]
+    },
+    {
+      "id": "mc-061",
+      "size": 5,
+      "source_ids": [
+        "finding-480",
+        "finding-586",
+        "finding-857",
+        "finding-933",
+        "finding-987"
+      ]
+    },
+    {
+      "id": "mc-062",
+      "size": 5,
+      "source_ids": [
+        "finding-516",
+        "finding-660",
+        "finding-686",
+        "finding-937",
+        "finding-998"
+      ]
+    },
+    {
+      "id": "mc-063",
+      "size": 5,
+      "source_ids": [
+        "finding-679",
+        "finding-700",
+        "finding-762",
+        "finding-763",
+        "finding-769"
+      ]
+    },
+    {
+      "id": "mc-064",
+      "size": 5,
+      "source_ids": [
+        "finding-706",
+        "finding-735",
+        "finding-813",
+        "finding-951",
+        "finding-1005"
+      ]
+    },
+    {
+      "id": "mc-065",
+      "size": 5,
+      "source_ids": [
+        "finding-724",
+        "finding-725",
+        "finding-741",
+        "finding-799",
+        "finding-873"
+      ]
+    },
+    {
+      "id": "mc-066",
+      "size": 4,
+      "source_ids": [
+        "finding-80",
+        "finding-459",
+        "finding-510",
+        "finding-684"
+      ]
+    },
+    {
+      "id": "mc-067",
+      "size": 4,
+      "source_ids": [
+        "finding-91",
+        "finding-160",
+        "finding-222",
+        "finding-1099"
+      ]
+    },
+    {
+      "id": "mc-068",
+      "size": 4,
+      "source_ids": [
+        "finding-170",
+        "finding-172",
+        "finding-187",
+        "finding-188"
+      ]
+    },
+    {
+      "id": "mc-069",
+      "size": 4,
+      "source_ids": [
+        "finding-171",
+        "finding-186",
+        "finding-463",
+        "finding-1126"
+      ]
+    },
+    {
+      "id": "mc-070",
+      "size": 4,
+      "source_ids": [
+        "finding-173",
+        "finding-179",
+        "finding-308",
+        "finding-742"
+      ]
+    },
+    {
+      "id": "mc-071",
+      "size": 4,
+      "source_ids": [
+        "finding-242",
+        "finding-461",
+        "finding-595",
+        "finding-1083"
+      ]
+    },
+    {
+      "id": "mc-072",
+      "size": 4,
+      "source_ids": [
+        "finding-269",
+        "finding-296",
+        "finding-885",
+        "finding-1014"
+      ]
+    },
+    {
+      "id": "mc-073",
+      "size": 4,
+      "source_ids": [
+        "finding-303",
+        "finding-551",
+        "finding-674",
+        "finding-978"
+      ]
+    },
+    {
+      "id": "mc-074",
+      "size": 4,
+      "source_ids": [
+        "finding-341",
+        "finding-983",
+        "finding-1076",
+        "finding-1115"
+      ]
+    },
+    {
+      "id": "mc-075",
+      "size": 4,
+      "source_ids": [
+        "finding-344",
+        "finding-380",
+        "finding-387",
+        "finding-398"
+      ]
+    },
+    {
+      "id": "mc-076",
+      "size": 4,
+      "source_ids": [
+        "finding-345",
+        "finding-436",
+        "finding-513",
+        "finding-807"
+      ]
+    },
+    {
+      "id": "mc-077",
+      "size": 4,
+      "source_ids": [
+        "finding-413",
+        "finding-446",
+        "finding-476",
+        "finding-719"
+      ]
+    },
+    {
+      "id": "mc-078",
+      "size": 4,
+      "source_ids": [
+        "finding-493",
+        "finding-782",
+        "finding-916",
+        "finding-929"
+      ]
+    },
+    {
+      "id": "mc-079",
+      "size": 4,
+      "source_ids": [
+        "finding-505",
+        "finding-554",
+        "finding-677",
+        "finding-1134"
+      ]
+    },
+    {
+      "id": "mc-080",
+      "size": 4,
+      "source_ids": [
+        "finding-539",
+        "finding-580",
+        "finding-647",
+        "finding-1068"
+      ]
+    },
+    {
+      "id": "mc-081",
+      "size": 4,
+      "source_ids": [
+        "finding-541",
+        "finding-542",
+        "finding-576",
+        "finding-583"
+      ]
+    },
+    {
+      "id": "mc-082",
+      "size": 4,
+      "source_ids": [
+        "finding-680",
+        "finding-743",
+        "finding-795",
+        "finding-835"
+      ]
+    },
+    {
+      "id": "mc-083",
+      "size": 4,
+      "source_ids": [
+        "finding-683",
+        "finding-1169",
+        "finding-1175",
+        "finding-1183"
+      ]
+    },
+    {
+      "id": "mc-084",
+      "size": 4,
+      "source_ids": [
+        "finding-734",
+        "finding-1059",
+        "finding-1060",
+        "finding-1144"
+      ]
+    },
+    {
+      "id": "mc-085",
+      "size": 4,
+      "source_ids": [
+        "finding-761",
+        "finding-767",
+        "finding-791",
+        "finding-1103"
+      ]
+    },
+    {
+      "id": "mc-086",
+      "size": 4,
+      "source_ids": [
+        "finding-840",
+        "finding-1124",
+        "finding-1136",
+        "finding-1164"
+      ]
+    },
+    {
+      "id": "mc-087",
+      "size": 4,
+      "source_ids": [
+        "finding-894",
+        "finding-1000",
+        "finding-1004",
+        "finding-1094"
+      ]
+    },
+    {
+      "id": "mc-088",
+      "size": 3,
+      "source_ids": [
+        "finding-8",
+        "finding-225",
+        "finding-437"
+      ]
+    },
+    {
+      "id": "mc-089",
+      "size": 3,
+      "source_ids": [
+        "finding-12",
+        "finding-207",
+        "finding-733"
+      ]
+    },
+    {
+      "id": "mc-090",
+      "size": 3,
+      "source_ids": [
+        "finding-30",
+        "finding-315",
+        "finding-1073"
+      ]
+    },
+    {
+      "id": "mc-091",
+      "size": 3,
+      "source_ids": [
+        "finding-43",
+        "finding-309",
+        "finding-311"
+      ]
+    },
+    {
+      "id": "mc-092",
+      "size": 3,
+      "source_ids": [
+        "finding-48",
+        "finding-55",
+        "finding-60"
+      ]
+    },
+    {
+      "id": "mc-093",
+      "size": 3,
+      "source_ids": [
+        "finding-54",
+        "finding-485",
+        "finding-568"
+      ]
+    },
+    {
+      "id": "mc-094",
+      "size": 3,
+      "source_ids": [
+        "finding-84",
+        "finding-94",
+        "finding-670"
+      ]
+    },
+    {
+      "id": "mc-095",
+      "size": 3,
+      "source_ids": [
+        "finding-90",
+        "finding-302",
+        "finding-455"
+      ]
+    },
+    {
+      "id": "mc-096",
+      "size": 3,
+      "source_ids": [
+        "finding-99",
+        "finding-841",
+        "finding-1006"
+      ]
+    },
+    {
+      "id": "mc-097",
+      "size": 3,
+      "source_ids": [
+        "finding-105",
+        "finding-115",
+        "finding-927"
+      ]
+    },
+    {
+      "id": "mc-098",
+      "size": 3,
+      "source_ids": [
+        "finding-111",
+        "finding-845",
+        "finding-906"
+      ]
+    },
+    {
+      "id": "mc-099",
+      "size": 3,
+      "source_ids": [
+        "finding-191",
+        "finding-501",
+        "finding-560"
+      ]
+    },
+    {
+      "id": "mc-100",
+      "size": 3,
+      "source_ids": [
+        "finding-195",
+        "finding-825",
+        "finding-907"
+      ]
+    },
+    {
+      "id": "mc-101",
+      "size": 3,
+      "source_ids": [
+        "finding-208",
+        "finding-1058",
+        "finding-1143"
+      ]
+    },
+    {
+      "id": "mc-102",
+      "size": 3,
+      "source_ids": [
+        "finding-209",
+        "finding-357",
+        "finding-815"
+      ]
+    },
+    {
+      "id": "mc-103",
+      "size": 3,
+      "source_ids": [
+        "finding-220",
+        "finding-1016",
+        "finding-1195"
+      ]
+    },
+    {
+      "id": "mc-104",
+      "size": 3,
+      "source_ids": [
+        "finding-231",
+        "finding-241",
+        "finding-262"
+      ]
+    },
+    {
+      "id": "mc-105",
+      "size": 3,
+      "source_ids": [
+        "finding-232",
+        "finding-264",
+        "finding-1100"
+      ]
+    },
+    {
+      "id": "mc-106",
+      "size": 3,
+      "source_ids": [
+        "finding-317",
+        "finding-613",
+        "finding-655"
+      ]
+    },
+    {
+      "id": "mc-107",
+      "size": 3,
+      "source_ids": [
+        "finding-326",
+        "finding-327",
+        "finding-440"
+      ]
+    },
+    {
+      "id": "mc-108",
+      "size": 3,
+      "source_ids": [
+        "finding-343",
+        "finding-381",
+        "finding-392"
+      ]
+    },
+    {
+      "id": "mc-109",
+      "size": 3,
+      "source_ids": [
+        "finding-346",
+        "finding-382",
+        "finding-1106"
+      ]
+    },
+    {
+      "id": "mc-110",
+      "size": 3,
+      "source_ids": [
+        "finding-372",
+        "finding-423",
+        "finding-736"
+      ]
+    },
+    {
+      "id": "mc-111",
+      "size": 3,
+      "source_ids": [
+        "finding-397",
+        "finding-492",
+        "finding-1057"
+      ]
+    },
+    {
+      "id": "mc-112",
+      "size": 3,
+      "source_ids": [
+        "finding-410",
+        "finding-757",
+        "finding-1154"
+      ]
+    },
+    {
+      "id": "mc-113",
+      "size": 3,
+      "source_ids": [
+        "finding-497",
+        "finding-1024",
+        "finding-1048"
+      ]
+    },
+    {
+      "id": "mc-114",
+      "size": 3,
+      "source_ids": [
+        "finding-553",
+        "finding-970",
+        "finding-1077"
+      ]
+    },
+    {
+      "id": "mc-115",
+      "size": 3,
+      "source_ids": [
+        "finding-615",
+        "finding-690",
+        "finding-698"
+      ]
+    },
+    {
+      "id": "mc-116",
+      "size": 3,
+      "source_ids": [
+        "finding-699",
+        "finding-754",
+        "finding-850"
+      ]
+    },
+    {
+      "id": "mc-117",
+      "size": 3,
+      "source_ids": [
+        "finding-712",
+        "finding-994",
+        "finding-1114"
+      ]
+    },
+    {
+      "id": "mc-118",
+      "size": 3,
+      "source_ids": [
+        "finding-748",
+        "finding-826",
+        "finding-1135"
+      ]
+    },
+    {
+      "id": "mc-119",
+      "size": 3,
+      "source_ids": [
+        "finding-783",
+        "finding-787",
+        "finding-1012"
+      ]
+    },
+    {
+      "id": "mc-120",
+      "size": 3,
+      "source_ids": [
+        "finding-802",
+        "finding-1102",
+        "finding-1113"
+      ]
+    },
+    {
+      "id": "mc-121",
+      "size": 3,
+      "source_ids": [
+        "finding-949",
+        "finding-1108",
+        "finding-1130"
+      ]
+    },
+    {
+      "id": "mc-122",
+      "size": 3,
+      "source_ids": [
+        "finding-964",
+        "finding-991",
+        "finding-1185"
+      ]
+    },
+    {
+      "id": "mc-123",
+      "size": 3,
+      "source_ids": [
+        "finding-982",
+        "finding-1074",
+        "finding-1090"
+      ]
+    },
+    {
+      "id": "mc-124",
+      "size": 2,
+      "source_ids": [
+        "finding-1",
+        "finding-104"
+      ]
+    },
+    {
+      "id": "mc-125",
+      "size": 2,
+      "source_ids": [
+        "finding-17",
+        "finding-383"
+      ]
+    },
+    {
+      "id": "mc-126",
+      "size": 2,
+      "source_ids": [
+        "finding-53",
+        "finding-650"
+      ]
+    },
+    {
+      "id": "mc-127",
+      "size": 2,
+      "source_ids": [
+        "finding-61",
+        "finding-797"
+      ]
+    },
+    {
+      "id": "mc-128",
+      "size": 2,
+      "source_ids": [
+        "finding-66",
+        "finding-1179"
+      ]
+    },
+    {
+      "id": "mc-129",
+      "size": 2,
+      "source_ids": [
+        "finding-88",
+        "finding-221"
+      ]
+    },
+    {
+      "id": "mc-130",
+      "size": 2,
+      "source_ids": [
+        "finding-108",
+        "finding-112"
+      ]
+    },
+    {
+      "id": "mc-131",
+      "size": 2,
+      "source_ids": [
+        "finding-118",
+        "finding-1082"
+      ]
+    },
+    {
+      "id": "mc-132",
+      "size": 2,
+      "source_ids": [
+        "finding-125",
+        "finding-1116"
+      ]
+    },
+    {
+      "id": "mc-133",
+      "size": 2,
+      "source_ids": [
+        "finding-161",
+        "finding-1199"
+      ]
+    },
+    {
+      "id": "mc-134",
+      "size": 2,
+      "source_ids": [
+        "finding-165",
+        "finding-1141"
+      ]
+    },
+    {
+      "id": "mc-135",
+      "size": 2,
+      "source_ids": [
+        "finding-167",
+        "finding-190"
+      ]
+    },
+    {
+      "id": "mc-136",
+      "size": 2,
+      "source_ids": [
+        "finding-169",
+        "finding-930"
+      ]
+    },
+    {
+      "id": "mc-137",
+      "size": 2,
+      "source_ids": [
+        "finding-176",
+        "finding-192"
+      ]
+    },
+    {
+      "id": "mc-138",
+      "size": 2,
+      "source_ids": [
+        "finding-178",
+        "finding-1070"
+      ]
+    },
+    {
+      "id": "mc-139",
+      "size": 2,
+      "source_ids": [
+        "finding-184",
+        "finding-1140"
+      ]
+    },
+    {
+      "id": "mc-140",
+      "size": 2,
+      "source_ids": [
+        "finding-198",
+        "finding-827"
+      ]
+    },
+    {
+      "id": "mc-141",
+      "size": 2,
+      "source_ids": [
+        "finding-200",
+        "finding-205"
+      ]
+    },
+    {
+      "id": "mc-142",
+      "size": 2,
+      "source_ids": [
+        "finding-223",
+        "finding-1159"
+      ]
+    },
+    {
+      "id": "mc-143",
+      "size": 2,
+      "source_ids": [
+        "finding-224",
+        "finding-226"
+      ]
+    },
+    {
+      "id": "mc-144",
+      "size": 2,
+      "source_ids": [
+        "finding-227",
+        "finding-1146"
+      ]
+    },
+    {
+      "id": "mc-145",
+      "size": 2,
+      "source_ids": [
+        "finding-234",
+        "finding-965"
+      ]
+    },
+    {
+      "id": "mc-146",
+      "size": 2,
+      "source_ids": [
+        "finding-250",
+        "finding-579"
+      ]
+    },
+    {
+      "id": "mc-147",
+      "size": 2,
+      "source_ids": [
+        "finding-265",
+        "finding-781"
+      ]
+    },
+    {
+      "id": "mc-148",
+      "size": 2,
+      "source_ids": [
+        "finding-267",
+        "finding-506"
+      ]
+    },
+    {
+      "id": "mc-149",
+      "size": 2,
+      "source_ids": [
+        "finding-274",
+        "finding-1049"
+      ]
+    },
+    {
+      "id": "mc-150",
+      "size": 2,
+      "source_ids": [
+        "finding-285",
+        "finding-1085"
+      ]
+    },
+    {
+      "id": "mc-151",
+      "size": 2,
+      "source_ids": [
+        "finding-287",
+        "finding-1120"
+      ]
+    },
+    {
+      "id": "mc-152",
+      "size": 2,
+      "source_ids": [
+        "finding-290",
+        "finding-868"
+      ]
+    },
+    {
+      "id": "mc-153",
+      "size": 2,
+      "source_ids": [
+        "finding-291",
+        "finding-760"
+      ]
+    },
+    {
+      "id": "mc-154",
+      "size": 2,
+      "source_ids": [
+        "finding-293",
+        "finding-751"
+      ]
+    },
+    {
+      "id": "mc-155",
+      "size": 2,
+      "source_ids": [
+        "finding-301",
+        "finding-1075"
+      ]
+    },
+    {
+      "id": "mc-156",
+      "size": 2,
+      "source_ids": [
+        "finding-305",
+        "finding-517"
+      ]
+    },
+    {
+      "id": "mc-157",
+      "size": 2,
+      "source_ids": [
+        "finding-310",
+        "finding-1061"
+      ]
+    },
+    {
+      "id": "mc-158",
+      "size": 2,
+      "source_ids": [
+        "finding-329",
+        "finding-1031"
+      ]
+    },
+    {
+      "id": "mc-159",
+      "size": 2,
+      "source_ids": [
+        "finding-331",
+        "finding-973"
+      ]
+    },
+    {
+      "id": "mc-160",
+      "size": 2,
+      "source_ids": [
+        "finding-384",
+        "finding-1069"
+      ]
+    },
+    {
+      "id": "mc-161",
+      "size": 2,
+      "source_ids": [
+        "finding-418",
+        "finding-441"
+      ]
+    },
+    {
+      "id": "mc-162",
+      "size": 2,
+      "source_ids": [
+        "finding-424",
+        "finding-1086"
+      ]
+    },
+    {
+      "id": "mc-163",
+      "size": 2,
+      "source_ids": [
+        "finding-429",
+        "finding-1147"
+      ]
+    },
+    {
+      "id": "mc-164",
+      "size": 2,
+      "source_ids": [
+        "finding-439",
+        "finding-487"
+      ]
+    },
+    {
+      "id": "mc-165",
+      "size": 2,
+      "source_ids": [
+        "finding-457",
+        "finding-814"
+      ]
+    },
+    {
+      "id": "mc-166",
+      "size": 2,
+      "source_ids": [
+        "finding-467",
+        "finding-1098"
+      ]
+    },
+    {
+      "id": "mc-167",
+      "size": 2,
+      "source_ids": [
+        "finding-494",
+        "finding-1022"
+      ]
+    },
+    {
+      "id": "mc-168",
+      "size": 2,
+      "source_ids": [
+        "finding-535",
+        "finding-1160"
+      ]
+    },
+    {
+      "id": "mc-169",
+      "size": 2,
+      "source_ids": [
+        "finding-571",
+        "finding-946"
+      ]
+    },
+    {
+      "id": "mc-170",
+      "size": 2,
+      "source_ids": [
+        "finding-574",
+        "finding-601"
+      ]
+    },
+    {
+      "id": "mc-171",
+      "size": 2,
+      "source_ids": [
+        "finding-582",
+        "finding-692"
+      ]
+    },
+    {
+      "id": "mc-172",
+      "size": 2,
+      "source_ids": [
+        "finding-585",
+        "finding-877"
+      ]
+    },
+    {
+      "id": "mc-173",
+      "size": 2,
+      "source_ids": [
+        "finding-591",
+        "finding-1009"
+      ]
+    },
+    {
+      "id": "mc-174",
+      "size": 2,
+      "source_ids": [
+        "finding-696",
+        "finding-1097"
+      ]
+    },
+    {
+      "id": "mc-175",
+      "size": 2,
+      "source_ids": [
+        "finding-713",
+        "finding-1107"
+      ]
+    },
+    {
+      "id": "mc-176",
+      "size": 2,
+      "source_ids": [
+        "finding-717",
+        "finding-989"
+      ]
+    },
+    {
+      "id": "mc-177",
+      "size": 2,
+      "source_ids": [
+        "finding-729",
+        "finding-1118"
+      ]
+    },
+    {
+      "id": "mc-178",
+      "size": 2,
+      "source_ids": [
+        "finding-744",
+        "finding-745"
+      ]
+    },
+    {
+      "id": "mc-179",
+      "size": 2,
+      "source_ids": [
+        "finding-749",
+        "finding-821"
+      ]
+    },
+    {
+      "id": "mc-180",
+      "size": 2,
+      "source_ids": [
+        "finding-793",
+        "finding-1132"
+      ]
+    },
+    {
+      "id": "mc-181",
+      "size": 2,
+      "source_ids": [
+        "finding-855",
+        "finding-883"
+      ]
+    },
+    {
+      "id": "mc-182",
+      "size": 2,
+      "source_ids": [
+        "finding-879",
+        "finding-1105"
+      ]
+    },
+    {
+      "id": "mc-183",
+      "size": 2,
+      "source_ids": [
+        "finding-957",
+        "finding-999"
+      ]
+    },
+    {
+      "id": "mc-184",
+      "size": 2,
+      "source_ids": [
+        "finding-985",
+        "finding-1093"
+      ]
+    },
+    {
+      "id": "mc-185",
+      "size": 2,
+      "source_ids": [
+        "finding-1045",
+        "finding-1050"
+      ]
+    },
+    {
+      "id": "mc-186",
+      "size": 2,
+      "source_ids": [
+        "finding-1111",
+        "finding-1128"
+      ]
+    },
+    {
+      "id": "mc-187",
+      "size": 2,
+      "source_ids": [
+        "finding-1139",
+        "finding-1145"
+      ]
+    },
+    {
+      "id": "mc-188",
+      "size": 2,
+      "source_ids": [
+        "finding-1187",
+        "finding-1188"
+      ]
+    },
+    {
+      "id": "mc-189",
+      "size": 1,
+      "source_ids": [
+        "finding-107"
+      ]
+    },
+    {
+      "id": "mc-190",
+      "size": 1,
+      "source_ids": [
+        "finding-164"
+      ]
+    },
+    {
+      "id": "mc-191",
+      "size": 1,
+      "source_ids": [
+        "finding-203"
+      ]
+    },
+    {
+      "id": "mc-192",
+      "size": 1,
+      "source_ids": [
+        "finding-273"
+      ]
+    },
+    {
+      "id": "mc-193",
+      "size": 1,
+      "source_ids": [
+        "finding-279"
+      ]
+    },
+    {
+      "id": "mc-194",
+      "size": 1,
+      "source_ids": [
+        "finding-286"
+      ]
+    },
+    {
+      "id": "mc-195",
+      "size": 1,
+      "source_ids": [
+        "finding-295"
+      ]
+    },
+    {
+      "id": "mc-196",
+      "size": 1,
+      "source_ids": [
+        "finding-297"
+      ]
+    },
+    {
+      "id": "mc-197",
+      "size": 1,
+      "source_ids": [
+        "finding-299"
+      ]
+    },
+    {
+      "id": "mc-198",
+      "size": 1,
+      "source_ids": [
+        "finding-313"
+      ]
+    },
+    {
+      "id": "mc-199",
+      "size": 1,
+      "source_ids": [
+        "finding-314"
+      ]
+    },
+    {
+      "id": "mc-200",
+      "size": 1,
+      "source_ids": [
+        "finding-330"
+      ]
+    },
+    {
+      "id": "mc-201",
+      "size": 1,
+      "source_ids": [
+        "finding-337"
+      ]
+    },
+    {
+      "id": "mc-202",
+      "size": 1,
+      "source_ids": [
+        "finding-385"
+      ]
+    },
+    {
+      "id": "mc-203",
+      "size": 1,
+      "source_ids": [
+        "finding-409"
+      ]
+    },
+    {
+      "id": "mc-204",
+      "size": 1,
+      "source_ids": [
+        "finding-425"
+      ]
+    },
+    {
+      "id": "mc-205",
+      "size": 1,
+      "source_ids": [
+        "finding-431"
+      ]
+    },
+    {
+      "id": "mc-206",
+      "size": 1,
+      "source_ids": [
+        "finding-432"
+      ]
+    },
+    {
+      "id": "mc-207",
+      "size": 1,
+      "source_ids": [
+        "finding-443"
+      ]
+    },
+    {
+      "id": "mc-208",
+      "size": 1,
+      "source_ids": [
+        "finding-465"
+      ]
+    },
+    {
+      "id": "mc-209",
+      "size": 1,
+      "source_ids": [
+        "finding-466"
+      ]
+    },
+    {
+      "id": "mc-210",
+      "size": 1,
+      "source_ids": [
+        "finding-488"
+      ]
+    },
+    {
+      "id": "mc-211",
+      "size": 1,
+      "source_ids": [
+        "finding-495"
+      ]
+    },
+    {
+      "id": "mc-212",
+      "size": 1,
+      "source_ids": [
+        "finding-503"
+      ]
+    },
+    {
+      "id": "mc-213",
+      "size": 1,
+      "source_ids": [
+        "finding-536"
+      ]
+    },
+    {
+      "id": "mc-214",
+      "size": 1,
+      "source_ids": [
+        "finding-556"
+      ]
+    },
+    {
+      "id": "mc-215",
+      "size": 1,
+      "source_ids": [
+        "finding-587"
+      ]
+    },
+    {
+      "id": "mc-216",
+      "size": 1,
+      "source_ids": [
+        "finding-590"
+      ]
+    },
+    {
+      "id": "mc-217",
+      "size": 1,
+      "source_ids": [
+        "finding-622"
+      ]
+    },
+    {
+      "id": "mc-218",
+      "size": 1,
+      "source_ids": [
+        "finding-723"
+      ]
+    },
+    {
+      "id": "mc-219",
+      "size": 1,
+      "source_ids": [
+        "finding-738"
+      ]
+    },
+    {
+      "id": "mc-220",
+      "size": 1,
+      "source_ids": [
+        "finding-800"
+      ]
+    },
+    {
+      "id": "mc-221",
+      "size": 1,
+      "source_ids": [
+        "finding-805"
+      ]
+    },
+    {
+      "id": "mc-222",
+      "size": 1,
+      "source_ids": [
+        "finding-808"
+      ]
+    },
+    {
+      "id": "mc-223",
+      "size": 1,
+      "source_ids": [
+        "finding-913"
+      ]
+    },
+    {
+      "id": "mc-224",
+      "size": 1,
+      "source_ids": [
+        "finding-959"
+      ]
+    },
+    {
+      "id": "mc-225",
+      "size": 1,
+      "source_ids": [
+        "finding-968"
+      ]
+    },
+    {
+      "id": "mc-226",
+      "size": 1,
+      "source_ids": [
+        "finding-1002"
+      ]
+    },
+    {
+      "id": "mc-227",
+      "size": 1,
+      "source_ids": [
+        "finding-1015"
+      ]
+    },
+    {
+      "id": "mc-228",
+      "size": 1,
+      "source_ids": [
+        "finding-1025"
+      ]
+    },
+    {
+      "id": "mc-229",
+      "size": 1,
+      "source_ids": [
+        "finding-1038"
+      ]
+    },
+    {
+      "id": "mc-230",
+      "size": 1,
+      "source_ids": [
+        "finding-1046"
+      ]
+    },
+    {
+      "id": "mc-231",
+      "size": 1,
+      "source_ids": [
+        "finding-1062"
+      ]
+    },
+    {
+      "id": "mc-232",
+      "size": 1,
+      "source_ids": [
+        "finding-1067"
+      ]
+    },
+    {
+      "id": "mc-233",
+      "size": 1,
+      "source_ids": [
+        "finding-1071"
+      ]
+    },
+    {
+      "id": "mc-234",
+      "size": 1,
+      "source_ids": [
+        "finding-1092"
+      ]
+    },
+    {
+      "id": "mc-235",
+      "size": 1,
+      "source_ids": [
+        "finding-1121"
+      ]
+    },
+    {
+      "id": "mc-236",
+      "size": 1,
+      "source_ids": [
+        "finding-1122"
+      ]
+    },
+    {
+      "id": "mc-237",
+      "size": 1,
+      "source_ids": [
+        "finding-1131"
+      ]
+    },
+    {
+      "id": "mc-238",
+      "size": 1,
+      "source_ids": [
+        "finding-1137"
+      ]
+    },
+    {
+      "id": "mc-239",
+      "size": 1,
+      "source_ids": [
+        "finding-1138"
+      ]
+    },
+    {
+      "id": "mc-240",
+      "size": 1,
+      "source_ids": [
+        "finding-1142"
+      ]
+    }
+  ],
+  "wall_seconds_audit": 33.63
+}

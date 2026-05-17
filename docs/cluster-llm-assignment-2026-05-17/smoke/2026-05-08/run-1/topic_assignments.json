@@ -1,0 +1,6711 @@
+{
+  "algorithm": "llm-cluster-assignment",
+  "params": {
+    "llm_model": "google/gemini-3-flash-preview",
+    "temperature": 1.0,
+    "reasoning": "none",
+    "upstream_stage": "assign_clusters",
+    "per_finding_cap": 3
+  },
+  "wall_seconds": 0.001,
+  "n_topics": 15,
+  "n_findings": 1401,
+  "n_findings_assigned": 519,
+  "n_orphans": 882,
+  "mean_assignments_per_finding": 0.3883,
+  "topics": [
+    {
+      "topic_index": 0,
+      "topic_title": "US and Iran maintain diplomatic dialogue despite exchange of fire in Strait of Hormuz",
+      "n_assigned": 154,
+      "assignments": [
+        {
+          "source_id": "finding-0",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-8",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-17",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-19",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-23",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-24",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-25",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-26",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-28",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-30",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-31",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-32",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-33",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-34",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-39",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-47",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-49",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-51",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-59",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-60",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-61",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-62",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-66",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-71",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-74",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-75",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-77",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-79",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-81",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-92",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-93",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-94",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-106",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-115",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-118",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-122",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-258",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-311",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-328",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-364",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-368",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-372",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-376",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-377",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-384",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-391",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-397",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-399",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-402",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-419",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-420",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-421",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-422",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-423",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-425",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-429",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-431",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-433",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-434",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-435",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-436",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-437",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-438",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-440",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-441",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-443",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-444",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-448",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-450",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-451",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-452",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-455",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-457",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-458",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-459",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-462",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-465",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-466",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-467",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-468",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-472",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-474",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-475",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-477",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-478",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-479",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-480",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-484",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-486",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-487",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-489",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-490",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-492",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-493",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-497",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-498",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-501",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-502",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-518",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-526",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-552",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-553",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-554",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-555",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-556",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-557",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-564",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-566",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-569",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-570",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-588",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-595",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-616",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-617",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-626",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-633",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-662",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-664",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-666",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-703",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-709",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-745",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-751",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-760",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-764",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-765",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-777",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-805",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-870",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-933",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-958",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-979",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-981",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-986",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1101",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1106",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1119",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1171",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1196",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1201",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1206",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1209",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1225",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1273",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1333",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1334",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1335",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1342",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1347",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1349",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1369",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1390",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1394",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1399",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 1,
+      "topic_title": "Russia and Ukraine trade accusations over Victory Day ceasefire violations",
+      "n_assigned": 106,
+      "assignments": [
+        {
+          "source_id": "finding-5",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-13",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-15",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-36",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-38",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-42",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-56",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-134",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-135",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-136",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-137",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-138",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-139",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-140",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-142",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-144",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-146",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-147",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-148",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-150",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-152",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-153",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-154",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-155",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-156",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-157",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-158",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-159",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-160",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-161",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-162",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-163",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-164",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-168",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-362",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-503",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-527",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-528",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-547",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-580",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-584",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-594",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-659",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-679",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-680",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-689",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-700",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-701",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-702",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-705",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-706",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-707",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-708",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-710",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-713",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-714",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-716",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-717",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-718",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-719",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-720",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-721",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-722",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-723",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-726",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-728",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-730",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-731",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-732",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-734",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-736",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-738",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-739",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-740",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-741",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-742",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-743",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-744",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-746",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-747",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-748",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-749",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-750",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-752",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-755",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-758",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-759",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-767",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-771",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-772",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-778",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-946",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-952",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-953",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-959",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-991",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1134",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1154",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1190",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1213",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1234",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1258",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1322",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1359",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1379",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1396",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 2,
+      "topic_title": "Donald Trump and Lula da Silva meet at White House to relink US-Brazil relations",
+      "n_assigned": 39,
+      "assignments": [
+        {
+          "source_id": "finding-45",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-57",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-58",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-131",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-260",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-270",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-274",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-277",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-278",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-296",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-303",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-309",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-314",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-315",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-317",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-330",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-335",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-340",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-346",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-347",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-504",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-511",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-577",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-618",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-798",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-869",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-896",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1038",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1061",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1066",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1072",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1087",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1097",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1102",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1149",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1170",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1199",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1226",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1393",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 3,
+      "topic_title": "South African Constitutional Court orders Parliament to revisit Cyril Ramaphosa impeachment",
+      "n_assigned": 6,
+      "assignments": [
+        {
+          "source_id": "finding-174",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-208",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-339",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-506",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-585",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-962",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 4,
+      "topic_title": "Hantavirus outbreak on cruise ship MV Hondius triggers international health response",
+      "n_assigned": 49,
+      "assignments": [
+        {
+          "source_id": "finding-9",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-48",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-50",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-83",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-108",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-308",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-332",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-343",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-365",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-403",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-404",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-507",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-531",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-534",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-536",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-537",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-548",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-573",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-619",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-635",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-648",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-670",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-682",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-683",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-691",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-766",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-782",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-783",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-784",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-785",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-786",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-831",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-861",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-892",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-898",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-932",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-948",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-988",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1075",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1086",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1094",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1095",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1107",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1132",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1179",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1227",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1284",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1350",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1370",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 5,
+      "topic_title": "Internal crisis hits Real Madrid following training ground altercation",
+      "n_assigned": 26,
+      "assignments": [
+        {
+          "source_id": "finding-246",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-285",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-321",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-523",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-789",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-790",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-791",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-792",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-811",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-853",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-855",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-856",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-882",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-893",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-947",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1034",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1103",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1118",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1139",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1141",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1144",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1164",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1165",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1181",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1189",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1328",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 6,
+      "topic_title": "Tamil Nadu government formation proceeds with support for Vijay's TVK party",
+      "n_assigned": 15,
+      "assignments": [
+        {
+          "source_id": "finding-352",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-353",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-354",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-355",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-357",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-366",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-370",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-558",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-589",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1242",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1243",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1246",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1248",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1264",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1265",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 7,
+      "topic_title": "US trade court strikes down Donald Trump's 10 percent universal tariffs",
+      "n_assigned": 65,
+      "assignments": [
+        {
+          "source_id": "finding-4",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-45",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-52",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-55",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-57",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-58",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-100",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-103",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-222",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-260",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-270",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-274",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-277",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-278",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-291",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-296",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-302",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-303",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-309",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-314",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-315",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-317",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-335",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-340",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-346",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-347",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-392",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-439",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-469",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-473",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-476",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-481",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-482",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-488",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-491",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-515",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-522",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-550",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-592",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-593",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-596",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-599",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-613",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-618",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-629",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-638",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-665",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-667",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-695",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-712",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-798",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-830",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-875",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1035",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1097",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1102",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1149",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1170",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1199",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1219",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1224",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1229",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1232",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1296",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1384",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 8,
+      "topic_title": "China sentences former defense ministers to death with reprieve for corruption",
+      "n_assigned": 13,
+      "assignments": [
+        {
+          "source_id": "finding-116",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-127",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-449",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-456",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-461",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-521",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-586",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-675",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-972",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1109",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1112",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1140",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1202",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 9,
+      "topic_title": "Pope Leo XIV marks first anniversary amid tensions with US administration",
+      "n_assigned": 16,
+      "assignments": [
+        {
+          "source_id": "finding-6",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-41",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-383",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-532",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-590",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-640",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-650",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-651",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-781",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-818",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-835",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1048",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1104",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1166",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1237",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1319",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 10,
+      "topic_title": "Labour Party suffers significant losses in UK local elections as Nigel Farage gains",
+      "n_assigned": 17,
+      "assignments": [
+        {
+          "source_id": "finding-11",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-12",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-96",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-356",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-545",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-559",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-563",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-627",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-628",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-636",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-657",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-754",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-806",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-990",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1345",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1363",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1387",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 11,
+      "topic_title": "Bank of Mexico concludes interest rate cut cycle at 6.5 percent",
+      "n_assigned": 11,
+      "assignments": [
+        {
+          "source_id": "finding-259",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-271",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-297",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-313",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-318",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-325",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-344",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-349",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-607",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1146",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1160",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 12,
+      "topic_title": "K-pop group BTS begins successful concert residency in Mexico City",
+      "n_assigned": 12,
+      "assignments": [
+        {
+          "source_id": "finding-133",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-280",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-288",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-295",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-310",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-327",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-333",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-345",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-350",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-351",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-389",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-1180",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 13,
+      "topic_title": "Mount Dukono eruption in Indonesia kills three hikers",
+      "n_assigned": 10,
+      "assignments": [
+        {
+          "source_id": "finding-14",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-46",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-114",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-175",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-206",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-378",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-505",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-538",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-587",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-976",
+          "similarity": null
+        }
+      ]
+    },
+    {
+      "topic_index": 14,
+      "topic_title": "Naturalist David Attenborough celebrates 100th birthday",
+      "n_assigned": 5,
+      "assignments": [
+        {
+          "source_id": "finding-542",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-578",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-591",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-697",
+          "similarity": null
+        },
+        {
+          "source_id": "finding-704",
+          "similarity": null
+        }
+      ]
+    }
+  ],
+  "orphans": [
+    {
+      "source_id": "finding-1",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-2",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-3",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-7",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-10",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-16",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-18",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-20",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-21",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-22",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-27",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-29",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-35",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-37",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-40",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-43",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-44",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-53",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-54",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-63",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-64",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-65",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-67",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-68",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-69",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-70",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-72",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-73",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-76",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-78",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-80",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-82",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-84",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-85",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-86",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-87",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-88",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-89",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-90",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-91",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-95",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-97",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-98",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-99",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-101",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-102",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-104",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-105",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-107",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-109",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-110",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-111",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-112",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-113",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-117",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-119",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-120",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-121",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-123",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-124",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-125",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-126",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-128",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-129",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-130",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-132",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-141",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-143",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-145",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-149",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-151",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-165",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-166",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-167",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-169",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-170",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-171",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-172",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-173",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-176",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-177",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-178",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-179",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-180",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-181",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-182",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-183",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-184",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-185",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-186",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-187",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-188",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-189",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-190",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-191",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-192",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-193",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-194",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-195",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-196",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-197",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-198",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-199",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-200",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-201",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-202",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-203",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-204",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-205",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-207",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-209",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-210",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-211",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-212",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-213",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-214",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-215",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-216",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-217",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-218",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-219",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-220",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-221",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-223",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-224",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-225",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-226",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-227",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-228",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-229",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-230",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-231",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-232",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-233",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-234",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-235",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-236",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-237",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-238",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-239",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-240",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-241",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-242",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-243",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-244",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-245",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-247",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-248",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-249",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-250",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-251",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-252",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-253",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-254",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-255",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-256",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-257",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-261",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-262",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-263",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-264",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-265",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-266",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-267",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-268",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-269",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-272",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-273",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-275",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-276",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-279",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-281",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-282",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-283",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-284",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-286",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-287",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-289",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-290",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-292",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-293",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-294",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-298",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-299",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-300",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-301",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-304",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-305",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-306",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-307",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-312",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-316",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-319",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-320",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-322",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-323",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-324",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-326",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-329",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-331",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-334",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-336",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-337",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-338",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-341",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-342",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-348",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-358",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-359",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-360",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-361",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-363",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-367",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-369",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-371",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-373",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-374",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-375",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-379",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-380",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-381",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-382",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-385",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-386",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-387",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-388",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-390",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-393",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-394",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-395",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-396",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-398",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-400",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-401",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-405",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-406",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-407",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-408",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-409",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-410",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-411",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-412",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-413",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-414",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-415",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-416",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-417",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-418",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-424",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-426",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-427",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-428",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-430",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-432",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-442",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-445",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-446",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-447",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-453",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-454",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-460",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-463",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-464",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-470",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-471",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-483",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-485",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-494",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-495",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-496",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-499",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-500",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-508",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-509",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-510",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-512",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-513",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-514",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-516",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-517",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-519",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-520",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-524",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-525",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-529",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-530",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-533",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-535",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-539",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-540",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-541",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-543",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-544",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-546",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-549",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-551",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-560",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-561",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-562",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-565",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-567",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-568",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-571",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-572",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-574",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-575",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-576",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-579",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-581",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-582",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-583",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-597",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-598",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-600",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-601",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-602",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-603",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-604",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-605",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-606",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-608",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-609",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-610",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-611",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-612",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-614",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-615",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-620",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-621",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-622",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-623",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-624",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-625",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-630",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-631",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-632",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-634",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-637",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-639",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-641",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-642",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-643",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-644",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-645",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-646",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-647",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-649",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-652",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-653",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-654",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-655",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-656",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-658",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-660",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-661",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-663",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-668",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-669",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-671",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-672",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-673",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-674",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-676",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-677",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-678",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-681",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-684",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-685",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-686",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-687",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-688",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-690",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-692",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-693",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-694",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-696",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-698",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-699",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-711",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-715",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-724",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-725",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-727",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-729",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-733",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-735",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-737",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-753",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-756",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-757",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-761",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-762",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-763",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-768",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-769",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-770",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-773",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-774",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-775",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-776",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-779",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-780",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-787",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-788",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-793",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-794",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-795",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-796",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-797",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-799",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-800",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-801",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-802",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-803",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-804",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-807",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-808",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-809",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-810",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-812",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-813",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-814",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-815",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-816",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-817",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-819",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-820",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-821",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-822",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-823",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-824",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-825",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-826",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-827",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-828",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-829",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-832",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-833",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-834",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-836",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-837",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-838",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-839",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-840",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-841",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-842",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-843",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-844",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-845",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-846",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-847",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-848",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-849",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-850",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-851",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-852",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-854",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-857",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-858",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-859",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-860",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-862",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-863",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-864",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-865",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-866",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-867",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-868",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-871",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-872",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-873",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-874",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-876",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-877",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-878",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-879",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-880",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-881",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-883",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-884",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-885",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-886",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-887",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-888",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-889",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-890",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-891",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-894",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-895",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-897",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-899",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-900",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-901",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-902",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-903",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-904",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-905",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-906",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-907",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-908",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-909",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-910",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-911",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-912",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-913",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-914",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-915",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-916",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-917",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-918",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-919",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-920",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-921",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-922",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-923",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-924",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-925",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-926",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-927",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-928",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-929",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-930",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-931",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-934",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-935",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-936",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-937",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-938",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-939",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-940",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-941",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-942",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-943",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-944",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-945",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-949",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-950",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-951",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-954",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-955",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-956",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-957",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-960",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-961",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-963",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-964",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-965",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-966",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-967",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-968",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-969",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-970",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-971",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-973",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-974",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-975",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-977",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-978",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-980",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-982",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-983",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-984",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-985",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-987",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-989",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-992",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-993",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-994",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-995",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-996",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-997",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-998",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-999",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1000",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1001",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1002",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1003",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1004",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1005",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1006",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1007",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1008",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1009",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1010",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1011",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1012",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1013",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1014",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1015",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1016",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1017",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1018",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1019",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1020",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1021",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1022",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1023",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1024",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1025",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1026",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1027",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1028",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1029",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1030",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1031",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1032",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1033",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1036",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1037",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1039",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1040",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1041",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1042",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1043",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1044",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1045",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1046",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1047",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1049",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1050",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1051",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1052",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1053",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1054",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1055",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1056",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1057",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1058",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1059",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1060",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1062",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1063",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1064",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1065",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1067",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1068",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1069",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1070",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1071",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1073",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1074",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1076",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1077",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1078",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1079",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1080",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1081",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1082",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1083",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1084",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1085",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1088",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1089",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1090",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1091",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1092",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1093",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1096",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1098",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1099",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1100",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1105",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1108",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1110",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1111",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1113",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1114",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1115",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1116",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1117",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1120",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1121",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1122",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1123",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1124",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1125",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1126",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1127",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1128",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1129",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1130",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1131",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1133",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1135",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1136",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1137",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1138",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1142",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1143",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1145",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1147",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1148",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1150",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1151",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1152",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1153",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1155",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1156",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1157",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1158",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1159",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1161",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1162",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1163",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1167",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1168",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1169",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1172",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1173",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1174",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1175",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1176",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1177",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1178",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1182",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1183",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1184",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1185",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1186",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1187",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1188",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1191",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1192",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1193",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1194",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1195",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1197",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1198",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1200",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1203",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1204",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1205",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1207",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1208",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1210",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1211",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1212",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1214",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1215",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1216",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1217",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1218",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1220",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1221",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1222",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1223",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1228",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1230",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1231",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1233",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1235",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1236",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1238",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1239",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1240",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1241",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1244",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1245",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1247",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1249",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1250",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1251",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1252",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1253",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1254",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1255",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1256",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1257",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1259",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1260",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1261",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1262",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1263",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1266",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1267",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1268",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1269",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1270",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1271",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1272",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1274",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1275",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1276",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1277",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1278",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1279",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1280",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1281",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1282",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1283",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1285",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1286",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1287",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1288",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1289",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1290",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1291",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1292",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1293",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1294",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1295",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1297",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1298",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1299",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1300",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1301",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1302",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1303",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1304",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1305",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1306",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1307",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1308",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1309",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1310",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1311",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1312",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1313",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1314",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1315",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1316",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1317",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1318",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1320",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1321",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1323",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1324",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1325",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1326",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1327",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1329",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1330",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1331",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1332",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1336",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1337",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1338",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1339",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1340",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1341",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1343",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1344",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1346",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1348",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1351",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1352",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1353",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1354",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1355",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1356",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1357",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1358",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1360",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1361",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1362",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1364",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1365",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1366",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1367",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1368",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1371",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1372",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1373",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1374",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1375",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1376",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1377",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1378",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1380",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1381",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1382",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1383",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1385",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1386",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1388",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1389",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1391",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1392",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1395",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1397",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1398",
+      "best_similarity": null,
+      "best_topic_index": null
+    },
+    {
+      "source_id": "finding-1400",
+      "best_similarity": null,
+      "best_topic_index": null
+    }
+  ]
+}
