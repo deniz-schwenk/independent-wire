@@ -64,3 +64,9 @@ V2-*-SMOKE-LOG.md
 
 # Sweep harness embedding cache (binary, regeneratable)
 docs/gravitational-recalibration-*/_cache/
+
+# Cluster-internal-audit harness cache (pre-cluster output, binary/regeneratable)
+docs/cluster-internal-audit/audit-*/_cache/
+
+# Cluster-internal-audit working helpers (local-only; superseded by committed CSVs)
+scripts/_audit_*

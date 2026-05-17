@@ -1,0 +1,908 @@
+{
+  "cluster_rank": 0,
+  "cluster_id": "mc-000",
+  "size": 100,
+  "n_findings": 100,
+  "findings": [
+    {
+      "source_id": "finding-5",
+      "title": "Ukraine may have turned tide of Russian territorial gains, says think tank",
+      "summary": "ISW says Moscow&#039;s advance is slowing as Ukraine claims Russia&#039;s army suffered more than 35,000 casualties in April.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Ukraine may have turned tide of Russian territorial gains, says think tank | ISW says Moscow&#039;s advance is slowing as Ukraine claims Russia&#039;s army suffered more than 35,000 casualties in April."
+    },
+    {
+      "source_id": "finding-13",
+      "title": "Russia, Ukraine trade fire, blame despite Victory Day ceasefire",
+      "summary": "Warring sides accuse each other of violations as attacks continue across front lines.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Russia, Ukraine trade fire, blame despite Victory Day ceasefire | Warring sides accuse each other of violations as attacks continue across front lines."
+    },
+    {
+      "source_id": "finding-15",
+      "title": "Amid Ukraine’s daring assaults, Russia scales back Victory Day celebrations",
+      "summary": "An important date in the Russian calendar, May 9 will be a slimmed-down affair with less military showcasing.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Amid Ukraine’s daring assaults, Russia scales back Victory Day celebrations | An important date in the Russian calendar, May 9 will be a slimmed-down affair with less military showcasing."
+    },
+    {
+      "source_id": "finding-36",
+      "title": "Moscow calls German chancellor’s rearmament remarks ‘astonishing’",
+      "summary": "Russian foreign minister accuses European officials of encouraging 'revanchist sentiments'",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Moscow calls German chancellor’s rearmament remarks ‘astonishing’ | Russian foreign minister accuses European officials of encouraging 'revanchist sentiments'"
+    },
+    {
+      "source_id": "finding-38",
+      "title": "Russia, Ukraine accuse each other of violating Victory Day ceasefire",
+      "summary": "Zelenskyy claims Moscow carried out over 850 drone strikes, while Russia says it ‘responded in kind’",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Russia, Ukraine accuse each other of violating Victory Day ceasefire | Zelenskyy claims Moscow carried out over 850 drone strikes, while Russia says it ‘responded in kind’"
+    },
+    {
+      "source_id": "finding-42",
+      "title": "Breakaway Transnistria region no obstacle to Moldova joining EU: Foreign policy chief",
+      "summary": "VIsiting Eastern European country, Kaja Kallas also says current Russia-Ukraine negotiations 'are not really going anywhere'",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Breakaway Transnistria region no obstacle to Moldova joining EU: Foreign policy chief | VIsiting Eastern European country, Kaja Kallas also says current Russia-Ukraine negotiations 'are not really going anywhere'"
+    },
+    {
+      "source_id": "finding-56",
+      "title": "Russia warns against 'confrontational draft resolutions' over Middle East situation",
+      "summary": "'We urge our UNSC colleagues to refrain from artificially stirring up tensions within the Council,' says Permanent Mission of Russia",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Russia warns against 'confrontational draft resolutions' over Middle East situation | 'We urge our UNSC colleagues to refrain from artificially stirring up tensions within the Council,' says Permanent Mission of Russia"
+    },
+    {
+      "source_id": "finding-134",
+      "title": "Latvia Summons Russian Diplomat Over Drone Incident",
+      "summary": "Latvia’s defense minister had said two drones that crashed in the country on Thursday were likely Ukrainian and traveling toward Russian targets.",
+      "description": "",
+      "language": "en",
+      "outlet": "Moscow Times",
+      "text": "Latvia Summons Russian Diplomat Over Drone Incident | Latvia’s defense minister had said two drones that crashed in the country on Thursday were likely Ukrainian and traveling toward Russian targets."
+    },
+    {
+      "source_id": "finding-135",
+      "title": "Russia Readies for Dialed-Down Victory Day Spectacle as Drones Fly and Millions Go Offline",
+      "summary": "While 12 regions do plan to hold full-scale military parades, as many as 11 have called off their celebrations entirely.",
+      "description": "",
+      "language": "en",
+      "outlet": "Moscow Times",
+      "text": "Russia Readies for Dialed-Down Victory Day Spectacle as Drones Fly and Millions Go Offline | While 12 regions do plan to hold full-scale military parades, as many as 11 have called off their celebrations entirely."
+    },
+    {
+      "source_id": "finding-136",
+      "title": "Airports in Southern Russia Paralyzed After Ukrainian Drone Hits Air Traffic Control Center",
+      "summary": "The early morning drone attacks come hours after a ceasefire that Russia unilaterally announced for May 8-10 came into effect.",
+      "description": "",
+      "language": "en",
+      "outlet": "Moscow Times",
+      "text": "Airports in Southern Russia Paralyzed After Ukrainian Drone Hits Air Traffic Control Center | The early morning drone attacks come hours after a ceasefire that Russia unilaterally announced for May 8-10 came into effect."
+    },
+    {
+      "source_id": "finding-137",
+      "title": "Russia Scolds Ally Armenia for Hosting Zelensky",
+      "summary": "Foreign Ministry spokeswoman Maria Zakharova also warned Yerevan against pursuing closer ties with the European Union.",
+      "description": "",
+      "language": "en",
+      "outlet": "Moscow Times",
+      "text": "Russia Scolds Ally Armenia for Hosting Zelensky | Foreign Ministry spokeswoman Maria Zakharova also warned Yerevan against pursuing closer ties with the European Union."
+    },
+    {
+      "source_id": "finding-138",
+      "title": "Russian Economy Shrinks in the First Quarter",
+      "summary": "The 0.5% contraction in GDP significantly missed the Central Bank’s earlier projection of 1.6% annualized growth for the period.",
+      "description": "",
+      "language": "en",
+      "outlet": "Moscow Times",
+      "text": "Russian Economy Shrinks in the First Quarter | The 0.5% contraction in GDP significantly missed the Central Bank’s earlier projection of 1.6% annualized growth for the period."
+    },
+    {
+      "source_id": "finding-139",
+      "title": "Yekaterinburg Police Arrest Soviet Repression Researcher on ‘Terrorism’ Charges",
+      "summary": "Oleg Novoselov studies Stalin’s Great Terror of the 1930s in the Urals and had previously volunteered at the local chapter of the human rights group Memorial.",
+      "description": "",
+      "language": "en",
+      "outlet": "Moscow Times",
+      "text": "Yekaterinburg Police Arrest Soviet Repression Researcher on ‘Terrorism’ Charges | Oleg Novoselov studies Stalin’s Great Terror of the 1930s in the Urals and had previously volunteered at the local chapter of the human rights group Memorial."
+    },
+    {
+      "source_id": "finding-140",
+      "title": "Russian Military Accuses Ukraine of Launching Drone Attacks From Latvian Airspace",
+      "summary": "Latvian officials said two drones crashed on its territory early Thursday, with one sparking a brief fire at an oil storage facility.",
+      "description": "",
+      "language": "en",
+      "outlet": "Moscow Times",
+      "text": "Russian Military Accuses Ukraine of Launching Drone Attacks From Latvian Airspace | Latvian officials said two drones crashed on its territory early Thursday, with one sparking a brief fire at an oil storage facility."
+    },
+    {
+      "source_id": "finding-142",
+      "title": "Europeans not fully aware of scale of Russia's abduction of Ukrainian children – CoE envoy",
+      "summary": "The general public, even in European countries, does not fully understand the situation surrounding Russia's abduction of Ukrainian children, including its scale and underlying causes.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Europeans not fully aware of scale of Russia's abduction of Ukrainian children – CoE envoy | The general public, even in European countries, does not fully understand the situation surrounding Russia's abduction of Ukrainian children, including its scale and underlying causes."
+    },
+    {
+      "source_id": "finding-144",
+      "title": "Dutch analyst says war may be reaching turning point in Ukraine's favor",
+      "summary": "Dutch analyst Patrick Bolder believes Russia's war against Ukraine is entering a phase in which the strategic advantage is gradually shifting toward Ukraine. According to him, the situation on the battlefield is increasingly developing to Russia's disadvantage.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Dutch analyst says war may be reaching turning point in Ukraine's favor | Dutch analyst Patrick Bolder believes Russia's war against Ukraine is entering a phase in which the strategic advantage is gradually shifting toward Ukraine. According to him, the situation on the battlefield is increasingly developing to Russia's disadvantage."
+    },
+    {
+      "source_id": "finding-146",
+      "title": "Drone attack disrupts operations at 13 airports in southern Russia",
+      "summary": "On Friday, 13 airports in southern Russia, as well as Moscow Vnukovo Airport, temporarily suspended operations. Among the targets hit by drones was the building of the Air Navigation of Southern Russia traffic control center in Rostov-on-Don.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Drone attack disrupts operations at 13 airports in southern Russia | On Friday, 13 airports in southern Russia, as well as Moscow Vnukovo Airport, temporarily suspended operations. Among the targets hit by drones was the building of the Air Navigation of Southern Russia traffic control center in Rostov-on-Don."
+    },
+    {
+      "source_id": "finding-147",
+      "title": "Russia urgently deploying more forces to counter Ukrainian drones – CinC Syrskyi",
+      "summary": "The Russian military is urgently deploying four additional regiments, 24 battalions, and 162 batteries to counter Ukrainian strike drones.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Russia urgently deploying more forces to counter Ukrainian drones – CinC Syrskyi | The Russian military is urgently deploying four additional regiments, 24 battalions, and 162 batteries to counter Ukrainian strike drones."
+    },
+    {
+      "source_id": "finding-148",
+      "title": "Ukraine sentences Medinsky, head of Russian institute in absentia to ten years in prison",
+      "summary": "Kyiv's Shevchenkivskyi District Court has sentenced Vladimir Medinsky, an aide to Russian ruler Vladimir Putin, and Anatoly Torkunov, rector of the Moscow State Institute of International Relations at the Russian Foreign Ministry, in absentia to ten years in prison with confiscation of property over an anti-Ukrainian textbook.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Ukraine sentences Medinsky, head of Russian institute in absentia to ten years in prison | Kyiv's Shevchenkivskyi District Court has sentenced Vladimir Medinsky, an aide to Russian ruler Vladimir Putin, and Anatoly Torkunov, rector of the Moscow State Institute of International Relations at the Russian Foreign Ministry, in absentia to ten years in prison with confiscation of property over an anti-Ukrainian textbook."
+    },
+    {
+      "source_id": "finding-150",
+      "title": "Russian strikes kill 17,400 civilians since beginning of full-scale war – Prosecutor General's Office",
+      "summary": "More than 17,400 civilians have been killed by Russian strikes since the start of the full-scale invasion.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Russian strikes kill 17,400 civilians since beginning of full-scale war – Prosecutor General's Office | More than 17,400 civilians have been killed by Russian strikes since the start of the full-scale invasion."
+    },
+    {
+      "source_id": "finding-152",
+      "title": "Electrical substation on fire in Krasnoperekopsk after drone attack, strike reported on military unit in Simferopol",
+      "summary": "In temporarily occupied Crimea, a large electrical substation caught fire overnight on May 8 following a drone attack. A fire was also reported on the grounds of the Brom chemical plant, and a Russian military unit in Simferopol was reportedly hit.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Electrical substation on fire in Krasnoperekopsk after drone attack, strike reported on military unit in Simferopol | In temporarily occupied Crimea, a large electrical substation caught fire overnight on May 8 following a drone attack. A fire was also reported on the grounds of the Brom chemical plant, and a Russian military unit in Simferopol was reportedly hit."
+    },
+    {
+      "source_id": "finding-153",
+      "title": "Drones of NGU Azov take control of skies over Mariupol",
+      "summary": "Unmanned aerial vehicles operated by the 1st Corps of the National Guard of Ukraine Azov are taking control of the skies over the temporarily occupied city of Mariupol in the Donetsk region, currently patrolling roads up to 160 kilometers from the frontline.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Drones of NGU Azov take control of skies over Mariupol | Unmanned aerial vehicles operated by the 1st Corps of the National Guard of Ukraine Azov are taking control of the skies over the temporarily occupied city of Mariupol in the Donetsk region, currently patrolling roads up to 160 kilometers from the frontline."
+    },
+    {
+      "source_id": "finding-154",
+      "title": "Updated version of nazism labeled 'made in Russia' - Zelensky",
+      "summary": "President Volodymyr Zelensky stated today, May 8, on the Day of Remembrance and Victory over Nazism, that the Ukrainian people are once again forced to stop evil — an updated version of Nazism labeled \"made in Russia.\"",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Updated version of nazism labeled 'made in Russia' - Zelensky | President Volodymyr Zelensky stated today, May 8, on the Day of Remembrance and Victory over Nazism, that the Ukrainian people are once again forced to stop evil — an updated version of Nazism labeled \"made in Russia.\""
+    },
+    {
+      "source_id": "finding-155",
+      "title": "Russian attacks in Kharkiv region over past day leave ten injured",
+      "summary": "Over the past day, the city of Kharkiv and 17 other settlements in the Kharkiv region came under Russian attack, leaving ten people injured, including three children.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Russian attacks in Kharkiv region over past day leave ten injured | Over the past day, the city of Kharkiv and 17 other settlements in the Kharkiv region came under Russian attack, leaving ten people injured, including three children."
+    },
+    {
+      "source_id": "finding-156",
+      "title": "Russia carries out 596 strikes on energy infrastructure since start of full-scale war – SSU",
+      "summary": "Russian forces have carried out 596 strikes on Ukraine's energy infrastructure since the beginning of the full-scale invasion.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Russia carries out 596 strikes on energy infrastructure since start of full-scale war – SSU | Russian forces have carried out 596 strikes on Ukraine's energy infrastructure since the beginning of the full-scale invasion."
+    },
+    {
+      "source_id": "finding-157",
+      "title": "UDF strikes Russian oil facility in Yaroslavl, 700 kilometers from border – Zelensky",
+      "summary": "Ukraine's Defense Forces struck an oil industry facility in Yaroslavl, Russian Federation, located 700 km from the Ukrainian border.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "UDF strikes Russian oil facility in Yaroslavl, 700 kilometers from border – Zelensky | Ukraine's Defense Forces struck an oil industry facility in Yaroslavl, Russian Federation, located 700 km from the Ukrainian border."
+    },
+    {
+      "source_id": "finding-158",
+      "title": "No Russian military units present on territory of Belarus – Demchenko",
+      "summary": "Ukrainian intelligence currently does not detect the presence of Russian military units in Belarus.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "No Russian military units present on territory of Belarus – Demchenko | Ukrainian intelligence currently does not detect the presence of Russian military units in Belarus."
+    },
+    {
+      "source_id": "finding-159",
+      "title": "War update: 208 combat clashes on front line",
+      "summary": "Over the past day, May 7, a total of 208 combat engagements between Ukraine's Defense Forces and Russian invaders were recorded on the front line.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "War update: 208 combat clashes on front line | Over the past day, May 7, a total of 208 combat engagements between Ukraine's Defense Forces and Russian invaders were recorded on the front line."
+    },
+    {
+      "source_id": "finding-160",
+      "title": "Ukraine’s air defenses down 56 out of 67 Russian drones overnight",
+      "summary": "Air Force of the Armed Forces of Ukraine reported that air defense forces shot down or suppressed 56 out of 67 drones launched by Russia against Ukraine starting from the evening of May 7.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Ukraine’s air defenses down 56 out of 67 Russian drones overnight | Air Force of the Armed Forces of Ukraine reported that air defense forces shot down or suppressed 56 out of 67 drones launched by Russia against Ukraine starting from the evening of May 7."
+    },
+    {
+      "source_id": "finding-161",
+      "title": "Zelensky says Russia violated ceasefire with over 140 strikes and 10 assaults",
+      "summary": "President Volodymyr Zelensky said that as of 7:00 on Friday, May 8, more than 140 strikes on frontline positions and 10 assault operations had been recorded. Russian forces also carried out more than 850 drone strikes using various types of UAVs.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Zelensky says Russia violated ceasefire with over 140 strikes and 10 assaults | President Volodymyr Zelensky said that as of 7:00 on Friday, May 8, more than 140 strikes on frontline positions and 10 assault operations had been recorded. Russian forces also carried out more than 850 drone strikes using various types of UAVs."
+    },
+    {
+      "source_id": "finding-163",
+      "title": "Russia’s war casualty toll in Ukraine up by 1,130 over past day",
+      "summary": "The total combat losses of Russian forces from February 24, 2022, to May 8, 2026, in the war against Ukraine amount to approximately 1,339,190 personnel, including 1,130 troops lost over the past day.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Russia’s war casualty toll in Ukraine up by 1,130 over past day | The total combat losses of Russian forces from February 24, 2022, to May 8, 2026, in the war against Ukraine amount to approximately 1,339,190 personnel, including 1,130 troops lost over the past day."
+    },
+    {
+      "source_id": "finding-164",
+      "title": "Ukrainian drone operators destroy Russian Grad launcher near Huliaipole",
+      "summary": "FPV drone operators from the Asgard Battalion of the 412th Nemesis Brigade of Ukraine’s Unmanned Systems Forces destroyed a Russian BM-21 Grad multiple launch rocket system near Huliaipole in the Zaporizhzhia region.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Ukrainian drone operators destroy Russian Grad launcher near Huliaipole | FPV drone operators from the Asgard Battalion of the 412th Nemesis Brigade of Ukraine’s Unmanned Systems Forces destroyed a Russian BM-21 Grad multiple launch rocket system near Huliaipole in the Zaporizhzhia region."
+    },
+    {
+      "source_id": "finding-168",
+      "title": "Ukraine running critically low on air defense missiles after relentless Russian strikes – Air Force spox",
+      "summary": "Ukraine is facing a shortage of missiles for its Patriot, NASAMS, and IRIS-T air defense systems due to intense Russian strikes and difficulties with weapons supplies, which have depleted stockpiles and left some air defense units partially lacking ammunition.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Ukraine running critically low on air defense missiles after relentless Russian strikes – Air Force spox | Ukraine is facing a shortage of missiles for its Patriot, NASAMS, and IRIS-T air defense systems due to intense Russian strikes and difficulties with weapons supplies, which have depleted stockpiles and left some air defense units partially lacking ammunition."
+    },
+    {
+      "source_id": "finding-362",
+      "title": "Inside Russia's Plan To Help Power Iran's Kill Machine Against Americans",
+      "summary": "Moscow's secret plan involved Russia sending 5,000 short-range fibre-optic drones to Iran",
+      "description": "",
+      "language": "en",
+      "outlet": "NDTV",
+      "text": "Inside Russia's Plan To Help Power Iran's Kill Machine Against Americans | Moscow's secret plan involved Russia sending 5,000 short-range fibre-optic drones to Iran"
+    },
+    {
+      "source_id": "finding-503",
+      "title": "Russia and Ukraine accuse each other of breaching Victory Day ceasefire",
+      "summary": "The two sides report responding to hundreds of drone attacks, just hours into a truce to cover celebrations of the Soviet Union's victory over Nazi Germany.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Russia and Ukraine accuse each other of breaching Victory Day ceasefire | The two sides report responding to hundreds of drone attacks, just hours into a truce to cover celebrations of the Soviet Union's victory over Nazi Germany."
+    },
+    {
+      "source_id": "finding-527",
+      "title": "Rosenberg: Russia's Victory Day parade with no tanks a sign Ukraine war not going to plan",
+      "summary": "For the first time in nearly two decades, there will be no military hardware, just soldiers during Saturday's parade in Moscow.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Rosenberg: Russia's Victory Day parade with no tanks a sign Ukraine war not going to plan | For the first time in nearly two decades, there will be no military hardware, just soldiers during Saturday's parade in Moscow."
+    },
+    {
+      "source_id": "finding-528",
+      "title": "Thousands of North Koreans fought for Russia. A memorial hints at the death toll",
+      "summary": "An estimated 11,000 North Korean soldiers were sent to fight in Russia's war against Ukraine.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Thousands of North Koreans fought for Russia. A memorial hints at the death toll | An estimated 11,000 North Korean soldiers were sent to fight in Russia's war against Ukraine."
+    },
+    {
+      "source_id": "finding-547",
+      "title": "Ukraine and Russia accuse each other of breaking proposed ceasefires ahead of Victory Day parade in Moscow – Europe live",
+      "summary": "Ukraine suggested an indefinite ceasefire this week but it was repeatedly violated by RussiaThe European Commission also insisted that airlines must not charge customers extra fuel fees after they have already bought tickets, as the aviation sector feels the pain from high energy prices because of the Middle East war, AFP reported.“Airlines may adapt their published fares to the situation, but adding a fuel surcharge to a ticket after it has been bought cannot be justified,” EU spokeswoman An...",
+      "description": "",
+      "language": "en",
+      "outlet": "Guardian World",
+      "text": "Ukraine and Russia accuse each other of breaking proposed ceasefires ahead of Victory Day parade in Moscow – Europe live | Ukraine suggested an indefinite ceasefire this week but it was repeatedly violated by RussiaThe European Commission also insisted that airlines must not charge customers extra fuel fees after they have already bought tickets, as the aviation sector feels the pain from high energy prices because of the Middle East war, AFP reported.“Airlines may adapt their published fares to the situation, but adding a fuel surcharge to a ticket after it has been bought cannot be justified,” EU spokeswoman An..."
+    },
+    {
+      "source_id": "finding-580",
+      "title": "Why Russia has scaled back May 9 Victory Parade",
+      "summary": "This year's May 9 military parades in Moscow will be much more modest and have been canceled altogether in other parts of Russia. The Kremlin has blamed Ukraine.",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "Why Russia has scaled back May 9 Victory Parade | This year's May 9 military parades in Moscow will be much more modest and have been canceled altogether in other parts of Russia. The Kremlin has blamed Ukraine."
+    },
+    {
+      "source_id": "finding-584",
+      "title": "Ukraine, Russia trade attacks despite 'ceasefire'",
+      "summary": "Russia had declared a unilateral ceasefire for World War II commemorations, but Ukraine said Moscow has not held off. Both sides reported new strikes. A Victory Day parade in Moscow will be more subdued this year.",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "Ukraine, Russia trade attacks despite 'ceasefire' | Russia had declared a unilateral ceasefire for World War II commemorations, but Ukraine said Moscow has not held off. Both sides reported new strikes. A Victory Day parade in Moscow will be more subdued this year."
+    },
+    {
+      "source_id": "finding-594",
+      "title": "Zelenskyy warns Russia's friends against attending parade",
+      "summary": "Zelenskyy said he did \"not recommend\" that representatives of states allied with Russia attend the May 9 parade. Russian authorities also said they were concerned about possible Ukrainian attacks.",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "Zelenskyy warns Russia's friends against attending parade | Zelenskyy said he did \"not recommend\" that representatives of states allied with Russia attend the May 9 parade. Russian authorities also said they were concerned about possible Ukrainian attacks."
+    },
+    {
+      "source_id": "finding-659",
+      "title": "Schwere Angriffe trotz von Russland ausgerufener Waffenruhe",
+      "summary": "Russland will morgen den Jahrestag des Sieges über Nazi-Deutschland ungestört mit einer Parade feiern - und hat dafür einseitig eine Waffenruhe ausgerufen. Doch nun melden beide Seiten schwere Angriffe.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "Schwere Angriffe trotz von Russland ausgerufener Waffenruhe | Russland will morgen den Jahrestag des Sieges über Nazi-Deutschland ungestört mit einer Parade feiern - und hat dafür einseitig eine Waffenruhe ausgerufen. Doch nun melden beide Seiten schwere Angriffe."
+    },
+    {
+      "source_id": "finding-679",
+      "title": "Drohnen nahe der russischen Grenze in Lettland abgestürzt",
+      "summary": "In Lettland sind zwei Drohnen nahe der Grenze zu Russland abgestürzt. Ein Flugkörper beschädigte Öltanks in der Stadt Rezekne. Es könnte sich um ukrainische Drohnen handeln, die Ziele in Russland treffen sollten.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "Drohnen nahe der russischen Grenze in Lettland abgestürzt | In Lettland sind zwei Drohnen nahe der Grenze zu Russland abgestürzt. Ein Flugkörper beschädigte Öltanks in der Stadt Rezekne. Es könnte sich um ukrainische Drohnen handeln, die Ziele in Russland treffen sollten."
+    },
+    {
+      "source_id": "finding-680",
+      "title": "Russland: Ein Stimmungswechsel, der heikel für Putin ist",
+      "summary": "Ein geringes Wirtschaftswachstum und ukrainische Drohnen bis nach Sibirien setzen Russlands Präsidenten Putin unter Druck. Seine Zustimmungswerte sinken, und selbst aus den eigenen Reihen kommt Kritik. Von Lilia Becker.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "Russland: Ein Stimmungswechsel, der heikel für Putin ist | Ein geringes Wirtschaftswachstum und ukrainische Drohnen bis nach Sibirien setzen Russlands Präsidenten Putin unter Druck. Seine Zustimmungswerte sinken, und selbst aus den eigenen Reihen kommt Kritik. Von Lilia Becker."
+    },
+    {
+      "source_id": "finding-700",
+      "title": "Мосгорсуд отменил решение о запрете «ЯПлакалъ»",
+      "summary": "Мосгорсуд отменил решение о запрете распространения в России информации, размещенной на сайте «ЯПлакалъ», сообщает пресс-служба судов Москвы.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Мосгорсуд отменил решение о запрете «ЯПлакалъ» | Мосгорсуд отменил решение о запрете распространения в России информации, размещенной на сайте «ЯПлакалъ», сообщает пресс-служба судов Москвы."
+    },
+    {
+      "source_id": "finding-701",
+      "title": "Власти РФ отозвали все ранее выданные аккредитации на парад Победы у иностранных журналистов, сообщил Der Spiegel. В Кремле это отрицают",
+      "summary": "Российские власти отозвали аккредитации на парад Победы у журналистов всех зарубежных СМИ, сообщило вечером 7 мая немецкое издание Der Spiegel.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Власти РФ отозвали все ранее выданные аккредитации на парад Победы у иностранных журналистов, сообщил Der Spiegel. В Кремле это отрицают | Российские власти отозвали аккредитации на парад Победы у журналистов всех зарубежных СМИ, сообщило вечером 7 мая немецкое издание Der Spiegel."
+    },
+    {
+      "source_id": "finding-702",
+      "title": "На юге России остановлена работа 13 аэропортов — из-за попадания дрона в офис аэронавигации в Ростове-на-Дону",
+      "summary": "В южной части России прекратили работу 13 аэропортов — после того, как беспилотник попал в административное здание филиала компании «Аэронавигация Юга России», сообщил Минтранс.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "На юге России остановлена работа 13 аэропортов — из-за попадания дрона в офис аэронавигации в Ростове-на-Дону | В южной части России прекратили работу 13 аэропортов — после того, как беспилотник попал в административное здание филиала компании «Аэронавигация Юга России», сообщил Минтранс."
+    },
+    {
+      "source_id": "finding-705",
+      "title": "Зеленский: Россия «даже не имитирует» прекращение огня. Минобороны России: мы наносим ответные удары",
+      "summary": "Россия и Украина обвинили друг друга в продолжении боевых действий после начала «перемирия», которое в одностороннем порядке с полуночи объявила Москва.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Зеленский: Россия «даже не имитирует» прекращение огня. Минобороны России: мы наносим ответные удары | Россия и Украина обвинили друг друга в продолжении боевых действий после начала «перемирия», которое в одностороннем порядке с полуночи объявила Москва."
+    },
+    {
+      "source_id": "finding-706",
+      "title": "Кто и как строил в России «храм войны»? Ко Дню Победы публикуем в приложении «Медузы» книгу историка Ильи Венявкина о людях, чьи идеи и поступки помогли Путину подготовить россиян к нападению на Украину",
+      "summary": "Визит в Главный храм Вооруженных сил России (ГХВС), построенный в честь 75-летия победы в Великой Отечественной войне, историк и сооснователь проекта Russian Independent Media Archive (RIMA) Илья Венявкин называет одной из отправных точек для начала работы над книгой «Храм войны». Подобно тому, как идея построить ГХВС годами «вызревала в российской политической культуре», постепенно формировался и специфический общественный запрос, сделавший возможным нападение России на Украину 24 февраля 20...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Кто и как строил в России «храм войны»? Ко Дню Победы публикуем в приложении «Медузы» книгу историка Ильи Венявкина о людях, чьи идеи и поступки помогли Путину подготовить россиян к нападению на Украину | Визит в Главный храм Вооруженных сил России (ГХВС), построенный в честь 75-летия победы в Великой Отечественной войне, историк и сооснователь проекта Russian Independent Media Archive (RIMA) Илья Венявкин называет одной из отправных точек для начала работы над книгой «Храм войны». Подобно тому, как идея построить ГХВС годами «вызревала в российской политической культуре», постепенно формировался и специфический общественный запрос, сделавший возможным нападение России на Украину 24 февраля 20..."
+    },
+    {
+      "source_id": "finding-707",
+      "title": "В России будет новая уполномоченная по правам человека — это Яна Лантратова. Ее назначение лоббировал Никита Михалков, узнала «Медуза». Она призывала запретить «Свидетелей Иеговы» и помогала Сергею Миронову насильно вывезти ребенка из Херсона",
+      "summary": "13 мая Госдуме предстоит избрать нового уполномоченного по правам человека. Действующий омбудсмен Татьяна Москалькова, проработавшая два срока, по закону больше не может занимать этот пост. Кандидатура нового уполномоченного уже известна — это депутат Госдумы от «Справедливой России», бывшая чиновница администрации президента и провластная общественница Яна Лантратова. «Медуза» рассказывает, кто она такая, и как на ее назначение повлиял режиссер Никита Михалков.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "В России будет новая уполномоченная по правам человека — это Яна Лантратова. Ее назначение лоббировал Никита Михалков, узнала «Медуза». Она призывала запретить «Свидетелей Иеговы» и помогала Сергею Миронову насильно вывезти ребенка из Херсона | 13 мая Госдуме предстоит избрать нового уполномоченного по правам человека. Действующий омбудсмен Татьяна Москалькова, проработавшая два срока, по закону больше не может занимать этот пост. Кандидатура нового уполномоченного уже известна — это депутат Госдумы от «Справедливой России», бывшая чиновница администрации президента и провластная общественница Яна Лантратова. «Медуза» рассказывает, кто она такая, и как на ее назначение повлиял режиссер Никита Михалков."
+    },
+    {
+      "source_id": "finding-708",
+      "title": "Первый день «перемирия», объявленного Россией в одностороннем порядке. Украина запустила больше 200 беспилотников. На подлете к Москве сбили 27 дронов",
+      "summary": "Украина массово атаковала Москву беспилотниками вскоре после полуночи 8 мая, когда вступило в силу объявленное Россией одностороннее перемирие, сообщил мэр города Сергей Собянин.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Первый день «перемирия», объявленного Россией в одностороннем порядке. Украина запустила больше 200 беспилотников. На подлете к Москве сбили 27 дронов | Украина массово атаковала Москву беспилотниками вскоре после полуночи 8 мая, когда вступило в силу объявленное Россией одностороннее перемирие, сообщил мэр города Сергей Собянин."
+    },
+    {
+      "source_id": "finding-710",
+      "title": "Началось объявленное Россией одностороннее перемирие. Оно продлится до 10 мая",
+      "summary": "Перемирие, которое Россия объявила в войне с Украиной в одностороннем порядке, началось в полночь 8 мая. Как ранее заявило Минобороны РФ, режим прекращения огня продлится до 10 мая.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Началось объявленное Россией одностороннее перемирие. Оно продлится до 10 мая | Перемирие, которое Россия объявила в войне с Украиной в одностороннем порядке, началось в полночь 8 мая. Как ранее заявило Минобороны РФ, режим прекращения огня продлится до 10 мая."
+    },
+    {
+      "source_id": "finding-713",
+      "title": "Российский МИД «испытал негодование» из-за того, что Зеленскому дали «трибуну для озвучивания угроз» в Ереване",
+      "summary": "Посла Армении Гургена Арсеняна вызвали в МИД России из-за выступления президента Украины Владимира Зеленского на саммите Европейского политического сообщества в Ереване, следует из сообщения российского министерства.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Российский МИД «испытал негодование» из-за того, что Зеленскому дали «трибуну для озвучивания угроз» в Ереване | Посла Армении Гургена Арсеняна вызвали в МИД России из-за выступления президента Украины Владимира Зеленского на саммите Европейского политического сообщества в Ереване, следует из сообщения российского министерства."
+    },
+    {
+      "source_id": "finding-714",
+      "title": "Сайт «ЯПлакалъ» запретили, но так и не заблокировали. Роскомнадзор объясняет: суд не указал, какую именно информацию сочли запрещенной",
+      "summary": "Роскомнадзор не включил сайт «ЯПлакалъ» в специальный реестр запрещенной информации, сообщила пресс-служба ведомства ТАСС.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Сайт «ЯПлакалъ» запретили, но так и не заблокировали. Роскомнадзор объясняет: суд не указал, какую именно информацию сочли запрещенной | Роскомнадзор не включил сайт «ЯПлакалъ» в специальный реестр запрещенной информации, сообщила пресс-служба ведомства ТАСС."
+    },
+    {
+      "source_id": "finding-716",
+      "title": "«Странное желание. Мы не рекомендуем». Зеленский предостерег иностранных политиков от празднования 9 Мая в Москве",
+      "summary": "Президент Украины Владимир Зеленский рекомендовал представителям иностранных государств отказаться от участия в праздничных мероприятиях в Москве по случаю 9 Мая.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "«Странное желание. Мы не рекомендуем». Зеленский предостерег иностранных политиков от празднования 9 Мая в Москве | Президент Украины Владимир Зеленский рекомендовал представителям иностранных государств отказаться от участия в праздничных мероприятиях в Москве по случаю 9 Мая."
+    },
+    {
+      "source_id": "finding-717",
+      "title": "«Владимир Путин теряет контроль над Россией». Под таким названием в The Economist вышла колонка бывшего чиновника российского правительства. «Медуза» публикует ее полный перевод",
+      "summary": "В британском журнале The Economist вышла анонимная колонка под названием «Владимир Путин теряет контроль над Россией». Ее автор — бывший высокопоставленный чиновник российского правительства. В статье он рассуждает о том, что «каждый новый шаг Владимира Путина, направленный на сохранение власти, лишь ускоряет процесс распада». С разрешения The Economist «Медуза» публикует полный перевод колонки.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "«Владимир Путин теряет контроль над Россией». Под таким названием в The Economist вышла колонка бывшего чиновника российского правительства. «Медуза» публикует ее полный перевод | В британском журнале The Economist вышла анонимная колонка под названием «Владимир Путин теряет контроль над Россией». Ее автор — бывший высокопоставленный чиновник российского правительства. В статье он рассуждает о том, что «каждый новый шаг Владимира Путина, направленный на сохранение власти, лишь ускоряет процесс распада». С разрешения The Economist «Медуза» публикует полный перевод колонки."
+    },
+    {
+      "source_id": "finding-718",
+      "title": "У россиян на фоне шатдаунов вырос спрос на наличку и бумажные карты",
+      "summary": "Банк России зафиксировал, что в марте-апреле у россиян вырос спрос на наличные деньги, говорится в резюме обсуждения ключевой ставки, представленном 7 мая.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "У россиян на фоне шатдаунов вырос спрос на наличку и бумажные карты | Банк России зафиксировал, что в марте-апреле у россиян вырос спрос на наличные деньги, говорится в резюме обсуждения ключевой ставки, представленном 7 мая."
+    },
+    {
+      "source_id": "finding-719",
+      "title": "Кремль «не видит смысла» в продолжении переговоров о завершении войны — пока Украина не выведет войска из Донбасса",
+      "summary": "Россия не видит смысла в новом раунде трехсторонних переговоров о завершении войны до тех пор, пока Украина не выведет войска из Донбасса. Об этом заявил помощник президента РФ Юрий Ушаков.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Кремль «не видит смысла» в продолжении переговоров о завершении войны — пока Украина не выведет войска из Донбасса | Россия не видит смысла в новом раунде трехсторонних переговоров о завершении войны до тех пор, пока Украина не выведет войска из Донбасса. Об этом заявил помощник президента РФ Юрий Ушаков."
+    },
+    {
+      "source_id": "finding-720",
+      "title": "«Заведу я голубей — и надежней, и быстрей». До 9 Мая осталось два дня. Петербург без интернета. Москве — приготовиться",
+      "summary": "Блокировки в России все сильнее. Шатдауны устраивают по любому поводу. «Медуза» остается рядом! 👾Мы продолжим рассказывать, как сохранить связь с внешним миром. Например, что делать, если не работает VPN, как обходить белые списки с помощью мессенджера Delta Chat и как подготовиться к отключениям интернета. Чтобы обо всем этом узнавать, важно сохранить доступ к «Медузе» — и это легко! Скачайте наше приложение, сохраните волшебную ссылку и подпишитесь на SOS-рассылку.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "«Заведу я голубей — и надежней, и быстрей». До 9 Мая осталось два дня. Петербург без интернета. Москве — приготовиться | Блокировки в России все сильнее. Шатдауны устраивают по любому поводу. «Медуза» остается рядом! 👾Мы продолжим рассказывать, как сохранить связь с внешним миром. Например, что делать, если не работает VPN, как обходить белые списки с помощью мессенджера Delta Chat и как подготовиться к отключениям интернета. Чтобы обо всем этом узнавать, важно сохранить доступ к «Медузе» — и это легко! Скачайте наше приложение, сохраните волшебную ссылку и подпишитесь на SOS-рассылку."
+    },
+    {
+      "source_id": "finding-721",
+      "title": "В колонии погиб художник Владимир Яроцкий. Официальная версия — самоубийство. Его судили за портрет Путина в виде пениса с георгиевской лентой",
+      "summary": "Политзаключенный, 41-летний художник из Краснодара Владимир Яроцкий погиб в колонии № 9 в Краснодарском крае в ночь на 7 мая, сообщили проект «Политзек-Инфо» и издание Sotavision. По официальной версии, он покончил с собой.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "В колонии погиб художник Владимир Яроцкий. Официальная версия — самоубийство. Его судили за портрет Путина в виде пениса с георгиевской лентой | Политзаключенный, 41-летний художник из Краснодара Владимир Яроцкий погиб в колонии № 9 в Краснодарском крае в ночь на 7 мая, сообщили проект «Политзек-Инфо» и издание Sotavision. По официальной версии, он покончил с собой."
+    },
+    {
+      "source_id": "finding-722",
+      "title": "Евросоюз отказался эвакуировать дипломатов из Киева — несмотря на угрозы Москвы нанести удар по центру города",
+      "summary": "Страны Евросоюза не намерены эвакуировать своих дипломатов из Киева на фоне угроз России нанести массированный удар по столице Украины. Об этом заявил спикер Еврокомиссии Ануар Эль-Ануни.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Евросоюз отказался эвакуировать дипломатов из Киева — несмотря на угрозы Москвы нанести удар по центру города | Страны Евросоюза не намерены эвакуировать своих дипломатов из Киева на фоне угроз России нанести массированный удар по столице Украины. Об этом заявил спикер Еврокомиссии Ануар Эль-Ануни."
+    },
+    {
+      "source_id": "finding-723",
+      "title": "Парад в Москве пройдет без военной техники, шествия «Бессмертного полка» не будет. Вот список городов России, где совсем отказались от парадов — или решили не выводить военную технику",
+      "summary": "Власти России традиционно проводят военные парады по случаю 9 Мая в десятках городов страны. Однако на фоне полномасштабной войны с Украиной во многих регионах парады отменяют или готовятся провести в сокращенном формате. Например, в Москве впервые с 2007 года парад будет без военной техники. Ограничения затронули и шествия «Бессмертный полк» — в некоторых городах их проведут только онлайн. На основе публикаций российских медиа (1, 2, 3, 4, 5) и открытых данных «Медуза» составила списки, из к...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Парад в Москве пройдет без военной техники, шествия «Бессмертного полка» не будет. Вот список городов России, где совсем отказались от парадов — или решили не выводить военную технику | Власти России традиционно проводят военные парады по случаю 9 Мая в десятках городов страны. Однако на фоне полномасштабной войны с Украиной во многих регионах парады отменяют или готовятся провести в сокращенном формате. Например, в Москве впервые с 2007 года парад будет без военной техники. Ограничения затронули и шествия «Бессмертный полк» — в некоторых городах их проведут только онлайн. На основе публикаций российских медиа (1, 2, 3, 4, 5) и открытых данных «Медуза» составила списки, из к..."
+    },
+    {
+      "source_id": "finding-726",
+      "title": "Война. 1534-й день. Зеленский: «Россия довоевалась до того, что их главный парад уже зависит от нас. Это четкий сигнал, что войну надо завершать»",
+      "summary": "«Медуза» с 24 февраля 2022 года в прямом эфире рассказывает о российско-украинской войне. Мы ежедневно публикуем ваши письма, потому что уверены: о войне нужно продолжать говорить. Поделитесь с нами мыслями о войне. Какие чувства вы испытываете? Как война влияет на вашу жизнь и ваше отношение к миру? Если у вас есть история, связанная с войной, — расскажите ее. Форма для обратной связи — в конце этой статьи. Обзор предыдущего дня можно прочитать тут.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Война. 1534-й день. Зеленский: «Россия довоевалась до того, что их главный парад уже зависит от нас. Это четкий сигнал, что войну надо завершать» | «Медуза» с 24 февраля 2022 года в прямом эфире рассказывает о российско-украинской войне. Мы ежедневно публикуем ваши письма, потому что уверены: о войне нужно продолжать говорить. Поделитесь с нами мыслями о войне. Какие чувства вы испытываете? Как война влияет на вашу жизнь и ваше отношение к миру? Если у вас есть история, связанная с войной, — расскажите ее. Форма для обратной связи — в конце этой статьи. Обзор предыдущего дня можно прочитать тут."
+    },
+    {
+      "source_id": "finding-728",
+      "title": "«Нам сказали: не время искать солдат Второй мировой». Россия бросила останки советских военных в Латвии",
+      "summary": "Отряд «Легенда» уже более четверти века занимается поиском и перезахоронением военных, погибших на территории Латвии во Второй мировой войне. Чаще всего поисковики находят советских солдат — в латвийской земле их остаются десятки тысяч. Поиск и идентификацию осложняет то, что руководство СССР не выдавало красноармейцам жетоны, а бумажные документы в земле быстро портились.  В девяностых и нулевых «Легенда» активно сотрудничала с российским посольством и российскими поисковиками, но в 2014 год...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Novaya Gazeta Europe",
+      "text": "«Нам сказали: не время искать солдат Второй мировой». Россия бросила останки советских военных в Латвии | Отряд «Легенда» уже более четверти века занимается поиском и перезахоронением военных, погибших на территории Латвии во Второй мировой войне. Чаще всего поисковики находят советских солдат — в латвийской земле их остаются десятки тысяч. Поиск и идентификацию осложняет то, что руководство СССР не выдавало красноармейцам жетоны, а бумажные документы в земле быстро портились.  В девяностых и нулевых «Легенда» активно сотрудничала с российским посольством и российскими поисковиками, но в 2014 год..."
+    },
+    {
+      "source_id": "finding-730",
+      "title": "Под ударом «Фламинго». Как жители столицы Чувашии переживают последствия крупнейшей за время войны воздушной атаки на город",
+      "summary": "В ночь на 5 мая столица Чувашии, город Чебоксары, подверглась самой мощной атаке ВСУ с начала войны. По сообщениям властей, один как минимум из восьми беспилотников, запущенных ВСУ, попал в многоквартирный жилой дом, расположенный вблизи оборонного завода «ВНИИР-Прогресс», который, по информации ВСУ, «занимается производством ГНСС-приемников и антенн для спутниковых систем GLONASS, GPS и Galileo», применяемых в дронах-камикадзе типа Shahed, а также в крылатых и баллистических ракетах.  Как со...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Novaya Gazeta Europe",
+      "text": "Под ударом «Фламинго». Как жители столицы Чувашии переживают последствия крупнейшей за время войны воздушной атаки на город | В ночь на 5 мая столица Чувашии, город Чебоксары, подверглась самой мощной атаке ВСУ с начала войны. По сообщениям властей, один как минимум из восьми беспилотников, запущенных ВСУ, попал в многоквартирный жилой дом, расположенный вблизи оборонного завода «ВНИИР-Прогресс», который, по информации ВСУ, «занимается производством ГНСС-приемников и антенн для спутниковых систем GLONASS, GPS и Galileo», применяемых в дронах-камикадзе типа Shahed, а также в крылатых и баллистических ракетах.  Как со..."
+    },
+    {
+      "source_id": "finding-731",
+      "title": "Россия отозвала аккредитации иностранных СМИ на военный парад в Москве",
+      "summary": "Кремль отозвал аккредитации иностранных СМИ на военный парад 9 мая в Москве. Об этом сообщил Der Spiegel, журналисты которого лишились приглашений на мероприятие. «Формат освещения парада был изменен в связи с ситуацией. Поэтому иностранные СМИ, которым уже была обещана аккредитация, больше не допускаются», — заявила журналу сотрудница Кремля. Аккредитацию отозвали также у немецких медиа ARD и ZDF, британской вещательной компании Sky, информационного агентства AFP, итальянского телеканала Rai...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Novaya Gazeta Europe",
+      "text": "Россия отозвала аккредитации иностранных СМИ на военный парад в Москве | Кремль отозвал аккредитации иностранных СМИ на военный парад 9 мая в Москве. Об этом сообщил Der Spiegel, журналисты которого лишились приглашений на мероприятие. «Формат освещения парада был изменен в связи с ситуацией. Поэтому иностранные СМИ, которым уже была обещана аккредитация, больше не допускаются», — заявила журналу сотрудница Кремля. Аккредитацию отозвали также у немецких медиа ARD и ZDF, британской вещательной компании Sky, информационного агентства AFP, итальянского телеканала Rai..."
+    },
+    {
+      "source_id": "finding-732",
+      "title": "«Пришлось нам, получается, убить Сеню». Российский солдат два месяца выживал в пехотном штурме, голодал в подвале и застрелил сослуживца. Дмитрий Дурнев встретился с этим солдатом",
+      "summary": "Российский военнослужащий во время тренировки в Запорожской области, Украина, 4 мая 2026 года. Фото: Александр Полегенко / ТАСС / ZUMA Press / Scanpix / LETA .   От редакции: Дмитрий Дурнев, готовивший этот текст, представился своему собеседнику журналистом «Новой газеты Европа». Российский солдат сообщил, что дает интервью добровольно. Дурнев также уточнил, осознает ли тот возможные последствия публикации: пленный подумал минуту и равнодушно сказал, что фамилию его можно и убрать, скорее для...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Novaya Gazeta Europe",
+      "text": "«Пришлось нам, получается, убить Сеню». Российский солдат два месяца выживал в пехотном штурме, голодал в подвале и застрелил сослуживца. Дмитрий Дурнев встретился с этим солдатом | Российский военнослужащий во время тренировки в Запорожской области, Украина, 4 мая 2026 года. Фото: Александр Полегенко / ТАСС / ZUMA Press / Scanpix / LETA .   От редакции: Дмитрий Дурнев, готовивший этот текст, представился своему собеседнику журналистом «Новой газеты Европа». Российский солдат сообщил, что дает интервью добровольно. Дурнев также уточнил, осознает ли тот возможные последствия публикации: пленный подумал минуту и равнодушно сказал, что фамилию его можно и убрать, скорее для..."
+    },
+    {
+      "source_id": "finding-734",
+      "title": "«Досье»: в администрации Путина стали думать о том, как «продать» россиянам возможное окончание войны",
+      "summary": "Сотрудники администрации президента еще в конце зимы 2025 года начали прорабатывать «образ победы» — набор пропагандистских тезисов, с помощью которых россиянам можно было бы объяснить возможное мирное соглашение с Украиной. Об этом говорится в расследовании центра «Досье».  Проблемы из-за войны. В презентации для приближенных Сергея Кириенко говорится, что продолжение войны может потребовать всеобщей мобилизации и полного перевода экономики на военные рельсы. Среди рисков также перечисляются...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Novaya Gazeta Europe",
+      "text": "«Досье»: в администрации Путина стали думать о том, как «продать» россиянам возможное окончание войны | Сотрудники администрации президента еще в конце зимы 2025 года начали прорабатывать «образ победы» — набор пропагандистских тезисов, с помощью которых россиянам можно было бы объяснить возможное мирное соглашение с Украиной. Об этом говорится в расследовании центра «Досье».  Проблемы из-за войны. В презентации для приближенных Сергея Кириенко говорится, что продолжение войны может потребовать всеобщей мобилизации и полного перевода экономики на военные рельсы. Среди рисков также перечисляются..."
+    },
+    {
+      "source_id": "finding-736",
+      "title": "Why Russia’s air defenses can’t protect its oil refineries from Ukrainian strikes",
+      "summary": "Since mid-April, Ukraine has struck the Tuapse oil terminal on Russia&apos;s Black Sea coast four times, triggering major fires at one of the country&apos;s key oil export hubs despite active air defenses and repeated Russian claims of intercepted drones.The attacks have caused days-long fires, halted",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Why Russia’s air defenses can’t protect its oil refineries from Ukrainian strikes | Since mid-April, Ukraine has struck the Tuapse oil terminal on Russia&apos;s Black Sea coast four times, triggering major fires at one of the country&apos;s key oil export hubs despite active air defenses and repeated Russian claims of intercepted drones.The attacks have caused days-long fires, halted"
+    },
+    {
+      "source_id": "finding-738",
+      "title": "Russian attacks kill at least 6, injure 58 across Ukraine over past day",
+      "summary": "Ukrainian forces downed 56 out of 67 drones, including Shahed-type attack drones, that Russia launched overnight, the Air Force reported.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Russian attacks kill at least 6, injure 58 across Ukraine over past day | Ukrainian forces downed 56 out of 67 drones, including Shahed-type attack drones, that Russia launched overnight, the Air Force reported."
+    },
+    {
+      "source_id": "finding-739",
+      "title": "Russian oil refinery, defense technology center struck in Ukraine's overnight attacks",
+      "summary": "President Volodymyr Zelensky confirmed later in the day that Ukrainian forces attacked the city of Yaroslavl, targeting an oil infrastructure facility.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Russian oil refinery, defense technology center struck in Ukraine's overnight attacks | President Volodymyr Zelensky confirmed later in the day that Ukrainian forces attacked the city of Yaroslavl, targeting an oil infrastructure facility."
+    },
+    {
+      "source_id": "finding-740",
+      "title": "'We don't recommend' — Zelensky warns foreign officials against attending Russia's Victory Day parade",
+      "summary": "\"(Russia) wants permission from Ukraine to hold their parade, so they can safely march onto the square for one hour once a year, and then go back to killing our people and waging war again,\" President Volodymyr Zelensky said.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "'We don't recommend' — Zelensky warns foreign officials against attending Russia's Victory Day parade | \"(Russia) wants permission from Ukraine to hold their parade, so they can safely march onto the square for one hour once a year, and then go back to killing our people and waging war again,\" President Volodymyr Zelensky said."
+    },
+    {
+      "source_id": "finding-741",
+      "title": "Confusion surrounds Victory Day ceasefire as both Russia, Ukraine report drone attacks, front line fighting",
+      "summary": "More than 140 strikes on Ukrainian front-line positions had been recorded by 7 a.m. local time, according to President Volodymyr Zelensky.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Confusion surrounds Victory Day ceasefire as both Russia, Ukraine report drone attacks, front line fighting | More than 140 strikes on Ukrainian front-line positions had been recorded by 7 a.m. local time, according to President Volodymyr Zelensky."
+    },
+    {
+      "source_id": "finding-742",
+      "title": "Russia will likely strike Ukraine’s energy grid again. Kyiv still isn’t preparing",
+      "summary": "As the springtime sun coaxes Kyiv&#x2019;s residents outdoors, memories of a winter without reliable heat or electricity caused by Russian strikes are beginning to fade &#x2014; creating a dangerous distraction from the government&apos;s failure to prepare for the upcoming season.Kyiv expects Moscow to launch another",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Russia will likely strike Ukraine’s energy grid again. Kyiv still isn’t preparing | As the springtime sun coaxes Kyiv&#x2019;s residents outdoors, memories of a winter without reliable heat or electricity caused by Russian strikes are beginning to fade &#x2014; creating a dangerous distraction from the government&apos;s failure to prepare for the upcoming season.Kyiv expects Moscow to launch another"
+    },
+    {
+      "source_id": "finding-743",
+      "title": "General Staff: Russia has lost 1,339,190 troops in Ukraine since Feb. 24, 2022",
+      "summary": "The figure includes 1,130 casualties that Russian forces suffered over the past day.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "General Staff: Russia has lost 1,339,190 troops in Ukraine since Feb. 24, 2022 | The figure includes 1,130 casualties that Russian forces suffered over the past day."
+    },
+    {
+      "source_id": "finding-744",
+      "title": "Ukraine reportedly launches dozens of drones at Moscow ahead of Victory Day Parade",
+      "summary": "Moscow Mayor Sergey Sobyanin claimed that Ukraine's military launched dozens of drones towards the Russian capital throughout the night on May 8, just one day before Moscow is set to stage its annual Victory Day military parade.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Ukraine reportedly launches dozens of drones at Moscow ahead of Victory Day Parade | Moscow Mayor Sergey Sobyanin claimed that Ukraine's military launched dozens of drones towards the Russian capital throughout the night on May 8, just one day before Moscow is set to stage its annual Victory Day military parade."
+    },
+    {
+      "source_id": "finding-746",
+      "title": "'On the issue of Ukraine, we are not an ally of Russia,' Armenian PM says as Kremlin fumes over Zelensky visit",
+      "summary": "Russia's Foreign Ministry summoned the Armenian ambassador on May 7, saying it was \"incomprehensible\" for Yerevan to host Zelensky days earlier.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "'On the issue of Ukraine, we are not an ally of Russia,' Armenian PM says as Kremlin fumes over Zelensky visit | Russia's Foreign Ministry summoned the Armenian ambassador on May 7, saying it was \"incomprehensible\" for Yerevan to host Zelensky days earlier."
+    },
+    {
+      "source_id": "finding-747",
+      "title": "Russian city Perm cancels Victory Day parade after wave of Ukrainian drone strikes",
+      "summary": "Perm lies 1,500 kilometers (930 miles) from the Ukrainian border. President Volodymyr Zelensky said on May 7 that Ukraine would answer Russia's ceasefire violations with \"long-range sanctions.\"",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Russian city Perm cancels Victory Day parade after wave of Ukrainian drone strikes | Perm lies 1,500 kilometers (930 miles) from the Ukrainian border. President Volodymyr Zelensky said on May 7 that Ukraine would answer Russia's ceasefire violations with \"long-range sanctions.\""
+    },
+    {
+      "source_id": "finding-748",
+      "title": "As Russia warns embassies to flee Kyiv before Victory Day, diplomats say they aren't moving",
+      "summary": "The warning came after President Volodymyr Zelensky said the fate of Russia's May 9 military parade \"depends\" on Ukraine's army.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "As Russia warns embassies to flee Kyiv before Victory Day, diplomats say they aren't moving | The warning came after President Volodymyr Zelensky said the fate of Russia's May 9 military parade \"depends\" on Ukraine's army."
+    },
+    {
+      "source_id": "finding-749",
+      "title": "Ukraine war latest: Ukraine condemns 'alarming' situation in Russian-occupied Kherson Oblast",
+      "summary": "Key developments on May 7: Ukraine condemns &apos;alarming situation&apos; in Russian-occupied Oleshky in Kherson Oblast, civilians trapped in urgent need of aidUkraine to respond to Russia&apos;s ceasefire violations with &apos;long-range sanctions,&apos; Zelensky says&apos;Emergency situation&apos; &#x2014; Ukrainian firefighters unable to extinguish",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Ukraine war latest: Ukraine condemns 'alarming' situation in Russian-occupied Kherson Oblast | Key developments on May 7: Ukraine condemns &apos;alarming situation&apos; in Russian-occupied Oleshky in Kherson Oblast, civilians trapped in urgent need of aidUkraine to respond to Russia&apos;s ceasefire violations with &apos;long-range sanctions,&apos; Zelensky says&apos;Emergency situation&apos; &#x2014; Ukrainian firefighters unable to extinguish"
+    },
+    {
+      "source_id": "finding-750",
+      "title": "Why Moscow is afraid this Victory Day",
+      "summary": "On May 9, Moscow will stage its annual Victory Day parade marking the end of World War II in Europe &#x2014; but this year, the spectacle is notable not for its grandeur, but for what&apos;s missing.For the first time in Vladimir Putin&apos;s Russia, no missiles,",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Why Moscow is afraid this Victory Day | On May 9, Moscow will stage its annual Victory Day parade marking the end of World War II in Europe &#x2014; but this year, the spectacle is notable not for its grandeur, but for what&apos;s missing.For the first time in Vladimir Putin&apos;s Russia, no missiles,"
+    },
+    {
+      "source_id": "finding-752",
+      "title": "Kiev regime an MI6 ‘terrorist operation’ – Garland Nixon (VIDEO)",
+      "summary": "British intelligence agencies are calling the shots in Kiev, according to Garland Nixon, as Ukraine violates the Victory Day ceasefire Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Kiev regime an MI6 ‘terrorist operation’ – Garland Nixon (VIDEO) | British intelligence agencies are calling the shots in Kiev, according to Garland Nixon, as Ukraine violates the Victory Day ceasefire Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-767",
+      "title": "Kiev must take ‘one serious step’ before new trilateral talks – Kremlin aide",
+      "summary": "Ukraine must take “one serious step” to advance the peace process and end the conflict with Russia, Kremlin aide Yury Ushakov has said Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Kiev must take ‘one serious step’ before new trilateral talks – Kremlin aide | Ukraine must take “one serious step” to advance the peace process and end the conflict with Russia, Kremlin aide Yury Ushakov has said Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-771",
+      "title": "Remains of 80 Soviet soldiers reburied in Germany (VIDEO)",
+      "summary": "The remains of 80 Soviet soldiers found at a German construction site have been reburied Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Remains of 80 Soviet soldiers reburied in Germany (VIDEO) | The remains of 80 Soviet soldiers found at a German construction site have been reburied Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-772",
+      "title": "Kiev targets Russia with drones after Moscow’s Victory Day ceasefire goes into effect",
+      "summary": "The two-day ceasefire on May 8-9, announced by Russia ahead of and during Victory Day celebrations has begun Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Kiev targets Russia with drones after Moscow’s Victory Day ceasefire goes into effect | The two-day ceasefire on May 8-9, announced by Russia ahead of and during Victory Day celebrations has begun Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-778",
+      "title": "Ukraine steps up strikes on Europe’s largest nuclear plant – Moscow",
+      "summary": "Ukraine has been increasingly targeting the premises of Zaporozhye NPP and the town of Energodar, Rosatom’s Aleksey Likhachev says Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Ukraine steps up strikes on Europe’s largest nuclear plant – Moscow | Ukraine has been increasingly targeting the premises of Zaporozhye NPP and the town of Energodar, Rosatom’s Aleksey Likhachev says Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-946",
+      "title": "Yusuf Yazıcı’ya bir sakatlık şoku daha! 3. Kez çapraz bağı koptu",
+      "summary": "Yunanistan temsilcisi Olympiakos’ta forma giyen milli futbolcumuz Yusuf Yazıcı’dan bir kötü haber daha geldi.",
+      "description": "",
+      "language": "tr",
+      "outlet": "Hurriyet",
+      "text": "Yusuf Yazıcı’ya bir sakatlık şoku daha! 3. Kez çapraz bağı koptu | Yunanistan temsilcisi Olympiakos’ta forma giyen milli futbolcumuz Yusuf Yazıcı’dan bir kötü haber daha geldi."
+    },
+    {
+      "source_id": "finding-952",
+      "title": "Armenia thumbs nose at Kremlin as it receives strong EU endorsement",
+      "summary": "Russia is mad, but can’t do much about it.",
+      "description": "",
+      "language": "en",
+      "outlet": "Eurasianet",
+      "text": "Armenia thumbs nose at Kremlin as it receives strong EU endorsement | Russia is mad, but can’t do much about it."
+    },
+    {
+      "source_id": "finding-953",
+      "title": "New report documents how Central Asian states abet Russian sanctions-busting",
+      "summary": "Georgia is Russia’s primary route in Caucasus.",
+      "description": "",
+      "language": "en",
+      "outlet": "Eurasianet",
+      "text": "New report documents how Central Asian states abet Russian sanctions-busting | Georgia is Russia’s primary route in Caucasus."
+    },
+    {
+      "source_id": "finding-959",
+      "title": "Kazakhstan sticking with OPEC",
+      "summary": "Did Kremlin have hand in decision not to withdraw?",
+      "description": "",
+      "language": "en",
+      "outlet": "Eurasianet",
+      "text": "Kazakhstan sticking with OPEC | Did Kremlin have hand in decision not to withdraw?"
+    },
+    {
+      "source_id": "finding-991",
+      "title": "Queda de drone provoca inc�ndio florestal de grandes propor��es em zona de exclus�o de Tchern�bil",
+      "summary": "A queda de um drone provocou um inc�ndio florestal de grandes dimens�es na zona de exclus�o de Tchern�bil, no norte da Ucr�nia, na quinta-feira (7), informaram as autoridades locais. N�o foi detectado um aumento da radioatividade.\nLeia mais (05/08/2026 - 09h10)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Queda de drone provoca inc�ndio florestal de grandes propor��es em zona de exclus�o de Tchern�bil | A queda de um drone provocou um inc�ndio florestal de grandes dimens�es na zona de exclus�o de Tchern�bil, no norte da Ucr�nia, na quinta-feira (7), informaram as autoridades locais. N�o foi detectado um aumento da radioatividade.\nLeia mais (05/08/2026 - 09h10)"
+    },
+    {
+      "source_id": "finding-1134",
+      "title": "La purga de altos mandos pone en duda el poderío militar ruso",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "La purga de altos mandos pone en duda el poderío militar ruso"
+    },
+    {
+      "source_id": "finding-1190",
+      "title": "Alemania tacha de \"inaceptable\" la amenaza rusa de represalias a Kiev por el 9 de mayo",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "Alemania tacha de \"inaceptable\" la amenaza rusa de represalias a Kiev por el 9 de mayo"
+    },
+    {
+      "source_id": "finding-1213",
+      "title": "Global perceptions of U.S. under Trump worse than Russia, survey finds",
+      "summary": "Global perceptions of the U.S. have deteriorated for a second consecutive year and are now worse ‌than views of Russia, an annual study on democracy published on Friday…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Global perceptions of U.S. under Trump worse than Russia, survey finds | Global perceptions of the U.S. have deteriorated for a second consecutive year and are now worse ‌than views of Russia, an annual study on democracy published on Friday…"
+    },
+    {
+      "source_id": "finding-1234",
+      "title": "Zelenskyy warns against attending Russia's parade as Moscow repeats threats",
+      "summary": "Ukrainian President Volodymyr Zelenskyy on Thursday warned allies of Russia against attending its May 9 WWII victory parade, as Moscow doubled down on its threat to strike Kyiv…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Zelenskyy warns against attending Russia's parade as Moscow repeats threats | Ukrainian President Volodymyr Zelenskyy on Thursday warned allies of Russia against attending its May 9 WWII victory parade, as Moscow doubled down on its threat to strike Kyiv…"
+    },
+    {
+      "source_id": "finding-1258",
+      "title": "A year after Operation Sindoor, drones to standoff weapons: Armed forces take fast route to shopping",
+      "summary": "",
+      "description": "",
+      "language": "en",
+      "outlet": "Indian Express",
+      "text": "A year after Operation Sindoor, drones to standoff weapons: Armed forces take fast route to shopping"
+    },
+    {
+      "source_id": "finding-1322",
+      "title": "Russia to make major international sporting return in Australia",
+      "summary": "Russia will be given its highest profile platform since its sporting exile at the World Aquatics Water Polo World Cup finals in Sydney in July this year.",
+      "description": "",
+      "language": "en",
+      "outlet": "ABC News Australia",
+      "text": "Russia to make major international sporting return in Australia | Russia will be given its highest profile platform since its sporting exile at the World Aquatics Water Polo World Cup finals in Sydney in July this year."
+    },
+    {
+      "source_id": "finding-1359",
+      "title": "Ukraine: le gouvernement alerte sur la situation humanitaire désastreuse à Kherson",
+      "summary": "La Russie et l'Ukraine se sont mutuellement accusées vendredi 8 mai de n'avoir pas respecté le cessez-le-feu unilatéral de Moscou entré en vigueur à minuit pour les commémorations du 9-Mai, chaque camp dénonçant des attaques de drones. Le président ukrainien Volodymyr Zelensky a notamment souligné que les forces russes ont lancé plus de 850 drones sur le front pendant la nuit de jeudi à vendredi et que l'armée a abattu 56 drones russes hors du front, dans le reste du pays.",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "Ukraine: le gouvernement alerte sur la situation humanitaire désastreuse à Kherson | La Russie et l'Ukraine se sont mutuellement accusées vendredi 8 mai de n'avoir pas respecté le cessez-le-feu unilatéral de Moscou entré en vigueur à minuit pour les commémorations du 9-Mai, chaque camp dénonçant des attaques de drones. Le président ukrainien Volodymyr Zelensky a notamment souligné que les forces russes ont lancé plus de 850 drones sur le front pendant la nuit de jeudi à vendredi et que l'armée a abattu 56 drones russes hors du front, dans le reste du pays."
+    },
+    {
+      "source_id": "finding-1379",
+      "title": "Russia halts flights at 13 airports after drones hit air navigation center",
+      "summary": "Control center in Rostov-on-Don, which manages air traffic in southern Russia, was hit by Ukrainian drone strikes, Russian transport ministry says.",
+      "description": "",
+      "language": "en",
+      "outlet": "Politico Europe",
+      "text": "Russia halts flights at 13 airports after drones hit air navigation center | Control center in Rostov-on-Don, which manages air traffic in southern Russia, was hit by Ukrainian drone strikes, Russian transport ministry says."
+    },
+    {
+      "source_id": "finding-1396",
+      "title": "Russia’s pared-down Victory Day parade tells a story: Away from the pomp, war in Ukraine is not going to Putin’s plan",
+      "summary": "Moscow’s influence is Eastern Europe has been slipping of late, including with the loss of a stalwart ally in Hungary.  The battleground, as ever, remains Ukraine.",
+      "description": "",
+      "language": "en",
+      "outlet": "The Conversation",
+      "text": "Russia’s pared-down Victory Day parade tells a story: Away from the pomp, war in Ukraine is not going to Putin’s plan | Moscow’s influence is Eastern Europe has been slipping of late, including with the loss of a stalwart ally in Hungary.  The battleground, as ever, remains Ukraine."
+    }
+  ]
+}

@@ -1,0 +1,702 @@
+{
+  "audit_date": "2026-05-17",
+  "audit_label": "cluster-internal-coherence",
+  "task_brief": "TASK-CLUSTER-INTERNAL-AUDIT.md",
+  "datasets": [
+    "2026-05-08",
+    "2026-05-11",
+    "2026-05-13"
+  ],
+  "pre_cluster_params": {
+    "distance_threshold": 0.7,
+    "linkage": "average",
+    "metric": "cosine",
+    "embed_model_name": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "fastembed_version": "0.8.0"
+  },
+  "top_k_clusters_per_day": 10,
+  "cross_day_aggregate": {
+    "n_findings_audited": 1233,
+    "n_off_topic": 118,
+    "weighted_off_topic_pct": 9.57,
+    "simple_mean_off_topic_pct_per_cluster": 9.83,
+    "n_clusters_audited": 30,
+    "n_clusters_non_singular_hypothesis": 16
+  },
+  "per_day": [
+    {
+      "date": "2026-05-08",
+      "n_findings_population": 1401,
+      "n_clusters_total": 246,
+      "n_clusters_in_top_k": 10,
+      "n_clusters_audited": 10,
+      "n_findings_audited": 438,
+      "n_off_topic": 49,
+      "weighted_off_topic_pct": 11.19,
+      "simple_mean_off_topic_pct": 12.0,
+      "n_clusters_non_singular_hypothesis": 7,
+      "clusters": [
+        {
+          "cluster_rank": 0,
+          "cluster_id": "mc-000",
+          "size": 100,
+          "n_labeled": 100,
+          "on_topic": 83,
+          "off_topic": 17,
+          "off_topic_pct": 17.0,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "Russia-Ukraine war coverage in the days surrounding Russia's 2026 Victory Day weekend — front-line combat, the disputed unilateral ceasefire, Ukrainian drone strikes on Russian airports and energy/military infrastructure, and the pared-down May 9 parade.",
+          "csv_file": "_data/2026-05-08/cluster-00.audit.csv",
+          "hypothesis_file": "_data/2026-05-08/cluster-00.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 1,
+          "cluster_id": "mc-001",
+          "size": 70,
+          "n_labeled": 70,
+          "on_topic": 65,
+          "off_topic": 5,
+          "off_topic_pct": 7.14,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "The escalating US-Iran war and contested ceasefire — the May 7-8 exchange of fire in the Strait of Hormuz, the UAE air-defence interception of Iranian missiles/drones, Trump's 'still in effect' framing, and the surrounding diplomatic and economic fallout.",
+          "csv_file": "_data/2026-05-08/cluster-01.audit.csv",
+          "hypothesis_file": "_data/2026-05-08/cluster-01.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 2,
+          "cluster_id": "mc-002",
+          "size": 49,
+          "n_labeled": 49,
+          "on_topic": 45,
+          "off_topic": 4,
+          "off_topic_pct": 8.16,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "Hantavirus outbreak linked to the MV Hondius cruise ship — passenger disembarkation in the Canary Islands, contact-tracing across countries, WHO/Argentina-Milei diplomatic friction, and parallel suspected cases in the UK, South Africa, and Singapore.",
+          "csv_file": "_data/2026-05-08/cluster-02.audit.csv",
+          "hypothesis_file": "_data/2026-05-08/cluster-02.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 3,
+          "cluster_id": "mc-003",
+          "size": 47,
+          "n_labeled": 47,
+          "on_topic": 44,
+          "off_topic": 3,
+          "off_topic_pct": 6.38,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span South Korean domestic news (President Lee government meetings, Samsung Electronics wage talks, Seoul market movements, HMM headquarters relocation, financial statistics), North Korea developments (long-range artillery deployment, constitutional amendments), and South Korea's external relations across multiple partners — overwhelmingly a single-outlet (Yonhap) Korean news roundup cluster.",
+          "csv_file": "_data/2026-05-08/cluster-03.audit.csv",
+          "hypothesis_file": "_data/2026-05-08/cluster-03.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 4,
+          "cluster_id": "mc-004",
+          "size": 41,
+          "n_labeled": 41,
+          "on_topic": 40,
+          "off_topic": 1,
+          "off_topic_pct": 2.44,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span ongoing judicial and political-scandal coverage across multiple Latin-American jurisdictions (Mexican corruption probes around Sheinbaum/cartels, Brazilian STF / Vorcaro / Ciro Nogueira / Master proceedings, Argentine Milei corruption around Reidel/YPF, Nigerian PGF/Tinubu/Sowore disputes, Spanish judicial-political maneuvering around Vox/Moreno/Quiles) plus assorted single-country judicial-process items in El Salvador, Hungary, Russia, and Germany.",
+          "csv_file": "_data/2026-05-08/cluster-04.audit.csv",
+          "hypothesis_file": "_data/2026-05-08/cluster-04.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 5,
+          "cluster_id": "mc-005",
+          "size": 34,
+          "n_labeled": 34,
+          "on_topic": 33,
+          "off_topic": 1,
+          "off_topic_pct": 2.94,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span Spanish- and Portuguese-language cultural and entertainment coverage (art exhibitions, theater premieres, telenovela cast features, chef and food profiles, music-figure milestones, opera/cinema reviews), bullfighting/tennis sports stories, and miscellaneous lifestyle features — a culture/entertainment beat without a single anchoring event.",
+          "csv_file": "_data/2026-05-08/cluster-05.audit.csv",
+          "hypothesis_file": "_data/2026-05-08/cluster-05.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 6,
+          "cluster_id": "mc-006",
+          "size": 25,
+          "n_labeled": 25,
+          "on_topic": 22,
+          "off_topic": 3,
+          "off_topic_pct": 12.0,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span US-Cuba relations (Rubio's new Cuba sanctions, Lula's claim Trump won't militarily intervene, Cuba's condemnation), Mexican politics around the Sheinbaum-Trump cartel-extradition friction and El Chapo's new judicial appeal, and Spanish opposition friction (Patxi López vs Feijóo, Díaz Ayuso's comments on Mexico) — a multi-theme political news roundup without a single anchoring event.",
+          "csv_file": "_data/2026-05-08/cluster-06.audit.csv",
+          "hypothesis_file": "_data/2026-05-08/cluster-06.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 7,
+          "cluster_id": "mc-007",
+          "size": 25,
+          "n_labeled": 25,
+          "on_topic": 24,
+          "off_topic": 1,
+          "off_topic_pct": 4.0,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span the Real Madrid Valverde-Tchouaméni dressing-room fight and Real Madrid's internal investigation, the cancellation of Flamengo's Copa Libertadores match after Medellín fan vandalism, and surrounding European football / Spanish football / Masters 1000 Rome tennis / Giro d'Italia / Liga MX coverage — a sports news beat without a single anchoring event.",
+          "csv_file": "_data/2026-05-08/cluster-07.audit.csv",
+          "hypothesis_file": "_data/2026-05-08/cluster-07.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 8,
+          "cluster_id": "mc-008",
+          "size": 24,
+          "n_labeled": 24,
+          "on_topic": 19,
+          "off_topic": 5,
+          "off_topic_pct": 20.83,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span Brazilian and Latin-American service/lifestyle/business journalism (supermarket labor practices, Mother's Day commerce, soybean-chain economics, mining-sector policy, eviction guidance, water-reservoir levels, Desenrola debt tips, real-estate listings, mocktail bartending) plus assorted feature pieces (NGO sector role, Venice flooding) — overwhelmingly a service/lifestyle/business beat without an anchoring event.",
+          "csv_file": "_data/2026-05-08/cluster-08.audit.csv",
+          "hypothesis_file": "_data/2026-05-08/cluster-08.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 9,
+          "cluster_id": "mc-009",
+          "size": 23,
+          "n_labeled": 23,
+          "on_topic": 14,
+          "off_topic": 9,
+          "off_topic_pct": 39.13,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles are dominated by Turkish district-court legal-notice templates from Hürriyet (Gölcük 1., Istanbul 12./21./36., Demirci, Samsun 8., Bakırköy 16., Istanbul Anadolu 11., Izmir 61., Antalya 18., Adana 11., Gaziantep İcra) and a small Italian-judicial sub-cluster around the Basilico/Delfin Luxembourg share-procedure case; everything else is unrelated outlier content (Brazilian favela document, missing Colombian journalist, Guinean opposition musician, Cameroun funeral disputes, miscellaneous lifestyle items).",
+          "csv_file": "_data/2026-05-08/cluster-09.audit.csv",
+          "hypothesis_file": "_data/2026-05-08/cluster-09.hypothesis.txt"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-11",
+      "n_findings_population": 1201,
+      "n_clusters_total": 241,
+      "n_clusters_in_top_k": 10,
+      "n_clusters_audited": 10,
+      "n_findings_audited": 359,
+      "n_off_topic": 34,
+      "weighted_off_topic_pct": 9.47,
+      "simple_mean_off_topic_pct": 9.11,
+      "n_clusters_non_singular_hypothesis": 4,
+      "clusters": [
+        {
+          "cluster_rank": 0,
+          "cluster_id": "mc-000",
+          "size": 66,
+          "n_labeled": 66,
+          "on_topic": 52,
+          "off_topic": 14,
+          "off_topic_pct": 21.21,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "Russia-Ukraine war news on May 11 — mutual accusations of breaching the three-day Russia-declared truce, Putin's nomination of former German Chancellor Schröder as Russia's preferred peace mediator (rejected by Germany / EU / Ukraine), Zelensky's claim he 'pushed' Putin toward talks, and the war's broader political-diplomatic fallout.",
+          "csv_file": "_data/2026-05-11/cluster-00.audit.csv",
+          "hypothesis_file": "_data/2026-05-11/cluster-00.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 1,
+          "cluster_id": "mc-001",
+          "size": 61,
+          "n_labeled": 61,
+          "on_topic": 58,
+          "off_topic": 3,
+          "off_topic_pct": 4.92,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "The US-Iran war and ceasefire negotiations — Iran's counter-proposal to the US peace plan (sovereignty over Hormuz, war compensation, frozen-assets release), Trump's 'totally unacceptable' rejection, Netanyahu's CBS interview hinting at US troop deployment, Yemen Ansarullah warnings, and Iran's execution of a man convicted of spying for CIA/Mossad.",
+          "csv_file": "_data/2026-05-11/cluster-01.audit.csv",
+          "hypothesis_file": "_data/2026-05-11/cluster-01.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 2,
+          "cluster_id": "mc-002",
+          "size": 55,
+          "n_labeled": 55,
+          "on_topic": 55,
+          "off_topic": 0,
+          "off_topic_pct": 0.0,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "Hantavirus outbreak linked to the MV Hondius cruise ship — disembarkation and repatriation of passengers from Tenerife, new positive cases among evacuated US / French / Irish / Indian / German / British nationals, the British army paratroop response on a remote UK island, and the parallel WHO / Argentina / France diplomatic context.",
+          "csv_file": "_data/2026-05-11/cluster-02.audit.csv",
+          "hypothesis_file": "_data/2026-05-11/cluster-02.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 3,
+          "cluster_id": "mc-003",
+          "size": 29,
+          "n_labeled": 29,
+          "on_topic": 28,
+          "off_topic": 1,
+          "off_topic_pct": 3.45,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "Israel's continuing military operations and political fallout on May 11 — Israeli attacks in Gaza, West Bank settler violence and demolitions in Silwan and elsewhere, the Israel-Lebanon ceasefire under stress with Hezbollah drone exchanges and Kiryat Shmona intercepts, Palestinian commemoration of Shireen Abu Akleh and the Sumud Flotilla, and surrounding political pieces on Netanyahu, US support, and EU action.",
+          "csv_file": "_data/2026-05-11/cluster-03.audit.csv",
+          "hypothesis_file": "_data/2026-05-11/cluster-03.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 4,
+          "cluster_id": "mc-004",
+          "size": 29,
+          "n_labeled": 29,
+          "on_topic": 29,
+          "off_topic": 0,
+          "off_topic_pct": 0.0,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span the Barcelona LaLiga title clinched with the Clásico victory over Real Madrid (with Flick's father's death backdrop) and the broader weekend sports beat — Liga MX Femenil semifinals, Brazilian volleyball/canoeing/Sub-17 medals at multiple events, Masters 1000 Rome tennis, and surrounding football transfer / FIFA World Cup off-pitch coverage.",
+          "csv_file": "_data/2026-05-11/cluster-04.audit.csv",
+          "hypothesis_file": "_data/2026-05-11/cluster-04.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 5,
+          "cluster_id": "mc-005",
+          "size": 29,
+          "n_labeled": 29,
+          "on_topic": 20,
+          "off_topic": 9,
+          "off_topic_pct": 31.03,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span South Korea's response to the May 11 attack on the HMM cargo vessel in the Strait of Hormuz (Cheong Wa Dae condemnation, defense-ministry probe, opposition pressure to publicly identify Iran, US Treasury Secretary Bessent's pre-Trump-Xi Seoul visit) and a broader single-outlet (Yonhap) Korean foreign-affairs / defense roundup (NATO cooperation, NK Victory Day march, defense chief talks, naval fleet review).",
+          "csv_file": "_data/2026-05-11/cluster-05.audit.csv",
+          "hypothesis_file": "_data/2026-05-11/cluster-05.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 6,
+          "cluster_id": "mc-006",
+          "size": 27,
+          "n_labeled": 27,
+          "on_topic": 25,
+          "off_topic": 2,
+          "off_topic_pct": 7.41,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span Brazilian business / economy / society features (Agência Brasil 36th anniversary, the Ypê factory corrosion / Anvisa controversy, debt and credit-renegotiation pieces, USP police-action / academic-strike standoff, INSS Mother's Day task force, work-week reform debate, Datafolha crime and trust polls, banking outlook) and Spanish tech / economy lifestyle features — overwhelmingly a Folha de S.Paulo + Infobae feature beat without an anchoring event.",
+          "csv_file": "_data/2026-05-11/cluster-06.audit.csv",
+          "hypothesis_file": "_data/2026-05-11/cluster-06.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 7,
+          "cluster_id": "mc-007",
+          "size": 23,
+          "n_labeled": 23,
+          "on_topic": 20,
+          "off_topic": 3,
+          "off_topic_pct": 13.04,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "The Trump-Xi state-visit summit in Beijing this week — China confirming the dates, US-China pre-summit trade talks in South Korea, the Iran-war pressure backdrop and Trump's intent to press Xi on Iran, currency-fix and trade-rebound preparation, and surrounding commentary on Taiwan and Trump's last 'friendly' 2017 visit.",
+          "csv_file": "_data/2026-05-11/cluster-07.audit.csv",
+          "hypothesis_file": "_data/2026-05-11/cluster-07.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 8,
+          "cluster_id": "mc-008",
+          "size": 21,
+          "n_labeled": 21,
+          "on_topic": 20,
+          "off_topic": 1,
+          "off_topic_pct": 4.76,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span the France-Africa 'Africa Forward' summit in Nairobi (Macron's visit and 11 deals with Kenya, EU's €1bn Africa partnership package, Tinubu's arrival, France's pivot to African strategic partnerships) and a broader African-news beat (Sudan drone-war conflict alert, Zimbabwe diaspora-protest leaked memo and farm restitution, Malawi cost-of-living crisis, Madagascar information-law bill, RDC Sud-Kivu suspension and senior-officer trial, Togo map debate, Senegal demining in Casamance).",
+          "csv_file": "_data/2026-05-11/cluster-08.audit.csv",
+          "hypothesis_file": "_data/2026-05-11/cluster-08.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 9,
+          "cluster_id": "mc-009",
+          "size": 19,
+          "n_labeled": 19,
+          "on_topic": 18,
+          "off_topic": 1,
+          "off_topic_pct": 5.26,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "Ukraine-Russia war news around international defence cooperation — Baltic states' drone incidents and Ukraine's offer of expert teams, Germany's Pistorius visit to Kyiv to discuss joint arms production, Ukraine's resumed fuel imports from Hungary/Slovakia, EU €90bn loan first funds expected, Russian frozen-assets compensation debate, and the war's front-line tactical positioning around Vovchansk/Kupiansk.",
+          "csv_file": "_data/2026-05-11/cluster-09.audit.csv",
+          "hypothesis_file": "_data/2026-05-11/cluster-09.hypothesis.txt"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-13",
+      "n_findings_population": 1405,
+      "n_clusters_total": 279,
+      "n_clusters_in_top_k": 10,
+      "n_clusters_audited": 10,
+      "n_findings_audited": 436,
+      "n_off_topic": 35,
+      "weighted_off_topic_pct": 8.03,
+      "simple_mean_off_topic_pct": 8.38,
+      "n_clusters_non_singular_hypothesis": 5,
+      "clusters": [
+        {
+          "cluster_rank": 0,
+          "cluster_id": "mc-000",
+          "size": 77,
+          "n_labeled": 77,
+          "on_topic": 73,
+          "off_topic": 4,
+          "off_topic_pct": 5.19,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "Russia-Ukraine war news on May 13 — Russia's test of the Sarmat 'most powerful missile in the world' / Satan II ICBM and planned late-2026 deployment, end of the three-day Victory Day ceasefire with renewed Russian strikes on Kryvyi Rih / Dnipropetrovsk / Kharkiv / Sumy, Ukrainian drone strikes on Yaroslavl industrial and Orenburg gas facilities, and the surrounding diplomatic / sanctions / Russian-NK weapons-trafficking context.",
+          "csv_file": "_data/2026-05-13/cluster-00.audit.csv",
+          "hypothesis_file": "_data/2026-05-13/cluster-00.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 1,
+          "cluster_id": "mc-001",
+          "size": 72,
+          "n_labeled": 72,
+          "on_topic": 66,
+          "off_topic": 6,
+          "off_topic_pct": 8.33,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "The Trump-Xi state-visit summit in Beijing on May 13 — Trump's arrival and the key issues shaping the meeting (trade, Taiwan, Iran-war pressure, rare earths, AI, currency, business open-up), Nvidia CEO Jensen Huang and US defense secretary's unusual inclusion in the delegation, Marco Rubio's presence despite Beijing sanctions, China's red lines, and Beijing's preparation.",
+          "csv_file": "_data/2026-05-13/cluster-01.audit.csv",
+          "hypothesis_file": "_data/2026-05-13/cluster-01.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 2,
+          "cluster_id": "mc-002",
+          "size": 58,
+          "n_labeled": 58,
+          "on_topic": 54,
+          "off_topic": 4,
+          "off_topic_pct": 6.9,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "US-Iran war coverage on May 13 — Trump declaring he does not need Xi's help on Iran as he heads to China, Reuters / WSJ reports of Saudi Arabia and the UAE conducting covert attacks on Iran, Iran's executions of alleged Mossad spies, mounting US war costs at $29bn (with $1T scenarios), and Hegseth's congressional grilling on those costs and Trump's end-game.",
+          "csv_file": "_data/2026-05-13/cluster-02.audit.csv",
+          "hypothesis_file": "_data/2026-05-13/cluster-02.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 3,
+          "cluster_id": "mc-003",
+          "size": 53,
+          "n_labeled": 53,
+          "on_topic": 46,
+          "off_topic": 7,
+          "off_topic_pct": 13.21,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span the US-China pre-summit trade talks in Seoul and Bessent's visit ahead of Trump-Xi, South Korea's 'phased' Hormuz support review and HMM ship-strike investigation, the Samsung Electronics wage-talks breakdown threatening a major strike, Seoul market and currency volatility on US/Mideast uncertainties, and a broader Yonhap Korean domestic-and-foreign-affairs roundup (NK developments, US Navy nuclear-sub request, jobs data, editorials).",
+          "csv_file": "_data/2026-05-13/cluster-03.audit.csv",
+          "hypothesis_file": "_data/2026-05-13/cluster-03.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 4,
+          "cluster_id": "mc-004",
+          "size": 44,
+          "n_labeled": 44,
+          "on_topic": 42,
+          "off_topic": 2,
+          "off_topic_pct": 4.55,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span Spanish political and culture features (Díaz Ayuso's controversial Mexico-trip account, Florentino Pérez calling Real Madrid elections amid post-Clásico crisis, PSOE-PP-Vox local rivalries, El País Madrid municipal/cultural pieces, Spanish TV and media-business shakeups), Brazilian socio-historical and political features (SP labour-week debate, Belo Horizonte plane-crash survivor, Lei Áurea archive find, Pinakotheke reopening, Câmara SP CPI), and assorted Latin-American celebrity/crime/lifestyle items (Carolina Flores feminicidio, Río Gallegos dismembered body, Peruvian gossip, Cannes Critics' Week opening).",
+          "csv_file": "_data/2026-05-13/cluster-04.audit.csv",
+          "hypothesis_file": "_data/2026-05-13/cluster-04.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 5,
+          "cluster_id": "mc-005",
+          "size": 29,
+          "n_labeled": 29,
+          "on_topic": 28,
+          "off_topic": 1,
+          "off_topic_pct": 3.45,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span the France-Africa 'Africa Forward' Summit in Nairobi (Macron's $27bn investment unveil, Ruto's win-win partnership call, Tinubu's reform call, Guterres' summit speech, France-24 interviews on Mali/DRC/immigration, Eliud Kipchoge's run with Macron, French protester arrested, deals and partnerships) and a broader African-news beat (South African demolitions and Western Cape storm, COP31 climate demands, Great Green Wall progress, RDC AFC/M23 repositioning, French companies in Ethiopia).",
+          "csv_file": "_data/2026-05-13/cluster-05.audit.csv",
+          "hypothesis_file": "_data/2026-05-13/cluster-05.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 6,
+          "cluster_id": "mc-006",
+          "size": 27,
+          "n_labeled": 27,
+          "on_topic": 23,
+          "off_topic": 4,
+          "off_topic_pct": 14.81,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "UK PM Keir Starmer's political-survival crisis — junior ministers quitting, the King's Speech as battleground, calls for him to step aside or hand over to Farage, six potential Labour successors profiled, Starmer's defiance and meeting with Streeting, and party-rules analysis on how hard he is to oust.",
+          "csv_file": "_data/2026-05-13/cluster-06.audit.csv",
+          "hypothesis_file": "_data/2026-05-13/cluster-06.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 7,
+          "cluster_id": "mc-007",
+          "size": 26,
+          "n_labeled": 26,
+          "on_topic": 22,
+          "off_topic": 4,
+          "off_topic_pct": 15.38,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span Ukraine's anti-corruption case against Andrei Yermak (Zelensky's ex-chief of staff) and the related $10m money-laundering investigation, Russian opposition (FBK / Navalnaya / Ashurkov / TV Rain editor) infighting and Russian-internal judicial proceedings (ex-deputy nature-minister fraud, ex-Binance director, fabricated drugs case compensation), and assorted single-jurisdiction judicial cases (Sarkozy Libya, Cum-Ex Berger Germany, Turkish Özgür Özel / Özkan Yalım, Mayo Zambada Mexican narco, Benin ex-deputy coup-praise).",
+          "csv_file": "_data/2026-05-13/cluster-07.audit.csv",
+          "hypothesis_file": "_data/2026-05-13/cluster-07.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 8,
+          "cluster_id": "mc-008",
+          "size": 25,
+          "n_labeled": 25,
+          "on_topic": 22,
+          "off_topic": 3,
+          "off_topic_pct": 12.0,
+          "hypothesis_was_singular": false,
+          "hypothesis_text": "No apparent single story; the titles span US-Mexico-cartel friction (CIA Ground Branch revelations and denials, Hegseth's intervene-or-we-will warning, CNN's AIFA-explosion claim, DEA on Rocha Moya, Trump's cartel-extradition pressure, Los Chapitos negotiated surrender), Lula-Trump diplomacy and Lula's 'Brasil Contra o Crime Organizado' pre-election plan, Spanish (PP-PSOE Zapatero/Feijoo) and Venezuelan (jailed dissident death) political-scandal items, plus Trump-vs-ICC, Philippines Duterte ICC, Guatemala on Venezuela, and Argentina PJ Mendoza factional split.",
+          "csv_file": "_data/2026-05-13/cluster-08.audit.csv",
+          "hypothesis_file": "_data/2026-05-13/cluster-08.hypothesis.txt"
+        },
+        {
+          "cluster_rank": 9,
+          "cluster_id": "mc-009",
+          "size": 25,
+          "n_labeled": 25,
+          "on_topic": 25,
+          "off_topic": 0,
+          "off_topic_pct": 0.0,
+          "hypothesis_was_singular": true,
+          "hypothesis_text": "Israel's military operations in southern Lebanon (drone strikes, 13-15 paramedics/soldiers killed, 380 killed since the April 17 ceasefire) and the Knesset's special-tribunal-with-death-penalty law for October 7 attackers — surrounding Hezbollah pressure, UAE/Abu Dhabi sanctions on Hezbollah-linked groups, the new October 7 sexual-violence report, the Spain/ESC EU dilemma, and the Sumud Flotilla treatment controversy.",
+          "csv_file": "_data/2026-05-13/cluster-09.audit.csv",
+          "hypothesis_file": "_data/2026-05-13/cluster-09.hypothesis.txt"
+        }
+      ]
+    }
+  ],
+  "per_cluster_raw": [
+    {
+      "cluster_id": "mc-000",
+      "day": "2026-05-08",
+      "size": 100,
+      "off_topic_count": 17,
+      "off_topic_pct": 17.0,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-001",
+      "day": "2026-05-08",
+      "size": 70,
+      "off_topic_count": 5,
+      "off_topic_pct": 7.14,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-002",
+      "day": "2026-05-08",
+      "size": 49,
+      "off_topic_count": 4,
+      "off_topic_pct": 8.16,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-003",
+      "day": "2026-05-08",
+      "size": 47,
+      "off_topic_count": 3,
+      "off_topic_pct": 6.38,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-004",
+      "day": "2026-05-08",
+      "size": 41,
+      "off_topic_count": 1,
+      "off_topic_pct": 2.44,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-005",
+      "day": "2026-05-08",
+      "size": 34,
+      "off_topic_count": 1,
+      "off_topic_pct": 2.94,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-006",
+      "day": "2026-05-08",
+      "size": 25,
+      "off_topic_count": 3,
+      "off_topic_pct": 12.0,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-007",
+      "day": "2026-05-08",
+      "size": 25,
+      "off_topic_count": 1,
+      "off_topic_pct": 4.0,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-008",
+      "day": "2026-05-08",
+      "size": 24,
+      "off_topic_count": 5,
+      "off_topic_pct": 20.83,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-009",
+      "day": "2026-05-08",
+      "size": 23,
+      "off_topic_count": 9,
+      "off_topic_pct": 39.13,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-000",
+      "day": "2026-05-11",
+      "size": 66,
+      "off_topic_count": 14,
+      "off_topic_pct": 21.21,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-001",
+      "day": "2026-05-11",
+      "size": 61,
+      "off_topic_count": 3,
+      "off_topic_pct": 4.92,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-002",
+      "day": "2026-05-11",
+      "size": 55,
+      "off_topic_count": 0,
+      "off_topic_pct": 0.0,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-003",
+      "day": "2026-05-11",
+      "size": 29,
+      "off_topic_count": 1,
+      "off_topic_pct": 3.45,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-004",
+      "day": "2026-05-11",
+      "size": 29,
+      "off_topic_count": 0,
+      "off_topic_pct": 0.0,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-005",
+      "day": "2026-05-11",
+      "size": 29,
+      "off_topic_count": 9,
+      "off_topic_pct": 31.03,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-006",
+      "day": "2026-05-11",
+      "size": 27,
+      "off_topic_count": 2,
+      "off_topic_pct": 7.41,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-007",
+      "day": "2026-05-11",
+      "size": 23,
+      "off_topic_count": 3,
+      "off_topic_pct": 13.04,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-008",
+      "day": "2026-05-11",
+      "size": 21,
+      "off_topic_count": 1,
+      "off_topic_pct": 4.76,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-009",
+      "day": "2026-05-11",
+      "size": 19,
+      "off_topic_count": 1,
+      "off_topic_pct": 5.26,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-000",
+      "day": "2026-05-13",
+      "size": 77,
+      "off_topic_count": 4,
+      "off_topic_pct": 5.19,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-001",
+      "day": "2026-05-13",
+      "size": 72,
+      "off_topic_count": 6,
+      "off_topic_pct": 8.33,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-002",
+      "day": "2026-05-13",
+      "size": 58,
+      "off_topic_count": 4,
+      "off_topic_pct": 6.9,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-003",
+      "day": "2026-05-13",
+      "size": 53,
+      "off_topic_count": 7,
+      "off_topic_pct": 13.21,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-004",
+      "day": "2026-05-13",
+      "size": 44,
+      "off_topic_count": 2,
+      "off_topic_pct": 4.55,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-005",
+      "day": "2026-05-13",
+      "size": 29,
+      "off_topic_count": 1,
+      "off_topic_pct": 3.45,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-006",
+      "day": "2026-05-13",
+      "size": 27,
+      "off_topic_count": 4,
+      "off_topic_pct": 14.81,
+      "hypothesis_was_singular": true
+    },
+    {
+      "cluster_id": "mc-007",
+      "day": "2026-05-13",
+      "size": 26,
+      "off_topic_count": 4,
+      "off_topic_pct": 15.38,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-008",
+      "day": "2026-05-13",
+      "size": 25,
+      "off_topic_count": 3,
+      "off_topic_pct": 12.0,
+      "hypothesis_was_singular": false
+    },
+    {
+      "cluster_id": "mc-009",
+      "day": "2026-05-13",
+      "size": 25,
+      "off_topic_count": 0,
+      "off_topic_pct": 0.0,
+      "hypothesis_was_singular": true
+    }
+  ]
+}

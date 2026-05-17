@@ -1,0 +1,314 @@
+{
+  "cluster_rank": 5,
+  "cluster_id": "mc-005",
+  "size": 34,
+  "n_findings": 34,
+  "findings": [
+    {
+      "source_id": "finding-266",
+      "title": "Sinaloa: el descubrimiento que llegó tarde",
+      "summary": "Sonya Santos descubre la gastronomía sinaloense: aguachile, chilorio, tamales barbones y una obsesión silenciosa por la calidad del ingrediente.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Sinaloa: el descubrimiento que llegó tarde | Sonya Santos descubre la gastronomía sinaloense: aguachile, chilorio, tamales barbones y una obsesión silenciosa por la calidad del ingrediente."
+    },
+    {
+      "source_id": "finding-286",
+      "title": "‘No espero que me quieran’: ¿Quién es Édgar Núñez, chef con estrella Michelin que se une a ‘Masterchef 24/7′?",
+      "summary": "El chef Édgar Núñez es propietario del restaurante Sud 777, el cual ha sido reconocido por la lista 50 Best's Latin América.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "‘No espero que me quieran’: ¿Quién es Édgar Núñez, chef con estrella Michelin que se une a ‘Masterchef 24/7′? | El chef Édgar Núñez es propietario del restaurante Sud 777, el cual ha sido reconocido por la lista 50 Best's Latin América."
+    },
+    {
+      "source_id": "finding-287",
+      "title": "‘Tiene los mejores molletes’: ¿Cómo es La Sombra del Sabino, el café donde encararon a Noroña en Tepoztlán?",
+      "summary": "La Sombra del Sabino combina cafetería, librería y actividades culturales en Tepoztlán. Conoce la historia del restaurante, su menú, precios y el incidente que vivió Gerardo Fernández Noroña.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "‘Tiene los mejores molletes’: ¿Cómo es La Sombra del Sabino, el café donde encararon a Noroña en Tepoztlán? | La Sombra del Sabino combina cafetería, librería y actividades culturales en Tepoztlán. Conoce la historia del restaurante, su menú, precios y el incidente que vivió Gerardo Fernández Noroña."
+    },
+    {
+      "source_id": "finding-601",
+      "title": "Nella gioia e nel dolore di Ozpetek a Natale in sala, con Scalera, Ferilli, Argentero",
+      "summary": "Nel cast anche Miguel Angel Silvestre, Venier, Cucciari, Recano",
+      "description": "",
+      "language": "it",
+      "outlet": "ANSA",
+      "text": "Nella gioia e nel dolore di Ozpetek a Natale in sala, con Scalera, Ferilli, Argentero | Nel cast anche Miguel Angel Silvestre, Venier, Cucciari, Recano"
+    },
+    {
+      "source_id": "finding-637",
+      "title": "Annette Messager's 'A Swallow Does Not Make Spring' exhibition brings her menagerie to life at the Musée de la Chasse et de la Nature",
+      "summary": "The artist has installed her birds, giant snails, monsters and whimsical creatures among the taxidermied animals of the Paris museum. Visits are punctuated with surprises and incongruities.",
+      "description": "",
+      "language": "en",
+      "outlet": "Le Monde",
+      "text": "Annette Messager's 'A Swallow Does Not Make Spring' exhibition brings her menagerie to life at the Musée de la Chasse et de la Nature | The artist has installed her birds, giant snails, monsters and whimsical creatures among the taxidermied animals of the Paris museum. Visits are punctuated with surprises and incongruities."
+    },
+    {
+      "source_id": "finding-797",
+      "title": "Nueve momentos de Marta Sánchez en sus 60 años en los que hizo, dijo y cantó lo que quiso",
+      "summary": "Su visita a las tropas españolas en el Golfo Pérsico, su marcha de Olé Olé, su letra para el himno de España... La cantante lleva más de cuatro décadas subida a los escenarios, donde siempre ha sido ella misma, aunque no siempre se la haya entendido",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Nueve momentos de Marta Sánchez en sus 60 años en los que hizo, dijo y cantó lo que quiso | Su visita a las tropas españolas en el Golfo Pérsico, su marcha de Olé Olé, su letra para el himno de España... La cantante lleva más de cuatro décadas subida a los escenarios, donde siempre ha sido ella misma, aunque no siempre se la haya entendido"
+    },
+    {
+      "source_id": "finding-814",
+      "title": "Sonsoles Ónega inaugura San Isidro con un pregón con tintes reivindicativos: “Me duele que haya que ser buitre y no paloma para vivir aquí”",
+      "summary": "La periodista ha salido al balcón de la Casa De la Villa con una carta de amor a la ciudad, en el que ha hablado de migración, vivienda o de gentrificación",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Sonsoles Ónega inaugura San Isidro con un pregón con tintes reivindicativos: “Me duele que haya que ser buitre y no paloma para vivir aquí” | La periodista ha salido al balcón de la Casa De la Villa con una carta de amor a la ciudad, en el que ha hablado de migración, vivienda o de gentrificación"
+    },
+    {
+      "source_id": "finding-815",
+      "title": "Los estrenos de teatro y danza de la semana",
+      "summary": "Los críticos de ‘Babelia’ reseñan lo nuevo de José Sacristán, Carlota Subirós, María Velasco, Goyo Montero y Mats Ek",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Los estrenos de teatro y danza de la semana | Los críticos de ‘Babelia’ reseñan lo nuevo de José Sacristán, Carlota Subirós, María Velasco, Goyo Montero y Mats Ek"
+    },
+    {
+      "source_id": "finding-820",
+      "title": "El Roto: exposición",
+      "summary": "Viñeta del 8 de mayo de 2026",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "El Roto: exposición | Viñeta del 8 de mayo de 2026"
+    },
+    {
+      "source_id": "finding-822",
+      "title": "¡Gracias por todo, Soledad!, por Daniella Martí",
+      "summary": "Viñeta del viernes 8 de mayo de 2026",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "¡Gracias por todo, Soledad!, por Daniella Martí | Viñeta del viernes 8 de mayo de 2026"
+    },
+    {
+      "source_id": "finding-832",
+      "title": "L’etern retorn de Gaziel",
+      "summary": "El professor valencià Francisco Fuster publica la segona biografia del periodista, aquesta en castellà, encertadament titulada ‘Insobornable’",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "L’etern retorn de Gaziel | El professor valencià Francisco Fuster publica la segona biografia del periodista, aquesta en castellà, encertadament titulada ‘Insobornable’"
+    },
+    {
+      "source_id": "finding-836",
+      "title": "La memoria negra y esclavista que España dejó fuera de su historia",
+      "summary": "Valencia se suma a las ciudades que revisan su pasado de esclavitud con rutas y actividades para recuperar el relato de las personas negras que habitaron sus calles desde hace siglos. Historiadores piden una revisión profunda del relato nacional que los incluya",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "La memoria negra y esclavista que España dejó fuera de su historia | Valencia se suma a las ciudades que revisan su pasado de esclavitud con rutas y actividades para recuperar el relato de las personas negras que habitaron sus calles desde hace siglos. Historiadores piden una revisión profunda del relato nacional que los incluya"
+    },
+    {
+      "source_id": "finding-844",
+      "title": "‘Hangar rojo’: una ópera prima rotunda sobre la conciencia individual en el golpe de Pinochet",
+      "summary": "La primera película de Juan Pablo Sallato recrea el principio de la dictadura chilena a través del dilema de un militar paracaidista",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "‘Hangar rojo’: una ópera prima rotunda sobre la conciencia individual en el golpe de Pinochet | La primera película de Juan Pablo Sallato recrea el principio de la dictadura chilena a través del dilema de un militar paracaidista"
+    },
+    {
+      "source_id": "finding-848",
+      "title": "Una empresaria de mascotas y la exigencia de “promover valores estadounidenses”: la ofensiva cultural de Trump golpea la Bienal de Venecia",
+      "summary": "El país llega a la gran cita del arte representado por Alma Allen, un escultor autodidacta que fue escogido tras una convocatoria tardía y reorientada hacia el ideario MAGA",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Una empresaria de mascotas y la exigencia de “promover valores estadounidenses”: la ofensiva cultural de Trump golpea la Bienal de Venecia | El país llega a la gran cita del arte representado por Alma Allen, un escultor autodidacta que fue escogido tras una convocatoria tardía y reorientada hacia el ideario MAGA"
+    },
+    {
+      "source_id": "finding-849",
+      "title": "“Este es el primer ‘rock and roll’ de Silvio Rodríguez”: Alejo Stivel y el cantautor cubano sellan 50 años de amistad en una canción",
+      "summary": "‘Déjame en paz’ es un tema tremendamente pegadizo en el que el antiguo miembro de Tequila compone la música, el autor de ‘Ojalá’ escribe la letra y ambos cantan",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "“Este es el primer ‘rock and roll’ de Silvio Rodríguez”: Alejo Stivel y el cantautor cubano sellan 50 años de amistad en una canción | ‘Déjame en paz’ es un tema tremendamente pegadizo en el que el antiguo miembro de Tequila compone la música, el autor de ‘Ojalá’ escribe la letra y ambos cantan"
+    },
+    {
+      "source_id": "finding-858",
+      "title": "Los hermanos Artidiello, guardianes de los guisos asturianos en el Hostal de Caravia: “Hay clientes que vienen desde hace 50 años”",
+      "summary": "Son cuatro y, desde que tomaron las riendas del restaurante, se reparten las tareas entre la sala y la cocina. Ofrecen una carta sencilla, de territorio y con precios ajustados, además de un menú del día por 13,50 euros",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Los hermanos Artidiello, guardianes de los guisos asturianos en el Hostal de Caravia: “Hay clientes que vienen desde hace 50 años” | Son cuatro y, desde que tomaron las riendas del restaurante, se reparten las tareas entre la sala y la cocina. Ofrecen una carta sencilla, de territorio y con precios ajustados, además de un menú del día por 13,50 euros"
+    },
+    {
+      "source_id": "finding-860",
+      "title": "En busca de la mariposa graellsia, la reina alada de España, en la sierra de Guadarrama",
+      "summary": "En mayo y junio, con la última luz del día, tienen lugar los escarceos amorosos de la mariposa más bella de Europa, que fue descubierta en 1849 en un pinar abulense. Salir de noche a su encuentro es un buen plan",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "En busca de la mariposa graellsia, la reina alada de España, en la sierra de Guadarrama | En mayo y junio, con la última luz del día, tienen lugar los escarceos amorosos de la mariposa más bella de Europa, que fue descubierta en 1849 en un pinar abulense. Salir de noche a su encuentro es un buen plan"
+    },
+    {
+      "source_id": "finding-885",
+      "title": "Política, discoteca y bono cultural en la Feria de San Isidro: ¿están los jóvenes salvando los toros?",
+      "summary": "Expertos y aficionados analizan el creciente furor taurino alimentado de ideología entre la generación Z, ante el ciclo taurino de Madrid que arrasa en taquilla",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Política, discoteca y bono cultural en la Feria de San Isidro: ¿están los jóvenes salvando los toros? | Expertos y aficionados analizan el creciente furor taurino alimentado de ideología entre la generación Z, ante el ciclo taurino de Madrid que arrasa en taquilla"
+    },
+    {
+      "source_id": "finding-887",
+      "title": "Ni Morante de la Puebla ni Roca Rey estarán este domingo en Valladolid",
+      "summary": "El torero sevillano reaparecerá el día 15 en Jerez de la Frontera y la vuelta del peruano dependerá de su evolución",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Ni Morante de la Puebla ni Roca Rey estarán este domingo en Valladolid | El torero sevillano reaparecerá el día 15 en Jerez de la Frontera y la vuelta del peruano dependerá de su evolución"
+    },
+    {
+      "source_id": "finding-1014",
+      "title": "Othon Bastos adia espet�culo em Bras�lia ap�s romper tend�o",
+      "summary": "Othon Bastos, de 92 anos, adiou para agosto as apresenta��es do espet�culo \"N�o Me Entrego, N�o!\", que faria na Caixa Cultural Bras�lia entre os dias 14 e 24 deste m�s.\nLeia mais (05/08/2026 - 05h13)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Othon Bastos adia espet�culo em Bras�lia ap�s romper tend�o | Othon Bastos, de 92 anos, adiou para agosto as apresenta��es do espet�culo \"N�o Me Entrego, N�o!\", que faria na Caixa Cultural Bras�lia entre os dias 14 e 24 deste m�s.\nLeia mais (05/08/2026 - 05h13)"
+    },
+    {
+      "source_id": "finding-1025",
+      "title": "Dries Van Noten inaugura funda��o em Veneza com exposi��o sobre beleza",
+      "summary": "H� cartazes espalhados por Veneza com frases assinadas por nomes como Rei Kawakubo e Jean Cocteau. Alguns s�o vermelhos, outros azuis ou amarelos. Em comum, eles buscam definir o mais subjetivo dos conceitos: a beleza. Entre os autores dessa dissemina��o de pensamentos silenciosos est� um estilista de talento singular que, ao longo de suas quase quatro d�cadas na moda, entregou ao p�blico suas interpreta��es mais profundas sobre o belo: Dries Van Noten.\nLeia mais (05/08/2026 - 04h00)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Dries Van Noten inaugura funda��o em Veneza com exposi��o sobre beleza | H� cartazes espalhados por Veneza com frases assinadas por nomes como Rei Kawakubo e Jean Cocteau. Alguns s�o vermelhos, outros azuis ou amarelos. Em comum, eles buscam definir o mais subjetivo dos conceitos: a beleza. Entre os autores dessa dissemina��o de pensamentos silenciosos est� um estilista de talento singular que, ao longo de suas quase quatro d�cadas na moda, entregou ao p�blico suas interpreta��es mais profundas sobre o belo: Dries Van Noten.\nLeia mais (05/08/2026 - 04h00)"
+    },
+    {
+      "source_id": "finding-1036",
+      "title": "Elenco de 'Tr�s Gra�as' se re�ne para show ap�s fim das grava��es e leva f�s � loucura",
+      "summary": "Mesmo com as grava��es j� encerradas e o elenco oficialmente de f�rias, os atores da novela \"Tr�s Gra�as\", de Aguinaldo Silva, se reuniram nesta quinta-feira (7) para participar da turn� do projeto -o pr�ximo show acontece no dia 15, em S�o Paulo.\nLeia mais (05/07/2026 - 23h59)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Elenco de 'Tr�s Gra�as' se re�ne para show ap�s fim das grava��es e leva f�s � loucura | Mesmo com as grava��es j� encerradas e o elenco oficialmente de f�rias, os atores da novela \"Tr�s Gra�as\", de Aguinaldo Silva, se reuniram nesta quinta-feira (7) para participar da turn� do projeto -o pr�ximo show acontece no dia 15, em S�o Paulo.\nLeia mais (05/07/2026 - 23h59)"
+    },
+    {
+      "source_id": "finding-1050",
+      "title": "Exposi��o 'Flora��es' re�ne obras de Claudia Liz e Adriano Damas sobre corpo e natureza",
+      "summary": "A Nata Galeria de Arte Contempor�nea, na regi�o oeste de S�o Paulo, inaugura nesta sexta-feira (8) a exposi��o \"Flora��es\", que re�ne obras da artista visual Claudia Liz e do fot�grafo Adriano Damas. O projeto parte da rela��o que ambos mant�m com o mundo natural.\nLeia mais (05/07/2026 - 23h00)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Exposi��o 'Flora��es' re�ne obras de Claudia Liz e Adriano Damas sobre corpo e natureza | A Nata Galeria de Arte Contempor�nea, na regi�o oeste de S�o Paulo, inaugura nesta sexta-feira (8) a exposi��o \"Flora��es\", que re�ne obras da artista visual Claudia Liz e do fot�grafo Adriano Damas. O projeto parte da rela��o que ambos mant�m com o mundo natural.\nLeia mais (05/07/2026 - 23h00)"
+    },
+    {
+      "source_id": "finding-1054",
+      "title": "Pratos do Casa Rios entregam tanto sabor que confundem o paladar",
+      "summary": "Cr�tica | SP\nCasa Rios\nQuatro estrelas (muito bom)\nR. Deputado Lacerda Franco, 478, Pinheiros, regi�o oeste. @casariosrestaurante\nLeia mais (05/07/2026 - 23h00)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Pratos do Casa Rios entregam tanto sabor que confundem o paladar | Cr�tica | SP\nCasa Rios\nQuatro estrelas (muito bom)\nR. Deputado Lacerda Franco, 478, Pinheiros, regi�o oeste. @casariosrestaurante\nLeia mais (05/07/2026 - 23h00)"
+    },
+    {
+      "source_id": "finding-1056",
+      "title": "Epis�dio surpresa sem chefs � um desvio fascinante e trist�ssimo de 'O Urso'",
+      "summary": "Ningu�m esperava um epis�dio extra de \"O Urso\", e que pancada ele �. A semanas da estreia da quinta e �ltima temporada da s�rie, \"Gary\", um m�dia-metragem estrelado somente por Richie (Ebon Moss-Bachrach) e Mikey (Jon Bernthal) que funciona como pref�cio da hist�ria principal, entrou no ar ter�a-feira (5) na Disney+ sem divulga��o pr�via.\nLeia mais (05/07/2026 - 22h55)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Epis�dio surpresa sem chefs � um desvio fascinante e trist�ssimo de 'O Urso' | Ningu�m esperava um epis�dio extra de \"O Urso\", e que pancada ele �. A semanas da estreia da quinta e �ltima temporada da s�rie, \"Gary\", um m�dia-metragem estrelado somente por Richie (Ebon Moss-Bachrach) e Mikey (Jon Bernthal) que funciona como pref�cio da hist�ria principal, entrou no ar ter�a-feira (5) na Disney+ sem divulga��o pr�via.\nLeia mais (05/07/2026 - 22h55)"
+    },
+    {
+      "source_id": "finding-1057",
+      "title": "Let�cia Spiller exalta nova fase de Pedro Novaes e celebra papel do filho em releitura de 'A Viagem'",
+      "summary": "Entre os bastidores da carreira e a admira��o pelo filho, Let�cia Spiller falou com orgulho sobre o novo momento vivido por Pedro Novaes. A atriz comentou o sucesso do int�rprete de Leonardo em \"Tr�s Gra�as\", que vem emendando trabalhos bem diferentes na televis�o, e celebrou a escolha do filho para interpretar Alexandre em uma releitura do cl�ssico \"A Viagem\".\nLeia mais (05/07/2026 - 22h52)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Let�cia Spiller exalta nova fase de Pedro Novaes e celebra papel do filho em releitura de 'A Viagem' | Entre os bastidores da carreira e a admira��o pelo filho, Let�cia Spiller falou com orgulho sobre o novo momento vivido por Pedro Novaes. A atriz comentou o sucesso do int�rprete de Leonardo em \"Tr�s Gra�as\", que vem emendando trabalhos bem diferentes na televis�o, e celebrou a escolha do filho para interpretar Alexandre em uma releitura do cl�ssico \"A Viagem\".\nLeia mais (05/07/2026 - 22h52)"
+    },
+    {
+      "source_id": "finding-1058",
+      "title": "Grazi Massafera se despede de 'Tr�s Gra�as' e celebra sucesso de Arminda: 'Me diverti muito'",
+      "summary": "Ap�s meses mergulhada em uma rotina intensa de grava��es, Grazi Massafera finalmente entrou no modo f�rias -ainda que admita que a ficha ainda n�o caiu completamente. Em clima descontra�do e nost�lgico, a atriz falou sobre o fim de \"Tr�s Gra�as\", relembrou os bastidores da produ��o e comemorou o sucesso de Arminda, personagem que conquistou o p�blico com humor, exageros e momentos inesperados.\n\nAnimada com os desdobramentos da trama, Grazi contou ter ficado surpresa com o alcance da novela. \"...",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Grazi Massafera se despede de 'Tr�s Gra�as' e celebra sucesso de Arminda: 'Me diverti muito' | Ap�s meses mergulhada em uma rotina intensa de grava��es, Grazi Massafera finalmente entrou no modo f�rias -ainda que admita que a ficha ainda n�o caiu completamente. Em clima descontra�do e nost�lgico, a atriz falou sobre o fim de \"Tr�s Gra�as\", relembrou os bastidores da produ��o e comemorou o sucesso de Arminda, personagem que conquistou o p�blico com humor, exageros e momentos inesperados.\n\nAnimada com os desdobramentos da trama, Grazi contou ter ficado surpresa com o alcance da novela. \"..."
+    },
+    {
+      "source_id": "finding-1071",
+      "title": "Barbara Reis defende vil� de 'Tr�s Gra�as' e diz que personagem era movida pela dor da maternidade",
+      "summary": "A reta final de \"Tr�s Gra�as\" mexeu com o p�blico e tamb�m com Barbara Reis. Nesta quinta-feira (7), a atriz refletiu sobre as motiva��es de Lena, sua personagem na trama de Aguinaldo Silva e defendeu que a novela trouxe � tona discuss�es importantes sobre tr�fico humano e ado��o ilegal.\n\nSegundo Barbara, Lena era uma mulher \"incompreendida\" e movida pela frustra��o de n�o conseguir gerar um filho biologicamente. \"Ela nasceu m�e\", afirmou a atriz ao comentar o comportamento da personagem, que...",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Barbara Reis defende vil� de 'Tr�s Gra�as' e diz que personagem era movida pela dor da maternidade | A reta final de \"Tr�s Gra�as\" mexeu com o p�blico e tamb�m com Barbara Reis. Nesta quinta-feira (7), a atriz refletiu sobre as motiva��es de Lena, sua personagem na trama de Aguinaldo Silva e defendeu que a novela trouxe � tona discuss�es importantes sobre tr�fico humano e ado��o ilegal.\n\nSegundo Barbara, Lena era uma mulher \"incompreendida\" e movida pela frustra��o de n�o conseguir gerar um filho biologicamente. \"Ela nasceu m�e\", afirmou a atriz ao comentar o comportamento da personagem, que..."
+    },
+    {
+      "source_id": "finding-1080",
+      "title": "Filha de Helo�sa P�riss� reage a coment�rio sobre namoro da atriz: 'Homofobia'",
+      "summary": "Luisa P�riss� saiu em defesa da m�e, Helo�sa P�riss�, ap�s um coment�rio sobre o relacionamento da atriz com a diretora Let�cia Prisco.\nLeia mais (05/07/2026 - 20h43)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Filha de Helo�sa P�riss� reage a coment�rio sobre namoro da atriz: 'Homofobia' | Luisa P�riss� saiu em defesa da m�e, Helo�sa P�riss�, ap�s um coment�rio sobre o relacionamento da atriz com a diretora Let�cia Prisco.\nLeia mais (05/07/2026 - 20h43)"
+    },
+    {
+      "source_id": "finding-1089",
+      "title": "Fl�vio e Ciro Nogueira de m�os dadas?",
+      "summary": "Leia mais (05/07/2026 - 19h47)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Fl�vio e Ciro Nogueira de m�os dadas? | Leia mais (05/07/2026 - 19h47)"
+    },
+    {
+      "source_id": "finding-1127",
+      "title": "El pintor italiano Pontormo llega \"por primera vez\" al Prado con 'La Visitación', nunca expuesta en España",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "El pintor italiano Pontormo llega \"por primera vez\" al Prado con 'La Visitación', nunca expuesta en España"
+    },
+    {
+      "source_id": "finding-1129",
+      "title": "Rytas y AEK, verdugos de La Laguna Tenerife y Unicaja, buscan la gloria en Badalona",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "Rytas y AEK, verdugos de La Laguna Tenerife y Unicaja, buscan la gloria en Badalona"
+    },
+    {
+      "source_id": "finding-1187",
+      "title": "Tres nuevos estudios agrandan los orígenes de la lengua española a partir de siglos X-XI",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "Tres nuevos estudios agrandan los orígenes de la lengua española a partir de siglos X-XI"
+    },
+    {
+      "source_id": "finding-1192",
+      "title": "El uruguayo Martín Satriano apunta al choque entre el Getafe y el Oviedo",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "El uruguayo Martín Satriano apunta al choque entre el Getafe y el Oviedo"
+    }
+  ]
+}

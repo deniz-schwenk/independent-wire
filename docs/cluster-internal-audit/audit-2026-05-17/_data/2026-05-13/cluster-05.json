@@ -1,0 +1,269 @@
+{
+  "cluster_rank": 5,
+  "cluster_id": "mc-005",
+  "size": 29,
+  "n_findings": 29,
+  "findings": [
+    {
+      "source_id": "finding-77",
+      "title": "French president’s onstage outburst in Kenya overshadows Africa bid",
+      "summary": "French President Emmanuel Macron is facing backlash after he interrupted a panel at the Africa Forward Summit in Kenya to demand silence from the audience.\nMacron stormed the stage to rebuke audience members for what he called a “total lack of respect”, accusing them of disrupting speakers during a presentation by artists and young entrepreneurs. He had earlier described himself as a “Pan-Africanist” during a news conference.\nThe summit is meant to showcase France’s new policy for the contine...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "French president’s onstage outburst in Kenya overshadows Africa bid | French President Emmanuel Macron is facing backlash after he interrupted a panel at the Africa Forward Summit in Kenya to demand silence from the audience.\nMacron stormed the stage to rebuke audience members for what he called a “total lack of respect”, accusing them of disrupting speakers during a presentation by artists and young entrepreneurs. He had earlier described himself as a “Pan-Africanist” during a news conference.\nThe summit is meant to showcase France’s new policy for the contine..."
+    },
+    {
+      "source_id": "finding-154",
+      "title": "Africa: All of Africa Today - May 13, 2026",
+      "summary": "[allAfrica]",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "Africa: All of Africa Today - May 13, 2026 | [allAfrica]"
+    },
+    {
+      "source_id": "finding-155",
+      "title": "South Africa: Joburg Mayor Defends Demolitions of Illegal Structures - South African News Briefs - May 13, 2026",
+      "summary": "[allAfrica]",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "South Africa: Joburg Mayor Defends Demolitions of Illegal Structures - South African News Briefs - May 13, 2026 | [allAfrica]"
+    },
+    {
+      "source_id": "finding-163",
+      "title": "Africa: Ruto Calls for Win-Win Africa-France Partnership At Nairobi Summit",
+      "summary": "[Capital FM] Nairobi -- President William Ruto has called for a win-win partnership between Africa and France built on mutual respect and shared responsibility.",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "Africa: Ruto Calls for Win-Win Africa-France Partnership At Nairobi Summit | [Capital FM] Nairobi -- President William Ruto has called for a win-win partnership between Africa and France built on mutual respect and shared responsibility."
+    },
+    {
+      "source_id": "finding-164",
+      "title": "South Africa: The Western Cape Mops Up After the Storm",
+      "summary": "[GroundUp] Roads closed, trucks stranded, thousands of homes waterlogged or damaged",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "South Africa: The Western Cape Mops Up After the Storm | [GroundUp] Roads closed, trucks stranded, thousands of homes waterlogged or damaged"
+    },
+    {
+      "source_id": "finding-165",
+      "title": "Africa: What Africa and Global South Should Canvass at COP31 in T&#xfc;rkiye",
+      "summary": "[allAfrica] When COP31 opens in Antalya, T&#xfc;rkiye, this November, you'll recognize the choreography immediately. I saw it all play out at COP29 in Baku: African ministers arrive with speeches about ambition, negotiators disappear into rooms with marked-up drafts, banners line the walkways outside, and climate slogans sound urgent. Ten days later, the summit ends and the final communiqu&#xe9; again calls for solidarity and a renewed pledge to keep 1.5&#xb0;C alive.",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "Africa: What Africa and Global South Should Canvass at COP31 in T&#xfc;rkiye | [allAfrica] When COP31 opens in Antalya, T&#xfc;rkiye, this November, you'll recognize the choreography immediately. I saw it all play out at COP29 in Baku: African ministers arrive with speeches about ambition, negotiators disappear into rooms with marked-up drafts, banners line the walkways outside, and climate slogans sound urgent. Ten days later, the summit ends and the final communiqu&#xe9; again calls for solidarity and a renewed pledge to keep 1.5&#xb0;C alive."
+    },
+    {
+      "source_id": "finding-167",
+      "title": "Ethiopia: French Companies Expand Presence in Ethiopia, Despite Security Concerns",
+      "summary": "[RFI] The Africa Forward summit, currently under way in the Kenyan capital Nairobi, reflects France's efforts to reposition itself on the continent. An increasing number of French companies are choosing to set up operations in neighbouring Ethiopia - attracted by a market of more than 120 million people, despite a deteriorating security situation.",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "Ethiopia: French Companies Expand Presence in Ethiopia, Despite Security Concerns | [RFI] The Africa Forward summit, currently under way in the Kenyan capital Nairobi, reflects France's efforts to reposition itself on the continent. An increasing number of French companies are choosing to set up operations in neighbouring Ethiopia - attracted by a market of more than 120 million people, despite a deteriorating security situation."
+    },
+    {
+      "source_id": "finding-179",
+      "title": "Africa: Guterres Highlights Africa's Leadership in Speech to Summit in Nairobi",
+      "summary": "[UN News] Africa continues to advance and demands investment at scale, justice in global systems, and partnerships grounded in respect, UN Secretary-General Ant&#xf3;nio Guterres said on Tuesday.",
+      "description": "",
+      "language": "en",
+      "outlet": "AllAfrica",
+      "text": "Africa: Guterres Highlights Africa's Leadership in Speech to Summit in Nairobi | [UN News] Africa continues to advance and demands investment at scale, justice in global systems, and partnerships grounded in respect, UN Secretary-General Ant&#xf3;nio Guterres said on Tuesday."
+    },
+    {
+      "source_id": "finding-192",
+      "title": "Eliud Kipchoge’s Nairobi run with Macron: The French connection",
+      "summary": "Athlete talks of 23 years of discipline, revisits World Championship glory in Paris after race...",
+      "description": "",
+      "language": "en",
+      "outlet": "Daily Nation",
+      "text": "Eliud Kipchoge’s Nairobi run with Macron: The French connection | Athlete talks of 23 years of discipline, revisits World Championship glory in Paris after race..."
+    },
+    {
+      "source_id": "finding-201",
+      "title": "In Kenya, leadership has become a performance",
+      "summary": "Leadership is not only about presence; it is about ideas.",
+      "description": "",
+      "language": "en",
+      "outlet": "Daily Nation",
+      "text": "In Kenya, leadership has become a performance | Leadership is not only about presence; it is about ideas."
+    },
+    {
+      "source_id": "finding-203",
+      "title": "Africa is not a continent waiting for solutions: António Guterres",
+      "summary": "",
+      "description": "",
+      "language": "en",
+      "outlet": "Daily Nation",
+      "text": "Africa is not a continent waiting for solutions: António Guterres"
+    },
+    {
+      "source_id": "finding-205",
+      "title": "French national among protesters nabbed at Africa summit venue in Nairobi",
+      "summary": "About 50 activists, including Greece and South Korean nationals, had placards denouncing...",
+      "description": "",
+      "language": "en",
+      "outlet": "Daily Nation",
+      "text": "French national among protesters nabbed at Africa summit venue in Nairobi | About 50 activists, including Greece and South Korean nationals, had placards denouncing..."
+    },
+    {
+      "source_id": "finding-210",
+      "title": "At Africa Forward Summit, Tinubu calls for reform of global financial architecture",
+      "summary": "The Africa/France summit, co-hosted by Presidents Emmanuel Macron of France and William Ruto of Kenya, brought together leaders and top officials from more than 30 countries across the continent.\nThe post At Africa Forward Summit, Tinubu calls for reform of global financial architecture appeared first on Premium Times Nigeria.",
+      "description": "",
+      "language": "en",
+      "outlet": "Premium Times Nigeria",
+      "text": "At Africa Forward Summit, Tinubu calls for reform of global financial architecture | The Africa/France summit, co-hosted by Presidents Emmanuel Macron of France and William Ruto of Kenya, brought together leaders and top officials from more than 30 countries across the continent.\nThe post At Africa Forward Summit, Tinubu calls for reform of global financial architecture appeared first on Premium Times Nigeria."
+    },
+    {
+      "source_id": "finding-495",
+      "title": "Guterres highlights Africa’s leadership in speech to summit in Nairobi",
+      "summary": "Africa continues to advance and demands investment at scale, justice in global systems, and partnerships grounded in respect, UN Secretary-General António Guterres said on Tuesday.",
+      "description": "",
+      "language": "en",
+      "outlet": "UN News",
+      "text": "Guterres highlights Africa’s leadership in speech to summit in Nairobi | Africa continues to advance and demands investment at scale, justice in global systems, and partnerships grounded in respect, UN Secretary-General António Guterres said on Tuesday."
+    },
+    {
+      "source_id": "finding-500",
+      "title": "Ambitious Great Green Wall Shows Slow, Steady Progress in Strengthening Landscapes, Improving Livelihoods",
+      "summary": "In 2021, Gadeja Shehu and about a hundred farmers in Garbadu village, Zamfara State in northwestern Nigeria, were invited by officials of the National Agency for the Great Green Wall to plant trees across a large stretch of land in their community. Shehu remembers how fierce, dust-laden winds from the Sahara Desert often tore off [&#8230;]",
+      "description": "",
+      "language": "en",
+      "outlet": "IPS News",
+      "text": "Ambitious Great Green Wall Shows Slow, Steady Progress in Strengthening Landscapes, Improving Livelihoods | In 2021, Gadeja Shehu and about a hundred farmers in Garbadu village, Zamfara State in northwestern Nigeria, were invited by officials of the National Agency for the Great Green Wall to plant trees across a large stretch of land in their community. Shehu remembers how fierce, dust-laden winds from the Sahara Desert often tore off [&#8230;]"
+    },
+    {
+      "source_id": "finding-520",
+      "title": "France seeks to move beyond colonial ties by meeting African leaders in Kenya",
+      "summary": "In a first since these meetings started in the 1970s, this move reflects a change in France's thinking.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "France seeks to move beyond colonial ties by meeting African leaders in Kenya | In a first since these meetings started in the 1970s, this move reflects a change in France's thinking."
+    },
+    {
+      "source_id": "finding-574",
+      "title": "Emmanuel Macron wants dialogue with Rwanda and DRC",
+      "summary": "“If now everyone is rushing to isolate Rwanda simply because the Americans have done so, there is little chance of persuading Rwanda to adopt a cooperative policy.” In an exclusive interview with FRANCE 24, RFI and TV5Monde, French President Emmanuel Macron called for dialogue with Rwanda and DR Congo",
+      "description": "",
+      "language": "en",
+      "outlet": "France 24",
+      "text": "Emmanuel Macron wants dialogue with Rwanda and DRC | “If now everyone is rushing to isolate Rwanda simply because the Americans have done so, there is little chance of persuading Rwanda to adopt a cooperative policy.” In an exclusive interview with FRANCE 24, RFI and TV5Monde, French President Emmanuel Macron called for dialogue with Rwanda and DR Congo"
+    },
+    {
+      "source_id": "finding-575",
+      "title": "Deals and new partnerships at Africa-France summit",
+      "summary": "In tonight's edition, sovereignty was the buzzword of Kenyan President William Ruto at the close of the Africa Forward summit in Nairobi. Also, in the biggest change on the ground in months,  Rwanda-backed M23 rebels have retreated from seized territory in the DRC. And as the war in Iran continues to disrupt exports around the world, Zimbabwe's horticulture industry is also struggling with rising shipping costs, which are threatening vital exports.",
+      "description": "",
+      "language": "en",
+      "outlet": "France 24",
+      "text": "Deals and new partnerships at Africa-France summit | In tonight's edition, sovereignty was the buzzword of Kenyan President William Ruto at the close of the Africa Forward summit in Nairobi. Also, in the biggest change on the ground in months,  Rwanda-backed M23 rebels have retreated from seized territory in the DRC. And as the war in Iran continues to disrupt exports around the world, Zimbabwe's horticulture industry is also struggling with rising shipping costs, which are threatening vital exports."
+    },
+    {
+      "source_id": "finding-577",
+      "title": "Emmanuel Macron’s speaks about France's policies in Sahel countries",
+      "summary": "\"I think we should have had that challenging dialogue sooner. And perhaps in such cases, we should have rethought our military presence sooner.\" In his interview with FRANCE 24, RFI and TV5Monde, French President Emmanuel Macron reflected on the state of relations between France and the Sahel countries. Here's a part of his interview.",
+      "description": "",
+      "language": "en",
+      "outlet": "France 24",
+      "text": "Emmanuel Macron’s speaks about France's policies in Sahel countries | \"I think we should have had that challenging dialogue sooner. And perhaps in such cases, we should have rethought our military presence sooner.\" In his interview with FRANCE 24, RFI and TV5Monde, French President Emmanuel Macron reflected on the state of relations between France and the Sahel countries. Here's a part of his interview."
+    },
+    {
+      "source_id": "finding-579",
+      "title": "Mali, immigration and DR Congo: Five key takeaways from Macron's interview with FRANCE 24",
+      "summary": "French President Emmanuel Macron on Tuesday spoke to FRANCE 24 at the close of the Africa Forward Summit in Nairobi, Kenya. Here’s what you need to know about how Macron sees France’s changing relationship with African nations.",
+      "description": "",
+      "language": "en",
+      "outlet": "France 24",
+      "text": "Mali, immigration and DR Congo: Five key takeaways from Macron's interview with FRANCE 24 | French President Emmanuel Macron on Tuesday spoke to FRANCE 24 at the close of the Africa Forward Summit in Nairobi, Kenya. Here’s what you need to know about how Macron sees France’s changing relationship with African nations."
+    },
+    {
+      "source_id": "finding-582",
+      "title": "Watch: Macron speaks to FRANCE 24 as Africa Forward Summit wraps up",
+      "summary": "",
+      "description": "",
+      "language": "en",
+      "outlet": "France 24",
+      "text": "Watch: Macron speaks to FRANCE 24 as Africa Forward Summit wraps up"
+    },
+    {
+      "source_id": "finding-641",
+      "title": "At Nairobi summit, France makes push to invest in Africa",
+      "summary": "Paris declared its ambition to invest in the continent at the Africa Forward Summit, which opened on May 11 in the heart of the Kenyan capital. Competition, however, is fierce across these dynamic markets.",
+      "description": "",
+      "language": "en",
+      "outlet": "Le Monde",
+      "text": "At Nairobi summit, France makes push to invest in Africa | Paris declared its ambition to invest in the continent at the Africa Forward Summit, which opened on May 11 in the heart of the Kenyan capital. Competition, however, is fierce across these dynamic markets."
+    },
+    {
+      "source_id": "finding-791",
+      "title": "France wants to dominate Africa – activist",
+      "summary": "France is seeking to regain influence in Africa through new partnerships, P.L.O. Lumumba has told RT Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "France wants to dominate Africa – activist | France is seeking to regain influence in Africa through new partnerships, P.L.O. Lumumba has told RT Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-967",
+      "title": "Tinubu calls for stronger African economic integration at Nairobi summit",
+      "summary": "President Bola Tinubu on Tuesday led Nigeria’s delegation to the Africa Forward Summit in Nairobi, Kenya, advocating stronger economic integration that prioritises Africa’s growth and industrialisation.\nThe post Tinubu calls for stronger African economic integration at Nairobi summit appeared first on Vanguard News.",
+      "description": "",
+      "language": "en",
+      "outlet": "Vanguard Nigeria",
+      "text": "Tinubu calls for stronger African economic integration at Nairobi summit | President Bola Tinubu on Tuesday led Nigeria’s delegation to the Africa Forward Summit in Nairobi, Kenya, advocating stronger economic integration that prioritises Africa’s growth and industrialisation.\nThe post Tinubu calls for stronger African economic integration at Nairobi summit appeared first on Vanguard News."
+    },
+    {
+      "source_id": "finding-1239",
+      "title": "Macron unveils $27 billion investment in Africa at partnership summit in Kenya",
+      "summary": "French President Emmanuel Macron announced new investments in Africa as a partnership summit closed on Tuesday in Kenya with calls for mutual respect and new, revamped ties that…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Macron unveils $27 billion investment in Africa at partnership summit in Kenya | French President Emmanuel Macron announced new investments in Africa as a partnership summit closed on Tuesday in Kenya with calls for mutual respect and new, revamped ties that…"
+    },
+    {
+      "source_id": "finding-1367",
+      "title": "Après le sommet de Nairobi, Emmanuel Macron fait escale en Éthiopie, un pays «ami»",
+      "summary": "Au lendemain du sommet Afrique-France de Nairobi, Emmanuel Macron fait escale ce mercredi 13 mai 2026 en Éthiopie. Un pays « ami », où il rencontrera le Premier ministre Abiy Ahmed, à quelques semaines des élections générales dans le pays et se rendra au siège de l’Union africaine.",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "Après le sommet de Nairobi, Emmanuel Macron fait escale en Éthiopie, un pays «ami» | Au lendemain du sommet Afrique-France de Nairobi, Emmanuel Macron fait escale ce mercredi 13 mai 2026 en Éthiopie. Un pays « ami », où il rencontrera le Premier ministre Abiy Ahmed, à quelques semaines des élections générales dans le pays et se rendra au siège de l’Union africaine."
+    },
+    {
+      "source_id": "finding-1377",
+      "title": "Sommet Africa Forward à Nairobi: une pluie d'annonces et un partenariat «renouvelé» avec la France",
+      "summary": "Le sommet Africa Forward, co-organisé par la France et le Kenya à Nairobi, a pris fin mardi 12 mai 2026. Après une première journée consacrée aux chefs d'entreprises, une trentaine de chefs d'États et de gouvernements du continent se sont réunis mardi aux côtés du président français, Emmanuel Macron, et de son homologue kényan, William Ruto. La journée a débouché sur une pluie d'annonces côté business et sur quelques gestes politiques. Voici ce qu'il faut retenir du sommet.",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "Sommet Africa Forward à Nairobi: une pluie d'annonces et un partenariat «renouvelé» avec la France | Le sommet Africa Forward, co-organisé par la France et le Kenya à Nairobi, a pris fin mardi 12 mai 2026. Après une première journée consacrée aux chefs d'entreprises, une trentaine de chefs d'États et de gouvernements du continent se sont réunis mardi aux côtés du président français, Emmanuel Macron, et de son homologue kényan, William Ruto. La journée a débouché sur une pluie d'annonces côté business et sur quelques gestes politiques. Voici ce qu'il faut retenir du sommet."
+    },
+    {
+      "source_id": "finding-1378",
+      "title": "Est de la RDC: après son retrait d'Uvira, l'AFC/M23 se repositionne à Kamanyola",
+      "summary": "En République démocratique du Congo (RDC), le groupe armé AFC/M23 s'est replié, mardi 12 mai, à plus de 70 kilomètres d'Uvira, ville de l'est du pays qu'il avait brièvement occupée en décembre 2025. Avec ce retrait, le premier mouvement notable du front depuis la prise de la ville, le groupe armé soutenu par le Rwanda se plie aux pressions de Washington, agacé par son entrée à Uvira malgré les accords de paix.",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "Est de la RDC: après son retrait d'Uvira, l'AFC/M23 se repositionne à Kamanyola | En République démocratique du Congo (RDC), le groupe armé AFC/M23 s'est replié, mardi 12 mai, à plus de 70 kilomètres d'Uvira, ville de l'est du pays qu'il avait brièvement occupée en décembre 2025. Avec ce retrait, le premier mouvement notable du front depuis la prise de la ville, le groupe armé soutenu par le Rwanda se plie aux pressions de Washington, agacé par son entrée à Uvira malgré les accords de paix."
+    },
+    {
+      "source_id": "finding-1402",
+      "title": "Climate change: What Africa must demand at COP31 in Antalya",
+      "summary": "Faced with climate injustice, Africa must establish its negotiating power with clear terms at COP31, call for tangible financing, prioritize adaptation, and align its ambitions with the aid received.",
+      "description": "",
+      "language": "en",
+      "outlet": "Global Voices",
+      "text": "Climate change: What Africa must demand at COP31 in Antalya | Faced with climate injustice, Africa must establish its negotiating power with clear terms at COP31, call for tangible financing, prioritize adaptation, and align its ambitions with the aid received."
+    }
+  ]
+}

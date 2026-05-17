@@ -1,0 +1,557 @@
+{
+  "cluster_rank": 1,
+  "cluster_id": "mc-001",
+  "size": 61,
+  "n_findings": 61,
+  "findings": [
+    {
+      "source_id": "finding-0",
+      "title": "Former Qatar PM: Netanyahu using Iran war to reshape Middle East",
+      "summary": "Sheikh Hamad bin Jassim warns Strait of Hormuz crisis is most dangerous fallout of war on Iran, calls for &#039;Gulf NATO&#039;.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Former Qatar PM: Netanyahu using Iran war to reshape Middle East | Sheikh Hamad bin Jassim warns Strait of Hormuz crisis is most dangerous fallout of war on Iran, calls for &#039;Gulf NATO&#039;."
+    },
+    {
+      "source_id": "finding-3",
+      "title": "Iran says US making ‘unreasonable’ demands in negotiations to end war",
+      "summary": "Foreign ministry spokesman Esmaeil Baghaei says Iran&#039;s proposal to end the conflict, unblock Hormuz Strait is generous.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Iran says US making ‘unreasonable’ demands in negotiations to end war | Foreign ministry spokesman Esmaeil Baghaei says Iran&#039;s proposal to end the conflict, unblock Hormuz Strait is generous."
+    },
+    {
+      "source_id": "finding-9",
+      "title": "Iran war day 73: Trump and Tehran clash over latest peace proposals",
+      "summary": "Brent crude rises amid a continuing deadlock as Trump describes Iran&#039;s response as &#039;totally unacceptable&#039;.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Iran war day 73: Trump and Tehran clash over latest peace proposals | Brent crude rises amid a continuing deadlock as Trump describes Iran&#039;s response as &#039;totally unacceptable&#039;."
+    },
+    {
+      "source_id": "finding-19",
+      "title": "Trump calls Iran response “totally unacceptable”",
+      "summary": "Report on the latest developments after US President Donald Trump rejected Iran’s response to the US peace proposal.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Trump calls Iran response “totally unacceptable” | Report on the latest developments after US President Donald Trump rejected Iran’s response to the US peace proposal."
+    },
+    {
+      "source_id": "finding-27",
+      "title": "Yemen’s Ansarullah warns US after Trump rejected Iran’s proposal",
+      "summary": "Amer says Trump does not like the truth, and for this reason, he continuously receives defeats from Iran.",
+      "description": "",
+      "language": "en",
+      "outlet": "Press TV",
+      "text": "Yemen’s Ansarullah warns US after Trump rejected Iran’s proposal | Amer says Trump does not like the truth, and for this reason, he continuously receives defeats from Iran."
+    },
+    {
+      "source_id": "finding-28",
+      "title": "US suffers 'total defeat' in war against Iran, faces irreversible strategic collapse: Neocon analyst",
+      "summary": "In a mea culpa, neoconservative commentator Robert Kagan says the US suffered 'total defeat' against Iran, permanently shattering its global standing",
+      "description": "",
+      "language": "en",
+      "outlet": "Press TV",
+      "text": "US suffers 'total defeat' in war against Iran, faces irreversible strategic collapse: Neocon analyst | In a mea culpa, neoconservative commentator Robert Kagan says the US suffered 'total defeat' against Iran, permanently shattering its global standing"
+    },
+    {
+      "source_id": "finding-29",
+      "title": "Man convicted of spying for CIA, Mossad executed in Iran",
+      "summary": "A man convicted of spying for the CIA and Mossad has been executed in Iran.",
+      "description": "",
+      "language": "en",
+      "outlet": "Press TV",
+      "text": "Man convicted of spying for CIA, Mossad executed in Iran | A man convicted of spying for the CIA and Mossad has been executed in Iran."
+    },
+    {
+      "source_id": "finding-31",
+      "title": "Iran says its proposal was generous as US insists on ‘unreasonable demands’",
+      "summary": "Baghaei says Iran's proposal for ending the recent war was reasonable.",
+      "description": "",
+      "language": "en",
+      "outlet": "Press TV",
+      "text": "Iran says its proposal was generous as US insists on ‘unreasonable demands’ | Baghaei says Iran's proposal for ending the recent war was reasonable."
+    },
+    {
+      "source_id": "finding-32",
+      "title": "Trump's deadly trap: By rejecting Iran's proposal, US enters a strategic nightmare with no escape",
+      "summary": "By theatrically rejecting Iran’s comprehensive plan to end the war, Trump trapped the US at a fatal three-way crossroads: resume a losing war, accept humiliating defeat under Iran’s terms, or face endless escalation.",
+      "description": "",
+      "language": "en",
+      "outlet": "Press TV",
+      "text": "Trump's deadly trap: By rejecting Iran's proposal, US enters a strategic nightmare with no escape | By theatrically rejecting Iran’s comprehensive plan to end the war, Trump trapped the US at a fatal three-way crossroads: resume a losing war, accept humiliating defeat under Iran’s terms, or face endless escalation."
+    },
+    {
+      "source_id": "finding-34",
+      "title": "Iran peace plan demands war compensation, sovereignty over Hormuz",
+      "summary": "Iran has submitted a comprehensive plan to end the US-Israeli war of aggression, insisting on full compensation for war damages and the lifting of all sanctions, according to an IRIB report.",
+      "description": "",
+      "language": "en",
+      "outlet": "Press TV",
+      "text": "Iran peace plan demands war compensation, sovereignty over Hormuz | Iran has submitted a comprehensive plan to end the US-Israeli war of aggression, insisting on full compensation for war damages and the lifting of all sanctions, according to an IRIB report."
+    },
+    {
+      "source_id": "finding-39",
+      "title": "Trump rebuffs Iranian response to latest US proposal to end war",
+      "summary": "Tehran recently sent reply through Pakistani mediators as ceasefire efforts struggle",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Trump rebuffs Iranian response to latest US proposal to end war | Tehran recently sent reply through Pakistani mediators as ceasefire efforts struggle"
+    },
+    {
+      "source_id": "finding-41",
+      "title": "Trump to 'pressure' Xi over Iran support during visit, says White House official",
+      "summary": "'I would expect the president to apply pressure, and as you said, he has done so before,' official tells reporters",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Trump to 'pressure' Xi over Iran support during visit, says White House official | 'I would expect the president to apply pressure, and as you said, he has done so before,' official tells reporters"
+    },
+    {
+      "source_id": "finding-44",
+      "title": "Turkish, Egyptian foreign ministers discuss Iran-US negotiations in phone call",
+      "summary": "Fidan and Abdelatty review latest developments in talks process",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Turkish, Egyptian foreign ministers discuss Iran-US negotiations in phone call | Fidan and Abdelatty review latest developments in talks process"
+    },
+    {
+      "source_id": "finding-46",
+      "title": "Iran war ‘not over’ until enriched uranium removed: Netanyahu",
+      "summary": "Israeli prime minister says Iran's enrichment facilities and missile-related infrastructure still pose a threat",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Iran war ‘not over’ until enriched uranium removed: Netanyahu | Israeli prime minister says Iran's enrichment facilities and missile-related infrastructure still pose a threat"
+    },
+    {
+      "source_id": "finding-58",
+      "title": "Trump says 'we'll blow them up' if Iran uranium site accessed",
+      "summary": "President says US keeping Iran’s nuclear materials site 'very well surveilled,' warning military action would be taken if anyone attempted to access it",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Trump says 'we'll blow them up' if Iran uranium site accessed | President says US keeping Iran’s nuclear materials site 'very well surveilled,' warning military action would be taken if anyone attempted to access it"
+    },
+    {
+      "source_id": "finding-59",
+      "title": "Qatar, Saudi Arabia discuss de-escalation efforts amid US-Iran conflict",
+      "summary": "Qatari premier, Saudi foreign minister call for addressing conflict through peaceful means, dialogue",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Qatar, Saudi Arabia discuss de-escalation efforts amid US-Iran conflict | Qatari premier, Saudi foreign minister call for addressing conflict through peaceful means, dialogue"
+    },
+    {
+      "source_id": "finding-62",
+      "title": "Netanyahu hints at US troop deployment against Iran in CBS interview",
+      "summary": "Netanyahu hints at US troop deployment against Iran in CBS interview\n\n    \n    \n\n          \n      \n      \n        Submitted by \nMEE staff\n on \nMon, 05/11/2026 - 10:44\n\n        \n      \n    \n      \n    \n                Israeli leader refused to divulge details but suggested US President Donald Trump agrees with him on need for ground attack\n                      \n                  \n                  \n\n  \n\n\n                  Israeli Prime Minister Benjamin Netanyahu told the '60 Minutes' strand ...",
+      "description": "",
+      "language": "en",
+      "outlet": "Middle East Eye",
+      "text": "Netanyahu hints at US troop deployment against Iran in CBS interview | Netanyahu hints at US troop deployment against Iran in CBS interview\n\n    \n    \n\n          \n      \n      \n        Submitted by \nMEE staff\n on \nMon, 05/11/2026 - 10:44\n\n        \n      \n    \n      \n    \n                Israeli leader refused to divulge details but suggested US President Donald Trump agrees with him on need for ground attack\n                      \n                  \n                  \n\n  \n\n\n                  Israeli Prime Minister Benjamin Netanyahu told the '60 Minutes' strand ..."
+    },
+    {
+      "source_id": "finding-65",
+      "title": "Iran describes its proposal to end war with US as 'legitimate' and 'generous'",
+      "summary": "Iran describes its proposal to end war with US as 'legitimate' and 'generous'\n\n    \n    \n\n        \n    \n                Iranian foreign ministry spokesperson Esmaeil Baghaei has said that Iran's proposal to end the war with the US and reopen the Strait of Hormuz is \"legitimate\" and \"generous\".\n\n“Demanding an end to the war, lifting the blockade and piracy, and ⁠releasing Iranian assets that have ⁠been unjustly frozen in banks due to US pressure,” Esmaeil Baghaei ⁠said.\n\n\"Safe passage through ...",
+      "description": "",
+      "language": "en",
+      "outlet": "Middle East Eye",
+      "text": "Iran describes its proposal to end war with US as 'legitimate' and 'generous' | Iran describes its proposal to end war with US as 'legitimate' and 'generous'\n\n    \n    \n\n        \n    \n                Iranian foreign ministry spokesperson Esmaeil Baghaei has said that Iran's proposal to end the war with the US and reopen the Strait of Hormuz is \"legitimate\" and \"generous\".\n\n“Demanding an end to the war, lifting the blockade and piracy, and ⁠releasing Iranian assets that have ⁠been unjustly frozen in banks due to US pressure,” Esmaeil Baghaei ⁠said.\n\n\"Safe passage through ..."
+    },
+    {
+      "source_id": "finding-67",
+      "title": "Morning update",
+      "summary": "Morning update\n\n    \n    \n\n        \n    \n                Good morning Middle East Eye readers,\n\nHopes for a diplomatic breakthrough between Washington and Tehran have dimmed after Donald Trump dismissed Iran’s latest response to the US peace proposal as “totally unacceptable”.\n\nTehran insists the American plan amounted to surrender and is demanding guarantees against future attacks, while tensions continue to spill across the region.\n\nIsraeli strikes in Lebanon are intensifying, oil prices ar...",
+      "description": "",
+      "language": "en",
+      "outlet": "Middle East Eye",
+      "text": "Morning update | Morning update\n\n    \n    \n\n        \n    \n                Good morning Middle East Eye readers,\n\nHopes for a diplomatic breakthrough between Washington and Tehran have dimmed after Donald Trump dismissed Iran’s latest response to the US peace proposal as “totally unacceptable”.\n\nTehran insists the American plan amounted to surrender and is demanding guarantees against future attacks, while tensions continue to spill across the region.\n\nIsraeli strikes in Lebanon are intensifying, oil prices ar..."
+    },
+    {
+      "source_id": "finding-69",
+      "title": "Iran executes man accused of spying for CIA and Mossad",
+      "summary": "Iran executes man accused of spying for CIA and Mossad\n\n    \n    \n\n        \n    \n                Iran has executed a man accused of spying for the Central Intelligence Agency and Mossad, according to Iranian state-linked media reports.\n\nThe judiciary’s Mizan news outlet and Mehr News Agency identified the man as Erfan Shakourzadeh, saying he worked at a scientific organisation involved in satellite-related activities and was accused of transferring classified scientific information to foreign...",
+      "description": "",
+      "language": "en",
+      "outlet": "Middle East Eye",
+      "text": "Iran executes man accused of spying for CIA and Mossad | Iran executes man accused of spying for CIA and Mossad\n\n    \n    \n\n        \n    \n                Iran has executed a man accused of spying for the Central Intelligence Agency and Mossad, according to Iranian state-linked media reports.\n\nThe judiciary’s Mizan news outlet and Mehr News Agency identified the man as Erfan Shakourzadeh, saying he worked at a scientific organisation involved in satellite-related activities and was accused of transferring classified scientific information to foreign..."
+    },
+    {
+      "source_id": "finding-70",
+      "title": "Iran says US has not issued World Cup visas for players",
+      "summary": "Iran says US has not issued World Cup visas for players\n\n    \n    \n\n        \n    \n                The Iran Football Federation said the United States has yet to issue entry visas to members of Iran’s national football team ahead of the 2026 Fifa World Cup 2026.\n\nFederation president Mehdi Taj told Nasim TV that no player had yet received a visa and that the process was taking “a very long time”.\n\nIran’s national team is preparing for a training camp in Türkiye lasting around 15 days later thi...",
+      "description": "",
+      "language": "en",
+      "outlet": "Middle East Eye",
+      "text": "Iran says US has not issued World Cup visas for players | Iran says US has not issued World Cup visas for players\n\n    \n    \n\n        \n    \n                The Iran Football Federation said the United States has yet to issue entry visas to members of Iran’s national football team ahead of the 2026 Fifa World Cup 2026.\n\nFederation president Mehdi Taj told Nasim TV that no player had yet received a visa and that the process was taking “a very long time”.\n\nIran’s national team is preparing for a training camp in Türkiye lasting around 15 days later thi..."
+    },
+    {
+      "source_id": "finding-76",
+      "title": "Iran demands sovereignty over Hormuz in counterproposal to US",
+      "summary": "Iran demands sovereignty over Hormuz in counterproposal to US\n\n    \n    \n\n        \n    \n                Iran, in its counterproposal to end the conflict with the United States and Israel, is demanding full compensation for war damage, the lifting of all sanctions and recognition of Iranian sovereignty over the Strait of Hormuz, according to reports by Iranian state media.\n\nPress TV&nbsp;and IRIB&nbsp;said the proposal also called for the release of frozen Iranian assets and was delivered to W...",
+      "description": "",
+      "language": "en",
+      "outlet": "Middle East Eye",
+      "text": "Iran demands sovereignty over Hormuz in counterproposal to US | Iran demands sovereignty over Hormuz in counterproposal to US\n\n    \n    \n\n        \n    \n                Iran, in its counterproposal to end the conflict with the United States and Israel, is demanding full compensation for war damage, the lifting of all sanctions and recognition of Iranian sovereignty over the Strait of Hormuz, according to reports by Iranian state media.\n\nPress TV&nbsp;and IRIB&nbsp;said the proposal also called for the release of frozen Iranian assets and was delivered to W..."
+    },
+    {
+      "source_id": "finding-81",
+      "title": "Iran’s Araghchi holds talks with Dutch foreign minister",
+      "summary": "Iran’s Araghchi holds talks with Dutch foreign minister\n\n    \n    \n\n        \n    \n                Iranian foreign minister Abbas Araghchi held a phone call with Dutch foreign minister Tom Berendsen to discuss bilateral ties and the latest regional and diplomatic developments, according to Iranian state media.\n\nIRIB said in a post on its Telegram channel that the two officials exchanged views on issues related to relations between Iran and the Netherlands as well as ongoing regional tensions.\n...",
+      "description": "",
+      "language": "en",
+      "outlet": "Middle East Eye",
+      "text": "Iran’s Araghchi holds talks with Dutch foreign minister | Iran’s Araghchi holds talks with Dutch foreign minister\n\n    \n    \n\n        \n    \n                Iranian foreign minister Abbas Araghchi held a phone call with Dutch foreign minister Tom Berendsen to discuss bilateral ties and the latest regional and diplomatic developments, according to Iranian state media.\n\nIRIB said in a post on its Telegram channel that the two officials exchanged views on issues related to relations between Iran and the Netherlands as well as ongoing regional tensions.\n..."
+    },
+    {
+      "source_id": "finding-121",
+      "title": "Trump, Tehran and a Qatari tanker transit: here’s what happened overnight",
+      "summary": "The US-Israel war against Iran has now entered its 10th week and there has been little progress on the stalled peace talks.\nThese are the major takeaways from what happened overnight.\nWhat did Trump say?\nIran reportedly sent a response to Washington’s latest proposal – a one-page memo aimed at ending the war – but it was rejected by US President Donald Trump.\n“TOTALLY UNACCEPTABLE!” he wrote on social media on Sunday.\nIran’s Tasnim news agency, citing an “informed source”, reported that Tehra...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "Trump, Tehran and a Qatari tanker transit: here’s what happened overnight | The US-Israel war against Iran has now entered its 10th week and there has been little progress on the stalled peace talks.\nThese are the major takeaways from what happened overnight.\nWhat did Trump say?\nIran reportedly sent a response to Washington’s latest proposal – a one-page memo aimed at ending the war – but it was rejected by US President Donald Trump.\n“TOTALLY UNACCEPTABLE!” he wrote on social media on Sunday.\nIran’s Tasnim news agency, citing an “informed source”, reported that Tehra..."
+    },
+    {
+      "source_id": "finding-129",
+      "title": "Trump calls Iran’s response to US peace proposal ‘unacceptable’",
+      "summary": "Iran sent its response to the latest US proposal to end the Iran war via Pakistani mediators on Sunday, but US President Donald Trump quickly rejected it in a social media post as “TOTALLY UNACCEPTABLE!” – the latest setback to efforts to resolve the stand-off in the Persian Gulf that has throttled shipping and sent energy prices soaring.\nIranian state television reported that Tehran rejected the US proposal as amounting to surrender, insisting instead on “war reparations by the US, full Iran...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "Trump calls Iran’s response to US peace proposal ‘unacceptable’ | Iran sent its response to the latest US proposal to end the Iran war via Pakistani mediators on Sunday, but US President Donald Trump quickly rejected it in a social media post as “TOTALLY UNACCEPTABLE!” – the latest setback to efforts to resolve the stand-off in the Persian Gulf that has throttled shipping and sent energy prices soaring.\nIranian state television reported that Tehran rejected the US proposal as amounting to surrender, insisting instead on “war reparations by the US, full Iran..."
+    },
+    {
+      "source_id": "finding-135",
+      "title": "Umerov discusses possible leader-level meeting formats in US to end war – Zelensky",
+      "summary": "Secretary of Ukraine's National Security and Defense Council Rustem Umerov discussed possible formats of meetings at the leadership level in the United States to help end the war.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Umerov discusses possible leader-level meeting formats in US to end war – Zelensky | Secretary of Ukraine's National Security and Defense Council Rustem Umerov discussed possible formats of meetings at the leadership level in the United States to help end the war."
+    },
+    {
+      "source_id": "finding-212",
+      "title": "Irã envia resposta à proposta de paz dos EUA",
+      "summary": "O Irã afirmou, neste domingo (10), que enviou resposta a uma proposta dos Estados Unidos para iniciar negociações de paz para acabar com a guerra. As informações são da agência Reuters com base na mídia estatal iraniana.\n\nA resposta se concentrou no fim da guerra em todas as frentes, especialmente no Líbano, e na segurança da navegação pelo Estreito de Ormuz, sem indicar como ou quando poderia ser reaberto.\n\nNotícias relacionadas:EUA e Irã estão perto de fechar memorando para pôr fim à guerra...",
+      "description": "",
+      "language": "pt",
+      "outlet": "Agencia Brasil",
+      "text": "Irã envia resposta à proposta de paz dos EUA | O Irã afirmou, neste domingo (10), que enviou resposta a uma proposta dos Estados Unidos para iniciar negociações de paz para acabar com a guerra. As informações são da agência Reuters com base na mídia estatal iraniana.\n\nA resposta se concentrou no fim da guerra em todas as frentes, especialmente no Líbano, e na segurança da navegação pelo Estreito de Ormuz, sem indicar como ou quando poderia ser reaberto.\n\nNotícias relacionadas:EUA e Irã estão perto de fechar memorando para pôr fim à guerra..."
+    },
+    {
+      "source_id": "finding-245",
+      "title": "‘La guerra sigue’: Trump e Irán rechazan sus propuestas de paz para poner fin al conflicto",
+      "summary": "Irán ofreció transferir parte de sus reservas de uranio altamente enriquecido a un tercer país, pero rechazó la idea de desmantelar sus instalaciones nucleares.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "‘La guerra sigue’: Trump e Irán rechazan sus propuestas de paz para poner fin al conflicto | Irán ofreció transferir parte de sus reservas de uranio altamente enriquecido a un tercer país, pero rechazó la idea de desmantelar sus instalaciones nucleares."
+    },
+    {
+      "source_id": "finding-246",
+      "title": "‘Si vamos, deben aceptar’: Estas son las condiciones de Irán para jugar el Mundial 2026 en EU",
+      "summary": "La Federación de Futbol de Irán presentó una lista de condiciones a la FIFA antes de jugar el Mundial 2026 en Estados Unidos, México y Canadá, donde enfrentará a Bélgica, Nueva Zelanda y Egipto.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "‘Si vamos, deben aceptar’: Estas son las condiciones de Irán para jugar el Mundial 2026 en EU | La Federación de Futbol de Irán presentó una lista de condiciones a la FIFA antes de jugar el Mundial 2026 en Estados Unidos, México y Canadá, donde enfrentará a Bélgica, Nueva Zelanda y Egipto."
+    },
+    {
+      "source_id": "finding-251",
+      "title": "‘Ya no se reirán más’: Trump arremete contra Irán, Barak Obama y Joe Biden",
+      "summary": "Donald Trump reiteró que EU sigue al pendiente de las reservas de uranio de Irán.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "‘Ya no se reirán más’: Trump arremete contra Irán, Barak Obama y Joe Biden | Donald Trump reiteró que EU sigue al pendiente de las reservas de uranio de Irán."
+    },
+    {
+      "source_id": "finding-276",
+      "title": "Iran Hangs Man Convicted Of Spying, Leaking Secrets To Mossad, US",
+      "summary": "Erfan Shakourzadeh worked at one of Iran's \"scientific organisations active in the satellite field.\"",
+      "description": "",
+      "language": "en",
+      "outlet": "NDTV",
+      "text": "Iran Hangs Man Convicted Of Spying, Leaking Secrets To Mossad, US | Erfan Shakourzadeh worked at one of Iran's \"scientific organisations active in the satellite field.\""
+    },
+    {
+      "source_id": "finding-288",
+      "title": "Iran says made 'legitimate' demands in peace proposal rejected by Trump as 'totally unacceptable'",
+      "summary": "Iran on Monday asserted that it made “legitimate” demands in its latest formal response to the United States’ peace proposal, after US President Donald Trump rejected the reply as “totally unacceptable”.\nForeign Ministry Spokesperson Esmaeil Baqaei said Tehran had called for an end to the war across the region, the lifting of the US blockade of Iranian ports, and the release of frozen assets abroad in its response.\n“We did not demand any concessions. The only thing we demanded was Iran’s legi...",
+      "description": "",
+      "language": "en",
+      "outlet": "Dawn",
+      "text": "Iran says made 'legitimate' demands in peace proposal rejected by Trump as 'totally unacceptable' | Iran on Monday asserted that it made “legitimate” demands in its latest formal response to the United States’ peace proposal, after US President Donald Trump rejected the reply as “totally unacceptable”.\nForeign Ministry Spokesperson Esmaeil Baqaei said Tehran had called for an end to the war across the region, the lifting of the US blockade of Iranian ports, and the release of frozen assets abroad in its response.\n“We did not demand any concessions. The only thing we demanded was Iran’s legi..."
+    },
+    {
+      "source_id": "finding-304",
+      "title": "Trump rejects ‘unacceptable’ Iranian terms for ending war",
+      "summary": "• Iran conveyed response via Pakistani mediators• Officials say Tehran wants to focus on ending hostilities, leaving ‘contentious’ matters like sanctions relief, N-issues for later• Pezeshkian says dialogue ‘does not mean surrender or retreat’; Khamenei meets military commander• After Washington meetings, Qatari PM discusses diplomatic efforts with PM Shehbaz\nWASHINGTON/ISLAMABAD: President Donald Trump has rejected Iran’s formal response to the latest US proposal, conveyed through Pakistani ...",
+      "description": "",
+      "language": "en",
+      "outlet": "Dawn",
+      "text": "Trump rejects ‘unacceptable’ Iranian terms for ending war | • Iran conveyed response via Pakistani mediators• Officials say Tehran wants to focus on ending hostilities, leaving ‘contentious’ matters like sanctions relief, N-issues for later• Pezeshkian says dialogue ‘does not mean surrender or retreat’; Khamenei meets military commander• After Washington meetings, Qatari PM discusses diplomatic efforts with PM Shehbaz\nWASHINGTON/ISLAMABAD: President Donald Trump has rejected Iran’s formal response to the latest US proposal, conveyed through Pakistani ..."
+    },
+    {
+      "source_id": "finding-323",
+      "title": "Iran describes its proposal to end war with US as 'legitimate'",
+      "summary": "Tehran's proposal includes lifting the US naval blockade&nbsp;and releasing Iranian assets that have been frozen in banks.",
+      "description": "",
+      "language": "en",
+      "outlet": "CNA",
+      "text": "Iran describes its proposal to end war with US as 'legitimate' | Tehran's proposal includes lifting the US naval blockade&nbsp;and releasing Iranian assets that have been frozen in banks."
+    },
+    {
+      "source_id": "finding-412",
+      "title": "Trump calls Iran response to US proposal to end war 'totally unacceptable'",
+      "summary": "Iran is reported to want lifting of the US naval blockade, recognition of Iranian sovereignty over the Strait of Hormuz and compensation for war damage.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Trump calls Iran response to US proposal to end war 'totally unacceptable' | Iran is reported to want lifting of the US naval blockade, recognition of Iranian sovereignty over the Strait of Hormuz and compensation for war damage."
+    },
+    {
+      "source_id": "finding-449",
+      "title": "Middle East crisis live: Trump rejects Iran response to US peace proposal as Tehran warns of new attacks",
+      "summary": "US president calls Iranian response ‘totally unacceptable’ while Tehran says it will retaliate against any new US strikes or foreign warships in strait of HormuzTrump calls Iran’s response to peace plan ‘totally unacceptable’ as ceasefire fraysTurkey’s foreign minister, Hakan Fidan, will visit Qatar later today for talks on the war, its impact on the region and efforts to ensure navigational safety in the strait of Hormuz is resumed, a Turkish diplomatic source told the Reuters news agency.Tu...",
+      "description": "",
+      "language": "en",
+      "outlet": "Guardian World",
+      "text": "Middle East crisis live: Trump rejects Iran response to US peace proposal as Tehran warns of new attacks | US president calls Iranian response ‘totally unacceptable’ while Tehran says it will retaliate against any new US strikes or foreign warships in strait of HormuzTrump calls Iran’s response to peace plan ‘totally unacceptable’ as ceasefire fraysTurkey’s foreign minister, Hakan Fidan, will visit Qatar later today for talks on the war, its impact on the region and efforts to ensure navigational safety in the strait of Hormuz is resumed, a Turkish diplomatic source told the Reuters news agency.Tu..."
+    },
+    {
+      "source_id": "finding-450",
+      "title": "Trump calls Iran’s response to peace plan ‘totally unacceptable’ as ceasefire frays",
+      "summary": "US president expresses ire at Tehran’s reported demands, as drones strike Gulf nations and Israel warns war ‘not over’Donald Trump has rejected an Iranian response to a US peace proposal as “totally unacceptable”, on a day the month-old ceasefire showed signs of fraying as drone strikes were reported around the region and Benjamin Netanyahu warned the war was “not over”.The Iranian counter-proposal was passed to Washington through Pakistani mediators. Continue reading...",
+      "description": "",
+      "language": "en",
+      "outlet": "Guardian World",
+      "text": "Trump calls Iran’s response to peace plan ‘totally unacceptable’ as ceasefire frays | US president expresses ire at Tehran’s reported demands, as drones strike Gulf nations and Israel warns war ‘not over’Donald Trump has rejected an Iranian response to a US peace proposal as “totally unacceptable”, on a day the month-old ceasefire showed signs of fraying as drone strikes were reported around the region and Benjamin Netanyahu warned the war was “not over”.The Iranian counter-proposal was passed to Washington through Pakistani mediators. Continue reading..."
+    },
+    {
+      "source_id": "finding-468",
+      "title": "Morning news brief",
+      "summary": "Trump says Iran's response to the U.S. ceasefire proposal is \"totally unacceptable,\" Trump heads to China amid Iran war, Congress returns after week-long break.",
+      "description": "",
+      "language": "en",
+      "outlet": "NPR",
+      "text": "Morning news brief | Trump says Iran's response to the U.S. ceasefire proposal is \"totally unacceptable,\" Trump heads to China amid Iran war, Congress returns after week-long break."
+    },
+    {
+      "source_id": "finding-472",
+      "title": "Trump rejects Iran's latest response to U.S. ceasefire proposal",
+      "summary": "Iran delivered its response to Pakistani mediators on Sunday, according to the state-run Islamic Republic News Agency.",
+      "description": "",
+      "language": "en",
+      "outlet": "NPR",
+      "text": "Trump rejects Iran's latest response to U.S. ceasefire proposal | Iran delivered its response to Pakistani mediators on Sunday, according to the state-run Islamic Republic News Agency."
+    },
+    {
+      "source_id": "finding-484",
+      "title": "Iran war: Trump rejects proposal to end conflict",
+      "summary": "Donald Trump has called Iran's plan \"totally unacceptable.\" The fragile ceasefire had been tested earlier in the day by Iranian strikes across the Gulf. DW has more.",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "Iran war: Trump rejects proposal to end conflict | Donald Trump has called Iran's plan \"totally unacceptable.\" The fragile ceasefire had been tested earlier in the day by Iranian strikes across the Gulf. DW has more."
+    },
+    {
+      "source_id": "finding-507",
+      "title": "Trump to Axios: \"I don't like\" Iran's peace plan response",
+      "summary": "President Trump told Axios in a short phone call on Sunday that he would reject Iran's response to the latest draft agreement to end the war. Why it matters: The U.S. waited 10 days for the Iranian response, which came on Sunday. The White House hoped Iran's positions would show further progress toward a deal, but Trump's initial reaction signals the opposite.What he's saying: \"I don't like their letter. It's inappropriate. I don't like their response,\" Trump said, declining to go into furthe...",
+      "description": "",
+      "language": "en",
+      "outlet": "Axios",
+      "text": "Trump to Axios: \"I don't like\" Iran's peace plan response | President Trump told Axios in a short phone call on Sunday that he would reject Iran's response to the latest draft agreement to end the war. Why it matters: The U.S. waited 10 days for the Iranian response, which came on Sunday. The White House hoped Iran's positions would show further progress toward a deal, but Trump's initial reaction signals the opposite.What he's saying: \"I don't like their letter. It's inappropriate. I don't like their response,\" Trump said, declining to go into furthe..."
+    },
+    {
+      "source_id": "finding-532",
+      "title": "Trump says Iran response to US ceasefire proposal 'totally unacceptable'",
+      "summary": "Iran threatened new attacks, and warned against a planned French-British maritime security operation in the Strait of Hormuz. Emmanuel Macron said that it would be a joint mission to secure shipping, and not a military deployment.",
+      "description": "",
+      "language": "en",
+      "outlet": "Le Monde",
+      "text": "Trump says Iran response to US ceasefire proposal 'totally unacceptable' | Iran threatened new attacks, and warned against a planned French-British maritime security operation in the Strait of Hormuz. Emmanuel Macron said that it would be a joint mission to secure shipping, and not a military deployment."
+    },
+    {
+      "source_id": "finding-548",
+      "title": "Iran-Liveblog: ++ Iran wehrt sich gegen Kritik von Trump ++",
+      "summary": "Nach Kritik von US-Präsident Trump hat Iran seinen Vorschlag zur Beendigung des Krieges als legitim und großzügig verteidigt. Großbritannien und Frankreich beraten morgen militärische Pläne zur Sicherung der Schifffahrt in der Straße von Hormus.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "Iran-Liveblog: ++ Iran wehrt sich gegen Kritik von Trump ++ | Nach Kritik von US-Präsident Trump hat Iran seinen Vorschlag zur Beendigung des Krieges als legitim und großzügig verteidigt. Großbritannien und Frankreich beraten morgen militärische Pläne zur Sicherung der Schifffahrt in der Straße von Hormus."
+    },
+    {
+      "source_id": "finding-558",
+      "title": "Nach US-Vorschlag: Trump findet Irans Antwort \"völlig inakzeptabel\"",
+      "summary": "Iran hat auf den US-Vorschlag zur Beendigung des Kriegs reagiert - aber die Antwort missfällt US-Präsident Trump. Er wies die Forderungen aus Teheran zurück und nannte sie \"völlig inakzeptabel\".",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "Nach US-Vorschlag: Trump findet Irans Antwort \"völlig inakzeptabel\" | Iran hat auf den US-Vorschlag zur Beendigung des Kriegs reagiert - aber die Antwort missfällt US-Präsident Trump. Er wies die Forderungen aus Teheran zurück und nannte sie \"völlig inakzeptabel\"."
+    },
+    {
+      "source_id": "finding-564",
+      "title": "Iran übermittelt Antwort auf US-Vorschlag über neue Verhandlungen",
+      "summary": "Die USA hatten Iran einen 14-Punkte-Vorschlag zur Aufnahme von Friedensgesprächen vorgelegt. Jetzt hat Teheran seine Antwort an Vermittler Pakistan übermittelt. Die Golfstaaten melden derweil neue iranische Angriffe.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "Iran übermittelt Antwort auf US-Vorschlag über neue Verhandlungen | Die USA hatten Iran einen 14-Punkte-Vorschlag zur Aufnahme von Friedensgesprächen vorgelegt. Jetzt hat Teheran seine Antwort an Vermittler Pakistan übermittelt. Die Golfstaaten melden derweil neue iranische Angriffe."
+    },
+    {
+      "source_id": "finding-573",
+      "title": "++ Trump: Antwort aus Iran \"völlig inakzeptabel\"  ++",
+      "summary": "US-Präsident Trump lehnt die Antwort Irans auf den US-Vorschlag zur Beendigung des Krieges ab. Israels Premierminister Netanjahu betonte zuvor, dass der Krieg gegen Iran noch nicht vorbei sei.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "++ Trump: Antwort aus Iran \"völlig inakzeptabel\"  ++ | US-Präsident Trump lehnt die Antwort Irans auf den US-Vorschlag zur Beendigung des Krieges ab. Israels Premierminister Netanjahu betonte zuvor, dass der Krieg gegen Iran noch nicht vorbei sei."
+    },
+    {
+      "source_id": "finding-598",
+      "title": "Трамп назвал ответ Ирана на мирное предложение Вашингтона «неприемлемым»",
+      "summary": "Дональд Трамп прокомментировал ответ Тегерана на последнее предложение Вашингтона по прекращению войны.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Трамп назвал ответ Ирана на мирное предложение Вашингтона «неприемлемым» | Дональд Трамп прокомментировал ответ Тегерана на последнее предложение Вашингтона по прекращению войны."
+    },
+    {
+      "source_id": "finding-635",
+      "title": "Iran’s new ‘atomic bomb’: How US policy pushed Iran over the brink",
+      "summary": "After decades of sanctions, and then an open war, Tehran has forced Washington to the table on its terms Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Iran’s new ‘atomic bomb’: How US policy pushed Iran over the brink | After decades of sanctions, and then an open war, Tehran has forced Washington to the table on its terms Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-637",
+      "title": "The domino effect: How Iran-Israel tensions arm pirates",
+      "summary": "Amid the blockade of the Strait of Hormuz, the confrontation between Iran and Israel in the Red Sea is growing Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "The domino effect: How Iran-Israel tensions arm pirates | Amid the blockade of the Strait of Hormuz, the confrontation between Iran and Israel in the Red Sea is growing Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-639",
+      "title": "Maximum pressure, minimum victory: How the US lost the momentum in Iran",
+      "summary": "Is the conflict winding down towards an uneasy stability or winding up for a new escalation? Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Maximum pressure, minimum victory: How the US lost the momentum in Iran | Is the conflict winding down towards an uneasy stability or winding up for a new escalation? Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-643",
+      "title": "Iran’s response to US peace terms ‘totally unacceptable’ – Trump",
+      "summary": "US President Donald Trump has called Iran’s response to Washington’s latest proposal for ending the war “totally unacceptable” Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Iran’s response to US peace terms ‘totally unacceptable’ – Trump | US President Donald Trump has called Iran’s response to Washington’s latest proposal for ending the war “totally unacceptable” Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-644",
+      "title": "Trump vows to get Iran’s enriched uranium",
+      "summary": "US President Donald Trump has vowed to secure Iran’s enriched uranium stockpile “at some point” Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Trump vows to get Iran’s enriched uranium | US President Donald Trump has vowed to secure Iran’s enriched uranium stockpile “at some point” Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-664",
+      "title": "Trump considera “totalmente inaceptable” la respuesta de Irán a su propuesta de paz",
+      "summary": "Teherán reclama que, para poner fin a la guerra, Washington debe levantar las sanciones económicas, así como el bloqueo del estrecho de Ormuz, según informa la agencia iraní Tasnim",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Trump considera “totalmente inaceptable” la respuesta de Irán a su propuesta de paz | Teherán reclama que, para poner fin a la guerra, Washington debe levantar las sanciones económicas, así como el bloqueo del estrecho de Ormuz, según informa la agencia iraní Tasnim"
+    },
+    {
+      "source_id": "finding-816",
+      "title": "Iran demands end to war, release of frozen assets in response to US",
+      "summary": "Iran's foreign ministry said Monday it had called for an end to the war across the region and the release of frozen assets abroad in its response to the latest US proposal.\nThe post Iran demands end to war, release of frozen assets in response to US appeared first on Vanguard News.",
+      "description": "",
+      "language": "en",
+      "outlet": "Vanguard Nigeria",
+      "text": "Iran demands end to war, release of frozen assets in response to US | Iran's foreign ministry said Monday it had called for an end to the war across the region and the release of frozen assets abroad in its response to the latest US proposal.\nThe post Iran demands end to war, release of frozen assets in response to US appeared first on Vanguard News."
+    },
+    {
+      "source_id": "finding-822",
+      "title": "Iran hangs man accused of passing info to CIA, Mossad",
+      "summary": "Iran said Monday it had hanged a man convicted of spying for Israel and the United States, the latest in a wave of executions during the war with the two foes.\nThe post Iran hangs man accused of passing info to CIA, Mossad appeared first on Vanguard News.",
+      "description": "",
+      "language": "en",
+      "outlet": "Vanguard Nigeria",
+      "text": "Iran hangs man accused of passing info to CIA, Mossad | Iran said Monday it had hanged a man convicted of spying for Israel and the United States, the latest in a wave of executions during the war with the two foes.\nThe post Iran hangs man accused of passing info to CIA, Mossad appeared first on Vanguard News."
+    },
+    {
+      "source_id": "finding-823",
+      "title": "Trump rejects Iran peace terms as Tehran warns of new attacks",
+      "summary": "\"I have just read the response from Iran's so-called 'Representatives.' I don't like it -- TOTALLY UNACCEPTABLE!\" Trump said.\nThe post Trump rejects Iran peace terms as Tehran warns of new attacks appeared first on Vanguard News.",
+      "description": "",
+      "language": "en",
+      "outlet": "Vanguard Nigeria",
+      "text": "Trump rejects Iran peace terms as Tehran warns of new attacks | \"I have just read the response from Iran's so-called 'Representatives.' I don't like it -- TOTALLY UNACCEPTABLE!\" Trump said.\nThe post Trump rejects Iran peace terms as Tehran warns of new attacks appeared first on Vanguard News."
+    },
+    {
+      "source_id": "finding-897",
+      "title": "Petr�leo abre em alta ap�s Trump classificar proposta iraniana como inaceit�vel",
+      "summary": "As incertezas em torno do acordo de paz entre Estados Unidos e Ir� pesaram na abertura das negocia��es de petr�leo desta semana. Na virada da madrugada de segunda (11), �s 00h10, os contratos de petr�leo Brent para julho eram negociados a US$ 105,54, alta de 4,20%.\nLeia mais (05/10/2026 - 20h03)",
+      "description": "",
+      "language": "pt",
+      "outlet": "Folha de S.Paulo",
+      "text": "Petr�leo abre em alta ap�s Trump classificar proposta iraniana como inaceit�vel | As incertezas em torno do acordo de paz entre Estados Unidos e Ir� pesaram na abertura das negocia��es de petr�leo desta semana. Na virada da madrugada de segunda (11), �s 00h10, os contratos de petr�leo Brent para julho eram negociados a US$ 105,54, alta de 4,20%.\nLeia mais (05/10/2026 - 20h03)"
+    },
+    {
+      "source_id": "finding-1021",
+      "title": "Irán no cede en las negociaciones con EE.UU. y trata de imponer sus exigencia a Trump",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "Irán no cede en las negociaciones con EE.UU. y trata de imponer sus exigencia a Trump"
+    },
+    {
+      "source_id": "finding-1052",
+      "title": "Trump calls Iran's response to U.S. peace proposal 'unacceptable'",
+      "summary": "President Donald Trump on Sunday rejected Iran's response to a U.S. proposal for peace talks to end the war, as two ships were allowed to pass through the…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Trump calls Iran's response to U.S. peace proposal 'unacceptable' | President Donald Trump on Sunday rejected Iran's response to a U.S. proposal for peace talks to end the war, as two ships were allowed to pass through the…"
+    },
+    {
+      "source_id": "finding-1180",
+      "title": "Conflit Iran–États-Unis–Israël: comment l’Arabie saoudite tente de se tenir à distance de la guerre",
+      "summary": "Quel est le positionnement du royaume saoudien vis-à-vis du conflit entre l’Iran, les États-Unis et Israël ? Depuis plus de deux mois, Riyad semble vouloir se tenir à distance des bruits de bottes, et pour cause.",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "Conflit Iran–États-Unis–Israël: comment l’Arabie saoudite tente de se tenir à distance de la guerre | Quel est le positionnement du royaume saoudien vis-à-vis du conflit entre l’Iran, les États-Unis et Israël ? Depuis plus de deux mois, Riyad semble vouloir se tenir à distance des bruits de bottes, et pour cause."
+    },
+    {
+      "source_id": "finding-1182",
+      "title": "EN DIRECT - Guerre au Moyen-Orient: les États-Unis continuent d’avoir des «exigences déraisonnables» selon l'Iran",
+      "summary": "Donald Trump ⁠a qualifié dimanche ​soir de « totalement inacceptable » la réponse iranienne à la proposition de Washington destinée à mettre fin à leur ​conflit, tandis que Téhéran a dénoncé des « demandes excessives » qui équivaudraient à une capitulation, a rapporté la presse officielle iranienne. Peu après, Benyamin Netanyahu a fait part de sa détermination à récupérer l'uranium iranien dans une interview à la télévision CBS.",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "EN DIRECT - Guerre au Moyen-Orient: les États-Unis continuent d’avoir des «exigences déraisonnables» selon l'Iran | Donald Trump ⁠a qualifié dimanche ​soir de « totalement inacceptable » la réponse iranienne à la proposition de Washington destinée à mettre fin à leur ​conflit, tandis que Téhéran a dénoncé des « demandes excessives » qui équivaudraient à une capitulation, a rapporté la presse officielle iranienne. Peu après, Benyamin Netanyahu a fait part de sa détermination à récupérer l'uranium iranien dans une interview à la télévision CBS."
+    }
+  ]
+}

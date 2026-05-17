@@ -1,0 +1,242 @@
+{
+  "cluster_rank": 7,
+  "cluster_id": "mc-007",
+  "size": 26,
+  "n_findings": 26,
+  "findings": [
+    {
+      "source_id": "finding-9",
+      "title": "Zelenskyy’s ex-chief of staff appears in court in money-laundering case",
+      "summary": "Andriy Yermak is suspected in an alleged $10.5m money-laundering scheme involving a luxury real estate development.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Zelenskyy’s ex-chief of staff appears in court in money-laundering case | Andriy Yermak is suspected in an alleged $10.5m money-laundering scheme involving a luxury real estate development."
+    },
+    {
+      "source_id": "finding-122",
+      "title": "Yulia Navalnaya Rejects Claims of ‘Fictitious Employees’ as FBK Infighting Goes Public",
+      "summary": "Ivan Zhdanov, who served as FBK’s CEO from July 2022 until his removal in September, called for an internal audit of the organization after claiming in a recent interview that former chairman Leonid Volkov had hired “fictitious employees.”",
+      "description": "",
+      "language": "en",
+      "outlet": "Moscow Times",
+      "text": "Yulia Navalnaya Rejects Claims of ‘Fictitious Employees’ as FBK Infighting Goes Public | Ivan Zhdanov, who served as FBK’s CEO from July 2022 until his removal in September, called for an internal audit of the organization after claiming in a recent interview that former chairman Leonid Volkov had hired “fictitious employees.”"
+    },
+    {
+      "source_id": "finding-123",
+      "title": "TV Rain Editor-in-Chief Jailed 8 Years in Absentia Over War ‘Fakes’",
+      "summary": "Tikhon Dzyadko, who serves as editor-in-chief at TV Rain, was accused of spreading false information about the Russian armed forces.",
+      "description": "",
+      "language": "en",
+      "outlet": "Moscow Times",
+      "text": "TV Rain Editor-in-Chief Jailed 8 Years in Absentia Over War ‘Fakes’ | Tikhon Dzyadko, who serves as editor-in-chief at TV Rain, was accused of spreading false information about the Russian armed forces."
+    },
+    {
+      "source_id": "finding-275",
+      "title": "Un nuevo giro en la traición al ‘Mayo’ Zambada; Iván Archivaldo habría planeado la entrega del capo",
+      "summary": "Según el diario estadounidense LA Times, el avión donde fue entregado ‘El Mayo’ Zambada pertenecía a Iván Archivaldo, quien habría planeado el secuestro del fundador del Cártel de Sinaloa.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Un nuevo giro en la traición al ‘Mayo’ Zambada; Iván Archivaldo habría planeado la entrega del capo | Según el diario estadounidense LA Times, el avión donde fue entregado ‘El Mayo’ Zambada pertenecía a Iván Archivaldo, quien habría planeado el secuestro del fundador del Cártel de Sinaloa."
+    },
+    {
+      "source_id": "finding-507",
+      "title": "Zelensky's ex-chief of staff in court as Ukraine corruption probe escalates",
+      "summary": "Andriy Yermak was named by Ukraine's two anti-corruption agencies as a suspect in a money-laundering scheme.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Zelensky's ex-chief of staff in court as Ukraine corruption probe escalates | Andriy Yermak was named by Ukraine's two anti-corruption agencies as a suspect in a money-laundering scheme."
+    },
+    {
+      "source_id": "finding-563",
+      "title": "Prosecutors to announce sentences for Sarkozy in Libya funding appeal",
+      "summary": "French prosecutors are on Wednesday due to announce their requested sentences against former president Nicolas Sarkozy in an appeal trial over allegations of illegal campaign funding from Libya’s late dictator Muammar Gaddafi. Sarkozy was last year sentenced to prison by a lower court and became the first modern French president to serve time behind bars.",
+      "description": "",
+      "language": "en",
+      "outlet": "France 24",
+      "text": "Prosecutors to announce sentences for Sarkozy in Libya funding appeal | French prosecutors are on Wednesday due to announce their requested sentences against former president Nicolas Sarkozy in an appeal trial over allegations of illegal campaign funding from Libya’s late dictator Muammar Gaddafi. Sarkozy was last year sentenced to prison by a lower court and became the first modern French president to serve time behind bars."
+    },
+    {
+      "source_id": "finding-679",
+      "title": "Cum-Ex-Schlüsselfigur Berger muss zehn Jahre ins Gefängnis",
+      "summary": "Das Landgericht Bonn verhängt gegen Berger, eine Schlüsselfigur des Cum-Ex-Skandals, nach WDR-Informationen eine Gesamtstrafe von zehn Jahren. Dies ist die bislang höchste Gefängnisstrafe im größten deutschen Steuerskandal. Von M. Bognanni.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "Cum-Ex-Schlüsselfigur Berger muss zehn Jahre ins Gefängnis | Das Landgericht Bonn verhängt gegen Berger, eine Schlüsselfigur des Cum-Ex-Skandals, nach WDR-Informationen eine Gesamtstrafe von zehn Jahren. Dies ist die bislang höchste Gefängnisstrafe im größten deutschen Steuerskandal. Von M. Bognanni."
+    },
+    {
+      "source_id": "finding-717",
+      "title": "Бывшего замминистра природных ресурсов Дениса Буцаева, бежавшего в США после отставки, обвинили в мошенничестве",
+      "summary": "Бывший заместитель министра природных ресурсов России Денис Буцаев проходит в качестве обвиняемого по уголовному делу о мошенничестве в особо крупном размере. Об этом 13 мая сообщил ТАСС, ссылаясь на правоохранительные органы.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Бывшего замминистра природных ресурсов Дениса Буцаева, бежавшего в США после отставки, обвинили в мошенничестве | Бывший заместитель министра природных ресурсов России Денис Буцаев проходит в качестве обвиняемого по уголовному делу о мошенничестве в особо крупном размере. Об этом 13 мая сообщил ТАСС, ссылаясь на правоохранительные органы."
+    },
+    {
+      "source_id": "finding-722",
+      "title": "Бывшего директора криптобиржи Binance в СНГ Владимира Смеркиса приговорили к пяти годам, обвинив в присвоении денег клиента за рекламную кампанию",
+      "summary": "Пресненский районный суд Москвы приговорил бывшего директора криптобиржи Binance в СНГ и сооснователя крипто-игры Blum Владимира Смеркиса к пяти годам колонии общего режима по обвинению в мошенничестве (часть 4 статьи 159 УК).",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Бывшего директора криптобиржи Binance в СНГ Владимира Смеркиса приговорили к пяти годам, обвинив в присвоении денег клиента за рекламную кампанию | Пресненский районный суд Москвы приговорил бывшего директора криптобиржи Binance в СНГ и сооснователя крипто-игры Blum Владимира Смеркиса к пяти годам колонии общего режима по обвинению в мошенничестве (часть 4 статьи 159 УК)."
+    },
+    {
+      "source_id": "finding-727",
+      "title": "Бывший исполнительный директор ФБК Владимир Ашурков дал интервью Юрию Дудю. Он ответил на вопросы о деньгах олигархов, сотрудничестве фонда с Железняком и письме в защиту Фридмана. Главные цитаты",
+      "summary": "Владимир Ашурков — финансист и соратник Алексея Навального — дал трехчасовое интервью журналисту Юрию Дудю. В 2000-х Ашурков работал финансовым директором порта Петербурга и топ-менеджером «Альфа-Групп». С 2010 года он участвовал в расследованиях Алексея Навального. Впоследствии стал исполнительным директором Фонда борьбы с коррупцией (ФБК) и занимал эту должность до 2023 года. В интервью Дудю Ашурков ответил на вопросы о недавних скандалах вокруг ФБК, в том числе о том, брали ли соратники На...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Бывший исполнительный директор ФБК Владимир Ашурков дал интервью Юрию Дудю. Он ответил на вопросы о деньгах олигархов, сотрудничестве фонда с Железняком и письме в защиту Фридмана. Главные цитаты | Владимир Ашурков — финансист и соратник Алексея Навального — дал трехчасовое интервью журналисту Юрию Дудю. В 2000-х Ашурков работал финансовым директором порта Петербурга и топ-менеджером «Альфа-Групп». С 2010 года он участвовал в расследованиях Алексея Навального. Впоследствии стал исполнительным директором Фонда борьбы с коррупцией (ФБК) и занимал эту должность до 2023 года. В интервью Дудю Ашурков ответил на вопросы о недавних скандалах вокруг ФБК, в том числе о том, брали ли соратники На..."
+    },
+    {
+      "source_id": "finding-729",
+      "title": "Андрей Ермак заявил в суде, что не признает свою вину. Его подозревают в отмывании денег на строительстве резиденции под Киевом",
+      "summary": "Бывший глава офиса президента Украины Андрей Ермак отрицает обвинения, выдвинутые против него по делу об отмывании денег.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Андрей Ермак заявил в суде, что не признает свою вину. Его подозревают в отмывании денег на строительстве резиденции под Киевом | Бывший глава офиса президента Украины Андрей Ермак отрицает обвинения, выдвинутые против него по делу об отмывании денег."
+    },
+    {
+      "source_id": "finding-737",
+      "title": "Антикоррупционная прокуратура Украины потребовала ареста Андрея Ермака — с возможностью выйти под залог в четыре миллиона долларов",
+      "summary": "Глава Специализированной антикоррупционной прокуратуры (САП) Украины Александр Клименко заявил, что ведомство будет просить суд избрать для бывшего главы офиса президента Андрея Ермака меру пресечения в виде ареста. Об этом он объявил на брифинге, его слова приводит «Громадське».",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Антикоррупционная прокуратура Украины потребовала ареста Андрея Ермака — с возможностью выйти под залог в четыре миллиона долларов | Глава Специализированной антикоррупционной прокуратуры (САП) Украины Александр Клименко заявил, что ведомство будет просить суд избрать для бывшего главы офиса президента Андрея Ермака меру пресечения в виде ареста. Об этом он объявил на брифинге, его слова приводит «Громадське»."
+    },
+    {
+      "source_id": "finding-740",
+      "title": "Бывшая пресс-секретарь Зеленского Юлия Мендель дала интервью Такеру Карлсону. Его суть в пяти словах: президент — диктатор, лицемер и наркопотребитель. «Эта дама давно не в себе», — ответили в офисе Зеленского",
+      "summary": "Бывшая пресс-секретарь президента Украины Владимира Зеленского Юлия Мендель дала полуторачасовое интервью консервативному американскому журналисту Такеру Карлсону. В интервью Мендель, работавшая с Зеленским с 2019 по 2021 год, крайне негативно высказалась о бывшем начальнике — она назвала его «одним из самых больших препятствий на пути к миру» и заявила, что он регулярно употребляет наркотики. Из-за близости слов Мендель нарративам российской пропаганды интервью активно начали цитировать росс...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Бывшая пресс-секретарь Зеленского Юлия Мендель дала интервью Такеру Карлсону. Его суть в пяти словах: президент — диктатор, лицемер и наркопотребитель. «Эта дама давно не в себе», — ответили в офисе Зеленского | Бывшая пресс-секретарь президента Украины Владимира Зеленского Юлия Мендель дала полуторачасовое интервью консервативному американскому журналисту Такеру Карлсону. В интервью Мендель, работавшая с Зеленским с 2019 по 2021 год, крайне негативно высказалась о бывшем начальнике — она назвала его «одним из самых больших препятствий на пути к миру» и заявила, что он регулярно употребляет наркотики. Из-за близости слов Мендель нарративам российской пропаганды интервью активно начали цитировать росс..."
+    },
+    {
+      "source_id": "finding-741",
+      "title": "Антикоррупционное бюро Украины: подозреваемыми по делу об отмывании 10 миллионов долларов стали еще шесть человек. По нему проходит и Андрей Ермак",
+      "summary": "Фигурантами по делу о легализации 460 миллионов гривен (около 10,5 миллиона долларов) в рамках элитного строительства под Киевом проходят еще шесть человек, сообщили Национальное антикоррупционное бюро (НАБУ) и Специализированная антикоррупционная прокуратура Украины (САП).",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Антикоррупционное бюро Украины: подозреваемыми по делу об отмывании 10 миллионов долларов стали еще шесть человек. По нему проходит и Андрей Ермак | Фигурантами по делу о легализации 460 миллионов гривен (около 10,5 миллиона долларов) в рамках элитного строительства под Киевом проходят еще шесть человек, сообщили Национальное антикоррупционное бюро (НАБУ) и Специализированная антикоррупционная прокуратура Украины (САП)."
+    },
+    {
+      "source_id": "finding-743",
+      "title": "В Киев приехал глава Palantir. Министр обороны Украины заявил, что ВСУ используют технологии этой компании для ударов вглубь России",
+      "summary": "В Украину приехал глава Palantir — американской компании-разработчика систем анализа данных — Алекс Карп. Он встретился с президентом страны Владимиром Зеленским и главой Минобороны Михаилом Федоровым.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "В Киев приехал глава Palantir. Министр обороны Украины заявил, что ВСУ используют технологии этой компании для ударов вглубь России | В Украину приехал глава Palantir — американской компании-разработчика систем анализа данных — Алекс Карп. Он встретился с президентом страны Владимиром Зеленским и главой Минобороны Михаилом Федоровым."
+    },
+    {
+      "source_id": "finding-747",
+      "title": "Жителю Самары назначили компенсацию в 350 тысяч рублей за срок по сфабрикованному делу о наркотиках",
+      "summary": "Октябрьский районный суд Самары назначил 350 тысяч рублей компенсации морального вреда 52-летнему Олегу Покашлеву, сообщил фонд «Общественный вестник». Мужчина требовал 10 млн рублей. В 2016 году в отношении Покашлева, который работал электриком в управляющей компании, сфабриковали уголовное дело о незаконном производстве и сбыте наркотиков. Полицейские, по словам Покашлева, не подкидывали ему наркотики, а просто сфальсифицировали документы. Также он рассказывал, что его пытали ради признател...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Novaya Gazeta Europe",
+      "text": "Жителю Самары назначили компенсацию в 350 тысяч рублей за срок по сфабрикованному делу о наркотиках | Октябрьский районный суд Самары назначил 350 тысяч рублей компенсации морального вреда 52-летнему Олегу Покашлеву, сообщил фонд «Общественный вестник». Мужчина требовал 10 млн рублей. В 2016 году в отношении Покашлева, который работал электриком в управляющей компании, сфабриковали уголовное дело о незаконном производстве и сбыте наркотиков. Полицейские, по словам Покашлева, не подкидывали ему наркотики, а просто сфальсифицировали документы. Также он рассказывал, что его пытали ради признател..."
+    },
+    {
+      "source_id": "finding-750",
+      "title": "Прокуратура Украины потребует арестовать Андрея Ермака с возможностью выйти под залог. Бывшему главе Офиса президента Украины сообщили о подозрении по делу о коррупции. Главное",
+      "summary": "Прокуратура Украины потребовала арестовать бывшего главу Офиса президента Андрея Ермака по делу о легализации коррупционных средств с возможностью выхода под залог в $4,1 млн. 12 мая суд заслушал прокурора, а 13 мая примет решение о мере пресечения. По версии НАБУ и САП, фигуранты расследования с 2021 по 2025 год отмыли более 460 млн гривен через строительство элитного коттеджного комплекса «Династия» под Киевом, связанного со схемами в «Энергоатоме».  Все, что нужно знать о новых обвинениях ...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Novaya Gazeta Europe",
+      "text": "Прокуратура Украины потребует арестовать Андрея Ермака с возможностью выйти под залог. Бывшему главе Офиса президента Украины сообщили о подозрении по делу о коррупции. Главное | Прокуратура Украины потребовала арестовать бывшего главу Офиса президента Андрея Ермака по делу о легализации коррупционных средств с возможностью выхода под залог в $4,1 млн. 12 мая суд заслушал прокурора, а 13 мая примет решение о мере пресечения. По версии НАБУ и САП, фигуранты расследования с 2021 по 2025 год отмыли более 460 млн гривен через строительство элитного коттеджного комплекса «Династия» под Киевом, связанного со схемами в «Энергоатоме».  Все, что нужно знать о новых обвинениях ..."
+    },
+    {
+      "source_id": "finding-752",
+      "title": "Владимир Ашурков — о работе с Алексеем Навальным, ФБК и Леониде Волкове. Бывший исполнительный директор Фонда борьбы с коррупцией дал интервью Дудю. Главное",
+      "summary": "Бывший исполнительный директор ФБК Владимир Ашурков дал большое интервью Юрию Дудю о работе с Алексеем Навальным, ФБК, Леониде Волкове и письмах в поддержку бизнесменов. Он рассказал, как внутри команды обсуждали санкции против российских бизнесменов, почему считает ошибкой письмо Волкова и что думает про уголовные дела за донаты ФБК. Главное из интервью — в пересказе «Новой-Европа». Владимир Ашурков. Фото: вДудь / YouTube .Отношения с Кохом Дудь спросил у Ашуркова, спонсировал ли когда-то ФБ...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Novaya Gazeta Europe",
+      "text": "Владимир Ашурков — о работе с Алексеем Навальным, ФБК и Леониде Волкове. Бывший исполнительный директор Фонда борьбы с коррупцией дал интервью Дудю. Главное | Бывший исполнительный директор ФБК Владимир Ашурков дал большое интервью Юрию Дудю о работе с Алексеем Навальным, ФБК, Леониде Волкове и письмах в поддержку бизнесменов. Он рассказал, как внутри команды обсуждали санкции против российских бизнесменов, почему считает ошибкой письмо Волкова и что думает про уголовные дела за донаты ФБК. Главное из интервью — в пересказе «Новой-Европа». Владимир Ашурков. Фото: вДудь / YouTube .Отношения с Кохом Дудь спросил у Ашуркова, спонсировал ли когда-то ФБ..."
+    },
+    {
+      "source_id": "finding-769",
+      "title": "WATCH IN FULL: Sergey Lavrov’s exclusive interview with RT India",
+      "summary": "Russian Foreign Minister Sergey Lavrov has talked to Runjhun Sharma ahead of his visit to New Delhi Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "WATCH IN FULL: Sergey Lavrov’s exclusive interview with RT India | Russian Foreign Minister Sergey Lavrov has talked to Runjhun Sharma ahead of his visit to New Delhi Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-780",
+      "title": "Zelensky’s ex-spokeswoman added to state-linked ‘kill list’",
+      "summary": "Ukraine’s state-backed Mirotvorets website has added Vladimir Zelensky’s former press secretary, Yulia Mendel, to its “kill list” Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Zelensky’s ex-spokeswoman added to state-linked ‘kill list’ | Ukraine’s state-backed Mirotvorets website has added Vladimir Zelensky’s former press secretary, Yulia Mendel, to its “kill list” Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-789",
+      "title": "Who is the ‘mystery partner’ in ex-Zelensky aide’s alleged money laundering scheme?",
+      "summary": "The NABU indictment of former Zelensky chief of staff Andrey Yermak marks a major blow to the Ukrainian leader’s grip on power Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Who is the ‘mystery partner’ in ex-Zelensky aide’s alleged money laundering scheme? | The NABU indictment of former Zelensky chief of staff Andrey Yermak marks a major blow to the Ukrainian leader’s grip on power Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-840",
+      "title": "Rasputín, el monje curandero que fascinó a los zares y abrió la puerta al fin del imperio ruso",
+      "summary": "Este campesino de Siberia no llegó a tener cargo oficial en la corte del zar, pero tras frenar aparentemente un ataque hemofílico del hijo de Nicolás II, se metió a la zarina en el bolsillo. Su influencia en la pareja real fue enorme y acabó conduciéndolos a su final, como cuenta el historiador británico Antony Beevor en el libro ‘Rasputín y la caída de los Románov’, del que ‘Ideas’ adelanta un extracto",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Rasputín, el monje curandero que fascinó a los zares y abrió la puerta al fin del imperio ruso | Este campesino de Siberia no llegó a tener cargo oficial en la corte del zar, pero tras frenar aparentemente un ataque hemofílico del hijo de Nicolás II, se metió a la zarina en el bolsillo. Su influencia en la pareja real fue enorme y acabó conduciéndolos a su final, como cuenta el historiador británico Antony Beevor en el libro ‘Rasputín y la caída de los Románov’, del que ‘Ideas’ adelanta un extracto"
+    },
+    {
+      "source_id": "finding-934",
+      "title": "Özkan Yalım'ın etkin pişmanlık ifadesinde çarpıcı iddia | 'Özgür Özel mesajla istedi, aracı kişiye verdim'",
+      "summary": "Cumhuriyet Halk Partisi'nden ihraç edilen tutuklu Uşak Belediye Başkanı Özkan Yalım etkin pişmanlık başvurusunda bulunmuş ve ek ifade vermişti. Yalım, dün İstanbul'da savcıya 5 saat süren ifade verdi. Yalım, ek ifadesinde CHP'nin tartışmalı kurultayına dair dikkat çeken iddialarda bulundu.",
+      "description": "",
+      "language": "tr",
+      "outlet": "Hurriyet",
+      "text": "Özkan Yalım'ın etkin pişmanlık ifadesinde çarpıcı iddia | 'Özgür Özel mesajla istedi, aracı kişiye verdim' | Cumhuriyet Halk Partisi'nden ihraç edilen tutuklu Uşak Belediye Başkanı Özkan Yalım etkin pişmanlık başvurusunda bulunmuş ve ek ifade vermişti. Yalım, dün İstanbul'da savcıya 5 saat süren ifade verdi. Yalım, ek ifadesinde CHP'nin tartışmalı kurultayına dair dikkat çeken iddialarda bulundu."
+    },
+    {
+      "source_id": "finding-942",
+      "title": "Özgür Özel’in ‘çantacısı’ da gözaltında",
+      "summary": "Yolsuzluk operasyonu kapsamında, belinde havlu ile Ankara’da bir otelde belediye çalışanı sevgilisiyle basılan, gözaltına alındıktan sonra tutuklanan eski Uşak Belediye Başkanı Özkan Yalım’ın etkin pişmanlıktan yararlanmak için verdiği ifade CHP’li Özgür Özel’in başını yakacak gibi görünüyor.",
+      "description": "",
+      "language": "tr",
+      "outlet": "Hurriyet",
+      "text": "Özgür Özel’in ‘çantacısı’ da gözaltında | Yolsuzluk operasyonu kapsamında, belinde havlu ile Ankara’da bir otelde belediye çalışanı sevgilisiyle basılan, gözaltına alındıktan sonra tutuklanan eski Uşak Belediye Başkanı Özkan Yalım’ın etkin pişmanlıktan yararlanmak için verdiği ifade CHP’li Özgür Özel’in başını yakacak gibi görünüyor."
+    },
+    {
+      "source_id": "finding-984",
+      "title": "How fake job offer led to my abduction in Zamfara — UNIJOS graduate",
+      "summary": "JOS — A graduate of University of Jos, John Azi, has recounted his traumatic experience after  he was allegedly lured with a fake job offer, abducted and taken to a kidnappers’ camp in Zamfara State.\nThe post How fake job offer led to my abduction in Zamfara — UNIJOS graduate appeared first on Vanguard News.",
+      "description": "",
+      "language": "en",
+      "outlet": "Vanguard Nigeria",
+      "text": "How fake job offer led to my abduction in Zamfara — UNIJOS graduate | JOS — A graduate of University of Jos, John Azi, has recounted his traumatic experience after  he was allegedly lured with a fake job offer, abducted and taken to a kidnappers’ camp in Zamfara State.\nThe post How fake job offer led to my abduction in Zamfara — UNIJOS graduate appeared first on Vanguard News."
+    },
+    {
+      "source_id": "finding-1372",
+      "title": "Bénin: accusé d'avoir salué la tentative de coup d'État, un ex-député des Démocrates condamné à cinq ans de prison",
+      "summary": "Au Bénin, Soumaila Sounon Boké, ancien député du principal parti d'opposition Les Démocrates, a été condamné ce mardi 12 mai 2026 à cinq ans de prison et à une amende de 10 millions de FCFA par la Cour de répression des infractions économiques et du terrorisme (Criet) de Cotonou. Le tribunal lui reproche des faits d' « apologie de crime contre la sûreté de l'État » et d'« incitation à la haine et à la violence ».  À l'origine : un message posté dans un groupe WhatsApp le 7 décembre dernier, j...",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "Bénin: accusé d'avoir salué la tentative de coup d'État, un ex-député des Démocrates condamné à cinq ans de prison | Au Bénin, Soumaila Sounon Boké, ancien député du principal parti d'opposition Les Démocrates, a été condamné ce mardi 12 mai 2026 à cinq ans de prison et à une amende de 10 millions de FCFA par la Cour de répression des infractions économiques et du terrorisme (Criet) de Cotonou. Le tribunal lui reproche des faits d' « apologie de crime contre la sûreté de l'État » et d'« incitation à la haine et à la violence ».  À l'origine : un message posté dans un groupe WhatsApp le 7 décembre dernier, j..."
+    }
+  ]
+}

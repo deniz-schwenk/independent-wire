@@ -1,0 +1,602 @@
+{
+  "cluster_rank": 0,
+  "cluster_id": "mc-000",
+  "size": 66,
+  "n_findings": 66,
+  "findings": [
+    {
+      "source_id": "finding-18",
+      "title": "Things are not going so well for Russia",
+      "summary": "Stalled advance in Ukraine and economic woes are not the only worries for the Kremlin - also a distant ‘near abroad&#039;.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Things are not going so well for Russia | Stalled advance in Ukraine and economic woes are not the only worries for the Kremlin - also a distant ‘near abroad&#039;."
+    },
+    {
+      "source_id": "finding-21",
+      "title": "Russia and Ukraine accuse the other of ceasefire violations",
+      "summary": "Russia and Ukraine accuse the other of ceasefire violations.",
+      "description": "",
+      "language": "en",
+      "outlet": "Al Jazeera",
+      "text": "Russia and Ukraine accuse the other of ceasefire violations | Russia and Ukraine accuse the other of ceasefire violations."
+    },
+    {
+      "source_id": "finding-47",
+      "title": "Zelenskyy says Ukraine pushed Putin 'a little' toward a potential meeting",
+      "summary": "Russia's Putin earlier said he is ready to meet Zelenskyy in any third country, but only to finalize a peace agreement to end the ongoing 4-year war",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Zelenskyy says Ukraine pushed Putin 'a little' toward a potential meeting | Russia's Putin earlier said he is ready to meet Zelenskyy in any third country, but only to finalize a peace agreement to end the ongoing 4-year war"
+    },
+    {
+      "source_id": "finding-56",
+      "title": "Azerbaijani leader slams EU border observers, saying they act ‘as if they are defending Armenia from us’",
+      "summary": "Ilham Aliyev says there is ‘no need’ to defend Armenia, underlining that Azerbaijan ‘achieved what we wanted.’",
+      "description": "",
+      "language": "en",
+      "outlet": "Anadolu Agency",
+      "text": "Azerbaijani leader slams EU border observers, saying they act ‘as if they are defending Armenia from us’ | Ilham Aliyev says there is ‘no need’ to defend Armenia, underlining that Azerbaijan ‘achieved what we wanted.’"
+    },
+    {
+      "source_id": "finding-131",
+      "title": "Ukraine and Russia accuse each other of breaking US-brokered ceasefire",
+      "summary": "Russia and Ukraine swapped accusations of breaking a US-brokered ceasefire on Sunday, with both sides claiming to have suffered casualties in drone and artillery strikes over the past 24 hours.\nUkraine’s President Volodymyr Zelensky said that Russia was neither observing the truce nor “even particularly trying to”, adding there had been no calm in front-line areas despite a lull in large-scale attacks and pledged that Ukraine would retaliate for any aggression shown by Moscow.\n“Yesterday and...",
+      "description": "",
+      "language": "en",
+      "outlet": "South China Morning Post",
+      "text": "Ukraine and Russia accuse each other of breaking US-brokered ceasefire | Russia and Ukraine swapped accusations of breaking a US-brokered ceasefire on Sunday, with both sides claiming to have suffered casualties in drone and artillery strikes over the past 24 hours.\nUkraine’s President Volodymyr Zelensky said that Russia was neither observing the truce nor “even particularly trying to”, adding there had been no calm in front-line areas despite a lull in large-scale attacks and pledged that Ukraine would retaliate for any aggression shown by Moscow.\n“Yesterday and..."
+    },
+    {
+      "source_id": "finding-132",
+      "title": "U.K. Sanctions Russian ‘Disinformation’ Outfit Over Plot to Sway Armenian Elections",
+      "summary": "The new measures target 49 employees of the Social Design Agency, a group already under Western sanctions for alleged election interference.",
+      "description": "",
+      "language": "en",
+      "outlet": "Moscow Times",
+      "text": "U.K. Sanctions Russian ‘Disinformation’ Outfit Over Plot to Sway Armenian Elections | The new measures target 49 employees of the Social Design Agency, a group already under Western sanctions for alleged election interference."
+    },
+    {
+      "source_id": "finding-133",
+      "title": "EU Ministers to Discuss Possibility of Direct Talks With Russia",
+      "summary": "Vladimir Putin has proposed German Chancellor Gerhard Schröder as a possible negotiator in talks with the European Union.",
+      "description": "",
+      "language": "en",
+      "outlet": "Moscow Times",
+      "text": "EU Ministers to Discuss Possibility of Direct Talks With Russia | Vladimir Putin has proposed German Chancellor Gerhard Schröder as a possible negotiator in talks with the European Union."
+    },
+    {
+      "source_id": "finding-134",
+      "title": "Ukraine Reports Multiple Casualties on Second Day of Russia Truce",
+      "summary": "Ukrainian air force data showed a decrease in long-range Russian drone strikes compared to before the truce, but officials reported casualties nonetheless.",
+      "description": "",
+      "language": "en",
+      "outlet": "Moscow Times",
+      "text": "Ukraine Reports Multiple Casualties on Second Day of Russia Truce | Ukrainian air force data showed a decrease in long-range Russian drone strikes compared to before the truce, but officials reported casualties nonetheless."
+    },
+    {
+      "source_id": "finding-145",
+      "title": "Ukraine firmly rejects Schröder as EU negotiator – FM Sybiha",
+      "summary": "Kyiv does not support the candidacy of former German Chancellor Gerhard Schröder as a potential negotiator for the European Union, a proposal reportedly put forward by Russia.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Ukraine firmly rejects Schröder as EU negotiator – FM Sybiha | Kyiv does not support the candidacy of former German Chancellor Gerhard Schröder as a potential negotiator for the European Union, a proposal reportedly put forward by Russia."
+    },
+    {
+      "source_id": "finding-147",
+      "title": "Russian forces launch 250 attacks on Ukrainian border units in one day, most using drones",
+      "summary": "Russian forces shelled Ukrainian border guard units 250 times over the past day, including 150 attacks carried out with drones.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Russian forces launch 250 attacks on Ukrainian border units in one day, most using drones | Russian forces shelled Ukrainian border guard units 250 times over the past day, including 150 attacks carried out with drones."
+    },
+    {
+      "source_id": "finding-148",
+      "title": "Five people injured in Russian attacks on Kharkiv region over past day",
+      "summary": "On May 10, the city of Kharkiv and seven other settlements in the Kharkiv region came under Russian attacks, leaving five people injured.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Five people injured in Russian attacks on Kharkiv region over past day | On May 10, the city of Kharkiv and seven other settlements in the Kharkiv region came under Russian attacks, leaving five people injured."
+    },
+    {
+      "source_id": "finding-150",
+      "title": "Russia has no right to appoint EU negotiator – Kallas",
+      "summary": "Former German Chancellor Gerhard Schröder is a well-known lobbyist for Russian companies, so it is not surprising that Vladimir Putin would like him to serve as the European Union’s negotiator.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Russia has no right to appoint EU negotiator – Kallas | Former German Chancellor Gerhard Schröder is a well-known lobbyist for Russian companies, so it is not surprising that Vladimir Putin would like him to serve as the European Union’s negotiator."
+    },
+    {
+      "source_id": "finding-152",
+      "title": "Russians shell 13 settlements in Kherson region over past day, leaving two killed, others injured",
+      "summary": "In the Kherson region, two people were killed and two more injured as a result of Russian attacks over the past 24 hours.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Russians shell 13 settlements in Kherson region over past day, leaving two killed, others injured | In the Kherson region, two people were killed and two more injured as a result of Russian attacks over the past 24 hours."
+    },
+    {
+      "source_id": "finding-153",
+      "title": "War update: 180 combat engagements over past day",
+      "summary": "During the previous day, May 10, 180 combat clashes between the Defense Forces of Ukraine and Russian invaders were recorded on the frontline.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "War update: 180 combat engagements over past day | During the previous day, May 10, 180 combat clashes between the Defense Forces of Ukraine and Russian invaders were recorded on the frontline."
+    },
+    {
+      "source_id": "finding-154",
+      "title": "Russia loses 920 troops, 76 artillery systems in war against Ukraine over past day",
+      "summary": "The total combat losses of Russian forces since the start of the full-scale invasion of Ukraine on February 24, 2022, through May 11, 2026, are estimated at about 1,342,030 personnel, including 920 in the past 24 hours.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Russia loses 920 troops, 76 artillery systems in war against Ukraine over past day | The total combat losses of Russian forces since the start of the full-scale invasion of Ukraine on February 24, 2022, through May 11, 2026, are estimated at about 1,342,030 personnel, including 920 in the past 24 hours."
+    },
+    {
+      "source_id": "finding-155",
+      "title": "Russians strike Zaporizhzhia region 785 times in one day, leaving one killed, two injured",
+      "summary": "Over the past 24 hours, Russian occupiers carried out 785 strikes on 36 settlements in the Zaporizhzhia region. One person was killed and two others were injured as a result of enemy attacks on the Zaporizhzhia district.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Russians strike Zaporizhzhia region 785 times in one day, leaving one killed, two injured | Over the past 24 hours, Russian occupiers carried out 785 strikes on 36 settlements in the Zaporizhzhia region. One person was killed and two others were injured as a result of enemy attacks on the Zaporizhzhia district."
+    },
+    {
+      "source_id": "finding-158",
+      "title": "Russian strike in Zaporizhzhia region leave one injured, houses damaged",
+      "summary": "A woman was injured and residential buildings were damaged following a Russian attack in the Zaporizhzhia district.",
+      "description": "",
+      "language": "en",
+      "outlet": "Ukrinform",
+      "text": "Russian strike in Zaporizhzhia region leave one injured, houses damaged | A woman was injured and residential buildings were damaged following a Russian attack in the Zaporizhzhia district."
+    },
+    {
+      "source_id": "finding-263",
+      "title": "Rusia acusa a Ucrania de romper la tregua de tres días mediada por Estados Unidos",
+      "summary": "El alto el fuego entre Rusia y Ucrania aplicaría del sábado 9 al lunes 11 de mayo.",
+      "description": "",
+      "language": "es",
+      "outlet": "El Financiero",
+      "text": "Rusia acusa a Ucrania de romper la tregua de tres días mediada por Estados Unidos | El alto el fuego entre Rusia y Ucrania aplicaría del sábado 9 al lunes 11 de mayo."
+    },
+    {
+      "source_id": "finding-426",
+      "title": "Putin says he thinks Ukraine conflict 'coming to an end'",
+      "summary": "The Russian leader sees potential for Ukraine negotiations, but condemns the West's backing for President Zelensky.",
+      "description": "",
+      "language": "en",
+      "outlet": "BBC World",
+      "text": "Putin says he thinks Ukraine conflict 'coming to an end' | The Russian leader sees potential for Ukraine negotiations, but condemns the West's backing for President Zelensky."
+    },
+    {
+      "source_id": "finding-444",
+      "title": "EU’s Kallas criticises Putin’s ‘very cynical’ Ukraine ceasefire calls and rejects suggestion of Schröder as mediator – Europe live",
+      "summary": "EU’s foreign policy chief and the ex-Estonian PM dismiss Putin’s suggestion that former German chancellor could coordinate talksMeanwhile, Poland’s former justice minister Zbigniew Ziobro, wanted by Polish authorities with allegations of over 20 criminal charges, moved to the US over the weekend, leaving Hungary where he held political asylum granted by the previous government of Viktor Orbán.Ziobro was one of the most prominent faces of the PiS government and played a central role in its con...",
+      "description": "",
+      "language": "en",
+      "outlet": "Guardian World",
+      "text": "EU’s Kallas criticises Putin’s ‘very cynical’ Ukraine ceasefire calls and rejects suggestion of Schröder as mediator – Europe live | EU’s foreign policy chief and the ex-Estonian PM dismiss Putin’s suggestion that former German chancellor could coordinate talksMeanwhile, Poland’s former justice minister Zbigniew Ziobro, wanted by Polish authorities with allegations of over 20 criminal charges, moved to the US over the weekend, leaving Hungary where he held political asylum granted by the previous government of Viktor Orbán.Ziobro was one of the most prominent faces of the PiS government and played a central role in its con..."
+    },
+    {
+      "source_id": "finding-479",
+      "title": "Germany's business community is frustrated and disillusioned",
+      "summary": "No one had higher hopes for Friedrich Merz's chancellorship than the German business community. Meanwhile, however, early euphoria has given way to bitter disappointment.",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "Germany's business community is frustrated and disillusioned | No one had higher hopes for Friedrich Merz's chancellorship than the German business community. Meanwhile, however, early euphoria has given way to bitter disappointment."
+    },
+    {
+      "source_id": "finding-486",
+      "title": "Could German ex-leader really negotiate Ukraine peace?",
+      "summary": "Former German chancellor Gerhard Schröder is a controversial — and some critics would even say, unserious — choice as a negotiator on the Ukraine war. He's long been criticized for being too close to Russia.",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "Could German ex-leader really negotiate Ukraine peace? | Former German chancellor Gerhard Schröder is a controversial — and some critics would even say, unserious — choice as a negotiator on the Ukraine war. He's long been criticized for being too close to Russia."
+    },
+    {
+      "source_id": "finding-490",
+      "title": "'No comment' after Schröder named by Putin for Ukraine talks",
+      "summary": "Russian President Vladimir Putin suggested that the former German chancellor serve as a mediator in Russia-Ukraine peace talks.",
+      "description": "",
+      "language": "en",
+      "outlet": "DW News",
+      "text": "'No comment' after Schröder named by Putin for Ukraine talks | Russian President Vladimir Putin suggested that the former German chancellor serve as a mediator in Russia-Ukraine peace talks."
+    },
+    {
+      "source_id": "finding-496",
+      "title": "Tajani, 'il negoziatore lo sceglie l'Europa, non la Russia'",
+      "summary": "'La scelta sarà negoziata tra i 27. Costa? È un nome prestigioso'",
+      "description": "",
+      "language": "it",
+      "outlet": "ANSA",
+      "text": "Tajani, 'il negoziatore lo sceglie l'Europa, non la Russia' | 'La scelta sarà negoziata tra i 27. Costa? È un nome prestigioso'"
+    },
+    {
+      "source_id": "finding-521",
+      "title": "Top ECB official attacks German opposition to UniCredit’s bid for Commerzbank",
+      "summary": "Central bank’s outgoing vice-president Luis de Guindos says Berlin’s intervention goes ‘against spirit of single market’",
+      "description": "",
+      "language": "en",
+      "outlet": "Financial Times",
+      "text": "Top ECB official attacks German opposition to UniCredit’s bid for Commerzbank | Central bank’s outgoing vice-president Luis de Guindos says Berlin’s intervention goes ‘against spirit of single market’"
+    },
+    {
+      "source_id": "finding-528",
+      "title": "In Madagascar, Russia seeks a new African stronghold",
+      "summary": "After bursting onto the scene alongside the junta, which seized power in October 2025, by providing it with weapons and military instructors from Africa Corps, Moscow has been advancing its pawns on many fronts.",
+      "description": "",
+      "language": "en",
+      "outlet": "Le Monde",
+      "text": "In Madagascar, Russia seeks a new African stronghold | After bursting onto the scene alongside the junta, which seized power in October 2025, by providing it with weapons and military instructors from Africa Corps, Moscow has been advancing its pawns on many fronts."
+    },
+    {
+      "source_id": "finding-559",
+      "title": "Söder verlangt von der Regierung Ergebnisse - Prämie hält er für tot",
+      "summary": "Bayerns Ministerpräsident Söder hält die Entlastungsprämie für tot und erwartet von der Regierung, dass sie endlich Ergebnisse liefert. Im Bericht aus Berlin äußert er sich auch zu Putins abgespeckter Militärparade, in der er ein Zeichen sieht.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "Söder verlangt von der Regierung Ergebnisse - Prämie hält er für tot | Bayerns Ministerpräsident Söder hält die Entlastungsprämie für tot und erwartet von der Regierung, dass sie endlich Ergebnisse liefert. Im Bericht aus Berlin äußert er sich auch zu Putins abgespeckter Militärparade, in der er ein Zeichen sieht."
+    },
+    {
+      "source_id": "finding-563",
+      "title": "Putin schlägt Schröder als Vermittler vor - die Reaktionen sind gemischt",
+      "summary": "Sie verbindet eine jahrelange Freundschaft - nun will Kreml-Chef Putin Altkanzler Schröder als Vermittler im Krieg gegen die Ukraine haben. Reaktionen aus der deutschen Politik folgen schnell.",
+      "description": "",
+      "language": "de",
+      "outlet": "Tagesschau",
+      "text": "Putin schlägt Schröder als Vermittler vor - die Reaktionen sind gemischt | Sie verbindet eine jahrelange Freundschaft - nun will Kreml-Chef Putin Altkanzler Schröder als Vermittler im Krieg gegen die Ukraine haben. Reaktionen aus der deutschen Politik folgen schnell."
+    },
+    {
+      "source_id": "finding-578",
+      "title": "Russland beauftragt laut Bundesregierung Organisierte Kriminalität für gezielte Tötungen",
+      "summary": "Der Kreml habe kriminelle russische Banden unter seiner Kontrolle, sagt das Bundesinnenministerium. Ihr Einfluss reiche bis nach Deutschland. Die Grünen fordern mehr Befugnisse für den Verfassungsschutz.",
+      "description": "",
+      "language": "de",
+      "outlet": "Der Spiegel",
+      "text": "Russland beauftragt laut Bundesregierung Organisierte Kriminalität für gezielte Tötungen | Der Kreml habe kriminelle russische Banden unter seiner Kontrolle, sagt das Bundesinnenministerium. Ihr Einfluss reiche bis nach Deutschland. Die Grünen fordern mehr Befugnisse für den Verfassungsschutz."
+    },
+    {
+      "source_id": "finding-588",
+      "title": "Великобритания ввела санкции против Института развития интернета (занимается пропагандой), ЭИСИ (это кремлевский «мозговой центр») и руководства АНО «Диалог» (отвечает за пиар Минобороны)",
+      "summary": "Власти Великобритании внесли в санкционный список еще около 80 россиян и российских организаций. Под британскими санкциями теперь находится Институт развития интернета, гендиректор АНО «Диалог» Владимир Табак и руководитель отдела стратегических направлений этой организации Тимофей Василиев (известен также как Тимофей Ви), а также Экспертный институт социальных исследований (ЭИСИ).",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Великобритания ввела санкции против Института развития интернета (занимается пропагандой), ЭИСИ (это кремлевский «мозговой центр») и руководства АНО «Диалог» (отвечает за пиар Минобороны) | Власти Великобритании внесли в санкционный список еще около 80 россиян и российских организаций. Под британскими санкциями теперь находится Институт развития интернета, гендиректор АНО «Диалог» Владимир Табак и руководитель отдела стратегических направлений этой организации Тимофей Василиев (известен также как Тимофей Ви), а также Экспертный институт социальных исследований (ЭИСИ)."
+    },
+    {
+      "source_id": "finding-589",
+      "title": "В Украине готовят план армейской реформы. Срок службы предлагается четко ограничить, а ТЦК — разделить на два подразделения. Но планы меняются «чуть ли не каждый день», рассказала «Украинская правда»",
+      "summary": "В январе 2026 года Владимир Зеленский сменил министра обороны Украины — вместо Дениса Шмыгаля им стал Михаил Федоров, который до этого возглавлял министерство цифровой трансформации и занимал должность первого вице-премьера. Сразу после назначения Федоров пообещал изменить систему подготовки военных и заявил, что «нельзя игнорировать проблему ТЦК». В начале мая Зеленский пообещал провести новый «значительный этап армейской реформы». «Украинская правда» поговорила с источниками, а также изучил...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "В Украине готовят план армейской реформы. Срок службы предлагается четко ограничить, а ТЦК — разделить на два подразделения. Но планы меняются «чуть ли не каждый день», рассказала «Украинская правда» | В январе 2026 года Владимир Зеленский сменил министра обороны Украины — вместо Дениса Шмыгаля им стал Михаил Федоров, который до этого возглавлял министерство цифровой трансформации и занимал должность первого вице-премьера. Сразу после назначения Федоров пообещал изменить систему подготовки военных и заявил, что «нельзя игнорировать проблему ТЦК». В начале мая Зеленский пообещал провести новый «значительный этап армейской реформы». «Украинская правда» поговорила с источниками, а также изучил..."
+    },
+    {
+      "source_id": "finding-596",
+      "title": "«Меня чуть ли не записали главой Цифрового сопротивления». Наталья Касперская заявила, что не обсуждала с ФСБ блокировки интернета — и считает себя «государственником и патриотом»",
+      "summary": "Соосновательница «Лаборатории Касперского», президент группы компаний InfoWatch Наталья Касперская заявила, что не встречалась с сотрудниками Второй службы ФСБ, которая занимается блокировками интернета в России. О встрече 8 мая написал The Bell со ссылкой на источники.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "«Меня чуть ли не записали главой Цифрового сопротивления». Наталья Касперская заявила, что не обсуждала с ФСБ блокировки интернета — и считает себя «государственником и патриотом» | Соосновательница «Лаборатории Касперского», президент группы компаний InfoWatch Наталья Касперская заявила, что не встречалась с сотрудниками Второй службы ФСБ, которая занимается блокировками интернета в России. О встрече 8 мая написал The Bell со ссылкой на источники."
+    },
+    {
+      "source_id": "finding-597",
+      "title": "Россияне теперь могут поехать в Саудовскую Аравию без визы. Но прямых рейсов практически нет из-за войны",
+      "summary": "С 11 мая вступил в силу безвизовый режим между Россией и Саудовской Аравией, соглашение о котором было подписано в декабре 2025 года.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Россияне теперь могут поехать в Саудовскую Аравию без визы. Но прямых рейсов практически нет из-за войны | С 11 мая вступил в силу безвизовый режим между Россией и Саудовской Аравией, соглашение о котором было подписано в декабре 2025 года."
+    },
+    {
+      "source_id": "finding-599",
+      "title": "«Я невыносимый человек». Мария Алехина — об эмиграции, тюрьме, любви и новой книге «Политическая. Как выжить в (из) России». Она вышла в издательстве «Медузы»",
+      "summary": "«Политическая. Как выжить в из России» — новая книга активистки, художницы и участницы Pussy Riot Марии Алехиной, которая вышла в издательстве «Медузы». Алехина рассказывает о последних мирных годах жизни в России и начале полномасштабной войны в Украине. Тогда ей все-таки пришлось покинуть Москву, хотя она этого совершенно не хотела. Специально для «Медузы» с Марией Алехиной поговорила журналистка Олеся Герасименко (которая написала один из самых интересных текстов об Алехиной) — о книге, вы...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "«Я невыносимый человек». Мария Алехина — об эмиграции, тюрьме, любви и новой книге «Политическая. Как выжить в (из) России». Она вышла в издательстве «Медузы» | «Политическая. Как выжить в из России» — новая книга активистки, художницы и участницы Pussy Riot Марии Алехиной, которая вышла в издательстве «Медузы». Алехина рассказывает о последних мирных годах жизни в России и начале полномасштабной войны в Украине. Тогда ей все-таки пришлось покинуть Москву, хотя она этого совершенно не хотела. Специально для «Медузы» с Марией Алехиной поговорила журналистка Олеся Герасименко (которая написала один из самых интересных текстов об Алехиной) — о книге, вы..."
+    },
+    {
+      "source_id": "finding-602",
+      "title": "«Немного подтолкнули мы его». Зеленский заявил, что сейчас Путин «наконец готов к реальным встречам»",
+      "summary": "Владимир Зеленский во второй день трехдневного перемирия заявил, что массированных атак со стороны России не было, а Владимир Путин «сам говорит, что наконец готов к реальным встречам».",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "«Немного подтолкнули мы его». Зеленский заявил, что сейчас Путин «наконец готов к реальным встречам» | Владимир Зеленский во второй день трехдневного перемирия заявил, что массированных атак со стороны России не было, а Владимир Путин «сам говорит, что наконец готов к реальным встречам»."
+    },
+    {
+      "source_id": "finding-605",
+      "title": "Путин назвал «предпочтительным переговорщиком» по Украине бывшего канцлера ФРГ Шредера. В правительстве Германии это предложение отвергли",
+      "summary": "В правительстве Германии отвергли предложение Владимира Путина о том, чтобы посредником между Россией и Украиной выступил бывший канцлер ФРГ Герхард Шредер, сообщают Reuters, Süddeutsche Zeitung, Spiegel и другие немецкие СМИ со ссылкой на источники.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Путин назвал «предпочтительным переговорщиком» по Украине бывшего канцлера ФРГ Шредера. В правительстве Германии это предложение отвергли | В правительстве Германии отвергли предложение Владимира Путина о том, чтобы посредником между Россией и Украиной выступил бывший канцлер ФРГ Герхард Шредер, сообщают Reuters, Süddeutsche Zeitung, Spiegel и другие немецкие СМИ со ссылкой на источники."
+    },
+    {
+      "source_id": "finding-606",
+      "title": "Война. 1537-й день. Украина и Россия обвиняют друг друга в нарушениях перемирия. Западные СМИ считают сокращенный парад признаком слабости Путина",
+      "summary": "«Медуза» с 24 февраля 2022 года в прямом эфире рассказывает о российско-украинской войне. Мы ежедневно публикуем ваши письма, потому что уверены: о войне нужно продолжать говорить. Поделитесь с нами мыслями о войне. Какие чувства вы испытываете? Как война влияет на вашу жизнь и ваше отношение к миру? Если у вас есть история, связанная с войной, — расскажите ее. Форма для обратной связи — в конце этой статьи. Обзор предыдущего дня можно прочитать тут.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Война. 1537-й день. Украина и Россия обвиняют друг друга в нарушениях перемирия. Западные СМИ считают сокращенный парад признаком слабости Путина | «Медуза» с 24 февраля 2022 года в прямом эфире рассказывает о российско-украинской войне. Мы ежедневно публикуем ваши письма, потому что уверены: о войне нужно продолжать говорить. Поделитесь с нами мыслями о войне. Какие чувства вы испытываете? Как война влияет на вашу жизнь и ваше отношение к миру? Если у вас есть история, связанная с войной, — расскажите ее. Форма для обратной связи — в конце этой статьи. Обзор предыдущего дня можно прочитать тут."
+    },
+    {
+      "source_id": "finding-607",
+      "title": "«Руководство ФБК отступило от принципов „Не врать и не воровать“». Иван Жданов дал большое интервью Ирине Шихман — о вывозе биоматериалов Навального, ошибках ФБК и своем увольнении",
+      "summary": "Бывший директор ФБК Иван Жданов, проработавший в фонде больше 10 лет и уволенный осенью 2025 года, дал большое интервью Ирине Шихман (а первое интервью сразу после ухода он давал «Медузе»). В разговоре с Шихман Жданов рассказал, как организовывал вывоз биоматериалов Навального за границу — в западные лаборатории, которые позже установили, чем был отравлен политик в заполярной колонии. Кроме этого, Жданов высказался о своих расхождениях с руководством ФБК, о решениях фонда, с которыми он был н...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "«Руководство ФБК отступило от принципов „Не врать и не воровать“». Иван Жданов дал большое интервью Ирине Шихман — о вывозе биоматериалов Навального, ошибках ФБК и своем увольнении | Бывший директор ФБК Иван Жданов, проработавший в фонде больше 10 лет и уволенный осенью 2025 года, дал большое интервью Ирине Шихман (а первое интервью сразу после ухода он давал «Медузе»). В разговоре с Шихман Жданов рассказал, как организовывал вывоз биоматериалов Навального за границу — в западные лаборатории, которые позже установили, чем был отравлен политик в заполярной колонии. Кроме этого, Жданов высказался о своих расхождениях с руководством ФБК, о решениях фонда, с которыми он был н..."
+    },
+    {
+      "source_id": "finding-608",
+      "title": "Александр Сокуров не выступил на Венецианской биеннале. Против его участия высказались в открытом письме российские активисты. Среди подписантов — Павел Таланкин и Саша Скочиленко, которую режиссер поддерживал в суде. Дискуссия не утихает уже несколько дней. Главные реакции",
+      "summary": "Выступление Александра Сокурова на Венецианской биеннале не состоялось. Российский режиссер был приглашен на конференцию «Инакомыслие и мир», но, как сообщили в пресс-службе биеннале, не смог принять участие «из-за внезапной недоступности». Накануне биеннале с открытым письмом к руководству выставки обратились российские и итальянские деятели культуры и активисты. Они назвали «имитацией» цикл закрытых дискуссий «Инакомыслие и мир», куда пригласили Сокурова, и высказались против участия режисс...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "Александр Сокуров не выступил на Венецианской биеннале. Против его участия высказались в открытом письме российские активисты. Среди подписантов — Павел Таланкин и Саша Скочиленко, которую режиссер поддерживал в суде. Дискуссия не утихает уже несколько дней. Главные реакции | Выступление Александра Сокурова на Венецианской биеннале не состоялось. Российский режиссер был приглашен на конференцию «Инакомыслие и мир», но, как сообщили в пресс-службе биеннале, не смог принять участие «из-за внезапной недоступности». Накануне биеннале с открытым письмом к руководству выставки обратились российские и итальянские деятели культуры и активисты. Они назвали «имитацией» цикл закрытых дискуссий «Инакомыслие и мир», куда пригласили Сокурова, и высказались против участия режисс..."
+    },
+    {
+      "source_id": "finding-609",
+      "title": "«Мои слова сейчас активно используют враги России». Журналистка, поздравившая мать пропавшего без вести военного с «двойным праздником», извинилась",
+      "summary": "Журналистка телеканала «Кузбасс Первый» Марина Киселева, которая во время шествия «Бессмертного полка» в Кемерово поздравила мать пропавшего без вести участника войны с Украиной с «двойным праздником», извинилась.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "«Мои слова сейчас активно используют враги России». Журналистка, поздравившая мать пропавшего без вести военного с «двойным праздником», извинилась | Журналистка телеканала «Кузбасс Первый» Марина Киселева, которая во время шествия «Бессмертного полка» в Кемерово поздравила мать пропавшего без вести участника войны с Украиной с «двойным праздником», извинилась."
+    },
+    {
+      "source_id": "finding-610",
+      "title": "В России утвердили концепцию исторического просвещения. Среди подростков хотят «повышать осведомленность» о героях «СВО»",
+      "summary": "Министерство просвещения России утвердило «Концепцию исторического просвещения в образовательных организациях», сообщила пресс-служба ведомства.",
+      "description": "",
+      "language": "ru",
+      "outlet": "Meduza",
+      "text": "В России утвердили концепцию исторического просвещения. Среди подростков хотят «повышать осведомленность» о героях «СВО» | Министерство просвещения России утвердило «Концепцию исторического просвещения в образовательных организациях», сообщила пресс-служба ведомства."
+    },
+    {
+      "source_id": "finding-617",
+      "title": "Москва контуженная. Как в столице праздновали 9 Мая без интернета. Репортаж с улиц вблизи Кремля",
+      "summary": "В преддверии 9 мая прошлого года в России впервые опробовали полную блокировку мобильного интернета. Тогда шатдаун затронул центр города в Москве и многие другие города страны. Спустя год ограничения мобильного интернета и блокировки популярных приложений стали для россиян нормой, а VPN — почти жизненной необходимостью.  В Москву шатдауны вернулись в марте этого года: почти месяц внутри Садового кольца не работал интернет, не считая сайтов из «белого списка». Но даже и они работали с перебоям...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Novaya Gazeta Europe",
+      "text": "Москва контуженная. Как в столице праздновали 9 Мая без интернета. Репортаж с улиц вблизи Кремля | В преддверии 9 мая прошлого года в России впервые опробовали полную блокировку мобильного интернета. Тогда шатдаун затронул центр города в Москве и многие другие города страны. Спустя год ограничения мобильного интернета и блокировки популярных приложений стали для россиян нормой, а VPN — почти жизненной необходимостью.  В Москву шатдауны вернулись в марте этого года: почти месяц внутри Садового кольца не работал интернет, не считая сайтов из «белого списка». Но даже и они работали с перебоям..."
+    },
+    {
+      "source_id": "finding-618",
+      "title": "Без диалога. Репортаж с Венецианской биеннале. Мы поговорили с людьми, которые представляют там Россию",
+      "summary": "Самый большой политический скандал на 61-й биеннале в Венеции, главном смотре современного искусства на планете, случился еще до официального открытия. 6 мая впервые с момента начала полномасштабного вторжения в Украину Россия представила там собственную программу в своем павильоне — несмотря на то, что против этого выступали художники, политики и активисты со всего мира. Последние несколько дней в Венеции продолжаются протесты, организованные при участии группы Pussy Riot, — при этом в самом...",
+      "description": "",
+      "language": "ru",
+      "outlet": "Novaya Gazeta Europe",
+      "text": "Без диалога. Репортаж с Венецианской биеннале. Мы поговорили с людьми, которые представляют там Россию | Самый большой политический скандал на 61-й биеннале в Венеции, главном смотре современного искусства на планете, случился еще до официального открытия. 6 мая впервые с момента начала полномасштабного вторжения в Украину Россия представила там собственную программу в своем павильоне — несмотря на то, что против этого выступали художники, политики и активисты со всего мира. Последние несколько дней в Венеции продолжаются протесты, организованные при участии группы Pussy Riot, — при этом в самом..."
+    },
+    {
+      "source_id": "finding-619",
+      "title": "Ukraine gives Russia POW exchange list, seeks US guarantees for deal, Zelensky says",
+      "summary": "\"We expect the American side to be active in ensuring the implementation of this agreement,\" President Volodymyr Zelensky said.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Ukraine gives Russia POW exchange list, seeks US guarantees for deal, Zelensky says | \"We expect the American side to be active in ensuring the implementation of this agreement,\" President Volodymyr Zelensky said."
+    },
+    {
+      "source_id": "finding-621",
+      "title": "EU, Ukraine reject Germany's ex-Chancellor Schroeder as peace talks mediator",
+      "summary": "Kaja Kallas noted that Gerhard Schroeder has worked as \"a high-level lobbyist for Russian state-owned companies,\" and that it is clear why Vladimir Putin \"wants him\" as the mediator.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "EU, Ukraine reject Germany's ex-Chancellor Schroeder as peace talks mediator | Kaja Kallas noted that Gerhard Schroeder has worked as \"a high-level lobbyist for Russian state-owned companies,\" and that it is clear why Vladimir Putin \"wants him\" as the mediator."
+    },
+    {
+      "source_id": "finding-623",
+      "title": "As Victory Day ceasefire draws to a close, Russian attacks kill 3 civilians, injure 16",
+      "summary": "During the ceasefire, there were no large-scale airstrikes, though the Ukrainian Air Force reported Russian drone launches and the firing of one Iskander-M ballistic missile from occupied Crimea.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "As Victory Day ceasefire draws to a close, Russian attacks kill 3 civilians, injure 16 | During the ceasefire, there were no large-scale airstrikes, though the Ukrainian Air Force reported Russian drone launches and the firing of one Iskander-M ballistic missile from occupied Crimea."
+    },
+    {
+      "source_id": "finding-625",
+      "title": "General Staff: Russia has lost 1,342,030 troops in Ukraine since Feb. 24, 2022",
+      "summary": "The number includes 920 casualties that Russian forces suffered over the past day.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "General Staff: Russia has lost 1,342,030 troops in Ukraine since Feb. 24, 2022 | The number includes 920 casualties that Russian forces suffered over the past day."
+    },
+    {
+      "source_id": "finding-627",
+      "title": "Ukraine to 'respond in kind' if Russia refrains from mass aerial attacks, Zelensky says",
+      "summary": "\"As for our long-range sanctions, yesterday and today, Ukraine refrained from long-range actions in response to the absence of massive Russian attacks. Going forward, we will respond in kind,\" President Volodymyr Zelensky said.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Ukraine to 'respond in kind' if Russia refrains from mass aerial attacks, Zelensky says | \"As for our long-range sanctions, yesterday and today, Ukraine refrained from long-range actions in response to the absence of massive Russian attacks. Going forward, we will respond in kind,\" President Volodymyr Zelensky said."
+    },
+    {
+      "source_id": "finding-628",
+      "title": "Analysis: Is Ukraine starting to win the war again?",
+      "summary": "Who is winning?Since the launch of Russia&apos;s full-scale invasion of Ukraine, the information space around the war has been obsessed with this deceptively simple question, and the constant new iterations of answers to it.In the hands of those fighting the narrative war, from officials on both",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Analysis: Is Ukraine starting to win the war again? | Who is winning?Since the launch of Russia&apos;s full-scale invasion of Ukraine, the information space around the war has been obsessed with this deceptively simple question, and the constant new iterations of answers to it.In the hands of those fighting the narrative war, from officials on both"
+    },
+    {
+      "source_id": "finding-630",
+      "title": "Ukraine war latest: Putin says he believes war in Ukraine almost over",
+      "summary": "Key developments on May 9-10:Putin says he believes war in Ukraine almost over&apos;Victory will be ours,&apos; Putin tells Victory Day parade without any tanksRussia breaks 3-day ceasefire as strikes kill 1, injure 19 across UkraineKremlin says it expects US envoys Witkoff, Kushner, &apos;quite",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Ukraine war latest: Putin says he believes war in Ukraine almost over | Key developments on May 9-10:Putin says he believes war in Ukraine almost over&apos;Victory will be ours,&apos; Putin tells Victory Day parade without any tanksRussia breaks 3-day ceasefire as strikes kill 1, injure 19 across UkraineKremlin says it expects US envoys Witkoff, Kushner, &apos;quite"
+    },
+    {
+      "source_id": "finding-631",
+      "title": "Germany skeptical of Putin's proposal to make Schroeder mediator in Ukraine peace talks, media reports",
+      "summary": "A German official, speaking on condition of anonymity, told Reuters that the proposal was not credible because Russia had not changed its conditions for ending the war.",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Germany skeptical of Putin's proposal to make Schroeder mediator in Ukraine peace talks, media reports | A German official, speaking on condition of anonymity, told Reuters that the proposal was not credible because Russia had not changed its conditions for ending the war."
+    },
+    {
+      "source_id": "finding-633",
+      "title": "Is Russia still a superpower? | Ukraine This Week",
+      "summary": "For the first time in nearly two decades, Russia&#x2019;s Victory Day parade on Red Square was held without heavy military equipment, officially due to security concerns linked to Ukrainian drone attacks. In the latest episode of Ukraine This Week, Kateryna Hodunova examines whether Russia can still be considered",
+      "description": "",
+      "language": "en",
+      "outlet": "Kyiv Independent",
+      "text": "Is Russia still a superpower? | Ukraine This Week | For the first time in nearly two decades, Russia&#x2019;s Victory Day parade on Red Square was held without heavy military equipment, officially due to security concerns linked to Ukrainian drone attacks. In the latest episode of Ukraine This Week, Kateryna Hodunova examines whether Russia can still be considered"
+    },
+    {
+      "source_id": "finding-641",
+      "title": "Ukraine violated Victory Day ceasefire over 16,000 times – Russian MOD",
+      "summary": "The Ukrainian military has violated the Victory Day ceasefire more than 16,000 times, the Russian Defense Ministry has said Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Ukraine violated Victory Day ceasefire over 16,000 times – Russian MOD | The Ukrainian military has violated the Victory Day ceasefire more than 16,000 times, the Russian Defense Ministry has said Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-645",
+      "title": "Moscow expects ‘explanations’ from Yerevan over Zelensky’s statements – Kremlin",
+      "summary": "Russia awaits “explanations” from Armenia over its treatment of “anti-Russian” statements made by Ukraine’s Vladimir Zelensky in Yerevan Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Moscow expects ‘explanations’ from Yerevan over Zelensky’s statements – Kremlin | Russia awaits “explanations” from Armenia over its treatment of “anti-Russian” statements made by Ukraine’s Vladimir Zelensky in Yerevan Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-646",
+      "title": "Deutschland über alles? The world is not ready for German rearmament",
+      "summary": "As US priorities shift from the EU, NATO faces a fragmented future shaped by Russia fears, French autonomy and Germany’s military revival Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Deutschland über alles? The world is not ready for German rearmament | As US priorities shift from the EU, NATO faces a fragmented future shaped by Russia fears, French autonomy and Germany’s military revival Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-649",
+      "title": "Kremlin explains impasse in Ukraine peace talks",
+      "summary": "Ukraine needs to withdraw its troops from Donbass for the peace process to move forward, a Russian presidential aide has said Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "Kremlin explains impasse in Ukraine peace talks | Ukraine needs to withdraw its troops from Donbass for the peace process to move forward, a Russian presidential aide has said Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-651",
+      "title": "The Soviet sacrifice in WWII: What is often left out in the West",
+      "summary": "Moscow repeatedly pleaded for the opening of a second front years before D-Day, while Soviet forces largely fought Nazi Germany alone Read Full Article at RT.com",
+      "description": "",
+      "language": "en",
+      "outlet": "RT",
+      "text": "The Soviet sacrifice in WWII: What is often left out in the West | Moscow repeatedly pleaded for the opening of a second front years before D-Day, while Soviet forces largely fought Nazi Germany alone Read Full Article at RT.com"
+    },
+    {
+      "source_id": "finding-666",
+      "title": "Rusia y Ucrania se acusan mutuamente de haber violado el alto el fuego",
+      "summary": "Al menos tres civiles han muerto en bombardeos cerca del frente, en Jersón y Zaporiyia. Moscú y Kiev sí han suspendido sus ataques a larga distancia",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Rusia y Ucrania se acusan mutuamente de haber violado el alto el fuego | Al menos tres civiles han muerto en bombardeos cerca del frente, en Jersón y Zaporiyia. Moscú y Kiev sí han suspendido sus ataques a larga distancia"
+    },
+    {
+      "source_id": "finding-667",
+      "title": "Orden 1564: el putinismo emprende el gran borrado de los crímenes soviéticos y la veneración a Stalin y la Cheka",
+      "summary": "En apenas unos días, las autoridades abren una exposición contra los polacos en las fosas de Katyn, criminalizan la asociación Memorial y reconvierten el museo del gulag",
+      "description": "",
+      "language": "es",
+      "outlet": "El Pais",
+      "text": "Orden 1564: el putinismo emprende el gran borrado de los crímenes soviéticos y la veneración a Stalin y la Cheka | En apenas unos días, las autoridades abren una exposición contra los polacos en las fosas de Katyn, criminalizan la asociación Memorial y reconvierten el museo del gulag"
+    },
+    {
+      "source_id": "finding-803",
+      "title": "Armenia thumbs nose at Kremlin as it receives strong EU endorsement",
+      "summary": "Russia is mad, but can’t do much about it.",
+      "description": "",
+      "language": "en",
+      "outlet": "Eurasianet",
+      "text": "Armenia thumbs nose at Kremlin as it receives strong EU endorsement | Russia is mad, but can’t do much about it."
+    },
+    {
+      "source_id": "finding-804",
+      "title": "New report documents how Central Asian states abet Russian sanctions-busting",
+      "summary": "Georgia is Russia’s primary route in Caucasus.",
+      "description": "",
+      "language": "en",
+      "outlet": "Eurasianet",
+      "text": "New report documents how Central Asian states abet Russian sanctions-busting | Georgia is Russia’s primary route in Caucasus."
+    },
+    {
+      "source_id": "finding-955",
+      "title": "Reino Unido sanciona a 85 personas y entidades rusas por desinformación y deportación de niños ucranianos",
+      "summary": "",
+      "description": "",
+      "language": "es",
+      "outlet": "Infobae",
+      "text": "Reino Unido sanciona a 85 personas y entidades rusas por desinformación y deportación de niños ucranianos"
+    },
+    {
+      "source_id": "finding-1044",
+      "title": "Japan to send officials to Russia in May to protect business assets",
+      "summary": "Japan will send officials to Russia at the end of this month for talks with Moscow &quot;from the perspective of protecting the assets of Japanese firms&quot; operating in…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Japan to send officials to Russia in May to protect business assets | Japan will send officials to Russia at the end of this month for talks with Moscow &quot;from the perspective of protecting the assets of Japanese firms&quot; operating in…"
+    },
+    {
+      "source_id": "finding-1064",
+      "title": "Russia and Ukraine accuse each other of violating 3-day truce",
+      "summary": "Russia and Ukraine swapped accusations of breaking a U.S.-brokered ceasefire on Sunday, with both sides claiming to have suffered casualties in drone and artillery strikes over the past…",
+      "description": "",
+      "language": "en",
+      "outlet": "Japan Today",
+      "text": "Russia and Ukraine accuse each other of violating 3-day truce | Russia and Ukraine swapped accusations of breaking a U.S.-brokered ceasefire on Sunday, with both sides claiming to have suffered casualties in drone and artillery strikes over the past…"
+    },
+    {
+      "source_id": "finding-1167",
+      "title": "En Ukraine, le difficile travail d'identification et de rapatriement des enfants volés par la Russie",
+      "summary": "En Ukraine, depuis 2022, autorités, institutions internationales et ONG travaillent d'arrache-pied pour identifier et rapatrier plus de 20 000 enfants déportés de force par la Russie. La justice internationale est en marche : c'est pour ce crime de déportation que Vladimir Poutine et sa commissaire aux Droits des enfants, Maria Lvova Belova, sont recherchés par la cour pénale internationale. En attendant un jugement, les Ukrainiens se mobilisent pour le retour des leurs.",
+      "description": "",
+      "language": "fr",
+      "outlet": "RFI",
+      "text": "En Ukraine, le difficile travail d'identification et de rapatriement des enfants volés par la Russie | En Ukraine, depuis 2022, autorités, institutions internationales et ONG travaillent d'arrache-pied pour identifier et rapatrier plus de 20 000 enfants déportés de force par la Russie. La justice internationale est en marche : c'est pour ce crime de déportation que Vladimir Poutine et sa commissaire aux Droits des enfants, Maria Lvova Belova, sont recherchés par la cour pénale internationale. En attendant un jugement, les Ukrainiens se mobilisent pour le retour des leurs."
+    },
+    {
+      "source_id": "finding-1193",
+      "title": "EU’s Kallas rejects Gerhard Schröder as Russia-Ukraine negotiator",
+      "summary": "Russian leader Vladimir Putin has said he would like the ex-German chancellor to negotiate on Europe's behalf.",
+      "description": "",
+      "language": "en",
+      "outlet": "Politico Europe",
+      "text": "EU’s Kallas rejects Gerhard Schröder as Russia-Ukraine negotiator | Russian leader Vladimir Putin has said he would like the ex-German chancellor to negotiate on Europe's behalf."
+    }
+  ]
+}
