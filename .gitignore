@@ -70,3 +70,6 @@ docs/cluster-internal-audit/audit-*/_cache/
 
 # Cluster-internal-audit working helpers (local-only; superseded by committed CSVs)
 scripts/_audit_*
+
+# Cluster-level gravitation sweep similarity-matrix cache (binary, regeneratable)
+docs/cluster-level-gravitation-*/_cache/
