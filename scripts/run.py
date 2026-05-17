@@ -23,6 +23,7 @@ from src.runner.stage_lists import (
 )
 from src.schemas import (
     BIAS_DETECTOR_SCHEMA,
+    CLUSTER_ASSIGNMENT_SCHEMA,
     CURATOR_TOPIC_DISCOVERY_SCHEMA,
     EDITOR_SCHEMA,
     HYDRATION_PHASE1_SCHEMA,
@@ -95,6 +96,26 @@ def create_agents() -> dict[str, Agent]:
             # Output is ~10–30 topics × ~350 chars ≈ 3K tokens; 2× cushion.
             max_tokens=8000,
             output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
+        ),
+        # Hypothesis 2 LLM-based cluster→topic assignment — TASK-CLUSTER-
+        # LLM-ASSIGNMENT. Not wired into build_production_stages /
+        # build_hydrated_stages; only the opt-in
+        # build_production_stages_llm_assignment() constructor uses it.
+        # Temperature 1.0 by architect's choice — the cluster-to-topic
+        # judgement benefits from full reasoning latitude; the prompt's
+        # conservative borderline rule absorbs the spread. max_tokens
+        # cushion for ~200 entries × ~30 tokens ≈ 6K plus reasoning room.
+        "assign_clusters": Agent(
+            name="assign_clusters",
+            model="google/gemini-3-flash-preview",
+            system_prompt_path=str(agents_dir / "assign_clusters" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "assign_clusters" / "INSTRUCTIONS.md"),
+            tools=[],
+            temperature=1.0,
+            max_tokens=8000,
+            provider="openrouter",
+            reasoning="none",
+            output_schema=CLUSTER_ASSIGNMENT_SCHEMA,
         ),
         "editor": Agent(
             name="editor",

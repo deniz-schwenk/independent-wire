@@ -685,6 +685,215 @@ class CuratorTopicDiscoveryStage(_AgentStageBase):
 
 
 # ---------------------------------------------------------------------------
+# Wrapper: AssignClustersStage  (run-stage) — TASK-CLUSTER-LLM-ASSIGNMENT
+# ---------------------------------------------------------------------------
+
+
+class AssignClustersStage(_AgentStageBase):
+    """LLM-based cluster→topic assignment — Hypothesis 2 of the cluster-
+    level pivot (docs/cluster-level-gravitation-2026-05-17/conclusion.md
+    deferred Hypothesis 2 to a separate brief; this is that brief).
+
+    Reads:
+        - ``curator_pre_clusters`` — Brief 1 micro-clusters (id, size,
+          source_ids[]) — for the cluster IDs and member finding lookup.
+        - ``curator_findings`` — for finding-title text and embeddings
+          used by the shared top-K-by-centroid sample-title helper.
+        - ``curator_discovered_topics`` — Brief 4 topic list (title +
+          summary) passed to the LLM as the universe of topic indices.
+
+    Writes ``curator_cluster_assignments_llm`` — the raw LLM
+    ``{assignments[]}`` plus call metadata + the deterministically-derived
+    orphan list (every input cluster_id that does not appear in
+    assignments[]).
+
+    The sample-title compression reuses
+    ``_compress_pre_clusters_to_llm_input`` (the same K=8 top-K-by-
+    centroid helper as ``CuratorTopicDiscoveryStage``) so the LLM input
+    is shape-consistent across the two stages.
+
+    Coexists with the deterministic ``gravitational_assign`` in the
+    codebase; only the opt-in evaluation stage list
+    ``build_production_stages_llm_assignment`` wires this stage.
+    Production keeps Brief 5b's pinned T=0.55 finding-level path until
+    the architect picks Branch A in TASK-CLUSTER-LLM-ASSIGNMENT Phase 3.
+    """
+
+    stage_kind = "run"
+    reads = (
+        "curator_findings",
+        "curator_pre_clusters",
+        "curator_discovered_topics",
+    )
+    writes = ("curator_cluster_assignments_llm",)
+    agent_role = "assign_clusters"
+
+    def __init__(
+        self,
+        agent: Agent,
+        *,
+        embedder: Any = None,
+        sample_titles_per_cluster: int = SAMPLE_TITLES_PER_CLUSTER,
+    ) -> None:
+        self.agent = agent
+        self._embedder = embedder
+        self.k = sample_titles_per_cluster
+
+    def _get_embedder(self):
+        if self._embedder is not None:
+            return self._embedder
+        from src.stages.coherence import _get_default_embedder
+
+        return _get_default_embedder()
+
+    async def __call__(self, run_bus: RunBus) -> RunBus:
+        import time
+
+        from src.stages.coherence import _cosine_normalized
+
+        findings = list(run_bus.curator_findings or [])
+        pre_clusters_record = run_bus.curator_pre_clusters or {}
+        pre_clusters = list(pre_clusters_record.get("clusters") or [])
+        discovered_record = run_bus.curator_discovered_topics or {}
+        topics = list(discovered_record.get("topics") or [])
+
+        model_name = getattr(self.agent, "model", "")
+        temperature = getattr(self.agent, "temperature", None)
+        max_tokens = getattr(self.agent, "max_tokens", None)
+        reasoning = getattr(self.agent, "reasoning", None)
+        top_p = getattr(self.agent, "top_p", None)
+
+        meta_common: dict[str, Any] = {
+            "llm_model": model_name,
+            "params": {
+                "temperature": temperature,
+                "reasoning": reasoning,
+                "top_p": top_p,
+                "max_tokens": max_tokens,
+            },
+            "n_clusters_input": len(pre_clusters),
+            "n_topics_input": len(topics),
+        }
+
+        # Empty inputs → no LLM call, empty record
+        if not pre_clusters or not topics:
+            run_bus.curator_cluster_assignments_llm = {
+                **meta_common,
+                "wall_seconds": 0.0,
+                "llm_cost_usd": 0.0,
+                "llm_input_tokens": 0,
+                "llm_output_tokens": 0,
+                "n_clusters_assigned": 0,
+                "n_clusters_orphan": len(pre_clusters),
+                "assignments": [],
+                "orphan_cluster_ids": [
+                    c.get("id", "") for c in pre_clusters if c.get("id")
+                ],
+            }
+            logger.info(
+                "AssignClustersStage: empty input "
+                "(pre_clusters=%d, topics=%d) → no LLM call",
+                len(pre_clusters), len(topics),
+            )
+            return run_bus
+
+        t0 = time.monotonic()
+        emb = self._get_embedder()
+
+        # Re-embed findings once (singleton ONNX session is shared with
+        # the other Curator-side stages). The matrix is per-finding-
+        # index; the cluster compression helper handles the
+        # finding-NNN → row-index resolution and the empty-title filter.
+        finding_texts = [_topic_discovery_finding_text(f) for f in findings]
+        finding_matrix = _cosine_normalized(emb.embed_batch(finding_texts))
+
+        micro_clusters_input = _compress_pre_clusters_to_llm_input(
+            pre_clusters, findings, finding_matrix, k=self.k
+        )
+
+        message = (
+            "Assign each micro-cluster to the topic(s) it primarily belongs to. "
+            "Output JSON: {assignments: [{cluster_id, topic_indices}]}."
+        )
+        context = {
+            "topics": topics,
+            "micro_clusters": micro_clusters_input,
+        }
+        result = await self.agent.run(message, context=context)
+
+        parsed = _parse_agent_output(result)
+        raw_assignments = _unwrap_list(parsed, "assignments")
+
+        # Defensive normalisation — strict-mode schema enforces shape on
+        # the model side, but parse-failure fallbacks can leak through.
+        # Keep only entries that have a cluster_id mapping to an input
+        # cluster and a non-empty integer topic_indices list within range.
+        input_cluster_ids = {
+            str(c.get("id", "")) for c in pre_clusters if c.get("id")
+        }
+        n_topics = len(topics)
+        seen_cluster_ids: set[str] = set()
+        assignments_out: list[dict] = []
+        for entry in raw_assignments:
+            if not isinstance(entry, dict):
+                continue
+            cid = entry.get("cluster_id")
+            if not isinstance(cid, str) or cid not in input_cluster_ids:
+                continue
+            if cid in seen_cluster_ids:
+                continue
+            raw_indices = entry.get("topic_indices") or []
+            if not isinstance(raw_indices, list):
+                continue
+            indices: list[int] = []
+            for ti in raw_indices:
+                if isinstance(ti, bool):
+                    continue
+                if not isinstance(ti, int):
+                    continue
+                if 0 <= ti < n_topics and ti not in indices:
+                    indices.append(ti)
+            if not indices:
+                continue
+            seen_cluster_ids.add(cid)
+            assignments_out.append({
+                "cluster_id": cid,
+                "topic_indices": indices,
+            })
+
+        orphan_cluster_ids = sorted(input_cluster_ids - seen_cluster_ids)
+
+        wall = time.monotonic() - t0
+        cost = float(getattr(result, "cost_usd", 0.0) or 0.0)
+        # AgentResult only carries `tokens_used` (the combined total) —
+        # split between input/output isn't surfaced through the SDK call
+        # chain, so we record the combined number in both slots and rely
+        # on the LLM-provider invoice for the split when needed. The
+        # explicit field names keep the smoke-summary table aligned with
+        # the brief's contract.
+        tokens_used = int(getattr(result, "tokens_used", 0) or 0)
+
+        run_bus.curator_cluster_assignments_llm = {
+            **meta_common,
+            "wall_seconds": round(wall, 3),
+            "llm_cost_usd": cost,
+            "llm_input_tokens": tokens_used,
+            "llm_output_tokens": tokens_used,
+            "n_clusters_assigned": len(assignments_out),
+            "n_clusters_orphan": len(orphan_cluster_ids),
+            "assignments": assignments_out,
+            "orphan_cluster_ids": orphan_cluster_ids,
+        }
+        logger.info(
+            "AssignClustersStage: %d clusters × %d topics → %d assigned, "
+            "%d orphan (%.2fs, $%.4f)",
+            len(pre_clusters), n_topics, len(assignments_out),
+            len(orphan_cluster_ids), wall, cost,
+        )
+        return run_bus
+
+
+# ---------------------------------------------------------------------------
 # Wrapper: EditorStage  (run-stage)
 # ---------------------------------------------------------------------------
 
@@ -2196,6 +2405,7 @@ class ResolveActorAliasesStage(_AgentStageBase):
 
 
 __all__ = [
+    "AssignClustersStage",
     "BiasLanguageStage",
     "CuratorTopicDiscoveryStage",
     "EditorStage",

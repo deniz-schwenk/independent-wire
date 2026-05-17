@@ -375,6 +375,43 @@ class _RunBusFields(BaseModel):
         optional_write=True,
     )
 
+    # 4A.2f LLM-based cluster→topic assignment (1 slot). Written by the
+    # new AssignClustersStage (src/agent_stages.py) — TASK-CLUSTER-LLM-
+    # ASSIGNMENT, Hypothesis 2 of the cluster-level pivot first surfaced
+    # by docs/cluster-internal-audit/audit-2026-05-17/. The stage reads
+    # the day's discovered topics and the Brief 1 micro-clusters
+    # (compressed via the shared top-K-by-centroid helper at K=8), hands
+    # the resulting {topics[], micro_clusters[]} pair to an LLM at
+    # temperature 1.0, and writes the raw {assignments[]} verbatim plus
+    # LLM-call metadata and the deterministically-derived orphan list
+    # (cluster_ids present in the input that the LLM did not assign).
+    #
+    # Output shape:
+    #   {
+    #     llm_model, params{temperature, reasoning, top_p, max_tokens},
+    #     wall_seconds, llm_cost_usd, llm_input_tokens, llm_output_tokens,
+    #     n_clusters_input, n_topics_input,
+    #     n_clusters_assigned, n_clusters_orphan,
+    #     assignments: [{cluster_id, topic_indices}],
+    #     orphan_cluster_ids: [str, ...],
+    #   }
+    #
+    # **Wiring status:** OPT-IN ONLY. Coexists with Brief 5b's pinned
+    # gravitational_assign in the codebase; the new evaluation-only
+    # stage-list constructor build_production_stages_llm_assignment()
+    # in src/runner/stage_lists.py wires the LLM path instead. Default
+    # build_production_stages() / build_hydrated_stages() remain on the
+    # finding-level deterministic path until / unless the architect
+    # picks Branch A in TASK-CLUSTER-LLM-ASSIGNMENT Phase 3.
+    #
+    # optional_write=True — the default production stage list never
+    # writes this slot.
+    curator_cluster_assignments_llm: dict = Slot(
+        default_factory=dict,
+        visibility="internal",
+        optional_write=True,
+    )
+
     # 4A.3 Editor phase (2 slots — including previous_coverage as the 11th run-scoped slot)
     previous_coverage: list = Slot(
         default_factory=list,
