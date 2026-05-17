@@ -1,9 +1,9 @@
 # Independent Wire — Open Source Roadmap
 
 **Created:** 2026-03-26
-**Updated:** 2026-05-07 (post Phase 2 of TASK-RESOLVE-ACTOR-ALIASES + render restructure; latest commit aaef864 — preceding this V2-DOC-RECONCILE commit).
+**Updated:** 2026-05-17 (post `TASK-DOC-RECONCILE` / Brief 6 — H3.1 expanded with the Triple-Stage Curator brief sequence; Phase 1 unchanged in rank, Curator machinery substantively updated).
 **Status:** Living document — strategic overview.
-**Basis:** Vision paper (March 2026) + PoC experience (Sessions 1–12) + Model Evals (Sessions 4–5) + Cost Optimization (Session 6) + Rendering + Website (Session 7) + V2 architecture (April–May 2026) + B-full canonical-actors migration + render restructure (May 2026)
+**Basis:** Vision paper (March 2026) + PoC experience (Sessions 1–12) + Model Evals (Sessions 4–5) + Cost Optimization (Session 6) + Rendering + Website (Session 7) + V2 architecture (April–May 2026) + B-full canonical-actors migration + render restructure (May 2026) + Triple-Stage Curator brief sequence (May 12–17 2026, `docs/ADR-CURATOR-TRIPLE-STAGE.md` + `docs/AUDIT-TIMELINE.md`)
 
 ---
 
@@ -68,18 +68,28 @@ Core framework operational. Pipeline produces Topic Packages with multilingual r
 
 ## H3 — Architecture, Polish, and Community
 
-### H3.1 — V2 Architecture + post-V2 content-quality wave (April–May 2026) ✅ Complete
+### H3.1 — V2 Architecture + Triple-Stage Curator (April–May 2026) ✅ Complete
 
 **Goal:** make the pipeline architecturally clean enough that future content quality work can happen without fighting the structure, then layer the first round of structural content-quality wins on top.
 
 V1 had aggregation surface as the source of all five S14/S15 bug classes (ID-consistency, aggregation duplications, pre-research artefacts surviving downstream, per-actor metadata grafted from wrong dimensions, editor-time selection_reason becoming false). V2 replaced aggregation with a **Bus + Stage architecture**: one RunBus, N TopicBuses, one stage list per variant, one render layer that filters by visibility metadata.
 
-| WP | Status |
+The V1 single-pass Curator that survived the April–May big-bang was then replaced in turn by the **Triple-Stage Curator** (Briefs 1–5b, May 12–17 2026, `docs/ADR-CURATOR-TRIPLE-STAGE.md`): deterministic Agglomerative pre-clustering, a small-input LLM topic-discovery step that emits only `{topics: [{title, summary}]}`, and deterministic gravitational assignment at cosine threshold `T = 0.55, V = title + summary`. Empirical validation against the 2,542-label audit set: **8.23 % aggregate weighted off-topic** (vs. 69.59 % at the provisional T = 0.30), zero topics above 50 % off-topic across 30 audited top-10 topics on three eval days.
+
+| WP / Brief | Status |
 |----|--------|
-| WP-V2-BUS-ARCHITECTURE | ✅ Complete — V2-01 through V2-11b shipped April 30 – May 1 2026. V1 deleted in commit 19348f3. Source-level closed. Documentation reconciled in V2-DOC-RECONCILE (May 7 2026). |
-| TASK-RENDER-RESTRUCTURE-V2 | ✅ Complete (May 5–7 2026, commits `ced8981 → 0a4b120`). Five atomic commits restructured the rendered TP around five primary sections (Article, Positions, Actors, Sources, Bias-Card). New first-class Actors section with cluster-filterable list; two-level outlet-grouped Sources section with per-outlet metadata propagation from `config/sources.json` (`editorial_independence`, `tier`, `bias_note`); collapsible QA-Corrections wrapper. |
-| TASK-RESOLVE-ACTOR-ALIASES Phase 1+2 | ✅ Complete (May 5–7 2026, commits `c20459a` and `6fe0258`). New cross-variant alias resolver agent with the verified Y-config (Flash, `temp=1.0`, `reasoning="medium"`, `max_tokens=66000`); new `canonical_actors[]` consumer-facing slot and `actor_alias_mapping[]` audit trail; `final_actors[]` becomes audit-only. **F2 (actor-name alias dedup) closed.** Every consumer (Perspective, enrich_perspective_clusters, BiasLanguage, Writer, render) migrated to `canonical_actors[]`. ARCH-V2-BUS-SCHEMA §7.2 documents the strict-merge pattern parallel to §7.1's strict-drop. |
-| Phase 2 Commit 2 (Flash endpoint switch) | ⚠️ Blocked — `google/gemini-flash-latest` is not a valid OpenRouter model ID. Reverted; awaiting Architect input on the actual identifier (alternatives: `google/gemini-2.5-flash`, `google/gemini-2.5-flash:latest`, both work but pin to a specific family version). |
+| `WP-V2-BUS-ARCHITECTURE` | ✅ Complete — V2-01 through V2-11b shipped April 30 – May 1 2026. V1 deleted in commit `19348f3`. Documentation reconciled in V2-DOC-RECONCILE (May 7) and again in `TASK-DOC-RECONCILE` (May 17, this brief). |
+| `TASK-RENDER-RESTRUCTURE-V2` | ✅ Complete (May 5–7, commits `ced8981 → 0a4b120`). Five atomic commits restructured the rendered TP around five primary sections (Article, Positions, Actors, Sources, Bias-Card). |
+| `TASK-RESOLVE-ACTOR-ALIASES` Phase 1+2 | ✅ Complete (May 5–7, commits `c20459a` + `6fe0258`). F2 (actor-name alias dedup) closed; canonical_actors[] consumer-facing slot; ARCH-V2-BUS-SCHEMA §7.2 strict-merge pattern. |
+| Phase 2 Commit 2 (Flash endpoint switch) | ⚠️ Blocked — `google/gemini-flash-latest` is not a valid OpenRouter model ID. Reverted; awaiting Architect input on the actual identifier. |
+| Triple-Stage Curator — Brief 1 (`TASK-EMBED-PRE-CLUSTER-STAGE`) | ✅ Complete (commit ending `9cc2957`). |
+| Triple-Stage Curator — Brief 2 (`TASK-GRAVITATIONAL-ASSIGN-STAGE`) | ✅ Complete (commit ending `5189cec`). Provisional calibration at `T=0.30`; superseded by Brief 5b. |
+| Triple-Stage Curator — Brief 3 (PE round: Curator + Editor prompt rewrites) | ✅ Complete (commit `03103e8`). |
+| Triple-Stage Curator — Brief 4 (`TASK-CURATOR-TOPIC-DISCOVERY-STAGE`) | ✅ Complete (commit ending `3ab766c`). |
+| Triple-Stage Curator — Brief 5 (`TASK-TRIPLE-STAGE-CUTOVER`) | ✅ Complete (commit ending `0135c8f`). |
+| `TASK-CLUSTER-QUALITY-AUDIT` | ✅ Complete (commit `6d8ffc4`). 2,542 labels; surfaced 69.59 % aggregate off-topic at provisional T=0.30; motivated Brief 5b. |
+| Triple-Stage Curator — Brief 5b (`TASK-GRAVITATIONAL-RECALIBRATION`) | ✅ Complete (commit ending `310a55d`). Pinned `T=0.55, V=title+summary`; re-audit confirms 8.23 % aggregate / 0 topics > 50 %. |
+| `TASK-DOC-RECONCILE` (Brief 6) | ✅ Complete — this commit. ARCHITECTURE.md / ADR / AGENT-IO-MAP refreshed; new AUDIT-TIMELINE.md; TASKS/ROADMAP/CLAUDE marked V2-current. |
 
 **Key architectural changes:**
 - Granular Bus slots with declared owner, visibility, and mirrors_from metadata.
@@ -87,8 +97,9 @@ V1 had aggregation surface as the source of all five S14/S15 bug classes (ID-con
 - Hierarchical Bus separation (run-scoped vs. topic-scoped state).
 - Render is selection — output formats are pure functions over Bus state.
 - ID-flow symmetric end-to-end: `final_sources` carries `src-NNN`, every downstream agent reads and emits in `src-NNN`.
+- Triple-Stage Curator: deterministic pre-cluster → LLM topic-discovery → deterministic gravitational assignment. The V4-Pro over-clustering pathology is structurally impossible — the LLM no longer assigns findings, so the per-finding output pressure that produced the catch-all behaviour is gone.
 
-Full architectural specification: `docs/ARCH-V2-BUS-SCHEMA.md`. Decision log: same document §10.
+Full architectural specification: `docs/ARCH-V2-BUS-SCHEMA.md` (bus + stage schema) + `docs/ARCHITECTURE.md` (first-principles + V2 stage list) + `docs/ADR-CURATOR-TRIPLE-STAGE.md` (Curator decision + resolved calibration points). Chronological audit trail: `docs/AUDIT-TIMELINE.md`. Decision log for bus + stage: `docs/ARCH-V2-BUS-SCHEMA.md` §10.
 
 ### H3.2 — Content Quality Polish (Researcher-Polish) — iteration 1 ✅ complete; iteration 2 deferred
 
@@ -101,11 +112,11 @@ V2 made the pipeline architecturally clean. The next emphasis is content depth a
 | TASK-RESEARCHER-POLISH (iteration 1) | ✅ shipped May 2-4 2026. Inline 6-shape Story-Shape-Targeting in Plan-INSTRUCTIONS for both production and hydrated variants (commit b2bec02). SYSTEM.md mini-touch on breadth + depth dual mandate. Researcher-Plan and Researcher-Hydrated-Plan now run on anthropic/claude-opus-4.6. Date context passed in (commit bd92e44). Per-query Story-Shape obligation (commit 0b03760). Authoritative cost €0.22/Plan-call. Six-axis smoke pass. | 1 session |
 | TASK-RESEARCHER-POLISH (iteration 2) | Deterministic Pre-Plan stage that classifies story shape before the LLM plans. Deferred — needs to be universally applicable, not just for the 6 shapes from iteration 1. | After iteration 1 evaluated |
 
-### H3.2.5 — Live-pipeline-run with the full Phase-2 stack — next active workstream
+### H3.2.5 — Live-pipeline observation under V2 (continuous)
 
-With B-full canonical-actors migration shipped, the F2 alias-dedup work-stream closed at source level, and the render restructure live, the next milestone is the **first production run with the full Phase-2 stack** on a fresh dossier date. Validates that F2 dedup reaches the published article text (Writer cites canonical names rather than per-source variants), Actors-section anchors resolve correctly across topics, and the resolver Y-config produces stable canonical merges on real-world multilingual coverage.
+The pipeline has run live at `independent-wire.org` throughout the V2 + Triple-Stage-Curator work. The F2 alias-dedup stack was validated on the 2026-05-07 → 2026-05-11 baseline runs (Writer cites canonical names, Actors-section anchors resolve, resolver Y-config stable on real multilingual coverage). The recalibrated Curator landed 2026-05-17; **multi-day production observation under the recalibrated `T=0.55 V1` is the next deferred observation task** (`TASK-POST-V2-PRODUCTION-OBSERVATION` in `docs/TASKS.md`). Watch surface: any drift on a real-world day not covered by the eval set (2026-05-08 / 11 / 13), and any topic where the higher threshold drops a multilingual cluster the editorial team would have wanted retained.
 
-After the live-run validates the stack, the **weekly-outlet-audit cadence** (see `BACKLOG-WEEKLY-OUTLET-AUDIT.md` at repo root) becomes active — the alias mapping plus the propagated outlet metadata (`tier`, `editorial_independence`, `bias_note`) need a regular review loop to stay coherent with the live source pool.
+After production observation surfaces a stable post-V2 picture, the **weekly-outlet-audit cadence** (see `BACKLOG-WEEKLY-OUTLET-AUDIT.md` at repo root) and the **external Vision Paper update** (see Vision alignment below) become next-priority workstreams.
 
 ### H3.2.6 — Phase-1 LLM Plan-Model Sweep — deferred
 
@@ -174,6 +185,8 @@ No commercial model. No advertising. No investor equity. Operating cost target: 
 ## Vision alignment
 
 Each work-stream above traces back to the Vision paper (March 2026). The five-dimensional Bias Card (language, source, geographical, selection, framing) is implemented as a multi-slot derived view at render time — see `docs/ARCH-V2-BUS-SCHEMA.md` §4B.12 for the explicit mapping of Vision dimensions to TopicBus slots. The transparency-first principle is structurally enforced via the visibility metadata system: nothing reaches the public TP that hasn't been explicitly marked `tp` in the schema.
+
+**External Vision Paper update is deferred** until production-run experience accumulates under the V2 + recalibrated-Curator architecture. The internal documentation (this roadmap + `docs/ARCHITECTURE.md` + `docs/ADR-CURATOR-TRIPLE-STAGE.md` + `docs/AUDIT-TIMELINE.md`) reflects the V2 state as of 2026-05-17; the external `VISIONindependentwire.pdf` was explicitly held out of scope for the `TASK-DOC-RECONCILE` brief and is queued in `docs/TASKS.md` for activation after `TASK-POST-V2-PRODUCTION-OBSERVATION` completes.
 
 What still doesn't exist:
 - Investigative journalism — AI cannot replace humans on the ground. The system relieves routine work; investigative work stays human.

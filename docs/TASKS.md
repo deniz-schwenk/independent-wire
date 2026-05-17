@@ -1,8 +1,16 @@
 # Independent Wire — Task Tracker
 
 **Created:** 2026-03-30
-**Updated:** 2026-05-07 (post Phase 2 of TASK-RESOLVE-ACTOR-ALIASES + post Render-Restructure-V2 + repo-root cleanup; latest commit aaef864 — preceding this V2-DOC-RECONCILE commit)
+**Updated:** 2026-05-17 (post `TASK-DOC-RECONCILE` / Brief 6: triple-stage Curator brief sequence marked complete with commit hashes; future workstreams carried forward; BACKLOG / TASK naming applied)
 **Purpose:** Living document — updated after each session
+
+## Naming conventions
+
+- **`TASK-*`** — CC-execution-ready brief with explicit acceptance criteria. Lives at repo root (or `docs/archive/` once shipped). Architect writes the brief; CC executes against it. Brief files are gitignored — only the resulting commits and updates to this tracker live in the repo.
+- **`BACKLOG-*`** — architect-level diagnosis or sketch. Documents a problem and (optionally) candidate directions, but not yet a CC-ready brief. Lives at repo root and is checked into git as the durable architect's working surface for the topic.
+- **`WP-*`** — historical work-package label from V1 / early V2. Still used for catalogued future workstreams (`WP-OPUS-4.7-MIGRATION`, `WP-STRUCTURED-OUTPUTS-V2`, `WP-TOPIC-STAGE-PARALLELISATION`, etc.) that are too coarse-grained to be CC briefs yet.
+
+When a BACKLOG entry matures into a CC-ready brief, the architect drafts a `TASK-*` file at repo root and references the BACKLOG entry in the brief's `## Why` section. The BACKLOG entry remains in place as the historical diagnosis.
 
 ---
 
@@ -79,6 +87,25 @@ The V2 big-bang work-stream broke into eleven sequential CC tasks. Listed here f
 
 ---
 
+## Triple-Stage Curator brief sequence (May 12–17 2026) — all ✅
+
+Implementation of `docs/ADR-CURATOR-TRIPLE-STAGE.md`. Eight commits land the new architecture, audit it, recalibrate it, validate it, and reconcile the documentation. Empirical end-state: aggregate weighted off-topic rate **8.23 %** at the pinned T=0.55 V1, zero topics above 50 % off-topic across the 30 audited top-10 topics on three eval days. Full chronology in `docs/AUDIT-TIMELINE.md`.
+
+| Brief | Description | Terminal commit |
+|---|---|---|
+| Brief 1 — `TASK-EMBED-PRE-CLUSTER-STAGE` | New `pre_cluster_findings` run-stage. Agglomerative clustering on fastembed `paraphrase-multilingual-MiniLM-L12-v2` embeddings (`distance_threshold=0.7`, `linkage='average'`, `metric='cosine'`). | `9cc2957` |
+| Brief 2 — `TASK-GRAVITATIONAL-ASSIGN-STAGE` | New `gravitational_assign` run-stage. Cosine-threshold + per-finding-cap deterministic assignment with `np.lexsort` tie-break. Provisional calibration `T=0.30, cap=3` at this point. | `5189cec` |
+| Brief 3 — PE round | Curator + Editor prompt rewrites: new Topic-Discovery prompt for the LLM Curator (`{topics: [{title, summary}]}`-only output), updated Editor input description. Old prompts archived. | `03103e8` |
+| Brief 4 — `TASK-CURATOR-TOPIC-DISCOVERY-STAGE` | New `CuratorTopicDiscoveryStage` LLM stage. `SAMPLE_TITLES_PER_CLUSTER=8`, top-K-by-centroid compression, `CURATOR_TOPIC_DISCOVERY_SCHEMA` strict-mode output. | `3ab766c` |
+| Brief 5 — `TASK-TRIPLE-STAGE-CUTOVER` | Pipeline cutover: old `CuratorStage` removed, `gravitational_assign` rerouted to read `curator_discovered_topics`, `assemble_curator_topics` composes the legacy `curator_topics_unsliced` shape from the new slot trio. `measure_cluster_coherence` stage callable removed; `src/stages/coherence.py` retained for the fastembed singleton. | `0135c8f` |
+| `TASK-CLUSTER-QUALITY-AUDIT` | 2,542 (finding, topic) labels with reasoning notes across the top-10 topics of three eval days at the post-cutover provisional T=0.30 V1. Surfaced **69.59 % aggregate weighted off-topic rate** — V1 cluster headlines used in Brief 2's calibration are tighter than the Stage-2 LLM topic-centres in the new architecture. Motivated Brief 5b. | `6d8ffc4` |
+| Brief 5b — `TASK-GRAVITATIONAL-RECALIBRATION` | 12-config sweep (T × V) against the audit set; qualitative samples at the top-three configurations; architect's pick `T=0.55, V=title+summary` (V1). Pin + re-audit confirms **aggregate 8.23 %**, zero topics > 50 %. Brief 2 calibration explicitly marked superseded. | `310a55d` |
+| Brief 6 — `TASK-DOC-RECONCILE` (this brief) | Documentation reconciliation: `docs/ARCHITECTURE.md` updated to V2; `docs/AGENT-IO-MAP.md` header + §2.2c refreshed; `docs/ADR-CURATOR-TRIPLE-STAGE.md` moved to *Implemented and empirically validated*; `docs/AUDIT-TIMELINE.md` created; `docs/TASKS.md` + `docs/ROADMAP.md` mark sequence complete; `CLAUDE.md` updated for V2 state; BACKLOG cleanup pass. | this commit's final hash |
+
+Test suite: 595 / 0 at the audit start; +7 sweep helper tests added in Brief 5b → **602 / 0** at this brief's start, unchanged through the doc-only Brief 6 commits.
+
+---
+
 ## Recently shipped (May 5–7 2026)
 
 The work that landed between the prior TASKS.md state (commit 8f48804) and this V2-DOC-RECONCILE pass.
@@ -97,21 +124,21 @@ The work that landed between the prior TASKS.md state (commit 8f48804) and this 
 
 ### Next active workstream
 
-| Task | Status | Description |
-|------|--------|-------------|
-| Live-pipeline-run for next dossier date | 🔵 Active | First production run with the full Phase-2 stack (resolver Y-config + canonical_actors consumer migration + render restructure + outlet metadata propagation). Validates F2 dedup reaching the published text on a fresh real dossier. |
+The Triple-Stage Curator brief sequence (above) finished 2026-05-17 with this `TASK-DOC-RECONCILE` commit. The architect picks the next active workstream from the Queued section below; live production runs at `independent-wire.org` continue throughout. Multi-day production observation under the recalibrated Curator (post Brief 5b) is itself a deferred observation task — `TASK-POST-V2-PRODUCTION-OBSERVATION` queued below.
 
 ### Queued (Architect priority order)
 
 | Task | Status | Description |
 |------|--------|-------------|
-| TASK-WEEKLY-OUTLET-AUDIT | 🔵 Queued | First instance of the weekly outlet-audit cadence — see `BACKLOG-WEEKLY-OUTLET-AUDIT.md` at repo root. Triages outlet metadata, alias mappings, and tier classifications against the live source pool. |
-| WP-OPUS-4.7-MIGRATION | 🔵 Queued | Opus 4.6 → 4.7 across all Opus-using agents (Editor, Researcher Plan, Perspective, Writer, Bias Language, Hydration Phase 2). `src/agent.py` refactor for `output_config.effort`. Per-agent effort-level eval before swap. Substantial workstream. |
-| WP-STRUCTURED-OUTPUTS-V2 | 🔵 Queued | After Researcher-Polish iteration 2 settles. Migration of `response_format` patterns where structured outputs improve robustness further. Research documented in `docs/RESEARCH-OPENROUTER-STRUCTURED-OUTPUTS.md`. |
-| TASK-FUTURE-RESEARCH-DEPTH | 🔵 Queued | Direct institutional source fetch via curated registry (RSS/API endpoints per source-category), bypassing LLM-Planner. Prerequisite: Researcher-Polish iteration 1 evaluated against challenger models. |
-| TASK-RESEARCHER-POLISH (iteration 2) | 🔵 Queued | Deterministic Pre-Plan stage that classifies story shape before the LLM plans. Deferred from iteration 1.5 — needs to be universally applicable, not just for the 6 shapes from iteration 1. |
-| WP-SPENDING-CAP-REDESIGN | 🔵 Queued | Pre-call spending cap rather than post-phase check. V2-10 came near €5 before tripping post-phase guard — pre-call check catches overruns earlier. |
-| WP-TOPIC-STAGE-PARALLELISATION | 🔵 Queued | Run multiple TopicBuses concurrently rather than serially. Architecturally trivial in V2 (no cross-TopicBus dependency); deferred for stability. |
+| `TASK-POST-V2-PRODUCTION-OBSERVATION` | 🔵 Queued | Multi-day production observation under the recalibrated Curator (pinned `T=0.55`, `V=title+summary`). Watch for any edge-case drift on a real-world day not covered by the eval set (2026-05-08 / 11 / 13). Activation: routine cadence over the first few weeks of post-pin production. Prerequisite for the external Vision Paper update. |
+| `TASK-WEEKLY-OUTLET-AUDIT` | 🔵 Queued | First instance of the weekly outlet-audit cadence — see `BACKLOG-WEEKLY-OUTLET-AUDIT.md` at repo root. Triages outlet metadata, alias mappings, and tier classifications against the live source pool. |
+| `WP-OPUS-4.7-MIGRATION` | 🔵 Queued | Opus 4.6 → 4.7 across all Opus-using agents (Editor, Researcher Plan, Perspective, Writer, Bias Language, Hydration Phase 2). `src/agent.py` refactor for `output_config.effort` (low / medium / high / xhigh / max). Per-agent effort-level eval before swap. Substantial workstream. |
+| `WP-STRUCTURED-OUTPUTS-V2` | 🔵 Queued | Consolidating the strict-schema work that the V2 Curator already pioneered. Migration of `response_format` patterns where structured outputs improve robustness further. Research documented in `docs/RESEARCH-OPENROUTER-STRUCTURED-OUTPUTS.md`. |
+| `TASK-FUTURE-RESEARCH-DEPTH` | 🔵 Queued | Direct institutional source fetch via curated registry (RSS/API endpoints per source-category), bypassing LLM-Planner. Prerequisite: Researcher-Polish iteration 1 evaluated against challenger models. |
+| `TASK-RESEARCHER-POLISH` iteration 2 | 🔵 Queued | Deterministic Pre-Plan stage that classifies story shape before the LLM plans. Deferred from iteration 1.5 — needs to be universally applicable, not just for the 6 shapes from iteration 1. |
+| `WP-SPENDING-CAP-REDESIGN` | 🔵 Queued | Pre-call spending cap rather than post-phase check. V2-10 came near €5 before tripping post-phase guard — pre-call check catches overruns earlier. |
+| `WP-TOPIC-STAGE-PARALLELISATION` | 🔵 Queued | Run multiple TopicBuses concurrently rather than serially. Architecturally trivial in V2 (no cross-TopicBus dependency); deferred for stability. |
+| External Vision Paper update | 🔵 Queued | `VISIONindependentwire.pdf` external manifest update once production-run experience accumulates under V2. Explicitly **out of scope for this brief sequence** per the architect; activation gated on `TASK-POST-V2-PRODUCTION-OBSERVATION` completion. |
 | Portfolio site (deniz-schwenk.github.io/portfolio) | 🔵 Queued | Public-facing portfolio surfacing the Independent Wire build. Not on the Independent Wire deployment surface. |
 
 ### Deferred / catalogued
@@ -189,4 +216,4 @@ Formalised in `docs/ARCH-V2-BUS-SCHEMA.md` §3.1 and §3.2:
 1. **Originary output** — every Bus slot has exactly one owner; pass-through fields are routed by Python.
 2. **Agents are isolated from the Bus schema** — agents emit structures local to their task; the agent-stage wrappers map them onto Bus slots.
 
-The **Audit Commitment** sub-section in `docs/ARCHITECTURE.md` (now deprecated for pipeline architecture but retained as historical reference) describes the 6-step procedure for evaluating an agent's IO contract against these principles. Researcher-Polish is the next planned application of this audit procedure (Writer was first; queued for second visit post-Researcher-Polish).
+In V2 the principles are structurally enforced at the runner level — every Bus slot has a declared owner, and a stage that writes to a slot it does not own fails precondition validation. The per-agent audit procedure (the "Audit Commitment" subsection that lived in `docs/ARCHITECTURE.md` under V1) is largely subsumed by this structural enforcement; the residual surface (checking each prompt does not redundantly emit pass-through fields) folds into the per-agent prompt-review work (Researcher-Polish ran first; Writer and QA review queued post-Researcher-Polish iteration 2).
