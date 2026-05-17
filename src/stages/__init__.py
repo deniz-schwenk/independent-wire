@@ -6,6 +6,9 @@ Run-scoped stages live in `run_stages`; topic-scoped stages will live in
 topic-level mirror stages.
 """
 
+from src.stages.cluster_to_finding_assignments import (
+    cluster_to_finding_assignments,
+)
 from src.stages.gravitational_assign import (
     gravitational_assign,
     make_gravitational_assign,
@@ -61,6 +64,7 @@ __all__ = [
     "attach_hydration_urls",
     "attach_hydration_urls_to_assignments",
     "cleanup_stale_references",
+    "cluster_to_finding_assignments",
     "compose_transparency_card",
     "compute_source_balance",
     "consolidate_actors",

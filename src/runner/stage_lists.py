@@ -19,6 +19,7 @@ from __future__ import annotations
 from typing import Any, Callable, Optional
 
 from src.agent_stages import (
+    AssignClustersStage,
     BiasLanguageStage,
     CuratorTopicDiscoveryStage,
     EditorStage,
@@ -40,6 +41,7 @@ from src.stages import (
     attach_hydration_urls,
     attach_hydration_urls_to_assignments,
     cleanup_stale_references,
+    cluster_to_finding_assignments,
     compose_transparency_card,
     compute_source_balance,
     consolidate_actors,
@@ -164,6 +166,77 @@ def build_production_stages(
     ]
 
     post_run_stages: list = []  # populated by the runner with RenderStage + FinalizeRunStage
+
+    return run_stages, topic_stages, post_run_stages
+
+
+def build_production_stages_llm_assignment(
+    agents: dict[str, Any],
+    *,
+    web_search_tool: Any = None,
+    hydration_fetcher: Any = None,
+    max_produce: Optional[int] = None,
+    output_dir: Optional[Any] = None,
+) -> tuple[list, list, list]:
+    """Opt-in evaluation variant: LLM-based cluster→topic assignment.
+
+    Mirrors :func:`build_production_stages` exactly EXCEPT that the
+    finding-level deterministic ``gravitational_assign`` is replaced by
+    the two-stage LLM path:
+
+        ``AssignClustersStage → cluster_to_finding_assignments``
+
+    Used by ``scripts/smoke_cluster_llm_assignment.py`` to evaluate
+    Hypothesis 2 of the cluster-level pivot (TASK-CLUSTER-LLM-
+    ASSIGNMENT). **Not** installed in the default production stage list
+    until / unless the architect picks Branch A in Phase 3 of that
+    brief — the existing :func:`build_production_stages` and
+    :func:`build_hydrated_stages` constructors remain unchanged so
+    production behaviour is bit-identical to its pre-brief state.
+
+    The agents dict must include the ``assign_clusters`` Agent (new
+    registration in ``scripts/run.py``) in addition to the production
+    agent set.
+    """
+    run_stages = [
+        _init_run_for("production", max_produce, output_dir),
+        fetch_findings,
+        pre_cluster_findings,
+        CuratorTopicDiscoveryStage(agents["curator_topic_discovery"]),
+        AssignClustersStage(agents["assign_clusters"]),
+        cluster_to_finding_assignments,
+        assemble_curator_topics,
+        EditorStage(agents["editor"]),
+        select_topics,
+    ]
+
+    topic_stages = [
+        ResearcherPlanStage(agents["researcher_plan"]),
+        _wrap_researcher_search(web_search_tool),
+        ResearcherAssembleStage(agents["researcher_assemble"]),
+        merge_sources,
+        renumber_sources,
+        filter_media_actors_quoted,
+        propagate_outlet_metadata,
+        consolidate_actors,
+        ResolveActorAliasesStage(agents["resolve_actor_aliases"]),
+        partition_canonical_actors_by_evidence,
+        normalize_pre_research,
+        PerspectiveStage(agents["perspective"]),
+        enrich_perspective_clusters,
+        mirror_perspective_synced,
+        WriterStage(agents["writer"]),
+        QaAnalyzeStage(agents["qa_analyze"]),
+        mirror_qa_corrected,
+        prune_unused_sources_and_clusters,
+        cleanup_stale_references,
+        compute_source_balance,
+        validate_coverage_gaps_stage,
+        BiasLanguageStage(agents["bias_language"]),
+        compose_transparency_card,
+    ]
+
+    post_run_stages: list = []
 
     return run_stages, topic_stages, post_run_stages
 
@@ -372,6 +445,7 @@ def hydrated_stage_names() -> list[str]:
 __all__ = [
     "build_hydrated_stages",
     "build_production_stages",
+    "build_production_stages_llm_assignment",
     "hydrated_stage_names",
     "production_stage_names",
 ]
