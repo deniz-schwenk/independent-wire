@@ -1,5 +1,7 @@
 # Coherence-stage calibration — V1 baseline
 
+> **Historical / superseded.** This document records the passive coherence-stage measurements taken on the V1 Curator's output (single-pass `CuratorStage` that was removed in the Brief 5 cutover, commit `0135c8f`). The numbers were the substrate for Brief 2's provisional `T=0.30` gravitational threshold calibration. The current V2 calibration is `T=0.55, V=title+summary` per Brief 5b; see [`docs/AUDIT-TIMELINE.md`](../AUDIT-TIMELINE.md) for the full chronology and [`docs/cluster-quality-audit/audit-2026-05-16-recalibrated/`](../cluster-quality-audit/audit-2026-05-16-recalibrated/) for the validation evidence. This file is retained as audit-trail.
+
 - Source state: `output/2026-05-11-v1-baseline/_state/run-2026-05-11-722571ae/run_bus.CuratorStage.json`
 - Model: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
 - fastembed version (pinned): `0.8.0`
