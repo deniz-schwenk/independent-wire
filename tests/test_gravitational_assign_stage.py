@@ -526,7 +526,9 @@ def test_bus_slot_metadata():
 
 
 def test_pinned_calibration_constants():
-    assert GRAVITATIONAL_THRESHOLD == 0.30
+    # Recalibrated 2026-05-17 per TASK-GRAVITATIONAL-RECALIBRATION
+    # (was 0.30 under Brief 2's 504-label set; superseded).
+    assert GRAVITATIONAL_THRESHOLD == 0.55
     assert PER_FINDING_CAP == 3
     assert ALGORITHM == "cosine-threshold-topk"
     assert "similarity desc" in TIE_BREAK_RULE

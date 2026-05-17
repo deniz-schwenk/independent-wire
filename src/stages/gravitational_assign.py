@@ -4,8 +4,11 @@ assignment by cosine threshold + per-finding cap.
 Authoritative references:
 - docs/ADR-CURATOR-TRIPLE-STAGE.md         (architectural rationale)
 - TASK-GRAVITATIONAL-ASSIGN-STAGE.md       (this stage's contract)
-- docs/gravitational-assign/_calibration-2026-05-15.md
-                                            (threshold + cap calibration)
+- TASK-GRAVITATIONAL-RECALIBRATION.md      (current calibration: T=0.55, V1)
+- docs/gravitational-recalibration-2026-05-16/
+                                            (sweep evidence + sample render)
+- docs/cluster-quality-audit/audit-2026-05-16-recalibrated/
+                                            (re-audit validation)
 
 Runs AFTER Brief 1's ``pre_cluster_findings`` and AFTER the eventual
 Stage-2 LLM Topic-Discovery Curator, BEFORE the Editor in the triple-
@@ -29,12 +32,6 @@ numpy / sklearn change cannot silently shift assignments.
 The stage is declared but NOT YET WIRED into
 ``build_production_stages`` / ``build_hydrated_stages``. The
 integration brief later in the triple-stage sequence wires it.
-
-**Calibration is provisional** pending Brief 4's real Stage-2 output.
-The V1 Curator headlines used as topic-centre proxies during
-calibration are tighter than the eventual Stage-2 topic-centres will
-be; the threshold will be revisited then. See the calibration report
-for the F1 / orphan-rate / cap-fit evidence behind the pinned values.
 """
 
 from __future__ import annotations
@@ -60,23 +57,35 @@ logger = logging.getLogger(__name__)
 
 
 # ── Pinned calibration constants ────────────────────────────────────────
-GRAVITATIONAL_THRESHOLD: float = 0.30
+GRAVITATIONAL_THRESHOLD: float = 0.55
 """Cosine-similarity floor that separates a topic match from an orphan.
-Calibrated against the 504-label ground-truth set on 2026-05-15 —
-pooled F1 = 0.768 at T=0.30 (within the F1 ≥ 0.75 plateau spanning
-T=0.30–0.40), 49.7 % orphan rate, ~18 % multi-assignment rate, cap
-binds for only 1.7 % of findings. See
-``docs/gravitational-assign/_calibration-2026-05-15.md`` for the
-evidence. **Provisional** pending Brief 4's real Stage-2 topic-centre
-output."""
+**Recalibrated 2026-05-17** against the 2,542-label audit set produced
+by TASK-CLUSTER-QUALITY-AUDIT (HEAD 6d8ffc4) — sweep over T ∈ {0.30…
+0.55} × V ∈ {title+summary, title-only} surfaced T=0.55, V=title+summary
+as the configuration that drops aggregate weighted off-topic from 69.6 %
+(production at T=0.30) to ~8 %, with no gravity-trap topic above 50 %
+off-topic and recall preserved on clean multilingual topics. See
+``docs/gravitational-recalibration-2026-05-16/sweep.md`` for the full
+12-configuration sweep and ``samples/`` for the qualitative basis of
+the architect's pick.
+
+**Brief 2's 504-label calibration at T=0.30 is superseded.** That set
+was built against V1 cluster headlines that were tighter than the
+Stage-2 LLM topic-centres in the new triple-stage architecture; the
+mismatch is what surfaced as the 69.6 % drift in the audit. Re-audit at
+the recalibrated T=0.55 is in
+``docs/cluster-quality-audit/audit-2026-05-16-recalibrated/``."""
 
 PER_FINDING_CAP: int = 3
 """Maximum number of topics a single finding can be assigned to.
-Architect-decided range is 2–3; 3 chosen at calibration because at the
-production threshold only 45/2606 findings (~1.7 %) have ≥4 matches —
-the cap rarely binds, and 3 honours genuine cross-topic findings
-(e.g., a Strait-of-Hormuz attack between Iran-US-diplomacy and
-energy-crisis topics)."""
+At the recalibrated T=0.55 the cap **does not bind** — the sweep
+distribution at this threshold across the 4,007 findings of the three
+eval days shows 3,404 / 598 / 5 / 0 / 0 findings in the 0 / 1 / 2 / 3 /
+4+ buckets respectively (no finding has more than 2 above-threshold
+topics, so the cap of 3 is unused). Held at 3 to keep room for the
+genuine cross-topic edge case (e.g., a Strait-of-Hormuz attack between
+Iran-US-diplomacy and energy-crisis topics) without re-litigating the
+cap when a future tightening surfaces it."""
 
 TIE_BREAK_RULE: str = "similarity desc, topic-index asc"
 """Deterministic tie-break rule when the cap binds. Implemented via
