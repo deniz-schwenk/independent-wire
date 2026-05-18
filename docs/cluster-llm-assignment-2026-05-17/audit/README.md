@@ -108,9 +108,15 @@ _Topic-03 carries cross-topic drift between Yermak's resignation and the broader
 | 2 | 26 | 23 | 3 | 7 | 16 | **69.57 %** | 1 |
 | 3 | 26 | 23 | 3 | 7 | 16 | **69.57 %** | 1 |
 
-### 2026-05-11 topic-04 — Sport-Wochenende
+### 2026-05-11 topic-04 — Hantavirus (NOT Sport-Wochenende — see corrigendum)
 
-_The Sport-Wochenende cluster mc-04 was the architectural pivot in the cluster-level gravitation brief — under deterministic cluster-level T=0.55, it landed wholesale on topic-09 (Barcelona LaLiga), causing 50 % drift on a previously-clean topic. The LLM's per-run fate of mc-04 is the architectural canary case._
+_This subsection was originally labelled "Sport-Wochenende" but its data
+is actually for 2026-05-11 topic-04 (Hantavirus outbreak on the MV
+Hondius cruise ship), not for the Sport-Wochenende cluster. The
+harness's `GRAVITY_TRAPS` constant pointed `bundle_idx=4`, which on
+2026-05-11 is the Hantavirus topic, not a sports topic. The figures
+below are correct for Hantavirus topic-04; the architectural
+Sport-Wochenende canary case is the corrected section below._
 
 | Run | n_new_assigned | n_labeled | n_unlabeled_new | on | off | off % | n_clusters_assigned |
 |---:|---:|---:|---:|---:|---:|---:|---:|
@@ -118,15 +124,60 @@ _The Sport-Wochenende cluster mc-04 was the architectural pivot in the cluster-l
 | 2 | 55 | 53 | 2 | 53 | 0 | **0.00 %** | 1 |
 | 3 | 55 | 53 | 2 | 53 | 0 | **0.00 %** | 1 |
 
-## Sport-Wochenende cluster mc-04 fate (architectural canary)
+## Sport-Wochenende cluster mc-004 fate (architectural canary)
 
-The Sport-Wochenende cluster (mc-04, 2026-05-11) is the architectural pivot from the cluster-level gravitation brief — under deterministic T=0.55 it landed wholesale on topic-09 (Barcelona LaLiga). This section tracks the LLM's per-run decision on the same cluster.
+The Sport-Wochenende cluster (`mc-004`, 2026-05-11) is the
+architectural pivot from the cluster-level gravitation brief — under
+deterministic cluster-level T=0.55 it landed wholesale on topic-09
+(Barcelona LaLiga), causing 50 % drift on a previously-clean topic.
+This section tracks the LLM's per-run decision on the same cluster.
 
-| Run | Fate | Assigned topics |
-|---:|---|---|
-| 1 | **orphan** — LLM left mc-04 unassigned | — |
-| 2 | **orphan** — LLM left mc-04 unassigned | — |
-| 3 | **orphan** — LLM left mc-04 unassigned | — |
+`mc-004` carries 29 findings spanning Barcelona LaLiga, Liga MX,
+Brazilian volleyball, Tennis Rome, and other Sport-Wochenende coverage
+— the thematic-field pattern surfaced by
+[`docs/cluster-internal-audit/audit-2026-05-17/`](../../cluster-internal-audit/audit-2026-05-17/).
+
+| Run | Fate | Assigned topics | topic-09 off-% (consequence) |
+|---:|---|---|---:|
+| 1 | **assigned** | topic-09 (Barcelona LaLiga) | 50.00 % |
+| 2 | **orphan** (intentional — in `orphan_cluster_ids`) | — | 0.00 % |
+| 3 | **assigned** | topic-09 (Barcelona LaLiga) | 50.00 % |
+
+The 50 % / 0 % / 50 % off-rate on topic-09 across the three runs is
+the direct consequence of `mc-004`'s assignment: when assigned (runs
+1 & 3), the Liga MX / volleyball / tennis findings get dragged onto
+the Barcelona-specific topic; when orphaned (run 2), topic-09 stays
+clean. This is the **same wholesale-onto-Barcelona drift Brief 7's
+deterministic cluster-level gravitation produced**, with the
+additional run-to-run instability of the LLM path.
+
+### Corrigendum (2026-05-18)
+
+The first iteration of this audit document, committed in `48a137d`,
+reported `mc-04` as orphaned in all 3 runs. That was wrong. The
+harness's `SPORT_CLUSTER_ID = "mc-04"` constant never matched a real
+cluster — Brief 1 emits zero-padded three-digit IDs (`mc-000`,
+`mc-001`, …, `mc-004`). The lookup returned `None` for every run, and
+the rendering code defaulted to `fate: "orphan"`. The corrected mc-004
+fate above was reconstructed directly from
+`smoke/2026-05-11/run-{N}/assignments_llm.json`.
+
+The `gravity-trap case studies` subsection labelled "2026-05-11
+topic-04 — Sport-Wochenende" above is also relabelled to "Hantavirus"
+because the original label was the same naming confusion — `bundle_idx
+= 4` on 2026-05-11 is the Hantavirus topic, not a sports topic. The
+audit script's `GRAVITY_TRAPS` constant carries the same bug; a future
+re-use of the harness should replace `bundle_idx: 4` with the actual
+audited topic that hosts the Sport / Barcelona discussion (topic-09 on
+2026-05-11). The script itself is left unchanged in this brief because
+the data and the conclusion are now correctly framed in this document
+and in [`../conclusion.md`](../conclusion.md).
+
+The `audit.json` machine-readable file also carries the pre-correction
+`sport_cluster_case` field with the wrong "orphan in all 3 runs"
+data — it has not been mutated; readers consuming `audit.json` should
+treat the `sport_cluster_case` field as superseded and consult the
+table above instead.
 
 ## Honest framing
 
