@@ -8,7 +8,7 @@ Sources of truth: `src/runner/stage_lists.py` (stage order), `scripts/run.py` (a
 
 | Agent | Model | Temp | Reasoning | max_tokens |
 |---|---|---|---|---|
-| curator | `google/gemini-3-flash-preview` | 1.0 | none | 64000 |
+| curator_topic_discovery | `google/gemini-3-flash-preview` | 1.0 | none | 8000 |
 | editor | `anthropic/claude-opus-4.6` | 0.3 | none | default |
 | researcher_plan | `anthropic/claude-opus-4.6` | 0.5 | none | default |
 | researcher_assemble | `google/gemini-3-flash-preview` | 0.2 | none | default |
@@ -85,7 +85,7 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
 - **Source:** `src/agent_stages.py::CuratorTopicDiscoveryStage`
 - **Agent:** `curator_topic_discovery` (registered in `scripts/run.py`)
 - **Model:** `google/gemini-3-flash-preview`
-- **Params:** temp=0.2, reasoning=`none`, max_tokens=8000
+- **Params:** temp=1.0, reasoning=`none`, max_tokens=8000
 - **Prompt:** `agents/curator/SYSTEM.md` + `INSTRUCTIONS.md` (new prompts committed in the PE round preceding Brief 4)
 - **Output schema (strict):** `CURATOR_TOPIC_DISCOVERY_SCHEMA` in `src/schemas.py` — `{topics: [{title, summary}]}`. `additionalProperties: false` at every level so the LLM cannot silently invent legacy fields (`cluster_assignments`, `relevance_score`, `source_ids`).
 - **Compression (deterministic, K-pinned):** `SAMPLE_TITLES_PER_CLUSTER = 8`. For each pre-cluster: embed members via the shared fastembed singleton (one ONNX session, shared with §2.2b, §2.2c, §2.3b), compute the cluster centroid, pick the top-K findings by cosine similarity to centroid (sim desc, finding-index asc tie-break), extract titles. Clusters with size ≤ K pass through complete; clusters with empty titles get a placeholder marker.

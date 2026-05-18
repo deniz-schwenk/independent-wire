@@ -343,7 +343,7 @@ Authoritative table in `docs/AGENT-IO-MAP.md` §1; snapshot here. All via OpenRo
 
 | Agent | Model | Temp | Reasoning | Notes |
 |-------|-------|---:|---|---|
-| curator_topic_discovery | google/gemini-3-flash-preview | 0.2 | none | Replaces the legacy V1 `curator` agent; only Curator-side LLM in V2 |
+| curator_topic_discovery | google/gemini-3-flash-preview | 1.0 | none | Replaces the legacy V1 `curator` agent; only Curator-side LLM in V2 |
 | editor | anthropic/claude-opus-4.6 | 0.3 | none | |
 | researcher_plan | anthropic/claude-opus-4.6 | 0.5 | none | Opus 4.6 since Researcher-Polish iter 1 (commit `b2bec02`) |
 | researcher_assemble | google/gemini-3-flash-preview | 0.2 | none | |
