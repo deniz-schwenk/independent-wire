@@ -90,7 +90,7 @@ def create_agents() -> dict[str, Agent]:
             system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
             instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
             tools=[],
-            temperature=0.2,
+            temperature=1.0,
             provider="openrouter",
             reasoning="none",
             # Output is ~10–30 topics × ~350 chars ≈ 3K tokens; 2× cushion.
