@@ -11,7 +11,7 @@ Sources of truth: `src/runner/stage_lists.py` (stage order), `scripts/run.py` (a
 | curator_topic_discovery | `google/gemini-3-flash-preview` | 1.0 | none | 8000 |
 | editor | `anthropic/claude-opus-4.6` | 0.3 | none | default |
 | researcher_plan | `anthropic/claude-opus-4.6` | 0.5 | none | default |
-| researcher_assemble | `google/gemini-3-flash-preview` | 0.2 | none | default |
+| researcher_assemble | `deepseek/deepseek-v4-flash` | 0.5 | none | 16000 |
 | resolve_actor_aliases | `google/gemini-3-flash-preview` | 1.0 | medium | 66000 |
 | perspective | `anthropic/claude-opus-4.6` | 0.1 | none | default |
 | writer | `anthropic/claude-opus-4.6` | 0.3 | none | default |
@@ -232,8 +232,8 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::ResearcherAssembleStage`
-- **Model:** `google/gemini-3-flash-preview`
-- **Params:** temp=0.2, reasoning=none, max_tokens=default
+- **Model:** `deepseek/deepseek-v4-flash` (migrated from `google/gemini-3-flash-preview` 2026-05-18 per Wave-1 Sweep #3 — see `docs/cost-efficiency-sweep-2026-05-18/researcher_assemble-report.md`)
+- **Params:** temp=0.5, reasoning=none, max_tokens=16000
 - **Prompt:** `agents/researcher/ASSEMBLE-SYSTEM.md` + `ASSEMBLE-INSTRUCTIONS.md`
 - **Reads (Bus):** `editor_selected_topic`, `researcher_search_results` — TopicBus
 - **Writes (Bus):** `researcher_assemble_dossier` — TopicBus

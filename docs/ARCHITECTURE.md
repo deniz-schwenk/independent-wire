@@ -346,7 +346,7 @@ Authoritative table in `docs/AGENT-IO-MAP.md` §1; snapshot here. All via OpenRo
 | curator_topic_discovery | google/gemini-3-flash-preview | 1.0 | none | Replaces the legacy V1 `curator` agent; only Curator-side LLM in V2 |
 | editor | anthropic/claude-opus-4.6 | 0.3 | none | |
 | researcher_plan | anthropic/claude-opus-4.6 | 0.5 | none | Opus 4.6 since Researcher-Polish iter 1 (commit `b2bec02`) |
-| researcher_assemble | google/gemini-3-flash-preview | 0.2 | none | |
+| researcher_assemble | deepseek/deepseek-v4-flash | 0.5 | none | Migrated from `google/gemini-3-flash-preview` 2026-05-18 per Wave-1 Sweep #3 (~4.3× cheaper at $0.006/topic; 15/15/15 sources vs prior 15/12/10) |
 | resolve_actor_aliases | google/gemini-3-flash-preview | 1.0 | medium | F2 alias-merge (Y-config) |
 | perspective | anthropic/claude-opus-4.6 | 0.1 | none | (formerly "perspektiv" — anglicised in V2-07) |
 | writer | anthropic/claude-opus-4.6 | 0.3 | none | No web_search tool in V2 (since V2-09c2) |

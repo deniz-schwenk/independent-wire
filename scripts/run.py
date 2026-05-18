@@ -51,8 +51,10 @@ def create_agents() -> dict[str, Agent]:
     """Create all pipeline agents with their configurations.
 
     Models via OpenRouter (eval-validated, April 2026; Researcher Plan promoted
-    to Opus 4.6 in Researcher-Polish iter 1, May 2026):
-    - google/gemini-3-flash-preview: Curator, Researcher Assemble (reasoning=none)
+    to Opus 4.6 in Researcher-Polish iter 1, May 2026; Researcher Assemble
+    migrated to DeepSeek V4 Flash per Wave-1 Sweep #3, 2026-05-18):
+    - google/gemini-3-flash-preview: Curator (reasoning=none)
+    - deepseek/deepseek-v4-flash: Researcher Assemble (reasoning=none)
     - anthropic/claude-opus-4.6: Editor, Researcher Plan, Perspective, Writer, Bias Language (reasoning=none)
     - anthropic/claude-sonnet-4.6: QA-Analyze (reasoning=none, NEVER use r-medium)
     """
@@ -139,13 +141,15 @@ def create_agents() -> dict[str, Agent]:
             reasoning="none",
             output_schema=RESEARCHER_PLAN_SCHEMA,
         ),
+        # Researcher Assemble: DeepSeek V4 Flash per Wave-1 Sweep #3 — see docs/cost-efficiency-sweep-2026-05-18/researcher_assemble-report.md
         "researcher_assemble": Agent(
             name="researcher_assemble",
-            model="google/gemini-3-flash-preview",
+            model="deepseek/deepseek-v4-flash",
             system_prompt_path=str(agents_dir / "researcher" / "ASSEMBLE-SYSTEM.md"),
             instructions_path=str(agents_dir / "researcher" / "ASSEMBLE-INSTRUCTIONS.md"),
             tools=[],
-            temperature=0.2,
+            temperature=0.5,
+            max_tokens=16000,
             provider="openrouter",
             reasoning="none",
             output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
