@@ -6,6 +6,8 @@ Sources of truth: `src/runner/stage_lists.py` (stage order), `scripts/run.py` (a
 
 ## §1 Quick-Reference: LLM Configuration
 
+> The model assignments table below reflects the hydrated pipeline (canonical as of 2026-05-19). The non-hydrated pipeline inherits the same base configs via `create_agents()` but is legacy — preserved for backwards compatibility, not maintained going forward.
+
 | Agent | Model | Temp | Reasoning | max_tokens |
 |---|---|---|---|---|
 | curator_topic_discovery | `deepseek/deepseek-v4-flash` | 0.5 | medium | 160000 |

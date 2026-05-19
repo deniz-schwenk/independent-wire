@@ -363,6 +363,8 @@ Authoritative table in `docs/AGENT-IO-MAP.md` §1; snapshot here. All via OpenRo
 
 ## Hydration Pipeline (Stage 2 — Integrated, Production-Ready)
 
+> **Canonicalization (2026-05-19):** the hydrated pipeline is now the project's canonical pipeline. Daily production uses `--hydrated`. The non-hydrated path described above is legacy — preserved for backwards compatibility and historical reference, not maintained going forward (no new feature work, no per-stage tuning). All model swaps land in `create_agents()` (the base); the hydrated pipeline inherits automatically via `base = create_agents()`.
+
 The Production pipeline described above treats the Curator's clustered RSS findings as a ranking signal only: after the Editor selects the top 3 topics, the Researcher begins from zero, querying the web independently via search snippets. The RSS-cluster content — 15–25 articles per topic across 5–8 languages — is discarded. The Writer never sees the actual RSS source texts, only web-search snippets.
 
 **Stage 2 ("Hydrated variant") adds a parallel pipeline that uses the cluster content.** After the Editor and before the Researcher, a hydration sub-pipeline fetches the cluster URLs directly via HTTP, extracts article full-text, and passes it through a two-phase chunked Aggregator LLM pipeline that produces a pre-dossier in the same shape as the Researcher Assembler output. The Researcher Assembler then extends this pre-dossier with web-search results covering gaps that the cluster did not. Python merges both dossiers and renumbers the unified source list into a single `src-NNN` keyspace.

@@ -50,6 +50,11 @@ def setup_logging():
 def create_agents() -> dict[str, Agent]:
     """Create all pipeline agents with their configurations.
 
+    As of 2026-05-19, the non-hydrated path is legacy. The hydrated
+    pipeline (``--hydrated`` flag) is canonical for daily production.
+    The base agent configs below are inherited by
+    :func:`create_agents_hydrated` and are the production source of truth.
+
     Models via OpenRouter (eval-validated, April 2026; Researcher Plan promoted
     to Opus 4.6 in Researcher-Polish iter 1, May 2026; Researcher Assemble
     migrated to DeepSeek V4 Flash per Wave-1 Sweep #3, 2026-05-18; Curator
@@ -364,9 +369,11 @@ def parse_args():
     parser.add_argument(
         "--hydrated", action="store_true",
         help=(
-            "Run the hydrated pipeline (T1 fetch + Phase 1/2 aggregator + "
-            "Perspective-Sync) instead of production. From-scratch hydrated "
-            "runs are supported (V2 stage list is complete)."
+            "Run the hydrated pipeline (canonical for daily production as of "
+            "2026-05-19). Adds T1 fetch + Phase 1/2 aggregator + Perspective-"
+            "Sync on top of the base stage list. The non-hydrated path is "
+            "preserved for backwards compatibility but not actively "
+            "maintained. From-scratch hydrated runs are supported."
         ),
     )
     parser.add_argument(
