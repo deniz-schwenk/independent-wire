@@ -141,7 +141,8 @@ def create_agents() -> dict[str, Agent]:
             reasoning="none",
             output_schema=RESEARCHER_PLAN_SCHEMA,
         ),
-        # Researcher Assemble: DeepSeek V4 Flash per Wave-1 Sweep #3 — see docs/cost-efficiency-sweep-2026-05-18/researcher_assemble-report.md
+        # Researcher Assemble: DeepSeek V4 Flash per Wave-1 Sweep #3 — see docs/cost-efficiency-sweep-2026-05-18/researcher_assemble-report.md.
+        # max_tokens raised from 16k → 160k 2026-05-19 to align with Wave-2 uniform DeepSeek setting.
         "researcher_assemble": Agent(
             name="researcher_assemble",
             model="deepseek/deepseek-v4-flash",
@@ -149,7 +150,7 @@ def create_agents() -> dict[str, Agent]:
             instructions_path=str(agents_dir / "researcher" / "ASSEMBLE-INSTRUCTIONS.md"),
             tools=[],
             temperature=0.5,
-            max_tokens=16000,
+            max_tokens=160000,
             provider="openrouter",
             reasoning="none",
             output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
