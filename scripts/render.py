@@ -973,50 +973,49 @@ def build_perspectives(tp: dict) -> str:
 
 
 def build_actors_section(tp: dict) -> str:
-    """First-class Actors-section: every actor in ``canonical_actors``
-    (the alias-resolved consumer-facing list, surfaced under the
-    top-level ``actors`` key) listed once, with cluster memberships and
-    source attributions.
+    """Actors-section as navigation bridge.
 
-    Renders between Positions and Sources. Each ``<li>`` carries:
-    - ``id="actor-NNN"`` — direct anchor target (CSS ``:target`` styles
-      it on a ``#actor-NNN`` URL).
-    - ``data-clusters="cluster-pc-001 cluster-pc-005"`` — space-separated
-      list of cluster filter tags. The inline JS shim listens to
-      ``hashchange``: when the URL fragment matches ``#cluster-...``,
-      actors whose ``data-clusters`` does not include that token are
-      hidden and a "Show all" button surfaces.
+    Four-column table — one row per actor in ``tp["actors"]`` (the
+    alias-resolved canonical view). The section is no longer a quote
+    dossier (cluster cards carry positions; the Sources-section third
+    level carries verbatim quotes); it exists to let a reader jump
+    from any name in the page to every cluster and every source the
+    actor figures in.
 
-    Per cluster the actor belongs to, one position-line is rendered with:
-    the cluster anchor, the actor's ``quotes[].position`` text for that
-    cluster (filtered by ``source_id ∈ cluster.source_ids``), the
-    optional ``verbatim`` quote in italics, and the source-id anchor.
+    Columns: Actor / Role · Type / Cluster refs / Source refs.
+
+    - Actor: name, optionally suffixed with ``(anonymous)`` when the
+      actor is flagged anonymous. The row anchor is ``id="actor-NNN"``
+      so jumps from cluster cards (`<a href="#actor-NNN">`) land here.
+    - Role · Type: concatenation of ``role`` and ``type`` separated by
+      a middle dot. Empty cells fall through cleanly.
+    - Cluster refs: ``Cluster N`` anchors (target ``#pc-NNN``) for
+      every cluster the actor appears in (any tier), in
+      cluster-emission order. Empty cell when the actor belongs to no
+      cluster — no special label.
+    - Source refs: ``src-NNN`` anchors (target ``#src-NNN``) for every
+      entry in ``actor.source_ids[]``, in first-appearance order.
+      Duplicates collapse.
     """
     actors = tp.get("actors") or []
     clusters = tp.get("perspectives", {}).get("position_clusters", []) or []
 
-    # Build cluster-id → set(source_id) for filtering quotes per
-    # actor-cluster pair. Also remember each cluster's index so we can
-    # reference "Cluster N" in human-readable form.
-    cluster_sources: dict[str, set[str]] = {}
+    # cluster_id → 1-based emission index. Drives the human-readable
+    # "Cluster N" link text. Cluster-emission order is the order in
+    # which the Perspective agent wrote them.
     cluster_index: dict[str, int] = {}
     for i, c in enumerate(clusters, start=1):
         if not isinstance(c, dict):
             continue
         cid = c.get("id")
-        if not isinstance(cid, str) or not cid:
-            continue
-        cluster_sources[cid] = set(c.get("source_ids") or [])
-        cluster_index[cid] = i
+        if isinstance(cid, str) and cid:
+            cluster_index[cid] = i
 
-    # Reverse: actor-id → list of cluster-ids the actor belongs to,
-    # preserving the cluster order in which the agent emitted them.
-    # Also: actor-id → cluster-id → tier label (Stated/Reported/
-    # Mentioned), so the per-cluster position-line prefixes the actor's
-    # evidentiary tier within that cluster.
+    # actor_id → list of cluster_ids the actor appears in (any tier),
+    # in cluster-emission order. We use the cluster's `actor_ids[]`
+    # (the union of stated / reported / mentioned for that cluster) so
+    # tier is irrelevant — the table doesn't distinguish.
     actor_clusters: dict[str, list[str]] = {}
-    actor_cluster_tier: dict[tuple[str, str], str] = {}
-    tier_label_lookup = {key: label for key, label in _CLUSTER_TIERS}
     for c in clusters:
         if not isinstance(c, dict):
             continue
@@ -1027,66 +1026,37 @@ def build_actors_section(tp: dict) -> str:
             if not isinstance(aid, str):
                 continue
             actor_clusters.setdefault(aid, []).append(cid)
-        for tier_key, tier_label in _CLUSTER_TIERS:
-            for aid in c.get(tier_key) or []:
-                if isinstance(aid, str):
-                    actor_cluster_tier[(aid, cid)] = tier_label
 
-    def _position_line(
-        actor: dict, cluster_id: str, seen_quote_ids: set[int]
-    ) -> str:
-        aid = actor.get("id", "")
-        cluster_label = f"cluster {cluster_index.get(cluster_id, '?')}"
-        cluster_anchor = (
-            f'<a href="#{_esc(cluster_id)}">{_esc(cluster_label)}</a>'
-        )
-        tier = actor_cluster_tier.get((aid, cluster_id))
-        prefix = (
-            f'<span class="actor-position-tier">{tier} in</span> '
-            if tier
-            else ""
-        )
-        # Pick the first quote whose source_id grounds this cluster
-        # AND has not already been emitted for an earlier cluster of
-        # this same actor. `seen_quote_ids` is reset per actor (state
-        # lives in the outer loop). When an actor is assigned to
-        # multiple clusters sharing the same source, the first cluster
-        # gets the matching quote; subsequent clusters either pick the
-        # next unseen matching quote, or fall through to an anchor-only
-        # line. Dedup key: Python object id of the quote dict — fine-
-        # grained enough that two distinct quote dicts from the same
-        # source remain independently usable.
-        quotes = actor.get("quotes") or []
-        chosen = None
-        for q in quotes:
-            if not isinstance(q, dict):
+    def _cluster_refs_cell(aid: str) -> str:
+        cids = actor_clusters.get(aid, [])
+        if not cids:
+            return ""
+        links: list[str] = []
+        for cid in cids:
+            idx = cluster_index.get(cid)
+            if idx is None:
                 continue
-            if id(q) in seen_quote_ids:
-                continue
-            sid = q.get("source_id")
-            if isinstance(sid, str) and sid in cluster_sources.get(cluster_id, set()):
-                chosen = q
-                break
-        if chosen is None:
-            return f'<p class="actor-position-line">{prefix}{cluster_anchor}</p>'
-        seen_quote_ids.add(id(chosen))
-        position = _esc(chosen.get("position", "") or "")
-        verbatim = chosen.get("verbatim")
-        verbatim_html = ""
-        if isinstance(verbatim, str) and verbatim:
-            verbatim_html = (
-                f' <em class="actor-verbatim">&ldquo;{_esc(verbatim)}&rdquo;</em>'
+            links.append(
+                f'<a href="#{_esc(cid)}">Cluster {idx}</a>'
             )
-        sid = chosen.get("source_id", "")
-        src_anchor = (
-            f' (<a href="#{_esc(sid)}">{_esc(sid)}</a>)' if sid else ""
-        )
-        return (
-            f'<p class="actor-position-line">{prefix}{cluster_anchor}: '
-            f'{position}{verbatim_html}{src_anchor}</p>'
+        return ", ".join(links)
+
+    def _source_refs_cell(actor: dict) -> str:
+        # Dedup source_ids preserving first-appearance order.
+        seen: set[str] = set()
+        ordered: list[str] = []
+        for sid in actor.get("source_ids") or []:
+            if not isinstance(sid, str) or not sid or sid in seen:
+                continue
+            seen.add(sid)
+            ordered.append(sid)
+        if not ordered:
+            return ""
+        return ", ".join(
+            f'<a href="#{_esc(sid)}">{_esc(sid)}</a>' for sid in ordered
         )
 
-    items: list[str] = []
+    rows: list[str] = []
     for actor in actors:
         if not isinstance(actor, dict):
             continue
@@ -1094,60 +1064,26 @@ def build_actors_section(tp: dict) -> str:
         name = _esc(actor.get("name", ""))
         role = _esc(actor.get("role", ""))
         atype = _esc(actor.get("type", ""))
-        belongs = actor_clusters.get(aid, [])
-        data_clusters = " ".join(f"cluster-{cid}" for cid in belongs)
-        # Per-actor (not global) seen-quote set: each new actor starts
-        # fresh, so dedup never bleeds across actor cards.
-        seen_quote_ids: set[int] = set()
-        position_lines = "".join(
-            _position_line(actor, cid, seen_quote_ids) for cid in belongs
-        )
-        if not position_lines:
-            position_lines = (
-                '<p class="actor-position-line actor-no-cluster">'
-                'Actors with no positional alignment.</p>'
-            )
-
         anon_html = (
             ' <em class="actor-anonymous">(anonymous)</em>'
             if actor.get("is_anonymous") else ""
         )
-        # Per-actor source list — moved here from the cluster cards
-        # (see _cluster_actor_entry docstring). Renders all
-        # source_ids[] as `[src-NNN]` anchors targeting the Sources-
-        # section. Deduplicated, order preserved from the underlying
-        # list. Omitted entirely when the actor has no sources.
-        actor_source_ids = []
-        seen_aid_sids: set[str] = set()
-        for sid in actor.get("source_ids") or []:
-            if not isinstance(sid, str) or not sid:
-                continue
-            if sid in seen_aid_sids:
-                continue
-            seen_aid_sids.add(sid)
-            actor_source_ids.append(sid)
-        source_row_html = ""
-        if actor_source_ids:
-            anchors = " ".join(
-                f'<a href="#{_esc(sid)}">[{_esc(sid)}]</a>'
-                for sid in actor_source_ids
-            )
-            source_row_html = (
-                f'  <div class="actor-sources">{anchors}</div>\n'
-            )
-        items.append(
-            f'<li id="{_esc(aid)}" class="actor" data-clusters="{data_clusters}">\n'
-            f'  <div class="actor-header">'
-            f'<strong>{name}</strong> '
-            f'<span class="actor-role">{role}</span>{anon_html} '
-            f'<span class="actor-type">{atype}</span>'
-            f'</div>\n'
-            + source_row_html
-            + f'  <div class="actor-positions">{position_lines}</div>\n'
-            f'</li>\n'
+        if role and atype:
+            role_type = f"{role} &middot; {atype}"
+        else:
+            role_type = role or atype
+        cluster_cell = _cluster_refs_cell(aid)
+        source_cell = _source_refs_cell(actor)
+        rows.append(
+            f'<tr id="{_esc(aid)}" class="actor-row">'
+            f'<td class="actor-name"><strong>{name}</strong>{anon_html}</td>'
+            f'<td class="actor-role-type">{role_type}</td>'
+            f'<td class="actor-cluster-refs">{cluster_cell}</td>'
+            f'<td class="actor-source-refs">{source_cell}</td>'
+            f'</tr>\n'
         )
 
-    n = len(items)
+    n = len(rows)
     if n == 0:
         return (
             '<section id="actors-section" class="actors">\n'
@@ -1158,47 +1094,23 @@ def build_actors_section(tp: dict) -> str:
 
     actors_meta = (
         f'<p class="actors-meta">{n} actor{"" if n == 1 else "s"} '
-        f'quoted across this topic. Click a cluster card&rsquo;s actor '
-        f'count above to filter, or jump to a specific actor.</p>\n'
-    )
-
-    js_shim = (
-        '<script>\n'
-        '(function() {\n'
-        '  const list = document.querySelector(\'.actor-list\');\n'
-        '  const showAll = document.getElementById(\'actors-show-all\');\n'
-        '  if (!list || !showAll) return;\n'
-        '  function applyFilter() {\n'
-        '    const m = (window.location.hash || \'\').match(/^#cluster-(\\S+)$/);\n'
-        '    if (!m) {\n'
-        '      list.querySelectorAll(\'.actor\').forEach(li => { li.hidden = false; });\n'
-        '      showAll.hidden = true;\n'
-        '      return;\n'
-        '    }\n'
-        '    const target = \'cluster-\' + m[1];\n'
-        '    list.querySelectorAll(\'.actor\').forEach(li => {\n'
-        '      const tags = (li.dataset.clusters || \'\').split(/\\s+/);\n'
-        '      li.hidden = !tags.includes(target);\n'
-        '    });\n'
-        '    showAll.hidden = false;\n'
-        '  }\n'
-        '  showAll.addEventListener(\'click\', () => {\n'
-        '    history.pushState(\'\', document.title, window.location.pathname);\n'
-        '    applyFilter();\n'
-        '  });\n'
-        '  window.addEventListener(\'hashchange\', applyFilter);\n'
-        '  applyFilter();\n'
-        '})();\n'
-        '</script>\n'
+        f'quoted across this topic. Jump from any name above to find '
+        f'every cluster and source the actor figures in.</p>\n'
     )
 
     return (
         '<section id="actors-section" class="actors">\n'
         '<h2>Actors</h2>\n'
         f'{actors_meta}'
-        '<button id="actors-show-all" type="button" hidden>Show all actors</button>\n'
-        f'<ol class="actor-list">\n{"".join(items)}</ol>\n'
-        f'{js_shim}'
+        '<table class="actors-table">\n'
+        '<thead><tr>'
+        '<th>Actor</th>'
+        '<th>Role &middot; Type</th>'
+        '<th>Cluster refs</th>'
+        '<th>Source refs</th>'
+        '</tr></thead>\n'
+        f'<tbody>\n{"".join(rows)}</tbody>\n'
+        '</table>\n'
         '</section>\n'
     )
 
@@ -1570,6 +1482,27 @@ def build_sources_section(tp: dict) -> str:
     for alias_name, canonical_actor in alias_to_canonical.items():
         actors_by_name.setdefault(alias_name, canonical_actor)
 
+    # source_id → list of (actor, first-matching-quote) tuples. Drives
+    # the per-source third-level disclosable block. Each actor appears
+    # at most once per source — the first quote whose source_id matches
+    # wins. Quotes with neither `position` nor `verbatim` are filtered
+    # at render time (see the "usable" check below).
+    source_to_quote_entries: dict[str, list[tuple[dict, dict]]] = {}
+    for actor in tp.get("actors") or []:
+        if not isinstance(actor, dict):
+            continue
+        seen_sids_for_actor: set[str] = set()
+        for q in actor.get("quotes") or []:
+            if not isinstance(q, dict):
+                continue
+            sid_q = q.get("source_id")
+            if not isinstance(sid_q, str) or not sid_q:
+                continue
+            if sid_q in seen_sids_for_actor:
+                continue
+            seen_sids_for_actor.add(sid_q)
+            source_to_quote_entries.setdefault(sid_q, []).append((actor, q))
+
     by_outlet: dict[str, list[dict]] = {}
     for s in sources:
         if not isinstance(s, dict):
@@ -1667,6 +1600,66 @@ def build_sources_section(tp: dict) -> str:
                     f'</div>'
                 )
 
+            # Third-level disclosable block: per-actor quote details.
+            # For each actor with a usable quote (position OR verbatim)
+            # whose source_id matches this source, emit one entry with
+            # the actor anchor, role, position summary, optional
+            # verbatim, and a source-language tag when language != en.
+            # Omit the block entirely when no entry is usable.
+            quote_block_html = ""
+            quote_entries = source_to_quote_entries.get(sid, [])
+            usable_entries = [
+                (qa, qq) for qa, qq in quote_entries
+                if (qq.get("position") or qq.get("verbatim"))
+            ]
+            if usable_entries:
+                source_lang = s.get("language")
+                lang_tag = ""
+                if isinstance(source_lang, str) and source_lang and source_lang != "en":
+                    lang_tag = (
+                        f' <code class="source-quote-lang">'
+                        f'{_esc(source_lang)}</code>'
+                    )
+                entry_items: list[str] = []
+                for qa, qq in usable_entries:
+                    aid_q = qa.get("id", "")
+                    actor_name = _esc(qa.get("name", ""))
+                    actor_role = _esc(qa.get("role", ""))
+                    name_html = (
+                        f'<a href="#{_esc(aid_q)}">{actor_name}</a>'
+                        if aid_q else actor_name
+                    )
+                    position = _esc(qq.get("position") or "")
+                    position_html = (
+                        f'<p class="source-quote-position">{position}</p>'
+                        if position else ""
+                    )
+                    verbatim = qq.get("verbatim")
+                    verbatim_html = ""
+                    if isinstance(verbatim, str) and verbatim:
+                        verbatim_html = (
+                            f'<p class="source-quote-verbatim">'
+                            f'<em>&ldquo;{_esc(verbatim)}&rdquo;</em>'
+                            f'{lang_tag}</p>'
+                        )
+                    role_html = (
+                        f' <span class="actor-role">{actor_role}</span>'
+                        if actor_role else ""
+                    )
+                    entry_items.append(
+                        f'<li class="source-quote-entry">'
+                        f'<strong>{name_html}</strong>{role_html}'
+                        f'{position_html}{verbatim_html}'
+                        f'</li>'
+                    )
+                quote_block_html = (
+                    '  <details class="source-quotes">\n'
+                    '    <summary>Quote details</summary>\n'
+                    '    <ul class="source-quote-list">'
+                    f'{"".join(entry_items)}</ul>\n'
+                    '  </details>\n'
+                )
+
             items.append(
                 f'<li id="{_esc(sid)}" class="source">\n'
                 f'  <div class="source-header">'
@@ -1676,6 +1669,7 @@ def build_sources_section(tp: dict) -> str:
                 + f'  {summary_html}\n'
                 + (f'  {bias_note_html}\n' if bias_note_html else "")
                 + (f'  {actor_refs_html}\n' if actor_refs_html else "")
+                + quote_block_html
                 + '</li>\n'
             )
 

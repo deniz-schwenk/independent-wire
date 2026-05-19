@@ -815,6 +815,173 @@ def test_sources_section_outlets_sorted_alphabetically():
     assert pos_aj < pos_mee < pos_z
 
 
+def test_sources_section_third_level_renders_per_actor_entries():
+    """Acceptance criterion: each source's third-level disclosable
+    block carries one entry per actor whose quote.source_id matches.
+    Entry shape: anchor + role + position summary + verbatim italics."""
+    tp = {
+        "sources": [
+            {
+                "id": "src-001",
+                "outlet": "Al Jazeera",
+                "title": "Iran-Israel war update",
+                "summary": "Coverage of the day.",
+                "language": "en",
+                "actors_quoted": [{"name": "Trump"}, {"name": "Pezeshkian"}],
+            },
+        ],
+        "actors": [
+            {
+                "id": "actor-001",
+                "name": "Trump",
+                "role": "United States President",
+                "type": "government",
+                "source_ids": ["src-001"],
+                "quotes": [
+                    {"source_id": "src-001",
+                     "position": "Suspended a planned attack on Iran.",
+                     "verbatim": "We will respond if necessary."},
+                ],
+            },
+            {
+                "id": "actor-002",
+                "name": "Pezeshkian",
+                "role": "Iranian President",
+                "type": "government",
+                "source_ids": ["src-001"],
+                "quotes": [
+                    {"source_id": "src-001",
+                     "position": "Iran will not surrender.",
+                     "verbatim": None},
+                ],
+            },
+        ],
+    }
+    html = build_sources_table(tp)
+    # The disclosable block is present.
+    assert 'class="source-quotes"' in html
+    assert "<summary>Quote details</summary>" in html
+    # Per-actor entries with anchor + role.
+    assert '<a href="#actor-001">Trump</a>' in html
+    assert '<a href="#actor-002">Pezeshkian</a>' in html
+    assert "United States President" in html
+    assert "Iranian President" in html
+    # Position summaries surface.
+    assert "Suspended a planned attack on Iran." in html
+    assert "Iran will not surrender." in html
+    # Verbatim quote wraps in <em> with quotation marks.
+    assert 'class="source-quote-verbatim"' in html
+    assert "We will respond if necessary." in html
+
+
+def test_sources_section_third_level_includes_lang_tag_for_non_english():
+    """Acceptance criterion: the source-language tag appears inline
+    near the verbatim quote when the source language is not English."""
+    tp = {
+        "sources": [
+            {
+                "id": "src-005",
+                "outlet": "Tasnim",
+                "title": "Iranian statement",
+                "summary": "Persian-language coverage.",
+                "language": "fa",
+                "actors_quoted": [{"name": "Araghchi"}],
+            },
+        ],
+        "actors": [
+            {
+                "id": "actor-001",
+                "name": "Araghchi",
+                "role": "Foreign Minister",
+                "type": "government",
+                "source_ids": ["src-005"],
+                "quotes": [
+                    {"source_id": "src-005",
+                     "position": "Diplomatic channels remain open.",
+                     "verbatim": "تهران آماده مذاکره است"},
+                ],
+            },
+        ],
+    }
+    html = build_sources_table(tp)
+    # Language tag rendered as <code class="source-quote-lang"> with the
+    # source language, inline with the verbatim quote.
+    assert 'class="source-quote-lang"' in html
+    assert ">fa</code>" in html
+
+
+def test_sources_section_third_level_omitted_when_no_usable_content():
+    """Acceptance criterion: third-level block is omitted entirely when
+    a source's actors have neither position text nor verbatim — the
+    existing 'Actors quoted:' anchor row stays as today."""
+    tp = {
+        "sources": [
+            {
+                "id": "src-001",
+                "outlet": "Al Jazeera",
+                "title": "Headline only",
+                "summary": "Brief coverage.",
+                "language": "en",
+                "actors_quoted": [{"name": "Trump"}],
+            },
+        ],
+        "actors": [
+            {
+                "id": "actor-001",
+                "name": "Trump",
+                "role": "US President",
+                "type": "government",
+                "source_ids": ["src-001"],
+                "quotes": [
+                    # Quote exists but neither position nor verbatim is
+                    # populated. The third-level block must be omitted.
+                    {"source_id": "src-001", "position": "", "verbatim": None},
+                ],
+            },
+        ],
+    }
+    html = build_sources_table(tp)
+    # The 'Actors quoted:' anchor row remains.
+    assert 'class="source-actors-refs"' in html
+    assert "Actors quoted:" in html
+    # No third-level block.
+    assert 'class="source-quotes"' not in html
+
+
+def test_sources_section_third_level_omitted_when_no_matching_quote():
+    """When the source's actors carry no quotes whose source_id matches
+    the source's id, the third-level block is omitted (no entries to
+    render)."""
+    tp = {
+        "sources": [
+            {
+                "id": "src-001",
+                "outlet": "Outlet",
+                "title": "T",
+                "summary": "x",
+                "language": "en",
+                "actors_quoted": [{"name": "Person"}],
+            },
+        ],
+        "actors": [
+            {
+                "id": "actor-001",
+                "name": "Person",
+                "role": "r",
+                "type": "t",
+                "source_ids": ["src-002"],
+                "quotes": [
+                    {"source_id": "src-002",
+                     "position": "From another source.",
+                     "verbatim": None},
+                ],
+            },
+        ],
+    }
+    html = build_sources_table(tp)
+    assert 'class="source-quotes"' not in html
+
+
 def test_sources_section_source_id_label_matches_canonical():
     """The [N] label is derived from the source's id, stripping the
     src- prefix and leading zeros."""
