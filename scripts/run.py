@@ -53,10 +53,10 @@ def create_agents() -> dict[str, Agent]:
     Models via OpenRouter (eval-validated, April 2026; Researcher Plan promoted
     to Opus 4.6 in Researcher-Polish iter 1, May 2026; Researcher Assemble
     migrated to DeepSeek V4 Flash per Wave-1 Sweep #3, 2026-05-18; Curator
-    Topic Discovery migrated to DeepSeek V4 Flash per Wave-2 + variance
-    smoke, 2026-05-19):
+    Topic Discovery + Resolve Actor Aliases migrated to DeepSeek V4 Flash
+    per Wave-2 + variance smoke, 2026-05-19):
     - google/gemini-3-flash-preview: (no production agents currently)
-    - deepseek/deepseek-v4-flash: Curator Topic Discovery (reasoning=medium), Researcher Assemble (reasoning=none)
+    - deepseek/deepseek-v4-flash: Curator Topic Discovery (reasoning=medium), Researcher Assemble (reasoning=none), Resolve Actor Aliases (reasoning=none)
     - anthropic/claude-opus-4.6: Editor, Researcher Plan, Perspective, Writer, Bias Language (reasoning=none)
     - anthropic/claude-sonnet-4.6: QA-Analyze (reasoning=none, NEVER use r-medium)
     """
@@ -161,16 +161,23 @@ def create_agents() -> dict[str, Agent]:
             reasoning="none",
             output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
         ),
+        # DeepSeek V4 Flash per Wave-2 Sweep #2 (2026-05-18) — see
+        # docs/cost-efficiency-sweep-wave-2-2026-05-18/resolve_actor_aliases-report.md.
+        # Matches/exceeds baseline on alias pairs, 0 uncovered input IDs across
+        # 3 topics, 10-15× cheaper. reasoning lowered from medium → none
+        # (Wave-2 showed extraction-class doesn't benefit from reasoning on
+        # this role). max_tokens=160k per architect's Wave-2 DeepSeek uniform
+        # setting.
         "resolve_actor_aliases": Agent(
             name="resolve_actor_aliases",
-            model="google/gemini-3-flash-preview",
+            model="deepseek/deepseek-v4-flash",
             system_prompt_path=str(agents_dir / "resolve_actor_aliases" / "SYSTEM.md"),
             instructions_path=str(agents_dir / "resolve_actor_aliases" / "INSTRUCTIONS.md"),
             tools=[],
-            temperature=1.0,
-            max_tokens=66000,
+            temperature=0.5,
+            max_tokens=160000,
             provider="openrouter",
-            reasoning="medium",
+            reasoning="none",
             output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
         ),
         "perspective": Agent(

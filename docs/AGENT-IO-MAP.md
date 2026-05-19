@@ -12,7 +12,7 @@ Sources of truth: `src/runner/stage_lists.py` (stage order), `scripts/run.py` (a
 | editor | `anthropic/claude-opus-4.6` | 0.3 | none | default |
 | researcher_plan | `anthropic/claude-opus-4.6` | 0.5 | none | default |
 | researcher_assemble | `deepseek/deepseek-v4-flash` | 0.5 | none | 16000 |
-| resolve_actor_aliases | `google/gemini-3-flash-preview` | 1.0 | medium | 66000 |
+| resolve_actor_aliases | `deepseek/deepseek-v4-flash` | 0.5 | none | 160000 |
 | perspective | `anthropic/claude-opus-4.6` | 0.1 | none | default |
 | writer | `anthropic/claude-opus-4.6` | 0.3 | none | default |
 | qa_analyze | `anthropic/claude-sonnet-4.6` | 0.1 | none | 64000 |
@@ -281,8 +281,8 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::ResolveActorAliasesStage`
-- **Model:** `google/gemini-3-flash-preview`
-- **Params:** temp=1.0, reasoning=medium, max_tokens=66000
+- **Model:** `deepseek/deepseek-v4-flash` (migrated from `google/gemini-3-flash-preview` 2026-05-19 per Wave-2 Sweep #2 — see `docs/cost-efficiency-sweep-wave-2-2026-05-18/resolve_actor_aliases-report.md`. Variant `dskflash-t05-rnone` reproduces every baseline alias pair, populates anonymous-flag entries the baseline left empty, and leaves 0 uncovered input `final_actor.id` across the 3 audited topics at ~10-15× lower cost. `reasoning` lowered from `medium` → `none` based on Wave-2 finding that extraction-class roles don't benefit from reasoning on this stage.)
+- **Params:** temp=0.5, reasoning=none, max_tokens=160000
 - **Prompt:** `agents/resolve_actor_aliases/SYSTEM.md` + `INSTRUCTIONS.md`
 - **Reads (Bus):** `final_actors` — TopicBus
 - **Writes (Bus):** `canonical_actors`, `actor_alias_mapping` — TopicBus
