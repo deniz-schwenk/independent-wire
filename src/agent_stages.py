@@ -1271,17 +1271,38 @@ class ResearcherAssembleStage(_AgentStageBase):
             "Build a research dossier from these search results. "
             "Extract sources, actors, divergences, and coverage gaps."
         )
-        result = await self.agent.run(
-            message,
-            context={
-                "assignment": {
-                    "title": assignment.title,
-                    "selection_reason": assignment.selection_reason,
-                },
-                "date": run_bus.run_date,
-                "search_results": list(topic_bus.researcher_search_results),
+        context = {
+            "assignment": {
+                "title": assignment.title,
+                "selection_reason": assignment.selection_reason,
             },
+            "date": run_bus.run_date,
+            "search_results": list(topic_bus.researcher_search_results),
+        }
+
+        # Empty-output retry: same defense-in-depth as the Curator stage
+        # for DeepSeek's cache-cold empty-emission mode. Predicate is
+        # `sources` empty — every researcher_assemble call is expected
+        # to extract ≥1 source from the supplied search results;
+        # 0 sources means the LLM dropped everything. After 3 empty
+        # attempts the wrapper writes an empty dossier, and
+        # merge_sources' downstream writes-postcondition on
+        # `researcher_assemble_dossier` (no `optional_write`,
+        # no `mirrors_from`) fires loud.
+        def _is_empty_sources(parsed: Any) -> bool:
+            if not isinstance(parsed, dict):
+                return True
+            return len(parsed.get("sources") or []) == 0
+
+        result, attempts_used, _cost, _tokens = (
+            await self._call_with_empty_retry(
+                message=message,
+                context=context,
+                is_empty=_is_empty_sources,
+                log_label="ResearcherAssembleStage",
+            )
         )
+
         parsed = _parse_agent_output(result) or {}
         if not isinstance(parsed, dict):
             parsed = {}
@@ -1301,7 +1322,10 @@ class ResearcherAssembleStage(_AgentStageBase):
             preliminary_divergences=list(parsed.get("preliminary_divergences") or []),
             coverage_gaps=list(parsed.get("coverage_gaps") or []),
         )
-        return topic_bus.model_copy(update={"researcher_assemble_dossier": dossier})
+        return topic_bus.model_copy(update={
+            "researcher_assemble_dossier": dossier,
+            "researcher_assemble_n_attempts": attempts_used,
+        })
 
 
 # ---------------------------------------------------------------------------

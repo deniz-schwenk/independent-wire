@@ -565,6 +565,182 @@ def test_researcher_assemble_empty_output():
     assert tb_after.researcher_assemble_dossier.sources == []
 
 
+# ---------------------------------------------------------------------------
+# ResearcherAssemble empty-output retry — DeepSeek cache-cold mitigation
+# ---------------------------------------------------------------------------
+
+
+class _SequencedAssembleAgent:
+    """FakeAgent variant returning successive pre-baked AgentResults from
+    a queue. Used to drive the empty-retry path in ResearcherAssembleStage."""
+
+    def __init__(self, results: list[AgentResult]):
+        self._results = list(results)
+        self.name = "fake-research-assemble"
+        self.model = "deepseek/deepseek-v4-flash"
+        self.temperature = 0.5
+        self.max_tokens = 160000
+        self.reasoning = "none"
+        self.calls: list[dict] = []
+
+    async def run(self, message: str = "", context: dict | None = None, **kwargs):
+        self.calls.append({"message": message, "context": context, **kwargs})
+        if not self._results:
+            raise AssertionError(
+                "_SequencedAssembleAgent exhausted — too many calls"
+            )
+        return self._results.pop(0)
+
+
+def _assemble_empty_result(response_id: str, tokens: int = 8000) -> AgentResult:
+    return AgentResult(
+        content="",
+        structured={"sources": [], "preliminary_divergences": [], "coverage_gaps": []},
+        cost_usd=0.001,
+        tokens_used=tokens,
+        response_id=response_id,
+    )
+
+
+def _assemble_nonempty_result(
+    *, n_sources: int = 2, response_id: str = "resp-ok"
+) -> AgentResult:
+    return AgentResult(
+        content="",
+        structured={
+            "sources": [
+                {
+                    "url": f"https://outlet{i}.example/2026/05/01/story",
+                    "outlet": f"Outlet {i}",
+                    "language": "en",
+                    "country": "United States",
+                    "summary": f"summary {i}",
+                    "actors_quoted": [],
+                }
+                for i in range(n_sources)
+            ],
+            "preliminary_divergences": [],
+            "coverage_gaps": [],
+        },
+        cost_usd=0.003,
+        tokens_used=15_000,
+        response_id=response_id,
+    )
+
+
+def _make_assemble_tb_rb():
+    tb = TopicBus(
+        editor_selected_topic=EditorAssignment(title="t", selection_reason="r")
+    )
+    tb.researcher_search_results = [{"query": "x", "results": "..."}]
+    rb = RunBus()
+    rb.run_date = "2026-05-01"
+    return tb, rb
+
+
+def test_researcher_assemble_retry_empty_empty_nonempty(caplog):
+    import logging
+
+    agent = _SequencedAssembleAgent([
+        _assemble_empty_result(response_id="resp-1"),
+        _assemble_empty_result(response_id="resp-2"),
+        _assemble_nonempty_result(n_sources=3, response_id="resp-3"),
+    ])
+    stage = ResearcherAssembleStage(agent)
+    tb, rb = _make_assemble_tb_rb()
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        tb_after = _run(stage, tb, rb.as_readonly())
+
+    dossier = tb_after.researcher_assemble_dossier
+    assert len(dossier.sources) == 3
+    assert dossier.sources[0]["id"] == "research-rsrc-001"
+    assert tb_after.researcher_assemble_n_attempts == 3
+    assert len(agent.calls) == 3
+
+    warns = [r for r in caplog.records if r.levelno == logging.WARNING]
+    errs = [r for r in caplog.records if r.levelno == logging.ERROR]
+    assert len(warns) == 2
+    msgs = " ".join(r.getMessage() for r in warns)
+    assert "ResearcherAssembleStage" in msgs
+    assert "attempt 1/3" in msgs
+    assert "attempt 2/3" in msgs
+    assert "resp-1" in msgs
+    assert "resp-2" in msgs
+    assert errs == []
+
+
+def test_researcher_assemble_retry_all_three_empty_fires_postcondition(caplog):
+    """All 3 attempts empty → empty dossier, ERROR logged, and the
+    writes-postcondition on `researcher_assemble_dossier` (no
+    optional_write, no mirrors_from) fires loud — verifies the
+    downstream gate, not just the wrapper's internal assertion."""
+    import logging
+
+    from src.stage import StagePostconditionError, validate_postconditions
+
+    agent = _SequencedAssembleAgent([
+        _assemble_empty_result(response_id="resp-1"),
+        _assemble_empty_result(response_id="resp-2"),
+        _assemble_empty_result(response_id="resp-3"),
+    ])
+    stage = ResearcherAssembleStage(agent)
+    tb, rb = _make_assemble_tb_rb()
+    rb_ro_before = rb.as_readonly()
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        tb_after = _run(stage, tb, rb_ro_before)
+
+    dossier = tb_after.researcher_assemble_dossier
+    assert dossier.sources == []
+    assert dossier.preliminary_divergences == []
+    assert dossier.coverage_gaps == []
+    assert tb_after.researcher_assemble_n_attempts == 3
+    assert len(agent.calls) == 3
+
+    warns = [r for r in caplog.records if r.levelno == logging.WARNING]
+    errs = [r for r in caplog.records if r.levelno == logging.ERROR]
+    assert len(warns) == 2
+    assert len(errs) == 1
+    assert "all 3 attempts" in errs[0].getMessage()
+
+    # Downstream gate: the writes-postcondition on the empty dossier slot
+    # raises StagePostconditionError.
+    import pytest
+    with pytest.raises(StagePostconditionError) as exc:
+        validate_postconditions(
+            stage,
+            tb,
+            tb_after,
+            run_bus_before=rb_ro_before,
+            run_bus_after=rb.as_readonly(),
+        )
+    assert "researcher_assemble_dossier" in str(exc.value)
+
+
+def test_researcher_assemble_retry_non_empty_first_call_no_retry(caplog):
+    import logging
+
+    agent = _SequencedAssembleAgent([
+        _assemble_nonempty_result(n_sources=2, response_id="resp-ok"),
+    ])
+    stage = ResearcherAssembleStage(agent)
+    tb, rb = _make_assemble_tb_rb()
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        tb_after = _run(stage, tb, rb.as_readonly())
+
+    dossier = tb_after.researcher_assemble_dossier
+    assert len(dossier.sources) == 2
+    assert tb_after.researcher_assemble_n_attempts == 1
+    assert len(agent.calls) == 1
+
+    warns = [r for r in caplog.records if r.levelno == logging.WARNING]
+    errs = [r for r in caplog.records if r.levelno == logging.ERROR]
+    assert warns == []
+    assert errs == []
+
+
 def test_extract_date_from_url():
     assert _extract_date_from_url("https://x.example/2026/04/30/story") == "2026-04-30"
     assert _extract_date_from_url("https://x.example/2026-04-30/story") == "2026-04-30"

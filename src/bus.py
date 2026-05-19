@@ -478,13 +478,19 @@ class TopicBus(BaseModel):
         visibility="internal",
     )
 
-    # 4B.3 Researcher phase (3 slots)
+    # 4B.3 Researcher phase (3 slots + 1 retry-metadata slot)
     researcher_plan_queries: list = Slot(default_factory=list, visibility="internal")
     researcher_search_results: list = Slot(default_factory=list, visibility="internal")
     researcher_assemble_dossier: ResearcherAssembleDossier = Slot(
         default_factory=ResearcherAssembleDossier,
         visibility="internal",
     )
+    # Empty-output retry counter — populated by ResearcherAssembleStage.
+    # Kept out of the dossier model so an all-empty dossier still trips
+    # the writes-postcondition gate (the dossier's three list fields all
+    # default to empty; adding an int field here would mask the
+    # otherwise-empty state and silence the loud failure).
+    researcher_assemble_n_attempts: int = Slot(default=0, visibility="internal")
 
     # 4B.4 Source merge and renumbering (5 slots)
     merged_sources_pre_renumber: list = Slot(default_factory=list, visibility="internal")
