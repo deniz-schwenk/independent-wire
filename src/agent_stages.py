@@ -643,43 +643,83 @@ class CuratorTopicDiscoveryStage(_AgentStageBase):
             "run_date": run_date,
             "micro_clusters": micro_clusters_input,
         }
-        result = await self.agent.run(message, context=context)
 
-        parsed = _parse_agent_output(result)
-        if isinstance(parsed, dict):
-            topics_raw = parsed.get("topics", []) or []
-        elif isinstance(parsed, list):
-            # Defensive: fall back if the LLM emits a bare list
-            topics_raw = parsed
-        else:
-            topics_raw = []
-
+        # Empty-output retry: dskflash-t05-rmedium has a ~33 % cache-cold
+        # empty-emission rate (observed 28/0/26 across 3 isolated live
+        # invocations on 2026-05-19). The 27-rep variance smoke did not
+        # surface the mode. Up to 3 attempts; each retry is a fresh
+        # OpenRouter call so provider routing varies. After 3 empty
+        # attempts, fall through with an empty list and let
+        # assemble_curator_topics' postcondition fail loud.
+        max_attempts = 3
+        total_cost = 0.0
+        total_tokens = 0
         topics_clean: list[dict] = []
-        for entry in topics_raw:
-            if not isinstance(entry, dict):
-                continue
-            title = (entry.get("title") or "").strip()
-            summary = (entry.get("summary") or "").strip()
-            if not title:
-                continue
-            topics_clean.append({"title": title, "summary": summary})
+        attempts_used = 0
+        result = None
+        for attempt in range(1, max_attempts + 1):
+            attempts_used = attempt
+            result = await self.agent.run(message, context=context)
+            total_cost += float(getattr(result, "cost_usd", 0.0) or 0.0)
+            total_tokens += int(getattr(result, "tokens_used", 0) or 0)
+
+            parsed = _parse_agent_output(result)
+            if isinstance(parsed, dict):
+                topics_raw = parsed.get("topics", []) or []
+            elif isinstance(parsed, list):
+                # Defensive: fall back if the LLM emits a bare list
+                topics_raw = parsed
+            else:
+                topics_raw = []
+
+            topics_clean = []
+            for entry in topics_raw:
+                if not isinstance(entry, dict):
+                    continue
+                title = (entry.get("title") or "").strip()
+                summary = (entry.get("summary") or "").strip()
+                if not title:
+                    continue
+                topics_clean.append({"title": title, "summary": summary})
+
+            if topics_clean:
+                break
+
+            if attempt < max_attempts:
+                logger.warning(
+                    "CuratorTopicDiscoveryStage: empty topics on attempt "
+                    "%d/%d (response_id=%s, tokens=%d) — retrying",
+                    attempt,
+                    max_attempts,
+                    getattr(result, "response_id", None) or "?",
+                    int(getattr(result, "tokens_used", 0) or 0),
+                )
+            else:
+                logger.error(
+                    "CuratorTopicDiscoveryStage: empty topics on all %d "
+                    "attempts (last response_id=%s) — assemble_curator_"
+                    "topics' postcondition will fail loud",
+                    max_attempts,
+                    getattr(result, "response_id", None) or "?",
+                )
 
         wall = time.monotonic() - t0
 
         run_bus.curator_discovered_topics = {
             **meta_common,
             "wall_seconds": round(wall, 3),
-            "llm_cost_usd": float(getattr(result, "cost_usd", 0.0) or 0.0),
-            "tokens_used": int(getattr(result, "tokens_used", 0) or 0),
+            "llm_cost_usd": total_cost,
+            "tokens_used": total_tokens,
             "n_micro_clusters_input": len(micro_clusters_input),
             "n_topics": len(topics_clean),
+            "n_attempts": attempts_used,
             "topics": topics_clean,
         }
         logger.info(
             "CuratorTopicDiscoveryStage: %d micro-clusters → %d topics "
-            "(%.2fs, $%.4f)",
+            "(%.2fs, $%.4f, %d attempt%s)",
             len(micro_clusters_input), len(topics_clean), wall,
-            float(getattr(result, "cost_usd", 0.0) or 0.0),
+            total_cost, attempts_used, "" if attempts_used == 1 else "s",
         )
         return run_bus
 

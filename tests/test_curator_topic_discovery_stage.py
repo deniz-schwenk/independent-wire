@@ -494,3 +494,165 @@ def test_compress_drops_invalid_source_ids():
         pre_clusters, findings, matrix, k=8
     )
     assert micro_in[0]["sample_titles"] == ["Iran A"]
+
+
+# ---------------------------------------------------------------------------
+# 12. Empty-output retry — dskflash-t05-rmedium ~33 % cache-cold mode
+# ---------------------------------------------------------------------------
+
+
+class SequencedAgent:
+    """FakeAgent variant that returns successive pre-baked AgentResults
+    from a queue. Each ``run(...)`` call pops the head."""
+
+    def __init__(self, results: list[AgentResult], *, name: str = "fake"):
+        self._results = list(results)
+        self.name = name
+        self.model = "fake-model"
+        self.temperature = 0.5
+        self.max_tokens = 160000
+        self.reasoning = "medium"
+        self.calls: list[dict] = []
+
+    async def run(self, message: str = "", context: dict | None = None, **kwargs):
+        self.calls.append({"message": message, "context": context, **kwargs})
+        if not self._results:
+            raise AssertionError("SequencedAgent exhausted — too many calls")
+        return self._results.pop(0)
+
+
+def _empty_result(*, response_id: str = "resp-empty", tokens: int = 30_000):
+    return AgentResult(
+        content="",
+        structured={"topics": []},
+        cost_usd=0.005,
+        tokens_used=tokens,
+        response_id=response_id,
+    )
+
+
+def _non_empty_result(
+    *,
+    n: int = 25,
+    response_id: str = "resp-ok",
+    tokens: int = 42_000,
+):
+    return AgentResult(
+        content="",
+        structured={
+            "topics": [
+                {"title": f"Topic {i}", "summary": f"Summary {i}"}
+                for i in range(n)
+            ]
+        },
+        cost_usd=0.005,
+        tokens_used=tokens,
+        response_id=response_id,
+    )
+
+
+def _make_rb_with_two_findings():
+    findings = [{"title": "Iran A"}, {"title": "Iran B"}]
+    pre_clusters = [{
+        "id": "mc-000",
+        "size": 2,
+        "source_ids": ["finding-0", "finding-1"],
+    }]
+    return _make_rb(findings=findings, pre_clusters=pre_clusters)
+
+
+def test_retry_empty_empty_nonempty_succeeds_with_two_warnings(caplog):
+    """Empty, empty, then non-empty → stage completes with the third
+    call's topic list. WARNINGs logged for the two empties; final INFO
+    reflects 3 attempts."""
+    import logging
+
+    agent = SequencedAgent([
+        _empty_result(response_id="resp-1"),
+        _empty_result(response_id="resp-2"),
+        _non_empty_result(n=25, response_id="resp-3"),
+    ])
+    stage = CuratorTopicDiscoveryStage(agent, embedder=HashEmbedder())
+    rb = _make_rb_with_two_findings()
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        rb_out = _run_stage(stage, rb)
+
+    cdt = rb_out.curator_discovered_topics
+    assert cdt["n_topics"] == 25
+    assert cdt["n_attempts"] == 3
+    assert len(agent.calls) == 3
+    # cost + tokens accumulate across attempts
+    assert cdt["llm_cost_usd"] == 0.015  # 3 × 0.005
+    assert cdt["tokens_used"] == 30_000 + 30_000 + 42_000
+
+    warn_records = [r for r in caplog.records if r.levelno == logging.WARNING]
+    assert len(warn_records) == 2
+    msgs = " ".join(r.getMessage() for r in warn_records)
+    assert "attempt 1/3" in msgs
+    assert "attempt 2/3" in msgs
+    assert "resp-1" in msgs
+    assert "resp-2" in msgs
+
+    # No ERROR fired on success path
+    err_records = [r for r in caplog.records if r.levelno == logging.ERROR]
+    assert err_records == []
+
+
+def test_retry_all_three_empty_writes_empty_and_logs_error(caplog):
+    """Three empty attempts → 3 calls, ERROR logged about exhausted
+    retries, empty topics written to the bus. The downstream
+    assemble_curator_topics postcondition is what raises in production;
+    this stage itself does not raise."""
+    import logging
+
+    agent = SequencedAgent([
+        _empty_result(response_id="resp-1"),
+        _empty_result(response_id="resp-2"),
+        _empty_result(response_id="resp-3"),
+    ])
+    stage = CuratorTopicDiscoveryStage(agent, embedder=HashEmbedder())
+    rb = _make_rb_with_two_findings()
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        rb_out = _run_stage(stage, rb)
+
+    cdt = rb_out.curator_discovered_topics
+    assert cdt["n_topics"] == 0
+    assert cdt["topics"] == []
+    assert cdt["n_attempts"] == 3
+    assert len(agent.calls) == 3
+    assert cdt["llm_cost_usd"] == 0.015  # 3 × 0.005
+
+    warn_records = [r for r in caplog.records if r.levelno == logging.WARNING]
+    err_records = [r for r in caplog.records if r.levelno == logging.ERROR]
+    assert len(warn_records) == 2  # attempts 1 and 2
+    assert len(err_records) == 1   # attempt 3 (final)
+    assert "all 3 attempts" in err_records[0].getMessage()
+    assert "resp-3" in err_records[0].getMessage()
+
+
+def test_retry_non_empty_first_call_makes_no_retry(caplog):
+    """Non-empty on first call → exactly one agent.run() call, no
+    WARNING or ERROR logged."""
+    import logging
+
+    agent = SequencedAgent([
+        _non_empty_result(n=22, response_id="resp-ok"),
+    ])
+    stage = CuratorTopicDiscoveryStage(agent, embedder=HashEmbedder())
+    rb = _make_rb_with_two_findings()
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        rb_out = _run_stage(stage, rb)
+
+    cdt = rb_out.curator_discovered_topics
+    assert cdt["n_topics"] == 22
+    assert cdt["n_attempts"] == 1
+    assert len(agent.calls) == 1
+    assert cdt["llm_cost_usd"] == 0.005
+
+    warn_records = [r for r in caplog.records if r.levelno == logging.WARNING]
+    err_records = [r for r in caplog.records if r.levelno == logging.ERROR]
+    assert warn_records == []
+    assert err_records == []
