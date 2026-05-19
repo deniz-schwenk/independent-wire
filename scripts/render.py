@@ -1204,7 +1204,17 @@ def build_actors_section(tp: dict) -> str:
 
 
 def build_missing_voices(tp: dict) -> str:
-    """Render Perspective V2 missing_positions as a simple bulleted list."""
+    """Render Perspective V2 missing_positions as a simple bulleted list.
+
+    Legacy renderer. Returns empty when the consolidated slot is
+    present — the unified section in `build_missing_coverage_section`
+    has already covered the missing-voices content there. Stays here
+    as the fallback for pre-consolidation TP JSONs.
+    """
+    if isinstance(tp.get("consolidated_missing_coverage"), dict) and (
+        tp["consolidated_missing_coverage"]
+    ):
+        return ""
     missing = tp.get("perspectives", {}).get("missing_positions", [])
     if not missing:
         return ""
@@ -1218,6 +1228,69 @@ def build_missing_voices(tp: dict) -> str:
     if not items:
         return ""
     return f'<h2>What\'s missing</h2>\n<ul class="missing-positions">{"".join(items)}</ul>'
+
+
+def build_missing_coverage_section(tp: dict) -> str:
+    """Unified "What this dossier does not cover" section.
+
+    Reads the consolidated view written by the deterministic
+    `consolidate_missing_coverage` topic-stage. Renders two
+    sub-sections in order:
+      1. Missing stakeholder voices (Perspective's structured
+         missing_positions, grouped by type).
+      2. Missing topic dimensions (gaps that did not overlap any
+         missing_position description).
+
+    A sub-section whose list is empty is omitted entirely. If both
+    are empty, the whole section is omitted.
+
+    Legacy-permissive: when the consolidated slot is absent
+    (pre-2026-05-20 TPs), this function returns empty and the legacy
+    `build_missing_voices` + `build_coverage_gaps` render in their
+    original positions.
+    """
+    consolidated = tp.get("consolidated_missing_coverage")
+    if not isinstance(consolidated, dict) or not consolidated:
+        return ""
+    voices = consolidated.get("missing_stakeholder_voices") or []
+    dimensions = consolidated.get("missing_topic_dimensions") or []
+
+    sub_sections: list[str] = []
+
+    voice_items: list[str] = []
+    for m in voices:
+        if not isinstance(m, dict):
+            continue
+        mtype = _esc(m.get("type", ""))
+        desc = _esc(m.get("description", ""))
+        if not desc:
+            continue
+        voice_items.append(f'<li><strong>{mtype}</strong> — {desc}</li>')
+    if voice_items:
+        sub_sections.append(
+            '<h3 class="missing-coverage-sub">Missing stakeholder voices</h3>\n'
+            f'<ul class="missing-positions">{"".join(voice_items)}</ul>'
+        )
+
+    dimension_items: list[str] = []
+    for g in dimensions:
+        if not isinstance(g, str) or not g:
+            continue
+        dimension_items.append(f'<div class="coverage-gap">{_esc(g)}</div>')
+    if dimension_items:
+        sub_sections.append(
+            '<h3 class="missing-coverage-sub">Missing topic dimensions</h3>\n'
+            f'{"".join(dimension_items)}'
+        )
+
+    if not sub_sections:
+        return ""
+
+    return (
+        '<h2>What this dossier does not cover</h2>\n'
+        + "\n".join(sub_sections)
+        + "\n"
+    )
 
 
 def build_divergences(tp: dict) -> str:
@@ -1357,6 +1430,14 @@ def build_bias_card(tp: dict) -> str:
 
 
 def build_coverage_gaps(tp: dict) -> str:
+    """Legacy Coverage Gaps section. Returns empty when the consolidated
+    slot is present — `build_missing_coverage_section` already rendered
+    the deduped gap list under "Missing topic dimensions". Stays here
+    as the fallback for pre-consolidation TP JSONs."""
+    if isinstance(tp.get("consolidated_missing_coverage"), dict) and (
+        tp["consolidated_missing_coverage"]
+    ):
+        return ""
     gaps = (
         tp.get("bias_analysis", {})
           .get("selection", {})
@@ -1932,6 +2013,11 @@ def render(tp: dict) -> str:
         build_article_body(tp),
         build_perspectives(tp),
         build_actors_section(tp),
+        # Unified section when the consolidated slot is present.
+        # Legacy `build_missing_voices` + `build_coverage_gaps` calls
+        # below stay in place and self-skip in the consolidated case;
+        # they fire in their original positions for pre-2026-05-20 TPs.
+        build_missing_coverage_section(tp),
         build_missing_voices(tp),
         build_divergences(tp),
         build_bias_card(tp),

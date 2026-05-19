@@ -12,6 +12,7 @@ from scripts.render import (
     build_bias_card,
     build_coverage_gaps,
     build_meta_bar,
+    build_missing_coverage_section,
     build_missing_voices,
     build_perspectives,
     build_sources_table,
@@ -413,6 +414,120 @@ def test_coverage_gaps_falls_back_to_top_level_gaps():
     tp = {"gaps": ["Statement from the affected ministry was not available."]}
     html = build_coverage_gaps(tp)
     assert "Statement from the affected ministry was not available." in html
+
+
+# ---------------------------------------------------------------------------
+# Unified "What this dossier does not cover" + legacy fallback
+# ---------------------------------------------------------------------------
+
+
+def test_missing_coverage_unified_section_renders_both_sub_sections():
+    """When `consolidated_missing_coverage` is present and populated,
+    the unified section is emitted with both sub-section headings; the
+    legacy builders self-skip."""
+    tp = {
+        "consolidated_missing_coverage": {
+            "missing_stakeholder_voices": [
+                {
+                    "type": "industry",
+                    "description": "oil traders, shipping companies, "
+                                   "and insurance underwriters",
+                }
+            ],
+            "missing_topic_dimensions": [
+                "European Union diplomatic response to the crisis",
+            ],
+        },
+        # Audit-trail source fields still carry data; the unified
+        # renderer reads the consolidated slot, not these.
+        "perspectives": {
+            "missing_positions": [
+                {"type": "industry", "description": "oil traders..."},
+            ],
+        },
+        "gaps": ["oil traders, shipping companies, insurance underwriters",
+                 "European Union diplomatic response to the crisis"],
+    }
+    unified = build_missing_coverage_section(tp)
+    legacy_voices = build_missing_voices(tp)
+    legacy_gaps = build_coverage_gaps(tp)
+
+    # Unified section emitted with the new header.
+    assert "<h2>What this dossier does not cover</h2>" in unified
+    # Both sub-sections render with their `h3` headings.
+    assert "Missing stakeholder voices" in unified
+    assert "Missing topic dimensions" in unified
+    # Voice and dimension content surface within the unified section.
+    assert "oil traders" in unified
+    assert "European Union diplomatic response" in unified
+    # Legacy builders self-skip when the consolidated slot is present.
+    assert legacy_voices == ""
+    assert legacy_gaps == ""
+
+
+def test_missing_coverage_legacy_fallback_when_slot_absent():
+    """Pre-2026-05-20 TP JSONs do not carry the consolidated slot. The
+    unified renderer returns empty, and the legacy
+    `build_missing_voices` + `build_coverage_gaps` render in their
+    original positions, unchanged."""
+    tp = {
+        "perspectives": {
+            "missing_positions": [
+                {"type": "civil_society", "description": "Affected communities"},
+            ],
+        },
+        "gaps": [
+            "European Union diplomatic response to the crisis",
+        ],
+    }
+    unified = build_missing_coverage_section(tp)
+    legacy_voices = build_missing_voices(tp)
+    legacy_gaps = build_coverage_gaps(tp)
+
+    # Unified is empty — no consolidated slot present.
+    assert unified == ""
+    # Legacy renderers fire with their original headings + content.
+    assert "What's missing" in legacy_voices
+    assert "Affected communities" in legacy_voices
+    assert "<h2>Coverage Gaps</h2>" in legacy_gaps
+    assert "European Union diplomatic response" in legacy_gaps
+
+
+def test_missing_coverage_unified_section_omits_empty_sub_section():
+    """An empty list in one of the two axes drops only that sub-section;
+    the other still renders. Both empty → whole section omitted."""
+    # Only voices populated.
+    tp_voices_only = {
+        "consolidated_missing_coverage": {
+            "missing_stakeholder_voices": [
+                {"type": "industry", "description": "oil traders"},
+            ],
+            "missing_topic_dimensions": [],
+        }
+    }
+    html = build_missing_coverage_section(tp_voices_only)
+    assert "Missing stakeholder voices" in html
+    assert "Missing topic dimensions" not in html
+
+    # Only dimensions populated.
+    tp_dims_only = {
+        "consolidated_missing_coverage": {
+            "missing_stakeholder_voices": [],
+            "missing_topic_dimensions": ["A topic dimension"],
+        }
+    }
+    html = build_missing_coverage_section(tp_dims_only)
+    assert "Missing topic dimensions" in html
+    assert "Missing stakeholder voices" not in html
+
+    # Both empty.
+    tp_empty = {
+        "consolidated_missing_coverage": {
+            "missing_stakeholder_voices": [],
+            "missing_topic_dimensions": [],
+        }
+    }
+    assert build_missing_coverage_section(tp_empty) == ""
 
 
 def test_meta_bar_languages_count_correct():

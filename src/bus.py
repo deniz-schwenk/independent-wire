@@ -726,8 +726,23 @@ class TopicBus(BaseModel):
     bias_language_findings: list = Slot(default_factory=list, visibility=["tp", "mcp"])
     bias_reader_note: str = Slot("", visibility=["tp", "mcp"])
 
-    # 4B.10 Coverage gaps (1 slot)
+    # 4B.10 Coverage gaps (1 slot + 1 consolidation slot)
     coverage_gaps_validated: list = Slot(default_factory=list, visibility=["tp", "mcp"])
+    # Consolidated view written by `consolidate_missing_coverage` —
+    # deterministic dedup of `perspective_missing_positions[]` (Perspective
+    # agent, structured with `type`) against `coverage_gaps_validated[]`
+    # (Curator / Hydration, free-text). Shape:
+    #   {missing_stakeholder_voices: [...], missing_topic_dimensions: [...]}
+    # The two source slots persist unchanged as the audit trail; this slot
+    # is a derived view for the renderer. `optional_write=True` because
+    # the consolidation can legitimately produce an empty view when both
+    # input lists are empty, and so legacy / replay paths that bypass the
+    # consolidation stage still validate.
+    consolidated_missing_coverage: dict = Slot(
+        default_factory=dict,
+        visibility=["tp", "mcp"],
+        optional_write=True,
+    )
 
     # 4B.10b Strict-drop staging slots written by
     # `prune_unused_sources_and_clusters` and read by

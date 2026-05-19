@@ -336,7 +336,7 @@ def test_runbus_slot_count_regression_guard():
 def test_topicbus_slot_count_regression_guard():
     """Hard-coded expectation. Source: ARCH-V2-BUS-SCHEMA §4B.1–§4B.11.
 
-    Expected: 38 slots across 11 phases.
+    Expected: 39 slots across 11 phases.
     Phase counts: 4B.1=1, 4B.2=6 (hydration_phase1_n_attempts_per_chunk
     added by the empty-output retry mitigation, 2026-05-19), 4B.3=4
     (researcher_assemble_n_attempts added by the empty-output retry
@@ -346,9 +346,11 @@ def test_topicbus_slot_count_regression_guard():
     by the empty-output retry mitigation, 2026-05-19), 4B.4d=3
     (canonical_actors_stated / _reported / _mentioned — pools from
     TASK-EVIDENCE-TYPE-MIGRATION), 4B.5=2, 4B.6=1, 4B.7=4, 4B.8=1,
-    4B.9=2, 4B.10=1, 4B.10b=2 (prune_dropped_*), 4B.11=2.
+    4B.9=2, 4B.10=2 (consolidated_missing_coverage added by the
+    missing-voices / gaps dedup mitigation, 2026-05-20), 4B.10b=2
+    (prune_dropped_*), 4B.11=2.
     """
-    assert len(TopicBus.model_fields) == 38
+    assert len(TopicBus.model_fields) == 39
 
 
 # ---------------------------------------------------------------------------

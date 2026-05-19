@@ -172,6 +172,14 @@ def render_tp_public(
             "position_clusters": list(topic_bus.perspective_clusters_synced),
             "missing_positions": list(topic_bus.perspective_missing_positions),
         },
+        # Consolidated dedup view written by `consolidate_missing_coverage`.
+        # Surfaced under a top-level key so the public renderer can prefer
+        # the unified "What this dossier does not cover" section when this
+        # slot is populated; falls back to the legacy two sections when
+        # absent (e.g. pre-consolidation TP JSON re-render).
+        "consolidated_missing_coverage": dict(
+            topic_bus.consolidated_missing_coverage or {}
+        ),
         "article": topic_bus.qa_corrected_article.model_dump(),
         "divergences": list(topic_bus.qa_divergences),
         "bias_analysis": compose_bias_card(topic_bus),

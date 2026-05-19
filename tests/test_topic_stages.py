@@ -36,6 +36,7 @@ from src.stages.topic_stages import (
     cleanup_stale_references,
     compose_transparency_card,
     compute_source_balance,
+    consolidate_missing_coverage,
     enrich_perspective_clusters,
     merge_sources,
     mirror_perspective_synced,
@@ -663,6 +664,92 @@ def test_validate_coverage_gaps_stage_dedupes_jaccard():
     tb_after = _run(validate_coverage_gaps_stage, tb, _ro())
     kept = tb_after.coverage_gaps_validated
     assert len(kept) == 2  # near-duplicate dropped
+
+
+# ---------------------------------------------------------------------------
+# consolidate_missing_coverage — token-Jaccard dedup of voices vs gaps
+# ---------------------------------------------------------------------------
+
+
+def test_consolidate_drops_gap_matching_missing_position_description():
+    """Missing-position description and gap text overlap above the
+    Jaccard threshold → the gap is dropped from the consolidated
+    `missing_topic_dimensions` (the structured missing-position wins).
+    The two source slots persist unchanged as the audit trail."""
+    tb = TopicBus()
+    tb.perspective_missing_positions = [
+        {
+            "type": "industry",
+            "description": (
+                "oil traders, shipping companies, and insurance "
+                "underwriters affected by Strait of Hormuz disruption"
+            ),
+        },
+    ]
+    tb.coverage_gaps_validated = [
+        "oil traders, shipping companies, insurance underwriters",
+        "European Union diplomatic response to the crisis",
+    ]
+
+    tb_after = _run(consolidate_missing_coverage, tb, _ro())
+    consolidated = tb_after.consolidated_missing_coverage
+    voices = consolidated["missing_stakeholder_voices"]
+    dimensions = consolidated["missing_topic_dimensions"]
+
+    # The structured missing-position survives intact.
+    assert len(voices) == 1
+    assert voices[0]["type"] == "industry"
+    assert "oil traders" in voices[0]["description"]
+
+    # The matching gap was dropped; the non-overlapping gap survives.
+    assert len(dimensions) == 1
+    assert "European Union" in dimensions[0]
+    assert all("oil traders" not in g for g in dimensions)
+
+    # Audit trail: source slots are unchanged.
+    assert len(tb_after.perspective_missing_positions) == 1
+    assert len(tb_after.coverage_gaps_validated) == 2
+
+
+def test_consolidate_keeps_non_overlapping_gap():
+    """A gap whose tokens do not exceed the Jaccard threshold against
+    any missing_position description survives into
+    `missing_topic_dimensions`."""
+    tb = TopicBus()
+    tb.perspective_missing_positions = [
+        {
+            "type": "civil_society",
+            "description": (
+                "Iranian civil-society organisations and student "
+                "groups responding to the crisis"
+            ),
+        },
+    ]
+    tb.coverage_gaps_validated = [
+        "European Union diplomatic response to the crisis",
+    ]
+
+    tb_after = _run(consolidate_missing_coverage, tb, _ro())
+    consolidated = tb_after.consolidated_missing_coverage
+
+    # Voice survives (no input dropped).
+    assert len(consolidated["missing_stakeholder_voices"]) == 1
+    # Non-overlapping gap is preserved in the dimensions axis.
+    assert consolidated["missing_topic_dimensions"] == [
+        "European Union diplomatic response to the crisis",
+    ]
+
+
+def test_consolidate_empty_inputs_yield_empty_view():
+    tb = TopicBus()
+    tb.perspective_missing_positions = []
+    tb.coverage_gaps_validated = []
+    tb_after = _run(consolidate_missing_coverage, tb, _ro())
+    consolidated = tb_after.consolidated_missing_coverage
+    assert consolidated == {
+        "missing_stakeholder_voices": [],
+        "missing_topic_dimensions": [],
+    }
 
 
 # ---------------------------------------------------------------------------

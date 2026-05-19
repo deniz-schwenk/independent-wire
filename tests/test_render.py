@@ -143,7 +143,8 @@ def test_select_by_visibility_topicbus_tp():
     """tp-tagged TopicBus slots: final_sources + final_actors + qa_problems_found +
     qa_corrections + qa_corrected_article + qa_divergences +
     perspective_clusters_synced + bias_language_findings + bias_reader_note +
-    coverage_gaps_validated + source_balance + transparency_card."""
+    coverage_gaps_validated + consolidated_missing_coverage + source_balance +
+    transparency_card."""
     tb = _make_topicbus()
     out = select_by_visibility(tb, "tp")
     expected = {
@@ -159,6 +160,9 @@ def test_select_by_visibility_topicbus_tp():
         "bias_language_findings",
         "bias_reader_note",
         "coverage_gaps_validated",
+        # Deduped voices-vs-gaps view written by
+        # `consolidate_missing_coverage` (2026-05-20).
+        "consolidated_missing_coverage",
         "source_balance",
         "transparency_card",
     }
@@ -212,6 +216,9 @@ def test_render_tp_public_shape():
         "perspectives",
         "divergences",
         "gaps",
+        # Deduped voices-vs-gaps view written by
+        # `consolidate_missing_coverage` (2026-05-20).
+        "consolidated_missing_coverage",
         "article",
         "bias_analysis",
         "transparency",

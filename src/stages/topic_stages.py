@@ -1122,6 +1122,122 @@ async def validate_coverage_gaps_stage(
 
 
 # ---------------------------------------------------------------------------
+# 18b. consolidate_missing_coverage
+# ---------------------------------------------------------------------------
+
+
+# Inline stop-word list. Deliberately small (~30 entries) and inline so the
+# consolidation logic does not gain a new dependency. Covers articles,
+# prepositions, conjunctions, and a handful of bias-relevant filler words
+# that appear in both missing_positions descriptions and gap texts and
+# would otherwise dominate the Jaccard intersection.
+_CONSOLIDATION_STOPWORDS: frozenset[str] = frozenset({
+    "a", "an", "and", "are", "as", "at", "be", "by", "for", "from",
+    "has", "have", "in", "is", "it", "of", "on", "or", "that", "the",
+    "their", "they", "this", "to", "was", "were", "which", "with",
+    "who", "whose", "what", "perspectives", "perspective",
+})
+
+# Jaccard similarity threshold above which a missing_position and a gap
+# are treated as the same item. Conservative — we favour false-negatives
+# (show both lists) over false-positives (silently drop signal). Hand-
+# tuned against the 2026-05-19 Iran dossier where the
+# "oil traders, shipping companies, insurance underwriters" pair scored
+# ~0.55, with non-overlapping pairs in the same TP scoring < 0.20.
+_CONSOLIDATION_JACCARD_THRESHOLD: float = 0.5
+
+
+_TOKEN_NORMALISE_RE = re.compile(r"[^a-z0-9]+")
+
+
+def _consolidation_tokens(text: str) -> frozenset[str]:
+    """Lowercase, strip punctuation, split, drop stopwords. Returns a
+    frozenset of content tokens used for Jaccard comparison.
+
+    A token is kept iff it is ≥ 3 chars after normalisation and not in
+    the inline stopword list. The 3-char floor drops common single-/
+    two-letter noise ("US", "EU", numerals) — empirically the dossier
+    overlap signal lives in 4+ char content words.
+    """
+    if not isinstance(text, str) or not text:
+        return frozenset()
+    normalised = _TOKEN_NORMALISE_RE.sub(" ", text.lower()).split()
+    return frozenset(
+        tok for tok in normalised
+        if len(tok) >= 3 and tok not in _CONSOLIDATION_STOPWORDS
+    )
+
+
+def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+    if not a or not b:
+        return 0.0
+    intersection = len(a & b)
+    union = len(a | b)
+    return intersection / union if union else 0.0
+
+
+@topic_stage_def(
+    reads=("perspective_missing_positions", "coverage_gaps_validated"),
+    writes=("consolidated_missing_coverage",),
+)
+async def consolidate_missing_coverage(
+    topic_bus: TopicBus, run_bus: RunBusReadOnly
+) -> TopicBus:
+    """Deterministic dedup of missing-position descriptions against
+    coverage-gap texts. Detects literal token-Jaccard overlap and emits a
+    consolidated two-axis view for the renderer.
+
+    Reads `perspective_missing_positions[]` (structured, each entry
+    carries `type` + `description`) and `coverage_gaps_validated[]`
+    (free-text strings). When a gap-text and a missing-position
+    description share token-Jaccard ≥
+    `_CONSOLIDATION_JACCARD_THRESHOLD`, the missing-position entry
+    wins (structured, carries `type`) and the matching gap is dropped
+    from the consolidated view. The two source slots persist unchanged
+    as the audit trail.
+
+    Output shape:
+        {
+          "missing_stakeholder_voices": [<missing_positions entries>],
+          "missing_topic_dimensions": [<surviving gap texts>],
+        }
+    """
+    voices = list(topic_bus.perspective_missing_positions or [])
+    gaps = list(topic_bus.coverage_gaps_validated or [])
+
+    # Pre-tokenise voices once so each gap comparison stays O(|voices|).
+    voice_tokens: list[frozenset[str]] = [
+        _consolidation_tokens(v.get("description", ""))
+        if isinstance(v, dict) else frozenset()
+        for v in voices
+    ]
+
+    surviving_gaps: list = []
+    for gap in gaps:
+        if not isinstance(gap, str) or not gap:
+            # Defensive: pass non-strings through as-is so a future
+            # richer gap shape does not silently drop here.
+            surviving_gaps.append(gap)
+            continue
+        gap_tokens = _consolidation_tokens(gap)
+        matched = False
+        for vt in voice_tokens:
+            if _jaccard(gap_tokens, vt) >= _CONSOLIDATION_JACCARD_THRESHOLD:
+                matched = True
+                break
+        if not matched:
+            surviving_gaps.append(gap)
+
+    consolidated = {
+        "missing_stakeholder_voices": copy.deepcopy(voices),
+        "missing_topic_dimensions": copy.deepcopy(surviving_gaps),
+    }
+    return topic_bus.model_copy(
+        update={"consolidated_missing_coverage": consolidated}
+    )
+
+
+# ---------------------------------------------------------------------------
 # 19a. prune_unused_sources_and_clusters
 # ---------------------------------------------------------------------------
 
@@ -1961,4 +2077,5 @@ __all__ = [
     "prune_unused_sources_and_clusters",
     "renumber_sources",
     "validate_coverage_gaps_stage",
+    "consolidate_missing_coverage",
 ]

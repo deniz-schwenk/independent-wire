@@ -57,6 +57,7 @@ from src.stages import (
     merge_sources,
     mirror_perspective_synced,
     mirror_qa_corrected,
+    consolidate_missing_coverage,
     normalize_pre_research,
     partition_canonical_actors_by_evidence,
     pre_cluster_findings,
@@ -161,6 +162,7 @@ def build_production_stages(
         cleanup_stale_references,
         compute_source_balance,
         validate_coverage_gaps_stage,
+        consolidate_missing_coverage,
         BiasLanguageStage(agents["bias_language"]),
         compose_transparency_card,
     ]
@@ -232,6 +234,7 @@ def build_production_stages_llm_assignment(
         cleanup_stale_references,
         compute_source_balance,
         validate_coverage_gaps_stage,
+        consolidate_missing_coverage,
         BiasLanguageStage(agents["bias_language"]),
         compose_transparency_card,
     ]
@@ -328,6 +331,7 @@ def build_hydrated_stages(
         cleanup_stale_references,
         compute_source_balance,
         validate_coverage_gaps_stage,
+        consolidate_missing_coverage,
         BiasLanguageStage(agents["bias_language"]),
         compose_transparency_card,
     ]
@@ -387,6 +391,7 @@ _PRODUCTION_TOPIC_NAMES = (
     "cleanup_stale_references",
     "compute_source_balance",
     "validate_coverage_gaps_stage",
+    "consolidate_missing_coverage",
     "BiasLanguageStage",
     "compose_transparency_card",
 )
@@ -422,6 +427,7 @@ _HYDRATED_TOPIC_NAMES = (
     "cleanup_stale_references",
     "compute_source_balance",
     "validate_coverage_gaps_stage",
+    "consolidate_missing_coverage",
     "BiasLanguageStage",
     "compose_transparency_card",
 )
