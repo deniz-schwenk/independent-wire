@@ -172,6 +172,148 @@ def test_inline_js_shim_emitted_with_non_empty_list():
     assert "history.pushState" in html
 
 
+def test_per_actor_quote_dedup_single_quote_two_clusters_one_source():
+    """One quote, both clusters share its source: first cluster emits
+    the quote text; second cluster falls through to anchor-only (no
+    duplicate quote text in the rendered HTML)."""
+    tp = {
+        "actors": [
+            {
+                "id": "actor-001",
+                "name": "Araghchi",
+                "role": "Foreign Minister",
+                "type": "government",
+                "source_ids": ["src-007"],
+                "quotes": [
+                    {
+                        "source_id": "src-007",
+                        "position": "Tehran received messages from regional capitals",
+                        "verbatim": None,
+                    },
+                ],
+            },
+        ],
+        "perspectives": {
+            "position_clusters": [
+                {"id": "pc-002", "actor_ids": ["actor-001"], "source_ids": ["src-007"]},
+                {"id": "pc-003", "actor_ids": ["actor-001"], "source_ids": ["src-007"]},
+            ],
+        },
+    }
+    html = build_actors_section(tp)
+    # The quote position appears exactly once across the actor's two
+    # cluster-lines.
+    assert html.count(
+        "Tehran received messages from regional capitals"
+    ) == 1
+    # Both cluster anchors are still rendered (the dedup affects quote
+    # text, not the cluster membership line).
+    assert 'href="#pc-002"' in html
+    assert 'href="#pc-003"' in html
+    # The second cluster's anchor-only line carries no colon-separator
+    # (which only appears when a quote is attached). Counted across the
+    # actor block: one quote-bearing line ("anchor: position …") + one
+    # anchor-only line.
+    actor_block_start = html.find('id="actor-001"')
+    actor_block_end = html.find("</li>", actor_block_start)
+    block = html[actor_block_start:actor_block_end]
+    quote_bearing_lines = block.count("</a>:")
+    assert quote_bearing_lines == 1
+
+
+def test_per_actor_quote_dedup_two_quotes_two_sources_happy_path():
+    """Two quotes from two distinct sources, two clusters where each
+    cluster's source_ids contains one of the two sources. Dedup must
+    not break the happy path — each cluster gets its own
+    source-matching quote."""
+    tp = {
+        "actors": [
+            {
+                "id": "actor-001",
+                "name": "Macron",
+                "role": "President",
+                "type": "government",
+                "source_ids": ["src-001", "src-024"],
+                "quotes": [
+                    {
+                        "source_id": "src-001",
+                        "position": "calls for restraint",
+                        "verbatim": None,
+                    },
+                    {
+                        "source_id": "src-024",
+                        "position": "refuses offensive role",
+                        "verbatim": None,
+                    },
+                ],
+            },
+        ],
+        "perspectives": {
+            "position_clusters": [
+                {"id": "pc-001", "actor_ids": ["actor-001"], "source_ids": ["src-001"]},
+                {"id": "pc-009", "actor_ids": ["actor-001"], "source_ids": ["src-024"]},
+            ],
+        },
+    }
+    html = build_actors_section(tp)
+    assert "calls for restraint" in html
+    assert "refuses offensive role" in html
+    # Each appears exactly once — happy path is unchanged.
+    assert html.count("calls for restraint") == 1
+    assert html.count("refuses offensive role") == 1
+
+
+def test_per_actor_quote_dedup_two_quotes_same_source_two_clusters():
+    """Two quotes from the same source, both clusters reference that
+    source. The first cluster picks the first quote; the second cluster
+    picks the second quote (next-best match within the source overlap).
+    Neither falls through to anchor-only — there is enough material to
+    populate both lines."""
+    tp = {
+        "actors": [
+            {
+                "id": "actor-001",
+                "name": "Araghchi",
+                "role": "Foreign Minister",
+                "type": "government",
+                "source_ids": ["src-007"],
+                "quotes": [
+                    {
+                        "source_id": "src-007",
+                        "position": "first position from src-007",
+                        "verbatim": None,
+                    },
+                    {
+                        "source_id": "src-007",
+                        "position": "second position from src-007",
+                        "verbatim": None,
+                    },
+                ],
+            },
+        ],
+        "perspectives": {
+            "position_clusters": [
+                {"id": "pc-002", "actor_ids": ["actor-001"], "source_ids": ["src-007"]},
+                {"id": "pc-003", "actor_ids": ["actor-001"], "source_ids": ["src-007"]},
+            ],
+        },
+    }
+    html = build_actors_section(tp)
+    assert "first position from src-007" in html
+    assert "second position from src-007" in html
+    # Each appears exactly once.
+    assert html.count("first position from src-007") == 1
+    assert html.count("second position from src-007") == 1
+    # The first quote attaches to pc-002 (first cluster); the second
+    # attaches to pc-003 (second cluster) — order of first appearance
+    # in the rendered HTML.
+    first_idx = html.find("first position from src-007")
+    second_idx = html.find("second position from src-007")
+    pc002_idx = html.find('href="#pc-002"')
+    pc003_idx = html.find('href="#pc-003"')
+    assert pc002_idx < first_idx < pc003_idx < second_idx
+
+
 def test_show_all_button_starts_hidden_when_no_filter_active():
     tp = {
         "actors": [

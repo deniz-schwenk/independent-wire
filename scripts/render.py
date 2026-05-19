@@ -1049,7 +1049,9 @@ def build_actors_section(tp: dict) -> str:
                 if isinstance(aid, str):
                     actor_cluster_tier[(aid, cid)] = tier_label
 
-    def _position_line(actor: dict, cluster_id: str) -> str:
+    def _position_line(
+        actor: dict, cluster_id: str, seen_quote_ids: set[int]
+    ) -> str:
         aid = actor.get("id", "")
         cluster_label = f"cluster {cluster_index.get(cluster_id, '?')}"
         cluster_anchor = (
@@ -1061,14 +1063,22 @@ def build_actors_section(tp: dict) -> str:
             if tier
             else ""
         )
-        # Pick the first quote whose source_id grounds this cluster.
-        # Architect-neutral: a single position-line per cluster keeps
-        # the actor card scannable; multi-source quotes fall through
-        # to the §3.4 source-actor-refs layer.
+        # Pick the first quote whose source_id grounds this cluster
+        # AND has not already been emitted for an earlier cluster of
+        # this same actor. `seen_quote_ids` is reset per actor (state
+        # lives in the outer loop). When an actor is assigned to
+        # multiple clusters sharing the same source, the first cluster
+        # gets the matching quote; subsequent clusters either pick the
+        # next unseen matching quote, or fall through to an anchor-only
+        # line. Dedup key: Python object id of the quote dict — fine-
+        # grained enough that two distinct quote dicts from the same
+        # source remain independently usable.
         quotes = actor.get("quotes") or []
         chosen = None
         for q in quotes:
             if not isinstance(q, dict):
+                continue
+            if id(q) in seen_quote_ids:
                 continue
             sid = q.get("source_id")
             if isinstance(sid, str) and sid in cluster_sources.get(cluster_id, set()):
@@ -1076,6 +1086,7 @@ def build_actors_section(tp: dict) -> str:
                 break
         if chosen is None:
             return f'<p class="actor-position-line">{prefix}{cluster_anchor}</p>'
+        seen_quote_ids.add(id(chosen))
         position = _esc(chosen.get("position", "") or "")
         verbatim = chosen.get("verbatim")
         verbatim_html = ""
@@ -1102,7 +1113,12 @@ def build_actors_section(tp: dict) -> str:
         atype = _esc(actor.get("type", ""))
         belongs = actor_clusters.get(aid, [])
         data_clusters = " ".join(f"cluster-{cid}" for cid in belongs)
-        position_lines = "".join(_position_line(actor, cid) for cid in belongs)
+        # Per-actor (not global) seen-quote set: each new actor starts
+        # fresh, so dedup never bleeds across actor cards.
+        seen_quote_ids: set[int] = set()
+        position_lines = "".join(
+            _position_line(actor, cid, seen_quote_ids) for cid in belongs
+        )
         if not position_lines:
             position_lines = (
                 '<p class="actor-position-line actor-no-cluster">'
