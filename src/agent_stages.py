@@ -41,7 +41,7 @@ import unicodedata
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 from src.agent import Agent
 from src.bus import (
@@ -100,6 +100,91 @@ class _AgentStageBase:
             reads=tuple(cls.reads),
             writes=tuple(cls.writes),
         )
+
+    async def _call_with_empty_retry(
+        self,
+        *,
+        message: str,
+        context: dict[str, Any],
+        is_empty: Callable[[Any], bool],
+        log_label: str,
+        max_attempts: int = 3,
+    ) -> tuple[Any, int, float, int]:
+        """Call ``self.agent.run()`` up to ``max_attempts``; retry when the
+        parsed output satisfies the ``is_empty`` predicate.
+
+        Mitigation for DeepSeek's cache-cold empty-emission mode
+        (originally surfaced on `dskflash-t05-rmedium` in the Curator
+        stage). Each retry is a fresh OpenRouter call so provider
+        routing varies between attempts. No sleep — the empty mode is
+        cache-cold-correlated and the mitigation we want is
+        provider-routing re-roll, not cache warm-up.
+
+        Returns ``(last_result, attempts_used, total_cost_usd, total_tokens_used)``.
+        The caller parses ``last_result`` and decides the downstream
+        action (write to bus, fall through with empty payload so a
+        postcondition downstream fires loud, etc.).
+        """
+        return await _call_agent_with_empty_retry(
+            agent=self.agent,
+            message=message,
+            context=context,
+            is_empty=is_empty,
+            log_label=log_label,
+            max_attempts=max_attempts,
+        )
+
+
+async def _call_agent_with_empty_retry(
+    *,
+    agent: Agent,
+    message: str,
+    context: dict[str, Any],
+    is_empty: Callable[[Any], bool],
+    log_label: str,
+    max_attempts: int = 3,
+) -> tuple[Any, int, float, int]:
+    """Module-level twin of ``_AgentStageBase._call_with_empty_retry``.
+
+    Same semantics, but takes ``agent`` as an explicit argument so
+    non-method callers (e.g. the parallel per-chunk helpers in
+    `HydrationPhase1Stage`) can use it without binding to a stage
+    instance.
+    """
+    total_cost = 0.0
+    total_tokens = 0
+    last_result: Any = None
+    attempts_used = 0
+    for attempt in range(1, max_attempts + 1):
+        attempts_used = attempt
+        result = await agent.run(message, context=context)
+        total_cost += float(getattr(result, "cost_usd", 0.0) or 0.0)
+        total_tokens += int(getattr(result, "tokens_used", 0) or 0)
+        last_result = result
+
+        parsed = _parse_agent_output(result)
+        if not is_empty(parsed):
+            break
+
+        if attempt < max_attempts:
+            logger.warning(
+                "%s: empty output on attempt %d/%d "
+                "(response_id=%s, tokens=%d) — retrying",
+                log_label,
+                attempt,
+                max_attempts,
+                getattr(result, "response_id", None) or "?",
+                int(getattr(result, "tokens_used", 0) or 0),
+            )
+        else:
+            logger.error(
+                "%s: empty output on all %d attempts "
+                "(last response_id=%s) — downstream gate will fire loud",
+                log_label,
+                max_attempts,
+                getattr(result, "response_id", None) or "?",
+            )
+    return last_result, attempts_used, total_cost, total_tokens
 
 
 # ---------------------------------------------------------------------------
@@ -651,57 +736,45 @@ class CuratorTopicDiscoveryStage(_AgentStageBase):
         # OpenRouter call so provider routing varies. After 3 empty
         # attempts, fall through with an empty list and let
         # assemble_curator_topics' postcondition fail loud.
-        max_attempts = 3
-        total_cost = 0.0
-        total_tokens = 0
-        topics_clean: list[dict] = []
-        attempts_used = 0
-        result = None
-        for attempt in range(1, max_attempts + 1):
-            attempts_used = attempt
-            result = await self.agent.run(message, context=context)
-            total_cost += float(getattr(result, "cost_usd", 0.0) or 0.0)
-            total_tokens += int(getattr(result, "tokens_used", 0) or 0)
-
-            parsed = _parse_agent_output(result)
+        def _is_empty_topics(parsed: Any) -> bool:
             if isinstance(parsed, dict):
                 topics_raw = parsed.get("topics", []) or []
             elif isinstance(parsed, list):
-                # Defensive: fall back if the LLM emits a bare list
                 topics_raw = parsed
             else:
-                topics_raw = []
-
-            topics_clean = []
+                return True
             for entry in topics_raw:
-                if not isinstance(entry, dict):
-                    continue
-                title = (entry.get("title") or "").strip()
-                summary = (entry.get("summary") or "").strip()
-                if not title:
-                    continue
-                topics_clean.append({"title": title, "summary": summary})
+                if isinstance(entry, dict) and (entry.get("title") or "").strip():
+                    return False
+            return True
 
-            if topics_clean:
-                break
+        result, attempts_used, total_cost, total_tokens = (
+            await self._call_with_empty_retry(
+                message=message,
+                context=context,
+                is_empty=_is_empty_topics,
+                log_label="CuratorTopicDiscoveryStage",
+            )
+        )
 
-            if attempt < max_attempts:
-                logger.warning(
-                    "CuratorTopicDiscoveryStage: empty topics on attempt "
-                    "%d/%d (response_id=%s, tokens=%d) — retrying",
-                    attempt,
-                    max_attempts,
-                    getattr(result, "response_id", None) or "?",
-                    int(getattr(result, "tokens_used", 0) or 0),
-                )
-            else:
-                logger.error(
-                    "CuratorTopicDiscoveryStage: empty topics on all %d "
-                    "attempts (last response_id=%s) — assemble_curator_"
-                    "topics' postcondition will fail loud",
-                    max_attempts,
-                    getattr(result, "response_id", None) or "?",
-                )
+        parsed = _parse_agent_output(result)
+        if isinstance(parsed, dict):
+            topics_raw = parsed.get("topics", []) or []
+        elif isinstance(parsed, list):
+            # Defensive: fall back if the LLM emits a bare list
+            topics_raw = parsed
+        else:
+            topics_raw = []
+
+        topics_clean: list[dict] = []
+        for entry in topics_raw:
+            if not isinstance(entry, dict):
+                continue
+            title = (entry.get("title") or "").strip()
+            summary = (entry.get("summary") or "").strip()
+            if not title:
+                continue
+            topics_clean.append({"title": title, "summary": summary})
 
         wall = time.monotonic() - t0
 
