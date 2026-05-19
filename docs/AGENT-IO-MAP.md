@@ -8,7 +8,7 @@ Sources of truth: `src/runner/stage_lists.py` (stage order), `scripts/run.py` (a
 
 | Agent | Model | Temp | Reasoning | max_tokens |
 |---|---|---|---|---|
-| curator_topic_discovery | `google/gemini-3-flash-preview` | 1.0 | none | 8000 |
+| curator_topic_discovery | `deepseek/deepseek-v4-flash` | 0.5 | medium | 160000 |
 | editor | `anthropic/claude-opus-4.6` | 0.3 | none | default |
 | researcher_plan | `anthropic/claude-opus-4.6` | 0.5 | none | default |
 | researcher_assemble | `deepseek/deepseek-v4-flash` | 0.5 | none | 16000 |
@@ -84,8 +84,8 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::CuratorTopicDiscoveryStage`
 - **Agent:** `curator_topic_discovery` (registered in `scripts/run.py`)
-- **Model:** `google/gemini-3-flash-preview`
-- **Params:** temp=1.0, reasoning=`none`, max_tokens=8000
+- **Model:** `deepseek/deepseek-v4-flash` (migrated from `google/gemini-3-flash-preview` 2026-05-19 per Wave-2 Sweep #1 + the 9 × 3 = 27-rep variance smoke — see `docs/curator-variance-2026-05-19/curator-variance-report.md`. The variance smoke ranked `dskflash-t05-rmedium` as the only zero-emission-variance variant (25.0 ± 0.0 topics, 0 duplicates, 100 % schema-valid across 3 reps); Wave-2's single-rep observation of "41 emissions + corruption" was confirmed as a stochastic outlier — 0 `repeated_quoted` matches and 3 `repeated_word` matches total across all 27 reps.)
+- **Params:** temp=0.5, reasoning=`medium`, max_tokens=160000
 - **Prompt:** `agents/curator/SYSTEM.md` + `INSTRUCTIONS.md` (new prompts committed in the PE round preceding Brief 4)
 - **Output schema (strict):** `CURATOR_TOPIC_DISCOVERY_SCHEMA` in `src/schemas.py` — `{topics: [{title, summary}]}`. `additionalProperties: false` at every level so the LLM cannot silently invent legacy fields (`cluster_assignments`, `relevance_score`, `source_ids`).
 - **Compression (deterministic, K-pinned):** `SAMPLE_TITLES_PER_CLUSTER = 8`. For each pre-cluster: embed members via the shared fastembed singleton (one ONNX session, shared with §2.2b, §2.2c, §2.3b), compute the cluster centroid, pick the top-K findings by cosine similarity to centroid (sim desc, finding-index asc tie-break), extract titles. Clusters with size ≤ K pass through complete; clusters with empty titles get a placeholder marker.

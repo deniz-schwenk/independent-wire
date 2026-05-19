@@ -343,7 +343,7 @@ Authoritative table in `docs/AGENT-IO-MAP.md` §1; snapshot here. All via OpenRo
 
 | Agent | Model | Temp | Reasoning | Notes |
 |-------|-------|---:|---|---|
-| curator_topic_discovery | google/gemini-3-flash-preview | 1.0 | none | Replaces the legacy V1 `curator` agent; only Curator-side LLM in V2 |
+| curator_topic_discovery | deepseek/deepseek-v4-flash | 0.5 | medium | Migrated from `google/gemini-3-flash-preview` 2026-05-19 per Wave-2 + variance smoke (variant `dskflash-t05-rmedium`, 25.0 ± 0.0 topics, 0 duplicates across 3 reps). Only Curator-side LLM in V2 |
 | editor | anthropic/claude-opus-4.6 | 0.3 | none | |
 | researcher_plan | anthropic/claude-opus-4.6 | 0.5 | none | Opus 4.6 since Researcher-Polish iter 1 (commit `b2bec02`) |
 | researcher_assemble | deepseek/deepseek-v4-flash | 0.5 | none | Migrated from `google/gemini-3-flash-preview` 2026-05-18 per Wave-1 Sweep #3 (~4.3× cheaper at $0.006/topic; 15/15/15 sources vs prior 15/12/10) |

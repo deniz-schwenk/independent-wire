@@ -52,9 +52,11 @@ def create_agents() -> dict[str, Agent]:
 
     Models via OpenRouter (eval-validated, April 2026; Researcher Plan promoted
     to Opus 4.6 in Researcher-Polish iter 1, May 2026; Researcher Assemble
-    migrated to DeepSeek V4 Flash per Wave-1 Sweep #3, 2026-05-18):
-    - google/gemini-3-flash-preview: Curator (reasoning=none)
-    - deepseek/deepseek-v4-flash: Researcher Assemble (reasoning=none)
+    migrated to DeepSeek V4 Flash per Wave-1 Sweep #3, 2026-05-18; Curator
+    Topic Discovery migrated to DeepSeek V4 Flash per Wave-2 + variance
+    smoke, 2026-05-19):
+    - google/gemini-3-flash-preview: (no production agents currently)
+    - deepseek/deepseek-v4-flash: Curator Topic Discovery (reasoning=medium), Researcher Assemble (reasoning=none)
     - anthropic/claude-opus-4.6: Editor, Researcher Plan, Perspective, Writer, Bias Language (reasoning=none)
     - anthropic/claude-sonnet-4.6: QA-Analyze (reasoning=none, NEVER use r-medium)
     """
@@ -86,17 +88,21 @@ def create_agents() -> dict[str, Agent]:
         # the only Curator-side LLM in the new architecture; the
         # gravitational-assign and assemble stages are deterministic
         # Python and need no agent.
+        # DeepSeek V4 Flash per Wave-2 + curator-variance smoke 2026-05-19 — see
+        # docs/curator-variance-2026-05-19/curator-variance-report.md.
+        # Variant dskflash-t05-rmedium: zero emission-count variance
+        # (25.0 ± 0.0), zero duplicates across 3 reps. max_tokens=160k per
+        # architect's Wave-2 DeepSeek uniform setting.
         "curator_topic_discovery": Agent(
             name="curator_topic_discovery",
-            model="google/gemini-3-flash-preview",
+            model="deepseek/deepseek-v4-flash",
             system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
             instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
             tools=[],
-            temperature=1.0,
+            temperature=0.5,
             provider="openrouter",
-            reasoning="none",
-            # Output is ~10–30 topics × ~350 chars ≈ 3K tokens; 2× cushion.
-            max_tokens=8000,
+            reasoning="medium",
+            max_tokens=160000,
             output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
         ),
         # Hypothesis 2 LLM-based cluster→topic assignment — TASK-CLUSTER-
