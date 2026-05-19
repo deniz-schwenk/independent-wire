@@ -458,6 +458,163 @@ def test_sources_section_direct_canonical_name_match_still_works():
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
+# ResolveActorAliasesStage empty-output retry — DeepSeek cache-cold mitigation
+# ---------------------------------------------------------------------------
+
+
+class _SequencedResolverAgent:
+    def __init__(self, results: list[AgentResult]):
+        self._results = list(results)
+        self.name = "fake-resolver"
+        self.model = "deepseek/deepseek-v4-flash"
+        self.temperature = 0.5
+        self.max_tokens = 160000
+        self.reasoning = "none"
+        self.calls: list[dict] = []
+
+    async def run(self, message: str = "", context: dict | None = None, **kwargs):
+        self.calls.append({"message": message, "context": context or {}, **kwargs})
+        if not self._results:
+            raise AssertionError(
+                "_SequencedResolverAgent exhausted — too many calls"
+            )
+        return self._results.pop(0)
+
+
+def _resolver_empty_result(response_id: str) -> AgentResult:
+    return AgentResult(
+        content="",
+        structured={"aliases": [], "anonymous_flags": []},
+        cost_usd=0.001,
+        tokens_used=5_000,
+        response_id=response_id,
+        tool_calls=[],
+    )
+
+
+def _resolver_nonempty_result(*, response_id: str = "resp-ok") -> AgentResult:
+    return AgentResult(
+        content="",
+        structured={
+            "aliases": [
+                {"alias_id": "actor-002", "canonical_id": "actor-001"},
+            ],
+            "anonymous_flags": ["actor-003"],
+        },
+        cost_usd=0.002,
+        tokens_used=8_000,
+        response_id=response_id,
+        tool_calls=[],
+    )
+
+
+def _make_resolver_tb(n_actors: int = 4) -> TopicBus:
+    tb = TopicBus()
+    actors = []
+    for i in range(1, n_actors + 1):
+        actors.append({
+            "id": f"actor-{i:03d}",
+            "name": f"Actor {i}",
+            "role": "official",
+            "type": "individual",
+            "source_ids": [f"src-{i:03d}"],
+            "quotes": [
+                {"source_id": f"src-{i:03d}", "position": "p", "verbatim": None}
+            ],
+        })
+    tb.final_actors = actors
+    return tb
+
+
+def test_resolver_retry_empty_empty_nonempty(caplog):
+    import logging
+
+    agent = _SequencedResolverAgent([
+        _resolver_empty_result(response_id="resp-1"),
+        _resolver_empty_result(response_id="resp-2"),
+        _resolver_nonempty_result(response_id="resp-3"),
+    ])
+    stage = ResolveActorAliasesStage(agent)
+    tb = _make_resolver_tb(n_actors=4)
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        tb_after = _run(stage, tb, _ro())
+
+    # Non-empty result on attempt 3 → 1 alias merged + 1 anonymous flagged.
+    assert tb_after.resolve_actor_aliases_n_attempts == 3
+    assert len(agent.calls) == 3
+    assert len(tb_after.actor_alias_mapping) == 1
+    assert any(a.get("is_anonymous") for a in tb_after.canonical_actors)
+
+    warns = [r for r in caplog.records if r.levelno == logging.WARNING]
+    errs = [r for r in caplog.records if r.levelno == logging.ERROR]
+    assert len(warns) == 2
+    assert errs == []
+    msgs = " ".join(r.getMessage() for r in warns)
+    assert "ResolveActorAliasesStage" in msgs
+    assert "resp-1" in msgs and "resp-2" in msgs
+
+
+def test_resolver_retry_all_three_empty_logs_error_passthrough_canonical(caplog):
+    """All 3 attempts empty (with input ≥ 3) → ERROR logged; wrapper
+    falls through with the no-merge / no-flag canonical_actors (trivially
+    derived from final_actors). Both write slots carry
+    `optional_write=True`, so there is no postcondition gate to assert
+    raising for this stage — the loud signal is the ERROR log plus the
+    new ``resolve_actor_aliases_n_attempts = 3`` on the bus, both
+    observable by post-hoc audit."""
+    import logging
+
+    agent = _SequencedResolverAgent([
+        _resolver_empty_result(response_id="resp-1"),
+        _resolver_empty_result(response_id="resp-2"),
+        _resolver_empty_result(response_id="resp-3"),
+    ])
+    stage = ResolveActorAliasesStage(agent)
+    tb = _make_resolver_tb(n_actors=5)
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        tb_after = _run(stage, tb, _ro())
+
+    assert tb_after.resolve_actor_aliases_n_attempts == 3
+    assert len(agent.calls) == 3
+    # No merges → canonical_actors equals the pre-resolution actor set
+    # (each entry gets sanitized into a canonical_record shape but no
+    # alias was applied).
+    assert len(tb_after.canonical_actors) == 5
+    assert tb_after.actor_alias_mapping == []
+    assert all(not a.get("is_anonymous") for a in tb_after.canonical_actors)
+
+    warns = [r for r in caplog.records if r.levelno == logging.WARNING]
+    errs = [r for r in caplog.records if r.levelno == logging.ERROR]
+    assert len(warns) == 2
+    assert len(errs) == 1
+    assert "all 3 attempts" in errs[0].getMessage()
+    assert "ResolveActorAliasesStage" in errs[0].getMessage()
+
+
+def test_resolver_retry_non_empty_first_call_no_retry(caplog):
+    import logging
+
+    agent = _SequencedResolverAgent([
+        _resolver_nonempty_result(response_id="resp-ok"),
+    ])
+    stage = ResolveActorAliasesStage(agent)
+    tb = _make_resolver_tb(n_actors=4)
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        tb_after = _run(stage, tb, _ro())
+
+    assert tb_after.resolve_actor_aliases_n_attempts == 1
+    assert len(agent.calls) == 1
+
+    warns = [r for r in caplog.records if r.levelno == logging.WARNING]
+    errs = [r for r in caplog.records if r.levelno == logging.ERROR]
+    assert warns == []
+    assert errs == []
+
+
 def test_resolver_does_not_mutate_final_actors():
     """``ResolveActorAliasesStage`` is non-destructive on
     ``final_actors[]``. The pre-resolution snapshot survives the

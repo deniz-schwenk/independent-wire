@@ -2416,10 +2416,37 @@ class ResolveActorAliasesStage(_AgentStageBase):
             "entity. Flag entries whose name is a generic source-class "
             "label."
         )
-        result = await self.agent.run(
-            message,
-            context={"final_actors": final_actors},
+        context = {"final_actors": final_actors}
+
+        # Empty-output retry: defense-in-depth for the DeepSeek cache-cold
+        # empty-emission mode. The brief-suggested predicate
+        # (`canonical_actors` empty) does not work here — the LLM's raw
+        # output carries `aliases` and `anonymous_flags`, NOT
+        # `canonical_actors` (the wrapper derives canonical_actors below).
+        # The realistic empty signal is: BOTH raw arrays empty AND the
+        # input is large enough that genuine merges/anonymous-flags would
+        # be expected. With ≤2 input actors, empty raw output is the
+        # correct answer (nothing to merge) and we must not retry.
+        input_actor_count = len(final_actors)
+
+        def _is_empty_resolver(parsed: Any) -> bool:
+            if input_actor_count < 3:
+                return False
+            if not isinstance(parsed, dict):
+                return True
+            aliases = parsed.get("aliases") or []
+            anon = parsed.get("anonymous_flags") or []
+            return len(aliases) == 0 and len(anon) == 0
+
+        result, attempts_used, _cost, _tokens = (
+            await self._call_with_empty_retry(
+                message=message,
+                context=context,
+                is_empty=_is_empty_resolver,
+                log_label="ResolveActorAliasesStage",
+            )
         )
+
         parsed = _parse_agent_output(result) or {}
         if not isinstance(parsed, dict):
             parsed = {}
@@ -2537,6 +2564,7 @@ class ResolveActorAliasesStage(_AgentStageBase):
             update={
                 "canonical_actors": canonical_actors,
                 "actor_alias_mapping": actor_alias_mapping,
+                "resolve_actor_aliases_n_attempts": attempts_used,
             }
         )
 

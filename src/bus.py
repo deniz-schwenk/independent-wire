@@ -581,6 +581,14 @@ class TopicBus(BaseModel):
         visibility=["tp", "mcp"],
         optional_write=True,
     )
+    # Empty-output retry counter — populated by ResolveActorAliasesStage.
+    # Both write slots above carry `optional_write=True` so the writes-
+    # postcondition gate does not fire on empty resolver output; this
+    # counter surfaces retry events in the bus state for post-hoc audit
+    # without changing the optional-write contract.
+    resolve_actor_aliases_n_attempts: int = Slot(
+        default=0, visibility="internal"
+    )
 
     # 4B.4d Evidence-partitioned canonical-actor pools (3 slots).
     # Written by `partition_canonical_actors_by_evidence` — runs after
