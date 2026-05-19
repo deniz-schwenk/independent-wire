@@ -1520,6 +1520,7 @@ def build_sources_section(tp: dict) -> str:
 
             actor_refs_html = ""
             actor_links: list[str] = []
+            seen_aids: set[str] = set()
             for entry in s.get("actors_quoted") or []:
                 if not isinstance(entry, dict):
                     continue
@@ -1535,6 +1536,14 @@ def build_sources_section(tp: dict) -> str:
                     # resolver ran. Skip silently.
                     continue
                 aid = canonical.get("id", "")
+                # Dedup by canonical id: multiple quotes from the same
+                # actor in this source's actors_quoted[] collapse to one
+                # link. Preserves order of first appearance. Name
+                # variants ("Trump" vs "Donald Trump") that resolve to
+                # the same canonical actor collapse as well.
+                if aid in seen_aids:
+                    continue
+                seen_aids.add(aid)
                 canonical_name = canonical.get("name") or name
                 actor_links.append(
                     f'<a href="#{_esc(aid)}">{_esc(canonical_name)}</a>'

@@ -493,6 +493,59 @@ def test_sources_section_actors_refs_with_anchor_links():
     assert 'href="#actor-007">Hakan Fidan' in html
 
 
+def test_sources_section_actors_refs_dedup_same_canonical():
+    """Three actors_quoted entries that all resolve to the same canonical
+    actor render exactly one link. Two distinct canonicals quoted by the
+    same source render as two links in order of first appearance.
+
+    The dedup key is canonical id, so name variants ("Trump" via the
+    alias_mapping vs "Donald Trump" canonical) collapse as well."""
+    tp = {
+        "sources": [
+            {
+                "id": "src-001", "outlet": "Reuters", "title": "T",
+                "language": "en", "country": "US", "summary": "x",
+                "actors_quoted": [
+                    {"name": "Donald Trump", "role": "P", "type": "government",
+                     "position": "p"},
+                    # Same canonical, second quote — must collapse.
+                    {"name": "Donald Trump", "role": "P", "type": "government",
+                     "position": "p2"},
+                    # Distinct canonical — must render as a separate link.
+                    {"name": "Hakan Fidan", "role": "FM", "type": "government",
+                     "position": "p"},
+                    # Name variant resolved via actor_alias_mapping — same
+                    # canonical id as the first two entries, must collapse.
+                    {"name": "Trump", "role": "P", "type": "government",
+                     "position": "p3"},
+                    # Third raw-name duplicate — must collapse.
+                    {"name": "Donald Trump", "role": "P", "type": "government",
+                     "position": "p4"},
+                ],
+            }
+        ],
+        "actors": [
+            {"id": "actor-001", "name": "Donald Trump"},
+            {"id": "actor-007", "name": "Hakan Fidan"},
+        ],
+        "actor_alias_mapping": [
+            {"alias_id": "actor-002", "alias_name": "Trump",
+             "canonical_id": "actor-001"},
+        ],
+    }
+    html = build_sources_table(tp)
+    # Trump link appears exactly once; Hakan Fidan link appears exactly once.
+    assert html.count('href="#actor-001">') == 1
+    assert html.count('href="#actor-007">') == 1
+    # Order of first appearance: Trump comes before Fidan in the rendered
+    # actor-refs line.
+    refs_idx = html.find('class="source-actors-refs"')
+    assert refs_idx != -1
+    trump_idx = html.find('href="#actor-001">', refs_idx)
+    fidan_idx = html.find('href="#actor-007">', refs_idx)
+    assert 0 <= trump_idx < fidan_idx
+
+
 def test_sources_section_outlets_sorted_alphabetically():
     tp = {
         "sources": [
