@@ -1227,7 +1227,15 @@ def build_divergences(tp: dict) -> str:
 
 def build_bias_card(tp: dict) -> str:
     bias = tp.get("bias_analysis", {})
-    findings = bias.get("language", [])
+    # Filter out self-retracted findings (finding_valid == False) added
+    # by the Language Bias Analyzer's second-pass review. Legacy-
+    # permissive: a finding missing the field entirely is treated as
+    # valid so pre-2026-05-19 TPs still render correctly without
+    # backfill. Order of first appearance is preserved.
+    findings = [
+        f for f in bias.get("language", [])
+        if not (isinstance(f, dict) and f.get("finding_valid") is False)
+    ]
     by_language = bias.get("source", {}).get("by_language", {})
     framing = bias.get("framing", {})
     source = bias.get("source", {})

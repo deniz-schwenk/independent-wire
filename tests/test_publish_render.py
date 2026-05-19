@@ -237,6 +237,85 @@ def test_bias_card_no_findings_path():
     assert "Severity:" not in html
 
 
+def test_bias_card_filters_self_retracted_findings():
+    """`finding_valid: false` is the agent's self-retraction marker.
+    Retracted findings stay in the TP JSON (audit trail) but the
+    renderer drops them from the HTML. Surviving findings render in
+    order of first appearance, and the count line reflects only the
+    valid ones."""
+    tp = {
+        "bias_analysis": {
+            "language": [
+                {
+                    "issue": "loaded_term",
+                    "excerpt": "regime",
+                    "explanation": "Politically charged.",
+                    "finding_valid": True,
+                },
+                {
+                    "issue": "intensifier",
+                    "excerpt": "utterly",
+                    "explanation": "Adds rhetorical force; not a "
+                                   "real bias on review.",
+                    "finding_valid": False,
+                },
+                {
+                    "issue": "evaluative_adjective",
+                    "excerpt": "controversial",
+                    "explanation": "Value-laden modifier.",
+                    "finding_valid": True,
+                },
+                {
+                    "issue": "hedging",
+                    "excerpt": "perhaps",
+                    "explanation": "Not actually loaded.",
+                    "finding_valid": False,
+                },
+            ],
+            "source": {"by_language": {"en": 5}},
+        }
+    }
+    html = build_bias_card(tp)
+    # Count line reflects only the valid findings.
+    assert "2 language bias findings" in html
+    # Retracted excerpts must not appear anywhere in the rendered HTML.
+    assert "utterly" not in html
+    assert "perhaps" not in html
+    assert "Adds rhetorical force" not in html
+    assert "Not actually loaded" not in html
+    # Valid findings render in order of first appearance.
+    regime_idx = html.find("regime")
+    controversial_idx = html.find("controversial")
+    assert 0 <= regime_idx < controversial_idx
+
+
+def test_bias_card_legacy_findings_without_finding_valid_all_render():
+    """Pre-2026-05-19 TP JSONs do not carry `finding_valid` on findings.
+    The renderer is legacy-permissive at this boundary — missing field
+    is treated as valid, so all such findings still render."""
+    tp = {
+        "bias_analysis": {
+            "language": [
+                {
+                    "issue": "loaded_term",
+                    "excerpt": "regime",
+                    "explanation": "Politically charged.",
+                },
+                {
+                    "issue": "intensifier",
+                    "excerpt": "utterly",
+                    "explanation": "Adds rhetorical force.",
+                },
+            ],
+            "source": {"by_language": {"en": 5}},
+        }
+    }
+    html = build_bias_card(tp)
+    assert "2 language bias findings" in html
+    assert "regime" in html
+    assert "utterly" in html
+
+
 def test_missing_voices_section_renders_when_data_present():
     """Bug 3: V2 path is `perspectives.missing_positions`, not nested
     under `bias_analysis.perspectives`."""

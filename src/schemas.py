@@ -400,8 +400,19 @@ BIAS_DETECTOR_SCHEMA = {
                             "excerpt": {"type": "string"},
                             "issue": {"type": "string"},
                             "explanation": {"type": "string"},
+                            # Self-retraction marker. False = the agent
+                            # decided this finding is not a real bias
+                            # instance after second-pass review; the entry
+                            # stays in the persisted TP JSON as an audit
+                            # trail but the renderer filters it out.
+                            # Mandatory at the agent boundary; renderer
+                            # is legacy-permissive (missing → True) so
+                            # pre-2026-05-19 TPs still re-render.
+                            "finding_valid": {"type": "boolean"},
                         },
-                        "required": ["excerpt", "issue", "explanation"],
+                        "required": [
+                            "excerpt", "issue", "explanation", "finding_valid",
+                        ],
                         "additionalProperties": False,
                     },
                 },

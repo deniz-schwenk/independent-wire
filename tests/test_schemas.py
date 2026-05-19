@@ -24,6 +24,7 @@ from __future__ import annotations
 import pytest
 
 from src.schemas import (
+    BIAS_DETECTOR_SCHEMA,
     CLUSTER_ASSIGNMENT_SCHEMA,
     HYDRATION_PHASE1_SCHEMA,
     HYDRATION_PHASE2_SCHEMA,
@@ -247,3 +248,67 @@ def test_cluster_assignment_schema_rejects_missing_cluster_id():
 def test_cluster_assignment_schema_rejects_missing_assignments_key():
     with pytest.raises(SchemaError):
         _validate({}, CLUSTER_ASSIGNMENT_SCHEMA)
+
+
+# ---------------------------------------------------------------------------
+# BIAS_DETECTOR_SCHEMA — finding_valid self-retraction marker
+# ---------------------------------------------------------------------------
+
+
+def _bias_payload(findings: list[dict], reader_note: str = "x") -> dict:
+    return {
+        "language_bias": {"findings": findings},
+        "reader_note": reader_note,
+    }
+
+
+def test_bias_schema_rejects_finding_missing_finding_valid():
+    """A finding without `finding_valid` must fail validation the same
+    way as any other missing mandatory field."""
+    payload = _bias_payload([
+        {"excerpt": "Trump", "issue": "loaded_term", "explanation": "x"},
+    ])
+    with pytest.raises(SchemaError) as exc:
+        _validate(payload, BIAS_DETECTOR_SCHEMA)
+    assert "finding_valid" in str(exc.value)
+
+
+def test_bias_schema_accepts_finding_valid_true():
+    payload = _bias_payload([
+        {
+            "excerpt": "Trump",
+            "issue": "loaded_term",
+            "explanation": "x",
+            "finding_valid": True,
+        },
+    ])
+    _validate(payload, BIAS_DETECTOR_SCHEMA)  # does not raise
+
+
+def test_bias_schema_accepts_finding_valid_false():
+    """Self-retracted findings are valid output shape; the audit trail
+    needs them to survive schema validation."""
+    payload = _bias_payload([
+        {
+            "excerpt": "Trump",
+            "issue": "loaded_term",
+            "explanation": "x",
+            "finding_valid": False,
+        },
+    ])
+    _validate(payload, BIAS_DETECTOR_SCHEMA)  # does not raise
+
+
+def test_bias_schema_rejects_non_boolean_finding_valid():
+    """`finding_valid: "false"` (string) is a shape error — strict-mode
+    must enforce the boolean type."""
+    payload = _bias_payload([
+        {
+            "excerpt": "Trump",
+            "issue": "loaded_term",
+            "explanation": "x",
+            "finding_valid": "false",
+        },
+    ])
+    with pytest.raises(SchemaError):
+        _validate(payload, BIAS_DETECTOR_SCHEMA)
