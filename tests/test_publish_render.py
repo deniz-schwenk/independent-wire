@@ -182,6 +182,65 @@ def test_cluster_card_counts_use_singular_plural_correctly():
     assert "5 languages" in html
 
 
+def test_cluster_card_actor_entry_omits_source_list():
+    """An actor entry inside a cluster's tier-block renders the
+    name/role/type header but no source-anchor row. The full source
+    attribution lives in the Actors-section card now; cluster cards
+    stay scannable."""
+    tp = {
+        "actors": [
+            {
+                "id": "actor-001",
+                "name": "Araghchi",
+                "role": "Foreign Minister",
+                "type": "government",
+                "source_ids": ["src-007", "src-012", "src-019"],
+                "quotes": [
+                    {"source_id": "src-007", "position": "p", "verbatim": None},
+                    {"source_id": "src-012", "position": "p", "verbatim": None},
+                ],
+            },
+        ],
+        "perspectives": {
+            "position_clusters": [
+                {
+                    "id": "pc-001",
+                    "position_label": "Iranian government",
+                    "position_summary": "Tehran's diplomatic posture.",
+                    "actor_ids": ["actor-001"],
+                    "stated": ["actor-001"],
+                    "source_ids": ["src-007", "src-012"],
+                    "n_actors": 1,
+                    "n_sources": 2,
+                    "n_regions": 1,
+                    "n_languages": 1,
+                }
+            ],
+            "missing_positions": [],
+        },
+    }
+    html = build_perspectives(tp)
+    # Tier-block actor entry renders the actor's anchor, role, type.
+    assert 'class="cluster-tier-actor"' in html
+    assert "Araghchi" in html
+    assert "Foreign Minister" in html
+    # The per-actor source-anchor row that used to live on the cluster
+    # card is gone. The CSS span class is no longer emitted there,
+    # and none of the actor's source ids appear as anchors within the
+    # cluster-tier-actor markup.
+    assert 'class="cluster-actor-srcs"' not in html
+    # Slice to the tier-actor <li> block specifically — the cluster
+    # card has no other reason to emit a `#src-NNN` link for this
+    # actor, so we assert the tier-actor block carries none of them.
+    block_start = html.find('class="cluster-tier-actor"')
+    block_end = html.find("</li>", block_start)
+    assert block_start != -1
+    block = html[block_start:block_end]
+    assert 'href="#src-007"' not in block
+    assert 'href="#src-012"' not in block
+    assert 'href="#src-019"' not in block
+
+
 def test_cluster_card_actor_count_is_clickable_when_id_present():
     tp = {
         "perspectives": {

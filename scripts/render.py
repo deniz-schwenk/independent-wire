@@ -856,36 +856,20 @@ def _cluster_actor_entry(
     """Render a single actor entry inside a cluster sub-block.
 
     Markup parallels the Actors-section header: name (anchor to the
-    Actors-section row), role, type-badge, and a list of source-id
-    anchors filtered to the cluster's source_ids. Source refs are
-    omitted when the actor has no quotes grounded in this cluster's
-    sources (typical for the ``mentioned`` tier, which can be carried
-    by action-alignment without an explicit quote).
+    Actors-section row), role, type-badge. The per-actor source-id
+    list previously rendered here was moved to the Actors-section
+    card to keep cluster cards scannable (5-20 source tags per actor
+    was overwhelming). Readers who want the full source attribution
+    click the actor name to jump to the Actors-section.
+
+    ``cluster_source_ids`` is retained on the signature for API
+    stability and future use; it is no longer read here.
     """
+    del cluster_source_ids  # retained for signature stability; see docstring
     aid = actor.get("id", "")
     name = _esc(actor.get("name", ""))
     role = _esc(actor.get("role", ""))
     atype = _esc(actor.get("type", ""))
-    quote_sids: list[str] = []
-    seen_sids: set[str] = set()
-    for q in actor.get("quotes") or []:
-        if not isinstance(q, dict):
-            continue
-        sid = q.get("source_id")
-        if (
-            isinstance(sid, str)
-            and sid in cluster_source_ids
-            and sid not in seen_sids
-        ):
-            quote_sids.append(sid)
-            seen_sids.add(sid)
-    src_refs_html = ""
-    if quote_sids:
-        anchors = ", ".join(
-            f'<a href="#{_esc(sid)}">{_esc(sid)}</a>'
-            for sid in quote_sids
-        )
-        src_refs_html = f' <span class="cluster-actor-srcs">({anchors})</span>'
     name_html = (
         f'<a href="#{_esc(aid)}">{name}</a>' if aid else name
     )
@@ -894,7 +878,6 @@ def _cluster_actor_entry(
         f'<strong>{name_html}</strong> '
         f'<span class="cluster-actor-role">{role}</span> '
         f'<span class="cluster-actor-type">{atype}</span>'
-        f'{src_refs_html}'
         f'</li>'
     )
 
@@ -1129,6 +1112,29 @@ def build_actors_section(tp: dict) -> str:
             ' <em class="actor-anonymous">(anonymous)</em>'
             if actor.get("is_anonymous") else ""
         )
+        # Per-actor source list — moved here from the cluster cards
+        # (see _cluster_actor_entry docstring). Renders all
+        # source_ids[] as `[src-NNN]` anchors targeting the Sources-
+        # section. Deduplicated, order preserved from the underlying
+        # list. Omitted entirely when the actor has no sources.
+        actor_source_ids = []
+        seen_aid_sids: set[str] = set()
+        for sid in actor.get("source_ids") or []:
+            if not isinstance(sid, str) or not sid:
+                continue
+            if sid in seen_aid_sids:
+                continue
+            seen_aid_sids.add(sid)
+            actor_source_ids.append(sid)
+        source_row_html = ""
+        if actor_source_ids:
+            anchors = " ".join(
+                f'<a href="#{_esc(sid)}">[{_esc(sid)}]</a>'
+                for sid in actor_source_ids
+            )
+            source_row_html = (
+                f'  <div class="actor-sources">{anchors}</div>\n'
+            )
         items.append(
             f'<li id="{_esc(aid)}" class="actor" data-clusters="{data_clusters}">\n'
             f'  <div class="actor-header">'
@@ -1136,7 +1142,8 @@ def build_actors_section(tp: dict) -> str:
             f'<span class="actor-role">{role}</span>{anon_html} '
             f'<span class="actor-type">{atype}</span>'
             f'</div>\n'
-            f'  <div class="actor-positions">{position_lines}</div>\n'
+            + source_row_html
+            + f'  <div class="actor-positions">{position_lines}</div>\n'
             f'</li>\n'
         )
 

@@ -172,6 +172,48 @@ def test_inline_js_shim_emitted_with_non_empty_list():
     assert "history.pushState" in html
 
 
+def test_actor_card_renders_full_source_list_as_anchors():
+    """The per-actor source-list moved here from the cluster cards.
+    Every entry in `actor.source_ids[]` renders as a `[src-NNN]`
+    anchor pointing at the Sources-section. Dedup-preserved order."""
+    tp = {
+        "actors": [
+            {
+                "id": "actor-001",
+                "name": "Araghchi",
+                "role": "Foreign Minister",
+                "type": "government",
+                "source_ids": [
+                    "src-007", "src-012", "src-019", "src-007",  # dup
+                ],
+                "quotes": [
+                    {"source_id": "src-007", "position": "p", "verbatim": None},
+                ],
+            },
+        ],
+        "perspectives": {
+            "position_clusters": [
+                {"id": "pc-002", "actor_ids": ["actor-001"], "source_ids": ["src-007"]},
+            ],
+        },
+    }
+    html = build_actors_section(tp)
+    # The new actor-sources row appears within the actor card.
+    assert 'class="actor-sources"' in html
+    # Each source_id renders as `[src-NNN]` with an anchor to #src-NNN.
+    assert '<a href="#src-007">[src-007]</a>' in html
+    assert '<a href="#src-012">[src-012]</a>' in html
+    assert '<a href="#src-019">[src-019]</a>' in html
+    # Duplicate src-007 collapses to a single anchor in the row.
+    block_start = html.find('class="actor-sources"')
+    block_end = html.find("</div>", block_start)
+    assert block_start != -1
+    row = html[block_start:block_end]
+    assert row.count("[src-007]") == 1
+    # Order preserved from source_ids[].
+    assert row.find("src-007") < row.find("src-012") < row.find("src-019")
+
+
 def test_per_actor_quote_dedup_single_quote_two_clusters_one_source():
     """One quote, both clusters share its source: first cluster emits
     the quote text; second cluster falls through to anchor-only (no
