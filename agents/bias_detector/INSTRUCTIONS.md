@@ -40,14 +40,16 @@ A single JSON object with exactly two top-level fields. Example:
   "language_bias": {
     "findings": [
       {
-        "excerpt": "the devastating attack on the school",
-        "issue": "evaluative_adjective",
-        "explanation": "'Devastating' characterizes severity in the article's own voice; the article should describe the impact factually, for example by stating the number of casualties or the scale of damage."
-      },
-      {
         "excerpt": "the regime's foreign minister stated",
         "issue": "loaded_term",
-        "explanation": "'Regime' carries an implicit judgment about the legitimacy of the government, where the neutral 'government' would describe the same body without that judgment."
+        "explanation": "'Regime' carries an implicit judgment about the legitimacy of the government, where the neutral 'government' would describe the same body without that judgment.",
+        "finding_valid": true
+      },
+      {
+        "excerpt": "the unprecedented scope of the announcement",
+        "issue": "evaluative_adjective",
+        "explanation": "On review, 'unprecedented scope' does not appear in article_body — the phrasing surfaced while drafting the finding and was not in the source text. No finding to flag.",
+        "finding_valid": false
       }
     ]
   },
@@ -60,7 +62,8 @@ Field notes:
 - `language_bias.findings[]` — one entry per identified pattern, each carrying:
   - `excerpt` (mandatory) — the exact verbatim text from `article_body`. Findable via string match in the input.
   - `issue` (mandatory) — exactly one of: `evaluative_adjective`, `emotionalizing`, `passive_obscuring`, `loaded_term`, `hedging`, `intensifier`.
-  - `explanation` (mandatory) — one sentence stating what the flagged text does (the judgment it embeds, the attribution it lacks, the agent it obscures).
+  - `explanation` (mandatory) — one sentence. When the finding holds, naming what the flagged text does; when it does not, naming why.
+  - `finding_valid` (mandatory) — `true` when the finding holds, `false` when the explanation retracts it. Declared after `explanation`.
   Empty array when the article body has no meaningful language bias.
 - `reader_note` — two to three sentences in plain language. No bullet points, no internal terminology, no jargon.
 
@@ -70,7 +73,8 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 
 1. Every `excerpt` matches exact text in `article_body`. An excerpt that cannot be found by string lookup is treated as a hallucination.
 2. The `explanation` field names what the text does — the judgment it embeds, the attribution it lacks, the agent it obscures. "This word is evaluative" fails; "'Devastating' characterizes severity in the article's own voice" passes.
-3. Do not flag legitimate practice. Standard attribution, data-backed description, genuinely uncertain language for real ambiguity, and direct quotes from sources are not bias.
-4. Do not re-analyze the bias card. Source balance, geographic coverage, missing positions, and divergences are already aggregated; the agent reads them for the reader note but does not produce competing structural analysis or recount the card's contents.
-5. The reader note synthesizes for a thoughtful reader. Two or three plain-language sentences that pick the most important things — never an enumeration of every data point. Do not use internal terminology like "pipeline," "agents," "bias card," "dimensions," or "system."
-6. Empty findings are valid. When the article body has no meaningful language bias, `findings` is an empty array. Do not invent findings to appear thorough.
+3. Retraction is a legitimate outcome. When drafting the `explanation` reveals that the finding does not hold — typically because the `excerpt` is not in `article_body` or the flagged pattern is one of the legitimate-practice cases — write the retraction reason in `explanation` and set `finding_valid: false`. The boolean and the explanation agree on outcome; do not edit `excerpt` or `issue` retroactively to make a retracted finding disappear. Hallucinated excerpts (Rule 1) remain the primary discipline — `finding_valid: false` is the escape hatch for catching a mismatch mid-draft, not a licence to draft speculative findings.
+4. Do not flag legitimate practice. Standard attribution, data-backed description, genuinely uncertain language for real ambiguity, and direct quotes from sources are not bias.
+5. Do not re-analyze the bias card. Source balance, geographic coverage, missing positions, and divergences are already aggregated; the agent reads them for the reader note but does not produce competing structural analysis or recount the card's contents.
+6. The reader note synthesizes for a thoughtful reader. Two or three plain-language sentences that pick the most important things — never an enumeration of every data point. Do not use internal terminology.
+7. Empty findings are valid. When the article body has no meaningful language bias, `findings` is an empty array. Do not invent findings to appear thorough.
