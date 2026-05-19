@@ -465,10 +465,21 @@ class TopicBus(BaseModel):
         visibility="internal",
     )
 
-    # 4B.2 Hydration phase — hydrated variant only (5 slots)
+    # 4B.2 Hydration phase — hydrated variant only (5 slots + 1 retry-
+    # metadata slot)
     hydration_urls: list = Slot(default_factory=list, visibility="internal")
     hydration_fetch_results: list = Slot(default_factory=list, visibility="internal")
     hydration_phase1_analyses: list = Slot(default_factory=list, visibility="internal")
+    # One int per chunk dispatched by `HydrationPhase1Stage`, in the same
+    # order as `_distribute_chunks` produces them. The empty-output
+    # retry sits inside each per-chunk parallel task (so a retry on one
+    # chunk does not block the others). Brief framed this as
+    # "per-article" before realising chunks of 5-10 articles share one
+    # LLM call; reality is "per-chunk" — the name reflects the actual
+    # call topology.
+    hydration_phase1_n_attempts_per_chunk: list = Slot(
+        default_factory=list, visibility="internal"
+    )
     hydration_phase2_corpus: HydrationPhase2Corpus = Slot(
         default_factory=HydrationPhase2Corpus,
         visibility="internal",

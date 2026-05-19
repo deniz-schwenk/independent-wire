@@ -1098,8 +1098,313 @@ def test_hydration_phase1_skips_when_no_successful_fetches():
     stage = HydrationPhase1Stage(fake)
     tb_after = _run(stage, tb, _ro())
     assert tb_after.hydration_phase1_analyses == []
+    assert tb_after.hydration_phase1_n_attempts_per_chunk == []
     # Agent should NOT have been called
     assert len(fake.calls) == 0
+
+
+# ---------------------------------------------------------------------------
+# HydrationPhase1 empty-output retry — DeepSeek cache-cold mitigation
+# ---------------------------------------------------------------------------
+
+
+class _SequencedPhase1Agent:
+    """FakeAgent variant returning a queue of pre-baked AgentResults.
+
+    Used for the single-chunk Phase-1 retry-path tests."""
+
+    def __init__(self, results: list[AgentResult]):
+        self._results = list(results)
+        self.name = "fake-phase1"
+        self.model = "deepseek/deepseek-v4-pro"
+        self.temperature = 0.3
+        self.max_tokens = 32000
+        self.reasoning = "none"
+        self.calls: list[dict] = []
+
+    async def run(self, message: str = "", context: dict | None = None, **kwargs):
+        self.calls.append({"message": message, "context": context or {}})
+        if not self._results:
+            raise AssertionError(
+                "_SequencedPhase1Agent exhausted — too many calls"
+            )
+        return self._results.pop(0)
+
+
+def _phase1_response(*, n_articles: int, actors_per: int) -> AgentResult:
+    """Build a strict-mode Phase-1 response with the given content
+    density. ``actors_per=0`` is the empty-mode signal (every article
+    analysis returns 0 quoted actors)."""
+    return AgentResult(
+        content="",
+        structured={
+            "article_analyses": [
+                {
+                    "article_index": i,
+                    "summary": f"summary {i}",
+                    "actors_quoted": [
+                        {
+                            "name": f"Actor {i}-{k}",
+                            "role": "spokesperson",
+                            "type": "government",
+                            "position": "p",
+                            "evidence_type": "stated",
+                            "verbatim_quote": None,
+                        }
+                        for k in range(actors_per)
+                    ],
+                }
+                for i in range(n_articles)
+            ]
+        },
+        cost_usd=0.01,
+        tokens_used=20_000,
+        response_id=f"resp-{actors_per}",
+    )
+
+
+def _make_phase1_tb(n_articles: int = 1) -> TopicBus:
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.hydration_fetch_results = [
+        {
+            "url": f"https://outlet{i}.example/article/{i}",
+            "status": "success",
+            "title": f"Article {i}",
+            "outlet": f"Outlet {i}",
+            "language": "en",
+            "country": "United States",
+            "extracted_text": f"Body of article {i}.",
+        }
+        for i in range(n_articles)
+    ]
+    return tb
+
+
+def test_hydration_phase1_retry_empty_empty_nonempty(caplog):
+    """Single chunk (1 article). Empty / empty / non-empty → 3 calls,
+    2 WARNINGs, n_attempts_per_chunk=[3]."""
+    import logging
+
+    agent = _SequencedPhase1Agent([
+        _phase1_response(n_articles=1, actors_per=0),  # empty
+        _phase1_response(n_articles=1, actors_per=0),  # empty
+        _phase1_response(n_articles=1, actors_per=2),  # non-empty
+    ])
+    stage = HydrationPhase1Stage(agent)
+    tb = _make_phase1_tb(n_articles=1)
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        tb_after = _run(stage, tb, _ro())
+
+    analyses = tb_after.hydration_phase1_analyses
+    assert len(analyses) == 1
+    assert len(analyses[0]["actors_quoted"]) == 2
+    assert tb_after.hydration_phase1_n_attempts_per_chunk == [3]
+    assert len(agent.calls) == 3
+
+    warns = [r for r in caplog.records if r.levelno == logging.WARNING]
+    errs = [r for r in caplog.records if r.levelno == logging.ERROR]
+    # 2 empty-retry WARNINGs for chunk 1
+    empty_warns = [
+        r for r in warns if "empty output on attempt" in r.getMessage()
+    ]
+    assert len(empty_warns) == 2
+    msgs = " ".join(r.getMessage() for r in empty_warns)
+    assert "chunk 1" in msgs
+    assert "attempt 1/3" in msgs
+    assert "attempt 2/3" in msgs
+    assert errs == []
+
+
+def test_hydration_phase1_retry_all_three_empty_falls_through(caplog):
+    """All 3 attempts empty → ERROR logged, empty analyses written (no
+    actors_quoted on the single article), n_attempts_per_chunk=[3].
+    Phase-2 (downstream) is robust to zero-actor article analyses —
+    there is no postcondition gate that fires loud on this case; the
+    ERROR log and the new per-chunk attempts list are the audit
+    signals."""
+    import logging
+
+    agent = _SequencedPhase1Agent([
+        _phase1_response(n_articles=1, actors_per=0),
+        _phase1_response(n_articles=1, actors_per=0),
+        _phase1_response(n_articles=1, actors_per=0),
+    ])
+    stage = HydrationPhase1Stage(agent)
+    tb = _make_phase1_tb(n_articles=1)
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        tb_after = _run(stage, tb, _ro())
+
+    analyses = tb_after.hydration_phase1_analyses
+    assert len(analyses) == 1
+    assert analyses[0]["actors_quoted"] == []
+    assert tb_after.hydration_phase1_n_attempts_per_chunk == [3]
+    assert len(agent.calls) == 3
+
+    errs = [r for r in caplog.records if r.levelno == logging.ERROR]
+    assert len(errs) == 1
+    msg = errs[0].getMessage()
+    assert "chunk 1" in msg
+    assert "all 3 attempts" in msg
+
+
+def test_hydration_phase1_retry_non_empty_first_call_no_retry(caplog):
+    """Non-empty on first call → exactly one agent.run(), no WARNINGs
+    or ERRORs from the empty-output retry path. n_attempts_per_chunk=[1]."""
+    import logging
+
+    agent = _SequencedPhase1Agent([
+        _phase1_response(n_articles=1, actors_per=3),
+    ])
+    stage = HydrationPhase1Stage(agent)
+    tb = _make_phase1_tb(n_articles=1)
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        tb_after = _run(stage, tb, _ro())
+
+    analyses = tb_after.hydration_phase1_analyses
+    assert len(analyses) == 1
+    assert len(analyses[0]["actors_quoted"]) == 3
+    assert tb_after.hydration_phase1_n_attempts_per_chunk == [1]
+    assert len(agent.calls) == 1
+
+    warns = [r for r in caplog.records if r.levelno == logging.WARNING]
+    errs = [r for r in caplog.records if r.levelno == logging.ERROR]
+    empty_warns = [
+        r for r in warns if "empty output on attempt" in r.getMessage()
+    ]
+    assert empty_warns == []
+    assert errs == []
+
+
+def test_hydration_phase1_retry_mixed_three_chunks_independent(caplog):
+    """Three parallel chunks with independent retry counts.
+
+    Forces 3 chunks via 21 articles (``_distribute_chunks`` formula
+    ceil(N/10)). Mock dispatches by inspecting which article URLs are
+    in the chunk's payload:
+      - chunk 1 (articles 0-6):  clean first attempt → n_attempts=1
+      - chunk 2 (articles 7-13): empty, empty, non-empty → n_attempts=2
+      - chunk 3 (articles 14-20): empty on all 3 → n_attempts=3.
+
+    Asserts the new `n_attempts_per_chunk` list captures
+    `[1, 2, 3]` and that the parallel gather did not let chunk 3's
+    failure prevent chunks 1 and 2 from producing content."""
+    import logging
+
+    chunk2_call_count = 0
+    chunk3_call_count = 0
+
+    class _ChunkAwareAgent:
+        name = "fake-mixed-phase1"
+        model = "deepseek/deepseek-v4-pro"
+        temperature = 0.3
+        max_tokens = 32000
+        reasoning = "none"
+
+        def __init__(self):
+            self.calls: list[dict] = []
+
+        async def run(self, message: str = "", context: dict | None = None, **kwargs):
+            nonlocal chunk2_call_count, chunk3_call_count
+            self.calls.append({"message": message, "context": context or {}})
+            ctx = context or {}
+            articles = ctx.get("articles") or []
+            urls = [a.get("url") or "" for a in articles if isinstance(a, dict)]
+            first_url = urls[0] if urls else ""
+            n_remaining = len(articles)
+
+            if first_url.startswith("https://chunk1-"):
+                return _phase1_response(n_articles=n_remaining, actors_per=2)
+
+            if first_url.startswith("https://chunk2-"):
+                chunk2_call_count += 1
+                actors = 0 if chunk2_call_count == 1 else 2
+                # Chunk 2 succeeds on its 2nd attempt; the 2nd call
+                # returns a complete non-empty payload.
+                return _phase1_response(n_articles=n_remaining, actors_per=actors)
+
+            if first_url.startswith("https://chunk3-"):
+                chunk3_call_count += 1
+                return _phase1_response(n_articles=n_remaining, actors_per=0)
+
+            raise AssertionError(f"Unexpected article URL: {first_url!r}")
+
+    agent = _ChunkAwareAgent()
+    stage = HydrationPhase1Stage(agent)
+
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    # 21 articles → ceil(21/10) = 3 chunks of 7 each
+    # chunk 1: articles 0-6 (urls chunk1-N), chunk 2: 7-13 (chunk2-N),
+    # chunk 3: 14-20 (chunk3-N).
+    tb.hydration_fetch_results = [
+        {
+            "url": f"https://chunk1-{i}.example/article",
+            "status": "success",
+            "title": f"Chunk1 article {i}",
+            "outlet": "Outlet",
+            "language": "en",
+            "country": "US",
+            "extracted_text": f"Body {i}.",
+        }
+        for i in range(7)
+    ] + [
+        {
+            "url": f"https://chunk2-{i}.example/article",
+            "status": "success",
+            "title": f"Chunk2 article {i}",
+            "outlet": "Outlet",
+            "language": "en",
+            "country": "US",
+            "extracted_text": f"Body {i}.",
+        }
+        for i in range(7)
+    ] + [
+        {
+            "url": f"https://chunk3-{i}.example/article",
+            "status": "success",
+            "title": f"Chunk3 article {i}",
+            "outlet": "Outlet",
+            "language": "en",
+            "country": "US",
+            "extracted_text": f"Body {i}.",
+        }
+        for i in range(7)
+    ]
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        tb_after = _run(stage, tb, _ro())
+
+    # Independent retries: [1, 2, 3].
+    assert tb_after.hydration_phase1_n_attempts_per_chunk == [1, 2, 3]
+    # Chunks 1 and 2 produced quoted-actor content; chunk 3 stayed empty.
+    analyses = tb_after.hydration_phase1_analyses
+    assert len(analyses) == 21
+    # Articles 0-6: from chunk 1 → 2 actors each.
+    assert all(len(a["actors_quoted"]) == 2 for a in analyses[0:7])
+    # Articles 7-13: from chunk 2 (after 1 retry) → 2 actors each.
+    assert all(len(a["actors_quoted"]) == 2 for a in analyses[7:14])
+    # Articles 14-20: chunk 3 stayed empty.
+    assert all(a["actors_quoted"] == [] for a in analyses[14:21])
+
+    # Total calls: chunk 1 (1) + chunk 2 (2) + chunk 3 (3) = 6.
+    assert len(agent.calls) == 6
+    assert chunk2_call_count == 2
+    assert chunk3_call_count == 3
+
+    # WARNINGs from chunks 2 (1 retry) and 3 (2 retries) + 1 ERROR
+    # from chunk 3's exhausted retries.
+    warns = [r for r in caplog.records if r.levelno == logging.WARNING]
+    errs = [r for r in caplog.records if r.levelno == logging.ERROR]
+    empty_warns = [
+        r for r in warns if "empty output on attempt" in r.getMessage()
+    ]
+    assert len(empty_warns) == 3  # chunk2:1 + chunk3:2
+    assert len(errs) == 1
+    err_msg = errs[0].getMessage()
+    assert "chunk 3" in err_msg
+    assert "all 3 attempts" in err_msg
 
 
 # ===========================================================================

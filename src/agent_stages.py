@@ -1931,6 +1931,91 @@ async def _run_phase1_chunk(
     return analyses
 
 
+_PHASE1_EMPTY_MAX_ATTEMPTS = 3
+
+
+def _phase1_chunk_is_empty(analyses: list[dict[str, Any]]) -> bool:
+    """Empty-output predicate for one Phase-1 chunk response: every
+    analysis returned with no quoted actors.
+
+    Distinct from the missing-indices failure mode that
+    `_run_phase1_chunk` retries internally. An all-empty chunk passes
+    the missing-indices check (every article_index is present) but
+    carries zero extracted content — the DeepSeek cache-cold empty-
+    emission mode, mirroring what `dskflash-t05-rmedium` exhibited on
+    the Curator stage. A chunk where even one article has at least one
+    quoted actor is *not* empty here — legitimate articles can carry
+    zero quotable actors (wire-feed factuals etc.), so we only retry
+    when the ENTIRE chunk is content-empty.
+    """
+    if not analyses:
+        return True
+    return all(
+        not (a.get("actors_quoted") or [])
+        for a in analyses
+        if isinstance(a, dict)
+    )
+
+
+async def _run_phase1_chunk_with_empty_retry(
+    assignment: dict[str, Any],
+    chunk_articles: list[dict[str, Any]],
+    *,
+    chunk_idx: int,
+    agent: Agent,
+    max_attempts: int = _PHASE1_EMPTY_MAX_ATTEMPTS,
+) -> tuple[list[dict[str, Any]], int]:
+    """Wrap `_run_phase1_chunk` with a per-chunk empty-output retry.
+
+    The inner helper performs missing-index retries (an orthogonal
+    failure mode: LLM dropped article indices from the response). The
+    outer loop here retries the whole chunk when the *whole* response
+    came back content-empty (every analysis with `actors_quoted=[]`).
+    Each retry is a fresh OpenRouter call so provider routing varies.
+
+    After `max_attempts` of all-empty output, the final attempt's
+    analyses are returned and Phase-2 aggregation continues. Phase-2 is
+    the downstream reducer and is robust to article-analyses with zero
+    quoted actors — there is no postcondition gate inside Phase-1 that
+    fires on this case; the ERROR log + the ``hydration_phase1_n_
+    attempts_per_chunk`` slot on the bus are the loud signals.
+
+    Returns ``(analyses, attempts_used)``. ``_AggregatorValidationError``
+    from the inner helper propagates unchanged — truncation is a
+    distinct failure that the empty-output retry does not address.
+    """
+    last_analyses: list[dict[str, Any]] = []
+    attempts_used = 0
+    for attempt in range(1, max_attempts + 1):
+        attempts_used = attempt
+        analyses = await _run_phase1_chunk(
+            assignment, chunk_articles, chunk_idx=chunk_idx, agent=agent,
+        )
+        last_analyses = analyses
+
+        if not _phase1_chunk_is_empty(analyses):
+            break
+
+        if attempt < max_attempts:
+            logger.warning(
+                "HydrationPhase1Stage: chunk %d empty output on attempt "
+                "%d/%d (every article returned 0 quoted actors) — "
+                "retrying",
+                chunk_idx,
+                attempt,
+                max_attempts,
+            )
+        else:
+            logger.error(
+                "HydrationPhase1Stage: chunk %d empty output on all %d "
+                "attempts — falling through with empty analyses",
+                chunk_idx,
+                max_attempts,
+            )
+
+    return last_analyses, attempts_used
+
+
 def _merge_phase1_results(
     phase1_results: list[list[dict[str, Any]]],
     chunks: list[list[dict[str, Any]]],
@@ -2118,7 +2203,10 @@ class HydrationPhase1Stage(_AgentStageBase):
             r for r in fetch_results if isinstance(r, dict) and r.get("status") == "success"
         ]
         if not successful:
-            return topic_bus.model_copy(update={"hydration_phase1_analyses": []})
+            return topic_bus.model_copy(update={
+                "hydration_phase1_analyses": [],
+                "hydration_phase1_n_attempts_per_chunk": [],
+            })
 
         articles = [_prepare_article(r) for r in successful]
         chunks = _distribute_chunks(articles)
@@ -2129,14 +2217,23 @@ class HydrationPhase1Stage(_AgentStageBase):
         }
         chunk_results = await asyncio.gather(
             *[
-                _run_phase1_chunk(
-                    assignment_dict, chunk, chunk_idx=i + 1, agent=self.agent
+                _run_phase1_chunk_with_empty_retry(
+                    assignment_dict,
+                    chunk,
+                    chunk_idx=i + 1,
+                    agent=self.agent,
                 )
                 for i, chunk in enumerate(chunks)
             ]
         )
-        all_analyses = _merge_phase1_results(chunk_results, chunks)
-        return topic_bus.model_copy(update={"hydration_phase1_analyses": all_analyses})
+        # Each gather element is (analyses, attempts_used).
+        analyses_per_chunk = [r[0] for r in chunk_results]
+        attempts_per_chunk = [r[1] for r in chunk_results]
+        all_analyses = _merge_phase1_results(analyses_per_chunk, chunks)
+        return topic_bus.model_copy(update={
+            "hydration_phase1_analyses": all_analyses,
+            "hydration_phase1_n_attempts_per_chunk": attempts_per_chunk,
+        })
 
 
 # ---------------------------------------------------------------------------
