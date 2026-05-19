@@ -506,10 +506,12 @@ def test_resolver_does_not_mutate_final_actors():
 
 
 def test_resolver_agent_registration_carries_y_config():
-    """Production registration ships the verified diagnostic-V2 Y-config:
-    ``temperature=1.0``, ``reasoning="medium"``, ``max_tokens=66000``.
-    This regression-guards against accidental reverts to the Iter-1
-    baseline (``temperature=0.2`` + ``reasoning="none"``)."""
+    """Production registration ships the post-Wave-2 config:
+    ``model="deepseek/deepseek-v4-flash"``, ``temperature=0.5``,
+    ``reasoning="none"``, ``max_tokens=160000`` (commit a7130dd,
+    2026-05-19, per Wave-2 Sweep #2). Regression-guards against
+    accidental reverts to the pre-Wave-2 Gemini Y-config
+    (``temperature=1.0`` + ``reasoning="medium"``)."""
     run_py = (
         Path(__file__).resolve().parents[1] / "scripts" / "run.py"
     ).read_text(encoding="utf-8")
@@ -522,10 +524,13 @@ def test_resolver_agent_registration_carries_y_config():
     after = run_py.find('"perspective": Agent(', start)
     assert after > start
     block = run_py[start:after]
-    assert "temperature=1.0" in block
-    assert 'reasoning="medium"' in block
-    assert "max_tokens=66000" in block
-    # Defensive: the deprecated Iter-1 baseline values must NOT be in
-    # this block.
-    assert "temperature=0.2" not in block
-    assert 'reasoning="none"' not in block
+    assert 'model="deepseek/deepseek-v4-flash"' in block
+    assert "temperature=0.5" in block
+    assert 'reasoning="none"' in block
+    assert "max_tokens=160000" in block
+    # Defensive: the deprecated pre-Wave-2 Gemini Y-config values must
+    # NOT be in this block.
+    assert "google/gemini-3-flash-preview" not in block
+    assert "temperature=1.0" not in block
+    assert 'reasoning="medium"' not in block
+    assert "max_tokens=66000" not in block
