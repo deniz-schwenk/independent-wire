@@ -325,10 +325,6 @@ h2 {
   color: var(--color-text-subtle); margin-left: 0.25rem;
   text-transform: uppercase; letter-spacing: 0.05em;
 }
-.cluster-actor-srcs {
-  font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle);
-}
 
 /* Actors section */
 .actors h2 { margin-top: 2rem; }
@@ -336,13 +332,6 @@ h2 {
   font-family: var(--font-mono); font-size: 0.85rem;
   color: var(--color-text-secondary); margin: 0 0 1rem;
 }
-#actors-show-all {
-  font-family: var(--font-mono); font-size: 0.75rem;
-  background: transparent; border: 1px solid #000; cursor: pointer;
-  padding: 0.3rem 0.75rem; margin-bottom: 1rem;
-  text-transform: uppercase; letter-spacing: 0.05em;
-}
-#actors-show-all:hover { background: #000; color: var(--color-bg); }
 .actor-list { list-style: none; padding: 0; margin: 0; }
 .actor {
   padding: 1rem 0; border-top: 1px solid var(--color-border-light);
