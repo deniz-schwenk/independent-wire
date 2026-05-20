@@ -1,6 +1,6 @@
 # BACKLOG-CLUSTER-FORMATION-SINGLE-ACTOR
 
-**Status:** activation criterion met on 2026-05-19 — see "Activation signal" section below. PE brief not yet drafted.
+**Status:** deterministic bracket landed 2026-05-20 (`4e7da5d`) — acute symptom mitigated. Strategic prompt-rework remains open but no longer blocking. See "Mitigation 2026-05-20" section below.
 
 **Owner:** Architect
 
@@ -166,6 +166,34 @@ shape (when activated)` below as a PE brief when scheduling permits.
 Substrate of choice: tp-2026-05-19-003 (Ebola PHEIC) and
 tp-2026-05-19-001 (Iran ultimatum), plus the existing TP-08-002
 reference case for continuity with the prior 5-variant iteration.
+
+## Mitigation 2026-05-20 — deterministic single-voices bracket
+
+Commit `4e7da5d` introduces the `derive_single_voices` stage and the
+`single_voices` bus slot. Orphan actors with ≥2 sources are
+collected into a deterministically-derived bracket block, rendered
+as a visually-distinguished card after the regular position
+clusters. Tier (stated/reported/mentioned) is derived from the
+actor's quotes via a fixed rule.
+
+This is the deterministic complement to the strategic prompt-rework
+described below — not a replacement. The bracket makes the failure
+mode visible and useful:
+
+- Structurally-central protagonists no longer disappear from the
+  visible TP rendering. The DR Congo Health Minister case
+  (tp-2026-05-19-003) renders correctly with the first daily run on
+  this change.
+- The bracket doubles as a diagnostic instrument. A bracket
+  consistently carrying ≥5 protagonist-class actors across multiple
+  dossiers is a strong signal that the Perspective prompt is
+  systematically over-rejecting single-actor positions and the
+  strategic prompt-rework below should be activated.
+
+The strategic workstream stays open. Activation criterion shifts
+from "acute reader-facing failure" to "bracket size pattern
+signals systematic over-rejection". The pressure to ship the prompt
+rework is lower; the engineering rigour expected of it is the same.
 
 ## Suggested workstream shape (when activated)
 
