@@ -122,6 +122,10 @@ After production observation surfaces a stable post-V2 picture, the **weekly-out
 
 Catalogued for future activation. 10-combination sweep against the 2026-05-05 baseline (Opus 4.6 with story-shape inline). Combinations: Sonnet 4.6 × 2 reasoning settings, Gemini 3.1 Pro Preview × 4, DeepSeek V4 Pro × 4. Substrate at `output/2026-05-05/_state/run-2026-05-05-6189fcca/topic_buses.ResearcherHydratedPlanStage.{0,1,2}.json`. Total cost ~€1. Not actively running while the live-pipeline-run validation and weekly-outlet-audit init take priority.
 
+### H3.2.7 — Renderer-hygiene sweep ✅ Complete (2026-05-19/20)
+
+2026-05-19/20 — Renderer-hygiene sweep across published TPs. Seven issues fixed end-to-end: actor dedup per source; structured self-retraction of invalid bias findings; per-cluster quote dedup across actor lines; per-actor source-list moved from cluster cards into the Actors-section; the cluster-formation single-actor backlog activated by a production signal (DR Congo Health Minister with 6 quotes orphaned in tp-2026-05-19-003); coverage gaps and missing stakeholder voices consolidated under a unified renderer header with deterministic dedup; Actors-section refactored into a navigation table; verbatim quotes relocated to a third-level disclosure under each source.
+
 ### H3.3 — Architecture-quality follow-ups (catalogued, queued)
 
 These items improve V2 further but don't block any current capability:
