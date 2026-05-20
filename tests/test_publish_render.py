@@ -364,11 +364,10 @@ def test_single_voices_bracket_omitted_when_slot_absent():
     assert build_single_voices_bracket(tp) == ""
 
 
-def test_actors_section_row_for_bracket_actor_shows_single_voices_anchor():
-    """Acceptance criterion: an actor in the bracket sees a
-    `Single voices` entry in their Cluster-refs cell. For
-    bracket-only actors (no regular cluster), it is the only entry —
-    the cell is otherwise empty per Issue 7."""
+def test_actors_section_card_for_bracket_actor_shows_single_voices_box():
+    """An actor in the single-voices bracket sees a Single voices
+    cluster-ref box on their card, anchored at `#single-voices`. The
+    box carries the bracket-variant CSS class."""
     tp = {
         "actors": [
             {"id": "actor-001", "name": "Orphan Protagonist",
@@ -390,23 +389,24 @@ def test_actors_section_row_for_bracket_actor_shows_single_voices_anchor():
         },
     }
     html = build_actors_section(tp)
-    # Cluster-refs cell contains a Single voices anchor pointing at the
-    # bracket's DOM target (not a #pc-NNN cluster id).
-    assert '<a href="#single-voices">Single voices</a>' in html
-    # And no spurious "Cluster N" entry for this actor.
+    assert (
+        '<a class="actor-card-cluster-box actor-card-cluster-box--bracket"'
+        ' href="#single-voices">Single voices</a>'
+    ) in html
+    # No spurious Cluster-N box for this orphan.
     assert 'href="#pc-' not in html
 
 
-def test_actors_section_row_for_non_bracket_actor_omits_single_voices():
-    """An actor NOT in the bracket must not see a Single voices ref in
-    their Cluster-refs cell, even when a bracket exists in the TP."""
+def test_actors_section_card_for_non_bracket_actor_omits_single_voices_box():
+    """An actor NOT in the bracket must not see a Single voices box on
+    their card, even when a bracket exists in the TP."""
     tp = {
         "actors": [
             {"id": "actor-001", "name": "Clustered",
-             "role": "r", "type": "t",
+             "role": "r", "type": "government",
              "source_ids": ["src-001"], "quotes": []},
             {"id": "actor-002", "name": "Bracketed",
-             "role": "r", "type": "t",
+             "role": "r", "type": "government",
              "source_ids": ["src-001", "src-002"], "quotes": []},
         ],
         "perspectives": {
@@ -427,17 +427,17 @@ def test_actors_section_row_for_non_bracket_actor_omits_single_voices():
         },
     }
     html = build_actors_section(tp)
-    # actor-001's row carries the Cluster 1 anchor but no Single voices.
+    # actor-001's card carries the Cluster 1 box but no Single voices.
     actor1_start = html.find('id="actor-001"')
-    actor1_end = html.find("</tr>", actor1_start)
-    actor1_row = html[actor1_start:actor1_end]
-    assert 'href="#pc-001">Cluster 1' in actor1_row
-    assert "Single voices" not in actor1_row
-    # actor-002's row carries Single voices (and no cluster ref).
+    actor1_end = html.find('</article>', actor1_start)
+    actor1_card = html[actor1_start:actor1_end]
+    assert 'href="#pc-001">Cluster 1' in actor1_card
+    assert "Single voices" not in actor1_card
+    # actor-002's card carries Single voices (and no cluster ref).
     actor2_start = html.find('id="actor-002"')
-    actor2_end = html.find("</tr>", actor2_start)
-    actor2_row = html[actor2_start:actor2_end]
-    assert 'href="#single-voices">Single voices' in actor2_row
+    actor2_end = html.find('</article>', actor2_start)
+    actor2_card = html[actor2_start:actor2_end]
+    assert 'href="#single-voices">Single voices' in actor2_card
 
 
 def test_bias_card_renders_findings():

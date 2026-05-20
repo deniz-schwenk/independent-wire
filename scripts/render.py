@@ -341,42 +341,121 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
-/* Actors section */
-.actors h2 { margin-top: 2rem; }
-.actors-meta {
+/* Actors section — grouped card grid with type-tab filter */
+.actors-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin: 2.5rem 0 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid var(--color-border);
+}
+.actors-header h2 {
+  margin: 0; border-bottom: none; padding-bottom: 0; flex: 1;
+}
+.section-number {
   font-family: var(--font-mono); font-size: 0.85rem;
-  color: var(--color-text-secondary); margin: 0 0 1rem;
+  color: var(--color-text-subtle); font-weight: 400;
+  margin-right: 0.5rem;
 }
-.actor-list { list-style: none; padding: 0; margin: 0; }
-.actor {
-  padding: 1rem 0; border-top: 1px solid var(--color-border-light);
-}
-.actor:first-child { border-top: 0; padding-top: 0; }
-.actor[hidden] { display: none; }
-.actor:target { background: var(--color-bg-subtle, #f5f5f4); }
-.actor-header {
-  font-family: var(--font-sans); font-size: 1rem; margin-bottom: 0.4rem;
-}
-.actor-header strong { font-weight: 700; }
-.actor-role { color: var(--color-text-secondary); margin-left: 0.4rem; }
-.actor-type {
-  font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle); margin-left: 0.4rem;
+.actors-count {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--color-text-subtle);
   text-transform: uppercase; letter-spacing: 0.05em;
 }
-.actor-position-line {
-  font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55;
-  color: var(--color-text-secondary); margin: 0.35rem 0 0;
+.actors-meta {
+  font-family: var(--font-sans); font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin: 1rem 0 1.5rem;
+  border-left: 3px solid #000; padding-left: 0.75rem;
 }
-.actor-position-line a { color: inherit; text-decoration: underline; }
-.actor-verbatim { font-style: italic; }
-.actor-no-cluster { color: var(--color-text-subtle); font-size: 0.85rem; }
-.actor-position-tier {
+
+.actors-tabs {
+  display: flex; flex-wrap: wrap; gap: 0;
+  margin-bottom: 1.5rem;
+}
+.actor-tab {
+  font-family: var(--font-mono); font-size: 0.8rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.5rem 1rem; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; margin: 0 -1px -1px 0;
+}
+.actor-tab-count { margin-left: 0.4rem; color: var(--color-text-subtle); }
+.actor-tab--active { background: #000; color: var(--color-bg); }
+.actor-tab--active .actor-tab-count { color: var(--color-bg); }
+.actor-tab--disabled, .actor-tab[disabled] {
+  color: var(--color-text-subtle); cursor: not-allowed;
+  background: transparent; border-color: var(--color-border-light);
+}
+.actor-tab--disabled .actor-tab-count { color: var(--color-text-subtle); }
+.actor-tab:not(.actor-tab--active):not(.actor-tab--disabled):hover {
+  background: var(--color-bg-subtle, #f5f5f4);
+}
+
+.actor-group { margin-top: 2rem; }
+.actor-group[hidden] { display: none; }
+.actor-group-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-bottom: 2px solid #000; padding-bottom: 0.5rem; margin-bottom: 1rem;
+  gap: 1rem; flex-wrap: wrap;
+}
+.actor-group-name {
+  font-family: var(--font-sans); font-size: 1.1rem; font-weight: 700;
+  margin: 0;
+}
+.actor-group-meta {
+  font-family: var(--font-mono); font-size: 0.8rem;
+  color: var(--color-text-subtle);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.actor-card-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem;
+}
+.actor-card {
+  border-top: 1px solid var(--color-border-light);
+  padding: 1rem 0;
+}
+.actor-card:target { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 0.25rem; gap: 0.5rem;
+}
+.actor-card-name {
+  font-family: var(--font-sans); font-weight: 700; font-size: 1rem;
+}
+.actor-card-name a { color: inherit; text-decoration: none; }
+.actor-card-src-count {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle);
+  text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.actor-card-role {
+  font-family: var(--font-sans); font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem;
+}
+.actor-card-cluster-refs, .actor-card-source-refs {
+  display: flex; flex-wrap: wrap; gap: 0.25rem;
+  margin-top: 0.4rem;
+}
+.actor-card-cluster-box {
   font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle); font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  margin-right: 0.15rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.2rem 0.5rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; text-decoration: none;
 }
+.actor-card-cluster-box:hover { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-cluster-box--bracket { border-style: dashed; }
+.actor-card-source-box {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  background: var(--color-bg-subtle, #f5f5f4);
+  padding: 0.2rem 0.5rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; text-decoration: none;
+}
+.actor-card-source-box:hover { background: var(--color-border-light); }
 
 /* Missing voices */
 .missing-voice {
@@ -616,6 +695,9 @@ footer a { color: #000; text-decoration: underline; }
   .container { padding: 1rem; }
   h1 { font-size: 1.4rem; }
   .card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid { grid-template-columns: 1fr; }
+  .actors-tabs { font-size: 0.7rem; }
+  .actor-tab { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
   .meta-bar { flex-wrap: wrap; }
   .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
   .meta-item:last-child { border-bottom: none; }
@@ -1076,38 +1158,82 @@ def build_single_voices_bracket(tp: dict) -> str:
     )
 
 
+# Canonical actor-type enum (declared order from
+# `agents/perspective/INSTRUCTIONS.md`). Drives the tab bar layout and
+# group rendering order. Any actor whose `type` is not in this enum
+# still renders — under an "Other" group at the end of the card grid,
+# visible only on the ALL tab (no per-type tab targets it).
+_ACTOR_TYPE_ENUM: tuple[str, ...] = (
+    "government",
+    "legislature",
+    "judiciary",
+    "military",
+    "industry",
+    "civil_society",
+    "academia",
+    "media",
+    "international_org",
+    "affected_community",
+)
+
+
+def _humanise_actor_type(t: str) -> str:
+    """`civil_society` → `Civil society`. `international_org` →
+    `International org`. Title-case display name for group headings."""
+    return t.replace("_", " ").capitalize() if t else "Other"
+
+
+def _tab_label(t: str) -> str:
+    """Tab labels render in uppercase with underscores converted to
+    spaces (`civil_society` → `CIVIL SOCIETY`). Keeps the label short
+    and matches the screenshot's spacing."""
+    return t.replace("_", " ").upper() if t else "OTHER"
+
+
 def build_actors_section(tp: dict) -> str:
-    """Actors-section as navigation bridge.
+    """Actors-section as grouped card grid with type-tab filter.
 
-    Four-column table — one row per actor in ``tp["actors"]`` (the
-    alias-resolved canonical view). The section is no longer a quote
-    dossier (cluster cards carry positions; the Sources-section third
-    level carries verbatim quotes); it exists to let a reader jump
-    from any name in the page to every cluster and every source the
-    actor figures in.
+    Replaces the prior flat 4-column table (Issue 7, commit 557cea5)
+    with a per-stakeholder-type card grid plus a tab bar that
+    client-side-filters the visible groups. The section continues to
+    serve as navigation bridge — cluster cards and the single-voices
+    bracket back-link to `#actor-NNN` anchors that live on the cards.
 
-    Columns: Actor / Role · Type / Cluster refs / Source refs.
+    Layout:
+    - Header: H2 ``§03 Actors`` + right-aligned actor count.
+    - Sub-line: ``N actors quoted across this topic. Jump from any name
+      above to find every cluster and source the actor figures in.``
+    - Tab bar: ``ALL N`` first, then one tab per `_ACTOR_TYPE_ENUM`
+      entry in declared order. Active filled, inactive outlined,
+      zero-count disabled.
+    - Card grid: groups in enum order. Each group has its own
+      ``<h3>`` heading with the actor count and total source-ref count
+      for that type. Within a group, cards are sorted by source-ref
+      count desc with the actor name as tie-break.
 
-    - Actor: name, optionally suffixed with ``(anonymous)`` when the
-      actor is flagged anonymous. The row anchor is ``id="actor-NNN"``
-      so jumps from cluster cards (`<a href="#actor-NNN">`) land here.
-    - Role · Type: concatenation of ``role`` and ``type`` separated by
-      a middle dot. Empty cells fall through cleanly.
-    - Cluster refs: ``Cluster N`` anchors (target ``#pc-NNN``) for
-      every cluster the actor appears in (any tier), in
-      cluster-emission order. Empty cell when the actor belongs to no
-      cluster — no special label.
-    - Source refs: ``src-NNN`` anchors (target ``#src-NNN``) for every
-      entry in ``actor.source_ids[]``, in first-appearance order.
-      Duplicates collapse.
+    Per-card content:
+    - Top-left: actor name (anchor target ``id="actor-NNN"``).
+      ``(anonymous)`` suffix preserved when ``actor.is_anonymous``.
+    - Top-right: ``N SRC``.
+    - Second line: role text.
+    - Cluster-ref boxes: outlined boxes labelled ``Cluster N`` linking
+      to ``#pc-NNN``. Bracket actors get a ``Single voices`` box
+      linking to ``#single-voices`` (visually distinct).
+    - Source-ref boxes: filled boxes labelled ``src-NNN`` linking to
+      ``#src-NNN``.
+
+    Tab filtering: minimal inline JS toggles a ``data-active-type``
+    attribute on the group container; CSS hides every
+    ``.actor-group`` whose ``data-actor-type`` does not match (except
+    when ``data-active-type="all"``). Disabled tabs (zero count) carry
+    the ``disabled`` attribute and the JS handler skips them.
     """
-    actors = tp.get("actors") or []
+    actors_in = tp.get("actors") or []
     clusters = tp.get("perspectives", {}).get("position_clusters", []) or []
     single_voices = tp.get("perspectives", {}).get("single_voices") or {}
 
     # cluster_id → 1-based emission index. Drives the human-readable
-    # "Cluster N" link text. Cluster-emission order is the order in
-    # which the Perspective agent wrote them.
+    # "Cluster N" link text.
     cluster_index: dict[str, int] = {}
     for i, c in enumerate(clusters, start=1):
         if not isinstance(c, dict):
@@ -1117,9 +1243,7 @@ def build_actors_section(tp: dict) -> str:
             cluster_index[cid] = i
 
     # actor_id → list of cluster_ids the actor appears in (any tier),
-    # in cluster-emission order. We use the cluster's `actor_ids[]`
-    # (the union of stated / reported / mentioned for that cluster) so
-    # tier is irrelevant — the table doesn't distinguish.
+    # in cluster-emission order.
     actor_clusters: dict[str, list[str]] = {}
     for c in clusters:
         if not isinstance(c, dict):
@@ -1132,33 +1256,87 @@ def build_actors_section(tp: dict) -> str:
                 continue
             actor_clusters.setdefault(aid, []).append(cid)
 
-    # actor_ids contained in the single-voices bracket. The bracket
-    # ref appears after any regular cluster refs (by construction
-    # bracket actors are orphans, so they carry no regular refs — but
-    # the code handles both for safety).
+    # Bracket-actor set.
     bracket_actor_ids: set[str] = {
         a for a in (single_voices.get("actor_ids") or [])
         if isinstance(a, str)
     } if isinstance(single_voices, dict) else set()
 
-    def _cluster_refs_cell(aid: str) -> str:
-        cids = actor_clusters.get(aid, [])
-        links: list[str] = []
-        for cid in cids:
-            idx = cluster_index.get(cid)
-            if idx is None:
-                continue
-            links.append(
-                f'<a href="#{_esc(cid)}">Cluster {idx}</a>'
-            )
-        if aid in bracket_actor_ids:
-            links.append('<a href="#single-voices">Single voices</a>')
-        if not links:
-            return ""
-        return ", ".join(links)
+    # Filter to dict-shaped actors and bucket by type.
+    actors: list[dict] = [a for a in actors_in if isinstance(a, dict)]
+    n_total = len(actors)
+    by_type: dict[str, list[dict]] = {}
+    for actor in actors:
+        atype = actor.get("type") or ""
+        by_type.setdefault(atype, []).append(actor)
 
-    def _source_refs_cell(actor: dict) -> str:
-        # Dedup source_ids preserving first-appearance order.
+    # Group render order: enum types first, then any extra types
+    # found in the data (preserved insertion order). Per-type counts
+    # are needed for the tab bar even when the group is empty.
+    extra_types = [
+        t for t in by_type.keys()
+        if t and t not in _ACTOR_TYPE_ENUM
+    ]
+    render_types: list[str] = list(_ACTOR_TYPE_ENUM) + extra_types
+
+    # Sub-line.
+    actors_meta_html = (
+        f'<p class="actors-meta">{n_total} '
+        f'actor{"" if n_total == 1 else "s"} quoted across this topic. '
+        f'Jump from any name above to find every cluster and source '
+        f'the actor figures in.</p>\n'
+    )
+
+    if n_total == 0:
+        return (
+            '<section id="actors-section" class="actors">\n'
+            '  <div class="actors-header">\n'
+            '    <h2><span class="section-number">§03</span> Actors</h2>\n'
+            '    <span class="actors-count">0 ACTORS</span>\n'
+            '  </div>\n'
+            f'{actors_meta_html}'
+            '</section>\n'
+        )
+
+    # -- Tab bar --
+    def _per_type_source_count(atype: str) -> int:
+        total = 0
+        for actor in by_type.get(atype, []):
+            seen: set[str] = set()
+            for sid in actor.get("source_ids") or []:
+                if isinstance(sid, str) and sid and sid not in seen:
+                    seen.add(sid)
+            total += len(seen)
+        return total
+
+    tab_buttons: list[str] = []
+    tab_buttons.append(
+        '<button class="actor-tab actor-tab--active" '
+        'type="button" data-type-target="all">'
+        f'<span class="actor-tab-name">ALL</span> '
+        f'<span class="actor-tab-count">{n_total}</span>'
+        '</button>'
+    )
+    for atype in _ACTOR_TYPE_ENUM:
+        count = len(by_type.get(atype, []))
+        disabled_attr = " disabled" if count == 0 else ""
+        disabled_cls = " actor-tab--disabled" if count == 0 else ""
+        tab_buttons.append(
+            f'<button class="actor-tab{disabled_cls}" type="button" '
+            f'data-type-target="{_esc(atype)}"{disabled_attr}>'
+            f'<span class="actor-tab-name">{_esc(_tab_label(atype))}</span> '
+            f'<span class="actor-tab-count">{count}</span>'
+            '</button>'
+        )
+    tabs_html = (
+        '<div class="actors-tabs" role="tablist">\n'
+        + "".join(tab_buttons)
+        + '\n</div>\n'
+    )
+
+    # -- Card grid --
+    def _actor_source_ids(actor: dict) -> list[str]:
+        """Dedup actor.source_ids preserving first-appearance order."""
         seen: set[str] = set()
         ordered: list[str] = []
         for sid in actor.get("source_ids") or []:
@@ -1166,67 +1344,137 @@ def build_actors_section(tp: dict) -> str:
                 continue
             seen.add(sid)
             ordered.append(sid)
-        if not ordered:
-            return ""
-        return ", ".join(
-            f'<a href="#{_esc(sid)}">{_esc(sid)}</a>' for sid in ordered
-        )
+        return ordered
 
-    rows: list[str] = []
-    for actor in actors:
-        if not isinstance(actor, dict):
-            continue
+    def _build_card(actor: dict) -> str:
         aid = actor.get("id", "")
         name = _esc(actor.get("name", ""))
         role = _esc(actor.get("role", ""))
-        atype = _esc(actor.get("type", ""))
         anon_html = (
             ' <em class="actor-anonymous">(anonymous)</em>'
             if actor.get("is_anonymous") else ""
         )
-        if role and atype:
-            role_type = f"{role} &middot; {atype}"
-        else:
-            role_type = role or atype
-        cluster_cell = _cluster_refs_cell(aid)
-        source_cell = _source_refs_cell(actor)
-        rows.append(
-            f'<tr id="{_esc(aid)}" class="actor-row">'
-            f'<td class="actor-name"><strong>{name}</strong>{anon_html}</td>'
-            f'<td class="actor-role-type">{role_type}</td>'
-            f'<td class="actor-cluster-refs">{cluster_cell}</td>'
-            f'<td class="actor-source-refs">{source_cell}</td>'
-            f'</tr>\n'
+        sids = _actor_source_ids(actor)
+        n_src = len(sids)
+
+        cluster_boxes: list[str] = []
+        for cid in actor_clusters.get(aid, []):
+            idx = cluster_index.get(cid)
+            if idx is None:
+                continue
+            cluster_boxes.append(
+                f'<a class="actor-card-cluster-box" href="#{_esc(cid)}">'
+                f'Cluster {idx}</a>'
+            )
+        if aid in bracket_actor_ids:
+            cluster_boxes.append(
+                '<a class="actor-card-cluster-box actor-card-cluster-box--bracket"'
+                ' href="#single-voices">Single voices</a>'
+            )
+        cluster_refs_html = (
+            f'<div class="actor-card-cluster-refs">{"".join(cluster_boxes)}</div>\n'
+            if cluster_boxes else ""
         )
 
-    n = len(rows)
-    if n == 0:
+        if sids:
+            source_box_html = "".join(
+                f'<a class="actor-card-source-box" href="#{_esc(sid)}">'
+                f'{_esc(sid)}</a>'
+                for sid in sids
+            )
+            source_refs_html = (
+                f'<div class="actor-card-source-refs">{source_box_html}</div>\n'
+            )
+        else:
+            source_refs_html = ""
+
+        role_html = (
+            f'<p class="actor-card-role">{role}</p>\n' if role else ""
+        )
+
         return (
-            '<section id="actors-section" class="actors">\n'
-            '<h2>Actors</h2>\n'
-            '<p class="actors-meta">0 actors quoted across this topic.</p>\n'
+            f'<article id="{_esc(aid)}" class="actor-card">\n'
+            '  <div class="actor-card-header">\n'
+            f'    <strong class="actor-card-name">{name}{anon_html}</strong>\n'
+            f'    <span class="actor-card-src-count">{n_src} SRC</span>\n'
+            '  </div>\n'
+            f'  {role_html}'
+            f'  {cluster_refs_html}'
+            f'  {source_refs_html}'
+            '</article>\n'
+        )
+
+    def _build_group(atype: str) -> str:
+        members = by_type.get(atype, [])
+        if not members:
+            return ""
+        sorted_members = sorted(
+            members,
+            key=lambda a: (
+                -len(_actor_source_ids(a)),
+                (a.get("name") or "").lower(),
+            ),
+        )
+        n_actors_group = len(members)
+        n_source_refs_group = _per_type_source_count(atype)
+        cards_html = "".join(_build_card(a) for a in sorted_members)
+        return (
+            f'<section class="actor-group" data-actor-type="{_esc(atype)}">\n'
+            '  <div class="actor-group-header">\n'
+            f'    <h3 class="actor-group-name">{_esc(_humanise_actor_type(atype))}</h3>\n'
+            '    <span class="actor-group-meta">'
+            f'{n_actors_group} actor{"" if n_actors_group == 1 else "s"}'
+            ' &middot; '
+            f'{n_source_refs_group} source ref{"" if n_source_refs_group == 1 else "s"}'
+            '</span>\n'
+            '  </div>\n'
+            f'  <div class="actor-card-grid">\n{cards_html}  </div>\n'
             '</section>\n'
         )
 
-    actors_meta = (
-        f'<p class="actors-meta">{n} actor{"" if n == 1 else "s"} '
-        f'quoted across this topic. Jump from any name above to find '
-        f'every cluster and source the actor figures in.</p>\n'
+    group_blocks: list[str] = []
+    for atype in render_types:
+        block = _build_group(atype)
+        if block:
+            group_blocks.append(block)
+
+    groups_html = (
+        '<div class="actor-groups" data-active-type="all">\n'
+        + "".join(group_blocks)
+        + '</div>\n'
+    )
+
+    js_shim = (
+        '<script>\n'
+        '(function() {\n'
+        '  const section = document.getElementById(\'actors-section\');\n'
+        '  if (!section) return;\n'
+        '  const tabs = section.querySelectorAll(\'.actor-tab\');\n'
+        '  const groups = section.querySelector(\'.actor-groups\');\n'
+        '  if (!groups) return;\n'
+        '  tabs.forEach(tab => {\n'
+        '    if (tab.disabled) return;\n'
+        '    tab.addEventListener(\'click\', () => {\n'
+        '      const target = tab.dataset.typeTarget || \'all\';\n'
+        '      groups.dataset.activeType = target;\n'
+        '      tabs.forEach(t => t.classList.toggle(\'actor-tab--active\', t === tab));\n'
+        '    });\n'
+        '  });\n'
+        '})();\n'
+        '</script>\n'
     )
 
     return (
         '<section id="actors-section" class="actors">\n'
-        '<h2>Actors</h2>\n'
-        f'{actors_meta}'
-        '<table class="actors-table">\n'
-        '<thead><tr>'
-        '<th>Actor</th>'
-        '<th>Role &middot; Type</th>'
-        '<th>Cluster refs</th>'
-        '<th>Source refs</th>'
-        '</tr></thead>\n'
-        f'<tbody>\n{"".join(rows)}</tbody>\n'
-        '</table>\n'
+        '  <div class="actors-header">\n'
+        '    <h2><span class="section-number">&sect;03</span> Actors</h2>\n'
+        f'    <span class="actors-count">{n_total} '
+        f'ACTOR{"" if n_total == 1 else "S"}</span>\n'
+        '  </div>\n'
+        f'{actors_meta_html}'
+        f'{tabs_html}'
+        f'{groups_html}'
+        f'{js_shim}'
         '</section>\n'
     )
 
