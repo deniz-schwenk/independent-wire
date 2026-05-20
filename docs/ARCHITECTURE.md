@@ -179,6 +179,8 @@ The full slot catalogue with owners, visibility, mirrors-from, and initial / fin
 
 All other Bus slots — RunBus init metadata, EditorAssignments, the full TopicBus slot family — are unchanged from the V2 cutover and documented in `docs/ARCH-V2-BUS-SCHEMA.md` §4A / §4B. The Curator-side additions above are the only new slots introduced across Briefs 1–5b.
 
+Post-V2 TopicBus addition (2026-05-20): `consolidated_missing_coverage` is written by the new deterministic `consolidate_missing_coverage` topic-stage. Visibility `tp+mcp`, `optional_write=True`, carrying `{missing_stakeholder_voices, missing_topic_dimensions}` — a derived dedup view over `perspective_missing_positions[]` and `coverage_gaps_validated[]`. The two source slots persist unchanged as the audit trail; canonical slot spec lives in `docs/ARCH-V2-BUS-SCHEMA.md` §4B.
+
 ---
 
 ## V2 Stage List
@@ -273,7 +275,7 @@ Applied in the current V2 pipeline:
 The cost of violating this principle is both tokens (input + output paid twice for no value) and architecture (agents become brittle format-translators instead of reasoning modules).
 
 Applied in the current V2 pipeline:
-- **Bias Language** agent outputs only `language_bias` findings and `reader_note` — it does not re-emit the source list or divergences, which Python aggregates from other slots at render time.
+- **Bias Language** agent outputs only `language_bias` findings and `reader_note` — it does not re-emit the source list or divergences, which Python aggregates from other slots at render time. Each finding carries the mandatory `finding_valid: bool` field (since 2026-05-19 commit `6f59fb4`): the agent sets it to `false` when drafting the `explanation` reveals the finding does not hold (excerpt not in `article_body`, legitimate-practice case, etc.). Retracted findings persist in the TP JSON as the audit trail; the renderer drops them from the published HTML.
 - **QA+Fix** returns corrections plus the corrected article body (the latter via the `qa_corrected_article` empty-then-fill mirror) — not the full Topic Package, which Python assembles from the merged Bus state.
 - **Hydration aggregator (Phase 1)** returns `article_analyses[]` with `article_index`, `summary`, and `actors_quoted` only. URL, outlet, language, country, title, estimated_date are pass-through via Python merge keyed by `article_index`.
 - **Curator Topic Discovery** emits only `{topics: [{title, summary}]}`. Source IDs, finding counts, geographic coverage, language coverage, source-diversity flags are all attached deterministically by `assemble_curator_topics` after `gravitational_assign` has produced the assignments.
@@ -431,6 +433,7 @@ Production (V2):
   WriterStage → QaAnalyzeStage → mirror_qa_corrected →
     prune_unused_sources_and_clusters → cleanup_stale_references →
     compute_source_balance → validate_coverage_gaps_stage →
+    consolidate_missing_coverage →
   BiasLanguageStage → compose_transparency_card → finalize_run
 
 Hydrated (V2):
