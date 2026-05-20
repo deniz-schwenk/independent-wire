@@ -297,13 +297,14 @@ In the production variant, `perspective_sync` does not run. The mirror stage sti
 
 The Bias Language Detector reads the corrected article (`qa_corrected_article`) and emits only what is originary to it: linguistic findings and reader-note. Other bias dimensions (source, geographical, selection, framing) are derived from other slots at render time — see Section 4B.12.
 
-#### 4B.10 Coverage gaps (post-research validation)
+#### 4B.10 Coverage gaps (post-research validation) + missing-coverage consolidation
 
 | Slot | Owner | Initial | Final | Visibility |
 |---|---|---|---|---|
 | `coverage_gaps_validated` | init (Python validation stage, runs after `final_sources` and `source_balance` exist) | `[]` | `merged_coverage_gaps` filtered against `source_balance` to drop gap statements that the final source pool empirically refutes ("no X-language sources" when X is present, etc.) | `tp`, `mcp` |
+| `consolidated_missing_coverage` | init (`consolidate_missing_coverage`, deterministic Python stage, runs after `validate_coverage_gaps_stage` and before `BiasLanguageStage`) | `{}` | `{missing_stakeholder_voices: [...], missing_topic_dimensions: [...]}` — derived dedup view: tokens of every `coverage_gaps_validated[]` entry are Jaccard-compared against tokens of every `perspective_missing_positions[].description`; gaps matching at ≥ 0.5 are dropped (the structured missing-position entry wins, the gap is removed from `missing_topic_dimensions`). `optional_write=True` so legacy / replay paths that bypass the stage validate. | `tp`, `mcp` |
 
-The unvalidated `merged_coverage_gaps` remains in the TopicBus for full provenance. Render layers reference `coverage_gaps_validated` only.
+The unvalidated `merged_coverage_gaps` remains in the TopicBus for full provenance. Render layers reference `coverage_gaps_validated` for the audit-trail rendering and `consolidated_missing_coverage` for the unified "What this dossier does not cover" section. The two source slots (`coverage_gaps_validated`, `perspective_missing_positions`) persist unchanged — the consolidation is a derived view, not a mutation of agent output.
 
 #### 4B.11 Source balance and rendered transparency
 
@@ -382,6 +383,7 @@ TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
 16. mirror_qa_corrected           — Python: empty-then-fill mirror. Fills empty fields of qa_corrected_article from writer_article. Final state: qa_corrected_article has all four fields populated.
 17. compute_source_balance        — Python: aggregates final_sources into source_balance
 18. validate_coverage_gaps        — Python: filters merged_coverage_gaps against source_balance; populates coverage_gaps_validated
+18b. consolidate_missing_coverage  — Python: token-Jaccard (≥ 0.5) dedup of `perspective_missing_positions[].description` vs `coverage_gaps_validated[]`; populates `consolidated_missing_coverage` with `{missing_stakeholder_voices, missing_topic_dimensions}` (the two source slots persist unchanged as audit trail).
 19. bias_language                 — Reads qa_corrected_article; populates bias_language_findings, bias_reader_note
 20. compose_transparency_card     — Python: assembles transparency_card from editor_selected_topic.selection_reason (cleaned), the parent RunBus's run_id and run_date, qa_problems_found, qa_corrections, and writer_article (as article_original) if qa modified anything
 
@@ -430,6 +432,7 @@ TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
 24. mirror_perspective_synced     — Python: second invocation. For clusters where perspective_sync emitted deltas, those are merged onto the slot's existing content (per-element granularity).
 25. compute_source_balance        — Same as production stage 17
 26. validate_coverage_gaps        — Same as production stage 18
+26b. consolidate_missing_coverage  — Same as production stage 18b
 27. bias_language                 — Same as production stage 19
 28. compose_transparency_card     — Same as production stage 20
 
