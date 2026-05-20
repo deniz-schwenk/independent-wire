@@ -302,6 +302,21 @@ h2 {
 .cluster-counts a:hover { color: var(--color-text); }
 .card:target { background: var(--color-bg-subtle, #f5f5f4); }
 
+/* Single-voices bracket — visually distinguished from real shared-
+   position clusters. Dashed left accent + neutral tinted background
+   read as "this is a different kind of grouping" without breaking the
+   page's existing card rhythm. */
+.single-voices-bracket {
+  border-left: 4px dashed #000;
+  background: var(--color-bg-subtle, #f5f5f4);
+  margin-top: 1rem;
+}
+.single-voices-bracket-tag {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-left: 0.5rem;
+}
+
 /* Cluster three-level actor sub-blocks (stated / reported / mentioned) */
 .cluster-tier { margin-top: 0.85rem; }
 .cluster-tier-label {
@@ -961,6 +976,106 @@ def build_perspectives(tp: dict) -> str:
     return f'<h2>Perspectives &mdash; Position Clusters</h2>\n<div class="card-grid">\n{"".join(cards)}</div>\n'
 
 
+# Tier sub-list field names on the single_voices bracket. Mirrors the
+# tier-label pairs in `_CLUSTER_TIERS` but the bracket uses the
+# `actors_*` prefix to make it textually obvious that the bracket is
+# not a regular cluster.
+_SINGLE_VOICES_TIERS: tuple[tuple[str, str], ...] = (
+    ("actors_stated", "Stated"),
+    ("actors_reported", "Reported"),
+    ("actors_mentioned", "Mentioned"),
+)
+
+
+def build_single_voices_bracket(tp: dict) -> str:
+    """Render the deterministic single-voices bracket, when present.
+
+    Reads `tp["perspectives"]["single_voices"]` — a dict written by the
+    `derive_single_voices` topic-stage. Mirrors the structural shape of
+    a cluster card (position label + summary + tier-grouped actor list
+    + counts) but is visually distinguished via the
+    ``single-voices-bracket`` CSS class (dashed left accent + tinted
+    background) and a small "BRACKET" tag in the header. The DOM
+    anchor is ``id="single-voices"`` — explicitly separate from cluster
+    ``pc-NNN`` anchors so cross-references from the Actors-section can
+    distinguish the two.
+
+    The section is omitted entirely when:
+    - the slot is absent (legacy fallback for pre-this-change TPs); or
+    - `actor_ids[]` is empty (no orphan met the structural-centrality
+      floor of ≥ 2 sources).
+    """
+    sv = tp.get("perspectives", {}).get("single_voices")
+    if not isinstance(sv, dict) or not sv:
+        return ""
+    actor_ids = [a for a in (sv.get("actor_ids") or []) if isinstance(a, str)]
+    if not actor_ids:
+        return ""
+
+    label = sv.get("position_label", "Single voices")
+    summary = sv.get("summary", "")
+
+    actors = tp.get("actors") or []
+    actor_index: dict[str, dict] = {}
+    for actor in actors:
+        if isinstance(actor, dict):
+            aid = actor.get("id")
+            if isinstance(aid, str) and aid:
+                actor_index[aid] = actor
+
+    tier_blocks: list[str] = []
+    for tier_key, tier_label in _SINGLE_VOICES_TIERS:
+        tier_aids = [
+            a for a in (sv.get(tier_key) or []) if isinstance(a, str)
+        ]
+        if not tier_aids:
+            continue
+        entries = [
+            _cluster_actor_entry(actor_index[aid], set())
+            for aid in tier_aids
+            if aid in actor_index
+        ]
+        if not entries:
+            continue
+        tier_blocks.append(
+            f'  <div class="cluster-tier cluster-tier-{tier_key}">\n'
+            f'    <h4 class="cluster-tier-label">{tier_label}</h4>\n'
+            f'    <ul class="cluster-tier-actors">{"".join(entries)}</ul>\n'
+            f'  </div>\n'
+        )
+
+    counts = sv.get("counts") or {}
+    n_actors = int(counts.get("actors", 0) or 0)
+    n_sources = int(counts.get("sources", 0) or 0)
+    n_regions = int(counts.get("regions", 0) or 0)
+    n_languages = int(counts.get("languages", 0) or 0)
+    counts_line = (
+        f'<p class="cluster-counts">'
+        f'<span class="cluster-counts-actors">'
+        f'<a href="#single-voices">{_plural(n_actors, "actor")}</a>'
+        f'</span>'
+        f' &middot; '
+        f'<span>{_plural(n_sources, "source")}</span>'
+        f' &middot; '
+        f'<span>{_plural(n_regions, "region")}</span>'
+        f' &middot; '
+        f'<span>{_plural(n_languages, "language")}</span>'
+        f'</p>\n'
+    )
+
+    return (
+        '<div class="card single-voices-bracket" id="single-voices">\n'
+        '  <div class="card-header">'
+        f'<span class="card-actor">{_esc(label)}</span>'
+        '<span class="single-voices-bracket-tag">Bracket</span>'
+        '</div>\n'
+        f'  <div class="card-position">{_esc(summary)}</div>\n'
+        f'{"".join(tier_blocks)}'
+        f'  {counts_line}'
+        '</div>\n'
+    )
+
+
 def build_actors_section(tp: dict) -> str:
     """Actors-section as navigation bridge.
 
@@ -988,6 +1103,7 @@ def build_actors_section(tp: dict) -> str:
     """
     actors = tp.get("actors") or []
     clusters = tp.get("perspectives", {}).get("position_clusters", []) or []
+    single_voices = tp.get("perspectives", {}).get("single_voices") or {}
 
     # cluster_id → 1-based emission index. Drives the human-readable
     # "Cluster N" link text. Cluster-emission order is the order in
@@ -1016,10 +1132,17 @@ def build_actors_section(tp: dict) -> str:
                 continue
             actor_clusters.setdefault(aid, []).append(cid)
 
+    # actor_ids contained in the single-voices bracket. The bracket
+    # ref appears after any regular cluster refs (by construction
+    # bracket actors are orphans, so they carry no regular refs — but
+    # the code handles both for safety).
+    bracket_actor_ids: set[str] = {
+        a for a in (single_voices.get("actor_ids") or [])
+        if isinstance(a, str)
+    } if isinstance(single_voices, dict) else set()
+
     def _cluster_refs_cell(aid: str) -> str:
         cids = actor_clusters.get(aid, [])
-        if not cids:
-            return ""
         links: list[str] = []
         for cid in cids:
             idx = cluster_index.get(cid)
@@ -1028,6 +1151,10 @@ def build_actors_section(tp: dict) -> str:
             links.append(
                 f'<a href="#{_esc(cid)}">Cluster {idx}</a>'
             )
+        if aid in bracket_actor_ids:
+            links.append('<a href="#single-voices">Single voices</a>')
+        if not links:
+            return ""
         return ", ".join(links)
 
     def _source_refs_cell(actor: dict) -> str:
@@ -1995,6 +2122,7 @@ def render(tp: dict) -> str:
         build_reader_note(tp),
         build_article_body(tp),
         build_perspectives(tp),
+        build_single_voices_bracket(tp),
         build_actors_section(tp),
         # Unified section when the consolidated slot is present.
         # Legacy `build_missing_voices` + `build_coverage_gaps` calls

@@ -37,6 +37,7 @@ from src.stages.topic_stages import (
     compose_transparency_card,
     compute_source_balance,
     consolidate_missing_coverage,
+    derive_single_voices,
     enrich_perspective_clusters,
     merge_sources,
     mirror_perspective_synced,
@@ -750,6 +751,176 @@ def test_consolidate_empty_inputs_yield_empty_view():
         "missing_stakeholder_voices": [],
         "missing_topic_dimensions": [],
     }
+
+
+# ---------------------------------------------------------------------------
+# derive_single_voices — deterministic bracket for orphan protagonists
+# ---------------------------------------------------------------------------
+
+
+def test_single_voices_orphan_with_two_sources_qualifies_stated_tier():
+    """Acceptance criterion: a single orphan actor (≥ 2 sources) with at
+    least one verbatim quote lands in the bracket's `actors_stated`
+    sub-list. Region/language counts are derived from the matching
+    `final_sources[]` entries."""
+    tb = TopicBus()
+    tb.canonical_actors = [
+        {
+            "id": "actor-001",
+            "name": "DR Congo Health Minister",
+            "role": "Health Minister",
+            "type": "government",
+            "source_ids": ["src-001", "src-002"],
+            "quotes": [
+                {"source_id": "src-001",
+                 "position": "Declared a national outbreak.",
+                 "verbatim": "We are mobilising every district hospital."},
+                {"source_id": "src-002",
+                 "position": "Outlined containment plan.",
+                 "verbatim": None},
+            ],
+        },
+    ]
+    tb.perspective_clusters_synced = []  # actor-001 in no cluster → orphan
+    tb.final_sources = [
+        {"id": "src-001", "country": "Democratic Republic of the Congo",
+         "language": "fr"},
+        {"id": "src-002", "country": "United States", "language": "en"},
+    ]
+    tb_after = _run(derive_single_voices, tb, _ro())
+    sv = tb_after.single_voices
+
+    assert sv["position_label"] == "Single voices"
+    assert "unique positions" in sv["summary"]
+    assert sv["actors_stated"] == ["actor-001"]
+    assert sv["actors_reported"] == []
+    assert sv["actors_mentioned"] == []
+    assert sv["actor_ids"] == ["actor-001"]
+    assert sv["source_ids"] == ["src-001", "src-002"]
+    assert sv["counts"] == {
+        "actors": 1,
+        "sources": 2,
+        "regions": 2,   # DR Congo + United States
+        "languages": 2, # fr + en
+    }
+
+
+def test_single_voices_orphan_with_one_source_excluded():
+    """Acceptance criterion: an orphan whose source set has size 1
+    stays out of the bracket — single-source actors are tangential
+    mentions, not structurally central. The bracket renders with empty
+    `actor_ids[]` (which the renderer treats as "section omitted")."""
+    tb = TopicBus()
+    tb.canonical_actors = [
+        {
+            "id": "actor-001",
+            "name": "Tangential Witness",
+            "role": "Bystander",
+            "type": "individual",
+            "source_ids": ["src-005"],
+            "quotes": [
+                {"source_id": "src-005",
+                 "position": "Said something brief.",
+                 "verbatim": None},
+            ],
+        },
+    ]
+    tb.perspective_clusters_synced = []
+    tb.final_sources = [
+        {"id": "src-005", "country": "France", "language": "fr"},
+    ]
+    tb_after = _run(derive_single_voices, tb, _ro())
+    sv = tb_after.single_voices
+    assert sv["actor_ids"] == []
+    assert sv["actors_stated"] == []
+    assert sv["actors_reported"] == []
+    assert sv["actors_mentioned"] == []
+    assert sv["counts"]["actors"] == 0
+
+
+def test_single_voices_three_orphans_at_different_tiers():
+    """Acceptance criterion: three qualifying orphans land in their
+    respective tier sub-lists per the verbatim/position derivation
+    rule. Tier rule:
+      - any quote with non-empty `verbatim` → stated
+      - else any quote with non-empty `position` → reported
+      - else → mentioned
+    """
+    tb = TopicBus()
+    tb.canonical_actors = [
+        {
+            "id": "actor-001",
+            "name": "Has Verbatim",
+            "role": "r",
+            "type": "government",
+            "source_ids": ["src-001", "src-002"],
+            "quotes": [
+                {"source_id": "src-001", "position": "p",
+                 "verbatim": "v"},
+            ],
+        },
+        {
+            "id": "actor-002",
+            "name": "Paraphrase Only",
+            "role": "r",
+            "type": "government",
+            "source_ids": ["src-001", "src-003"],
+            "quotes": [
+                {"source_id": "src-001", "position": "paraphrased",
+                 "verbatim": None},
+                {"source_id": "src-003", "position": "more paraphrase",
+                 "verbatim": ""},
+            ],
+        },
+        {
+            "id": "actor-003",
+            "name": "Named Only",
+            "role": "r",
+            "type": "government",
+            "source_ids": ["src-002", "src-003"],
+            "quotes": [
+                {"source_id": "src-002", "position": "", "verbatim": None},
+                {"source_id": "src-003", "position": None, "verbatim": ""},
+            ],
+        },
+    ]
+    tb.perspective_clusters_synced = []
+    tb.final_sources = [
+        {"id": "src-001", "country": "X", "language": "en"},
+        {"id": "src-002", "country": "Y", "language": "en"},
+        {"id": "src-003", "country": "Z", "language": "fr"},
+    ]
+    tb_after = _run(derive_single_voices, tb, _ro())
+    sv = tb_after.single_voices
+    assert sv["actors_stated"] == ["actor-001"]
+    assert sv["actors_reported"] == ["actor-002"]
+    assert sv["actors_mentioned"] == ["actor-003"]
+    # actor_ids flat union ordered stated → reported → mentioned.
+    assert sv["actor_ids"] == ["actor-001", "actor-002", "actor-003"]
+    assert sv["counts"]["actors"] == 3
+    assert sv["counts"]["regions"] == 3
+    assert sv["counts"]["languages"] == 2
+
+
+def test_single_voices_actor_in_cluster_is_not_orphan():
+    """An actor present in any cluster's `actor_ids[]` is not an orphan
+    and must not appear in the bracket, even when their source set has
+    size ≥ 2."""
+    tb = TopicBus()
+    tb.canonical_actors = [
+        {"id": "actor-001", "name": "Clustered", "role": "r", "type": "t",
+         "source_ids": ["src-001", "src-002"], "quotes": []},
+        {"id": "actor-002", "name": "Orphan", "role": "r", "type": "t",
+         "source_ids": ["src-001", "src-002"], "quotes": []},
+    ]
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "actor_ids": ["actor-001"], "source_ids": ["src-001"]},
+    ]
+    tb.final_sources = []
+    tb_after = _run(derive_single_voices, tb, _ro())
+    sv = tb_after.single_voices
+    assert "actor-001" not in sv["actor_ids"]
+    assert sv["actor_ids"] == ["actor-002"]
 
 
 # ---------------------------------------------------------------------------

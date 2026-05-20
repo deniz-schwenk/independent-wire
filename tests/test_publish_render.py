@@ -9,12 +9,14 @@ from __future__ import annotations
 
 from scripts.publish import extract_metadata
 from scripts.render import (
+    build_actors_section,
     build_bias_card,
     build_coverage_gaps,
     build_meta_bar,
     build_missing_coverage_section,
     build_missing_voices,
     build_perspectives,
+    build_single_voices_bracket,
     build_sources_table,
     build_transparency,
 )
@@ -264,6 +266,178 @@ def test_cluster_card_actor_count_is_clickable_when_id_present():
     assert '<a href="#cluster-pc-007">2 actors</a>' in html
     # Cluster card itself anchorable by canonical id
     assert 'id="pc-007"' in html
+
+
+# ---------------------------------------------------------------------------
+# Single-voices bracket (build_single_voices_bracket + Actors-section row)
+# ---------------------------------------------------------------------------
+
+
+def test_single_voices_bracket_renders_with_full_shape():
+    """Acceptance criterion: the bracket renders the position label,
+    summary, tier-grouped actor names, and counts. It carries the
+    `single-voices-bracket` CSS class (visually distinguished from
+    regular cluster cards) and the `single-voices` DOM anchor (not a
+    `pc-NNN` cluster id)."""
+    tp = {
+        "actors": [
+            {"id": "actor-001", "name": "Health Minister",
+             "role": "Minister", "type": "government",
+             "source_ids": ["src-001", "src-002"], "quotes": []},
+            {"id": "actor-002", "name": "WHO Spokesperson",
+             "role": "Spokesperson", "type": "international_org",
+             "source_ids": ["src-003"], "quotes": []},
+        ],
+        "perspectives": {
+            "position_clusters": [],
+            "single_voices": {
+                "position_label": "Single voices",
+                "summary": "Actors with unique positions ...",
+                "actors_stated": ["actor-001"],
+                "actors_reported": ["actor-002"],
+                "actors_mentioned": [],
+                "actor_ids": ["actor-001", "actor-002"],
+                "source_ids": ["src-001", "src-002", "src-003"],
+                "counts": {
+                    "actors": 2, "sources": 3, "regions": 2, "languages": 2,
+                },
+            },
+        },
+    }
+    html = build_single_voices_bracket(tp)
+    # Card present with bracket-specific CSS class and DOM anchor.
+    assert 'class="card single-voices-bracket"' in html
+    assert 'id="single-voices"' in html
+    # Header carries the position-label and the "Bracket" tag for
+    # visual distinction from real clusters.
+    assert "Single voices" in html
+    assert 'class="single-voices-bracket-tag"' in html
+    assert "Bracket" in html
+    # Position summary surfaces.
+    assert "unique positions" in html
+    # Tier sub-blocks render with the expected labels and actors.
+    assert ">Stated<" in html
+    assert ">Reported<" in html
+    assert "Health Minister" in html
+    assert "WHO Spokesperson" in html
+    # Counts line uses the bracket's `counts` dict, not derived from
+    # `actor_ids` length, so a mismatch would surface.
+    assert "2 actors" in html
+    assert "3 sources" in html
+    assert "2 regions" in html
+    assert "2 languages" in html
+
+
+def test_single_voices_bracket_omitted_when_actor_ids_empty():
+    """Acceptance criterion: section omitted entirely when the slot
+    carries zero qualifying actors. Empty `actor_ids[]` is treated the
+    same as an absent slot — empty string returned, render() skips it."""
+    tp = {
+        "actors": [],
+        "perspectives": {
+            "position_clusters": [],
+            "single_voices": {
+                "position_label": "Single voices",
+                "summary": "...",
+                "actors_stated": [],
+                "actors_reported": [],
+                "actors_mentioned": [],
+                "actor_ids": [],
+                "source_ids": [],
+                "counts": {
+                    "actors": 0, "sources": 0, "regions": 0, "languages": 0,
+                },
+            },
+        },
+    }
+    assert build_single_voices_bracket(tp) == ""
+
+
+def test_single_voices_bracket_omitted_when_slot_absent():
+    """Acceptance criterion: legacy-permissive. A TP JSON without the
+    `single_voices` slot (pre-this-change publish) renders the rest of
+    the page unchanged — the bracket function returns empty string."""
+    tp = {
+        "actors": [],
+        "perspectives": {"position_clusters": []},
+    }
+    assert build_single_voices_bracket(tp) == ""
+
+
+def test_actors_section_row_for_bracket_actor_shows_single_voices_anchor():
+    """Acceptance criterion: an actor in the bracket sees a
+    `Single voices` entry in their Cluster-refs cell. For
+    bracket-only actors (no regular cluster), it is the only entry —
+    the cell is otherwise empty per Issue 7."""
+    tp = {
+        "actors": [
+            {"id": "actor-001", "name": "Orphan Protagonist",
+             "role": "Minister", "type": "government",
+             "source_ids": ["src-001", "src-002"], "quotes": []},
+        ],
+        "perspectives": {
+            "position_clusters": [],
+            "single_voices": {
+                "actors_stated": ["actor-001"],
+                "actors_reported": [],
+                "actors_mentioned": [],
+                "actor_ids": ["actor-001"],
+                "source_ids": ["src-001", "src-002"],
+                "counts": {
+                    "actors": 1, "sources": 2, "regions": 0, "languages": 0,
+                },
+            },
+        },
+    }
+    html = build_actors_section(tp)
+    # Cluster-refs cell contains a Single voices anchor pointing at the
+    # bracket's DOM target (not a #pc-NNN cluster id).
+    assert '<a href="#single-voices">Single voices</a>' in html
+    # And no spurious "Cluster N" entry for this actor.
+    assert 'href="#pc-' not in html
+
+
+def test_actors_section_row_for_non_bracket_actor_omits_single_voices():
+    """An actor NOT in the bracket must not see a Single voices ref in
+    their Cluster-refs cell, even when a bracket exists in the TP."""
+    tp = {
+        "actors": [
+            {"id": "actor-001", "name": "Clustered",
+             "role": "r", "type": "t",
+             "source_ids": ["src-001"], "quotes": []},
+            {"id": "actor-002", "name": "Bracketed",
+             "role": "r", "type": "t",
+             "source_ids": ["src-001", "src-002"], "quotes": []},
+        ],
+        "perspectives": {
+            "position_clusters": [
+                {"id": "pc-001", "actor_ids": ["actor-001"],
+                 "source_ids": ["src-001"]},
+            ],
+            "single_voices": {
+                "actors_stated": ["actor-002"],
+                "actors_reported": [],
+                "actors_mentioned": [],
+                "actor_ids": ["actor-002"],
+                "source_ids": ["src-001", "src-002"],
+                "counts": {
+                    "actors": 1, "sources": 2, "regions": 0, "languages": 0,
+                },
+            },
+        },
+    }
+    html = build_actors_section(tp)
+    # actor-001's row carries the Cluster 1 anchor but no Single voices.
+    actor1_start = html.find('id="actor-001"')
+    actor1_end = html.find("</tr>", actor1_start)
+    actor1_row = html[actor1_start:actor1_end]
+    assert 'href="#pc-001">Cluster 1' in actor1_row
+    assert "Single voices" not in actor1_row
+    # actor-002's row carries Single voices (and no cluster ref).
+    actor2_start = html.find('id="actor-002"')
+    actor2_end = html.find("</tr>", actor2_start)
+    actor2_row = html[actor2_start:actor2_end]
+    assert 'href="#single-voices">Single voices' in actor2_row
 
 
 def test_bias_card_renders_findings():

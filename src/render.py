@@ -171,6 +171,14 @@ def render_tp_public(
         "perspectives": {
             "position_clusters": list(topic_bus.perspective_clusters_synced),
             "missing_positions": list(topic_bus.perspective_missing_positions),
+            # Deterministic bracket of structurally-central orphan
+            # actors (≥ 2 sources, no cluster membership). Written by
+            # `derive_single_voices`. Surfaced alongside
+            # `position_clusters` so consumers can distinguish the
+            # bracket (disparate positions deterministically grouped)
+            # from real shared-position clusters. Empty dict / absent
+            # slot → renderer omits the section.
+            "single_voices": dict(topic_bus.single_voices or {}),
         },
         # Consolidated dedup view written by `consolidate_missing_coverage`.
         # Surfaced under a top-level key so the public renderer can prefer
@@ -196,6 +204,7 @@ _TP_RESHAPED_SLOTS: dict[str, str] = {
     # slot name → output key that carries its content (reshaped)
     "perspective_clusters_synced": "perspectives.position_clusters",
     "perspective_missing_positions": "perspectives.missing_positions",
+    "single_voices": "perspectives.single_voices",
     "qa_corrected_article": "article",
     "qa_divergences": "divergences",
     "coverage_gaps_validated": "gaps",

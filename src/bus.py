@@ -722,6 +722,40 @@ class TopicBus(BaseModel):
         mirror_granularity="element",
     )
 
+    # 4B.8b Single-voices bracket (1 derived slot).
+    # Written by `derive_single_voices` — deterministic Python stage that
+    # collects actors present in `canonical_actors[]` but absent from
+    # every `perspective_clusters_synced[].actor_ids[]`, filtered to those
+    # quoted by ≥ 2 sources (structurally-central orphans). The bracket
+    # is rendered as a single visually-distinguished card after the
+    # regular clusters; consumers must distinguish it from real shared-
+    # position clusters because the actors inside hold disparate
+    # positions deterministically grouped, not a shared cluster.
+    #
+    # Shape:
+    #   {
+    #     "position_label": "Single voices",
+    #     "summary": "<fixed module-level string>",
+    #     "actors_stated":    [actor-NNN, …],
+    #     "actors_reported":  [actor-NNN, …],
+    #     "actors_mentioned": [actor-NNN, …],
+    #     "actor_ids":        [actor-NNN, …],   # union of the three above
+    #     "source_ids":       [src-NNN, …],     # union across included actors
+    #     "counts": {"actors": N, "sources": N, "regions": N, "languages": N},
+    #   }
+    #
+    # `optional_write=True` because legacy / replay paths that bypass the
+    # stage validate, and because the bracket is legitimately empty when
+    # every orphan is below the 2-source threshold. When `actor_ids[]` is
+    # empty, the renderer omits the section entirely. The bracket does
+    # NOT mint a `pc-NNN` id — its DOM anchor is `id="single-voices"`,
+    # explicitly separate from cluster anchors.
+    single_voices: dict = Slot(
+        default_factory=dict,
+        visibility=["tp", "mcp"],
+        optional_write=True,
+    )
+
     # 4B.9 Bias Detector phase (2 slots)
     bias_language_findings: list = Slot(default_factory=list, visibility=["tp", "mcp"])
     bias_reader_note: str = Slot("", visibility=["tp", "mcp"])

@@ -1238,6 +1238,196 @@ async def consolidate_missing_coverage(
 
 
 # ---------------------------------------------------------------------------
+# 18c. derive_single_voices
+# ---------------------------------------------------------------------------
+
+
+# Fixed strings rendered into the bracket card. Module-level so the
+# renderer and tests can refer to them without round-tripping the bus.
+_SINGLE_VOICES_POSITION_LABEL: str = "Single voices"
+_SINGLE_VOICES_SUMMARY: str = (
+    "Actors with unique positions that cannot be grouped with other "
+    "positions into a shared cluster, but are referenced by multiple "
+    "sources and are therefore considered important to the dossier."
+)
+# Source-count threshold for inclusion. An orphan with only 1 source
+# stays out of the bracket — those are tangential mentions that the
+# regular Actors-section already surfaces with an empty Cluster-refs
+# cell (per Issue 7).
+_SINGLE_VOICES_MIN_SOURCES: int = 2
+
+
+def _derive_orphan_tier(actor: dict) -> str:
+    """Tier derivation rule for orphan actors who lack an agent-assigned
+    tier (because they sit outside every position cluster).
+
+    Rule (per the single-voices brief, 2026-05-20):
+    - any `quotes[i].verbatim` non-empty → "stated"   (direct quote on record)
+    - else any `quotes[i].position` non-empty → "reported"  (paraphrased)
+    - else → "mentioned"                              (named without position)
+
+    Note: this is independent of `quotes[i].evidence_type` — that field
+    is emitted by Hydration-Phase-1 and feeds the per-evidence canonical
+    actor pools, but the brief specifies the verbatim/position check
+    explicitly so the rule stays interpretable from the rendered TP
+    JSON alone (which omits `evidence_type` from agent quotes).
+    """
+    has_verbatim = False
+    has_position = False
+    for q in actor.get("quotes") or []:
+        if not isinstance(q, dict):
+            continue
+        v = q.get("verbatim")
+        if isinstance(v, str) and v.strip():
+            has_verbatim = True
+            break
+        p = q.get("position")
+        if isinstance(p, str) and p.strip():
+            has_position = True
+    if has_verbatim:
+        return "stated"
+    if has_position:
+        return "reported"
+    return "mentioned"
+
+
+@topic_stage_def(
+    reads=(
+        "canonical_actors",
+        "perspective_clusters_synced",
+        "final_sources",
+    ),
+    writes=("single_voices",),
+)
+async def derive_single_voices(
+    topic_bus: TopicBus, run_bus: RunBusReadOnly
+) -> TopicBus:
+    """Deterministic bracket for structurally-central orphan actors.
+
+    Reads `canonical_actors[]`, `perspective_clusters_synced[]`, and
+    `final_sources[]`. An actor qualifies for the bracket when:
+
+    - the actor's `id` is absent from every cluster's `actor_ids[]`
+      (i.e. Perspective did not place them in any shared-position
+      cluster); AND
+    - `len(set(actor.source_ids))` is at least
+      `_SINGLE_VOICES_MIN_SOURCES` (a structural-centrality floor — 1-
+      source orphans stay out and surface in the Actors-section with
+      an empty Cluster-refs cell, per Issue 7).
+
+    Qualifying actors get a tier assignment from `_derive_orphan_tier`.
+    The bracket dict (see `single_voices` slot docstring in `src/bus.py`)
+    holds `position_label`, `summary`, the three tier sub-lists, the
+    flat `actor_ids[]` (union, ordered stated → reported → mentioned and
+    within each tier preserving canonical_actors emission order), the
+    union `source_ids[]` (first-appearance order across included actors),
+    and the `counts` dict (actors, sources, regions, languages).
+
+    Region/language counts are derived against `final_sources[]` using
+    the same `normalise_country` / `normalise_language` helpers the
+    cluster-enrichment stage uses, so the count semantics match.
+
+    When no orphan qualifies, the stage writes an empty bracket
+    (`actor_ids=[]`, counts zero). The renderer treats both that and an
+    absent slot as "section omitted entirely", so legacy / replay paths
+    that bypass this stage render the page unchanged.
+    """
+    actors = list(topic_bus.canonical_actors or [])
+    clusters = list(topic_bus.perspective_clusters_synced or [])
+    sources = list(topic_bus.final_sources or [])
+
+    # 1. Build the clustered-actor set.
+    clustered_ids: set[str] = set()
+    for c in clusters:
+        if not isinstance(c, dict):
+            continue
+        for aid in c.get("actor_ids") or []:
+            if isinstance(aid, str):
+                clustered_ids.add(aid)
+
+    # 2. Build source-id → source-record lookup for region/language.
+    src_by_id: dict[str, dict] = {}
+    for s in sources:
+        if isinstance(s, dict):
+            sid = s.get("id")
+            if isinstance(sid, str) and sid:
+                src_by_id[sid] = s
+
+    # 3. Walk canonical_actors[] in order; collect qualifying orphans
+    #    with their derived tier. Order within each tier preserves
+    #    canonical_actors emission order.
+    actors_by_tier: dict[str, list[str]] = {
+        "stated": [],
+        "reported": [],
+        "mentioned": [],
+    }
+    qualifying_actors: list[dict] = []
+    for actor in actors:
+        if not isinstance(actor, dict):
+            continue
+        aid = actor.get("id")
+        if not isinstance(aid, str) or not aid:
+            continue
+        if aid in clustered_ids:
+            continue
+        # Dedup actor.source_ids for the centrality check.
+        actor_sids = {
+            sid for sid in (actor.get("source_ids") or [])
+            if isinstance(sid, str) and sid
+        }
+        if len(actor_sids) < _SINGLE_VOICES_MIN_SOURCES:
+            continue
+        tier = _derive_orphan_tier(actor)
+        actors_by_tier[tier].append(aid)
+        qualifying_actors.append(actor)
+
+    # 4. Flat union: ordered stated → reported → mentioned.
+    actor_ids: list[str] = (
+        actors_by_tier["stated"]
+        + actors_by_tier["reported"]
+        + actors_by_tier["mentioned"]
+    )
+
+    # 5. Union source_ids across included actors, first-appearance order.
+    source_ids: list[str] = []
+    seen_sids: set[str] = set()
+    regions_seen: set[str] = set()
+    languages_seen: set[str] = set()
+    for actor in qualifying_actors:
+        for sid in actor.get("source_ids") or []:
+            if not isinstance(sid, str) or not sid or sid in seen_sids:
+                continue
+            seen_sids.add(sid)
+            source_ids.append(sid)
+            src = src_by_id.get(sid)
+            if not src:
+                continue
+            country = normalise_country(src.get("country"))
+            language = normalise_language(src.get("language"))
+            if country:
+                regions_seen.add(country)
+            if language:
+                languages_seen.add(language)
+
+    bracket = {
+        "position_label": _SINGLE_VOICES_POSITION_LABEL,
+        "summary": _SINGLE_VOICES_SUMMARY,
+        "actors_stated": actors_by_tier["stated"],
+        "actors_reported": actors_by_tier["reported"],
+        "actors_mentioned": actors_by_tier["mentioned"],
+        "actor_ids": actor_ids,
+        "source_ids": source_ids,
+        "counts": {
+            "actors": len(actor_ids),
+            "sources": len(source_ids),
+            "regions": len(regions_seen),
+            "languages": len(languages_seen),
+        },
+    }
+    return topic_bus.model_copy(update={"single_voices": bracket})
+
+
+# ---------------------------------------------------------------------------
 # 19a. prune_unused_sources_and_clusters
 # ---------------------------------------------------------------------------
 
@@ -2078,4 +2268,5 @@ __all__ = [
     "renumber_sources",
     "validate_coverage_gaps_stage",
     "consolidate_missing_coverage",
+    "derive_single_voices",
 ]
