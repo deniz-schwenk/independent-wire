@@ -181,6 +181,8 @@ All other Bus slots — RunBus init metadata, EditorAssignments, the full TopicB
 
 Post-V2 TopicBus addition (2026-05-20): `consolidated_missing_coverage` is written by the new deterministic `consolidate_missing_coverage` topic-stage. Visibility `tp+mcp`, `optional_write=True`, carrying `{missing_stakeholder_voices, missing_topic_dimensions}` — a derived dedup view over `perspective_missing_positions[]` and `coverage_gaps_validated[]`. The two source slots persist unchanged as the audit trail; canonical slot spec lives in `docs/ARCH-V2-BUS-SCHEMA.md` §4B.
 
+Post-V2 TopicBus addition (2026-05-20): `single_voices` is written by the new deterministic `derive_single_voices` topic-stage. Visibility `tp+mcp`, `optional_write=True`, carrying `{position_label, summary, actors_stated, actors_reported, actors_mentioned, actor_ids, source_ids, counts}` — a deterministic bracket of structurally-central orphan actors (≥ 2 sources, no cluster membership). Sits next to `perspective_clusters_synced[]` so consumers can distinguish the bracket (disparate positions deterministically grouped) from a real shared-position cluster; the bracket's DOM anchor is `id="single-voices"`, explicitly separate from any `pc-NNN`. Canonical slot spec lives in `docs/ARCH-V2-BUS-SCHEMA.md` §4B.
+
 ---
 
 ## V2 Stage List
@@ -433,7 +435,7 @@ Production (V2):
   WriterStage → QaAnalyzeStage → mirror_qa_corrected →
     prune_unused_sources_and_clusters → cleanup_stale_references →
     compute_source_balance → validate_coverage_gaps_stage →
-    consolidate_missing_coverage →
+    consolidate_missing_coverage → derive_single_voices →
   BiasLanguageStage → compose_transparency_card → finalize_run
 
 Hydrated (V2):
