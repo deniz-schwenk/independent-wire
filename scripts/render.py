@@ -341,26 +341,8 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
-/* Actors section — grouped card grid with type-tab filter */
-.actors-header {
-  display: flex; justify-content: space-between; align-items: baseline;
-  margin: 2.5rem 0 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 3px solid var(--color-border);
-}
-.actors-header h2 {
-  margin: 0; border-bottom: none; padding-bottom: 0; flex: 1;
-}
-.section-number {
-  font-family: var(--font-mono); font-size: 0.85rem;
-  color: var(--color-text-subtle); font-weight: 400;
-  margin-right: 0.5rem;
-}
-.actors-count {
-  font-family: var(--font-mono); font-size: 0.85rem;
-  color: var(--color-text-subtle);
-  text-transform: uppercase; letter-spacing: 0.05em;
-}
+/* Actors section — flat card grid with type-tab filter */
+.actors h2 { margin-top: 2.5rem; }
 .actors-meta {
   font-family: var(--font-sans); font-size: 0.95rem;
   color: var(--color-text-secondary);
@@ -382,39 +364,33 @@ h2 {
 .actor-tab-count { margin-left: 0.4rem; color: var(--color-text-subtle); }
 .actor-tab--active { background: #000; color: var(--color-bg); }
 .actor-tab--active .actor-tab-count { color: var(--color-bg); }
-.actor-tab--disabled, .actor-tab[disabled] {
-  color: var(--color-text-subtle); cursor: not-allowed;
-  background: transparent; border-color: var(--color-border-light);
-}
-.actor-tab--disabled .actor-tab-count { color: var(--color-text-subtle); }
-.actor-tab:not(.actor-tab--active):not(.actor-tab--disabled):hover {
+.actor-tab:not(.actor-tab--active):hover {
   background: var(--color-bg-subtle, #f5f5f4);
 }
 
-.actor-group { margin-top: 2rem; }
-.actor-group[hidden] { display: none; }
-.actor-group-header {
-  display: flex; justify-content: space-between; align-items: baseline;
-  border-bottom: 2px solid #000; padding-bottom: 0.5rem; margin-bottom: 1rem;
-  gap: 1rem; flex-wrap: wrap;
-}
-.actor-group-name {
-  font-family: var(--font-sans); font-size: 1.1rem; font-weight: 700;
-  margin: 0;
-}
-.actor-group-meta {
-  font-family: var(--font-mono); font-size: 0.8rem;
-  color: var(--color-text-subtle);
-  text-transform: uppercase; letter-spacing: 0.05em;
-}
-
+/* Two-column grid with a vertical centre rule. The ::before pseudo
+   spans the full grid height and sits in the middle of the column
+   gap, matching the horizontal `border-top` rhythm on each card.
+   Disabled on mobile via the @media block when the grid collapses
+   to a single column. */
 .actor-card-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem;
+  position: relative;
+}
+.actor-card-grid::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%; width: 1px;
+  background: var(--color-border-light);
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 .actor-card {
   border-top: 1px solid var(--color-border-light);
   padding: 1rem 0;
 }
+.actor-card[hidden] { display: none; }
 .actor-card:target { background: var(--color-bg-subtle, #f5f5f4); }
 .actor-card-header {
   display: flex; justify-content: space-between; align-items: baseline;
@@ -436,7 +412,7 @@ h2 {
   margin: 0 0 0.5rem;
 }
 .actor-card-cluster-refs, .actor-card-source-refs {
-  display: flex; flex-wrap: wrap; gap: 0.25rem;
+  display: flex; flex-wrap: wrap; gap: 0.2rem;
   margin-top: 0.4rem;
 }
 .actor-card-cluster-box {
@@ -448,12 +424,16 @@ h2 {
 }
 .actor-card-cluster-box:hover { background: var(--color-bg-subtle, #f5f5f4); }
 .actor-card-cluster-box--bracket { border-style: dashed; }
+/* Source-ref boxes — tightened (Correction 3, 2026-05-20) so ≥ 5
+   `src-NNN` boxes fit per row at the desktop card width
+   (container 740px → ~334px per card column). Lowercase label,
+   minimal horizontal padding, no letter-spacing. */
 .actor-card-source-box {
   font-family: var(--font-mono); font-size: 0.7rem;
   background: var(--color-bg-subtle, #f5f5f4);
-  padding: 0.2rem 0.5rem;
-  text-transform: uppercase; letter-spacing: 0.05em;
+  padding: 0.2rem 0.35rem;
   color: #000; text-decoration: none;
+  letter-spacing: 0;
 }
 .actor-card-source-box:hover { background: var(--color-border-light); }
 
@@ -696,6 +676,7 @@ footer a { color: #000; text-decoration: underline; }
   h1 { font-size: 1.4rem; }
   .card-grid { grid-template-columns: 1fr; }
   .actor-card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid::before { display: none; }
   .actors-tabs { font-size: 0.7rem; }
   .actor-tab { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
   .meta-bar { flex-wrap: wrap; }
@@ -1177,39 +1158,37 @@ _ACTOR_TYPE_ENUM: tuple[str, ...] = (
 )
 
 
-def _humanise_actor_type(t: str) -> str:
-    """`civil_society` → `Civil society`. `international_org` →
-    `International org`. Title-case display name for group headings."""
-    return t.replace("_", " ").capitalize() if t else "Other"
-
-
 def _tab_label(t: str) -> str:
     """Tab labels render in uppercase with underscores converted to
-    spaces (`civil_society` → `CIVIL SOCIETY`). Keeps the label short
-    and matches the screenshot's spacing."""
+    spaces (`civil_society` → `CIVIL SOCIETY`)."""
     return t.replace("_", " ").upper() if t else "OTHER"
 
 
 def build_actors_section(tp: dict) -> str:
-    """Actors-section as grouped card grid with type-tab filter.
+    """Actors-section as flat card grid with type-tab filter.
 
-    Replaces the prior flat 4-column table (Issue 7, commit 557cea5)
-    with a per-stakeholder-type card grid plus a tab bar that
-    client-side-filters the visible groups. The section continues to
-    serve as navigation bridge — cluster cards and the single-voices
-    bracket back-link to `#actor-NNN` anchors that live on the cards.
+    Replaces the prior 4-column table (Issue 7, commit 557cea5) and
+    its first iteration (commit 5c51953, grouped sub-headings) with a
+    single continuous card grid. The section serves as a navigation
+    bridge — cluster cards and the single-voices bracket back-link to
+    ``#actor-NNN`` anchors that live on the cards.
 
     Layout:
-    - Header: H2 ``§03 Actors`` + right-aligned actor count.
-    - Sub-line: ``N actors quoted across this topic. Jump from any name
-      above to find every cluster and source the actor figures in.``
-    - Tab bar: ``ALL N`` first, then one tab per `_ACTOR_TYPE_ENUM`
-      entry in declared order. Active filled, inactive outlined,
-      zero-count disabled.
-    - Card grid: groups in enum order. Each group has its own
-      ``<h3>`` heading with the actor count and total source-ref count
-      for that type. Within a group, cards are sorted by source-ref
-      count desc with the actor name as tie-break.
+    - Header: plain ``<h2>Actors</h2>`` (matches every other section
+      heading — no §-prefix, no right-aligned count).
+    - Sub-line: ``N actors quoted across this topic. Jump from any
+      name above to find every cluster and source the actor figures
+      in.``
+    - Tab bar: ``ALL N`` first, then one tab per populated
+      `_ACTOR_TYPE_ENUM` entry in declared order. Tabs with zero
+      actors in this dossier are omitted entirely (corrected from the
+      earlier "render as disabled" treatment).
+    - Card grid: one continuous 2-column grid. Cards are emitted in
+      enum order across the underlying type groups (within each
+      group, sorted by source-ref count desc with actor name as
+      tie-break). No visible sub-headings — group boundaries are
+      visually seamless when ALL is active; clicking a type tab
+      hides cards from other types.
 
     Per-card content:
     - Top-left: actor name (anchor target ``id="actor-NNN"``).
@@ -1217,16 +1196,15 @@ def build_actors_section(tp: dict) -> str:
     - Top-right: ``N SRC``.
     - Second line: role text.
     - Cluster-ref boxes: outlined boxes labelled ``Cluster N`` linking
-      to ``#pc-NNN``. Bracket actors get a ``Single voices`` box
-      linking to ``#single-voices`` (visually distinct).
+      to ``#pc-NNN``. Bracket actors get a dashed-border
+      ``Single voices`` box linking to ``#single-voices``.
     - Source-ref boxes: filled boxes labelled ``src-NNN`` linking to
-      ``#src-NNN``.
+      ``#src-NNN``. Tightened so ≥ 5 boxes fit in a single card-width
+      row at desktop.
 
-    Tab filtering: minimal inline JS toggles a ``data-active-type``
-    attribute on the group container; CSS hides every
-    ``.actor-group`` whose ``data-actor-type`` does not match (except
-    when ``data-active-type="all"``). Disabled tabs (zero count) carry
-    the ``disabled`` attribute and the JS handler skips them.
+    Tab filtering: minimal inline JS sets `hidden` on every
+    ``.actor-card`` whose ``data-actor-type`` does not match the
+    active tab. ALL clears the filter.
     """
     actors_in = tp.get("actors") or []
     clusters = tp.get("perspectives", {}).get("position_clusters", []) or []
@@ -1270,9 +1248,10 @@ def build_actors_section(tp: dict) -> str:
         atype = actor.get("type") or ""
         by_type.setdefault(atype, []).append(actor)
 
-    # Group render order: enum types first, then any extra types
-    # found in the data (preserved insertion order). Per-type counts
-    # are needed for the tab bar even when the group is empty.
+    # Render order: enum types first, then any extra types found in
+    # the data (preserved insertion order). Empty enum types are
+    # included in the iteration so the per-type tab count can be
+    # rendered later — but tabs with zero count are skipped.
     extra_types = [
         t for t in by_type.keys()
         if t and t not in _ACTOR_TYPE_ENUM
@@ -1290,25 +1269,12 @@ def build_actors_section(tp: dict) -> str:
     if n_total == 0:
         return (
             '<section id="actors-section" class="actors">\n'
-            '  <div class="actors-header">\n'
-            '    <h2><span class="section-number">§03</span> Actors</h2>\n'
-            '    <span class="actors-count">0 ACTORS</span>\n'
-            '  </div>\n'
+            '<h2>Actors</h2>\n'
             f'{actors_meta_html}'
             '</section>\n'
         )
 
-    # -- Tab bar --
-    def _per_type_source_count(atype: str) -> int:
-        total = 0
-        for actor in by_type.get(atype, []):
-            seen: set[str] = set()
-            for sid in actor.get("source_ids") or []:
-                if isinstance(sid, str) and sid and sid not in seen:
-                    seen.add(sid)
-            total += len(seen)
-        return total
-
+    # -- Tab bar (populated types only) --
     tab_buttons: list[str] = []
     tab_buttons.append(
         '<button class="actor-tab actor-tab--active" '
@@ -1319,11 +1285,12 @@ def build_actors_section(tp: dict) -> str:
     )
     for atype in _ACTOR_TYPE_ENUM:
         count = len(by_type.get(atype, []))
-        disabled_attr = " disabled" if count == 0 else ""
-        disabled_cls = " actor-tab--disabled" if count == 0 else ""
+        if count == 0:
+            # Correction 1: zero-count tabs hidden entirely.
+            continue
         tab_buttons.append(
-            f'<button class="actor-tab{disabled_cls}" type="button" '
-            f'data-type-target="{_esc(atype)}"{disabled_attr}>'
+            f'<button class="actor-tab" type="button" '
+            f'data-type-target="{_esc(atype)}">'
             f'<span class="actor-tab-name">{_esc(_tab_label(atype))}</span> '
             f'<span class="actor-tab-count">{count}</span>'
             '</button>'
@@ -1346,7 +1313,7 @@ def build_actors_section(tp: dict) -> str:
             ordered.append(sid)
         return ordered
 
-    def _build_card(actor: dict) -> str:
+    def _build_card(actor: dict, atype: str) -> str:
         aid = actor.get("id", "")
         name = _esc(actor.get("name", ""))
         role = _esc(actor.get("role", ""))
@@ -1393,7 +1360,8 @@ def build_actors_section(tp: dict) -> str:
         )
 
         return (
-            f'<article id="{_esc(aid)}" class="actor-card">\n'
+            f'<article id="{_esc(aid)}" class="actor-card" '
+            f'data-actor-type="{_esc(atype)}">\n'
             '  <div class="actor-card-header">\n'
             f'    <strong class="actor-card-name">{name}{anon_html}</strong>\n'
             f'    <span class="actor-card-src-count">{n_src} SRC</span>\n'
@@ -1404,10 +1372,13 @@ def build_actors_section(tp: dict) -> str:
             '</article>\n'
         )
 
-    def _build_group(atype: str) -> str:
+    # Concatenate cards in enum order; within each underlying type
+    # group, sort by source-ref count desc with name as tie-break.
+    card_blocks: list[str] = []
+    for atype in render_types:
         members = by_type.get(atype, [])
         if not members:
-            return ""
+            continue
         sorted_members = sorted(
             members,
             key=lambda a: (
@@ -1415,33 +1386,12 @@ def build_actors_section(tp: dict) -> str:
                 (a.get("name") or "").lower(),
             ),
         )
-        n_actors_group = len(members)
-        n_source_refs_group = _per_type_source_count(atype)
-        cards_html = "".join(_build_card(a) for a in sorted_members)
-        return (
-            f'<section class="actor-group" data-actor-type="{_esc(atype)}">\n'
-            '  <div class="actor-group-header">\n'
-            f'    <h3 class="actor-group-name">{_esc(_humanise_actor_type(atype))}</h3>\n'
-            '    <span class="actor-group-meta">'
-            f'{n_actors_group} actor{"" if n_actors_group == 1 else "s"}'
-            ' &middot; '
-            f'{n_source_refs_group} source ref{"" if n_source_refs_group == 1 else "s"}'
-            '</span>\n'
-            '  </div>\n'
-            f'  <div class="actor-card-grid">\n{cards_html}  </div>\n'
-            '</section>\n'
-        )
+        for actor in sorted_members:
+            card_blocks.append(_build_card(actor, atype))
 
-    group_blocks: list[str] = []
-    for atype in render_types:
-        block = _build_group(atype)
-        if block:
-            group_blocks.append(block)
-
-    groups_html = (
-        '<div class="actor-groups" data-active-type="all">\n'
-        + "".join(group_blocks)
-        + '</div>\n'
+    cards_html = "".join(card_blocks)
+    grid_html = (
+        f'<div class="actor-card-grid">\n{cards_html}</div>\n'
     )
 
     js_shim = (
@@ -1450,13 +1400,13 @@ def build_actors_section(tp: dict) -> str:
         '  const section = document.getElementById(\'actors-section\');\n'
         '  if (!section) return;\n'
         '  const tabs = section.querySelectorAll(\'.actor-tab\');\n'
-        '  const groups = section.querySelector(\'.actor-groups\');\n'
-        '  if (!groups) return;\n'
+        '  const cards = section.querySelectorAll(\'.actor-card\');\n'
         '  tabs.forEach(tab => {\n'
-        '    if (tab.disabled) return;\n'
         '    tab.addEventListener(\'click\', () => {\n'
         '      const target = tab.dataset.typeTarget || \'all\';\n'
-        '      groups.dataset.activeType = target;\n'
+        '      cards.forEach(card => {\n'
+        '        card.hidden = (target !== \'all\' && card.dataset.actorType !== target);\n'
+        '      });\n'
         '      tabs.forEach(t => t.classList.toggle(\'actor-tab--active\', t === tab));\n'
         '    });\n'
         '  });\n'
@@ -1466,14 +1416,10 @@ def build_actors_section(tp: dict) -> str:
 
     return (
         '<section id="actors-section" class="actors">\n'
-        '  <div class="actors-header">\n'
-        '    <h2><span class="section-number">&sect;03</span> Actors</h2>\n'
-        f'    <span class="actors-count">{n_total} '
-        f'ACTOR{"" if n_total == 1 else "S"}</span>\n'
-        '  </div>\n'
+        '<h2>Actors</h2>\n'
         f'{actors_meta_html}'
         f'{tabs_html}'
-        f'{groups_html}'
+        f'{grid_html}'
         f'{js_shim}'
         '</section>\n'
     )

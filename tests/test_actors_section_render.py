@@ -23,23 +23,22 @@ from scripts.render import build_actors_section
 
 
 def test_empty_actors_renders_header_without_card_grid():
-    """No actors → section emits the header (with "0 ACTORS" count) and
-    the sub-line, no tab bar, no card grid."""
+    """No actors → section emits the plain ``<h2>Actors</h2>`` header
+    and the sub-line; no tab bar, no card grid."""
     tp = {"actors": [], "perspectives": {"position_clusters": []}}
     html = build_actors_section(tp)
     assert 'id="actors-section"' in html
-    assert "Actors</h2>" in html
-    assert "0 ACTORS" in html
+    assert "<h2>Actors</h2>" in html
     assert "0 actors quoted across this topic" in html
     assert 'class="actors-tabs"' not in html
     assert 'class="actor-card-grid"' not in html
 
 
-def test_header_renders_actor_count_and_sub_line_no_type_count():
-    """Acceptance criterion: header carries actor count only (no type
-    count); sub-line "N actors quoted across this topic. Jump from any
-    name above to find every cluster and source the actor figures in."
-    """
+def test_header_is_plain_h2_no_section_number_no_right_count():
+    """Header matches every other section heading: plain
+    ``<h2>Actors</h2>``, left-aligned, no ``§03`` section number, no
+    right-aligned ``N ACTORS`` count. The actor count is conveyed by
+    the sub-line directly below."""
     tp = {
         "actors": [
             {"id": "actor-001", "name": "A", "role": "r", "type": "government",
@@ -50,17 +49,21 @@ def test_header_renders_actor_count_and_sub_line_no_type_count():
         "perspectives": {"position_clusters": []},
     }
     html = build_actors_section(tp)
-    # Header count.
-    assert "2 ACTORS" in html
+    # Plain H2 (no nested span).
+    assert "<h2>Actors</h2>" in html
+    # No section-number, no actors-count, no actors-header flex
+    # wrapper, no §-prefix in any form.
+    assert "section-number" not in html
+    assert "actors-count" not in html
+    assert "actors-header" not in html
+    assert "&sect;" not in html
+    assert "§" not in html
     # Sub-line in full.
     assert (
         "2 actors quoted across this topic. Jump from any name above "
         "to find every cluster and source the actor figures in."
     ) in html
-    # Type count must NOT appear in the header. The screenshot showed
-    # "33 ACTORS · 6 TYPES" but the brief explicitly overrode that —
-    # so the header must contain neither "TYPES" nor a count-X-TYPES
-    # phrase.
+    # No type-count phrasing leaks in.
     assert "TYPES" not in html
     assert "2 types" not in html.lower()
 
@@ -70,9 +73,10 @@ def test_header_renders_actor_count_and_sub_line_no_type_count():
 # ---------------------------------------------------------------------------
 
 
-def test_tab_bar_renders_all_first_then_enum_order_with_counts():
-    """Acceptance criterion: tab bar carries ALL N then one tab per
-    enum type in declared order, each with its count.
+def test_tab_bar_renders_all_first_then_populated_types_in_enum_order():
+    """Acceptance criterion: tab bar carries ALL N followed by one tab
+    per populated enum type in declared order. Zero-count enum types
+    are omitted entirely (no disabled placeholder).
 
     Enum order: government, legislature, judiciary, military, industry,
     civil_society, academia, media, international_org,
@@ -92,45 +96,34 @@ def test_tab_bar_renders_all_first_then_enum_order_with_counts():
         "perspectives": {"position_clusters": []},
     }
     html = build_actors_section(tp)
-    # ALL tab first.
+    # ALL tab first, then only the three populated enum types in
+    # enum order: government, military, civil_society.
     idx_all = html.find('data-type-target="all"')
     idx_gov = html.find('data-type-target="government"')
-    idx_leg = html.find('data-type-target="legislature"')
-    idx_jud = html.find('data-type-target="judiciary"')
     idx_mil = html.find('data-type-target="military"')
-    idx_ind = html.find('data-type-target="industry"')
     idx_cs = html.find('data-type-target="civil_society"')
-    idx_aca = html.find('data-type-target="academia"')
-    idx_med = html.find('data-type-target="media"')
-    idx_intl = html.find('data-type-target="international_org"')
-    idx_aff = html.find('data-type-target="affected_community"')
-    assert idx_all >= 0
-    # Enum order — strictly ascending positions in the HTML.
-    order = [idx_all, idx_gov, idx_leg, idx_jud, idx_mil, idx_ind,
-             idx_cs, idx_aca, idx_med, idx_intl, idx_aff]
-    for prev, cur in zip(order, order[1:]):
-        assert 0 <= prev < cur, f"tab order violated: {order}"
+    assert 0 <= idx_all < idx_gov < idx_mil < idx_cs
+    # Zero-count enum types do NOT appear as tabs.
+    for empty in ("legislature", "judiciary", "industry", "academia",
+                  "media", "international_org", "affected_community"):
+        assert f'data-type-target="{empty}"' not in html
     # Per-tab counts on the populated types.
-    assert "ALL" in html
-    assert ">4</span>" in html or ">4 </span>" in html  # ALL = 4
-    # GOVERNMENT 2
+    assert ">4</span>" in html  # ALL = 4
     block = html[idx_gov:idx_gov + 400]
     assert "GOVERNMENT" in block
     assert ">2</span>" in block
-    # MILITARY 1
     block = html[idx_mil:idx_mil + 400]
     assert "MILITARY" in block
     assert ">1</span>" in block
-    # CIVIL SOCIETY 1
     block = html[idx_cs:idx_cs + 400]
     assert "CIVIL SOCIETY" in block
     assert ">1</span>" in block
 
 
-def test_tab_with_zero_count_rendered_disabled_no_click():
-    """Acceptance criterion: a tab whose count is 0 is rendered in
-    disabled style and carries the HTML `disabled` attribute (so the
-    JS handler skips it). It has no `href`."""
+def test_zero_count_enum_type_tab_omitted_entirely():
+    """Correction 1 (2026-05-20): a tab whose count is 0 is not
+    rendered at all — no disabled placeholder, no greyed-out shell.
+    The tab simply does not exist."""
     tp = {
         "actors": [
             {"id": "actor-001", "name": "A", "role": "r", "type": "government",
@@ -139,15 +132,17 @@ def test_tab_with_zero_count_rendered_disabled_no_click():
         "perspectives": {"position_clusters": []},
     }
     html = build_actors_section(tp)
-    # The MILITARY tab has count 0 in this fixture. It must carry the
-    # disabled attribute and the actor-tab--disabled CSS class.
-    idx = html.find('data-type-target="military"')
-    assert idx >= 0
-    block = html[idx - 200:idx + 200]
-    assert "disabled" in block
-    assert "actor-tab--disabled" in block
-    # Tab is a <button>, not an <a> — no href.
-    assert "href=" not in block
+    # Military, civil_society, etc. all have count 0 in this fixture.
+    for empty in ("military", "civil_society", "media", "academia",
+                  "legislature", "judiciary", "industry",
+                  "international_org", "affected_community"):
+        assert f'data-type-target="{empty}"' not in html
+    # No remnants of the disabled treatment.
+    assert "actor-tab--disabled" not in html
+    assert " disabled" not in html
+    # ALL + government only.
+    assert 'data-type-target="all"' in html
+    assert 'data-type-target="government"' in html
 
 
 def test_all_tab_is_active_by_default():
@@ -227,25 +222,33 @@ def test_card_grid_name_breaks_tie_when_source_counts_equal():
     assert 0 <= pos_aaron < pos_zelda
 
 
-def test_card_grid_group_header_carries_actor_and_source_ref_counts():
-    """Each group's header shows ``N actors · M source refs``. M is the
-    sum of per-actor source-ref counts (deduped per actor)."""
+def test_card_grid_has_no_group_subheadings_or_meta_lines():
+    """Correction 2 (2026-05-20): cards render as one continuous grid
+    with no per-type sub-heading and no ``N actors · M source refs``
+    meta line. The active tab is the only label naming the active
+    group; ALL view shows the cards flat in enum order across the
+    underlying type groups."""
     tp = {
         "actors": [
             {"id": "actor-001", "name": "A", "role": "r", "type": "government",
              "source_ids": ["src-001", "src-002"], "quotes": []},
             {"id": "actor-002", "name": "B", "role": "r", "type": "government",
-             "source_ids": ["src-001", "src-003", "src-003"], "quotes": []},  # dup
+             "source_ids": ["src-001", "src-003"], "quotes": []},
+            {"id": "actor-003", "name": "C", "role": "r", "type": "military",
+             "source_ids": ["src-001"], "quotes": []},
         ],
         "perspectives": {"position_clusters": []},
     }
     html = build_actors_section(tp)
-    # Group header carries "2 actors" and "4 source refs"
-    # (actor-001: 2 unique; actor-002: 2 unique after dedup; sum 4).
-    idx = html.find('data-actor-type="government"')
-    block = html[idx:idx + 600]
-    assert "2 actors" in block
-    assert "4 source refs" in block
+    # No group sub-heading element of any flavour.
+    assert "<h3" not in html
+    assert "actor-group" not in html  # catches actor-group, -header, -name, -meta
+    # No "N actors · M source refs" meta line in any case.
+    assert "source ref" not in html
+    # Humanised group names never appear as page text — only the
+    # uppercase tab labels do (e.g. "GOVERNMENT" inside the tab span).
+    assert ">Government<" not in html
+    assert ">Military<" not in html
 
 
 # ---------------------------------------------------------------------------
