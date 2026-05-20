@@ -106,6 +106,29 @@ Test suite: 595 / 0 at the audit start; +7 sweep helper tests added in Brief 5b 
 
 ---
 
+## Renderer-hygiene sweep (May 18–20 2026) — all ✅
+
+A two-day sweep across the published TP rendering. Seven journalistic-transparency issues fixed end-to-end plus the surrounding DeepSeek-class hardening (production swap, empty-output retries) that landed first.
+
+| Task | Description |
+|------|-------------|
+| `TASK-PRODUCTION-SWAP-FLASH-STAGES` (2026-05-19) | Three Flash-class production swaps to DeepSeek V4 Flash and the hydrated-pipeline canonicalization. `1dc75e0` (researcher_assemble max_tokens 16k → 160k), `f514d64` (curator_topic_discovery → DeepSeek V4 Flash, t=0.5 r=medium), `a7130dd` (resolve_actor_aliases → DeepSeek V4 Flash, t=0.5 r=none), `756c104` (architecture doc: hydrated pipeline canonical; non-hydrated marked legacy). |
+| `TASK-CURATOR-EMPTY-OUTPUT-RETRY` (2026-05-19) | 3-attempt retry for `CuratorTopicDiscoveryStage` to mitigate `dskflash-t05-rmedium`'s ~33 % cache-cold empty-emission mode. `ac2eea6` (stage), `b4abc76` (resolver Y-config regression test refreshed for the swap). |
+| `TASK-EMPTY-RETRY-EXTEND-DEEPSEEK-STAGES` (2026-05-19) | Curator retry pattern factored and extended to the three other DeepSeek-using stages. `6caf018` (shared `_AgentStageBase._call_with_empty_retry` helper + module-level twin; Curator refactored to use it), `06ed994` (ResearcherAssembleStage, sources-empty predicate), `262ea53` (ResolveActorAliasesStage, raw-aliases + anonymous_flags empty with input-size guard ≥ 3), `3a5a435` (HydrationAggregatorPhase1Stage, per-chunk parallel-safe all-zero-actors predicate). Slot-count guard 35 → 38. |
+| Issue 1 — Actor dedup per source (renderer) | `b122db3`: Sources-section `actors_quoted` deduplicated by canonical id within each source. Name variants resolving to the same canonical actor collapse to a single anchor. |
+| Issue 2 — Bias finding self-retraction | Schema-level `finding_valid: bool` mandatory field; renderer filters out `finding_valid: false` from published HTML while the TP JSON retains them as audit trail. `6f59fb4` (schema validate + renderer filter), `7409c96` (companion bias_detector INSTRUCTIONS.md prompt update). |
+| Issue 3 — Per-cluster quote dedup across actor lines | `e44b28c`: per-actor `seen_quote_ids` set in the old Actors-section prevented the same quote from being re-emitted across an actor's cluster lines. Logic removed in Issue 7 refactor (`557cea5`) since cluster-lines no longer carry quotes. |
+| Issue 4 — Per-actor source-list relocation | `2080cc1`: removed the per-actor `[src-NNN]` row from cluster cards (5–20 source tags per actor was overwhelming). Full source attribution moved to the per-actor card in the Actors-section. Subsequently relocated again under Issue 7. |
+| Issue 5 — Cluster-formation single-actor backlog activated | `5301a0a`: `BACKLOG-CLUSTER-FORMATION-SINGLE-ACTOR.md` activation criterion met by `tp-2026-05-19-003` (Ebola PHEIC) where the DR Congo Health Minister carried 6 quotes but no cluster formed around the unique single-actor position. PE brief not yet drafted; backlog now active. |
+| Issue 6 — Coverage gaps + missing voices consolidation | `932c5c2`: new deterministic `consolidate_missing_coverage` topic-stage between `validate_coverage_gaps_stage` and `BiasLanguageStage`. Token-Jaccard (≥ 0.5) dedup of `perspective_missing_positions[].description` vs `coverage_gaps_validated[]`. Renderer emits a unified "What this dossier does not cover" header; legacy two-section rendering remains as the fallback for pre-2026-05-20 TPs. |
+| Issue 7 — Actors-section navigation table + sources third level | `557cea5`: Actors-section refactored from per-actor quote dossier into a 4-column navigation table (Actor / Role · Type / Cluster refs / Source refs). Verbatim quotes relocated to a collapsed-by-default `<details>` block under each source carrying per-actor entries (anchor + role + position + verbatim + source-language tag when language ≠ `en`). Issue-3 dedup logic dropped in the same commit. |
+| Dead-CSS cleanup | `553cc5b`: `.cluster-actor-srcs` (Issue 4 leftover) and `#actors-show-all` (Issue 7 leftover) CSS rules removed. Verified empty in re-rendered output. |
+| `TASK-DOC-CONSOLIDATION-2026-05-20` (this brief) | Five atomic doc commits aligning `docs/` to the post-sweep state: ARCHITECTURE (`6267600`), ARCH-V2-BUS-SCHEMA (`d309e7f`), AGENT-IO-MAP (`4afd4c9`), ROADMAP (`aba9f9f`), TASKS (this commit). |
+
+Test suite: 602 / 0 at the sweep start → **679 / 0** at the end (added: 6 consolidation tests in `932c5c2`, 10 actors-section tests rewritten end-to-end + 4 sources third-level tests in `557cea5`; minus 3 Issue-3 dedup tests removed in the same commit; plus the empty-retry tests landed in the DeepSeek hardening sequence).
+
+---
+
 ## Recently shipped (May 5–7 2026)
 
 The work that landed between the prior TASKS.md state (commit 8f48804) and this V2-DOC-RECONCILE pass.
@@ -124,12 +147,13 @@ The work that landed between the prior TASKS.md state (commit 8f48804) and this 
 
 ### Next active workstream
 
-The Triple-Stage Curator brief sequence (above) finished 2026-05-17 with this `TASK-DOC-RECONCILE` commit. The architect picks the next active workstream from the Queued section below; live production runs at `independent-wire.org` continue throughout. Multi-day production observation under the recalibrated Curator (post Brief 5b) is itself a deferred observation task — `TASK-POST-V2-PRODUCTION-OBSERVATION` queued below.
+The Triple-Stage Curator brief sequence finished 2026-05-17; the Renderer-hygiene sweep (Issues 1–7 above) closed 2026-05-20. The architect picks the next active workstream from the Queued section below; live production runs at `independent-wire.org` continue throughout. Multi-day production observation under the recalibrated Curator (post Brief 5b) is itself a deferred observation task — `TASK-POST-V2-PRODUCTION-OBSERVATION` queued below. `BACKLOG-CLUSTER-FORMATION-SINGLE-ACTOR.md` is now activated (Issue 5) and awaits a PE brief.
 
 ### Queued (Architect priority order)
 
 | Task | Status | Description |
 |------|--------|-------------|
+| `BACKLOG-CLUSTER-FORMATION-SINGLE-ACTOR` | 🟢 Activated | Activation criterion met 2026-05-19 via `tp-2026-05-19-003` (Ebola PHEIC: DR Congo Health Minister carried 6 quotes but no cluster formed around the unique single-actor position). See `BACKLOG-CLUSTER-FORMATION-SINGLE-ACTOR.md` §"Activation signal — 2026-05-19" for the substrate (3 TPs, single-actor counts 5/3/6, biggest miss tp-2026-05-19-003). PE brief not yet drafted. |
 | `TASK-POST-V2-PRODUCTION-OBSERVATION` | 🔵 Queued | Multi-day production observation under the recalibrated Curator (pinned `T=0.55`, `V=title+summary`). Watch for any edge-case drift on a real-world day not covered by the eval set (2026-05-08 / 11 / 13). Activation: routine cadence over the first few weeks of post-pin production. Prerequisite for the external Vision Paper update. |
 | `TASK-WEEKLY-OUTLET-AUDIT` | 🔵 Queued | First instance of the weekly outlet-audit cadence — see `BACKLOG-WEEKLY-OUTLET-AUDIT.md` at repo root. Triages outlet metadata, alias mappings, and tier classifications against the live source pool. |
 | `WP-OPUS-4.7-MIGRATION` | 🔵 Queued | Opus 4.6 → 4.7 across all Opus-using agents (Editor, Researcher Plan, Perspective, Writer, Bias Language, Hydration Phase 2). `src/agent.py` refactor for `output_config.effort` (low / medium / high / xhigh / max). Per-agent effort-level eval before swap. Substantial workstream. |
