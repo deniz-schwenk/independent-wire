@@ -282,8 +282,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
 }
 
-/* Stakeholder cards */
-.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+/* Cluster cards — one card per row, full container width. Two-
+   column variant retired so the Cluster-ID pill, position label,
+   summary, tier-grouped actors, and counts row all read across the
+   full width (the cluster card is information-dense and benefits
+   from the horizontal space). */
+.card-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+/* Cluster-ID pill at top-left of each cluster card. Shares
+   ``.actor-card-cluster-box`` styling with the actor-card pills so
+   the cross-reference renders identically on both sides. The pill
+   needs a margin below to separate it from the position-label
+   header that follows. */
+.card > .actor-card-cluster-box {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
 .card {
   border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
   background: var(--color-bg);
@@ -674,7 +687,6 @@ footer a { color: #000; text-decoration: underline; }
 @media (max-width: 768px) {
   .container { padding: 1rem; }
   h1 { font-size: 1.4rem; }
-  .card-grid { grid-template-columns: 1fr; }
   .actor-card-grid { grid-template-columns: 1fr; }
   .actor-card-grid::before { display: none; }
   .actors-tabs { font-size: 0.7rem; }
@@ -917,6 +929,19 @@ _CLUSTER_TIERS: tuple[tuple[str, str], ...] = (
 )
 
 
+def _cluster_id_pill(cluster_id: str, idx: int) -> str:
+    """Cluster-ID pill — the small ``Cluster N`` box shared between
+    the Actors-section (per-actor cluster references) and the
+    Perspectives-section (top-of-card identifier on each cluster
+    card). Same text, same styling, same anchor target — so the two
+    sides of the cross-reference render identically. Returns the
+    bare ``<a>`` element; wrapping context is up to the caller."""
+    return (
+        f'<a class="actor-card-cluster-box" href="#{_esc(cluster_id)}">'
+        f'Cluster {idx}</a>'
+    )
+
+
 def _cluster_actor_entry(
     actor: dict, cluster_source_ids: set[str]
 ) -> str:
@@ -973,7 +998,10 @@ def build_perspectives(tp: dict) -> str:
                 actor_index[aid] = actor
 
     cards = []
-    for c in clusters:
+    # 1-based emission index matches `build_actors_section`'s
+    # cluster-index, so the ``Cluster N`` pill on a cluster card
+    # carries the same N as the pills referencing it from actor cards.
+    for cluster_idx, c in enumerate(clusters, start=1):
         if not isinstance(c, dict):
             continue
         label = c.get("position_label", "")
@@ -1028,8 +1056,18 @@ def build_perspectives(tp: dict) -> str:
             f'</p>\n'
         )
 
+        # Cluster-ID pill at top-left of the card. Same markup as the
+        # ``Cluster N`` pill used on actor cards, so the cross-reference
+        # is visually symmetric. Omitted when the cluster has no id —
+        # the pill's anchor target would be meaningless.
+        pill_html = (
+            f'  {_cluster_id_pill(cluster_id, cluster_idx)}\n'
+            if cluster_id else ""
+        )
+
         cards.append(
             f'<div class="card" id="{_esc(cluster_id)}">\n'
+            f'{pill_html}'
             f'  <div class="card-header"><span class="card-actor">{_esc(label)}</span></div>\n'
             f'  <div class="card-position">{_esc(summary)}</div>\n'
             f'{"".join(tier_blocks)}'
@@ -1329,10 +1367,7 @@ def build_actors_section(tp: dict) -> str:
             idx = cluster_index.get(cid)
             if idx is None:
                 continue
-            cluster_boxes.append(
-                f'<a class="actor-card-cluster-box" href="#{_esc(cid)}">'
-                f'Cluster {idx}</a>'
-            )
+            cluster_boxes.append(_cluster_id_pill(cid, idx))
         if aid in bracket_actor_ids:
             cluster_boxes.append(
                 '<a class="actor-card-cluster-box actor-card-cluster-box--bracket"'
