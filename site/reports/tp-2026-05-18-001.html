@@ -145,6 +145,21 @@ h2 {
 .cluster-counts a:hover { color: var(--color-text); }
 .card:target { background: var(--color-bg-subtle, #f5f5f4); }
 
+/* Single-voices bracket — visually distinguished from real shared-
+   position clusters. Dashed left accent + neutral tinted background
+   read as "this is a different kind of grouping" without breaking the
+   page's existing card rhythm. */
+.single-voices-bracket {
+  border-left: 4px dashed #000;
+  background: var(--color-bg-subtle, #f5f5f4);
+  margin-top: 1rem;
+}
+.single-voices-bracket-tag {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-left: 0.5rem;
+}
+
 /* Cluster three-level actor sub-blocks (stated / reported / mentioned) */
 .cluster-tier { margin-top: 0.85rem; }
 .cluster-tier-label {
@@ -168,10 +183,6 @@ h2 {
   color: var(--color-text-subtle); margin-left: 0.25rem;
   text-transform: uppercase; letter-spacing: 0.05em;
 }
-.cluster-actor-srcs {
-  font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle);
-}
 
 /* Actors section */
 .actors h2 { margin-top: 2rem; }
@@ -179,13 +190,6 @@ h2 {
   font-family: var(--font-mono); font-size: 0.85rem;
   color: var(--color-text-secondary); margin: 0 0 1rem;
 }
-#actors-show-all {
-  font-family: var(--font-mono); font-size: 0.75rem;
-  background: transparent; border: 1px solid #000; cursor: pointer;
-  padding: 0.3rem 0.75rem; margin-bottom: 1rem;
-  text-transform: uppercase; letter-spacing: 0.05em;
-}
-#actors-show-all:hover { background: #000; color: var(--color-bg); }
 .actor-list { list-style: none; padding: 0; margin: 0; }
 .actor {
   padding: 1rem 0; border-top: 1px solid var(--color-border-light);
@@ -647,7 +651,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="card-position">The US president and aligned officials threaten Iran with annihilation if it does not rapidly accept American terms, accusing Tehran of stalling and reneging on prior agreements. Pentagon leadership states it has multiple contingency plans — to escalate, reverse the situation, or reassign resources — and hawkish legislators urge targeting Iran&#x27;s energy infrastructure to force compliance.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="cluster-actor-role">President of the United States</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-002">src-002</a>, <a href="#src-003">src-003</a>, <a href="#src-004">src-004</a>, <a href="#src-005">src-005</a>, <a href="#src-006">src-006</a>, <a href="#src-007">src-007</a>, <a href="#src-008">src-008</a>, <a href="#src-009">src-009</a>, <a href="#src-012">src-012</a>, <a href="#src-014">src-014</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-015">Pete Hegseth</a></strong> <span class="cluster-actor-role">US Secretary of War</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-004">src-004</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-026">Lindsey Graham</a></strong> <span class="cluster-actor-role">Republican Senator</span> <span class="cluster-actor-type">legislature</span> <span class="cluster-actor-srcs">(<a href="#src-007">src-007</a>, <a href="#src-016">src-016</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="cluster-actor-role">President of the United States</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-015">Pete Hegseth</a></strong> <span class="cluster-actor-role">US Secretary of War</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-026">Lindsey Graham</a></strong> <span class="cluster-actor-role">Republican Senator</span> <span class="cluster-actor-type">legislature</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">3 actors</a></span> &middot; <span>12 sources</span> &middot; <span>8 regions</span> &middot; <span>4 languages</span></p>
 </div>
@@ -656,11 +660,11 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="card-position">Iranian military officials, senior government figures, and Mojtaba Khamenei — identified in Turkish-language reporting as a senior Iranian figure — warn that any US attack will be met with crushing retaliation, including opening new fronts, breaking the naval blockade, and turning the Sea of Oman into America&#x27;s &#x27;cemetery.&#x27; They frame the conflict as a &#x27;Third Imposed War&#x27; and assert that Iran&#x27;s armed forces remain ready and capable.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-002">Abolfazl Shakarchi</a></strong> <span class="cluster-actor-role">Spokesperson for Iran&#x27;s armed forces</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-008">src-008</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-021">Mojtaba Khamenei</a></strong> <span class="cluster-actor-role">Leader of Iran</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-007">src-007</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-028">Muhsin Rızai</a></strong> <span class="cluster-actor-role">Member of Iran&#x27;s Expediency Discernment Council and former IRGC General Commander</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-007">src-007</a>, <a href="#src-008">src-008</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-002">Abolfazl Shakarchi</a></strong> <span class="cluster-actor-role">Spokesperson for Iran&#x27;s armed forces</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-021">Mojtaba Khamenei</a></strong> <span class="cluster-actor-role">Leader of Iran</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-028">Muhsin Rızai</a></strong> <span class="cluster-actor-role">Member of Iran&#x27;s Expediency Discernment Council and former IRGC General Commander</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-036">Former IRGC commander</a></strong> <span class="cluster-actor-role">Former commander of Iran&#x27;s Islamic Revolutionary Guard Corps</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-015">src-015</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-037">Iranian officials</a></strong> <span class="cluster-actor-role">Unnamed Iranian government officials</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-017">src-017</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-038">IRGC Navy Public Relations</a></strong> <span class="cluster-actor-role">Public Relations of the Islamic Revolutionary Guard Corps Navy</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-042">Ali Abdollahi</a></strong> <span class="cluster-actor-role">Commander of the Khatam al-Anbia Headquarters of the Iranian Armed Forces</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-028">src-028</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-036">Former IRGC commander</a></strong> <span class="cluster-actor-role">Former commander of Iran&#x27;s Islamic Revolutionary Guard Corps</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-037">Iranian officials</a></strong> <span class="cluster-actor-role">Unnamed Iranian government officials</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-038">IRGC Navy Public Relations</a></strong> <span class="cluster-actor-role">Public Relations of the Islamic Revolutionary Guard Corps Navy</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-042">Ali Abdollahi</a></strong> <span class="cluster-actor-role">Commander of the Khatam al-Anbia Headquarters of the Iranian Armed Forces</span> <span class="cluster-actor-type">military</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">7 actors</a></span> &middot; <span>7 sources</span> &middot; <span>5 regions</span> &middot; <span>5 languages</span></p>
 </div>
@@ -669,7 +673,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="card-position">Iran&#x27;s chief negotiator and foreign ministry insist that Tehran&#x27;s conditions — including a full ceasefire, sanctions relief, release of frozen assets, war reparations, and sovereignty over the Strait of Hormuz — are &#x27;responsible&#x27; and &#x27;generous,&#x27; and that Washington&#x27;s refusal to offer tangible concessions is the real obstacle to peace. They argue US regional presence creates insecurity rather than providing it.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-004">Iran&#x27;s foreign ministry spokesperson</a></strong> <span class="cluster-actor-role">Spokesperson for Iran&#x27;s foreign ministry</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-013">Mohammad Bagher Qalibaf</a></strong> <span class="cluster-actor-role">Iran&#x27;s chief negotiator and parliament speaker</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>, <a href="#src-005">src-005</a>, <a href="#src-009">src-009</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-022">Mesud Pezeşkiyan</a></strong> <span class="cluster-actor-role">President of Iran</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-007">src-007</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-025">İsmail Bekayi</a></strong> <span class="cluster-actor-role">Spokesperson for Iran&#x27;s Foreign Ministry</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-007">src-007</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-004">Iran&#x27;s foreign ministry spokesperson</a></strong> <span class="cluster-actor-role">Spokesperson for Iran&#x27;s foreign ministry</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-013">Mohammad Bagher Qalibaf</a></strong> <span class="cluster-actor-role">Iran&#x27;s chief negotiator and parliament speaker</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-022">Mesud Pezeşkiyan</a></strong> <span class="cluster-actor-role">President of Iran</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-025">İsmail Bekayi</a></strong> <span class="cluster-actor-role">Spokesperson for Iran&#x27;s Foreign Ministry</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">4 actors</a></span> &middot; <span>6 sources</span> &middot; <span>5 regions</span> &middot; <span>2 languages</span></p>
 </div>
@@ -678,7 +682,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="card-position">An independent foreign policy analyst suggests that Trump&#x27;s bombastic threats should be evaluated by watching whether senior officials echo them and whether military deployments actually increase, noting his history of inflammatory statements designed for domestic political consumption rather than as direct policy signals.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-003">Adam Clements</a></strong> <span class="cluster-actor-role">Foreign policy analyst</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-003">Adam Clements</a></strong> <span class="cluster-actor-role">Foreign policy analyst</span> <span class="cluster-actor-type">civil_society</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">1 actor</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
@@ -687,7 +691,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="card-position">A former Trump-allied congresswoman breaks with the administration&#x27;s escalatory posture, warning that any ground deployment to Iran would trigger a &#x27;political revolution&#x27; in the United States, insisting the anti-foreign-war coalition is serious and will mobilize to stop it.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-027">Marjorie Taylor Greene</a></strong> <span class="cluster-actor-role">Former US Congress member</span> <span class="cluster-actor-type">legislature</span> <span class="cluster-actor-srcs">(<a href="#src-007">src-007</a>, <a href="#src-010">src-010</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-027">Marjorie Taylor Greene</a></strong> <span class="cluster-actor-role">Former US Congress member</span> <span class="cluster-actor-type">legislature</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">1 actor</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
@@ -696,7 +700,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="card-position">The IAEA and its director general express grave concern over the drone strike near the UAE&#x27;s Barakah nuclear power plant, calling for maximum military restraint near nuclear installations and warning that any military activity threatening nuclear safety violates fundamental international norms. The IAEA has separately flagged that Iran holds approximately 400 kilograms of uranium enriched to 60 percent — enough, according to the agency, for about ten nuclear weapons if further enriched to weapons grade — and that verification gaps persist.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-009">IAEA</a></strong> <span class="cluster-actor-role">International Atomic Energy Agency</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>, <a href="#src-008">src-008</a>, <a href="#src-025">src-025</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Rafael Grossi</a></strong> <span class="cluster-actor-role">Director General of the IAEA</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>, <a href="#src-006">src-006</a>, <a href="#src-026">src-026</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-009">IAEA</a></strong> <span class="cluster-actor-role">International Atomic Energy Agency</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Rafael Grossi</a></strong> <span class="cluster-actor-role">Director General of the IAEA</span> <span class="cluster-actor-type">international_org</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">2 actors</a></span> &middot; <span>5 sources</span> &middot; <span>4 regions</span> &middot; <span>3 languages</span></p>
 </div>
@@ -705,11 +709,11 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="card-position">UAE officials blame Iran or a regional proxy for the drone attack near the Barakah nuclear facility, calling it a terrorist act and a dangerous escalation that violates international laws and norms. Saudi Arabia similarly reports intercepting drones from Iraq and reserves the right to respond, framing the attacks as sovereignty violations.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-006">Saudi Arabia&#x27;s Defense Ministry</a></strong> <span class="cluster-actor-role">Defense Ministry of Saudi Arabia</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>, <a href="#src-007">src-007</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-008">UAE defense ministry</a></strong> <span class="cluster-actor-role">Defense ministry of the United Arab Emirates</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>, <a href="#src-006">src-006</a>, <a href="#src-008">src-008</a>, <a href="#src-020">src-020</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-020">Anwar Gargash</a></strong> <span class="cluster-actor-role">Emirati presidential adviser</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-006">src-006</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-031">Saudi Arabia</a></strong> <span class="cluster-actor-role">Kingdom of Saudi Arabia</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-008">src-008</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-006">Saudi Arabia&#x27;s Defense Ministry</a></strong> <span class="cluster-actor-role">Defense Ministry of Saudi Arabia</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-008">UAE defense ministry</a></strong> <span class="cluster-actor-role">Defense ministry of the United Arab Emirates</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-020">Anwar Gargash</a></strong> <span class="cluster-actor-role">Emirati presidential adviser</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-031">Saudi Arabia</a></strong> <span class="cluster-actor-role">Kingdom of Saudi Arabia</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-018">UAE foreign minister</a></strong> <span class="cluster-actor-role">Foreign minister of the United Arab Emirates</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-006">src-006</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-018">UAE foreign minister</a></strong> <span class="cluster-actor-role">Foreign minister of the United Arab Emirates</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">5 actors</a></span> &middot; <span>5 sources</span> &middot; <span>5 regions</span> &middot; <span>4 languages</span></p>
 </div>
@@ -718,7 +722,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="card-position">Gulf leaders reportedly persuaded Trump to postpone a planned military strike, Pakistan is actively mediating between Washington and Tehran through its interior minister&#x27;s visit to Tehran, and Russia emphasizes the importance of continuing political and diplomatic processes for a compromise-based peace.</div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="cluster-actor-role">President of the United States</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-005">src-005</a>, <a href="#src-007">src-007</a>, <a href="#src-009">src-009</a>, <a href="#src-013">src-013</a>, <a href="#src-019">src-019</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-012">Vladimir Putin</a></strong> <span class="cluster-actor-role">President of Russia</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-017">Xi Jinping</a></strong> <span class="cluster-actor-role">President of China</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-005">src-005</a>, <a href="#src-009">src-009</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-032">Mohsin Naqvi</a></strong> <span class="cluster-actor-role">Interior Minister of Pakistan</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-009">src-009</a>, <a href="#src-021">src-021</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="cluster-actor-role">President of the United States</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-012">Vladimir Putin</a></strong> <span class="cluster-actor-role">President of Russia</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-017">Xi Jinping</a></strong> <span class="cluster-actor-role">President of China</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-032">Mohsin Naqvi</a></strong> <span class="cluster-actor-role">Interior Minister of Pakistan</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">4 actors</a></span> &middot; <span>7 sources</span> &middot; <span>5 regions</span> &middot; <span>4 languages</span></p>
 </div>
@@ -727,11 +731,11 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="card-position">The war&#x27;s spillover effects include the Strait of Hormuz blockade disrupting global energy markets, drone attacks on Gulf state infrastructure, the stalling of the Caucasus Corridor project that would have exposed Armenia to Iranian retaliation, and Hezbollah&#x27;s continued attacks on Israel complicating Lebanon&#x27;s diplomatic position. European states are negotiating with Iran&#x27;s Revolutionary Guards for Hormuz transit, and the energy crisis is accelerating interest in renewable alternatives.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-011">Hussein Hajj Hassan</a></strong> <span class="cluster-actor-role">Hezbollah lawmaker</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-014">Tommy Pigott</a></strong> <span class="cluster-actor-role">US State Department spokesman</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-033">Nikol Pashinyan</a></strong> <span class="cluster-actor-role">Prime Minister of Armenia</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-034">Narek Karapetyan</a></strong> <span class="cluster-actor-role">Opposition leader in Armenia</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-011">Hussein Hajj Hassan</a></strong> <span class="cluster-actor-role">Hezbollah lawmaker</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-014">Tommy Pigott</a></strong> <span class="cluster-actor-role">US State Department spokesman</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-033">Nikol Pashinyan</a></strong> <span class="cluster-actor-role">Prime Minister of Armenia</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-034">Narek Karapetyan</a></strong> <span class="cluster-actor-role">Opposition leader in Armenia</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-041">Emmanuel Macron</a></strong> <span class="cluster-actor-role">President of France</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-027">src-027</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-041">Emmanuel Macron</a></strong> <span class="cluster-actor-role">President of France</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-009">5 actors</a></span> &middot; <span>6 sources</span> &middot; <span>5 regions</span> &middot; <span>4 languages</span></p>
 </div>
@@ -740,7 +744,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="card-position">International law experts and Iranian military officials characterize the US naval blockade as an illegal act of war, arguing it violates the UN Charter and the law of naval warfare, while Iranian sources frame the broader US-Israeli military campaign as aggression contravening international legal norms.</div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-036">Former IRGC commander</a></strong> <span class="cluster-actor-role">Former commander of Iran&#x27;s Islamic Revolutionary Guard Corps</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-015">src-015</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-040">Marc Weller</a></strong> <span class="cluster-actor-role">Professor of International Law at Chatham House</span> <span class="cluster-actor-type">academia</span> <span class="cluster-actor-srcs">(<a href="#src-022">src-022</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-036">Former IRGC commander</a></strong> <span class="cluster-actor-role">Former commander of Iran&#x27;s Islamic Revolutionary Guard Corps</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-040">Marc Weller</a></strong> <span class="cluster-actor-role">Professor of International Law at Chatham House</span> <span class="cluster-actor-type">academia</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-010">2 actors</a></span> &middot; <span>3 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
@@ -748,177 +752,47 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
 
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">35 actors quoted across this topic. Click a cluster card&rsquo;s actor count above to filter, or jump to a specific actor.</p>
-<button id="actors-show-all" type="button" hidden>Show all actors</button>
-<ol class="actor-list">
-<li id="actor-001" class="actor" data-clusters="cluster-pc-001 cluster-pc-008">
-  <div class="actor-header"><strong>Donald Trump</strong> <span class="actor-role">President of the United States</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: Threatens Iran with total destruction if it does not move quickly to meet US demands, stating the &#x27;clock is ticking.&#x27; <em class="actor-verbatim">&ldquo;&quot;For Iran, the Clock is Ticking, and they better get moving, FAST, or there won’t be anything left of them,&quot;&rdquo;</em> (<a href="#src-001">src-001</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-008">cluster 8</a>: Warns Iran the &#x27;clock is ticking&#x27; and threatens destruction if it does not move fast to reach a deal. <em class="actor-verbatim">&ldquo;&quot;They better get moving, FAST, or there won&#x27;t be anything left of them&quot;&rdquo;</em> (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-002" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Abolfazl Shakarchi</strong> <span class="actor-role">Spokesperson for Iran&#x27;s armed forces</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Warns the US that repeating any folly to compensate for America&#x27;s disgrace in the war will result in more crushing blows. <em class="actor-verbatim">&ldquo;&quot;Repeating any folly to compensate for America’s disgrace in the Third Imposed War against Iran will result in nothing but receiving more crushing and severe blows&quot;&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-003" class="actor" data-clusters="cluster-pc-004">
-  <div class="actor-header"><strong>Adam Clements</strong> <span class="actor-role">Foreign policy analyst</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-004">cluster 4</a>: Suggests Trump&#x27;s bombastic statements may be aimed at domestic audiences and advises watching whether officials echo the rhetoric and whether military activity increases. <em class="actor-verbatim">&ldquo;&quot;Of course, Iran would have to take it seriously... At the same time as well, President Trump is known for his bombastic tweets, his bombastic statements, perhaps for domestic audiences.&quot;&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-004" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Iran&#x27;s foreign ministry spokesperson</strong> <span class="actor-role">Spokesperson for Iran&#x27;s foreign ministry</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: States that Iran&#x27;s concerns were conveyed to the American side and exchanges continue through Pakistani mediators. <em class="actor-verbatim">&ldquo;&quot;As we announced yesterday, our concerns were conveyed to the American side&quot;&rdquo;</em> (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-006" class="actor" data-clusters="cluster-pc-007">
-  <div class="actor-header"><strong>Saudi Arabia&#x27;s Defense Ministry</strong> <span class="actor-role">Defense Ministry of Saudi Arabia</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-007">cluster 7</a>: Announces interception of three drones from Iraq and reserves the right to respond at a time and place of its choosing. <em class="actor-verbatim">&ldquo;&quot;The Ministry of Defense announced that on 17th May 2026, UAE air defense systems intercepted three UAVs that entered the country from the western border direction&quot;&rdquo;</em> (<a href="#src-003">src-003</a>)</p></div>
-</li>
-<li id="actor-007" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Benjamin Netanyahu</strong> <span class="actor-role">Prime Minister of Israel</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-008" class="actor" data-clusters="cluster-pc-007">
-  <div class="actor-header"><strong>UAE defense ministry</strong> <span class="actor-role">Defense ministry of the United Arab Emirates</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-007">cluster 7</a>: Announces a drone hit an electrical generator at Barakah nuclear plant and calls the incident a &#x27;dangerous escalation.&#x27; <em class="actor-verbatim">&ldquo;&quot;Investigations are underway to determine the source of the attacks&quot;&rdquo;</em> (<a href="#src-003">src-003</a>)</p></div>
-</li>
-<li id="actor-009" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>IAEA</strong> <span class="actor-role">International Atomic Energy Agency</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-006">cluster 6</a>: Expresses grave concern about the drone strike near the UAE nuclear plant and calls for maximum military restraint near nuclear facilities. <em class="actor-verbatim">&ldquo;&quot;The IAEA is following the situation closely and is in constant contact with the UAE authorities, ready to provide assistance if needed&quot;&rdquo;</em> (<a href="#src-003">src-003</a>)</p></div>
-</li>
-<li id="actor-010" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>Rafael Grossi</strong> <span class="actor-role">Director General of the IAEA</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-006">cluster 6</a>: Expresses grave concern about the incident and says military activity threatening nuclear safety is unacceptable. <em class="actor-verbatim">&ldquo;&quot;expresses grave concern about the incident and says military activity that threatens nuclear safety is unacceptable&quot;&rdquo;</em> (<a href="#src-003">src-003</a>)</p></div>
-</li>
-<li id="actor-011" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Hussein Hajj Hassan</strong> <span class="actor-role">Hezbollah lawmaker</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-009">cluster 9</a>: Denounces Lebanon&#x27;s direct negotiations with Israel as a dead-end path leading to one concession after another and rejects disarming the resistance. <em class="actor-verbatim">&ldquo;&quot;The direct negotiations that the authorities in Lebanon have conducted with the Israeli enemy have... led them down a dead-end path that will result in nothing but one concession after another&quot;&rdquo;</em> (<a href="#src-003">src-003</a>)</p></div>
-</li>
-<li id="actor-012" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Vladimir Putin</strong> <span class="actor-role">President of Russia</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-008">cluster 8</a></p></div>
-</li>
-<li id="actor-013" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Mohammad Bagher Qalibaf</strong> <span class="actor-role">Iran&#x27;s chief negotiator and parliament speaker</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: Insists Washington must accept Iran&#x27;s 14-point proposal, stating any other approach will be inconclusive. <em class="actor-verbatim">&ldquo;&quot;There is no alternative but to accept the rights of the Iranian people as laid out in the 14-point proposal. Any other approach will be completely inconclusive; nothing but one failure after another&quot;&rdquo;</em> (<a href="#src-003">src-003</a>)</p></div>
-</li>
-<li id="actor-014" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Tommy Pigott</strong> <span class="actor-role">US State Department spokesman</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-009">cluster 9</a>: States the US remains cognizant of challenges posed by Hezbollah&#x27;s continued attacks on Israel without Lebanese government approval, undertaken to derail the process. <em class="actor-verbatim">&ldquo;&quot;The United States remains cognizant of the challenges posed by Hezbollah’s continued attacks on Israel, without the consent or approval of the Government of Lebanon, undertaken in order to derail this process&quot;&rdquo;</em> (<a href="#src-003">src-003</a>)</p></div>
-</li>
-<li id="actor-015" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>Pete Hegseth</strong> <span class="actor-role">US Secretary of War</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: States the Pentagon has plans to escalate, reverse, or reassign resources as needed, without specifying next steps in Iran. <em class="actor-verbatim">&ldquo;&quot;Tenemos un plan para intensificar las medidas si fuera necesario. Tenemos un plan para revertir la situación si fuera necesario. Tenemos un plan para reasignar recursos&quot;&rdquo;</em> (<a href="#src-004">src-004</a>)</p></div>
-</li>
-<li id="actor-017" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Xi Jinping</strong> <span class="actor-role">President of China</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-008">cluster 8</a>: Assures Trump that China is not preparing military aid to Iran, while China&#x27;s foreign ministry states shipping lanes should be reopened as soon as possible. (<a href="#src-005">src-005</a>)</p></div>
-</li>
-<li id="actor-018" class="actor" data-clusters="cluster-pc-007">
-  <div class="actor-header"><strong>UAE foreign minister</strong> <span class="actor-role">Foreign minister of the United Arab Emirates</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-007">cluster 7</a>: Holds talks with regional states including Saudi Arabia and informs the IAEA of the drone strike details, asserting the UAE&#x27;s full right to respond to terrorist attacks. (<a href="#src-006">src-006</a>)</p></div>
-</li>
-<li id="actor-020" class="actor" data-clusters="cluster-pc-007">
-  <div class="actor-header"><strong>Anwar Gargash</strong> <span class="actor-role">Emirati presidential adviser</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-007">cluster 7</a>: Blames Iran or a regional proxy for the terrorist targeting of the Barakah nuclear plant, calling it a dangerous escalation violating international laws and norms. <em class="actor-verbatim">&ldquo;&quot;The terrorist targeting of the Barakah clean nuclear power plant, whether carried out by the principal perpetrator or through one of its agents, represents a dangerous escalation&quot;&rdquo;</em> (<a href="#src-006">src-006</a>)</p></div>
-</li>
-<li id="actor-021" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Mojtaba Khamenei</strong> <span class="actor-role">Leader of Iran</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: States that work has been done to open fronts where the enemy will be defenceless and inexperienced, and that other fronts will be opened if war continues. <em class="actor-verbatim">&ldquo;&quot;Düşmanın savunmasız kalacağı ve tecrübe sahibi olmadığı cephelerin açılması hususunda çalışmalar gerçekleştirilmiştir. Savaş durumunun devamı halinde çıkarlar gözetilerek söz konusu başka cepheler açılacaktır.&quot;&rdquo;</em> (<a href="#src-007">src-007</a>)</p></div>
-</li>
-<li id="actor-022" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Mesud Pezeşkiyan</strong> <span class="actor-role">President of Iran</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: Vows Iran will not submit to any power, will not sacrifice national honour for comfort, and insists dialogue does not mean surrender while defending Iran&#x27;s rights through negotiation. <em class="actor-verbatim">&ldquo;&quot;Diyalog teslim olmak anlamına gelmez&quot;&rdquo;</em> (<a href="#src-007">src-007</a>)</p></div>
-</li>
-<li id="actor-024" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Iran&#x27;s Supreme National Security Council</strong> <span class="actor-role">Iran&#x27;s highest security body</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-025" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>İsmail Bekayi</strong> <span class="actor-role">Spokesperson for Iran&#x27;s Foreign Ministry</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: Confirms diplomatic contacts continue through Pakistani mediation despite Washington rejecting Iran&#x27;s proposal, and states Iran&#x27;s priority demands include lifting sanctions and releasing frozen funds. <em class="actor-verbatim">&ldquo;&quot;Washington&#x27;ın teklifimizi reddetmesine rağmen, Pakistanlı arabulucu aracılığıyla bir dizi görüş aldık. Sunulan son teklife ilişkin bakış açımızı aktardık&quot;&rdquo;</em> (<a href="#src-007">src-007</a>)</p></div>
-</li>
-<li id="actor-026" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>Lindsey Graham</strong> <span class="actor-role">Republican Senator</span> <span class="actor-type">legislature</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: Calls on Trump to resume strikes on Iran, targeting energy infrastructure until Tehran accepts Washington&#x27;s terms, accusing Iran of playing games and trying to buy time. <em class="actor-verbatim">&ldquo;&quot;Enerji altyapısı onların zayıf noktasıdır. Mücadeleye geri dönersek, enerji konusunu listenin en başına koyardım. Onlara daha fazla zarar verin. Belki yeterince zarar verirseniz bir anlaşma yaparlar&quot;&rdquo;</em> (<a href="#src-007">src-007</a>)</p></div>
-</li>
-<li id="actor-027" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Marjorie Taylor Greene</strong> <span class="actor-role">Former US Congress member</span> <span class="actor-type">legislature</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-005">cluster 5</a>: Warns any attempt to send US troops to Iran would trigger a political revolution, stating the coalition against foreign wars will unite and become unstoppable. <em class="actor-verbatim">&ldquo;&quot;Artık yabancı savaşlar istemiyoruz&#x27; demiştik ve ciddiydik. Koalisyon birleşecek ve durdurulamaz olacak. Bunun için elimden geleni yapacağım&quot;&rdquo;</em> (<a href="#src-007">src-007</a>)</p></div>
-</li>
-<li id="actor-028" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Muhsin Rızai</strong> <span class="actor-role">Member of Iran&#x27;s Expediency Discernment Council and former IRGC General Commander</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: States Iran&#x27;s patience has limits, armed forces remain ready with finger on the trigger, and warns the US to end the naval blockade before the Sea of Oman becomes its cemetery. <em class="actor-verbatim">&ldquo;&quot;Sabrımızın bir sınırı var ve silahlı kuvvetler hazırlıklarına devam etmektedir ve eli tetikte bekliyor. Aynı zamanda diplomasi de devam ediyor&quot;&rdquo;</em> (<a href="#src-007">src-007</a>)</p></div>
-</li>
-<li id="actor-031" class="actor" data-clusters="cluster-pc-007">
-  <div class="actor-header"><strong>Saudi Arabia</strong> <span class="actor-role">Kingdom of Saudi Arabia</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-007">cluster 7</a>: Announces interception of three drones entering from Iraqi airspace and warns it will take necessary operational measures to respond to any attempt to violate its sovereignty. <em class="actor-verbatim">&ldquo;&quot;las medidas operativas necesarias&quot;&rdquo;</em> (<a href="#src-008">src-008</a>)</p></div>
-</li>
-<li id="actor-032" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Mohsin Naqvi</strong> <span class="actor-role">Interior Minister of Pakistan</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-008">cluster 8</a>: Met with Iran&#x27;s chief negotiator in Tehran as part of Pakistan&#x27;s active mediation in peace talks. (<a href="#src-009">src-009</a>)</p></div>
-</li>
-<li id="actor-033" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Nikol Pashinyan</strong> <span class="actor-role">Prime Minister of Armenia</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-009">cluster 9</a>: Admits that the TRIPP project is not a high priority for the US administration and that this will likely affect the time frame. <em class="actor-verbatim">&ldquo;&quot;Obviously, TRIPP isn&#x27;t a high priority with the U.S. administration, at least today,&quot;&rdquo;</em> (<a href="#src-011">src-011</a>)</p></div>
-</li>
-<li id="actor-034" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Narek Karapetyan</strong> <span class="actor-role">Opposition leader in Armenia</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-009">cluster 9</a>: Warns that the TRIPP route runs 30-40 meters from the Iranian border and questions what will happen if US-Iran relations deteriorate and only an American company remains there. <em class="actor-verbatim">&ldquo;&quot;the TRIPP route runs 30-40 meters from the Iranian border.&quot;&rdquo;</em> (<a href="#src-011">src-011</a>)</p></div>
-</li>
-<li id="actor-035" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Ilham Aliyev</strong> <span class="actor-role">President of Azerbaijan</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-036" class="actor" data-clusters="cluster-pc-002 cluster-pc-010">
-  <div class="actor-header"><strong>Former IRGC commander</strong> <span class="actor-role">Former commander of Iran&#x27;s Islamic Revolutionary Guard Corps</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-002">cluster 2</a>: Calls the US naval blockade an &#x27;act of war.&#x27; (<a href="#src-015">src-015</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-010">cluster 10</a>: Calls the US naval blockade an &#x27;act of war.&#x27; (<a href="#src-015">src-015</a>)</p></div>
-</li>
-<li id="actor-037" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Iranian officials</strong> <span class="actor-role">Unnamed Iranian government officials</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-002">cluster 2</a>: Respond sharply to Trump&#x27;s threats with warnings to US soldiers. <em class="actor-verbatim">&ldquo;مراقب سربازان خود باشید&rdquo;</em> (<a href="#src-017">src-017</a>)</p></div>
-</li>
-<li id="actor-038" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>IRGC Navy Public Relations</strong> <span class="actor-role">Public Relations of the Islamic Revolutionary Guard Corps Navy</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-002">cluster 2</a>: Announces the closure of the Strait of Hormuz and bans any transit of ships linked to US and Israeli ports, warning of hard action. (<a href="#src-018">src-018</a>)</p></div>
-</li>
-<li id="actor-040" class="actor" data-clusters="cluster-pc-010">
-  <div class="actor-header"><strong>Marc Weller</strong> <span class="actor-role">Professor of International Law at Chatham House</span> <span class="actor-type">academia</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-010">cluster 10</a>: Argues that the US blockade is an act of war and assesses its legality under the UN Charter and law of naval warfare. (<a href="#src-022">src-022</a>)</p></div>
-</li>
-<li id="actor-041" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Emmanuel Macron</strong> <span class="actor-role">President of France</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-009">cluster 9</a>: Assures that France never considered an offensive naval deployment in the strait, while supporting measures to protect commercial ships. (<a href="#src-027">src-027</a>)</p></div>
-</li>
-<li id="actor-042" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Ali Abdollahi</strong> <span class="actor-role">Commander of the Khatam al-Anbia Headquarters of the Iranian Armed Forces</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-002">cluster 2</a>: Warns that Iran will not allow any exports or imports in the Gulf, Sea of Oman, and Red Sea if the US naval blockade threatens Iranian commercial ships and oil tankers. (<a href="#src-028">src-028</a>)</p></div>
-</li>
-</ol>
-<script>
-(function() {
-  const list = document.querySelector('.actor-list');
-  const showAll = document.getElementById('actors-show-all');
-  if (!list || !showAll) return;
-  function applyFilter() {
-    const m = (window.location.hash || '').match(/^#cluster-(\S+)$/);
-    if (!m) {
-      list.querySelectorAll('.actor').forEach(li => { li.hidden = false; });
-      showAll.hidden = true;
-      return;
-    }
-    const target = 'cluster-' + m[1];
-    list.querySelectorAll('.actor').forEach(li => {
-      const tags = (li.dataset.clusters || '').split(/\s+/);
-      li.hidden = !tags.includes(target);
-    });
-    showAll.hidden = false;
-  }
-  showAll.addEventListener('click', () => {
-    history.pushState('', document.title, window.location.pathname);
-    applyFilter();
-  });
-  window.addEventListener('hashchange', applyFilter);
-  applyFilter();
-})();
-</script>
+<p class="actors-meta">35 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<table class="actors-table">
+<thead><tr><th>Actor</th><th>Role &middot; Type</th><th>Cluster refs</th><th>Source refs</th></tr></thead>
+<tbody>
+<tr id="actor-001" class="actor-row"><td class="actor-name"><strong>Donald Trump</strong></td><td class="actor-role-type">President of the United States &middot; government</td><td class="actor-cluster-refs"><a href="#pc-001">Cluster 1</a>, <a href="#pc-008">Cluster 8</a></td><td class="actor-source-refs"><a href="#src-001">src-001</a>, <a href="#src-002">src-002</a>, <a href="#src-003">src-003</a>, <a href="#src-004">src-004</a>, <a href="#src-005">src-005</a>, <a href="#src-006">src-006</a>, <a href="#src-007">src-007</a>, <a href="#src-008">src-008</a>, <a href="#src-009">src-009</a>, <a href="#src-011">src-011</a>, <a href="#src-012">src-012</a>, <a href="#src-013">src-013</a>, <a href="#src-014">src-014</a>, <a href="#src-015">src-015</a>, <a href="#src-019">src-019</a></td></tr>
+<tr id="actor-002" class="actor-row"><td class="actor-name"><strong>Abolfazl Shakarchi</strong></td><td class="actor-role-type">Spokesperson for Iran&#x27;s armed forces &middot; military</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a></td><td class="actor-source-refs"><a href="#src-001">src-001</a>, <a href="#src-008">src-008</a></td></tr>
+<tr id="actor-003" class="actor-row"><td class="actor-name"><strong>Adam Clements</strong></td><td class="actor-role-type">Foreign policy analyst &middot; civil_society</td><td class="actor-cluster-refs"><a href="#pc-004">Cluster 4</a></td><td class="actor-source-refs"><a href="#src-001">src-001</a></td></tr>
+<tr id="actor-004" class="actor-row"><td class="actor-name"><strong>Iran&#x27;s foreign ministry spokesperson</strong></td><td class="actor-role-type">Spokesperson for Iran&#x27;s foreign ministry &middot; government</td><td class="actor-cluster-refs"><a href="#pc-003">Cluster 3</a></td><td class="actor-source-refs"><a href="#src-002">src-002</a></td></tr>
+<tr id="actor-006" class="actor-row"><td class="actor-name"><strong>Saudi Arabia&#x27;s Defense Ministry</strong></td><td class="actor-role-type">Defense Ministry of Saudi Arabia &middot; government</td><td class="actor-cluster-refs"><a href="#pc-007">Cluster 7</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a>, <a href="#src-007">src-007</a></td></tr>
+<tr id="actor-007" class="actor-row"><td class="actor-name"><strong>Benjamin Netanyahu</strong></td><td class="actor-role-type">Prime Minister of Israel &middot; government</td><td class="actor-cluster-refs"></td><td class="actor-source-refs"><a href="#src-003">src-003</a></td></tr>
+<tr id="actor-008" class="actor-row"><td class="actor-name"><strong>UAE defense ministry</strong></td><td class="actor-role-type">Defense ministry of the United Arab Emirates &middot; government</td><td class="actor-cluster-refs"><a href="#pc-007">Cluster 7</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a>, <a href="#src-006">src-006</a>, <a href="#src-008">src-008</a>, <a href="#src-020">src-020</a></td></tr>
+<tr id="actor-009" class="actor-row"><td class="actor-name"><strong>IAEA</strong></td><td class="actor-role-type">International Atomic Energy Agency &middot; international_org</td><td class="actor-cluster-refs"><a href="#pc-006">Cluster 6</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a>, <a href="#src-008">src-008</a>, <a href="#src-025">src-025</a></td></tr>
+<tr id="actor-010" class="actor-row"><td class="actor-name"><strong>Rafael Grossi</strong></td><td class="actor-role-type">Director General of the IAEA &middot; international_org</td><td class="actor-cluster-refs"><a href="#pc-006">Cluster 6</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a>, <a href="#src-006">src-006</a>, <a href="#src-026">src-026</a></td></tr>
+<tr id="actor-011" class="actor-row"><td class="actor-name"><strong>Hussein Hajj Hassan</strong></td><td class="actor-role-type">Hezbollah lawmaker &middot; government</td><td class="actor-cluster-refs"><a href="#pc-009">Cluster 9</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a></td></tr>
+<tr id="actor-012" class="actor-row"><td class="actor-name"><strong>Vladimir Putin</strong></td><td class="actor-role-type">President of Russia &middot; government</td><td class="actor-cluster-refs"><a href="#pc-008">Cluster 8</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a></td></tr>
+<tr id="actor-013" class="actor-row"><td class="actor-name"><strong>Mohammad Bagher Qalibaf</strong></td><td class="actor-role-type">Iran&#x27;s chief negotiator and parliament speaker &middot; government</td><td class="actor-cluster-refs"><a href="#pc-003">Cluster 3</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a>, <a href="#src-005">src-005</a>, <a href="#src-009">src-009</a></td></tr>
+<tr id="actor-014" class="actor-row"><td class="actor-name"><strong>Tommy Pigott</strong></td><td class="actor-role-type">US State Department spokesman &middot; government</td><td class="actor-cluster-refs"><a href="#pc-009">Cluster 9</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a></td></tr>
+<tr id="actor-015" class="actor-row"><td class="actor-name"><strong>Pete Hegseth</strong></td><td class="actor-role-type">US Secretary of War &middot; government</td><td class="actor-cluster-refs"><a href="#pc-001">Cluster 1</a></td><td class="actor-source-refs"><a href="#src-004">src-004</a></td></tr>
+<tr id="actor-017" class="actor-row"><td class="actor-name"><strong>Xi Jinping</strong></td><td class="actor-role-type">President of China &middot; government</td><td class="actor-cluster-refs"><a href="#pc-008">Cluster 8</a></td><td class="actor-source-refs"><a href="#src-005">src-005</a>, <a href="#src-009">src-009</a></td></tr>
+<tr id="actor-018" class="actor-row"><td class="actor-name"><strong>UAE foreign minister</strong></td><td class="actor-role-type">Foreign minister of the United Arab Emirates &middot; government</td><td class="actor-cluster-refs"><a href="#pc-007">Cluster 7</a></td><td class="actor-source-refs"><a href="#src-006">src-006</a></td></tr>
+<tr id="actor-020" class="actor-row"><td class="actor-name"><strong>Anwar Gargash</strong></td><td class="actor-role-type">Emirati presidential adviser &middot; government</td><td class="actor-cluster-refs"><a href="#pc-007">Cluster 7</a></td><td class="actor-source-refs"><a href="#src-006">src-006</a></td></tr>
+<tr id="actor-021" class="actor-row"><td class="actor-name"><strong>Mojtaba Khamenei</strong></td><td class="actor-role-type">Leader of Iran &middot; government</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a></td><td class="actor-source-refs"><a href="#src-007">src-007</a></td></tr>
+<tr id="actor-022" class="actor-row"><td class="actor-name"><strong>Mesud Pezeşkiyan</strong></td><td class="actor-role-type">President of Iran &middot; government</td><td class="actor-cluster-refs"><a href="#pc-003">Cluster 3</a></td><td class="actor-source-refs"><a href="#src-007">src-007</a></td></tr>
+<tr id="actor-024" class="actor-row"><td class="actor-name"><strong>Iran&#x27;s Supreme National Security Council</strong></td><td class="actor-role-type">Iran&#x27;s highest security body &middot; government</td><td class="actor-cluster-refs"></td><td class="actor-source-refs"><a href="#src-007">src-007</a></td></tr>
+<tr id="actor-025" class="actor-row"><td class="actor-name"><strong>İsmail Bekayi</strong></td><td class="actor-role-type">Spokesperson for Iran&#x27;s Foreign Ministry &middot; government</td><td class="actor-cluster-refs"><a href="#pc-003">Cluster 3</a></td><td class="actor-source-refs"><a href="#src-007">src-007</a></td></tr>
+<tr id="actor-026" class="actor-row"><td class="actor-name"><strong>Lindsey Graham</strong></td><td class="actor-role-type">Republican Senator &middot; legislature</td><td class="actor-cluster-refs"><a href="#pc-001">Cluster 1</a></td><td class="actor-source-refs"><a href="#src-007">src-007</a>, <a href="#src-016">src-016</a></td></tr>
+<tr id="actor-027" class="actor-row"><td class="actor-name"><strong>Marjorie Taylor Greene</strong></td><td class="actor-role-type">Former US Congress member &middot; legislature</td><td class="actor-cluster-refs"><a href="#pc-005">Cluster 5</a></td><td class="actor-source-refs"><a href="#src-007">src-007</a>, <a href="#src-010">src-010</a></td></tr>
+<tr id="actor-028" class="actor-row"><td class="actor-name"><strong>Muhsin Rızai</strong></td><td class="actor-role-type">Member of Iran&#x27;s Expediency Discernment Council and former IRGC General Commander &middot; government</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a></td><td class="actor-source-refs"><a href="#src-007">src-007</a>, <a href="#src-008">src-008</a></td></tr>
+<tr id="actor-031" class="actor-row"><td class="actor-name"><strong>Saudi Arabia</strong></td><td class="actor-role-type">Kingdom of Saudi Arabia &middot; government</td><td class="actor-cluster-refs"><a href="#pc-007">Cluster 7</a></td><td class="actor-source-refs"><a href="#src-008">src-008</a></td></tr>
+<tr id="actor-032" class="actor-row"><td class="actor-name"><strong>Mohsin Naqvi</strong></td><td class="actor-role-type">Interior Minister of Pakistan &middot; government</td><td class="actor-cluster-refs"><a href="#pc-008">Cluster 8</a></td><td class="actor-source-refs"><a href="#src-009">src-009</a>, <a href="#src-021">src-021</a></td></tr>
+<tr id="actor-033" class="actor-row"><td class="actor-name"><strong>Nikol Pashinyan</strong></td><td class="actor-role-type">Prime Minister of Armenia &middot; government</td><td class="actor-cluster-refs"><a href="#pc-009">Cluster 9</a></td><td class="actor-source-refs"><a href="#src-011">src-011</a></td></tr>
+<tr id="actor-034" class="actor-row"><td class="actor-name"><strong>Narek Karapetyan</strong></td><td class="actor-role-type">Opposition leader in Armenia &middot; government</td><td class="actor-cluster-refs"><a href="#pc-009">Cluster 9</a></td><td class="actor-source-refs"><a href="#src-011">src-011</a></td></tr>
+<tr id="actor-035" class="actor-row"><td class="actor-name"><strong>Ilham Aliyev</strong></td><td class="actor-role-type">President of Azerbaijan &middot; government</td><td class="actor-cluster-refs"></td><td class="actor-source-refs"><a href="#src-011">src-011</a></td></tr>
+<tr id="actor-036" class="actor-row"><td class="actor-name"><strong>Former IRGC commander</strong></td><td class="actor-role-type">Former commander of Iran&#x27;s Islamic Revolutionary Guard Corps &middot; military</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a>, <a href="#pc-010">Cluster 10</a></td><td class="actor-source-refs"><a href="#src-015">src-015</a></td></tr>
+<tr id="actor-037" class="actor-row"><td class="actor-name"><strong>Iranian officials</strong></td><td class="actor-role-type">Unnamed Iranian government officials &middot; government</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a></td><td class="actor-source-refs"><a href="#src-017">src-017</a></td></tr>
+<tr id="actor-038" class="actor-row"><td class="actor-name"><strong>IRGC Navy Public Relations</strong></td><td class="actor-role-type">Public Relations of the Islamic Revolutionary Guard Corps Navy &middot; military</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a></td><td class="actor-source-refs"><a href="#src-018">src-018</a></td></tr>
+<tr id="actor-040" class="actor-row"><td class="actor-name"><strong>Marc Weller</strong></td><td class="actor-role-type">Professor of International Law at Chatham House &middot; academia</td><td class="actor-cluster-refs"><a href="#pc-010">Cluster 10</a></td><td class="actor-source-refs"><a href="#src-022">src-022</a></td></tr>
+<tr id="actor-041" class="actor-row"><td class="actor-name"><strong>Emmanuel Macron</strong></td><td class="actor-role-type">President of France &middot; government</td><td class="actor-cluster-refs"><a href="#pc-009">Cluster 9</a></td><td class="actor-source-refs"><a href="#src-027">src-027</a></td></tr>
+<tr id="actor-042" class="actor-row"><td class="actor-name"><strong>Ali Abdollahi</strong></td><td class="actor-role-type">Commander of the Khatam al-Anbia Headquarters of the Iranian Armed Forces &middot; military</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a></td><td class="actor-source-refs"><a href="#src-028">src-028</a></td></tr>
+</tbody>
+</table>
 </section>
 
 <h2>What's missing</h2>
@@ -1030,6 +904,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Reports Trump&#x27;s Truth Social post threatening Iran with destruction and notes his earlier AI-generated image suggesting a &#x27;calm before the storm.&#x27; Quotes Iranian state-linked Mehr news agency accusing the US of offering &#x27;no tangible concessions&#x27; and Iranian armed forces spokesperson Abolfazl Shakarchi warning against further threats, while analyst Adam Clements suggests Trump&#x27;s rhetoric may be aimed at domestic audiences.</p>
   <p class="source-bias-note"><em>Qatar-funded, strong Global South coverage</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-002">Abolfazl Shakarchi</a>, <a href="#actor-003">Adam Clements</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Threatens Iran with total destruction if it does not move quickly to meet US demands, stating the &#x27;clock is ticking.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;For Iran, the Clock is Ticking, and they better get moving, FAST, or there won’t be anything left of them,&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-002">Abolfazl Shakarchi</a></strong> <span class="actor-role">Spokesperson for Iran&#x27;s armed forces</span><p class="source-quote-position">Warns the US that repeating any folly to compensate for America&#x27;s disgrace in the war will result in more crushing blows.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Repeating any folly to compensate for America’s disgrace in the Third Imposed War against Iran will result in nothing but receiving more crushing and severe blows&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Adam Clements</a></strong> <span class="actor-role">Foreign policy analyst</span><p class="source-quote-position">Suggests Trump&#x27;s bombastic statements may be aimed at domestic audiences and advises watching whether officials echo the rhetoric and whether military activity increases.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Of course, Iran would have to take it seriously... At the same time as well, President Trump is known for his bombastic tweets, his bombastic statements, perhaps for domestic audiences.&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 <li id="src-013" class="source">
   <div class="source-header"><span class="source-id">[13]</span> <a class="source-headline" href="https://www.aljazeera.com/news/liveblog/2026/5/18/iran-war-live-trump-warns-clock-ticking-saudi-uae-report-drone-attacks?traffic_source=rss" target="_blank" rel="noopener">Iran war live: Trump threatens Tehran; Saudi, UAE report drone attacks</a></div>
@@ -1037,6 +915,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">A live blog entry noting that Trump said an attack on Iran was held off upon Gulf states&#x27; request, and providing updates on the US-Israel war on Iran and Israel&#x27;s attacks on Lebanon for May 18, 2026. The extracted text is minimal and contains no substantive actor statements beyond the headline reference.</p>
   <p class="source-bias-note"><em>Qatar-funded, strong Global South coverage</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Said an attack on Iran was held off upon the request of Gulf states.</p></li></ul>
+  </details>
 </li>
 <li id="src-020" class="source">
   <div class="source-header"><span class="source-id">[20]</span> <a class="source-headline" href="https://www.aljazeera.net/news/2026/5/17/%D8%B9%D8%A7%D8%AC%D9%84-%D9%85%D9%83%D8%AA%D8%A8-%D8%A3%D8%A8%D9%88-%D8%B8%D8%A8%D9%8A-%D8%A7%D9%84%D8%A5%D8%B9%D9%84%D8%A7%D9%85%D9%8A-%D8%AD%D8%B1%D9%8A%D9%82-%D9%86%D8%A7%D8%AC%D9%85" target="_blank" rel="noopener">إدانات عربية وإقليمية لاستهداف محطة نووية في الإمارات</a></div>
@@ -1044,6 +926,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Reports the drone attack on the Barakah nuclear plant perimeter in the UAE, with official Emirati statements and a wave of Arab and regional condemnations. Provides the Gulf state victim perspective and the security dimension for civilian nuclear infrastructure.</p>
   <p class="source-bias-note"><em>Qatar-funded, strong Global South coverage</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-008">UAE defense ministry</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-008">UAE defense ministry</a></strong> <span class="actor-role">Defense ministry of the United Arab Emirates</span><p class="source-quote-position">States that air defenses engaged three drones entering from the western border, two were shot down and one hit an external generator, with no radiation leak.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1065,7 +951,11 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="source-header"><span class="source-id">[2]</span> <a class="source-headline" href="https://www.bbc.com/news/articles/cd0p4y9y48xo?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener">Trump warns &#x27;clock is ticking&#x27; for Iran as peace progress stalls</a></div>
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-17</span></div>
   <p class="source-summary">Reports Trump&#x27;s Truth Social warning and notes his conversation with Netanyahu, while detailing Iran&#x27;s response through Pakistani mediators. Cites Iranian foreign ministry spokesperson confirming continued exchanges, Mehr news agency warning of an impasse, and Fars news agency reporting US demands including Iran keeping only one nuclear site and transferring enriched uranium to the US.</p>
-  <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-004">Iran&#x27;s foreign ministry spokesperson</a>, <a href="#actor-004">Iran&#x27;s foreign ministry spokesperson</a></div>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-004">Iran&#x27;s foreign ministry spokesperson</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Warns Iran the &#x27;clock is ticking&#x27; and threatens destruction if it does not move fast to reach a deal.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;They better get moving, FAST, or there won&#x27;t be anything left of them&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-004">Iran&#x27;s foreign ministry spokesperson</a></strong> <span class="actor-role">Spokesperson for Iran&#x27;s foreign ministry</span><p class="source-quote-position">States that Iran&#x27;s concerns were conveyed to the American side and exchanges continue through Pakistani mediators.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;As we announced yesterday, our concerns were conveyed to the American side&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1077,6 +967,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span></div>
   <p class="source-summary">Reports IAEA concerns about Iran&#x27;s 400+ kg of 60% enriched uranium, enough for about ten nuclear weapons, and the verification gap. Provides the nonproliferation and international watchdog perspective.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-009">IAEA</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-009">IAEA</a></strong> <span class="actor-role">International Atomic Energy Agency</span><p class="source-quote-position">Expresses concern that Iran&#x27;s 60% enriched uranium stockpile cannot be verified as peaceful and could be further enriched for weapons.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1088,6 +982,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>fa</span></div>
   <p class="source-summary">Reports the sharp Iranian official response to Trump&#x27;s threats, with reciprocal warnings to US troops. Provides the direct Iranian government reaction framing absent from Western sources.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-037">Iranian officials</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-037">Iranian officials</a></strong> <span class="actor-role">Unnamed Iranian government officials</span><p class="source-quote-position">Respond sharply to Trump&#x27;s threats with warnings to US soldiers.</p><p class="source-quote-verbatim"><em>&ldquo;مراقب سربازان خود باشید&rdquo;</em> <code class="source-quote-lang">fa</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1099,6 +997,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>ur</span></div>
   <p class="source-summary">Reports Pakistani Interior Minister Mohsin Naqvi&#x27;s unannounced visit to Tehran for talks with Iranian officials, contextualized within US-Iran tensions and Pakistan&#x27;s potential mediation role. Provides the Pakistani mediation perspective.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-032">Mohsin Naqvi</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-032">Mohsin Naqvi</a></strong> <span class="actor-role">Interior Minister of Pakistan</span><p class="source-quote-position">Makes an unannounced visit to Tehran to meet with Iranian Interior Minister amid US-Iran tensions and Pakistan&#x27;s possible mediation efforts.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1110,6 +1012,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-04-01</span></div>
   <p class="source-summary">Provides expert international law analysis arguing that Trump&#x27;s announced blockade is an act of war, assessing its legality under the UN Charter and the law of naval warfare. Offers a legal expert perspective absent from news reports.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-040">Marc Weller</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-040">Marc Weller</a></strong> <span class="actor-role">Professor of International Law at Chatham House</span><p class="source-quote-position">Argues that the US blockade is an act of war and assesses its legality under the UN Charter and law of naval warfare.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1132,6 +1038,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Provides a live-blog roundup covering Trump&#x27;s threat, a drone strike near Abu Dhabi&#x27;s Barakah nuclear plant, Saudi Arabia intercepting drones from Iraq, and Israeli strikes in Lebanon and Gaza. Includes IAEA chief Grossi expressing &#x27;grave concern&#x27; over the nuclear plant strike, the UAE calling it a &#x27;dangerous escalation,&#x27; and reports of European countries negotiating with Iran&#x27;s Revolutionary Guards for Hormuz transit.</p>
   <p class="source-bias-note"><em>German state-funded, editorially independent</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-006">Saudi Arabia&#x27;s Defense Ministry</a>, <a href="#actor-007">Benjamin Netanyahu</a>, <a href="#actor-008">UAE defense ministry</a>, <a href="#actor-009">IAEA</a>, <a href="#actor-010">Rafael Grossi</a>, <a href="#actor-011">Hussein Hajj Hassan</a>, <a href="#actor-012">Vladimir Putin</a>, <a href="#actor-013">Mohammad Bagher Qalibaf</a>, <a href="#actor-014">Tommy Pigott</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Threatens Iran with destruction and warns the &#x27;clock is ticking&#x27; to agree to a deal to end the war.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;For Iran, the Clock is Ticking, and they better get moving, FAST, or there won’t be anything left of them&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-006">Saudi Arabia&#x27;s Defense Ministry</a></strong> <span class="actor-role">Defense Ministry of Saudi Arabia</span><p class="source-quote-position">Announces interception of three drones from Iraq and reserves the right to respond at a time and place of its choosing.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;The Ministry of Defense announced that on 17th May 2026, UAE air defense systems intercepted three UAVs that entered the country from the western border direction&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-007">Benjamin Netanyahu</a></strong> <span class="actor-role">Prime Minister of Israel</span><p class="source-quote-position">States Israel is close to killing all Hamas militants behind the October 7 attack and that the IDF is holding territory and fighting an enemy trying to outsmart them.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;I promised that every single architect of the massacre and the hostage-taking would be eliminated down to the last one&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-008">UAE defense ministry</a></strong> <span class="actor-role">Defense ministry of the United Arab Emirates</span><p class="source-quote-position">Announces a drone hit an electrical generator at Barakah nuclear plant and calls the incident a &#x27;dangerous escalation.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Investigations are underway to determine the source of the attacks&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-009">IAEA</a></strong> <span class="actor-role">International Atomic Energy Agency</span><p class="source-quote-position">Expresses grave concern about the drone strike near the UAE nuclear plant and calls for maximum military restraint near nuclear facilities.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;The IAEA is following the situation closely and is in constant contact with the UAE authorities, ready to provide assistance if needed&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Rafael Grossi</a></strong> <span class="actor-role">Director General of the IAEA</span><p class="source-quote-position">Expresses grave concern about the incident and says military activity threatening nuclear safety is unacceptable.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;expresses grave concern about the incident and says military activity that threatens nuclear safety is unacceptable&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-011">Hussein Hajj Hassan</a></strong> <span class="actor-role">Hezbollah lawmaker</span><p class="source-quote-position">Denounces Lebanon&#x27;s direct negotiations with Israel as a dead-end path leading to one concession after another and rejects disarming the resistance.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;The direct negotiations that the authorities in Lebanon have conducted with the Israeli enemy have... led them down a dead-end path that will result in nothing but one concession after another&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-012">Vladimir Putin</a></strong> <span class="actor-role">President of Russia</span><p class="source-quote-position">Discusses the Iran conflict with UAE President Mohammed bin Zayed, emphasizing the importance of continuing political and diplomatic processes for compromise-based peace.</p></li><li class="source-quote-entry"><strong><a href="#actor-013">Mohammad Bagher Qalibaf</a></strong> <span class="actor-role">Iran&#x27;s chief negotiator and parliament speaker</span><p class="source-quote-position">Insists Washington must accept Iran&#x27;s 14-point proposal, stating any other approach will be inconclusive.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;There is no alternative but to accept the rights of the Iranian people as laid out in the 14-point proposal. Any other approach will be completely inconclusive; nothing but one failure after another&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-014">Tommy Pigott</a></strong> <span class="actor-role">US State Department spokesman</span><p class="source-quote-position">States the US remains cognizant of challenges posed by Hezbollah&#x27;s continued attacks on Israel without Lebanese government approval, undertaken to derail the process.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;The United States remains cognizant of the challenges posed by Hezbollah’s continued attacks on Israel, without the consent or approval of the Government of Lebanon, undertaken in order to derail this process&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1144,6 +1054,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Reports Trump&#x27;s Truth Social threat and his Fox News interview accusing Iran of retracting agreements five times. Quotes US War Secretary Pete Hegseth stating the Pentagon has plans to escalate, reverse, or reassign resources if needed, while noting Trump&#x27;s AI-generated image suggesting renewed attacks.</p>
   <p class="source-bias-note"><em>Major Mexican newspaper, centrist/business-oriented</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-015">Pete Hegseth</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Threatens Iran with destruction and accuses Tehran of accepting terms in dialogue then withdrawing the next day, claiming this has happened five times.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Para Irán, el reloj avanza, y más les vale ponerse en marcha —¡rápido!—, o no quedará nada de ellos. ¡El tiempo es esencial!&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-015">Pete Hegseth</a></strong> <span class="actor-role">US Secretary of War</span><p class="source-quote-position">States the Pentagon has plans to escalate, reverse, or reassign resources as needed, without specifying next steps in Iran.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Tenemos un plan para intensificar las medidas si fuera necesario. Tenemos un plan para revertir la situación si fuera necesario. Tenemos un plan para reasignar recursos&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1155,6 +1069,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="source-meta"><span>Iran</span> &middot; <span>fa</span></div>
   <p class="source-summary">Reports IAEA Director General Grossi&#x27;s statement that Iran holds about 400 kg of 60% enriched uranium, and that negotiations with Iran and other actors continue. Provides the Iranian domestic media framing of the IAEA&#x27;s nuclear report.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-010">Rafael Grossi</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-010">Rafael Grossi</a></strong> <span class="actor-role">Director General of the IAEA</span><p class="source-quote-position">States that Iran has about 400 kg of uranium enriched to 60% and that negotiations with Iran and other actors continue for a sustainable solution.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1166,6 +1084,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="source-meta"><span>France</span> &middot; <span>fa</span> &middot; <span>2026-03-27</span></div>
   <p class="source-summary">Reports the IRGC Navy&#x27;s official statement closing the Strait of Hormuz and threatening hard action against any transit linked to US or Israeli allies. Provides the military actor perspective on the blockade.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-038">IRGC Navy Public Relations</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-038">IRGC Navy Public Relations</a></strong> <span class="actor-role">Public Relations of the Islamic Revolutionary Guard Corps Navy</span><p class="source-quote-position">Announces the closure of the Strait of Hormuz and bans any transit of ships linked to US and Israeli ports, warning of hard action.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1178,6 +1100,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Reports Trump&#x27;s warning alongside details of the stalled negotiations, including Fars news agency reporting US demands for Iran to keep only one nuclear site and transfer enriched uranium, and Washington&#x27;s refusal to release frozen assets or pay reparations. Quotes Iranian parliament speaker Ghalibaf saying the US presence creates insecurity, and notes Pakistan&#x27;s interior minister meeting with Ghalibaf in Tehran.</p>
   <p class="source-bias-note"><em>French state-funded, editorially independent</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-013">Mohammad Bagher Qalibaf</a>, <a href="#actor-017">Xi Jinping</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Warns Iran to move quickly towards a peace deal or face destruction.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;For Iran, the Clock is Ticking, and they better get moving, FAST, or there won&#x27;t be anything left of them&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-013">Mohammad Bagher Qalibaf</a></strong> <span class="actor-role">Iran&#x27;s chief negotiator and parliament speaker</span><p class="source-quote-position">Says the US and Israeli war with Iran has destabilised the entire Middle East and that the US presence creates insecurity rather than providing it.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Some governments in the region believed that the presence of the United States would bring them security, but recent events showed that this presence is not only incapable of providing security, but also creates the grounds for insecurity&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-017">Xi Jinping</a></strong> <span class="actor-role">President of China</span><p class="source-quote-position">Assures Trump that China is not preparing military aid to Iran, while China&#x27;s foreign ministry states shipping lanes should be reopened as soon as possible.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1190,6 +1116,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Reports Trump postponing a planned military attack on Iran at the request of Qatar, Saudi Arabia, and UAE leaders who believe a deal preventing Iran&#x27;s nuclear weapon is possible. Quotes Iranian President Pezeshkian vowing not to submit to any power, and reports Israeli military on alert preparing for renewed strikes on Iran&#x27;s energy infrastructure. Also covers Saudi Arabia intercepting drones from Iraq and Iranian public weapons training in Tehran squares.</p>
   <p class="source-bias-note"><em>Major Turkish newspaper, Demiroren Media Group</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-021">Mojtaba Khamenei</a>, <a href="#actor-022">Mesud Pezeşkiyan</a>, <a href="#actor-006">Saudi Arabia&#x27;s Defense Ministry</a>, <a href="#actor-024">Iran&#x27;s Supreme National Security Council</a>, <a href="#actor-025">İsmail Bekayi</a>, <a href="#actor-026">Lindsey Graham</a>, <a href="#actor-027">Marjorie Taylor Greene</a>, <a href="#actor-028">Muhsin Rızai</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Announces postponing a planned military attack on Iran at the request of Gulf leaders, but orders preparedness for a large-scale operation if no acceptable deal is reached.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;İran&#x27;a yarın için planlanan askeri saldırının ertelendiğini&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li><li class="source-quote-entry"><strong><a href="#actor-006">Saudi Arabia&#x27;s Defense Ministry</a></strong> <span class="actor-role">Defense Ministry of Saudi Arabia</span><p class="source-quote-position">Announces three drones entering from Iraq were destroyed and reserves the right to respond at an appropriate time and place.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Savunma Bakanlığı uygun zaman ve mekanda karşılık verme hakkını saklı tutmaktadır&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li><li class="source-quote-entry"><strong><a href="#actor-021">Mojtaba Khamenei</a></strong> <span class="actor-role">Leader of Iran</span><p class="source-quote-position">States that work has been done to open fronts where the enemy will be defenceless and inexperienced, and that other fronts will be opened if war continues.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Düşmanın savunmasız kalacağı ve tecrübe sahibi olmadığı cephelerin açılması hususunda çalışmalar gerçekleştirilmiştir. Savaş durumunun devamı halinde çıkarlar gözetilerek söz konusu başka cepheler açılacaktır.&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li><li class="source-quote-entry"><strong><a href="#actor-022">Mesud Pezeşkiyan</a></strong> <span class="actor-role">President of Iran</span><p class="source-quote-position">Vows Iran will not submit to any power, will not sacrifice national honour for comfort, and insists dialogue does not mean surrender while defending Iran&#x27;s rights through negotiation.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Diyalog teslim olmak anlamına gelmez&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li><li class="source-quote-entry"><strong><a href="#actor-024">Iran&#x27;s Supreme National Security Council</a></strong> <span class="actor-role">Iran&#x27;s highest security body</span><p class="source-quote-position">Announces the creation of a new institution to manage the Strait of Hormuz and provide real-time updates on operations and developments.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Hürmüz Boğazı operasyonları ve son gelişmeler hakkında gerçek zamanlı güncellemeler sağlayacağını&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li><li class="source-quote-entry"><strong><a href="#actor-025">İsmail Bekayi</a></strong> <span class="actor-role">Spokesperson for Iran&#x27;s Foreign Ministry</span><p class="source-quote-position">Confirms diplomatic contacts continue through Pakistani mediation despite Washington rejecting Iran&#x27;s proposal, and states Iran&#x27;s priority demands include lifting sanctions and releasing frozen funds.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Washington&#x27;ın teklifimizi reddetmesine rağmen, Pakistanlı arabulucu aracılığıyla bir dizi görüş aldık. Sunulan son teklife ilişkin bakış açımızı aktardık&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li><li class="source-quote-entry"><strong><a href="#actor-026">Lindsey Graham</a></strong> <span class="actor-role">Republican Senator</span><p class="source-quote-position">Calls on Trump to resume strikes on Iran, targeting energy infrastructure until Tehran accepts Washington&#x27;s terms, accusing Iran of playing games and trying to buy time.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Enerji altyapısı onların zayıf noktasıdır. Mücadeleye geri dönersek, enerji konusunu listenin en başına koyardım. Onlara daha fazla zarar verin. Belki yeterince zarar verirseniz bir anlaşma yaparlar&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li><li class="source-quote-entry"><strong><a href="#actor-027">Marjorie Taylor Greene</a></strong> <span class="actor-role">Former US Congress member</span><p class="source-quote-position">Warns any attempt to send US troops to Iran would trigger a political revolution, stating the coalition against foreign wars will unite and become unstoppable.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Artık yabancı savaşlar istemiyoruz&#x27; demiştik ve ciddiydik. Koalisyon birleşecek ve durdurulamaz olacak. Bunun için elimden geleni yapacağım&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li><li class="source-quote-entry"><strong><a href="#actor-028">Muhsin Rızai</a></strong> <span class="actor-role">Member of Iran&#x27;s Expediency Discernment Council and former IRGC General Commander</span><p class="source-quote-position">States Iran&#x27;s patience has limits, armed forces remain ready with finger on the trigger, and warns the US to end the naval blockade before the Sea of Oman becomes its cemetery.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Sabrımızın bir sınırı var ve silahlı kuvvetler hazırlıklarına devam etmektedir ve eli tetikte bekliyor. Aynı zamanda diplomasi de devam ediyor&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li></ul>
+  </details>
 </li>
 <li id="src-014" class="source">
   <div class="source-header"><span class="source-id">[14]</span> <a class="source-headline" href="https://www.hurriyet.com.tr/dunya/abdnin-iranda-zorla-ikna-cikmazi-43175941" target="_blank" rel="noopener">ABD’nin İran’da ‘zorla ikna’ çıkmazı</a></div>
@@ -1197,6 +1127,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Details the US&#x27;s five conditions for Iran, including keeping only one nuclear site and transferring 400 kg of enriched uranium to the US, while Iran demands a full ceasefire, sanctions relief, release of frozen assets, war reparations, and recognition of its sovereignty over the Strait of Hormuz. The article reports internal Trump administration indecision on renewed strikes, NATO intelligence estimating Iran retains at least 60% of its missile capacity, and Iran&#x27;s plan to charge fees for submarine cable routes through the strait.</p>
   <p class="source-bias-note"><em>Major Turkish newspaper, Demiroren Media Group</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Threatens Iran that the clock is ticking and they must act quickly or nothing will be left of them.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;İran için saat işliyor, derhal ve hızlıca harekete geçseler iyi olur. Aksi takdirde kendilerinden geriye hiçbir şey kalmayacak. Zaman kritik önem taşıyor&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1209,6 +1143,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Reports Iranian military adviser Mohsen Rezai threatening to break the US naval blockade and warning the Sea of Oman will become America&#x27;s &#x27;cemetery,&#x27; while claiming Iranian forces damaged a US vessel during the Hormuz operation. Quotes armed forces spokesperson Shekarchi warning the US will face &#x27;new, aggressive, and surprising scenarios,&#x27; alongside Trump&#x27;s Truth Social threat and the UAE blaming Iran for the Barakah drone strike.</p>
   <p class="source-bias-note"><em>Pan-LatAm digital news, strong in AR/MX/CO</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-028">Muhsin Rızai</a>, <a href="#actor-001">Donald Trump</a>, <a href="#actor-002">Abolfazl Shakarchi</a>, <a href="#actor-008">UAE defense ministry</a>, <a href="#actor-009">IAEA</a>, <a href="#actor-031">Saudi Arabia</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Warns Iran the clock is ticking and threatens destruction if it does not move fast.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Para Irán, el reloj está corriendo, y más vale que se muevan, RÁPIDO, o no quedará nada de ellos. ¡EL TIEMPO ES ESENCIAL!&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-002">Abolfazl Shakarchi</a></strong> <span class="actor-role">Spokesperson for Iran&#x27;s armed forces</span><p class="source-quote-position">Warns that if the US carries out its threats, it will face new, aggressive, and surprising scenarios and sink into a swamp of its own making.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;enfrentará escenarios nuevos, agresivos y sorpresivos, y se hundirá en un pantano creado por sí mismo&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-008">UAE defense ministry</a></strong> <span class="actor-role">Defense ministry of the United Arab Emirates</span><p class="source-quote-position">Reports a drone strike caused a fire at the Barakah nuclear plant and that two other drones were intercepted, launched from the western border.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;con éxito&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-009">IAEA</a></strong> <span class="actor-role">International Atomic Energy Agency</span><p class="source-quote-position">Confirms emergency diesel generators are supplying power to Barakah&#x27;s unit 3 and calls for maximum military restraint near nuclear installations.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;máxima moderación militar&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-028">Muhsin Rızai</a></strong> <span class="actor-role">Member of Iran&#x27;s Expediency Discernment Council and former IRGC General Commander</span><p class="source-quote-position">Declares Iran will break the US naval blockade, warns the Sea of Oman will become America&#x27;s cemetery, and claims Iranian forces damaged a US vessel during the Hormuz operation.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Irán romperá este bloqueo naval&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-031">Saudi Arabia</a></strong> <span class="actor-role">Kingdom of Saudi Arabia</span><p class="source-quote-position">Announces interception of three drones entering from Iraqi airspace and warns it will take necessary operational measures to respond to any attempt to violate its sovereignty.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;las medidas operativas necesarias&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1221,6 +1159,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Reports Trump&#x27;s Truth Social threat that Iran must move quickly toward a peace deal or &#x27;there won&#x27;t be anything left of them,&#x27; and details stalled negotiations where the US demands Iran keep only one nuclear site and transfer enriched uranium stockpiles. The article also notes Iranian media criticism that Washington offers no tangible concessions, and includes comments from Iranian parliament speaker Ghalibaf blaming US and Israeli presence for regional insecurity.</p>
   <p class="source-bias-note"><em>English-language Japanese news (Atom format)</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-013">Mohammad Bagher Qalibaf</a>, <a href="#actor-017">Xi Jinping</a>, <a href="#actor-032">Mohsin Naqvi</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Warns Iran to move quickly toward a peace deal or face total destruction.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;For Iran, the Clock is Ticking, and they better get moving, FAST, or there won&#x27;t be anything left of them,&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-013">Mohammad Bagher Qalibaf</a></strong> <span class="actor-role">Iran&#x27;s chief negotiator and parliament speaker</span><p class="source-quote-position">States that the US and Israeli war with Iran has destabilized the entire Middle East and that the US presence creates grounds for insecurity rather than providing security.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Some governments in the region believed that the presence of the United States would bring them security, but recent events showed that this presence is not only incapable of providing security, but also creates the grounds for insecurity,&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-017">Xi Jinping</a></strong> <span class="actor-role">President of China</span><p class="source-quote-position">Assured Trump that China was not preparing military aid to Iran.</p></li><li class="source-quote-entry"><strong><a href="#actor-032">Mohsin Naqvi</a></strong> <span class="actor-role">Interior Minister of Pakistan</span><p class="source-quote-position">Met with Iran&#x27;s chief negotiator in Tehran as part of Pakistan&#x27;s active mediation in peace talks.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1243,6 +1185,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Covers former US congresswoman Marjorie Taylor Greene&#x27;s threat of a &#x27;political revolution&#x27; in the United States if American troops are deployed to Iran, framing her break with Trump&#x27;s foreign policy. The article situates her statement amid reports that the US and Israel are considering renewed military action against Iran.</p>
   <p class="source-bias-note"><em>Independent, UK-based MENA focus</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-027">Marjorie Taylor Greene</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-027">Marjorie Taylor Greene</a></strong> <span class="actor-role">Former US Congress member</span><p class="source-quote-position">Threatens a political revolution in America if US troops are deployed to Iran, declaring opposition to foreign wars.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;WE. ARE. DONE.&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 <li id="src-015" class="source">
   <div class="source-header"><span class="source-id">[15]</span> <a class="source-headline" href="https://www.middleeasteye.net/live-blog/live-blog-update/morning-update-537" target="_blank" rel="noopener">Morning update</a></div>
@@ -1250,6 +1196,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">A morning update roundup listing key developments including Trump&#x27;s warning that the &#x27;clock is ticking,&#x27; drone attacks in Saudi Arabia and the UAE, Israeli military preparations for possible strikes on Iran, a former IRGC commander calling the US naval blockade an &#x27;act of war,&#x27; and Iran discussing Strait of Hormuz tensions with French and South Korean officials. The entry is a headline aggregation with no extended actor statements.</p>
   <p class="source-bias-note"><em>Independent, UK-based MENA focus</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-036">Former IRGC commander</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Warns Iran that the &#x27;clock is ticking&#x27; for a peace deal with Washington.</p></li><li class="source-quote-entry"><strong><a href="#actor-036">Former IRGC commander</a></strong> <span class="actor-role">Former commander of Iran&#x27;s Islamic Revolutionary Guard Corps</span><p class="source-quote-position">Calls the US naval blockade an &#x27;act of war.&#x27;</p></li></ul>
+  </details>
 </li>
 <li id="src-016" class="source">
   <div class="source-header"><span class="source-id">[16]</span> <a class="source-headline" href="https://www.middleeasteye.net/live-blog/live-blog-update/us-senator-says-us-should-hurt-iran-destroy-infrastructure" target="_blank" rel="noopener">US senator says US should ‘hurt’ Iran, destroy infrastructure</a></div>
@@ -1257,6 +1207,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Reports Republican Senator Lindsey Graham urging Trump to target Iran&#x27;s energy infrastructure to force Tehran into accepting US terms in nuclear negotiations, arguing that hurting Iran more may produce a deal. Graham accuses Iran of trying to &#x27;wait us out&#x27; and &#x27;playing games.&#x27;</p>
   <p class="source-bias-note"><em>Independent, UK-based MENA focus</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-026">Lindsey Graham</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-026">Lindsey Graham</a></strong> <span class="actor-role">Republican Senator</span><p class="source-quote-position">Urges Trump to intensify pressure on Iran by targeting energy infrastructure, arguing that hurting Iran more may produce a deal.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;The energy infrastructure is their soft underbelly. If you go back to the fight, I&#x27;d put energy on top of the list.&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1269,6 +1223,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Analyzes how Trump&#x27;s war on Iran has delayed the Caucasus Corridor (TRIPP), a US-backed transportation link through Armenia, sparing Armenia from becoming an Iranian retaliatory target. The article quotes Armenian Prime Minister Pashinyan acknowledging the project is not a US priority, and opposition leader Karapetyan warning that the route&#x27;s proximity to Iran makes it vulnerable if US-Iran relations deteriorate further.</p>
   <p class="source-bias-note"><em>Quincy Institute, restraint-oriented foreign policy</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-033">Nikol Pashinyan</a>, <a href="#actor-034">Narek Karapetyan</a>, <a href="#actor-001">Donald Trump</a>, <a href="#actor-035">Ilham Aliyev</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Declared the ceasefire between the US and Iran &#x27;on life support&#x27; and issued new threats against the Islamic Republic.</p></li><li class="source-quote-entry"><strong><a href="#actor-033">Nikol Pashinyan</a></strong> <span class="actor-role">Prime Minister of Armenia</span><p class="source-quote-position">Admits that the TRIPP project is not a high priority for the US administration and that this will likely affect the time frame.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Obviously, TRIPP isn&#x27;t a high priority with the U.S. administration, at least today,&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-034">Narek Karapetyan</a></strong> <span class="actor-role">Opposition leader in Armenia</span><p class="source-quote-position">Warns that the TRIPP route runs 30-40 meters from the Iranian border and questions what will happen if US-Iran relations deteriorate and only an American company remains there.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;the TRIPP route runs 30-40 meters from the Iranian border.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-035">Ilham Aliyev</a></strong> <span class="actor-role">President of Azerbaijan</span><p class="source-quote-position">Occasionally positioned himself as the leader of all Azeris in the world, including those in Iran, flirting with Azeri irredentism.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1290,6 +1248,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>ar</span></div>
   <p class="source-summary">Reports Trump&#x27;s agreement to a two-week ceasefire with Iran, highlighting Gulf states&#x27; anxious monitoring of threats to their oil facilities and infrastructure. Provides the regional Gulf perspective on the escalation.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Agrees to a two-week ceasefire with Iran hours before his deadline expired.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1302,6 +1264,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="source-summary">Reports Trump&#x27;s renewed threat that &#x27;the clock is ticking&#x27; for Iran and that &#x27;nothing will be left of them&#x27; if they do not move, noting the ceasefire is hanging by a thread. The article contextualizes the threat within stalled diplomatic efforts and Trump&#x27;s frustration, referencing his earlier April warning that an entire civilization would die.</p>
   <p class="source-bias-note"><em>German public broadcaster ARD</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Threatens Iran with destruction if it does not move quickly toward a peace deal, stating the ceasefire is barely holding.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Für Iran tickt die Uhr, und sie sollten sich besser schnell bewegen, sonst wird von ihnen nichts mehr übrig bleiben&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1313,6 +1279,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-18</span></div>
   <p class="source-summary">Reports the UAE blaming Iran or its proxies for a drone strike near the Barakah nuclear plant, with presidential adviser Anwar Gargash calling it a &#x27;dangerous escalation&#x27; violating international law. Notes Trump&#x27;s Truth Social threat, his meeting with national security advisers, and IAEA chief Grossi&#x27;s grave concern over military activity threatening nuclear safety.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-018">UAE foreign minister</a>, <a href="#actor-010">Rafael Grossi</a>, <a href="#actor-008">UAE defense ministry</a>, <a href="#actor-020">Anwar Gargash</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Warns Iran the clock is ticking and threatens destruction if it does not move fast.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;For Iran, the Clock is Ticking, and they better get moving, FAST, or there won’t be anything left of them. TIME IS OF THE ESSENCE!&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-008">UAE defense ministry</a></strong> <span class="actor-role">Defense ministry of the United Arab Emirates</span><p class="source-quote-position">Announces one of three drones struck an electrical generator outside the inner perimeter of the Barakah plant and states investigations are ongoing.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Investigations are ongoing to determine the source of the attacks, and updates will be disclosed upon completion of the investigations&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Rafael Grossi</a></strong> <span class="actor-role">Director General of the IAEA</span><p class="source-quote-position">Expresses grave concern about the incident and says military activity threatening nuclear safety is unacceptable.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;grave concern about the incident and says military activity that threatens nuclear safety is unacceptable&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-018">UAE foreign minister</a></strong> <span class="actor-role">Foreign minister of the United Arab Emirates</span><p class="source-quote-position">Holds talks with regional states including Saudi Arabia and informs the IAEA of the drone strike details, asserting the UAE&#x27;s full right to respond to terrorist attacks.</p></li><li class="source-quote-entry"><strong><a href="#actor-020">Anwar Gargash</a></strong> <span class="actor-role">Emirati presidential adviser</span><p class="source-quote-position">Blames Iran or a regional proxy for the terrorist targeting of the Barakah nuclear plant, calling it a dangerous escalation violating international laws and norms.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;The terrorist targeting of the Barakah clean nuclear power plant, whether carried out by the principal perpetrator or through one of its agents, represents a dangerous escalation&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1324,6 +1294,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="source-meta"><span>France</span> &middot; <span>fr</span></div>
   <p class="source-summary">Analyzes the 11th week of the Iran war and its consequences for the EU, including the Strait of Hormuz blockade, energy supply risks, and internal EU divisions. Provides the European diplomatic and energy security perspective.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-041">Emmanuel Macron</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-041">Emmanuel Macron</a></strong> <span class="actor-role">President of France</span><p class="source-quote-position">Assures that France never considered an offensive naval deployment in the strait, while supporting measures to protect commercial ships.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1335,6 +1309,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <div class="source-meta"><span>Turkey</span> &middot; <span>ar</span></div>
   <p class="source-summary">Reports Iranian military commander Ali Abdollahi&#x27;s threat to halt all exports and imports in the Gulf, Sea of Oman, and Red Sea if the US naval blockade threatens Iranian ships. Provides the Turkish outlet&#x27;s coverage of the Iranian escalation threat.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-042">Ali Abdollahi</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-042">Ali Abdollahi</a></strong> <span class="actor-role">Commander of the Khatam al-Anbia Headquarters of the Iranian Armed Forces</span><p class="source-quote-position">Warns that Iran will not allow any exports or imports in the Gulf, Sea of Oman, and Red Sea if the US naval blockade threatens Iranian commercial ships and oil tankers.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>

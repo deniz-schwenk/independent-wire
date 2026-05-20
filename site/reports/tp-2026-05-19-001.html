@@ -125,8 +125,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
 }
 
-/* Stakeholder cards */
-.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+/* Cluster cards — one card per row, full container width. Two-
+   column variant retired so the Cluster-ID pill, position label,
+   summary, tier-grouped actors, and counts row all read across the
+   full width (the cluster card is information-dense and benefits
+   from the horizontal space). */
+.card-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+/* Cluster-ID pill at top-left of each cluster card. Shares
+   ``.actor-card-cluster-box`` styling with the actor-card pills so
+   the cross-reference renders identically on both sides. The pill
+   needs a margin below to separate it from the position-label
+   header that follows. */
+.card > .actor-card-cluster-box {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
 .card {
   border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
   background: var(--color-bg);
@@ -144,6 +157,21 @@ h2 {
 .cluster-counts a { color: inherit; text-decoration: underline; }
 .cluster-counts a:hover { color: var(--color-text); }
 .card:target { background: var(--color-bg-subtle, #f5f5f4); }
+
+/* Single-voices bracket — visually distinguished from real shared-
+   position clusters. Dashed left accent + neutral tinted background
+   read as "this is a different kind of grouping" without breaking the
+   page's existing card rhythm. */
+.single-voices-bracket {
+  border-left: 4px dashed #000;
+  background: var(--color-bg-subtle, #f5f5f4);
+  margin-top: 1rem;
+}
+.single-voices-bracket-tag {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-left: 0.5rem;
+}
 
 /* Cluster three-level actor sub-blocks (stated / reported / mentioned) */
 .cluster-tier { margin-top: 0.85rem; }
@@ -168,54 +196,102 @@ h2 {
   color: var(--color-text-subtle); margin-left: 0.25rem;
   text-transform: uppercase; letter-spacing: 0.05em;
 }
-.cluster-actor-srcs {
-  font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle);
+
+/* Actors section — flat card grid with type-tab filter */
+.actors h2 { margin-top: 2.5rem; }
+.actors-meta {
+  font-family: var(--font-sans); font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin: 1rem 0 1.5rem;
+  border-left: 3px solid #000; padding-left: 0.75rem;
 }
 
-/* Actors section */
-.actors h2 { margin-top: 2rem; }
-.actors-meta {
-  font-family: var(--font-mono); font-size: 0.85rem;
-  color: var(--color-text-secondary); margin: 0 0 1rem;
+.actors-tabs {
+  display: flex; flex-wrap: wrap; gap: 0;
+  margin-bottom: 1.5rem;
 }
-#actors-show-all {
+.actor-tab {
+  font-family: var(--font-mono); font-size: 0.8rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.5rem 1rem; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; margin: 0 -1px -1px 0;
+}
+.actor-tab-count { margin-left: 0.4rem; color: var(--color-text-subtle); }
+.actor-tab--active { background: #000; color: var(--color-bg); }
+.actor-tab--active .actor-tab-count { color: var(--color-bg); }
+.actor-tab:not(.actor-tab--active):hover {
+  background: var(--color-bg-subtle, #f5f5f4);
+}
+
+/* Two-column grid with a vertical centre rule. The ::before pseudo
+   spans the full grid height and sits in the middle of the column
+   gap, matching the horizontal `border-top` rhythm on each card.
+   Disabled on mobile via the @media block when the grid collapses
+   to a single column. */
+.actor-card-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem;
+  position: relative;
+}
+.actor-card-grid::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%; width: 1px;
+  background: var(--color-border-light);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.actor-card {
+  border-top: 1px solid var(--color-border-light);
+  padding: 1rem 0;
+}
+.actor-card[hidden] { display: none; }
+.actor-card:target { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 0.25rem; gap: 0.5rem;
+}
+.actor-card-name {
+  font-family: var(--font-sans); font-weight: 700; font-size: 1rem;
+}
+.actor-card-name a { color: inherit; text-decoration: none; }
+.actor-card-src-count {
   font-family: var(--font-mono); font-size: 0.75rem;
-  background: transparent; border: 1px solid #000; cursor: pointer;
-  padding: 0.3rem 0.75rem; margin-bottom: 1rem;
+  color: var(--color-text-subtle);
   text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap;
 }
-#actors-show-all:hover { background: #000; color: var(--color-bg); }
-.actor-list { list-style: none; padding: 0; margin: 0; }
-.actor {
-  padding: 1rem 0; border-top: 1px solid var(--color-border-light);
+.actor-card-role {
+  font-family: var(--font-sans); font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem;
 }
-.actor:first-child { border-top: 0; padding-top: 0; }
-.actor[hidden] { display: none; }
-.actor:target { background: var(--color-bg-subtle, #f5f5f4); }
-.actor-header {
-  font-family: var(--font-sans); font-size: 1rem; margin-bottom: 0.4rem;
+.actor-card-cluster-refs, .actor-card-source-refs {
+  display: flex; flex-wrap: wrap; gap: 0.2rem;
+  margin-top: 0.4rem;
 }
-.actor-header strong { font-weight: 700; }
-.actor-role { color: var(--color-text-secondary); margin-left: 0.4rem; }
-.actor-type {
+.actor-card-cluster-box {
   font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle); margin-left: 0.4rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.2rem 0.5rem;
   text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; text-decoration: none;
 }
-.actor-position-line {
-  font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55;
-  color: var(--color-text-secondary); margin: 0.35rem 0 0;
-}
-.actor-position-line a { color: inherit; text-decoration: underline; }
-.actor-verbatim { font-style: italic; }
-.actor-no-cluster { color: var(--color-text-subtle); font-size: 0.85rem; }
-.actor-position-tier {
+.actor-card-cluster-box:hover { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-cluster-box--bracket { border-style: dashed; }
+/* Source-ref boxes — tightened (Correction 3, 2026-05-20) so ≥ 5
+   `src-NNN` boxes fit per row at the desktop card width
+   (container 740px → ~334px per card column). Lowercase label,
+   minimal horizontal padding, no letter-spacing. */
+.actor-card-source-box {
   font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle); font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  margin-right: 0.15rem;
+  background: var(--color-bg-subtle, #f5f5f4);
+  padding: 0.2rem 0.35rem;
+  color: #000; text-decoration: none;
+  letter-spacing: 0;
 }
+.actor-card-source-box:hover { background: var(--color-border-light); }
 
 /* Missing voices */
 .missing-voice {
@@ -454,7 +530,10 @@ footer a { color: #000; text-decoration: underline; }
 @media (max-width: 768px) {
   .container { padding: 1rem; }
   h1 { font-size: 1.4rem; }
-  .card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid::before { display: none; }
+  .actors-tabs { font-size: 0.7rem; }
+  .actor-tab { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
   .meta-bar { flex-wrap: wrap; }
   .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
   .meta-item:last-child { border-bottom: none; }
@@ -641,267 +720,439 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
 <h2>Perspectives &mdash; Position Clusters</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
+  <a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>
   <div class="card-header"><span class="card-actor">Trump suspended a planned major attack on Iran at the request of Gulf states because serious negotiations may yield a deal</span></div>
   <div class="card-position">Multiple sources across languages and regions report that Trump called off a military strike scheduled for Tuesday after Saudi Arabia, the UAE, and Qatar asked for more time, citing a &#x27;very good chance&#x27; of reaching an agreement. He simultaneously warned the military remains prepared for a full-scale assault if talks fail.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="cluster-actor-role">President of the United States</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-002">src-002</a>, <a href="#src-003">src-003</a>, <a href="#src-004">src-004</a>, <a href="#src-005">src-005</a>, <a href="#src-006">src-006</a>, <a href="#src-007">src-007</a>, <a href="#src-008">src-008</a>, <a href="#src-009">src-009</a>, <a href="#src-010">src-010</a>, <a href="#src-011">src-011</a>, <a href="#src-012">src-012</a>, <a href="#src-015">src-015</a>, <a href="#src-017">src-017</a>, <a href="#src-019">src-019</a>, <a href="#src-020">src-020</a>, <a href="#src-025">src-025</a>, <a href="#src-029">src-029</a>, <a href="#src-030">src-030</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="cluster-actor-role">President of the United States</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-017">Mohammed bin Salman</a></strong> <span class="cluster-actor-role">Saudi Crown Prince</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-018">Tamim bin Hamad Al Thani</a></strong> <span class="cluster-actor-role">Qatar&#x27;s Emir</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-019">Mohamed bin Zayed Al Nahyan</a></strong> <span class="cluster-actor-role">UAE President</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-017">Mohammed bin Salman</a></strong> <span class="cluster-actor-role">Saudi Crown Prince</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-018">Tamim bin Hamad Al Thani</a></strong> <span class="cluster-actor-role">Qatar&#x27;s Emir</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-019">Mohamed bin Zayed Al Nahyan</a></strong> <span class="cluster-actor-role">UAE President</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">4 actors</a></span> &middot; <span>19 sources</span> &middot; <span>9 regions</span> &middot; <span>7 languages</span></p>
 </div>
 <div class="card" id="pc-002">
+  <a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a>
   <div class="card-header"><span class="card-actor">Iran will not surrender and is prepared to open new fronts and escalate militarily if the US resumes attacks</span></div>
   <div class="card-position">Iranian military commanders and senior officials have issued defiant warnings that dialogue does not equal capitulation, that Iran&#x27;s forces are stronger than before and &#x27;ready to pull the trigger,&#x27; and that new fronts with new methods will be opened if hostilities resume. Mojtaba Khamenei, identified by BBC as a senior Iranian official, warned new fronts would be opened &#x27;where the enemy had little experience and would be highly vulnerable.&#x27; This position spans the IRGC, the regular army, and senior political figures.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-002">Masoud Pezeshkian</a></strong> <span class="cluster-actor-role">President of Iran</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-009">src-009</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-003">Islamic Revolutionary Guard Corps (IRGC)</a></strong> <span class="cluster-actor-role">Iranian military force</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-005">src-005</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-004">Mohsen Rezaei</a></strong> <span class="cluster-actor-role">Member of Iran’s Expediency Discernment Council</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-005">Ali Abdollahi</a></strong> <span class="cluster-actor-role">Commander of Iran’s Khatam al-Anbiya Central Headquarters</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-015">src-015</a>, <a href="#src-003">src-003</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-012">Esmail Baghaei</a></strong> <span class="cluster-actor-role">Iranian Foreign Ministry Spokesperson</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-005">src-005</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-015">Mohamad Akraminia</a></strong> <span class="cluster-actor-role">Spokesperson for the Iranian Army</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-006">src-006</a>, <a href="#src-013">src-013</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-002">Masoud Pezeshkian</a></strong> <span class="cluster-actor-role">President of Iran</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-003">Islamic Revolutionary Guard Corps (IRGC)</a></strong> <span class="cluster-actor-role">Iranian military force</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-004">Mohsen Rezaei</a></strong> <span class="cluster-actor-role">Member of Iran’s Expediency Discernment Council</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-005">Ali Abdollahi</a></strong> <span class="cluster-actor-role">Commander of Iran’s Khatam al-Anbiya Central Headquarters</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-012">Esmail Baghaei</a></strong> <span class="cluster-actor-role">Iranian Foreign Ministry Spokesperson</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-015">Mohamad Akraminia</a></strong> <span class="cluster-actor-role">Spokesperson for the Iranian Army</span> <span class="cluster-actor-type">military</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-011">Mojtaba Khamenei</a></strong> <span class="cluster-actor-role">Supreme Leader of Iran</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-011">Mojtaba Khamenei</a></strong> <span class="cluster-actor-role">Supreme Leader of Iran</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">7 actors</a></span> &middot; <span>10 sources</span> &middot; <span>5 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-003">
+  <a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a>
   <div class="card-header"><span class="card-actor">Gulf Arab states and Pakistan played a decisive diplomatic role in brokering the pause and mediating between Washington and Tehran</span></div>
   <div class="card-position">Qatar, Saudi Arabia, and the UAE are credited with directly requesting the attack suspension, while Pakistan served as the primary channel for transmitting Iran&#x27;s 14-point proposal to Washington. Both US and Iranian officials have praised Pakistan&#x27;s mediation, and Gulf leaders are framed as drivers of the diplomatic opening rather than passive bystanders.</div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-006">Sheikh Mohammed bin Abdulrahman bin Jassim Al Thani</a></strong> <span class="cluster-actor-role">Prime Minister of Qatar</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-017">Mohammed bin Salman</a></strong> <span class="cluster-actor-role">Saudi Crown Prince</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-018">Tamim bin Hamad Al Thani</a></strong> <span class="cluster-actor-role">Qatar&#x27;s Emir</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-019">Mohamed bin Zayed Al Nahyan</a></strong> <span class="cluster-actor-role">UAE President</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-030">Pakistani officials</a></strong> <span class="cluster-actor-role">Unnamed Pakistani officials</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-021">src-021</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-031">Shehbaz Sharif</a></strong> <span class="cluster-actor-role">Prime Minister of Pakistan</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-022">src-022</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-032">Asim Munir</a></strong> <span class="cluster-actor-role">Field Marshal of Pakistan</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-022">src-022</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-033">JD Vance</a></strong> <span class="cluster-actor-role">Vice President of the United States</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-023">src-023</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-012">Esmail Baghaei</a></strong> <span class="cluster-actor-role">Iranian Foreign Ministry Spokesperson</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-023">src-023</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-035">Mohammad Bagher Ghalibaf</a></strong> <span class="cluster-actor-role">Speaker of the Iranian Parliament</span> <span class="cluster-actor-type">legislature</span> <span class="cluster-actor-srcs">(<a href="#src-023">src-023</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-006">Sheikh Mohammed bin Abdulrahman bin Jassim Al Thani</a></strong> <span class="cluster-actor-role">Prime Minister of Qatar</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-017">Mohammed bin Salman</a></strong> <span class="cluster-actor-role">Saudi Crown Prince</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-018">Tamim bin Hamad Al Thani</a></strong> <span class="cluster-actor-role">Qatar&#x27;s Emir</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-019">Mohamed bin Zayed Al Nahyan</a></strong> <span class="cluster-actor-role">UAE President</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-030">Pakistani officials</a></strong> <span class="cluster-actor-role">Unnamed Pakistani officials</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-031">Shehbaz Sharif</a></strong> <span class="cluster-actor-role">Prime Minister of Pakistan</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-032">Asim Munir</a></strong> <span class="cluster-actor-role">Field Marshal of Pakistan</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-033">JD Vance</a></strong> <span class="cluster-actor-role">Vice President of the United States</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-012">Esmail Baghaei</a></strong> <span class="cluster-actor-role">Iranian Foreign Ministry Spokesperson</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-035">Mohammad Bagher Ghalibaf</a></strong> <span class="cluster-actor-role">Speaker of the Iranian Parliament</span> <span class="cluster-actor-type">legislature</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">10 actors</a></span> &middot; <span>5 sources</span> &middot; <span>4 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-004">
+  <a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a>
   <div class="card-header"><span class="card-actor">Iran&#x27;s proposal is serious but insufficient, and the US zero-enrichment demand may itself be an obstacle to a deal</span></div>
   <div class="card-position">US officials describe Iran&#x27;s 14-point offer as &#x27;serious but incomplete,&#x27; particularly on uranium enrichment and missile limits. Simultaneously, analysts argue that Trump&#x27;s insistence on zero enrichment is a &#x27;poison pill&#x27; that makes agreement impossible, and Israeli officials fear Trump may settle for a partial deal that neglects nuclear and proxy concerns.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-008">Matt Duss</a></strong> <span class="cluster-actor-role">Executive Vice President at the Center for International Policy</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-009">Henry Ensher</a></strong> <span class="cluster-actor-role">Former US Ambassador to Algeria</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-008">Matt Duss</a></strong> <span class="cluster-actor-role">Executive Vice President at the Center for International Policy</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-009">Henry Ensher</a></strong> <span class="cluster-actor-role">Former US Ambassador to Algeria</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-028">U.S. officials</a></strong> <span class="cluster-actor-role">Unnamed U.S. administration officials</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-017">src-017</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-029">Marco Rubio</a></strong> <span class="cluster-actor-role">U.S. Secretary of State</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-037">Israeli officials</a></strong> <span class="cluster-actor-role">Unnamed officials in Jerusalem</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-027">src-027</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-028">U.S. officials</a></strong> <span class="cluster-actor-role">Unnamed U.S. administration officials</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-029">Marco Rubio</a></strong> <span class="cluster-actor-role">U.S. Secretary of State</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-037">Israeli officials</a></strong> <span class="cluster-actor-role">Unnamed officials in Jerusalem</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">5 actors</a></span> &middot; <span>7 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-005">
+  <a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a>
   <div class="card-header"><span class="card-actor">The Strait of Hormuz disruption is creating a global food and energy crisis that disproportionately harms vulnerable nations</span></div>
   <div class="card-position">The UK Foreign Secretary warns the world is &#x27;sleepwalking into a global food crisis&#x27; due to the Hormuz closure, while African and East Asian coverage details collapsing maritime traffic, soaring import costs, fertilizer shortages, and energy supply instability for import-dependent countries. G7 finance ministers call for IMF and World Bank intervention.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-022">Yvette Cooper</a></strong> <span class="cluster-actor-role">UK Foreign Secretary</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-013">src-013</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-026">Roland Lescure</a></strong> <span class="cluster-actor-role">French finance minister</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-013">src-013</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-022">Yvette Cooper</a></strong> <span class="cluster-actor-role">UK Foreign Secretary</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-026">Roland Lescure</a></strong> <span class="cluster-actor-role">French finance minister</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">2 actors</a></span> &middot; <span>3 sources</span> &middot; <span>2 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-006">
+  <a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a>
   <div class="card-header"><span class="card-actor">The US is using temporary sanctions waivers on Russian oil to cushion the global energy shock caused by the Iran war</span></div>
   <div class="card-position">The US Treasury Secretary announced a 30-day extension of a sanctions waiver allowing vulnerable nations to purchase Russian seaborne oil stranded at sea, framing it as humanitarian relief for countries hit hardest by the Iran conflict&#x27;s disruption of global energy markets.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-007">Scott Bessent</a></strong> <span class="cluster-actor-role">US Treasury Secretary</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-004">src-004</a>, <a href="#src-015">src-015</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-007">Scott Bessent</a></strong> <span class="cluster-actor-role">US Treasury Secretary</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">1 actor</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-007">
+  <a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a>
   <div class="card-header"><span class="card-actor">Iran&#x27;s 14-point proposal demands a comprehensive end to the war — including sanctions relief, asset unfreezing, and compensation — before any nuclear agreement is announced</span></div>
   <div class="card-position">Iran&#x27;s proposal, transmitted via Pakistan, calls for ending hostilities on all fronts, lifting the naval blockade, releasing frozen assets, US non-aggression guarantees, war damage compensation, and a new Strait of Hormuz mechanism. Tehran insists on a phased approach where the war ends before nuclear terms are finalized, while Washington wants all elements announced simultaneously.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-012">Esmail Baghaei</a></strong> <span class="cluster-actor-role">Iranian Foreign Ministry Spokesperson</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-005">src-005</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-012">Esmail Baghaei</a></strong> <span class="cluster-actor-role">Iranian Foreign Ministry Spokesperson</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-025">Kazem Gharibabadi</a></strong> <span class="cluster-actor-role">Iran&#x27;s deputy foreign minister</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-013">src-013</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-030">Pakistani officials</a></strong> <span class="cluster-actor-role">Unnamed Pakistani officials</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-021">src-021</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-025">Kazem Gharibabadi</a></strong> <span class="cluster-actor-role">Iran&#x27;s deputy foreign minister</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-030">Pakistani officials</a></strong> <span class="cluster-actor-role">Unnamed Pakistani officials</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">3 actors</a></span> &middot; <span>7 sources</span> &middot; <span>3 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-008">
+  <a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a>
   <div class="card-header"><span class="card-actor">Israel fears a partial US-Iran deal that neglects the nuclear program, missile capabilities, and Iran&#x27;s proxy network</span></div>
   <div class="card-position">Israeli officials worry that Trump will accept an interim agreement extending the ceasefire and easing sanctions without addressing enrichment, missile development, or Iran&#x27;s regional proxy forces. Israel is attempting to influence the deal&#x27;s terms by demanding complete enrichment bans and facility dismantlement, while Netanyahu insists on responding to perceived Iranian truce violations.</div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-036">Benjamin Netanyahu</a></strong> <span class="cluster-actor-role">Prime Minister of Israel</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-026">src-026</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-037">Israeli officials</a></strong> <span class="cluster-actor-role">Unnamed officials in Jerusalem</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-027">src-027</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-036">Benjamin Netanyahu</a></strong> <span class="cluster-actor-role">Prime Minister of Israel</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-037">Israeli officials</a></strong> <span class="cluster-actor-role">Unnamed officials in Jerusalem</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">2 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-009">
+  <a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a>
   <div class="card-header"><span class="card-actor">Attacks on Gulf infrastructure — including the UAE&#x27;s Barakah nuclear plant — represent a dangerous escalation that violates international norms</span></div>
   <div class="card-position">A drone attack on the UAE&#x27;s Barakah nuclear power plant and Saudi interception of drones from Iraq are framed by Gulf officials as a dangerous escalation and a violation of international law, highlighting the vulnerability of Gulf states&#x27; critical infrastructure amid the broader conflict.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-020">Anwar Gargash</a></strong> <span class="cluster-actor-role">Senior foreign policy adviser to the UAE president</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-012">src-012</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-020">Anwar Gargash</a></strong> <span class="cluster-actor-role">Senior foreign policy adviser to the UAE president</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-009">1 actor</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 </div>
 
+<div class="card single-voices-bracket" id="single-voices">
+  <div class="card-header"><span class="card-actor">Single voices</span><span class="single-voices-bracket-tag">Bracket</span></div>
+  <div class="card-position">Actors with unique positions that cannot be grouped with other positions into a shared cluster, but are referenced by multiple sources and are therefore considered important to the dossier.</div>
+  <div class="cluster-tier cluster-tier-actors_stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-016">Hakan Fidan</a></strong> <span class="cluster-actor-role">Foreign Minister of Turkey</span> <span class="cluster-actor-type">government</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#single-voices">1 actor</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>1 language</span></p>
+</div>
+
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">33 actors quoted across this topic. Click a cluster card&rsquo;s actor count above to filter, or jump to a specific actor.</p>
-<button id="actors-show-all" type="button" hidden>Show all actors</button>
-<ol class="actor-list">
-<li id="actor-001" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>Donald Trump</strong> <span class="actor-role">President of the United States</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: Postponed a planned attack on Iran after requests from the leaders of Qatar, Saudi Arabia and the UAE, citing serious negotiations. (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-002" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Masoud Pezeshkian</strong> <span class="actor-role">President of Iran</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Defended Tehran&#x27;s participation in talks and rejected suggestions the country was backing down, stating dialogue does not mean surrender. <em class="actor-verbatim">&ldquo;“Dialogue does not mean surrender,”&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-003" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Islamic Revolutionary Guard Corps (IRGC)</strong> <span class="actor-role">Iranian military force</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Struck groups linked to the US and Israel in western Iran and threatened to impose permits on fibre-optic cables in the Strait of Hormuz. <em class="actor-verbatim">&ldquo;“Following the imposition of control over the Strait of Hormuz, Iran, citing its absolute sovereignty over the bed and subsoil of its territorial sea … could declare that all fibre-optic cables passing through the waterway are subject to permits,”&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-004" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Mohsen Rezaei</strong> <span class="actor-role">Member of Iran’s Expediency Discernment Council</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Mocked Trump for setting and cancelling a deadline, stating the &#x27;iron fist&#x27; of Iran&#x27;s forces would force the US to retreat. <em class="actor-verbatim">&ldquo;“iron fist”&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-005" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Ali Abdollahi</strong> <span class="actor-role">Commander of Iran’s Khatam al-Anbiya Central Headquarters</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Warned the US and allies against another strategic mistake, stating Iranian forces were stronger than before. <em class="actor-verbatim">&ldquo;“strategic mistake or miscalculation”&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-006" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Sheikh Mohammed bin Abdulrahman bin Jassim Al Thani</strong> <span class="actor-role">Prime Minister of Qatar</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-003">cluster 3</a>: Expressed support for Pakistan’s mediation efforts aimed at resolving the crisis through diplomatic means. (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-007" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>Scott Bessent</strong> <span class="actor-role">US Treasury Secretary</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-006">cluster 6</a>: Announced the US has extended its sanctions waiver for Russian oil cargoes at sea by 30 days to help vulnerable nations. <em class="actor-verbatim">&ldquo;“provide the most vulnerable nations with the ability to temporarily access Russian oil currently stranded at sea,”&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-008" class="actor" data-clusters="cluster-pc-004">
-  <div class="actor-header"><strong>Matt Duss</strong> <span class="actor-role">Executive Vice President at the Center for International Policy</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-004">cluster 4</a>: Argued Trump&#x27;s demand for zero uranium enrichment was a &#x27;poison pill&#x27; pushed by Netanyahu and warmongers in Washington. <em class="actor-verbatim">&ldquo;“poison pill”&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-009" class="actor" data-clusters="cluster-pc-004">
-  <div class="actor-header"><strong>Henry Ensher</strong> <span class="actor-role">Former US Ambassador to Algeria</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-004">cluster 4</a>: Stated Trump is under growing pressure not to launch further attacks because there are &#x27;no good military options&#x27;. <em class="actor-verbatim">&ldquo;“no good military options”&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-010" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Hezbollah</strong> <span class="actor-role">Lebanese political and military group</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-011" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Mojtaba Khamenei</strong> <span class="actor-role">Supreme Leader of Iran</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-002">cluster 2</a>: Warned that new fronts would be opened where the enemy had little experience and would be highly vulnerable. (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-012" class="actor" data-clusters="cluster-pc-002 cluster-pc-003 cluster-pc-007">
-  <div class="actor-header"><strong>Esmail Baghaei</strong> <span class="actor-role">Iranian Foreign Ministry Spokesperson</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Insisted Iran&#x27;s demands were &#x27;responsible&#x27; and &#x27;generous&#x27;. <em class="actor-verbatim">&ldquo;“responsible” and “generous”&rdquo;</em> (<a href="#src-002">src-002</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-003">cluster 3</a>: Praised Pakistan&#x27;s efforts, calling it a friend and brother country, and said Pakistan&#x27;s mediation helped advance the ceasefire process. (<a href="#src-023">src-023</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-007">cluster 7</a>: Insisted Iran&#x27;s demands were &#x27;responsible&#x27; and &#x27;generous&#x27;. <em class="actor-verbatim">&ldquo;“responsible” and “generous”&rdquo;</em> (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-015" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Mohamad Akraminia</strong> <span class="actor-role">Spokesperson for the Iranian Army</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Threatened to open new fronts against the US and Israel with new tools and methods if they launch another aggression, stating Iran cannot be surrounded or defeated. <em class="actor-verbatim">&ldquo;“Si el enemigo comete una nueva estupidez y cae de nuevo en la trampa sionista y lanza otra agresión contra el querido Irán, abriremos nuevos frentes contra él, con nuevas herramientas y métodos”&rdquo;</em> (<a href="#src-006">src-006</a>)</p></div>
-</li>
-<li id="actor-016" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Hakan Fidan</strong> <span class="actor-role">Foreign Minister of Turkey</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-017" class="actor" data-clusters="cluster-pc-001 cluster-pc-003">
-  <div class="actor-header"><strong>Mohammed bin Salman</strong> <span class="actor-role">Saudi Crown Prince</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-001">cluster 1</a>: Asked Trump to hold off on the planned attack as serious negotiations are in progress and a deal acceptable to the US and countries in the Middle East will be made. (<a href="#src-011">src-011</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-003">cluster 3</a>: Asked Trump to hold off on the planned attack as serious negotiations are in progress and a deal acceptable to the US and countries in the Middle East will be made. (<a href="#src-011">src-011</a>)</p></div>
-</li>
-<li id="actor-018" class="actor" data-clusters="cluster-pc-001 cluster-pc-003">
-  <div class="actor-header"><strong>Tamim bin Hamad Al Thani</strong> <span class="actor-role">Qatar&#x27;s Emir</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-001">cluster 1</a>: Asked Trump to hold off on the planned attack as serious negotiations are in progress and a deal acceptable to the US and countries in the Middle East will be made. (<a href="#src-011">src-011</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-003">cluster 3</a>: Asked Trump to hold off on the planned attack as serious negotiations are in progress and a deal acceptable to the US and countries in the Middle East will be made. (<a href="#src-011">src-011</a>)</p></div>
-</li>
-<li id="actor-019" class="actor" data-clusters="cluster-pc-001 cluster-pc-003">
-  <div class="actor-header"><strong>Mohamed bin Zayed Al Nahyan</strong> <span class="actor-role">UAE President</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-001">cluster 1</a>: Asked Trump to hold off on the planned attack as serious negotiations are in progress and a deal acceptable to the US and countries in the Middle East will be made. (<a href="#src-011">src-011</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-003">cluster 3</a>: Asked Trump to hold off on the planned attack as serious negotiations are in progress and a deal acceptable to the US and countries in the Middle East will be made. (<a href="#src-011">src-011</a>)</p></div>
-</li>
-<li id="actor-020" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Anwar Gargash</strong> <span class="actor-role">Senior foreign policy adviser to the UAE president</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-009">cluster 9</a>: Called the drone attack on the Barakah nuclear plant a dangerous escalation and a dark chapter that violates all international laws and norms. <em class="actor-verbatim">&ldquo;&quot;El ataque terrorista contra la central nuclear de Barakah, ya sea perpetrado por el responsable principal o a través de uno de sus aliados, representa una peligrosa escalada y un capítulo oscuro que viola todas las leyes y normas internacionales.&quot;&rdquo;</em> (<a href="#src-012">src-012</a>)</p></div>
-</li>
-<li id="actor-022" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Yvette Cooper</strong> <span class="actor-role">UK Foreign Secretary</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-005">cluster 5</a>: Warned that the world is sleepwalking into a global food crisis due to the disruption of shipping through the Strait of Hormuz and called for urgent global pressure to reopen it. <em class="actor-verbatim">&ldquo;&quot;The world is sleepwalking into a global food crisis. We cannot risk tens of millions of people going hungry because one country has hijacked an international shipping lane.&quot;&rdquo;</em> (<a href="#src-013">src-013</a>)</p></div>
-</li>
-<li id="actor-023" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Bezalel Smotrich</strong> <span class="actor-role">Israeli Finance Minister</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-024" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Avichay Adraee</strong> <span class="actor-role">IDF Arabic-language spokesperson</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-025" class="actor" data-clusters="cluster-pc-007">
-  <div class="actor-header"><strong>Kazem Gharibabadi</strong> <span class="actor-role">Iran&#x27;s deputy foreign minister</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-007">cluster 7</a>: Stated that Iran&#x27;s recent proposal called for the lifting of sanctions, release of frozen funds, an end to the marine blockade, ending the war on all fronts, withdrawal of US forces, and war damage compensation. (<a href="#src-013">src-013</a>)</p></div>
-</li>
-<li id="actor-026" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Roland Lescure</strong> <span class="actor-role">French finance minister</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-005">cluster 5</a>: Stated that G7 finance ministers agree the IMF and World Bank must step up assistance for countries most vulnerable to the Middle East conflict. <em class="actor-verbatim">&ldquo;&quot;We agree on the fact that the IMF and the World Bank have to step up their game for those countries (most vulnerable to the impact of the Middle East conflict) and make sure we help them.&quot;&rdquo;</em> (<a href="#src-013">src-013</a>)</p></div>
-</li>
-<li id="actor-027" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Joseph Aoun</strong> <span class="actor-role">Lebanese President</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-028" class="actor" data-clusters="cluster-pc-004">
-  <div class="actor-header"><strong>U.S. officials</strong> <span class="actor-role">Unnamed U.S. administration officials</span> <em class="actor-anonymous">(anonymous)</em> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-004">cluster 4</a>: Described the Iranian offer as &#x27;serious but incomplete&#x27; and stressed that any pause in military action is contingent on progress in talks. (<a href="#src-017">src-017</a>)</p></div>
-</li>
-<li id="actor-029" class="actor" data-clusters="cluster-pc-004">
-  <div class="actor-header"><strong>Marco Rubio</strong> <span class="actor-role">U.S. Secretary of State</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-004">cluster 4</a>: Said nuclear issues &#x27;have to be addressed&#x27; but are now embedded in a broader framework rather than as a precondition. (<a href="#src-018">src-018</a>)</p></div>
-</li>
-<li id="actor-030" class="actor" data-clusters="cluster-pc-003 cluster-pc-007">
-  <div class="actor-header"><strong>Pakistani officials</strong> <span class="actor-role">Unnamed Pakistani officials</span> <em class="actor-anonymous">(anonymous)</em> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-003">cluster 3</a>: Confirmed that Tehran transmitted its response to Washington via Islamabad. (<a href="#src-021">src-021</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-007">cluster 7</a>: Confirmed that Tehran transmitted its response to Washington via Islamabad. (<a href="#src-021">src-021</a>)</p></div>
-</li>
-<li id="actor-031" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Shehbaz Sharif</strong> <span class="actor-role">Prime Minister of Pakistan</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-003">cluster 3</a>: Played a key role in secret diplomacy and direct meetings to facilitate the ceasefire. (<a href="#src-022">src-022</a>)</p></div>
-</li>
-<li id="actor-032" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Asim Munir</strong> <span class="actor-role">Field Marshal of Pakistan</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-003">cluster 3</a>: Involved in secret diplomacy and visits to facilitate communication between the two sides. (<a href="#src-022">src-022</a>)</p></div>
-</li>
-<li id="actor-033" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>JD Vance</strong> <span class="actor-role">Vice President of the United States</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-003">cluster 3</a>: Thanked Prime Minister Shehbaz Sharif and Field Marshal Asim Munir, saying Pakistan played an important and positive role in making the talks successful. (<a href="#src-023">src-023</a>)</p></div>
-</li>
-<li id="actor-035" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Mohammad Bagher Ghalibaf</strong> <span class="actor-role">Speaker of the Iranian Parliament</span> <span class="actor-type">legislature</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-003">cluster 3</a>: Praised Pakistan&#x27;s efforts, calling it a friend and brother country. (<a href="#src-023">src-023</a>)</p></div>
-</li>
-<li id="actor-036" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Benjamin Netanyahu</strong> <span class="actor-role">Prime Minister of Israel</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-008">cluster 8</a>: Insisted on the need to respond to what Israel considers Iranian violations of the truce, under U.S. pressure not to expand attacks. (<a href="#src-026">src-026</a>)</p></div>
-</li>
-<li id="actor-037" class="actor" data-clusters="cluster-pc-004 cluster-pc-008">
-  <div class="actor-header"><strong>Israeli officials</strong> <span class="actor-role">Unnamed officials in Jerusalem</span> <em class="actor-anonymous">(anonymous)</em> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-004">cluster 4</a>: Fear Trump will promote a partial agreement that extends the ceasefire and eases sanctions but neglects the nuclear issue, missile program, and Iran&#x27;s proxy network. (<a href="#src-027">src-027</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-008">cluster 8</a>: Fear Trump will promote a partial agreement that extends the ceasefire and eases sanctions but neglects the nuclear issue, missile program, and Iran&#x27;s proxy network. (<a href="#src-027">src-027</a>)</p></div>
-</li>
-</ol>
+<p class="actors-meta">33 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<div class="actors-tabs" role="tablist">
+<button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">33</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">25</span></button><button class="actor-tab" type="button" data-type-target="legislature"><span class="actor-tab-name">LEGISLATURE</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITARY</span> <span class="actor-tab-count">6</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">1</span></button>
+</div>
+<div class="actor-card-grid">
+<article id="actor-001" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Donald Trump</strong>
+    <span class="actor-card-src-count">19 SRC</span>
+  </div>
+  <p class="actor-card-role">President of the United States</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-017">src-017</a><a class="actor-card-source-box" href="#src-019">src-019</a><a class="actor-card-source-box" href="#src-020">src-020</a><a class="actor-card-source-box" href="#src-025">src-025</a><a class="actor-card-source-box" href="#src-029">src-029</a><a class="actor-card-source-box" href="#src-030">src-030</a></div>
+</article>
+<article id="actor-012" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Esmail Baghaei</strong>
+    <span class="actor-card-src-count">3 SRC</span>
+  </div>
+  <p class="actor-card-role">Iranian Foreign Ministry Spokesperson</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-023">src-023</a></div>
+</article>
+<article id="actor-007" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Scott Bessent</strong>
+    <span class="actor-card-src-count">3 SRC</span>
+  </div>
+  <p class="actor-card-role">US Treasury Secretary</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-015">src-015</a></div>
+</article>
+<article id="actor-016" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Hakan Fidan</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Foreign Minister of Turkey</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-015">src-015</a></div>
+</article>
+<article id="actor-002" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Masoud Pezeshkian</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">President of Iran</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-020" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Anwar Gargash</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Senior foreign policy adviser to the UAE president</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
+</article>
+<article id="actor-036" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Benjamin Netanyahu</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Prime Minister of Israel</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-026">src-026</a></div>
+</article>
+<article id="actor-023" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Bezalel Smotrich</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Israeli Finance Minister</p>
+    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+</article>
+<article id="actor-009" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Henry Ensher</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Former US Ambassador to Algeria</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+</article>
+<article id="actor-037" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Israeli officials <em class="actor-anonymous">(anonymous)</em></strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Unnamed officials in Jerusalem</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-027">src-027</a></div>
+</article>
+<article id="actor-033" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">JD Vance</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Vice President of the United States</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
+</article>
+<article id="actor-027" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Joseph Aoun</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Lebanese President</p>
+    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a></div>
+</article>
+<article id="actor-025" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Kazem Gharibabadi</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Iran&#x27;s deputy foreign minister</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+</article>
+<article id="actor-029" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Marco Rubio</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">U.S. Secretary of State</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+</article>
+<article id="actor-019" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mohamed bin Zayed Al Nahyan</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">UAE President</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-017" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mohammed bin Salman</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Saudi Crown Prince</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-004" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mohsen Rezaei</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Member of Iran’s Expediency Discernment Council</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+</article>
+<article id="actor-011" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mojtaba Khamenei</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Supreme Leader of Iran</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+</article>
+<article id="actor-030" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Pakistani officials <em class="actor-anonymous">(anonymous)</em></strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Unnamed Pakistani officials</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-021">src-021</a></div>
+</article>
+<article id="actor-026" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Roland Lescure</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">French finance minister</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+</article>
+<article id="actor-031" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Shehbaz Sharif</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Prime Minister of Pakistan</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-022">src-022</a></div>
+</article>
+<article id="actor-006" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Sheikh Mohammed bin Abdulrahman bin Jassim Al Thani</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Prime Minister of Qatar</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+</article>
+<article id="actor-018" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Tamim bin Hamad Al Thani</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Qatar&#x27;s Emir</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-028" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">U.S. officials <em class="actor-anonymous">(anonymous)</em></strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Unnamed U.S. administration officials</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-017">src-017</a></div>
+</article>
+<article id="actor-022" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Yvette Cooper</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">UK Foreign Secretary</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+</article>
+<article id="actor-035" class="actor-card" data-actor-type="legislature">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mohammad Bagher Ghalibaf</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Speaker of the Iranian Parliament</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
+</article>
+<article id="actor-005" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ali Abdollahi</strong>
+    <span class="actor-card-src-count">3 SRC</span>
+  </div>
+  <p class="actor-card-role">Commander of Iran’s Khatam al-Anbiya Central Headquarters</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-003" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Islamic Revolutionary Guard Corps (IRGC)</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Iranian military force</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-005">src-005</a></div>
+</article>
+<article id="actor-015" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mohamad Akraminia</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Spokesperson for the Iranian Army</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+</article>
+<article id="actor-032" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Asim Munir</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Field Marshal of Pakistan</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-022">src-022</a></div>
+</article>
+<article id="actor-024" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Avichay Adraee</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">IDF Arabic-language spokesperson</p>
+    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+</article>
+<article id="actor-010" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Hezbollah</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Lebanese political and military group</p>
+    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+</article>
+<article id="actor-008" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Matt Duss</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Executive Vice President at the Center for International Policy</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+</article>
+</div>
 <script>
 (function() {
-  const list = document.querySelector('.actor-list');
-  const showAll = document.getElementById('actors-show-all');
-  if (!list || !showAll) return;
-  function applyFilter() {
-    const m = (window.location.hash || '').match(/^#cluster-(\S+)$/);
-    if (!m) {
-      list.querySelectorAll('.actor').forEach(li => { li.hidden = false; });
-      showAll.hidden = true;
-      return;
-    }
-    const target = 'cluster-' + m[1];
-    list.querySelectorAll('.actor').forEach(li => {
-      const tags = (li.dataset.clusters || '').split(/\s+/);
-      li.hidden = !tags.includes(target);
+  const section = document.getElementById('actors-section');
+  if (!section) return;
+  const tabs = section.querySelectorAll('.actor-tab');
+  const cards = section.querySelectorAll('.actor-card');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.typeTarget || 'all';
+      cards.forEach(card => {
+        card.hidden = (target !== 'all' && card.dataset.actorType !== target);
+      });
+      tabs.forEach(t => t.classList.toggle('actor-tab--active', t === tab));
     });
-    showAll.hidden = false;
-  }
-  showAll.addEventListener('click', () => {
-    history.pushState('', document.title, window.location.pathname);
-    applyFilter();
   });
-  window.addEventListener('hashchange', applyFilter);
-  applyFilter();
 })();
 </script>
 </section>
@@ -1015,6 +1266,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="source-summary">Al Jazeera reports Trump postponed a planned attack on Iran at the request of Qatar, Saudi Arabia, and the UAE, framing the pause as a result of Gulf diplomatic pressure. The article highlights defiant Iranian rhetoric, including President Pezeshkian&#x27;s insistence that dialogue is not surrender, and details IRGC operations against alleged US/Israeli-linked groups in Kurdistan. It also notes Pakistan&#x27;s central mediating role and the domestic political pressure on Trump due to rising living costs linked to the war.</p>
   <p class="source-bias-note"><em>Qatar-funded, strong Global South coverage</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-002">Masoud Pezeshkian</a>, <a href="#actor-003">Islamic Revolutionary Guard Corps (IRGC)</a>, <a href="#actor-004">Mohsen Rezaei</a>, <a href="#actor-005">Ali Abdollahi</a>, <a href="#actor-006">Sheikh Mohammed bin Abdulrahman bin Jassim Al Thani</a>, <a href="#actor-007">Scott Bessent</a>, <a href="#actor-008">Matt Duss</a>, <a href="#actor-009">Henry Ensher</a>, <a href="#actor-010">Hezbollah</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Postponed a planned attack on Iran after requests from the leaders of Qatar, Saudi Arabia and the UAE, citing serious negotiations.</p></li><li class="source-quote-entry"><strong><a href="#actor-002">Masoud Pezeshkian</a></strong> <span class="actor-role">President of Iran</span><p class="source-quote-position">Defended Tehran&#x27;s participation in talks and rejected suggestions the country was backing down, stating dialogue does not mean surrender.</p><p class="source-quote-verbatim"><em>&ldquo;“Dialogue does not mean surrender,”&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Islamic Revolutionary Guard Corps (IRGC)</a></strong> <span class="actor-role">Iranian military force</span><p class="source-quote-position">Struck groups linked to the US and Israel in western Iran and threatened to impose permits on fibre-optic cables in the Strait of Hormuz.</p><p class="source-quote-verbatim"><em>&ldquo;“Following the imposition of control over the Strait of Hormuz, Iran, citing its absolute sovereignty over the bed and subsoil of its territorial sea … could declare that all fibre-optic cables passing through the waterway are subject to permits,”&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-004">Mohsen Rezaei</a></strong> <span class="actor-role">Member of Iran’s Expediency Discernment Council</span><p class="source-quote-position">Mocked Trump for setting and cancelling a deadline, stating the &#x27;iron fist&#x27; of Iran&#x27;s forces would force the US to retreat.</p><p class="source-quote-verbatim"><em>&ldquo;“iron fist”&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-005">Ali Abdollahi</a></strong> <span class="actor-role">Commander of Iran’s Khatam al-Anbiya Central Headquarters</span><p class="source-quote-position">Warned the US and allies against another strategic mistake, stating Iranian forces were stronger than before.</p><p class="source-quote-verbatim"><em>&ldquo;“strategic mistake or miscalculation”&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-006">Sheikh Mohammed bin Abdulrahman bin Jassim Al Thani</a></strong> <span class="actor-role">Prime Minister of Qatar</span><p class="source-quote-position">Expressed support for Pakistan’s mediation efforts aimed at resolving the crisis through diplomatic means.</p></li><li class="source-quote-entry"><strong><a href="#actor-007">Scott Bessent</a></strong> <span class="actor-role">US Treasury Secretary</span><p class="source-quote-position">Announced the US has extended its sanctions waiver for Russian oil cargoes at sea by 30 days to help vulnerable nations.</p><p class="source-quote-verbatim"><em>&ldquo;“provide the most vulnerable nations with the ability to temporarily access Russian oil currently stranded at sea,”&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-008">Matt Duss</a></strong> <span class="actor-role">Executive Vice President at the Center for International Policy</span><p class="source-quote-position">Argued Trump&#x27;s demand for zero uranium enrichment was a &#x27;poison pill&#x27; pushed by Netanyahu and warmongers in Washington.</p><p class="source-quote-verbatim"><em>&ldquo;“poison pill”&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-009">Henry Ensher</a></strong> <span class="actor-role">Former US Ambassador to Algeria</span><p class="source-quote-position">Stated Trump is under growing pressure not to launch further attacks because there are &#x27;no good military options&#x27;.</p><p class="source-quote-verbatim"><em>&ldquo;“no good military options”&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Hezbollah</a></strong> <span class="actor-role">Lebanese political and military group</span><p class="source-quote-position">Attacked Israeli soldiers with drones in southern Lebanon in retaliation for Israeli strikes on villages.</p></li></ul>
+  </details>
 </li>
 <li id="src-018" class="source">
   <div class="source-header"><span class="source-id">[18]</span> <a class="source-headline" href="https://www.aljazeera.com/news/2026/5/6/has-the-us-accepted-irans-demand-to-settle-hormuz-first-nuclear-later" target="_blank" rel="noopener">Has the US accepted Iran&#x27;s demand to settle Hormuz first, nuclear later?</a></div>
@@ -1022,6 +1277,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="source-summary">Analysis suggesting Washington has effectively agreed to Iran&#x27;s sequencing proposal: first a ceasefire and security arrangements for the Strait of Hormuz, later detailed nuclear talks. Notes this is a limited but significant concession to Tehran and highlights skepticism among U.S. hawks.</p>
   <p class="source-bias-note"><em>Qatar-funded, strong Global South coverage</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-029">Marco Rubio</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-029">Marco Rubio</a></strong> <span class="actor-role">U.S. Secretary of State</span><p class="source-quote-position">Said nuclear issues &#x27;have to be addressed&#x27; but are now embedded in a broader framework rather than as a precondition.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1033,6 +1292,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-18</span></div>
   <p class="source-summary">The BBC reports Trump called off a military attack on Iran scheduled for Tuesday at the request of Gulf states, emphasizing the fear Gulf Arab states have of Iranian retaliation against their infrastructure. The article details Iran&#x27;s reported demands, including an end to all hostilities and compensation, and notes a New York Times/Siena poll showing 64% of US voters believe the war was a mistake. It also highlights the economic pressure from Iran&#x27;s control of the Strait of Hormuz and the US naval blockade.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-011">Mojtaba Khamenei</a>, <a href="#actor-012">Esmail Baghaei</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Held off a military attack on Iran at the request of Gulf states, citing serious negotiations and a &#x27;very good chance&#x27; of a deal.</p><p class="source-quote-verbatim"><em>&ldquo;“a very positive development, but we&#x27;ll see whether or not it amounts to anything”&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-011">Mojtaba Khamenei</a></strong> <span class="actor-role">Supreme Leader of Iran</span><p class="source-quote-position">Warned that new fronts would be opened where the enemy had little experience and would be highly vulnerable.</p></li><li class="source-quote-entry"><strong><a href="#actor-012">Esmail Baghaei</a></strong> <span class="actor-role">Iranian Foreign Ministry Spokesperson</span><p class="source-quote-position">Insisted Iran&#x27;s demands were &#x27;responsible&#x27; and &#x27;generous&#x27;.</p><p class="source-quote-verbatim"><em>&ldquo;“responsible” and “generous”&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1044,12 +1307,20 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>ar</span></div>
   <p class="source-summary">Reports that Trump cancelled a planned attack on Iran in response to a request from the Emir of Qatar, the Crown Prince of Saudi Arabia, and the President of the UAE. States that Gulf leaders saw the possibility of a satisfactory agreement including Iran&#x27;s nuclear program. Also reports that Iran submitted a 14-point proposal via the UN.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Announced the cancellation of a planned attack on Iran, citing requests from Gulf leaders, and ordered the Pentagon to prepare for a comprehensive attack if talks fail.</p></li></ul>
+  </details>
 </li>
 <li id="src-026" class="source">
   <div class="source-header"><span class="source-id">[26]</span> <a class="source-headline" href="https://www.bbc.com/arabic/articles/cpvjm3pl4r1o" target="_blank" rel="noopener">هل يصمد وقف إطلاق النار بين إيران وإسرائيل؟</a></div>
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>ar</span></div>
   <p class="source-summary">Analysis of the chances of the ceasefire between Iran and Israel holding. Discusses U.S. pressure on Israeli PM Netanyahu not to expand attacks against Iran, versus Netanyahu&#x27;s insistence on responding to what Israel sees as Iranian violations. Shows that Israel&#x27;s acceptance of the ceasefire came under U.S. and international pressure, with widespread Israeli skepticism about Tehran&#x27;s intentions.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-036">Benjamin Netanyahu</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-036">Benjamin Netanyahu</a></strong> <span class="actor-role">Prime Minister of Israel</span><p class="source-quote-position">Insisted on the need to respond to what Israel considers Iranian violations of the truce, under U.S. pressure not to expand attacks.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1071,6 +1342,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>fa</span></div>
   <p class="source-summary">Reports that Iran responded to the latest U.S. proposal to end the war via Pakistan. The response includes a multi-clause text (14 points) covering gradual lifting of sanctions, lifting of the naval siege, security arrangements in the Strait of Hormuz, and a return to frameworks for reducing military tension. Emphasizes that the core of Iran&#x27;s plan is &#x27;ending the war, not just extending a ceasefire&#x27;.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-030">Pakistani officials</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-030">Pakistani officials</a></strong> <span class="actor-role">Unnamed Pakistani officials</span><p class="source-quote-position">Confirmed that Tehran transmitted its response to Washington via Islamabad.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1082,6 +1357,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>tr</span></div>
   <p class="source-summary">Reports that Trump said he postponed the attack on Iran at the request of Gulf countries. Notes that after the stalling of nuclear negotiations, Trump issued stern warnings to Iran and the attack was suspended due to diplomatic contacts.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Said he postponed the attack on Iran at the request of Gulf countries.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1093,6 +1372,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>ur</span></div>
   <p class="source-summary">Analytical piece on Pakistan&#x27;s mediation role in the temporary and conditional ceasefire between the U.S. and Iran. Highlights the secret diplomacy by Prime Minister Shehbaz Sharif and Field Marshal Asim Munir, and notes that the ceasefire is provisional, not final, with experts pointing to challenges and uncertainties.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-031">Shehbaz Sharif</a>, <a href="#actor-032">Asim Munir</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-031">Shehbaz Sharif</a></strong> <span class="actor-role">Prime Minister of Pakistan</span><p class="source-quote-position">Played a key role in secret diplomacy and direct meetings to facilitate the ceasefire.</p></li><li class="source-quote-entry"><strong><a href="#actor-032">Asim Munir</a></strong> <span class="actor-role">Field Marshal of Pakistan</span><p class="source-quote-position">Involved in secret diplomacy and visits to facilitate communication between the two sides.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1105,6 +1388,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="source-summary">DW News reports Trump paused a planned strike on Iran, citing a &#x27;very good chance&#x27; of a deal, and notes the fragile ceasefire is under strain. The article highlights that a senior Iranian source told Reuters the new proposal largely resembles an earlier offer Trump dismissed as &#x27;garbage&#x27;. It also reports Iran&#x27;s top military commander stating forces are &#x27;ready to pull the trigger&#x27; if the US begins new strikes.</p>
   <p class="source-bias-note"><em>German state-funded, editorially independent</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-005">Ali Abdollahi</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Called off a planned military strike on Iran, citing a &#x27;very good chance&#x27; of reaching a deal, but instructed the military to remain prepared for a full-scale assault.</p><p class="source-quote-verbatim"><em>&ldquo;“There seems to be a very good chance that they can work something out,”&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-005">Ali Abdollahi</a></strong> <span class="actor-role">Commander of Iran’s Khatam al-Anbiya Central Headquarters</span><p class="source-quote-position">Stated the country&#x27;s armed forces are &#x27;ready to pull the trigger&#x27; if the US begins new strikes.</p><p class="source-quote-verbatim"><em>&ldquo;“ready to pull the trigger”&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1117,6 +1404,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="source-summary">El Financiero reports Trump cancelled new bombings on Iran at the request of Middle Eastern nations, framing the decision within the dilemma of risking further oil price increases. The article notes the White House found Iran&#x27;s latest proposal lacking significant advances on uranium enrichment, and reports Iran&#x27;s insistence on the return of frozen assets and war compensation. It also covers the US extension of a sanctions waiver for Russian oil and Trump&#x27;s discussion with Xi Jinping about lifting sanctions on Chinese oil companies.</p>
   <p class="source-bias-note"><em>Major Mexican newspaper, centrist/business-oriented</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-007">Scott Bessent</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Cancelled new bombings on Iran at the request of several Middle Eastern nations, citing serious negotiations and instructing the Pentagon to be prepared for a large-scale attack.</p><p class="source-quote-verbatim"><em>&ldquo;“Se están llevando a cabo negociaciones serias”&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-007">Scott Bessent</a></strong> <span class="actor-role">US Treasury Secretary</span><p class="source-quote-position">Announced a 30-day extension of a sanctions waiver to allow the sale of Russian oil to vulnerable nations.</p><p class="source-quote-verbatim"><em>&ldquo;“a las naciones más vulnerables acceder temporalmente al petróleo ruso que actualmente permanece varado en el mar”&rdquo;</em> <code class="source-quote-lang">es</code></p></li></ul>
+  </details>
 </li>
 <li id="src-012" class="source">
   <div class="source-header"><span class="source-id">[12]</span> <a class="source-headline" href="https://www.elfinanciero.com.mx/mundo/2026/05/18/trump-ofrece-perdon-temporal-a-sanciones-contra-petroleo-de-iran/" target="_blank" rel="noopener">La ‘rama de olivo’ de Trump: Ofrece ‘perdón’ temporal a sanciones contra petróleo de Irán</a></div>
@@ -1124,6 +1415,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="source-summary">Reports a US proposal for a temporary exemption on Iranian oil sanctions, a key Iranian demand, citing Tasnim news agency. Details Iran&#x27;s demands for reparations, asset unfreezing, and an end to the port blockade, while also covering a drone attack on the UAE&#x27;s Barakah nuclear plant and Saudi Arabia&#x27;s interception of drones from Iraq.</p>
   <p class="source-bias-note"><em>Major Mexican newspaper, centrist/business-oriented</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-020">Anwar Gargash</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Expressed frustration with Iran and warned that &#x27;the clock is ticking&#x27; and they must move fast or &#x27;there won&#x27;t be anything left of them.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;el reloj corre&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-020">Anwar Gargash</a></strong> <span class="actor-role">Senior foreign policy adviser to the UAE president</span><p class="source-quote-position">Called the drone attack on the Barakah nuclear plant a dangerous escalation and a dark chapter that violates all international laws and norms.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;El ataque terrorista contra la central nuclear de Barakah, ya sea perpetrado por el responsable principal o a través de uno de sus aliados, representa una peligrosa escalada y un capítulo oscuro que viola todas las leyes y normas internacionales.&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1135,6 +1430,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <div class="source-meta"><span>France</span> &middot; <span>fa</span> &middot; <span>2026-05-02</span></div>
   <p class="source-summary">Provides detailed Persian-language coverage of Iran&#x27;s 14-point proposal delivered via Pakistan, including demands for an end to war on all fronts, U.S. non-aggression guarantees, lifting of sanctions, and a new mechanism for the Strait of Hormuz. Reports Trump&#x27;s dissatisfaction with the proposal.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Said he will review Iran&#x27;s new proposal but is not satisfied because Iran &#x27;wants things he cannot accept&#x27;, and did not rule out resuming attacks.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1146,6 +1445,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <div class="source-meta"><span>Pakistan</span> &middot; <span>ur</span></div>
   <p class="source-summary">Reports that both the U.S. and Iran have praised Pakistan&#x27;s mediation and facilitation role. Quotes U.S. Vice President JD Vance thanking Prime Minister Shehbaz Sharif and Field Marshal Asim Munir, and Iranian Foreign Ministry spokesperson Esmaeil Baghaei and parliamentary speaker Mohammad Bagher Ghalibaf calling Pakistan a friend and brother country.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-033">JD Vance</a>, <a href="#actor-012">Esmail Baghaei</a>, <a href="#actor-035">Mohammad Bagher Ghalibaf</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-012">Esmail Baghaei</a></strong> <span class="actor-role">Iranian Foreign Ministry Spokesperson</span><p class="source-quote-position">Praised Pakistan&#x27;s efforts, calling it a friend and brother country, and said Pakistan&#x27;s mediation helped advance the ceasefire process.</p></li><li class="source-quote-entry"><strong><a href="#actor-033">JD Vance</a></strong> <span class="actor-role">Vice President of the United States</span><p class="source-quote-position">Thanked Prime Minister Shehbaz Sharif and Field Marshal Asim Munir, saying Pakistan played an important and positive role in making the talks successful.</p></li><li class="source-quote-entry"><strong><a href="#actor-035">Mohammad Bagher Ghalibaf</a></strong> <span class="actor-role">Speaker of the Iranian Parliament</span><p class="source-quote-position">Praised Pakistan&#x27;s efforts, calling it a friend and brother country.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1157,6 +1460,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <div class="source-meta"><span>Germany</span> &middot; <span>de</span></div>
   <p class="source-summary">Liveblog covering the Iran war and NATO reactions. Reports Trump&#x27;s cancellation of the attack and includes European and German responses: Germany is strengthening air defense on NATO&#x27;s southeastern flank, and ministers emphasize that the Iran conflict is worsening the security situation.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Cancelled a planned attack on Iran for Tuesday, with the role of Gulf states and diplomatic pressure playing a part.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1169,6 +1476,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="source-summary">Infobae reports the Iranian Army threatened to &#x27;open new fronts&#x27; with new tools and methods if the US and Israel reactivate their offensive. The article quotes army spokesperson Mohamad Akraminia stating Iran cannot be surrounded or defeated, and frames the threat as a direct response to Trump&#x27;s announcement that he suspended planned attacks at the request of Saudi Arabia, the UAE, and Qatar.</p>
   <p class="source-bias-note"><em>Pan-LatAm digital news, strong in AR/MX/CO</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-015">Mohamad Akraminia</a>, <a href="#actor-001">Donald Trump</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Suspended planned attacks on Iran at the request of Saudi Arabia, the UAE, and Qatar, citing the possibility of an acceptable deal.</p></li><li class="source-quote-entry"><strong><a href="#actor-015">Mohamad Akraminia</a></strong> <span class="actor-role">Spokesperson for the Iranian Army</span><p class="source-quote-position">Threatened to open new fronts against the US and Israel with new tools and methods if they launch another aggression, stating Iran cannot be surrounded or defeated.</p><p class="source-quote-verbatim"><em>&ldquo;“Si el enemigo comete una nueva estupidez y cae de nuevo en la trampa sionista y lanza otra agresión contra el querido Irán, abriremos nuevos frentes contra él, con nuevas herramientas y métodos”&rdquo;</em> <code class="source-quote-lang">es</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1181,6 +1492,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="source-summary">Japan Today reports Trump called off a planned Tuesday strike on Iran at the request of Gulf allies, noting his history of setting and backing off deadlines. The article uniquely includes Turkish Foreign Minister Hakan Fidan&#x27;s assessment that much of Iran&#x27;s enriched uranium is buried under collapsed tunnels from previous US-Israeli strikes, and that Iran is not opposed in principle to complying with nuclear conditions. It also highlights Trump&#x27;s shifting parameters for a deal and his recent talks with Netanyahu and Xi Jinping.</p>
   <p class="source-bias-note"><em>English-language Japanese news (Atom format)</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-016">Hakan Fidan</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Held off on a military strike on Iran planned for Tuesday because &#x27;serious negotiations&#x27; are underway, but instructed the military to be prepared for a full-scale assault.</p><p class="source-quote-verbatim"><em>&ldquo;“For Iran, the Clock is Ticking, and they better get moving, FAST, or there won’t be anything left of them.”&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-016">Hakan Fidan</a></strong> <span class="actor-role">Foreign Minister of Turkey</span><p class="source-quote-position">Stated the immediate concern of negotiations is keeping the Strait of Hormuz open, and that much of Iran&#x27;s enriched uranium is buried under collapsed tunnels, posing no real threat currently.</p><p class="source-quote-verbatim"><em>&ldquo;“At present, there isn’t a situation that poses a real threat,&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1202,6 +1517,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <div class="source-meta"><span>Israel</span> &middot; <span>he</span></div>
   <p class="source-summary">Describes Israel&#x27;s position regarding U.S.-Iran negotiations. Israeli officials fear Trump will promote a &#x27;partial agreement&#x27; or interim deal that extends the ceasefire and eases sanctions but neglects the nuclear issue, missile program, and Iran&#x27;s proxy network. Israel is trying to influence the agreement&#x27;s wording with demands for a complete ban on enrichment and dismantlement of facilities.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-037">Israeli officials</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-037">Israeli officials</a></strong> <span class="actor-role">Unnamed officials in Jerusalem</span><p class="source-quote-position">Fear Trump will promote a partial agreement that extends the ceasefire and eases sanctions but neglects the nuclear issue, missile program, and Iran&#x27;s proxy network.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1214,6 +1533,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="source-summary">Middle East Eye reports Iran warned it will &#x27;open new fronts&#x27; against the US if it is attacked again, directly following Trump&#x27;s announcement that he called off a planned attack scheduled for Tuesday. The article is a brief live-blog entry that frames the threat as a response to the last-minute cancellation.</p>
   <p class="source-bias-note"><em>Independent, UK-based MENA focus</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Announced he had called off at the last minute a planned attack against Iran scheduled for Tuesday, citing a &#x27;very good chance&#x27; of reaching an agreement.</p><p class="source-quote-verbatim"><em>&ldquo;“very good chance”&rdquo;</em></p></li></ul>
+  </details>
 </li>
 <li id="src-014" class="source">
   <div class="source-header"><span class="source-id">[14]</span> <a class="source-headline" href="https://www.middleeasteye.net/live-blog/live-blog-update/washington-post-iran-wants-war-end-nuclear-agreement-announced" target="_blank" rel="noopener">Washington Post: Iran wants war to end before nuclear agreement is announced</a></div>
@@ -1237,6 +1560,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span></div>
   <p class="source-summary">Reports that Pakistan delivered a revised Iranian proposal to Washington. U.S. officials describe the offer as &#x27;serious but incomplete&#x27; and stress that any pause in military action is contingent on verifiable limits on enrichment and missile activity. Highlights mixed reactions within the U.S. administration and Congress.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-028">U.S. officials</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Confirmed he paused a large planned military attack on Iran and said there is a &#x27;very good chance&#x27; for a nuclear deal.</p></li><li class="source-quote-entry"><strong><a href="#actor-028">U.S. officials</a></strong> <span class="actor-role">Unnamed U.S. administration officials</span><p class="source-quote-position">Described the Iranian offer as &#x27;serious but incomplete&#x27; and stressed that any pause in military action is contingent on progress in talks.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1249,6 +1576,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="source-summary">Reports Trump&#x27;s postponement of a &#x27;very major attack&#x27; on Iran at the request of Qatar, Saudi Arabia, and the UAE, who believe a deal is close. Quotes Trump warning that the military remains ready for a &#x27;full, large-scale assault&#x27; if an acceptable deal is not reached, and includes Iranian President Pezeshkian&#x27;s insistence that dialogue does not mean surrender.</p>
   <p class="source-bias-note"><em>Russian state media, included for transparency</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-002">Masoud Pezeshkian</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Postponed a planned major attack on Iran after Gulf leaders asked for more time for diplomacy, but warned the military is ready for a full, large-scale assault if an acceptable deal is not reached.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;We were getting ready to do a very major attack tomorrow. I’ve put it off for a little while, hopefully maybe forever, but possibly for a little while, because we’ve had very big discussions with Iran.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-002">Masoud Pezeshkian</a></strong> <span class="actor-role">President of Iran</span><p class="source-quote-position">Insisted that dialogue does not mean surrender and that Iran will defend its interests and honor with all its might.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;dialogue does not mean surrender&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1261,6 +1592,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="source-summary">Reports Trump&#x27;s claim of &#x27;serious negotiations&#x27; with Iran and his cancellation of a planned attack after requests from Qatar, Saudi Arabia, and the UAE. Notes the fragile ceasefire, ongoing attacks in the Persian Gulf, and that Iran submitted a new proposal via Pakistani mediators.</p>
   <p class="source-bias-note"><em>German public broadcaster ARD</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Claimed there are &#x27;serious negotiations&#x27; with Iran and a very good chance of a solution, and that he cancelled a planned attack out of respect for a request from Gulf allies.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Es scheint eine sehr gute Chance zu geben, dass sie eine Lösung finden. Wenn wir das schaffen, ohne sie in Grund und Boden zu bomben, wäre ich sehr zufrieden.&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1272,18 +1607,30 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-18</span></div>
   <p class="source-summary">The Guardian reports Iran made a new proposal to end the war, with Trump postponing strikes, but notes contradictory reports from Pakistani mediators that both sides &#x27;keep changing their goalposts&#x27;. The article details reported Iranian concessions including a long-term nuclear suspension and uranium transfer to Russia, while also covering defiant IRGC threats to impose permits on internet cables. It highlights the domestic pressures on both leaders, including Trump&#x27;s midterm concerns and Iran&#x27;s economic crisis and internal arrests.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-012">Esmail Baghaei</a>, <a href="#actor-003">Islamic Revolutionary Guard Corps (IRGC)</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Postponed new military strikes on Iran at the request of Gulf leaders, claiming a deal was near that would leave Iran without nuclear weapons.</p><p class="source-quote-verbatim"><em>&ldquo;“There seems to be a very good chance that they can work something out. If we can do that without bombing the hell out of them, I’d be very happy,”&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Islamic Revolutionary Guard Corps (IRGC)</a></strong> <span class="actor-role">Iranian military force</span><p class="source-quote-position">Threatened to impose permits on internet cables passing through the Strait of Hormuz.</p></li><li class="source-quote-entry"><strong><a href="#actor-012">Esmail Baghaei</a></strong> <span class="actor-role">Iranian Foreign Ministry Spokesperson</span><p class="source-quote-position">Claimed Pakistan has shared Tehran&#x27;s latest proposal with the US and stated Tehran was prepared for all scenarios.</p><p class="source-quote-verbatim"><em>&ldquo;“As for their threats, rest assured that we are fully aware of how to respond appropriately to even the smallest mistake from the opposing side.”&rdquo;</em></p></li></ul>
+  </details>
 </li>
 <li id="src-013" class="source">
   <div class="source-header"><span class="source-id">[13]</span> <a class="source-headline" href="https://www.theguardian.com/world/live/2026/may/19/us-israel-iran-war-trump-peace-attacks-gulf-allies-strikes-hormuz-latest-news-updates" target="_blank" rel="noopener">Middle East crisis live: Iran warns it will ‘open new fronts’ against US if attacks resume after Trump suspends strikes</a></div>
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-19</span></div>
   <p class="source-summary">Reports Iran&#x27;s army warning it will &#x27;open new fronts&#x27; against the US if attacks resume, and UK Foreign Secretary Yvette Cooper&#x27;s warning that the world is &#x27;sleepwalking into a global food crisis&#x27; due to the Strait of Hormuz closure. Also covers Israeli evacuation orders in southern Lebanon, the ICC arrest warrant request for Israeli Finance Minister Smotrich, and the detention of an aid flotilla by Israel.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-015">Mohamad Akraminia</a>, <a href="#actor-022">Yvette Cooper</a>, <a href="#actor-023">Bezalel Smotrich</a>, <a href="#actor-024">Avichay Adraee</a>, <a href="#actor-025">Kazem Gharibabadi</a>, <a href="#actor-026">Roland Lescure</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-015">Mohamad Akraminia</a></strong> <span class="actor-role">Spokesperson for the Iranian Army</span><p class="source-quote-position">Warned that Iran will open new fronts against the US with new equipment and methods if it resumes attacks on Iran.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;If the enemy is foolish enough to fall into the Zionist trap again and launches new aggression against our beloved Iran, we will open new fronts against it, with new equipment and new methods.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-022">Yvette Cooper</a></strong> <span class="actor-role">UK Foreign Secretary</span><p class="source-quote-position">Warned that the world is sleepwalking into a global food crisis due to the disruption of shipping through the Strait of Hormuz and called for urgent global pressure to reopen it.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;The world is sleepwalking into a global food crisis. We cannot risk tens of millions of people going hungry because one country has hijacked an international shipping lane.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-023">Bezalel Smotrich</a></strong> <span class="actor-role">Israeli Finance Minister</span><p class="source-quote-position">Revealed the ICC requested an arrest warrant against him and threatened to harm the Palestinian Authority in response, calling it a declaration of war.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Issuing arrest warrants against the prime minister, the defense minister and the finance minister is a declaration of war – and in the face of a declaration of war, we will respond in kind.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-024">Avichay Adraee</a></strong> <span class="actor-role">IDF Arabic-language spokesperson</span><p class="source-quote-position">Warned residents of 12 towns in southern Lebanon to evacuate immediately ahead of expected attacks due to Hezbollah violating the ceasefire agreement.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Anyone present near Hezbollah elements, their facilities, and combat means endangers their life!&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-025">Kazem Gharibabadi</a></strong> <span class="actor-role">Iran&#x27;s deputy foreign minister</span><p class="source-quote-position">Stated that Iran&#x27;s recent proposal called for the lifting of sanctions, release of frozen funds, an end to the marine blockade, ending the war on all fronts, withdrawal of US forces, and war damage compensation.</p></li><li class="source-quote-entry"><strong><a href="#actor-026">Roland Lescure</a></strong> <span class="actor-role">French finance minister</span><p class="source-quote-position">Stated that G7 finance ministers agree the IMF and World Bank must step up assistance for countries most vulnerable to the Middle East conflict.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;We agree on the fact that the IMF and the World Bank have to step up their game for those countries (most vulnerable to the impact of the Middle East conflict) and make sure we help them.&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 <li id="src-015" class="source">
   <div class="source-header"><span class="source-id">[15]</span> <a class="source-headline" href="https://www.theguardian.com/world/live/2026/may/18/us-israel-iran-lebanon-donald-trump-hormuz-oil-latest-news-updates" target="_blank" rel="noopener">UAE restores power to Barakah nuclear plant after drone strike, says IAEA – as it happened</a></div>
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-19</span></div>
   <p class="source-summary">Reports Trump&#x27;s postponement of a planned attack on Iran after a peace proposal was sent, quoting him saying there is a &#x27;very good chance&#x27; of a deal. Includes Iran&#x27;s military warning it is &#x27;ready to pull the trigger,&#x27; Turkey&#x27;s foreign minister stating Iran&#x27;s enriched uranium is buried under collapsed tunnels, and the US extending a sanctions waiver for Russian oil.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-005">Ali Abdollahi</a>, <a href="#actor-016">Hakan Fidan</a>, <a href="#actor-007">Scott Bessent</a>, <a href="#actor-027">Joseph Aoun</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Postponed a planned attack on Iran after a peace proposal was sent and said there is a &#x27;very good chance&#x27; of reaching a deal that leaves Iran without nuclear weapons.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;It’s a very positive development.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-005">Ali Abdollahi</a></strong> <span class="actor-role">Commander of Iran’s Khatam al-Anbiya Central Headquarters</span><p class="source-quote-position">Stated that Iran&#x27;s armed forces are ready to pull the trigger and will respond quickly, decisively, powerfully, and extensively to any renewed aggression.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Any renewed aggression and invasion ... will be responded to quickly, decisively, powerfully and extensively.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-007">Scott Bessent</a></strong> <span class="actor-role">US Treasury Secretary</span><p class="source-quote-position">Announced a 30-day extension of a sanctions waiver allowing purchases of Russian seaborne oil to aid energy-vulnerable countries hit by the Iran war.</p></li><li class="source-quote-entry"><strong><a href="#actor-016">Hakan Fidan</a></strong> <span class="actor-role">Foreign Minister of Turkey</span><p class="source-quote-position">Stated that much of Iran&#x27;s enriched uranium is buried under collapsed tunnels after previous attacks and that there is no situation posing a real threat, but parties must conclude a nuclear negotiation.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;At present, there isn’t a situation that poses a real threat. But for this to continue, the parties must reach and conclude a nuclear negotiation among themselves.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-027">Joseph Aoun</a></strong> <span class="actor-role">Lebanese President</span><p class="source-quote-position">Said he would do the &#x27;impossible&#x27; to stop the war with Israel after a ceasefire and direct talks failed to end the fighting.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;impossible&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1295,6 +1642,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <div class="source-meta"><span>South Korea</span> &middot; <span>ko</span></div>
   <p class="source-summary">Reports that Trump announced a five-day halt to attacks on Iranian energy facilities, citing productive talks. Provides a South Korean perspective on the U.S.-Iran conflict, highlighting energy price and supply instability concerns for a major energy importer.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Announced a five-day halt to attacks on Iranian power plants and energy facilities, saying he had &#x27;productive talks&#x27; with Iran.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1307,6 +1658,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="source-summary">Details Trump&#x27;s instruction to the military not to launch an attack on Iran following requests from Saudi Arabia, UAE, and Qatar, while warning of a &#x27;full, large-scale&#x27; assault if no deal is reached. Reports that the White House views Iran&#x27;s latest 14-point proposal, delivered via Pakistan, as insufficient, and quotes Trump telling the New York Post he is &#x27;not open to anything right now.&#x27;</p>
   <p class="source-bias-note"><em>South Korean national news agency</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Donald Trump</a>, <a href="#actor-017">Mohammed bin Salman</a>, <a href="#actor-018">Tamim bin Hamad Al Thani</a>, <a href="#actor-019">Mohamed bin Zayed Al Nahyan</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Donald Trump</a></strong> <span class="actor-role">President of the United States</span><p class="source-quote-position">Instructed the military to hold off on a planned attack on Iran at the request of Gulf leaders but warned of a full, large-scale assault if an acceptable deal is not reached, and stated he is not open to any concessions.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Based on my respect for the above mentioned Leaders, I have instructed Secretary of War, Pete Hegseth, The Chairman of The Joint Chiefs of Staff, General Daniel Caine, and The United States Military, that we will NOT be doing the scheduled attack of Iran tomorrow.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-017">Mohammed bin Salman</a></strong> <span class="actor-role">Saudi Crown Prince</span><p class="source-quote-position">Asked Trump to hold off on the planned attack as serious negotiations are in progress and a deal acceptable to the US and countries in the Middle East will be made.</p></li><li class="source-quote-entry"><strong><a href="#actor-018">Tamim bin Hamad Al Thani</a></strong> <span class="actor-role">Qatar&#x27;s Emir</span><p class="source-quote-position">Asked Trump to hold off on the planned attack as serious negotiations are in progress and a deal acceptable to the US and countries in the Middle East will be made.</p></li><li class="source-quote-entry"><strong><a href="#actor-019">Mohamed bin Zayed Al Nahyan</a></strong> <span class="actor-role">UAE President</span><p class="source-quote-position">Asked Trump to hold off on the planned attack as serious negotiations are in progress and a deal acceptable to the US and countries in the Middle East will be made.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>

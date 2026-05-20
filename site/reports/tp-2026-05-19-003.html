@@ -125,8 +125,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
 }
 
-/* Stakeholder cards */
-.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+/* Cluster cards — one card per row, full container width. Two-
+   column variant retired so the Cluster-ID pill, position label,
+   summary, tier-grouped actors, and counts row all read across the
+   full width (the cluster card is information-dense and benefits
+   from the horizontal space). */
+.card-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+/* Cluster-ID pill at top-left of each cluster card. Shares
+   ``.actor-card-cluster-box`` styling with the actor-card pills so
+   the cross-reference renders identically on both sides. The pill
+   needs a margin below to separate it from the position-label
+   header that follows. */
+.card > .actor-card-cluster-box {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
 .card {
   border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
   background: var(--color-bg);
@@ -144,6 +157,21 @@ h2 {
 .cluster-counts a { color: inherit; text-decoration: underline; }
 .cluster-counts a:hover { color: var(--color-text); }
 .card:target { background: var(--color-bg-subtle, #f5f5f4); }
+
+/* Single-voices bracket — visually distinguished from real shared-
+   position clusters. Dashed left accent + neutral tinted background
+   read as "this is a different kind of grouping" without breaking the
+   page's existing card rhythm. */
+.single-voices-bracket {
+  border-left: 4px dashed #000;
+  background: var(--color-bg-subtle, #f5f5f4);
+  margin-top: 1rem;
+}
+.single-voices-bracket-tag {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-left: 0.5rem;
+}
 
 /* Cluster three-level actor sub-blocks (stated / reported / mentioned) */
 .cluster-tier { margin-top: 0.85rem; }
@@ -168,54 +196,102 @@ h2 {
   color: var(--color-text-subtle); margin-left: 0.25rem;
   text-transform: uppercase; letter-spacing: 0.05em;
 }
-.cluster-actor-srcs {
-  font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle);
+
+/* Actors section — flat card grid with type-tab filter */
+.actors h2 { margin-top: 2.5rem; }
+.actors-meta {
+  font-family: var(--font-sans); font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin: 1rem 0 1.5rem;
+  border-left: 3px solid #000; padding-left: 0.75rem;
 }
 
-/* Actors section */
-.actors h2 { margin-top: 2rem; }
-.actors-meta {
-  font-family: var(--font-mono); font-size: 0.85rem;
-  color: var(--color-text-secondary); margin: 0 0 1rem;
+.actors-tabs {
+  display: flex; flex-wrap: wrap; gap: 0;
+  margin-bottom: 1.5rem;
 }
-#actors-show-all {
+.actor-tab {
+  font-family: var(--font-mono); font-size: 0.8rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.5rem 1rem; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; margin: 0 -1px -1px 0;
+}
+.actor-tab-count { margin-left: 0.4rem; color: var(--color-text-subtle); }
+.actor-tab--active { background: #000; color: var(--color-bg); }
+.actor-tab--active .actor-tab-count { color: var(--color-bg); }
+.actor-tab:not(.actor-tab--active):hover {
+  background: var(--color-bg-subtle, #f5f5f4);
+}
+
+/* Two-column grid with a vertical centre rule. The ::before pseudo
+   spans the full grid height and sits in the middle of the column
+   gap, matching the horizontal `border-top` rhythm on each card.
+   Disabled on mobile via the @media block when the grid collapses
+   to a single column. */
+.actor-card-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem;
+  position: relative;
+}
+.actor-card-grid::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%; width: 1px;
+  background: var(--color-border-light);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.actor-card {
+  border-top: 1px solid var(--color-border-light);
+  padding: 1rem 0;
+}
+.actor-card[hidden] { display: none; }
+.actor-card:target { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 0.25rem; gap: 0.5rem;
+}
+.actor-card-name {
+  font-family: var(--font-sans); font-weight: 700; font-size: 1rem;
+}
+.actor-card-name a { color: inherit; text-decoration: none; }
+.actor-card-src-count {
   font-family: var(--font-mono); font-size: 0.75rem;
-  background: transparent; border: 1px solid #000; cursor: pointer;
-  padding: 0.3rem 0.75rem; margin-bottom: 1rem;
+  color: var(--color-text-subtle);
   text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap;
 }
-#actors-show-all:hover { background: #000; color: var(--color-bg); }
-.actor-list { list-style: none; padding: 0; margin: 0; }
-.actor {
-  padding: 1rem 0; border-top: 1px solid var(--color-border-light);
+.actor-card-role {
+  font-family: var(--font-sans); font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem;
 }
-.actor:first-child { border-top: 0; padding-top: 0; }
-.actor[hidden] { display: none; }
-.actor:target { background: var(--color-bg-subtle, #f5f5f4); }
-.actor-header {
-  font-family: var(--font-sans); font-size: 1rem; margin-bottom: 0.4rem;
+.actor-card-cluster-refs, .actor-card-source-refs {
+  display: flex; flex-wrap: wrap; gap: 0.2rem;
+  margin-top: 0.4rem;
 }
-.actor-header strong { font-weight: 700; }
-.actor-role { color: var(--color-text-secondary); margin-left: 0.4rem; }
-.actor-type {
+.actor-card-cluster-box {
   font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle); margin-left: 0.4rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.2rem 0.5rem;
   text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; text-decoration: none;
 }
-.actor-position-line {
-  font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55;
-  color: var(--color-text-secondary); margin: 0.35rem 0 0;
-}
-.actor-position-line a { color: inherit; text-decoration: underline; }
-.actor-verbatim { font-style: italic; }
-.actor-no-cluster { color: var(--color-text-subtle); font-size: 0.85rem; }
-.actor-position-tier {
+.actor-card-cluster-box:hover { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-cluster-box--bracket { border-style: dashed; }
+/* Source-ref boxes — tightened (Correction 3, 2026-05-20) so ≥ 5
+   `src-NNN` boxes fit per row at the desktop card width
+   (container 740px → ~334px per card column). Lowercase label,
+   minimal horizontal padding, no letter-spacing. */
+.actor-card-source-box {
   font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle); font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  margin-right: 0.15rem;
+  background: var(--color-bg-subtle, #f5f5f4);
+  padding: 0.2rem 0.35rem;
+  color: #000; text-decoration: none;
+  letter-spacing: 0;
 }
+.actor-card-source-box:hover { background: var(--color-border-light); }
 
 /* Missing voices */
 .missing-voice {
@@ -454,7 +530,10 @@ footer a { color: #000; text-decoration: underline; }
 @media (max-width: 768px) {
   .container { padding: 1rem; }
   h1 { font-size: 1.4rem; }
-  .card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid::before { display: none; }
+  .actors-tabs { font-size: 0.7rem; }
+  .actor-tab { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
   .meta-bar { flex-wrap: wrap; }
   .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
   .meta-item:last-child { border-bottom: none; }
@@ -676,311 +755,528 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
 <h2>Perspectives &mdash; Position Clusters</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
+  <a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>
   <div class="card-header"><span class="card-actor">The Ebola outbreak&#x27;s scale and speed demand the highest level of international alarm and coordinated response</span></div>
   <div class="card-position">WHO leadership, Africa CDC, and multiple international health bodies argue that the rapid spread of the Bundibugyo Ebola outbreak across DRC and into Uganda — with over 500 suspected cases and 130 deaths — justifies both a PHEIC declaration and a continental emergency, requiring unprecedented international surveillance and coordination.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="cluster-actor-role">Director General of the World Health Organization</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-003">src-003</a>, <a href="#src-004">src-004</a>, <a href="#src-006">src-006</a>, <a href="#src-007">src-007</a>, <a href="#src-009">src-009</a>, <a href="#src-010">src-010</a>, <a href="#src-012">src-012</a>, <a href="#src-013">src-013</a>, <a href="#src-016">src-016</a>, <a href="#src-019">src-019</a>, <a href="#src-033">src-033</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="cluster-actor-role">Director of the Africa Centres for Disease Control and Prevention</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-004">src-004</a>, <a href="#src-007">src-007</a>, <a href="#src-012">src-012</a>, <a href="#src-019">src-019</a>, <a href="#src-013">src-013</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-005">Anne Ancia</a></strong> <span class="cluster-actor-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-009">src-009</a>, <a href="#src-010">src-010</a>, <a href="#src-016">src-016</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-015">Ong Ye Kung</a></strong> <span class="cluster-actor-role">Health Minister of Singapore</span> <span class="cluster-actor-type">government</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="cluster-actor-role">Director General of the World Health Organization</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="cluster-actor-role">Director of the Africa Centres for Disease Control and Prevention</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-005">Anne Ancia</a></strong> <span class="cluster-actor-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-015">Ong Ye Kung</a></strong> <span class="cluster-actor-role">Health Minister of Singapore</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-044">World Health Organization (WHO)</a></strong> <span class="cluster-actor-role">International health agency</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-023">src-023</a>, <a href="#src-025">src-025</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-044">World Health Organization (WHO)</a></strong> <span class="cluster-actor-role">International health agency</span> <span class="cluster-actor-type">international_org</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">5 actors</a></span> &middot; <span>14 sources</span> &middot; <span>8 regions</span> &middot; <span>5 languages</span></p>
 </div>
 <div class="card" id="pc-002">
+  <a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a>
   <div class="card-header"><span class="card-actor">Delayed detection, wrong diagnostic reagents, and weakened surveillance systems allowed the outbreak to grow undetected for weeks</span></div>
   <div class="card-position">Multiple experts and organizations argue that the outbreak was identified too late because laboratories only had reagents for the Zaire strain, initial cases were misdiagnosed as malaria or salmonellosis, and years of international aid cuts had degraded disease surveillance and water/sanitation infrastructure in the affected region. The IRC attributed the surveillance failure in part to donor funding cuts, while WHO representative Anne Ancia noted a 73 percent reduction in water and sanitation funding.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-007">Jean-Jacques Muyembe</a></strong> <span class="cluster-actor-role">Congolese scientist who co-discovered the Ebola virus and head of Kinshasa&#x27;s National Institute of Biomedical Research (INRB)</span> <span class="cluster-actor-type">academia</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>, <a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-005">Anne Ancia</a></strong> <span class="cluster-actor-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-009">src-009</a>, <a href="#src-016">src-016</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="cluster-actor-role">Director of the Africa Centres for Disease Control and Prevention</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-012">src-012</a>, <a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-042">Klinger Soares Faico Filho</a></strong> <span class="cluster-actor-role">Professor of Clinical Medicine and Laboratory Medicine, Universidade Federal de São Paulo (UNIFESP)</span> <span class="cluster-actor-type">academia</span> <span class="cluster-actor-srcs">(<a href="#src-020">src-020</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-021">Laura Archer</a></strong> <span class="cluster-actor-role">Head of Clinical Care and Public Health in Emergencies at the International Federation of Red Cross and Red Crescent Societies</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-009">src-009</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-031">Red Cross</a></strong> <span class="cluster-actor-role">Humanitarian organization</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-016">src-016</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-007">Jean-Jacques Muyembe</a></strong> <span class="cluster-actor-role">Congolese scientist who co-discovered the Ebola virus and head of Kinshasa&#x27;s National Institute of Biomedical Research (INRB)</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-005">Anne Ancia</a></strong> <span class="cluster-actor-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="cluster-actor-role">Director of the Africa Centres for Disease Control and Prevention</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-042">Klinger Soares Faico Filho</a></strong> <span class="cluster-actor-role">Professor of Clinical Medicine and Laboratory Medicine, Universidade Federal de São Paulo (UNIFESP)</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-021">Laura Archer</a></strong> <span class="cluster-actor-role">Head of Clinical Care and Public Health in Emergencies at the International Federation of Red Cross and Red Crescent Societies</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-031">Red Cross</a></strong> <span class="cluster-actor-role">Humanitarian organization</span> <span class="cluster-actor-type">civil_society</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-009">International Rescue Committee</a></strong> <span class="cluster-actor-role">Aid agency</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="cluster-actor-role">Director General of the World Health Organization</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>, <a href="#src-009">src-009</a>, <a href="#src-012">src-012</a>, <a href="#src-016">src-016</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-009">International Rescue Committee</a></strong> <span class="cluster-actor-role">Aid agency</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="cluster-actor-role">Director General of the World Health Organization</span> <span class="cluster-actor-type">international_org</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">8 actors</a></span> &middot; <span>6 sources</span> &middot; <span>4 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-003">
+  <a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a>
   <div class="card-header"><span class="card-actor">Conflict, displacement, poverty, and fragile health systems in eastern DRC make containment exceptionally difficult</span></div>
   <div class="card-position">Aid agencies, academics, and on-the-ground observers emphasize that the outbreak is occurring in one of the continent&#x27;s most complex operational areas, marked by insecurity, population movements, and fragile health systems, where armed conflict, mass displacement, extreme poverty, distrust of authorities, and overwhelmed health infrastructure compound the challenge of containing Ebola.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-007">Jean-Jacques Muyembe</a></strong> <span class="cluster-actor-role">Congolese scientist who co-discovered the Ebola virus and head of Kinshasa&#x27;s National Institute of Biomedical Research (INRB)</span> <span class="cluster-actor-type">academia</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>, <a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-037">Heather Kerr</a></strong> <span class="cluster-actor-role">DRC country director at the International Rescue Committee</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-038">Manenji Mangundu</a></strong> <span class="cluster-actor-role">DRC country director at Oxfam</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-041">Maximilian Gertler</a></strong> <span class="cluster-actor-role">Specialist in internal medicine, emergency medicine, tropical medicine, and epidemiology at Berlin&#x27;s Charité</span> <span class="cluster-actor-type">academia</span> <span class="cluster-actor-srcs">(<a href="#src-019">src-019</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-035">Claude Kasuna</a></strong> <span class="cluster-actor-role">Resident of Irumu territory</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="cluster-actor-role">Director of the Africa Centres for Disease Control and Prevention</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-004">src-004</a>, <a href="#src-007">src-007</a>, <a href="#src-018">src-018</a>, <a href="#src-019">src-019</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-007">Jean-Jacques Muyembe</a></strong> <span class="cluster-actor-role">Congolese scientist who co-discovered the Ebola virus and head of Kinshasa&#x27;s National Institute of Biomedical Research (INRB)</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-037">Heather Kerr</a></strong> <span class="cluster-actor-role">DRC country director at the International Rescue Committee</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-038">Manenji Mangundu</a></strong> <span class="cluster-actor-role">DRC country director at Oxfam</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-041">Maximilian Gertler</a></strong> <span class="cluster-actor-role">Specialist in internal medicine, emergency medicine, tropical medicine, and epidemiology at Berlin&#x27;s Charité</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-035">Claude Kasuna</a></strong> <span class="cluster-actor-role">Resident of Irumu territory</span> <span class="cluster-actor-type">affected_community</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="cluster-actor-role">Director of the Africa Centres for Disease Control and Prevention</span> <span class="cluster-actor-type">international_org</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">6 actors</a></span> &middot; <span>7 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-004">
+  <a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a>
   <div class="card-header"><span class="card-actor">The absence of an approved vaccine or treatment for the Bundibugyo strain is the outbreak&#x27;s most critical vulnerability</span></div>
   <div class="card-position">Scientists, health officials, and the Africa CDC stress that unlike previous Zaire-strain outbreaks, no approved vaccine or therapy exists for Bundibugyo, leaving responders reliant on traditional public health measures. International experts are working with institutions including the University of Oxford and hope to have vaccine candidates in trials within two months, though WHO representative Ancia cautioned the outbreak will not be over in that timeframe.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-004">Mosoka Fallah</a></strong> <span class="cluster-actor-role">Acting director of the science department at the Africa Centres for Disease Control and Prevention</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-005">Anne Ancia</a></strong> <span class="cluster-actor-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-007">Jean-Jacques Muyembe</a></strong> <span class="cluster-actor-role">Congolese scientist who co-discovered the Ebola virus and head of Kinshasa&#x27;s National Institute of Biomedical Research (INRB)</span> <span class="cluster-actor-type">academia</span> <span class="cluster-actor-srcs">(<a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-032">Alejandro Macías</a></strong> <span class="cluster-actor-role">Infectious disease doctor and epidemiologist</span> <span class="cluster-actor-type">academia</span> <span class="cluster-actor-srcs">(<a href="#src-017">src-017</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-004">Mosoka Fallah</a></strong> <span class="cluster-actor-role">Acting director of the science department at the Africa Centres for Disease Control and Prevention</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-005">Anne Ancia</a></strong> <span class="cluster-actor-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-007">Jean-Jacques Muyembe</a></strong> <span class="cluster-actor-role">Congolese scientist who co-discovered the Ebola virus and head of Kinshasa&#x27;s National Institute of Biomedical Research (INRB)</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-032">Alejandro Macías</a></strong> <span class="cluster-actor-role">Infectious disease doctor and epidemiologist</span> <span class="cluster-actor-type">academia</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Ministero della Salute</a></strong> <span class="cluster-actor-role">Italian Ministry of Health</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="cluster-actor-role">Director of the Africa Centres for Disease Control and Prevention</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-004">src-004</a>, <a href="#src-007">src-007</a>, <a href="#src-018">src-018</a>, <a href="#src-022">src-022</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Ministero della Salute</a></strong> <span class="cluster-actor-role">Italian Ministry of Health</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="cluster-actor-role">Director of the Africa Centres for Disease Control and Prevention</span> <span class="cluster-actor-type">international_org</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">6 actors</a></span> &middot; <span>9 sources</span> &middot; <span>8 regions</span> &middot; <span>6 languages</span></p>
 </div>
 <div class="card" id="pc-005">
+  <a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a>
   <div class="card-header"><span class="card-actor">Discriminatory travel bans targeting non-citizens are ineffective and counterproductive to outbreak containment</span></div>
   <div class="card-position">The Infectious Diseases Society of America and Africa CDC argue that the US entry ban for non-citizens from affected countries is discriminatory and will not prevent viral spread, since pathogens do not recognize passports, and such measures risk undermining the cooperative international response the WHO recommends.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-019">Infectious Diseases Society of America</a></strong> <span class="cluster-actor-role">US medical association</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-008">src-008</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-019">Infectious Diseases Society of America</a></strong> <span class="cluster-actor-role">US medical association</span> <span class="cluster-actor-type">civil_society</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-025">Africa CDC</a></strong> <span class="cluster-actor-role">African Union public health agency</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-014">src-014</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-025">Africa CDC</a></strong> <span class="cluster-actor-role">African Union public health agency</span> <span class="cluster-actor-type">international_org</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">2 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-006">
+  <a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a>
   <div class="card-header"><span class="card-actor">Countries outside Africa should implement proportionate health monitoring for travelers rather than blanket travel bans</span></div>
   <div class="card-position">Multiple governments — including Italy, Singapore, Turkey, Japan, and India — have activated health surveillance, traveler advisories, and self-monitoring requirements at points of entry without imposing outright travel bans, aligning with WHO guidance that risk-based measures are more appropriate than blanket restrictions.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-014">Communicable Diseases Agency (CDA)</a></strong> <span class="cluster-actor-role">Singapore&#x27;s Communicable Diseases Agency</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-005">src-005</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-015">Ong Ye Kung</a></strong> <span class="cluster-actor-role">Health Minister of Singapore</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-005">src-005</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-014">Communicable Diseases Agency (CDA)</a></strong> <span class="cluster-actor-role">Singapore&#x27;s Communicable Diseases Agency</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-015">Ong Ye Kung</a></strong> <span class="cluster-actor-role">Health Minister of Singapore</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Ministero della Salute</a></strong> <span class="cluster-actor-role">Italian Ministry of Health</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-046">Türkiye Hudut ve Sahiller Sağlık Genel Müdürlüğü</a></strong> <span class="cluster-actor-role">General Directorate General of Border and Coastal Health, Turkey</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-028">src-028</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-047">Ministry of Foreign Affairs of Japan</a></strong> <span class="cluster-actor-role">National government ministry</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-032">src-032</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-048">Government of India</a></strong> <span class="cluster-actor-role">National government</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-035">src-035</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Ministero della Salute</a></strong> <span class="cluster-actor-role">Italian Ministry of Health</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-046">Türkiye Hudut ve Sahiller Sağlık Genel Müdürlüğü</a></strong> <span class="cluster-actor-role">General Directorate General of Border and Coastal Health, Turkey</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-047">Ministry of Foreign Affairs of Japan</a></strong> <span class="cluster-actor-role">National government ministry</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-048">Government of India</a></strong> <span class="cluster-actor-role">National government</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">6 actors</a></span> &middot; <span>5 sources</span> &middot; <span>5 regions</span> &middot; <span>5 languages</span></p>
 </div>
 <div class="card" id="pc-007">
+  <a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a>
   <div class="card-header"><span class="card-actor">The risk of Ebola spreading to high-income countries or becoming a global pandemic is extremely low</span></div>
   <div class="card-position">Germany&#x27;s health minister and a Mexican epidemiologist assert that while the outbreak is devastating in the affected region, Ebola&#x27;s transmission characteristics make a global pandemic nearly impossible, and countries like Germany face an extremely low domestic risk requiring no special precautions.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-040">Nina Warken</a></strong> <span class="cluster-actor-role">German Federal Health Minister</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-019">src-019</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-032">Alejandro Macías</a></strong> <span class="cluster-actor-role">Infectious disease doctor and epidemiologist</span> <span class="cluster-actor-type">academia</span> <span class="cluster-actor-srcs">(<a href="#src-017">src-017</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-040">Nina Warken</a></strong> <span class="cluster-actor-role">German Federal Health Minister</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-032">Alejandro Macías</a></strong> <span class="cluster-actor-role">Infectious disease doctor and epidemiologist</span> <span class="cluster-actor-type">academia</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">2 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-008">
+  <a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a>
   <div class="card-header"><span class="card-actor">Affected communities in Ituri are gripped by fear, economic hardship, and lack of protective resources</span></div>
   <div class="card-position">Residents of Ituri province describe widespread panic, economic devastation from health restrictions in an already impoverished region, a lack of access to basic protective supplies like face masks, and confusion about how to respond if family members fall ill, compounded by cultural practices like open-casket funerals that accelerate transmission.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-028">Bigboy</a></strong> <span class="cluster-actor-role">Ituri resident</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-016">src-016</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-029">Alfred Giza</a></strong> <span class="cluster-actor-role">Ituri resident</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-016">src-016</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-033">Gloire Mumbesa</a></strong> <span class="cluster-actor-role">Resident of Mongbwalu</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-034">Dieudonné Lossadekana</a></strong> <span class="cluster-actor-role">Resident of Bunia city</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-035">Claude Kasuna</a></strong> <span class="cluster-actor-role">Resident of Irumu territory</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-036">Jean Pierre Badombo</a></strong> <span class="cluster-actor-role">Former mayor of Mongbwalu</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-018">src-018</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-028">Bigboy</a></strong> <span class="cluster-actor-role">Ituri resident</span> <span class="cluster-actor-type">affected_community</span></li><li class="cluster-tier-actor"><strong><a href="#actor-029">Alfred Giza</a></strong> <span class="cluster-actor-role">Ituri resident</span> <span class="cluster-actor-type">affected_community</span></li><li class="cluster-tier-actor"><strong><a href="#actor-033">Gloire Mumbesa</a></strong> <span class="cluster-actor-role">Resident of Mongbwalu</span> <span class="cluster-actor-type">affected_community</span></li><li class="cluster-tier-actor"><strong><a href="#actor-034">Dieudonné Lossadekana</a></strong> <span class="cluster-actor-role">Resident of Bunia city</span> <span class="cluster-actor-type">affected_community</span></li><li class="cluster-tier-actor"><strong><a href="#actor-035">Claude Kasuna</a></strong> <span class="cluster-actor-role">Resident of Irumu territory</span> <span class="cluster-actor-type">affected_community</span></li><li class="cluster-tier-actor"><strong><a href="#actor-036">Jean Pierre Badombo</a></strong> <span class="cluster-actor-role">Former mayor of Mongbwalu</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">6 actors</a></span> &middot; <span>2 sources</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-009">
+  <a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a>
   <div class="card-header"><span class="card-actor">Regional actors including rebel groups, neighboring governments, and Russia are mobilizing their own containment and assistance responses</span></div>
   <div class="card-position">The M23/AFC rebel group claims to have activated health response mechanisms in its territories, Rwanda has closed its border, Uganda has enhanced surveillance and social distancing measures, the EAC has urged regional solidarity, and Russia is sending epidemiological specialists and diagnostic tests to Uganda at Kampala&#x27;s request.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-011">Lawrence Kanyuka</a></strong> <span class="cluster-actor-role">Spokesman for the AFC-M23 group</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-004">src-004</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-026">Andrea Aguer Ariik Malueth</a></strong> <span class="cluster-actor-role">EAC Deputy Secretary General in charge of Infrastructure, Productive, Social and Political Sectors</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-015">src-015</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-027">Rospotrebnadzor</a></strong> <span class="cluster-actor-role">Russian consumer rights and health protection agency</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-015">src-015</a>, <a href="#src-027">src-027</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-011">Lawrence Kanyuka</a></strong> <span class="cluster-actor-role">Spokesman for the AFC-M23 group</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-026">Andrea Aguer Ariik Malueth</a></strong> <span class="cluster-actor-role">EAC Deputy Secretary General in charge of Infrastructure, Productive, Social and Political Sectors</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-027">Rospotrebnadzor</a></strong> <span class="cluster-actor-role">Russian consumer rights and health protection agency</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-045">Uganda Ministry of Health</a></strong> <span class="cluster-actor-role">National health authority</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-024">src-024</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-045">Uganda Ministry of Health</a></strong> <span class="cluster-actor-role">National health authority</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-mentioned">
     <h4 class="cluster-tier-label">Mentioned</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-012">Rwanda</a></strong> <span class="cluster-actor-role">Government of Rwanda</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-004">src-004</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-013">Yoweri Museveni</a></strong> <span class="cluster-actor-role">President of Uganda</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-004">src-004</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-012">Rwanda</a></strong> <span class="cluster-actor-role">Government of Rwanda</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-013">Yoweri Museveni</a></strong> <span class="cluster-actor-role">President of Uganda</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-009">6 actors</a></span> &middot; <span>5 sources</span> &middot; <span>5 regions</span> &middot; <span>4 languages</span></p>
 </div>
 </div>
 
+<div class="card single-voices-bracket" id="single-voices">
+  <div class="card-header"><span class="card-actor">Single voices</span><span class="single-voices-bracket-tag">Bracket</span></div>
+  <div class="card-position">Actors with unique positions that cannot be grouped with other positions into a shared cluster, but are referenced by multiple sources and are therefore considered important to the dossier.</div>
+  <div class="cluster-tier cluster-tier-actors_stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-002">Samuel Roger Kamba</a></strong> <span class="cluster-actor-role">Health Minister of the Democratic Republic of the Congo</span> <span class="cluster-actor-type">government</span></li></ul>
+  </div>
+  <div class="cluster-tier cluster-tier-actors_reported">
+    <h4 class="cluster-tier-label">Reported</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-006">German Ministry of Health</a></strong> <span class="cluster-actor-role">German Ministry of Health</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-024">Centers for Disease Control and Prevention (CDC)</a></strong> <span class="cluster-actor-role">US public health agency</span> <span class="cluster-actor-type">government</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#single-voices">3 actors</a></span> &middot; <span>10 sources</span> &middot; <span>7 regions</span> &middot; <span>5 languages</span></p>
+</div>
+
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">41 actors quoted across this topic. Click a cluster card&rsquo;s actor count above to filter, or jump to a specific actor.</p>
-<button id="actors-show-all" type="button" hidden>Show all actors</button>
-<ol class="actor-list">
-<li id="actor-001" class="actor" data-clusters="cluster-pc-004 cluster-pc-006">
-  <div class="actor-header"><strong>Ministero della Salute</strong> <span class="actor-role">Italian Ministry of Health</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-004">cluster 4</a>: Orders health surveillance for personnel from governmental, non-governmental, and cooperative organizations returning from all territories of DR Congo and Uganda, citing maximum precaution due to uncertainties about the outbreak&#x27;s scale, severity, and lack of approved countermeasures. (<a href="#src-001">src-001</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-006">cluster 6</a>: Orders health surveillance for personnel from governmental, non-governmental, and cooperative organizations returning from all territories of DR Congo and Uganda, citing maximum precaution due to uncertainties about the outbreak&#x27;s scale, severity, and lack of approved countermeasures. (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-002" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Samuel Roger Kamba</strong> <span class="actor-role">Health Minister of the Democratic Republic of the Congo</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-003" class="actor" data-clusters="cluster-pc-001 cluster-pc-002">
-  <div class="actor-header"><strong>Tedros Adhanom Ghebreyesus</strong> <span class="actor-role">Director General of the World Health Organization</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: States he is deeply concerned about the scale and speed of the epidemic and that he declared a public health emergency of international concern over the Ebola outbreak in DR Congo and Uganda. <em class="actor-verbatim">&ldquo;&quot;I&#x27;m deeply concerned about the scale and speed of the epidemic&quot;&rdquo;</em> (<a href="#src-002">src-002</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-002">cluster 2</a>: States that the WHO first learned of suspected cases on 5 May, but laboratory confirmation only came nine days later. (<a href="#src-003">src-003</a>)</p></div>
-</li>
-<li id="actor-004" class="actor" data-clusters="cluster-pc-004">
-  <div class="actor-header"><strong>Mosoka Fallah</strong> <span class="actor-role">Acting director of the science department at the Africa Centres for Disease Control and Prevention</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-004">cluster 4</a></p></div>
-</li>
-<li id="actor-005" class="actor" data-clusters="cluster-pc-001 cluster-pc-002 cluster-pc-004">
-  <div class="actor-header"><strong>Anne Ancia</strong> <span class="actor-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: Reports that six tons of supplies, including personal protective equipment and other medical supplies, are arriving in the DRC on Tuesday. <em class="actor-verbatim">&ldquo;&quot;We have sent 12 tons of supply. An additional six are arriving today. These include personal protective equipment for frontline health workers (and) samples.&quot;&rdquo;</em> (<a href="#src-002">src-002</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Explains that detection was delayed because the Ituri laboratory only had reagents for the Zaire strain, causing negative tests, and that cases were initially mistaken for malaria or salmonellosis. She also states that funding cuts have caused a 73% reduction in water and sanitation in the affected region. <em class="actor-verbatim">&ldquo;&quot;Solo tenía reactivos para la cepa Zaire, por lo que las pruebas daban negativo&quot;&rdquo;</em> (<a href="#src-009">src-009</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-004">cluster 4</a>: States that a meeting with international experts will be held to analyze vaccine development, working with institutions like Oxford University, and hopes the process can be accelerated from the estimated two months. <em class="actor-verbatim">&ldquo;&quot;Esta tarde habrá una reunión con expertos internacionales para analizarlo, trabajamos con instituciones como la Universidad de Oxford y se habla de unos dos meses, pero ojalá podamos acelerar el proceso&quot;&rdquo;</em> (<a href="#src-011">src-011</a>)</p></div>
-</li>
-<li id="actor-006" class="actor" data-clusters="">
-  <div class="actor-header"><strong>German Ministry of Health</strong> <span class="actor-role">German Ministry of Health</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-007" class="actor" data-clusters="cluster-pc-002 cluster-pc-003 cluster-pc-004">
-  <div class="actor-header"><strong>Jean-Jacques Muyembe</strong> <span class="actor-role">Congolese scientist who co-discovered the Ebola virus and head of Kinshasa&#x27;s National Institute of Biomedical Research (INRB)</span> <span class="actor-type">academia</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Warns that health authorities may have detected the epidemic too late, that nobody has a grip on the numbers, and that it is better to work with local personnel to build community trust rather than bringing in people from Kinshasa. <em class="actor-verbatim">&ldquo;&quot;Frankly, at this point nobody can give a figure. Nobody has a grip on the numbers.&quot;&rdquo;</em> (<a href="#src-003">src-003</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: Warns that health authorities may have detected the epidemic too late, that nobody has a grip on the numbers, and that it is better to work with local personnel to build community trust rather than bringing in people from Kinshasa. <em class="actor-verbatim">&ldquo;&quot;Frankly, at this point nobody can give a figure. Nobody has a grip on the numbers.&quot;&rdquo;</em> (<a href="#src-003">src-003</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-004">cluster 4</a>: Said some candidate compounds for a Bundibugyo vaccine were expected to enter trials by the end of May or in June, and that public health measures like protecting healthcare workers and treating symptoms were being implemented. <em class="actor-verbatim">&ldquo;&quot;This is how we brought the Bundibugyo strain outbreak under control in 2012 in Isiro, not far from Ituri.&quot;&rdquo;</em> (<a href="#src-018">src-018</a>)</p></div>
-</li>
-<li id="actor-008" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Doctors Without Borders</strong> <span class="actor-role">Medical charity</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-009" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>International Rescue Committee</strong> <span class="actor-role">Aid agency</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-002">cluster 2</a>: Warns that cuts in international donor funding have weakened disease surveillance in the region. (<a href="#src-003">src-003</a>)</p></div>
-</li>
-<li id="actor-010" class="actor" data-clusters="cluster-pc-001 cluster-pc-002 cluster-pc-003 cluster-pc-004">
-  <div class="actor-header"><strong>Jean Kaseya</strong> <span class="actor-role">Director of the Africa Centres for Disease Control and Prevention</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: States that public health information campaigns are providing guidance on handling funerals, basic hygiene, and protection measures for health workers. <em class="actor-verbatim">&ldquo;&quot;providing information on how to handle funerals&quot;&rdquo;</em> (<a href="#src-004">src-004</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Warned that delayed detection slowed the response and allowed the virus to spread undetected for weeks, and that authorities still do not fully understand the scale of transmission. (<a href="#src-012">src-012</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: States that public health information campaigns are providing guidance on handling funerals, basic hygiene, and protection measures for health workers. <em class="actor-verbatim">&ldquo;&quot;providing information on how to handle funerals&quot;&rdquo;</em> (<a href="#src-004">src-004</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-004">cluster 4</a>: States that public health information campaigns are providing guidance on handling funerals, basic hygiene, and protection measures for health workers. <em class="actor-verbatim">&ldquo;&quot;providing information on how to handle funerals&quot;&rdquo;</em> (<a href="#src-004">src-004</a>)</p></div>
-</li>
-<li id="actor-011" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Lawrence Kanyuka</strong> <span class="actor-role">Spokesman for the AFC-M23 group</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-009">cluster 9</a>: States that the group has immediately activated response mechanisms in conjunction with health services and local medical facilities to prevent the spread of the disease in areas it controls. <em class="actor-verbatim">&ldquo;&quot;immediately activated&quot;&rdquo;</em> (<a href="#src-004">src-004</a>)</p></div>
-</li>
-<li id="actor-012" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Rwanda</strong> <span class="actor-role">Government of Rwanda</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Mentioned in</span> <a href="#pc-009">cluster 9</a>: Has closed its borders with DR Congo. (<a href="#src-004">src-004</a>)</p></div>
-</li>
-<li id="actor-013" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Yoweri Museveni</strong> <span class="actor-role">President of Uganda</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Mentioned in</span> <a href="#pc-009">cluster 9</a>: Has told people to avoid hugging and shaking hands and postponed the Martyrs&#x27; Day pilgrimage. (<a href="#src-004">src-004</a>)</p></div>
-</li>
-<li id="actor-014" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>Communicable Diseases Agency (CDA)</strong> <span class="actor-role">Singapore&#x27;s Communicable Diseases Agency</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-006">cluster 6</a>: States that the situation in DRC and Uganda is serious with significant ongoing transmission, and that health advisories and self-monitoring requirements are now in place at all points of entry. <em class="actor-verbatim">&ldquo;&quot;The situation in the DRC and Uganda is serious, with significant ongoing transmission in the affected regions.&quot;&rdquo;</em> (<a href="#src-005">src-005</a>)</p></div>
-</li>
-<li id="actor-015" class="actor" data-clusters="cluster-pc-001 cluster-pc-006">
-  <div class="actor-header"><strong>Ong Ye Kung</strong> <span class="actor-role">Health Minister of Singapore</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a></p><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-006">cluster 6</a>: Describes the situation in the affected African countries as dire and predicts many more deaths and infections in the coming days and weeks. <em class="actor-verbatim">&ldquo;&quot;We are likely to see many more deaths and infections in the coming days and weeks.&quot;&rdquo;</em> (<a href="#src-005">src-005</a>)</p></div>
-</li>
-<li id="actor-018" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Satish Pillai</strong> <span class="actor-role">Coordinator of the CDC&#x27;s Ebola response</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-019" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Infectious Diseases Society of America</strong> <span class="actor-role">US medical association</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-005">cluster 5</a>: States that while quarantines and travel restrictions can be useful, public health policies that discriminate against non-US citizens will not prevent viruses from crossing borders, as diseases do not recognize passports. <em class="actor-verbatim">&ldquo;&quot;las políticas de salud pública que discriminan a los ciudadanos no estadounidenses no impedirán que los virus crucen nuestras fronteras. Las enfermedades no reconocen pasaportes&quot;&rdquo;</em> (<a href="#src-008">src-008</a>)</p></div>
-</li>
-<li id="actor-021" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Laura Archer</strong> <span class="actor-role">Head of Clinical Care and Public Health in Emergencies at the International Federation of Red Cross and Red Crescent Societies</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Warns that Ebola outbreaks can escalate rapidly if cases are not identified in time, if communities lack reliable information, or if health systems are overwhelmed, and states that early detection, community engagement, and local public health actions are essential. <em class="actor-verbatim">&ldquo;&quot;Sabemos que los brotes de ébola pueden escalar rápidamente si los casos no se identifican a tiempo, si las comunidades no tienen información fiable o si los sistemas de salud se ven desbordados&quot;&rdquo;</em> (<a href="#src-009">src-009</a>)</p></div>
-</li>
-<li id="actor-024" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Centers for Disease Control and Prevention (CDC)</strong> <span class="actor-role">US public health agency</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-025" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Africa CDC</strong> <span class="actor-role">African Union public health agency</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-005">cluster 5</a>: Criticized the US decision to suspend entry for citizens from Ebola-affected areas. (<a href="#src-014">src-014</a>)</p></div>
-</li>
-<li id="actor-026" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Andrea Aguer Ariik Malueth</strong> <span class="actor-role">EAC Deputy Secretary General in charge of Infrastructure, Productive, Social and Political Sectors</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-009">cluster 9</a>: Stated the outbreak underscores the threat of epidemic-prone diseases and the importance of regional solidarity, and urged Partner States to activate preparedness plans and enhance screening at points of entry. <em class="actor-verbatim">&ldquo;&quot;The EAC remains vigilant and fully committed to supporting Partner States in strengthening surveillance, laboratory diagnosis, infection prevention and control, risk communication and community engagement, particularly in border areas&quot;&rdquo;</em> (<a href="#src-015">src-015</a>)</p></div>
-</li>
-<li id="actor-027" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Rospotrebnadzor</strong> <span class="actor-role">Russian consumer rights and health protection agency</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-009">cluster 9</a>: Announced it will send a team of specialists to Kampala to conduct an epidemiological investigation and provide logistical support and diagnostic tests to Uganda&#x27;s Ministry of Health. <em class="actor-verbatim">&ldquo;&quot;In connection with the outbreak of Ebola caused by Bundibugio orthoebolavirus in the Democratic Republic of the Congo and cases of this disease in the capital of neighboring Uganda, Rospotrebnadzor, at the request of the Ugandan side, will send a team of specialists to Kampala to conduct an epidemiological investigation&quot;&rdquo;</em> (<a href="#src-015">src-015</a>)</p></div>
-</li>
-<li id="actor-028" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Bigboy</strong> <span class="actor-role">Ituri resident</span> <span class="actor-type">affected_community</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-008">cluster 8</a>: Said people are &#x27;really scared&#x27; and taking precautions like handwashing, but wished they could access protective supplies like face masks. <em class="actor-verbatim">&ldquo;&quot;really scared&quot;&rdquo;</em> (<a href="#src-016">src-016</a>)</p></div>
-</li>
-<li id="actor-029" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Alfred Giza</strong> <span class="actor-role">Ituri resident</span> <span class="actor-type">affected_community</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-008">cluster 8</a>: Said the community is aware of the threat and waiting for face masks, but he would not know what to do if a family member contracted the disease. (<a href="#src-016">src-016</a>)</p></div>
-</li>
-<li id="actor-030" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Félix Tshisekedi</strong> <span class="actor-role">DR Congo President</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-031" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Red Cross</strong> <span class="actor-role">Humanitarian organization</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Warned that Ebola can escalate quickly if cases are not identified early, communities lack information, and health systems are overwhelmed, adding that &#x27;we are seeing all those conditions&#x27; in the current outbreak. <em class="actor-verbatim">&ldquo;&quot;we are seeing all those conditions&quot;&rdquo;</em> (<a href="#src-016">src-016</a>)</p></div>
-</li>
-<li id="actor-032" class="actor" data-clusters="cluster-pc-004 cluster-pc-007">
-  <div class="actor-header"><strong>Alejandro Macías</strong> <span class="actor-role">Infectious disease doctor and epidemiologist</span> <span class="actor-type">academia</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-004">cluster 4</a>: States that the risk of a pandemic is low for both Ebola and hantavirus, but Ebola is the &#x27;worst&#x27; disease due to hundreds of cases in the DRC, its ease of transmission, and the current variant&#x27;s lack of response to existing vaccines; adds that the US exit from WHO will make international aid more difficult. <em class="actor-verbatim">&ldquo;&quot;En El Congo se estiman más de 300 casos de ébola y crecen a una velocidad relativamente grande. Hay dos casos también en Uganda y puede diseminarse a la parte central de África&quot;&rdquo;</em> (<a href="#src-017">src-017</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-007">cluster 7</a>: States that the risk of a pandemic is low for both Ebola and hantavirus, but Ebola is the &#x27;worst&#x27; disease due to hundreds of cases in the DRC, its ease of transmission, and the current variant&#x27;s lack of response to existing vaccines; adds that the US exit from WHO will make international aid more difficult. <em class="actor-verbatim">&ldquo;&quot;En El Congo se estiman más de 300 casos de ébola y crecen a una velocidad relativamente grande. Hay dos casos también en Uganda y puede diseminarse a la parte central de África&quot;&rdquo;</em> (<a href="#src-017">src-017</a>)</p></div>
-</li>
-<li id="actor-033" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Gloire Mumbesa</strong> <span class="actor-role">Resident of Mongbwalu</span> <span class="actor-type">affected_community</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-008">cluster 8</a>: Said everyone is talking about Ebola and panic is engulfing the area because of the lack of a vaccine for the Bundibugyo strain. <em class="actor-verbatim">&ldquo;&quot;On public transport, in bars and at mass gatherings, everyone is talking about Ebola. The fear is that this disease may spread to many other areas.&quot;&rdquo;</em> (<a href="#src-018">src-018</a>)</p></div>
-</li>
-<li id="actor-034" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Dieudonné Lossadekana</strong> <span class="actor-role">Resident of Bunia city</span> <span class="actor-type">affected_community</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-008">cluster 8</a>: Said residents are stunned by Ebola&#x27;s resurgence and have already recorded several dozen deaths, calling it heartbreaking. <em class="actor-verbatim">&ldquo;&quot;We&#x27;re stunned by the resurgence of Ebola in our region. We&#x27;ve already recorded several dozen deaths. For us, it&#x27;s heartbreaking.&quot;&rdquo;</em> (<a href="#src-018">src-018</a>)</p></div>
-</li>
-<li id="actor-035" class="actor" data-clusters="cluster-pc-003 cluster-pc-008">
-  <div class="actor-header"><strong>Claude Kasuna</strong> <span class="actor-role">Resident of Irumu territory</span> <span class="actor-type">affected_community</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: Said poverty is rife and a health emergency hits hard economically, and that people tend to believe false myths rather than scientific evidence, requiring awareness-raising. <em class="actor-verbatim">&ldquo;&quot;We live in a region where poverty is rife and people live from hand to mouth. When a health emergency like this one strikes, it hits us hard economically.&quot;&rdquo;</em> (<a href="#src-018">src-018</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-008">cluster 8</a>: Said poverty is rife and a health emergency hits hard economically, and that people tend to believe false myths rather than scientific evidence, requiring awareness-raising. <em class="actor-verbatim">&ldquo;&quot;We live in a region where poverty is rife and people live from hand to mouth. When a health emergency like this one strikes, it hits us hard economically.&quot;&rdquo;</em> (<a href="#src-018">src-018</a>)</p></div>
-</li>
-<li id="actor-036" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Jean Pierre Badombo</strong> <span class="actor-role">Former mayor of Mongbwalu</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-008">cluster 8</a>: Said people started falling ill in mid-April after a large open-casket funeral procession arrived from Bunia, leading to a cascade of deaths. <em class="actor-verbatim">&ldquo;&quot;After that, we experienced a cascade of deaths.&quot;&rdquo;</em> (<a href="#src-018">src-018</a>)</p></div>
-</li>
-<li id="actor-037" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Heather Kerr</strong> <span class="actor-role">DRC country director at the International Rescue Committee</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: Said the conflict in the region made containing the Ebola outbreak &#x27;all the harder&#x27; and that years of conflict and displacement have left health systems &#x27;on their knees&#x27;. <em class="actor-verbatim">&ldquo;&quot;Eastern DRC&#x27;s years of conflict and displacement have left health systems on their knees. With dozens of lives already lost and an already overstretched health system, we need to act fast.&quot;&rdquo;</em> (<a href="#src-018">src-018</a>)</p></div>
-</li>
-<li id="actor-038" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Manenji Mangundu</strong> <span class="actor-role">DRC country director at Oxfam</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: Said the outbreak is hitting a country already stretched to breaking point due to ongoing conflict and years of aid cuts. <em class="actor-verbatim">&ldquo;&quot;hitting a country already stretched to breaking point&quot;&rdquo;</em> (<a href="#src-018">src-018</a>)</p></div>
-</li>
-<li id="actor-040" class="actor" data-clusters="cluster-pc-007">
-  <div class="actor-header"><strong>Nina Warken</strong> <span class="actor-role">German Federal Health Minister</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-007">cluster 7</a>: Stated the risk to Germany is &#x27;extremely low&#x27;, no precautions are needed in the country, and a global Ebola pandemic is &#x27;nearly impossible&#x27;. <em class="actor-verbatim">&ldquo;&quot;Im Land braucht es derzeit keine Vorkehrungen.&quot;&rdquo;</em> (<a href="#src-019">src-019</a>)</p></div>
-</li>
-<li id="actor-041" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Maximilian Gertler</strong> <span class="actor-role">Specialist in internal medicine, emergency medicine, tropical medicine, and epidemiology at Berlin&#x27;s Charité</span> <span class="actor-type">academia</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: Described Ebola as a &#x27;disease of poverty&#x27; caused by miserable living conditions, fear of violence, absence of effective healthcare, lack of clean water, and distrust of authorities. <em class="actor-verbatim">&ldquo;&quot;Armutserkrankung&quot;&rdquo;</em> (<a href="#src-019">src-019</a>)</p></div>
-</li>
-<li id="actor-042" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Klinger Soares Faico Filho</strong> <span class="actor-role">Professor of Clinical Medicine and Laboratory Medicine, Universidade Federal de São Paulo (UNIFESP)</span> <span class="actor-type">academia</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Argues that the most worrying feature is how large the outbreak was before recognition, that an outbreak reaching the transit network becomes everyone&#x27;s problem, and that cuts to global health programs may have contributed to detection delays. (<a href="#src-020">src-020</a>)</p></div>
-</li>
-<li id="actor-044" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>World Health Organization (WHO)</strong> <span class="actor-role">International health agency</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-001">cluster 1</a>: position:  (<a href="#src-023">src-023</a>)</p></div>
-</li>
-<li id="actor-045" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Uganda Ministry of Health</strong> <span class="actor-role">National health authority</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-009">cluster 9</a>: Confirmed the first Ebola case in Uganda and implemented enhanced surveillance, border safety, and emergency response teams. (<a href="#src-024">src-024</a>)</p></div>
-</li>
-<li id="actor-046" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>Türkiye Hudut ve Sahiller Sağlık Genel Müdürlüğü</strong> <span class="actor-role">General Directorate General of Border and Coastal Health, Turkey</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-006">cluster 6</a>: Issued a travel health advisory for the DRC and Uganda, recommending risk-based health monitoring and information for travelers rather than blanket travel restrictions. (<a href="#src-028">src-028</a>)</p></div>
-</li>
-<li id="actor-047" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>Ministry of Foreign Affairs of Japan</strong> <span class="actor-role">National government ministry</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-006">cluster 6</a>: Issued a level 1 travel advisory for the DRC and Uganda, advising caution and infection prevention measures for Japanese travelers without imposing a blanket travel ban. (<a href="#src-032">src-032</a>)</p></div>
-</li>
-<li id="actor-048" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>Government of India</strong> <span class="actor-role">National government</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-006">cluster 6</a>: Increased alertness and surveillance at airports and public health systems after the Ebola outbreak in DRC and Uganda, though no cases have been reported in India. (<a href="#src-035">src-035</a>)</p></div>
-</li>
-</ol>
+<p class="actors-meta">41 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<div class="actors-tabs" role="tablist">
+<button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">41</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">17</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITARY</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">7</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">ACADEMIA</span> <span class="actor-tab-count">4</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONAL ORG</span> <span class="actor-tab-count">7</span></button><button class="actor-tab" type="button" data-type-target="affected_community"><span class="actor-tab-name">AFFECTED COMMUNITY</span> <span class="actor-tab-count">5</span></button>
+</div>
+<div class="actor-card-grid">
+<article id="actor-002" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Samuel Roger Kamba</strong>
+    <span class="actor-card-src-count">6 SRC</span>
+  </div>
+  <p class="actor-card-role">Health Minister of the Democratic Republic of the Congo</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-018">src-018</a><a class="actor-card-source-box" href="#src-021">src-021</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+</article>
+<article id="actor-006" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">German Ministry of Health</strong>
+    <span class="actor-card-src-count">4 SRC</span>
+  </div>
+  <p class="actor-card-role">German Ministry of Health</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+</article>
+<article id="actor-024" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Centers for Disease Control and Prevention (CDC)</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">US public health agency</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-034">src-034</a></div>
+</article>
+<article id="actor-027" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Rospotrebnadzor</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Russian consumer rights and health protection agency</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-027">src-027</a></div>
+</article>
+<article id="actor-014" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Communicable Diseases Agency (CDA)</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Singapore&#x27;s Communicable Diseases Agency</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a></div>
+</article>
+<article id="actor-030" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Félix Tshisekedi</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">DR Congo President</p>
+    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
+</article>
+<article id="actor-048" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Government of India</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">National government</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-035">src-035</a></div>
+</article>
+<article id="actor-036" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Jean Pierre Badombo</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Former mayor of Mongbwalu</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+</article>
+<article id="actor-001" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ministero della Salute</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Italian Ministry of Health</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+</article>
+<article id="actor-047" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ministry of Foreign Affairs of Japan</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">National government ministry</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-032">src-032</a></div>
+</article>
+<article id="actor-040" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Nina Warken</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">German Federal Health Minister</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-019">src-019</a></div>
+</article>
+<article id="actor-015" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ong Ye Kung</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Health Minister of Singapore</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a></div>
+</article>
+<article id="actor-012" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Rwanda</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Government of Rwanda</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-018" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Satish Pillai</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Coordinator of the CDC&#x27;s Ebola response</p>
+    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+</article>
+<article id="actor-046" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Türkiye Hudut ve Sahiller Sağlık Genel Müdürlüğü</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">General Directorate General of Border and Coastal Health, Turkey</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-028">src-028</a></div>
+</article>
+<article id="actor-045" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Uganda Ministry of Health</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">National health authority</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-024">src-024</a></div>
+</article>
+<article id="actor-013" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Yoweri Museveni</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">President of Uganda</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-011" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Lawrence Kanyuka</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Spokesman for the AFC-M23 group</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-008" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Doctors Without Borders</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Medical charity</p>
+    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-037" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Heather Kerr</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">DRC country director at the International Rescue Committee</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+</article>
+<article id="actor-019" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Infectious Diseases Society of America</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">US medical association</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+</article>
+<article id="actor-009" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">International Rescue Committee</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Aid agency</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-021" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Laura Archer</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Head of Clinical Care and Public Health in Emergencies at the International Federation of Red Cross and Red Crescent Societies</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-038" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Manenji Mangundu</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">DRC country director at Oxfam</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+</article>
+<article id="actor-031" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Red Cross</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Humanitarian organization</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
+</article>
+<article id="actor-007" class="actor-card" data-actor-type="academia">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Jean-Jacques Muyembe</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Congolese scientist who co-discovered the Ebola virus and head of Kinshasa&#x27;s National Institute of Biomedical Research (INRB)</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+</article>
+<article id="actor-032" class="actor-card" data-actor-type="academia">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Alejandro Macías</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Infectious disease doctor and epidemiologist</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-017">src-017</a></div>
+</article>
+<article id="actor-042" class="actor-card" data-actor-type="academia">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Klinger Soares Faico Filho</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Professor of Clinical Medicine and Laboratory Medicine, Universidade Federal de São Paulo (UNIFESP)</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-020">src-020</a></div>
+</article>
+<article id="actor-041" class="actor-card" data-actor-type="academia">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Maximilian Gertler</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Specialist in internal medicine, emergency medicine, tropical medicine, and epidemiology at Berlin&#x27;s Charité</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-019">src-019</a></div>
+</article>
+<article id="actor-003" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Tedros Adhanom Ghebreyesus</strong>
+    <span class="actor-card-src-count">12 SRC</span>
+  </div>
+  <p class="actor-card-role">Director General of the World Health Organization</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-013">src-013</a><a class="actor-card-source-box" href="#src-016">src-016</a><a class="actor-card-source-box" href="#src-019">src-019</a><a class="actor-card-source-box" href="#src-033">src-033</a></div>
+</article>
+<article id="actor-010" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Jean Kaseya</strong>
+    <span class="actor-card-src-count">7 SRC</span>
+  </div>
+  <p class="actor-card-role">Director of the Africa Centres for Disease Control and Prevention</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-018">src-018</a><a class="actor-card-source-box" href="#src-019">src-019</a><a class="actor-card-source-box" href="#src-013">src-013</a><a class="actor-card-source-box" href="#src-022">src-022</a></div>
+</article>
+<article id="actor-005" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Anne Ancia</strong>
+    <span class="actor-card-src-count">5 SRC</span>
+  </div>
+  <p class="actor-card-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-016">src-016</a></div>
+</article>
+<article id="actor-044" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">World Health Organization (WHO)</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">International health agency</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a><a class="actor-card-source-box" href="#src-025">src-025</a></div>
+</article>
+<article id="actor-025" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Africa CDC</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">African Union public health agency</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a></div>
+</article>
+<article id="actor-026" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Andrea Aguer Ariik Malueth</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">EAC Deputy Secretary General in charge of Infrastructure, Productive, Social and Political Sectors</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a></div>
+</article>
+<article id="actor-004" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mosoka Fallah</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Acting director of the science department at the Africa Centres for Disease Control and Prevention</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+</article>
+<article id="actor-029" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Alfred Giza</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Ituri resident</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
+</article>
+<article id="actor-028" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Bigboy</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Ituri resident</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
+</article>
+<article id="actor-035" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Claude Kasuna</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Resident of Irumu territory</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+</article>
+<article id="actor-034" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Dieudonné Lossadekana</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Resident of Bunia city</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+</article>
+<article id="actor-033" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Gloire Mumbesa</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Resident of Mongbwalu</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+</article>
+</div>
 <script>
 (function() {
-  const list = document.querySelector('.actor-list');
-  const showAll = document.getElementById('actors-show-all');
-  if (!list || !showAll) return;
-  function applyFilter() {
-    const m = (window.location.hash || '').match(/^#cluster-(\S+)$/);
-    if (!m) {
-      list.querySelectorAll('.actor').forEach(li => { li.hidden = false; });
-      showAll.hidden = true;
-      return;
-    }
-    const target = 'cluster-' + m[1];
-    list.querySelectorAll('.actor').forEach(li => {
-      const tags = (li.dataset.clusters || '').split(/\s+/);
-      li.hidden = !tags.includes(target);
+  const section = document.getElementById('actors-section');
+  if (!section) return;
+  const tabs = section.querySelectorAll('.actor-tab');
+  const cards = section.querySelectorAll('.actor-card');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.typeTarget || 'all';
+      cards.forEach(card => {
+        card.hidden = (target !== 'all' && card.dataset.actorType !== target);
+      });
+      tabs.forEach(t => t.classList.toggle('actor-tab--active', t === tab));
     });
-    showAll.hidden = false;
-  }
-  showAll.addEventListener('click', () => {
-    history.pushState('', document.title, window.location.pathname);
-    applyFilter();
   });
-  window.addEventListener('hashchange', applyFilter);
-  applyFilter();
 })();
 </script>
 </section>
@@ -1094,6 +1390,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <div class="source-meta"><span>DRC</span> &middot; <span>fr</span> &middot; <span>2026-05-17</span></div>
   <p class="source-summary">Official DRC government press conference: Minister Kamba acknowledges challenges (lack of vaccine/treatment for Bundibugyo, material constraints) but asserts readiness based on experience from 17 previous outbreaks. Provides the Kinshasa government perspective.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-002">Samuel Roger Kamba</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Samuel Roger Kamba</a></strong> <span class="actor-role">Health Minister of the Democratic Republic of the Congo</span><p class="source-quote-position">Officially declares the Ebola epidemic in Ituri, details challenges including lack of vaccine and treatment for Bundibugyo, and asserts the country&#x27;s readiness based on experience from 17 previous epidemics.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1106,6 +1406,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Reports the death toll has risen to 131 from 513 suspected cases, according to DR Congo&#x27;s health minister. WHO Director-General Tedros Adhanom Ghebreyesus expresses deep concern about the epidemic&#x27;s scale and speed, and an emergency committee is set to discuss vaccine options for the Bundibugyo strain. Germany is preparing to treat an evacuated US citizen who contracted the virus.</p>
   <p class="source-bias-note"><em>Qatar-funded, strong Global South coverage</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-002">Samuel Roger Kamba</a>, <a href="#actor-003">Tedros Adhanom Ghebreyesus</a>, <a href="#actor-004">Mosoka Fallah</a>, <a href="#actor-005">Anne Ancia</a>, <a href="#actor-006">German Ministry of Health</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Samuel Roger Kamba</a></strong> <span class="actor-role">Health Minister of the Democratic Republic of the Congo</span><p class="source-quote-position">Reports an estimated 131 deaths from 513 suspected cases, cautioning that further research is needed to confirm whether all suspected deaths were caused by Ebola.</p></li><li class="source-quote-entry"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director General of the World Health Organization</span><p class="source-quote-position">States he is deeply concerned about the scale and speed of the epidemic and that he declared a public health emergency of international concern over the Ebola outbreak in DR Congo and Uganda.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;I&#x27;m deeply concerned about the scale and speed of the epidemic&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-004">Mosoka Fallah</a></strong> <span class="actor-role">Acting director of the science department at the Africa Centres for Disease Control and Prevention</span><p class="source-quote-position">States that when an outbreak involves a strain without countermeasures, the panel will advise on the best approach based on available evidence.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;When you have an outbreak with a strain that does not have countermeasures, we are going to advise on the best approach to take. We will look at what evidence we have and make a decision.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-005">Anne Ancia</a></strong> <span class="actor-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</span><p class="source-quote-position">Reports that six tons of supplies, including personal protective equipment and other medical supplies, are arriving in the DRC on Tuesday.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;We have sent 12 tons of supply. An additional six are arriving today. These include personal protective equipment for frontline health workers (and) samples.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-006">German Ministry of Health</a></strong> <span class="actor-role">German Ministry of Health</span><p class="source-quote-position">States that Germany is preparing to admit and treat a US citizen who contracted Ebola in the DRC following a request from US authorities.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1118,6 +1422,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Features an interview with Jean-Jacques Muyembe, co-discoverer of Ebola, who warns that health authorities may have detected the outbreak too late and that nobody has a firm grip on the numbers. He advocates for using local staff to build community trust, citing past attacks on health workers in conflict zones. The article also notes warnings from MSF and the IRC about the concerning spread and weakened disease surveillance due to funding cuts.</p>
   <p class="source-bias-note"><em>Pan-African aggregator</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-007">Jean-Jacques Muyembe</a>, <a href="#actor-008">Doctors Without Borders</a>, <a href="#actor-009">International Rescue Committee</a>, <a href="#actor-003">Tedros Adhanom Ghebreyesus</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director General of the World Health Organization</span><p class="source-quote-position">States that the WHO first learned of suspected cases on 5 May, but laboratory confirmation only came nine days later.</p></li><li class="source-quote-entry"><strong><a href="#actor-007">Jean-Jacques Muyembe</a></strong> <span class="actor-role">Congolese scientist who co-discovered the Ebola virus and head of Kinshasa&#x27;s National Institute of Biomedical Research (INRB)</span><p class="source-quote-position">Warns that health authorities may have detected the epidemic too late, that nobody has a grip on the numbers, and that it is better to work with local personnel to build community trust rather than bringing in people from Kinshasa.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Frankly, at this point nobody can give a figure. Nobody has a grip on the numbers.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-008">Doctors Without Borders</a></strong> <span class="actor-role">Medical charity</span><p class="source-quote-position">Describes the spread of the outbreak as extremely concerning and says it is preparing a large-scale response.</p></li><li class="source-quote-entry"><strong><a href="#actor-009">International Rescue Committee</a></strong> <span class="actor-role">Aid agency</span><p class="source-quote-position">Warns that cuts in international donor funding have weakened disease surveillance in the region.</p></li></ul>
+  </details>
 </li>
 <li id="src-015" class="source">
   <div class="source-header"><span class="source-id">[15]</span> <a class="source-headline" href="https://allafrica.com/stories/202605190335.html" target="_blank" rel="noopener">East Africa: EAC Urges Alert Over Ebola, Russia Sends Experts to Uganda</a></div>
@@ -1125,6 +1433,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Reports the EAC&#x27;s call for heightened surveillance and cross-border coordination, with 246 suspected cases and 65 deaths as of May 15. It also notes that Russia is sending Rospotrebnadzor specialists and diagnostic tests to Uganda at the Ugandan government&#x27;s request to support epidemiological investigation.</p>
   <p class="source-bias-note"><em>Pan-African aggregator</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-026">Andrea Aguer Ariik Malueth</a>, <a href="#actor-027">Rospotrebnadzor</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-026">Andrea Aguer Ariik Malueth</a></strong> <span class="actor-role">EAC Deputy Secretary General in charge of Infrastructure, Productive, Social and Political Sectors</span><p class="source-quote-position">Stated the outbreak underscores the threat of epidemic-prone diseases and the importance of regional solidarity, and urged Partner States to activate preparedness plans and enhance screening at points of entry.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;The EAC remains vigilant and fully committed to supporting Partner States in strengthening surveillance, laboratory diagnosis, infection prevention and control, risk communication and community engagement, particularly in border areas&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-027">Rospotrebnadzor</a></strong> <span class="actor-role">Russian consumer rights and health protection agency</span><p class="source-quote-position">Announced it will send a team of specialists to Kampala to conduct an epidemiological investigation and provide logistical support and diagnostic tests to Uganda&#x27;s Ministry of Health.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;In connection with the outbreak of Ebola caused by Bundibugio orthoebolavirus in the Democratic Republic of the Congo and cases of this disease in the capital of neighboring Uganda, Rospotrebnadzor, at the request of the Ugandan side, will send a team of specialists to Kampala to conduct an epidemiological investigation&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 <li id="src-020" class="source">
   <div class="source-header"><span class="source-id">[20]</span> <a class="source-headline" href="https://allafrica.com/stories/202605190013.html" target="_blank" rel="noopener">Congo-Kinshasa: Ebola Strain Spreading in Congo and Uganda Has No Approved Vaccine</a></div>
@@ -1132,6 +1444,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Analyzes the scientific and public health implications of the Bundibugyo outbreak, emphasizing the lack of an approved vaccine due to genetic divergence from the Zaire strain. It warns that delayed detection, porous borders, and the virus reaching urban transit hubs like Kampala make containment difficult, and notes that the US has banned entry from affected countries and evacuated exposed Americans.</p>
   <p class="source-bias-note"><em>Pan-African aggregator</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-042">Klinger Soares Faico Filho</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-042">Klinger Soares Faico Filho</a></strong> <span class="actor-role">Professor of Clinical Medicine and Laboratory Medicine, Universidade Federal de São Paulo (UNIFESP)</span><p class="source-quote-position">Argues that the most worrying feature is how large the outbreak was before recognition, that an outbreak reaching the transit network becomes everyone&#x27;s problem, and that cuts to global health programs may have contributed to detection delays.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1144,6 +1460,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Reports that Italy&#x27;s Ministry of Health has activated health surveillance for personnel returning from the outbreak zones in DR Congo and Uganda, citing uncertainties about the outbreak&#x27;s scale, the infection&#x27;s severity, and the lack of approved therapies or vaccines.</p>
   <p class="source-bias-note"><em>Italian wire service</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Ministero della Salute</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Ministero della Salute</a></strong> <span class="actor-role">Italian Ministry of Health</span><p class="source-quote-position">Orders health surveillance for personnel from governmental, non-governmental, and cooperative organizations returning from all territories of DR Congo and Uganda, citing maximum precaution due to uncertainties about the outbreak&#x27;s scale, severity, and lack of approved countermeasures.</p></li></ul>
+  </details>
 </li>
 <li id="src-014" class="source">
   <div class="source-header"><span class="source-id">[14]</span> <a class="source-headline" href="https://www.ansa.it/sito/notizie/topnews/2026/05/19/stop-usa-a-ingressi-di-cittadini-stranieri-dalle-zone-colpite-da-ebola_f1b2fa44-f26e-4f07-9a35-66120aba8e7f.html" target="_blank" rel="noopener">Stop Usa a ingressi di cittadini stranieri dalle zone colpite da Ebola</a></div>
@@ -1151,6 +1471,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Reports that the US CDC has suspended entry for non-US citizens who have been in Ebola-affected areas (Uganda, DRC, South Sudan) in the last 21 days, with the measure in effect for 30 days. Notes that Africa CDC has criticized the decision.</p>
   <p class="source-bias-note"><em>Italian wire service</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-024">Centers for Disease Control and Prevention (CDC)</a>, <a href="#actor-025">Africa CDC</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-024">Centers for Disease Control and Prevention (CDC)</a></strong> <span class="actor-role">US public health agency</span><p class="source-quote-position">Issued a 30-day entry suspension for non-US citizens from Ebola-affected areas, justified by the need to protect US health from the serious risk of Ebola introduction.</p></li><li class="source-quote-entry"><strong><a href="#actor-025">Africa CDC</a></strong> <span class="actor-role">African Union public health agency</span><p class="source-quote-position">Criticized the US decision to suspend entry for citizens from Ebola-affected areas.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1162,12 +1486,20 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-18</span></div>
   <p class="source-summary">Explains the biological and logistical challenges of the outbreak: the Bundibugyo strain has no approved vaccine, initial tests were negative because they targeted the more common Zaire strain, and the conflict zone setting complicates containment. It reports that the first known case was a nurse who died in Bunia, that funerals are a major transmission risk, and that some communities believe the disease is witchcraft, delaying reporting. It also details responses from the AFC-M23 rebel group, Rwanda, and Uganda.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-002">Samuel Roger Kamba</a>, <a href="#actor-010">Jean Kaseya</a>, <a href="#actor-003">Tedros Adhanom Ghebreyesus</a>, <a href="#actor-011">Lawrence Kanyuka</a>, <a href="#actor-012">Rwanda</a>, <a href="#actor-013">Yoweri Museveni</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Samuel Roger Kamba</a></strong> <span class="actor-role">Health Minister of the Democratic Republic of the Congo</span><p class="source-quote-position">Reports that the first known case was a nurse who died in Bunia, that the virus spread quickly due to exposure during her funeral, and that reporting delays occurred because communities believe the disease is witchcraft.</p></li><li class="source-quote-entry"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director General of the World Health Organization</span><p class="source-quote-position">States he is deeply concerned about the scale and speed of the epidemic.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;deeply concerned about the scale and speed of the epidemic&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="actor-role">Director of the Africa Centres for Disease Control and Prevention</span><p class="source-quote-position">States that public health information campaigns are providing guidance on handling funerals, basic hygiene, and protection measures for health workers.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;providing information on how to handle funerals&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-011">Lawrence Kanyuka</a></strong> <span class="actor-role">Spokesman for the AFC-M23 group</span><p class="source-quote-position">States that the group has immediately activated response mechanisms in conjunction with health services and local medical facilities to prevent the spread of the disease in areas it controls.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;immediately activated&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-012">Rwanda</a></strong> <span class="actor-role">Government of Rwanda</span><p class="source-quote-position">Has closed its borders with DR Congo.</p></li><li class="source-quote-entry"><strong><a href="#actor-013">Yoweri Museveni</a></strong> <span class="actor-role">President of Uganda</span><p class="source-quote-position">Has told people to avoid hugging and shaking hands and postponed the Martyrs&#x27; Day pilgrimage.</p></li></ul>
+  </details>
 </li>
 <li id="src-016" class="source">
   <div class="source-header"><span class="source-id">[16]</span> <a class="source-headline" href="https://www.bbc.com/news/articles/ceqp11gn1l8o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener">Ebola may be spreading faster than first thought, WHO doctor warns</a></div>
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-19</span></div>
   <p class="source-summary">Reports that the outbreak may be spreading faster than originally thought, with WHO&#x27;s Dr. Anne Ancia stating cases have disseminated to other provinces, and MRC modelling suggesting over 1,000 cases may have occurred. Includes testimony from Ituri residents describing fear and economic hardship, and notes President Tshisekedi&#x27;s call for calm.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-005">Anne Ancia</a>, <a href="#actor-028">Bigboy</a>, <a href="#actor-029">Alfred Giza</a>, <a href="#actor-030">Félix Tshisekedi</a>, <a href="#actor-003">Tedros Adhanom Ghebreyesus</a>, <a href="#actor-031">Red Cross</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director General of the World Health Organization</span><p class="source-quote-position">Said he was &#x27;deeply concerned about the scale and speed of the epidemic&#x27;.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;deeply concerned about the scale and speed of the epidemic&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-005">Anne Ancia</a></strong> <span class="actor-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</span><p class="source-quote-position">Warned that the more the agency investigates, the clearer it becomes that cases have spread to other areas, including South Kivu and Goma, and that high population mobility in insecure areas complicates control.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;The more we are investigating this outbreak, the more we realise that it has already disseminated at least a little bit across border and also in other provinces.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-028">Bigboy</a></strong> <span class="actor-role">Ituri resident</span><p class="source-quote-position">Said people are &#x27;really scared&#x27; and taking precautions like handwashing, but wished they could access protective supplies like face masks.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;really scared&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-029">Alfred Giza</a></strong> <span class="actor-role">Ituri resident</span><p class="source-quote-position">Said the community is aware of the threat and waiting for face masks, but he would not know what to do if a family member contracted the disease.</p></li><li class="source-quote-entry"><strong><a href="#actor-030">Félix Tshisekedi</a></strong> <span class="actor-role">DR Congo President</span><p class="source-quote-position">Called for calm and urged Congolese citizens to remain vigilant after holding a crisis meeting.</p></li><li class="source-quote-entry"><strong><a href="#actor-031">Red Cross</a></strong> <span class="actor-role">Humanitarian organization</span><p class="source-quote-position">Warned that Ebola can escalate quickly if cases are not identified early, communities lack information, and health systems are overwhelmed, adding that &#x27;we are seeing all those conditions&#x27; in the current outbreak.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;we are seeing all those conditions&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1179,6 +1511,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <div class="source-meta"><span>United States</span> &middot; <span>en</span></div>
   <p class="source-summary">Reports on the US CDC&#x27;s announcement of entry screening and a 30-day entry restriction for certain foreign travelers from the DRC, Uganda, and South Sudan, with exemptions for US citizens, green-card holders, and service members. Provides the US government response perspective.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-024">Centers for Disease Control and Prevention (CDC)</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-024">Centers for Disease Control and Prevention (CDC)</a></strong> <span class="actor-role">US public health agency</span><p class="source-quote-position">Announced new screening measures and a 30-day entry restriction for certain foreign travelers from the DRC, Uganda, and South Sudan.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1191,6 +1527,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Reports that Singapore has stepped up public health measures, including health advisories at all entry points and a requirement for incoming travelers from affected areas to self-monitor for 21 days. The Communicable Diseases Agency notes the seriousness of the situation, and Health Minister Ong Ye Kung describes the situation in the affected African countries as dire, predicting many more deaths and infections.</p>
   <p class="source-bias-note"><em>Singaporean news channel</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-014">Communicable Diseases Agency (CDA)</a>, <a href="#actor-015">Ong Ye Kung</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-014">Communicable Diseases Agency (CDA)</a></strong> <span class="actor-role">Singapore&#x27;s Communicable Diseases Agency</span><p class="source-quote-position">States that the situation in DRC and Uganda is serious with significant ongoing transmission, and that health advisories and self-monitoring requirements are now in place at all points of entry.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;The situation in the DRC and Uganda is serious, with significant ongoing transmission in the affected regions.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-015">Ong Ye Kung</a></strong> <span class="actor-role">Health Minister of Singapore</span><p class="source-quote-position">Describes the situation in the affected African countries as dire and predicts many more deaths and infections in the coming days and weeks.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;We are likely to see many more deaths and infections in the coming days and weeks.&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1203,6 +1543,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Reports that the WHO now assumes at least 130 Ebola deaths and 500 suspected cases, with Tedros deeply concerned about the outbreak&#x27;s scale and speed. The Africa CDC has declared a continental emergency, citing high regional spread risk due to cross-border traffic and mining mobility. Germany is preparing to treat an infected US doctor and six high-risk contacts. The article notes the outbreak likely began in late April but was only reported in early May.</p>
   <p class="source-bias-note"><em>German investigative newsmagazine</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Tedros Adhanom Ghebreyesus</a>, <a href="#actor-010">Jean Kaseya</a>, <a href="#actor-006">German Ministry of Health</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director General of the World Health Organization</span><p class="source-quote-position">States there are at least 500 suspected cases and 130 suspected deaths, plus 30 confirmed infections in Ituri, and expresses deep concern about the scale and speed of the Ebola spread.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;sehr besorgt&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-006">German Ministry of Health</a></strong> <span class="actor-role">German Ministry of Health</span><p class="source-quote-position">States that US authorities have requested help treating a US citizen infected with Ebola in Congo, and that preparations are underway to admit and treat him in Germany.</p></li><li class="source-quote-entry"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="actor-role">Director of the Africa Centres for Disease Control and Prevention</span><p class="source-quote-position">Declares a continental emergency, stating the outbreak is occurring in one of the continent&#x27;s most complex operational areas, marked by insecurity, population movements, fragile health systems, and limited availability of medical countermeasures.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;in einem der komplexesten Einsatzgebiete des Kontinents&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1215,6 +1559,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Reports WHO Director-General Tedros Adhanom Ghebreyesus&#x27;s deep concern about the scale and speed of the epidemic, with 30 lab-confirmed cases in Ituri and two confirmed cases in Kampala. It notes that Germany is preparing to treat an evacuated US doctor. The article highlights the challenges of the rare Bundibugyo strain, for which no recognized vaccine exists, and the remote, unstable setting complicating lab testing.</p>
   <p class="source-bias-note"><em>German state-funded, editorially independent</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-002">Samuel Roger Kamba</a>, <a href="#actor-003">Tedros Adhanom Ghebreyesus</a>, <a href="#actor-006">German Ministry of Health</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Samuel Roger Kamba</a></strong> <span class="actor-role">Health Minister of the Democratic Republic of the Congo</span><p class="source-quote-position">Reports roughly 131 deaths and around 513 suspected cases, noting that the reported deaths are all identified community deaths without necessarily being linked to Ebola.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;We have recorded roughly 131 deaths in total and we have around 513 suspected cases. The deaths we are reporting are all the deaths we have identified in the community, without necessarily saying that they are all linked to Ebola.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director General of the World Health Organization</span><p class="source-quote-position">States he is deeply concerned about the scale and speed of the epidemic and that he did not take the decision to declare a PHEIC lightly.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;I&#x27;m deeply concerned about the scale and speed of the epidemic.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-006">German Ministry of Health</a></strong> <span class="actor-role">German Ministry of Health</span><p class="source-quote-position">States it is preparing to treat a US doctor who contracted the virus, following a request from the US.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1227,6 +1575,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Reports that the US has banned entry to non-citizens who have been in DR Congo, South Sudan, or Uganda in the prior three weeks, and has suspended visa services in Uganda and DR Congo. The Infectious Diseases Society of America criticizes the policy as discriminatory and ineffective. The article also details the evacuation of an infected US missionary doctor to Germany and notes the CDC is investigating monoclonal antibodies as a potential treatment.</p>
   <p class="source-bias-note"><em>Major Mexican newspaper, centrist/business-oriented</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-018">Satish Pillai</a>, <a href="#actor-019">Infectious Diseases Society of America</a>, <a href="#actor-002">Samuel Roger Kamba</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Samuel Roger Kamba</a></strong> <span class="actor-role">Health Minister of the Democratic Republic of the Congo</span><p class="source-quote-position">Reports around 350 suspected cases and 91 deaths in DR Congo.</p></li><li class="source-quote-entry"><strong><a href="#actor-018">Satish Pillai</a></strong> <span class="actor-role">Coordinator of the CDC&#x27;s Ebola response</span><p class="source-quote-position">States that the infected missionary is symptomatic and has been sent to Germany, that six other exposed individuals are being transferred, and that the CDC is investigating monoclonal antibodies for potential use under a treatment protocol.</p></li><li class="source-quote-entry"><strong><a href="#actor-019">Infectious Diseases Society of America</a></strong> <span class="actor-role">US medical association</span><p class="source-quote-position">States that while quarantines and travel restrictions can be useful, public health policies that discriminate against non-US citizens will not prevent viruses from crossing borders, as diseases do not recognize passports.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;las políticas de salud pública que discriminan a los ciudadanos no estadounidenses no impedirán que los virus crucen nuestras fronteras. Las enfermedades no reconocen pasaportes&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li></ul>
+  </details>
 </li>
 <li id="src-017" class="source">
   <div class="source-header"><span class="source-id">[17]</span> <a class="source-headline" href="https://www.elfinanciero.com.mx/salud/2026/05/18/que-es-mas-preocupante-ebola-o-hantavirus-hay-bajo-riesgo-de-pandemia-dice-alejandro-macias/" target="_blank" rel="noopener">¿Qué es más preocupante: ébola o hantavirus?: ‘Hay bajo riesgo de pandemia’, dice Alejandro Macías</a></div>
@@ -1234,6 +1586,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Compares the Ebola and hantavirus outbreaks, with Mexican epidemiologist Alejandro Macías stating the pandemic risk is low for both but Ebola is more concerning due to hundreds of cases in the DRC, easy transmission, and the lack of an effective vaccine for the current variant. He notes that the US withdrawal from the WHO will complicate international aid.</p>
   <p class="source-bias-note"><em>Major Mexican newspaper, centrist/business-oriented</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-032">Alejandro Macías</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-032">Alejandro Macías</a></strong> <span class="actor-role">Infectious disease doctor and epidemiologist</span><p class="source-quote-position">States that the risk of a pandemic is low for both Ebola and hantavirus, but Ebola is the &#x27;worst&#x27; disease due to hundreds of cases in the DRC, its ease of transmission, and the current variant&#x27;s lack of response to existing vaccines; adds that the US exit from WHO will make international aid more difficult.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;En El Congo se estiman más de 300 casos de ébola y crecen a una velocidad relativamente grande. Hay dos casos también en Uganda y puede diseminarse a la parte central de África&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1245,6 +1601,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <div class="source-meta"><span>Spain</span> &middot; <span>es</span> &middot; <span>2026-05-19</span></div>
   <p class="source-summary">Reports WHO Director-General Tedros Adhanom Ghebreyesus&#x27;s warning about the magnitude and speed of the outbreak, with over 500 suspected cases and 130 suspected deaths. WHO representative Anne Ancia explains that detection was delayed because the Ituri laboratory only had reagents for the Zaire strain, leading cases to be mistaken for malaria or salmonellosis. She also details a 73% reduction in water and sanitation funding due to aid cuts. The IFRC warns that outbreaks can escalate rapidly without timely identification and community engagement.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Tedros Adhanom Ghebreyesus</a>, <a href="#actor-005">Anne Ancia</a>, <a href="#actor-021">Laura Archer</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director General of the World Health Organization</span><p class="source-quote-position">Warns of the magnitude and speed of the outbreak, with over 500 suspected cases and 130 suspected deaths, and expresses deep concern about cases in urban areas and deaths among health workers.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;profundamente preocupado&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-005">Anne Ancia</a></strong> <span class="actor-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</span><p class="source-quote-position">Explains that detection was delayed because the Ituri laboratory only had reagents for the Zaire strain, causing negative tests, and that cases were initially mistaken for malaria or salmonellosis. She also states that funding cuts have caused a 73% reduction in water and sanitation in the affected region.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Solo tenía reactivos para la cepa Zaire, por lo que las pruebas daban negativo&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-021">Laura Archer</a></strong> <span class="actor-role">Head of Clinical Care and Public Health in Emergencies at the International Federation of Red Cross and Red Crescent Societies</span><p class="source-quote-position">Warns that Ebola outbreaks can escalate rapidly if cases are not identified in time, if communities lack reliable information, or if health systems are overwhelmed, and states that early detection, community engagement, and local public health actions are essential.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Sabemos que los brotes de ébola pueden escalar rápidamente si los casos no se identifican a tiempo, si las comunidades no tienen información fiable o si los sistemas de salud se ven desbordados&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1257,6 +1617,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Reports that the WHO expects a vaccine for the Bundibugyo strain of Ebola, which has caused at least 130 deaths, could be developed in two months. WHO representative Anne Ancia specifies that the existing vaccine works against the Zaire variant but not the current Bundibugyo strain, and mentions two molecules under study.</p>
   <p class="source-bias-note"><em>Pan-LatAm digital news, strong in AR/MX/CO</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-005">Anne Ancia</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-005">Anne Ancia</a></strong> <span class="actor-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</span><p class="source-quote-position">States that a meeting with international experts will be held to analyze vaccine development, working with institutions like Oxford University, and hopes the process can be accelerated from the estimated two months.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Esta tarde habrá una reunión con expertos internacionales para analizarlo, trabajamos con instituciones como la Universidad de Oxford y se habla de unos dos meses, pero ojalá podamos acelerar el proceso&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1269,6 +1633,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Major French newspaper providing a comprehensive overview of the outbreak, the PHEIC declaration, and the initial response measures (isolation, contact tracing, border surveillance, community information campaigns).</p>
   <p class="source-bias-note"><em>French newspaper of record, EN edition</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-044">World Health Organization (WHO)</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-044">World Health Organization (WHO)</a></strong> <span class="actor-role">International health agency</span><p class="source-quote-position">Declared the situation a Public Health Emergency of International Concern.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1280,6 +1648,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <div class="source-meta"><span>Japan</span> &middot; <span>ja</span></div>
   <p class="source-summary">Official Japanese government travel advisory, issuing a level 1 advisory (be cautious) for the DRC and Uganda. Details the situation and advises Japanese nationals to check for updates and take infection prevention measures, without imposing a blanket travel ban.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-047">Ministry of Foreign Affairs of Japan</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-047">Ministry of Foreign Affairs of Japan</a></strong> <span class="actor-role">National government ministry</span><p class="source-quote-position">Issued a level 1 travel advisory for the DRC and Uganda, advising caution and infection prevention measures for Japanese travelers without imposing a blanket travel ban.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1291,6 +1663,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <div class="source-meta"><span>India</span> &middot; <span>hi</span></div>
   <p class="source-summary">Hindi-language report on India&#x27;s heightened alert and enhanced surveillance at airports following the outbreak in the DRC and Uganda, noting no cases in India. Provides the South Asian perspective on preparedness and border monitoring.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-048">Government of India</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-048">Government of India</a></strong> <span class="actor-role">National government</span><p class="source-quote-position">Increased alertness and surveillance at airports and public health systems after the Ebola outbreak in DRC and Uganda, though no cases have been reported in India.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1313,6 +1689,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Details the WHO&#x27;s declaration of a PHEIC for the Bundibugyo Ebola outbreak, noting 246 suspected cases and 80 deaths by mid-May, and the spread to Uganda. It highlights Africa CDC&#x27;s warning about delayed detection, WHO&#x27;s advice against travel bans, and the implications for Nigeria&#x27;s public health system.</p>
   <p class="source-bias-note"><em>Major Nigerian investigative newspaper</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Tedros Adhanom Ghebreyesus</a>, <a href="#actor-010">Jean Kaseya</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director General of the World Health Organization</span><p class="source-quote-position">Concluded that the cross-border outbreak requires the highest level of international surveillance and coordination, and warned that neighboring countries are at high risk due to population mobility and trade linkages.</p></li><li class="source-quote-entry"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="actor-role">Director of the Africa Centres for Disease Control and Prevention</span><p class="source-quote-position">Warned that delayed detection slowed the response and allowed the virus to spread undetected for weeks, and that authorities still do not fully understand the scale of transmission.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1335,6 +1715,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Interview with Africa CDC Director General Dr Jean Kaseya confirming no approved vaccine or treatment for Bundibugyo strain, outlining immediate priorities and discussions on future clinical trials. Provides the continental health agency perspective.</p>
   <p class="source-bias-note"><em>Radio France Internationale, francophone global. Replaces Jeune Afrique.</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-010">Jean Kaseya</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="actor-role">Director of the Africa Centres for Disease Control and Prevention</span><p class="source-quote-position">Confirms no approved vaccine or treatment for Bundibugyo, outlines immediate priorities (surveillance, contact tracing, lab strengthening), and mentions discussions on future clinical trials.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1346,6 +1730,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <div class="source-meta"><span>Russia</span> &middot; <span>ru</span> &middot; <span>2026-05-17</span></div>
   <p class="source-summary">Russian state news agency report on the PHEIC declaration, mentioning Rospotrebnadzor&#x27;s registration of a new Ebola test kit, reflecting a focus on domestic preparedness and diagnostic capacity rather than direct field assistance.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-027">Rospotrebnadzor</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-027">Rospotrebnadzor</a></strong> <span class="actor-role">Russian consumer rights and health protection agency</span><p class="source-quote-position">Registered a new test for detecting Ebola, indicating Ebola, reflecting Russian involvement in laboratory diagnostics and domestic preparedness.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1357,6 +1745,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <div class="source-meta"><span>United States</span> &middot; <span>en</span> &middot; <span>2026-05-17</span></div>
   <p class="source-summary">Reports a notable procedural precedent: this was the first time a PHEIC was declared without an emergency committee recommendation. Provides expert analysis on the governance implications of the WHO Director-General&#x27;s decision.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Tedros Adhanom Ghebreyesus</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director General of the World Health Organization</span><p class="source-quote-position">Declared the Ebola outbreak a PHEIC without an emergency committee recommendation, a procedural first.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1369,6 +1761,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Reports at least 500 suspected cases and 130 deaths, with the WHO &#x27;very concerned&#x27; about the outbreak&#x27;s scale and speed. It notes the AU&#x27;s continental emergency declaration, Rwanda&#x27;s border closure, the evacuation of an infected US missionary to Germany, and an expert group meeting to discuss vaccines including Merck&#x27;s Ervebo.</p>
   <p class="source-bias-note"><em>German public broadcaster ARD</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Tedros Adhanom Ghebreyesus</a>, <a href="#actor-006">German Ministry of Health</a>, <a href="#actor-010">Jean Kaseya</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director General of the World Health Organization</span><p class="source-quote-position">Said he is &#x27;very concerned about the scale and speed of the epidemic&#x27;.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;sehr besorgt über das Ausmaß und die Geschwindigkeit der Epidemie&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-006">German Ministry of Health</a></strong> <span class="actor-role">German Ministry of Health</span><p class="source-quote-position">Announced that US authorities requested help treating a US citizen infected with Ebola in the DRC, who will be flown to Germany for treatment.</p></li><li class="source-quote-entry"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="actor-role">Director of the Africa Centres for Disease Control and Prevention</span><p class="source-quote-position">Declared a continental emergency citing a high risk of regional spread due to intense cross-border traffic, mining-related mobility, insecurity, and inadequate infection prevention measures.</p></li></ul>
+  </details>
 </li>
 <li id="src-019" class="source">
   <div class="source-header"><span class="source-id">[19]</span> <a class="source-headline" href="https://www.tagesschau.de/wissen/ebola-wie-gefaehrlich-102.html" target="_blank" rel="noopener">Virus in Afrika: Wie gefährlich ist der Ebola-Ausbruch?</a></div>
@@ -1376,6 +1772,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="source-summary">Explains the nature of the Bundibugyo strain, the outbreak&#x27;s origins, and why the WHO declared a PHEIC but not a pandemic alert. It quotes German Health Minister Nina Warken stating the risk to Germany is extremely low and a pandemic is nearly impossible, while noting that the lack of a vaccine and cross-border spread via public transport are concerning factors.</p>
   <p class="source-bias-note"><em>German public broadcaster ARD</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Tedros Adhanom Ghebreyesus</a>, <a href="#actor-040">Nina Warken</a>, <a href="#actor-010">Jean Kaseya</a>, <a href="#actor-041">Maximilian Gertler</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director General of the World Health Organization</span><p class="source-quote-position">Said he is &#x27;very concerned&#x27; about the virus&#x27;s spread and clarified the outbreak does not meet pandemic criteria but neighboring countries face a high risk of further spread.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;sehr besorgt&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="actor-role">Director of the Africa Centres for Disease Control and Prevention</span><p class="source-quote-position">Warned that a case in Kampala involving a patient who traveled by public transport from Congo shows how quickly the virus can cross borders.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Der Fall zeigt, wie schnell das Virus Grenzen überqueren kann&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-040">Nina Warken</a></strong> <span class="actor-role">German Federal Health Minister</span><p class="source-quote-position">Stated the risk to Germany is &#x27;extremely low&#x27;, no precautions are needed in the country, and a global Ebola pandemic is &#x27;nearly impossible&#x27;.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Im Land braucht es derzeit keine Vorkehrungen.&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-041">Maximilian Gertler</a></strong> <span class="actor-role">Specialist in internal medicine, emergency medicine, tropical medicine, and epidemiology at Berlin&#x27;s Charité</span><p class="source-quote-position">Described Ebola as a &#x27;disease of poverty&#x27; caused by miserable living conditions, fear of violence, absence of effective healthcare, lack of clean water, and distrust of authorities.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Armutserkrankung&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1387,6 +1787,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <div class="source-meta"><span>Kenya</span> &middot; <span>sw</span></div>
   <p class="source-summary">Reports Uganda&#x27;s first confirmed case (a Congolese man who died in Kampala) and details Uganda&#x27;s response: enhanced surveillance, border safety, and emergency teams. Highlights the gold mining areas of Mongwalu and Rwampara as epicenters.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-045">Uganda Ministry of Health</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-045">Uganda Ministry of Health</a></strong> <span class="actor-role">National health authority</span><p class="source-quote-position">Confirmed the first Ebola case in Uganda and implemented enhanced surveillance, border safety, and emergency response teams.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1398,12 +1802,20 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-19</span></div>
   <p class="source-summary">Reports WHO Director-General Tedros Adhanom Ghebreyesus&#x27;s deep concern about the scale and speed of the outbreak, noting it is the first time a director-general has declared a PHEIC before convening an emergency committee. WHO DRC representative Anne Ancia warns the outbreak could be lengthy, comparing it to a previous two-year outbreak. The article highlights the insecure context in Ituri, where over 100,000 people have been newly displaced by escalating conflict since late 2025.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Tedros Adhanom Ghebreyesus</a>, <a href="#actor-005">Anne Ancia</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director General of the World Health Organization</span><p class="source-quote-position">States he is deeply concerned about the scale and speed of the epidemic, noting at least 500 suspected cases and 130 suspected deaths, and that he declared a PHEIC before convening an emergency committee for the first time.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;I&#x27;m deeply concerned about the scale and speed of the epidemic.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-005">Anne Ancia</a></strong> <span class="actor-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</span><p class="source-quote-position">Warns that the outbreak could be lengthy, stating she does not think it will be over in two months, pointing to a recent Ebola outbreak that took two years.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;I don&#x27;t think that in two months we will be done with this outbreak&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 <li id="src-018" class="source">
   <div class="source-header"><span class="source-id">[18]</span> <a class="source-headline" href="https://www.theguardian.com/world/2026/may/18/ituri-eastern-drc-ebola-outbreak-panic-fear" target="_blank" rel="noopener">‘It’s heartbreaking’: panic in eastern DRC over return of Ebola</a></div>
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-18</span></div>
   <p class="source-summary">Provides on-the-ground reporting from Ituri province, describing panic among residents due to the lack of a vaccine for the Bundibugyo strain and fears of economic restrictions. It quotes residents, a former mayor linking the outbreak to a funeral, and officials from IRC and Oxfam warning that conflict and aid cuts have left health systems unable to cope.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-033">Gloire Mumbesa</a>, <a href="#actor-034">Dieudonné Lossadekana</a>, <a href="#actor-035">Claude Kasuna</a>, <a href="#actor-036">Jean Pierre Badombo</a>, <a href="#actor-002">Samuel Roger Kamba</a>, <a href="#actor-037">Heather Kerr</a>, <a href="#actor-038">Manenji Mangundu</a>, <a href="#actor-010">Jean Kaseya</a>, <a href="#actor-007">Jean-Jacques Muyembe</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Samuel Roger Kamba</a></strong> <span class="actor-role">Health Minister of the Democratic Republic of the Congo</span><p class="source-quote-position">Announced the government would open three treatment centres for Ebola in Ituri.</p></li><li class="source-quote-entry"><strong><a href="#actor-007">Jean-Jacques Muyembe</a></strong> <span class="actor-role">Congolese scientist who co-discovered the Ebola virus and head of Kinshasa&#x27;s National Institute of Biomedical Research (INRB)</span><p class="source-quote-position">Said some candidate compounds for a Bundibugyo vaccine were expected to enter trials by the end of May or in June, and that public health measures like protecting healthcare workers and treating symptoms were being implemented.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;This is how we brought the Bundibugyo strain outbreak under control in 2012 in Isiro, not far from Ituri.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Jean Kaseya</a></strong> <span class="actor-role">Director of the Africa Centres for Disease Control and Prevention</span><p class="source-quote-position">Said he was in &#x27;panic mode&#x27; due to the lack of a vaccine and highlighted the need for manufacturing capacity on the continent.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;panic mode&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-033">Gloire Mumbesa</a></strong> <span class="actor-role">Resident of Mongbwalu</span><p class="source-quote-position">Said everyone is talking about Ebola and panic is engulfing the area because of the lack of a vaccine for the Bundibugyo strain.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;On public transport, in bars and at mass gatherings, everyone is talking about Ebola. The fear is that this disease may spread to many other areas.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-034">Dieudonné Lossadekana</a></strong> <span class="actor-role">Resident of Bunia city</span><p class="source-quote-position">Said residents are stunned by Ebola&#x27;s resurgence and have already recorded several dozen deaths, calling it heartbreaking.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;We&#x27;re stunned by the resurgence of Ebola in our region. We&#x27;ve already recorded several dozen deaths. For us, it&#x27;s heartbreaking.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-035">Claude Kasuna</a></strong> <span class="actor-role">Resident of Irumu territory</span><p class="source-quote-position">Said poverty is rife and a health emergency hits hard economically, and that people tend to believe false myths rather than scientific evidence, requiring awareness-raising.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;We live in a region where poverty is rife and people live from hand to mouth. When a health emergency like this one strikes, it hits us hard economically.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-036">Jean Pierre Badombo</a></strong> <span class="actor-role">Former mayor of Mongbwalu</span><p class="source-quote-position">Said people started falling ill in mid-April after a large open-casket funeral procession arrived from Bunia, leading to a cascade of deaths.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;After that, we experienced a cascade of deaths.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-037">Heather Kerr</a></strong> <span class="actor-role">DRC country director at the International Rescue Committee</span><p class="source-quote-position">Said the conflict in the region made containing the Ebola outbreak &#x27;all the harder&#x27; and that years of conflict and displacement have left health systems &#x27;on their knees&#x27;.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Eastern DRC&#x27;s years of conflict and displacement have left health systems on their knees. With dozens of lives already lost and an already overstretched health system, we need to act fast.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-038">Manenji Mangundu</a></strong> <span class="actor-role">DRC country director at Oxfam</span><p class="source-quote-position">Said the outbreak is hitting a country already stretched to breaking point due to ongoing conflict and years of aid cuts.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;hitting a country already stretched to breaking point&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1415,6 +1827,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <div class="source-meta"><span>Turkey</span> &middot; <span>tr</span></div>
   <p class="source-summary">Official Turkish government health travel health advisory summarizing the outbreak and providing recommendations for travelers. Emphasizes risk-based health monitoring and information over blanket travel restrictions, aligning with WHO advice.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-046">Türkiye Hudut ve Sahiller Sağlık Genel Müdürlüğü</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-046">Türkiye Hudut ve Sahiller Sağlık Genel Müdürlüğü</a></strong> <span class="actor-role">General Directorate General of Border and Coastal Health, Turkey</span><p class="source-quote-position">Issued a travel health advisory for the DRC and Uganda, recommending risk-based health monitoring and information for travelers rather than blanket travel restrictions.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1426,6 +1842,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <div class="source-meta"><span>International</span> &middot; <span>sw</span> &middot; <span>2026-05-01</span></div>
   <p class="source-summary">Swahili-language UN News report on the WHO PHEIC declaration, providing detailed case counts (8 confirmed, 246 suspected, 80 suspected deaths in Ituri; 2 confirmed in Kampala) and the specific WHO recommendations. Serves the East African audience in a regional lingua franca.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-044">World Health Organization (WHO)</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-044">World Health Organization (WHO)</a></strong> <span class="actor-role">International health agency</span><p class="source-quote-position">position: </p></li></ul>
+  </details>
 </li>
 </ol>
 </details>

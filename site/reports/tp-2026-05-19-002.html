@@ -125,8 +125,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
 }
 
-/* Stakeholder cards */
-.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+/* Cluster cards — one card per row, full container width. Two-
+   column variant retired so the Cluster-ID pill, position label,
+   summary, tier-grouped actors, and counts row all read across the
+   full width (the cluster card is information-dense and benefits
+   from the horizontal space). */
+.card-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+/* Cluster-ID pill at top-left of each cluster card. Shares
+   ``.actor-card-cluster-box`` styling with the actor-card pills so
+   the cross-reference renders identically on both sides. The pill
+   needs a margin below to separate it from the position-label
+   header that follows. */
+.card > .actor-card-cluster-box {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
 .card {
   border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
   background: var(--color-bg);
@@ -144,6 +157,21 @@ h2 {
 .cluster-counts a { color: inherit; text-decoration: underline; }
 .cluster-counts a:hover { color: var(--color-text); }
 .card:target { background: var(--color-bg-subtle, #f5f5f4); }
+
+/* Single-voices bracket — visually distinguished from real shared-
+   position clusters. Dashed left accent + neutral tinted background
+   read as "this is a different kind of grouping" without breaking the
+   page's existing card rhythm. */
+.single-voices-bracket {
+  border-left: 4px dashed #000;
+  background: var(--color-bg-subtle, #f5f5f4);
+  margin-top: 1rem;
+}
+.single-voices-bracket-tag {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-left: 0.5rem;
+}
 
 /* Cluster three-level actor sub-blocks (stated / reported / mentioned) */
 .cluster-tier { margin-top: 0.85rem; }
@@ -168,54 +196,102 @@ h2 {
   color: var(--color-text-subtle); margin-left: 0.25rem;
   text-transform: uppercase; letter-spacing: 0.05em;
 }
-.cluster-actor-srcs {
-  font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle);
+
+/* Actors section — flat card grid with type-tab filter */
+.actors h2 { margin-top: 2.5rem; }
+.actors-meta {
+  font-family: var(--font-sans); font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin: 1rem 0 1.5rem;
+  border-left: 3px solid #000; padding-left: 0.75rem;
 }
 
-/* Actors section */
-.actors h2 { margin-top: 2rem; }
-.actors-meta {
-  font-family: var(--font-mono); font-size: 0.85rem;
-  color: var(--color-text-secondary); margin: 0 0 1rem;
+.actors-tabs {
+  display: flex; flex-wrap: wrap; gap: 0;
+  margin-bottom: 1.5rem;
 }
-#actors-show-all {
+.actor-tab {
+  font-family: var(--font-mono); font-size: 0.8rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.5rem 1rem; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; margin: 0 -1px -1px 0;
+}
+.actor-tab-count { margin-left: 0.4rem; color: var(--color-text-subtle); }
+.actor-tab--active { background: #000; color: var(--color-bg); }
+.actor-tab--active .actor-tab-count { color: var(--color-bg); }
+.actor-tab:not(.actor-tab--active):hover {
+  background: var(--color-bg-subtle, #f5f5f4);
+}
+
+/* Two-column grid with a vertical centre rule. The ::before pseudo
+   spans the full grid height and sits in the middle of the column
+   gap, matching the horizontal `border-top` rhythm on each card.
+   Disabled on mobile via the @media block when the grid collapses
+   to a single column. */
+.actor-card-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem;
+  position: relative;
+}
+.actor-card-grid::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%; width: 1px;
+  background: var(--color-border-light);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.actor-card {
+  border-top: 1px solid var(--color-border-light);
+  padding: 1rem 0;
+}
+.actor-card[hidden] { display: none; }
+.actor-card:target { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 0.25rem; gap: 0.5rem;
+}
+.actor-card-name {
+  font-family: var(--font-sans); font-weight: 700; font-size: 1rem;
+}
+.actor-card-name a { color: inherit; text-decoration: none; }
+.actor-card-src-count {
   font-family: var(--font-mono); font-size: 0.75rem;
-  background: transparent; border: 1px solid #000; cursor: pointer;
-  padding: 0.3rem 0.75rem; margin-bottom: 1rem;
+  color: var(--color-text-subtle);
   text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap;
 }
-#actors-show-all:hover { background: #000; color: var(--color-bg); }
-.actor-list { list-style: none; padding: 0; margin: 0; }
-.actor {
-  padding: 1rem 0; border-top: 1px solid var(--color-border-light);
+.actor-card-role {
+  font-family: var(--font-sans); font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem;
 }
-.actor:first-child { border-top: 0; padding-top: 0; }
-.actor[hidden] { display: none; }
-.actor:target { background: var(--color-bg-subtle, #f5f5f4); }
-.actor-header {
-  font-family: var(--font-sans); font-size: 1rem; margin-bottom: 0.4rem;
+.actor-card-cluster-refs, .actor-card-source-refs {
+  display: flex; flex-wrap: wrap; gap: 0.2rem;
+  margin-top: 0.4rem;
 }
-.actor-header strong { font-weight: 700; }
-.actor-role { color: var(--color-text-secondary); margin-left: 0.4rem; }
-.actor-type {
+.actor-card-cluster-box {
   font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle); margin-left: 0.4rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.2rem 0.5rem;
   text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; text-decoration: none;
 }
-.actor-position-line {
-  font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55;
-  color: var(--color-text-secondary); margin: 0.35rem 0 0;
-}
-.actor-position-line a { color: inherit; text-decoration: underline; }
-.actor-verbatim { font-style: italic; }
-.actor-no-cluster { color: var(--color-text-subtle); font-size: 0.85rem; }
-.actor-position-tier {
+.actor-card-cluster-box:hover { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-cluster-box--bracket { border-style: dashed; }
+/* Source-ref boxes — tightened (Correction 3, 2026-05-20) so ≥ 5
+   `src-NNN` boxes fit per row at the desktop card width
+   (container 740px → ~334px per card column). Lowercase label,
+   minimal horizontal padding, no letter-spacing. */
+.actor-card-source-box {
   font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle); font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  margin-right: 0.15rem;
+  background: var(--color-bg-subtle, #f5f5f4);
+  padding: 0.2rem 0.35rem;
+  color: #000; text-decoration: none;
+  letter-spacing: 0;
 }
+.actor-card-source-box:hover { background: var(--color-border-light); }
 
 /* Missing voices */
 .missing-voice {
@@ -454,7 +530,10 @@ footer a { color: #000; text-decoration: underline; }
 @media (max-width: 768px) {
   .container { padding: 1rem; }
   h1 { font-size: 1.4rem; }
-  .card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid::before { display: none; }
+  .actors-tabs { font-size: 0.7rem; }
+  .actor-tab { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
   .meta-bar { flex-wrap: wrap; }
   .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
   .meta-item:last-child { border-bottom: none; }
@@ -640,100 +719,110 @@ footer a { color: #000; text-decoration: underline; }
 <h2>Perspectives &mdash; Position Clusters</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
+  <a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>
   <div class="card-header"><span class="card-actor">Israel&#x27;s interception of the flotilla is a lawful security operation to maintain the blockade on Hamas</span></div>
   <div class="card-position">Israeli officials frame the flotilla as a political provocation with no genuine humanitarian cargo, designed to break the isolation imposed on Hamas, obstruct peace efforts, and serve terrorist interests. They praise the naval operation as an outstanding success that neutralized a malicious plan.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-003">Israel&#x27;s Ministry of Foreign Affairs</a></strong> <span class="cluster-actor-role">Israeli Ministry of Foreign Affairs</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-002">src-002</a>, <a href="#src-003">src-003</a>, <a href="#src-018">src-018</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-007">Benjamin Netanyahu</a></strong> <span class="cluster-actor-role">Prime Minister of Israel</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-003">src-003</a>, <a href="#src-008">src-008</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-003">Israel&#x27;s Ministry of Foreign Affairs</a></strong> <span class="cluster-actor-role">Israeli Ministry of Foreign Affairs</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-007">Benjamin Netanyahu</a></strong> <span class="cluster-actor-role">Prime Minister of Israel</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">2 actors</a></span> &middot; <span>5 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-002">
+  <a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a>
   <div class="card-header"><span class="card-actor">The flotilla interception is an illegal act of piracy and aggression in international waters that violates international law</span></div>
   <div class="card-position">A broad coalition of governments, flotilla organisers, and activists condemn the interception as a violation of international law, freedom of navigation, and humanitarian principles. They characterize it as piracy, banditry, or kidnapping, and demand the immediate release of all detained participants and safe passage for the humanitarian mission.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Global Sumud Flotilla organisers</a></strong> <span class="cluster-actor-role">Organisers of the Gaza aid flotilla</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-008">src-008</a>, <a href="#src-002">src-002</a>, <a href="#src-003">src-003</a>, <a href="#src-004">src-004</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-002">Foreign ministers of Turkiye, Spain, Jordan, Pakistan, Bangladesh, Brazil, Indonesia, Colombia, Libya, and the Maldives</a></strong> <span class="cluster-actor-role">Foreign ministers of 10 countries</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-004">Margaret Connolly</a></strong> <span class="cluster-actor-role">Irish doctor and sister of President Catherine Connolly</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-003">src-003</a>, <a href="#src-008">src-008</a>, <a href="#src-026">src-026</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-005">President Catherine Connolly</a></strong> <span class="cluster-actor-role">President of Ireland</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-002">src-002</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-008">Recep Tayyip Erdogan</a></strong> <span class="cluster-actor-role">President of Turkey</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-008">src-008</a>, <a href="#src-020">src-020</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Micheál Martin</a></strong> <span class="cluster-actor-role">Taoiseach (Prime Minister) of Ireland</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-026">src-026</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-014">José Manuel Albares</a></strong> <span class="cluster-actor-role">Spanish Minister of Foreign Affairs</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-016">Saif Abukeshek</a></strong> <span class="cluster-actor-role">One of the leaders of the flotilla, Spanish-Palestinian activist</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-003">src-003</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-020">Özkan Özer</a></strong> <span class="cluster-actor-role">Educator and activist on the boat &#x27;Munki&#x27;</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-004">src-004</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-021">Ahmet Söylemez</a></strong> <span class="cluster-actor-role">Activist on the boat &#x27;L&#x27;ark&#x27;</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-004">src-004</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-022">Mehmet Yasir Cebeci</a></strong> <span class="cluster-actor-role">Psychologist and activist on the boat &#x27;Girolama&#x27;</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-004">src-004</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-023">Turkish Ministry of Foreign Affairs</a></strong> <span class="cluster-actor-role">Ministry of Foreign Affairs of Turkey</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-004">src-004</a>, <a href="#src-029">src-029</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-031">Nikos Christodoulides</a></strong> <span class="cluster-actor-role">President of Cyprus</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-008">src-008</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Global Sumud Flotilla organisers</a></strong> <span class="cluster-actor-role">Organisers of the Gaza aid flotilla</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-002">Foreign ministers of Turkiye, Spain, Jordan, Pakistan, Bangladesh, Brazil, Indonesia, Colombia, Libya, and the Maldives</a></strong> <span class="cluster-actor-role">Foreign ministers of 10 countries</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-004">Margaret Connolly</a></strong> <span class="cluster-actor-role">Irish doctor and sister of President Catherine Connolly</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-005">President Catherine Connolly</a></strong> <span class="cluster-actor-role">President of Ireland</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-008">Recep Tayyip Erdogan</a></strong> <span class="cluster-actor-role">President of Turkey</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Micheál Martin</a></strong> <span class="cluster-actor-role">Taoiseach (Prime Minister) of Ireland</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-014">José Manuel Albares</a></strong> <span class="cluster-actor-role">Spanish Minister of Foreign Affairs</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-016">Saif Abukeshek</a></strong> <span class="cluster-actor-role">One of the leaders of the flotilla, Spanish-Palestinian activist</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-020">Özkan Özer</a></strong> <span class="cluster-actor-role">Educator and activist on the boat &#x27;Munki&#x27;</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-021">Ahmet Söylemez</a></strong> <span class="cluster-actor-role">Activist on the boat &#x27;L&#x27;ark&#x27;</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-022">Mehmet Yasir Cebeci</a></strong> <span class="cluster-actor-role">Psychologist and activist on the boat &#x27;Girolama&#x27;</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-023">Turkish Ministry of Foreign Affairs</a></strong> <span class="cluster-actor-role">Ministry of Foreign Affairs of Turkey</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-031">Nikos Christodoulides</a></strong> <span class="cluster-actor-role">President of Cyprus</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-045">Government of Sweden</a></strong> <span class="cluster-actor-role">National government</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-022">src-022</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-047">Germany and Italy</a></strong> <span class="cluster-actor-role">National governments</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-027">src-027</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-045">Government of Sweden</a></strong> <span class="cluster-actor-role">National government</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-047">Germany and Italy</a></strong> <span class="cluster-actor-role">National governments</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">15 actors</a></span> &middot; <span>11 sources</span> &middot; <span>9 regions</span> &middot; <span>4 languages</span></p>
 </div>
 <div class="card" id="pc-003">
+  <a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a>
   <div class="card-header"><span class="card-actor">Israel&#x27;s actions constitute state terrorism and a systematic assault on the international order</span></div>
   <div class="card-position">Hamas and aligned voices go beyond the piracy framing to characterize Israel&#x27;s conduct as state terrorism that systematically undermines the entire international legal and political order, not merely a single illegal act but a pattern of deliberate destruction of global norms.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-011">Basem Naim</a></strong> <span class="cluster-actor-role">Hamas official</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-011">Basem Naim</a></strong> <span class="cluster-actor-role">Hamas official</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">1 actor</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-004">
+  <a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a>
   <div class="card-header"><span class="card-actor">The humanitarian crisis in Gaza remains severe and aid access is being systematically obstructed</span></div>
   <div class="card-position">UN agencies and humanitarian observers report that displaced families in Gaza shelter in overcrowded and damaged structures, basic services remain limited, and restrictions on spare parts and essential inputs continue to undermine humanitarian operations, providing the underlying justification for the flotilla mission.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-013">UN</a></strong> <span class="cluster-actor-role">United Nations</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-013">UN</a></strong> <span class="cluster-actor-role">United Nations</span> <span class="cluster-actor-type">international_org</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">1 actor</a></span> &middot; <span>2 sources</span> &middot; <span>1 region</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-005">
+  <a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a>
   <div class="card-header"><span class="card-actor">EU sanctions on Israeli settlers are a symbolic half-measure while the bloc enables the settlement enterprise through trade</span></div>
   <div class="card-position">Policy analysts and some European parliamentarians argue that the EU&#x27;s targeted sanctions on a handful of violent settlers are inadequate because the bloc refuses to suspend the EU-Israel Association Agreement or ban settlement trade, with Germany and Italy blocking stronger measures despite ICJ rulings and internal legal opinions.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-032">Kaja Kallas</a></strong> <span class="cluster-actor-role">EU High Representative for Foreign Policy</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-009">src-009</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-035">Lynn Boylan</a></strong> <span class="cluster-actor-role">Spokeswoman for the Left Group in the European Parliament, from Ireland</span> <span class="cluster-actor-type">legislature</span> <span class="cluster-actor-srcs">(<a href="#src-009">src-009</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-036">EU Commission</a></strong> <span class="cluster-actor-role">Executive body of the European Union</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-009">src-009</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-032">Kaja Kallas</a></strong> <span class="cluster-actor-role">EU High Representative for Foreign Policy</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-035">Lynn Boylan</a></strong> <span class="cluster-actor-role">Spokeswoman for the Left Group in the European Parliament, from Ireland</span> <span class="cluster-actor-type">legislature</span></li><li class="cluster-tier-actor"><strong><a href="#actor-036">EU Commission</a></strong> <span class="cluster-actor-role">Executive body of the European Union</span> <span class="cluster-actor-type">international_org</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">3 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-006">
+  <a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a>
   <div class="card-header"><span class="card-actor">Israel&#x27;s E1 settlement project aims to bisect the West Bank and eliminate the possibility of a Palestinian state</span></div>
   <div class="card-position">Israeli and Palestinian civil society voices, along with affected Palestinian residents, warn that the E1 project&#x27;s demolitions and planned 3,400 housing units are designed to create facts on the ground that permanently sever Palestinian territorial contiguity and drive out the Palestinian population, with Israeli officials openly stating the goal of burying Palestinian statehood.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-037">Mohammad Rahayal</a></strong> <span class="cluster-actor-role">Palestinian metal trader and resident of Al-Eizariya</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-010">src-010</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-038">Bezalel Smotrich</a></strong> <span class="cluster-actor-role">Israeli Finance Minister</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-010">src-010</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-040">Yonathan Mizrahi</a></strong> <span class="cluster-actor-role">Member of Israeli NGO Peace Now</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-010">src-010</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-041">Fahed al-Jabary</a></strong> <span class="cluster-actor-role">Owner of a demolished car wash in Al-Eizariya</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-010">src-010</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-037">Mohammad Rahayal</a></strong> <span class="cluster-actor-role">Palestinian metal trader and resident of Al-Eizariya</span> <span class="cluster-actor-type">affected_community</span></li><li class="cluster-tier-actor"><strong><a href="#actor-038">Bezalel Smotrich</a></strong> <span class="cluster-actor-role">Israeli Finance Minister</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-040">Yonathan Mizrahi</a></strong> <span class="cluster-actor-role">Member of Israeli NGO Peace Now</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-041">Fahed al-Jabary</a></strong> <span class="cluster-actor-role">Owner of a demolished car wash in Al-Eizariya</span> <span class="cluster-actor-type">affected_community</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-039">COGAT</a></strong> <span class="cluster-actor-role">Israeli authority responsible for administration in the occupied West Bank</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-010">src-010</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-039">COGAT</a></strong> <span class="cluster-actor-role">Israeli authority responsible for administration in the occupied West Bank</span> <span class="cluster-actor-type">military</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">5 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-007">
+  <a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a>
   <div class="card-header"><span class="card-actor">Israel&#x27;s evacuation orders in southern Lebanon are a justified response to Hezbollah ceasefire violations</span></div>
   <div class="card-position">Israeli military spokespeople assert that Hezbollah&#x27;s violations of the ceasefire agreement compel the army to act forcefully, issuing evacuation orders to protect civilians while striking Hezbollah positions, and claiming to take steps to mitigate civilian harm.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-024">Avichai Adrai</a></strong> <span class="cluster-actor-role">Arabic-language spokesperson for the Israeli military</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-005">src-005</a>, <a href="#src-007">src-007</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-027">Israeli military</a></strong> <span class="cluster-actor-role">Israel Defense Forces</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-006">src-006</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-029">Israeli authorities</a></strong> <span class="cluster-actor-role">Authorities of the State of Israel</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-006">src-006</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-024">Avichai Adrai</a></strong> <span class="cluster-actor-role">Arabic-language spokesperson for the Israeli military</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-027">Israeli military</a></strong> <span class="cluster-actor-role">Israel Defense Forces</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-029">Israeli authorities</a></strong> <span class="cluster-actor-role">Authorities of the State of Israel</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">3 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-008">
+  <a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a>
   <div class="card-header"><span class="card-actor">The Israel-Hezbollah conflict persists despite the ceasefire, causing mounting Lebanese civilian casualties</span></div>
   <div class="card-position">Lebanese authorities and health officials report that the death toll in Lebanon has surpassed 3,000, including hundreds of women, children, and healthcare workers, while both sides continue military operations in violation of the ceasefire extension, with Hezbollah claiming its attacks are responses to over 500 Israeli violations.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-025">Lebanese security sources</a></strong> <span class="cluster-actor-role">Security sources in Lebanon</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-006">src-006</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-026">Hezbollah</a></strong> <span class="cluster-actor-role">Iran-backed Lebanese militant group</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-006">src-006</a>, <a href="#src-024">src-024</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-028">Lebanon&#x27;s health ministry</a></strong> <span class="cluster-actor-role">Ministry of Public Health of Lebanon</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-006">src-006</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-025">Lebanese security sources</a></strong> <span class="cluster-actor-role">Security sources in Lebanon</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-026">Hezbollah</a></strong> <span class="cluster-actor-role">Iran-backed Lebanese militant group</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-028">Lebanon&#x27;s health ministry</a></strong> <span class="cluster-actor-role">Ministry of Public Health of Lebanon</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">3 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-009">
+  <a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a>
   <div class="card-header"><span class="card-actor">Governments with detained nationals prioritize consular protection while avoiding broader political condemnation</span></div>
   <div class="card-position">Some governments, notably South Korea, respond to the flotilla interception primarily through consular channels — requesting the safety of their detained nationals and providing assistance — without joining the broader international legal condemnation or taking a strong political stance on the blockade itself.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-042">Park Il</a></strong> <span class="cluster-actor-role">South Korean Foreign Ministry Spokesperson</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-042">Park Il</a></strong> <span class="cluster-actor-role">South Korean Foreign Ministry Spokesperson</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-009">1 actor</a></span> &middot; <span>3 sources</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-010">
+  <a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a>
   <div class="card-header"><span class="card-actor">The U.S. politically supports Israel&#x27;s flotilla interception and frames the mission as pro-Hamas</span></div>
   <div class="card-position">The U.S. State Department warned of consequences for flotilla supporters and labeled the mission &#x27;pro-Hamas,&#x27; signaling alignment with Israel&#x27;s security framing and diverging sharply from the international condemnation expressed by European, Middle Eastern, and Global South governments.</div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-043">U.S. State Department</a></strong> <span class="cluster-actor-role">Government department</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-019">src-019</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-043">U.S. State Department</a></strong> <span class="cluster-actor-role">Government department</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-010">1 actor</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
@@ -741,187 +830,366 @@ footer a { color: #000; text-decoration: underline; }
 
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">38 actors quoted across this topic. Click a cluster card&rsquo;s actor count above to filter, or jump to a specific actor.</p>
-<button id="actors-show-all" type="button" hidden>Show all actors</button>
-<ol class="actor-list">
-<li id="actor-001" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Global Sumud Flotilla organisers</strong> <span class="actor-role">Organisers of the Gaza aid flotilla</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: States that Israeli forces raided 41 of their boats in the eastern Mediterranean Sea while 10 vessels continue to sail towards Gaza. (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-002" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Foreign ministers of Turkiye, Spain, Jordan, Pakistan, Bangladesh, Brazil, Indonesia, Colombia, Libya, and the Maldives</strong> <span class="actor-role">Foreign ministers of 10 countries</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Describe Israeli forces&#x27; actions as blatant violations of international law and international humanitarian law, express serious concern for civilian participants, and call for the immediate release of all detained activists. (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-003" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>Israel&#x27;s Ministry of Foreign Affairs</strong> <span class="actor-role">Israeli Ministry of Foreign Affairs</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: Directed the flotilla to abandon its mission, stating &#x27;Change course and turn back immediately.&#x27; <em class="actor-verbatim">&ldquo;&quot;Change course and turn back immediately.&quot;&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-004" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Margaret Connolly</strong> <span class="actor-role">Irish doctor and sister of President Catherine Connolly</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Was among those &#x27;illegally kidnapped&#x27; by Israel, according to organisers. (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-005" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>President Catherine Connolly</strong> <span class="actor-role">President of Ireland</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Said the news of her sister&#x27;s detention was &#x27;upsetting&#x27; and expressed worry about her sister and her colleagues on board. <em class="actor-verbatim">&ldquo;&quot;I&#x27;m very worried about her, and I&#x27;m also very concerned about her colleagues on board.&quot;&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-007" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>Benjamin Netanyahu</strong> <span class="actor-role">Prime Minister of Israel</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: Said the raid was &#x27;effectively neutralizing a malicious plan designed to break the isolation we have imposed on Hamas terrorists in Gaza&#x27; and congratulated naval forces on &#x27;doing an outstanding job.&#x27; <em class="actor-verbatim">&ldquo;&quot;effectively neutralizing a malicious plan designed to break the isolation we have imposed on Hamas terrorists in Gaza&quot;&rdquo;</em> (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-008" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Recep Tayyip Erdogan</strong> <span class="actor-role">President of Turkey</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Condemned in the strongest terms Israel&#x27;s &#x27;piracy and banditry&#x27; against the &#x27;voyagers of hope.&#x27; <em class="actor-verbatim">&ldquo;&quot;piracy and banditry&quot;&rdquo;</em> (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-010" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Micheál Martin</strong> <span class="actor-role">Taoiseach (Prime Minister) of Ireland</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Called the interception &#x27;absolutely unacceptable&#x27; and &#x27;wrong,&#x27; adding that people had a right to protest and take part in a mission to highlight the &#x27;shocking&#x27; humanitarian situation in Gaza. <em class="actor-verbatim">&ldquo;&quot;absolutely unacceptable&quot;&rdquo;</em> (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-011" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Basem Naim</strong> <span class="actor-role">Hamas official</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: Accused Israel of &#x27;state terrorism and systematic undermining of the entire international order.&#x27; <em class="actor-verbatim">&ldquo;&quot;state terrorism and systematic undermining of the entire international order&quot;&rdquo;</em> (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-013" class="actor" data-clusters="cluster-pc-004">
-  <div class="actor-header"><strong>UN</strong> <span class="actor-role">United Nations</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-004">cluster 4</a>: Reported that many displaced families in Gaza still shelter in overcrowded tents or severely damaged structures, access to basic services remains limited, and humanitarian operations continue to be undermined by restrictions on critical spare parts and essential inputs. (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-014" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>José Manuel Albares</strong> <span class="actor-role">Spanish Minister of Foreign Affairs</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Summoned the Israeli chargé d&#x27;affaires to convey the Spanish government&#x27;s &#x27;formal and energetic protest&#x27; over the illegal detention of a flotilla he described as &#x27;humanitarian,&#x27; and demanded the immediate release of those detained. (<a href="#src-003">src-003</a>)</p></div>
-</li>
-<li id="actor-016" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Saif Abukeshek</strong> <span class="actor-role">One of the leaders of the flotilla, Spanish-Palestinian activist</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Stated that Brazil, Turkey, and Spain opposed the illegality of the interception, and said &#x27;Israel acts this way because nobody opposes it and appeals to international law.&#x27; <em class="actor-verbatim">&ldquo;&quot;Brasil, Turquía y España se opusieron a la ilegalidad de la interceptación. Es parte de nuestro trabajo: queremos que los gobiernos se enfrenten a ello. Israel actúa así porque nadie se opone y apela al derecho internacional.&quot;&rdquo;</em> (<a href="#src-003">src-003</a>)</p></div>
-</li>
-<li id="actor-017" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Forces of Marshal Haftar</strong> <span class="actor-role">Libyan National Army under Marshal Khalifa Haftar</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-020" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Özkan Özer</strong> <span class="actor-role">Educator and activist on the boat &#x27;Munki&#x27;</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Described seeing Israeli warships and three assault boats surrounding them, stated that harassment by Israeli drones, ships, and boats began as soon as they left Turkish territorial waters, and asked &#x27;Is there no one to stop this piracy?&#x27; <em class="actor-verbatim">&ldquo;&quot;Bu korsanlığa dur diyecek kimse yok mu&quot;&rdquo;</em> (<a href="#src-004">src-004</a>)</p></div>
-</li>
-<li id="actor-021" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Ahmet Söylemez</strong> <span class="actor-role">Activist on the boat &#x27;L&#x27;ark&#x27;</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Reported seeing Israeli assault boats intercepting nearby vessels before they quickly moved away, and stated that the flotilla had already planned next year&#x27;s actions while in Marmaris, saying &#x27;Allah toppled Nemrut with a mosquito; no one can say we cannot defeat Israel with a 12-metre boat.&#x27; <em class="actor-verbatim">&ldquo;&quot;Allah Nemrut&#x27;u bir sivrisinekle devirdi, İsrail&#x27;i de 12 metrelik bir tekneyle mağlup edemeyeceğimizi kimse söyleyemez.&quot;&rdquo;</em> (<a href="#src-004">src-004</a>)</p></div>
-</li>
-<li id="actor-022" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Mehmet Yasir Cebeci</strong> <span class="actor-role">Psychologist and activist on the boat &#x27;Girolama&#x27;</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Stated they were continuing their journey 300 kilometres from Gaza, that motivation among the 10 people on board was very high, and said &#x27;What matters is not the flotilla, but Gaza. Palestinians are being killed and oppressed every day.&#x27; <em class="actor-verbatim">&ldquo;&quot;Ne için mücadele ettiğimizi biliyoruz. Önemli olan filo değil, Gazze. Her gün öldürülen, zulme uğrayan Filistinliler var. Odaklanacaksak lütfen oraya odaklanalım.&quot;&rdquo;</em> (<a href="#src-004">src-004</a>)</p></div>
-</li>
-<li id="actor-023" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Turkish Ministry of Foreign Affairs</strong> <span class="actor-role">Ministry of Foreign Affairs of Turkey</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Condemned the intervention against the Sumud Flotilla as &#x27;a new act of piracy,&#x27; stated that Israel&#x27;s attacks and intimidation policies cannot prevent the international community&#x27;s pursuit of justice and solidarity with the Palestinian people, and demanded the immediate cessation of the intervention and unconditional release of detained participants. (<a href="#src-004">src-004</a>)</p></div>
-</li>
-<li id="actor-024" class="actor" data-clusters="cluster-pc-007">
-  <div class="actor-header"><strong>Avichai Adrai</strong> <span class="actor-role">Arabic-language spokesperson for the Israeli military</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-007">cluster 7</a>: Stated that Hezbollah&#x27;s violation of the ceasefire agreement compels the army to act forcefully against it, and ordered residents of 12 towns to evacuate immediately to a distance of no less than 1,000 metres, warning that anyone near Hezbollah elements, facilities, or combat means endangers their life. <em class="actor-verbatim">&ldquo;&quot;La violación del acuerdo de alto el fuego por parte del grupo terrorista Hezbolá obliga al Ejército a actuar con fuerza contra él&quot;&rdquo;</em> (<a href="#src-005">src-005</a>)</p></div>
-</li>
-<li id="actor-025" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Lebanese security sources</strong> <span class="actor-role">Security sources in Lebanon</span> <em class="actor-anonymous">(anonymous)</em> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-008">cluster 8</a>: Reported that an Israeli strike near Baalbeck killed a Palestinian Islamic Jihad commander, Wael Mahmoud Abd al-Halim, along with his daughter. (<a href="#src-006">src-006</a>)</p></div>
-</li>
-<li id="actor-026" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Hezbollah</strong> <span class="actor-role">Iran-backed Lebanese militant group</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-008">cluster 8</a>: Announced it launched an explosive drone at an Iron Dome air defence position in the Galilee area of northern Israel and carried out other attacks on Israeli forces in Lebanon. (<a href="#src-006">src-006</a>)</p></div>
-</li>
-<li id="actor-027" class="actor" data-clusters="cluster-pc-007">
-  <div class="actor-header"><strong>Israeli military</strong> <span class="actor-role">Israel Defense Forces</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-007">cluster 7</a>: Said it killed commander Wael Mahmoud Abd al-Halim in a strike after taking steps to &#x27;mitigate the risk of harm to civilians,&#x27; reported striking more than 30 Hezbollah sites in southern Lebanon in the previous 24 hours, and warned residents of three villages to leave their homes. <em class="actor-verbatim">&ldquo;&quot;mitigate the risk of harm to civilians&quot;&rdquo;</em> (<a href="#src-006">src-006</a>)</p></div>
-</li>
-<li id="actor-028" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Lebanon&#x27;s health ministry</strong> <span class="actor-role">Ministry of Public Health of Lebanon</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-008">cluster 8</a>: Reported that the death toll in Lebanon had risen to 3,020 people, among them 619 women, children, and healthcare workers. (<a href="#src-006">src-006</a>)</p></div>
-</li>
-<li id="actor-029" class="actor" data-clusters="cluster-pc-007">
-  <div class="actor-header"><strong>Israeli authorities</strong> <span class="actor-role">Authorities of the State of Israel</span> <em class="actor-anonymous">(anonymous)</em> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-007">cluster 7</a>: Reported that 18 soldiers have been killed by Hezbollah attacks or while operating in south Lebanon since March 2, in addition to a contractor, and that Hezbollah attacks have killed two civilians in northern Israel. (<a href="#src-006">src-006</a>)</p></div>
-</li>
-<li id="actor-031" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Nikos Christodoulides</strong> <span class="actor-role">President of Cyprus</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Said Israel had not informed Nicosia of its plans to act against the flotilla. (<a href="#src-008">src-008</a>)</p></div>
-</li>
-<li id="actor-032" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Kaja Kallas</strong> <span class="actor-role">EU High Representative for Foreign Policy</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-005">cluster 5</a>: States it is high time to move from deadlock to delivery and that extremisms and violence carry consequences. <em class="actor-verbatim">&ldquo;&quot;high time we move from deadlock to delivery. Extremisms and violence carry consequences.&quot;&rdquo;</em> (<a href="#src-009">src-009</a>)</p></div>
-</li>
-<li id="actor-033" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Gideon Sa&#x27;ar</strong> <span class="actor-role">Foreign Minister of Israel</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-034" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Peace Now</strong> <span class="actor-role">Israeli NGO</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-035" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Lynn Boylan</strong> <span class="actor-role">Spokeswoman for the Left Group in the European Parliament, from Ireland</span> <span class="actor-type">legislature</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-005">cluster 5</a>: Insists the EU needs a Union-wide ban on illegal settlement goods, suspension of the EU-Israel Association Agreement, and a two-way embargo. <em class="actor-verbatim">&ldquo;&quot;a Union-wide ban on illegal settlement goods, suspension of the EU-Israel Association Agreement and a two-way embargo.&quot;&rdquo;</em> (<a href="#src-009">src-009</a>)</p></div>
-</li>
-<li id="actor-036" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>EU Commission</strong> <span class="actor-role">Executive body of the European Union</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-005">cluster 5</a>: Says it neither commits nor refuses to present a proposal to ban trade with Israeli settlements. <em class="actor-verbatim">&ldquo;&quot;neither commits nor refuses to present a proposal to ban trade with Israeli settlements, as some countries have demanded.&quot;&rdquo;</em> (<a href="#src-009">src-009</a>)</p></div>
-</li>
-<li id="actor-037" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>Mohammad Rahayal</strong> <span class="actor-role">Palestinian metal trader and resident of Al-Eizariya</span> <span class="actor-type">affected_community</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-006">cluster 6</a>: Describes the demolition of his family&#x27;s shops and his own warehouse, stating he has no alternative livelihood and fears the project will leave nothing for Palestinians. <em class="actor-verbatim">&ldquo;&quot;Hier war der Gemüseladen, hier ein Elektromarkt, eine Fleischerei, ein Supermarkt&quot; ... &quot;Mein ganzes Leben arbeite ich für mein Geschäft, damit ich mich und meine Kinder ernähren kann. In Israel können wir nicht arbeiten, im Westjordanland gibt es keine Arbeit, die Wirtschaft liegt am Boden. Wo sollen wir hin? Es gibt keine Alternative.&quot;&rdquo;</em> (<a href="#src-010">src-010</a>)</p></div>
-</li>
-<li id="actor-038" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>Bezalel Smotrich</strong> <span class="actor-role">Israeli Finance Minister</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-006">cluster 6</a>: Said the E1 project should create facts on the ground and bury the dream of a Palestinian state. <em class="actor-verbatim">&ldquo;&quot;begraben&quot;&rdquo;</em> (<a href="#src-010">src-010</a>)</p></div>
-</li>
-<li id="actor-039" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>COGAT</strong> <span class="actor-role">Israeli authority responsible for administration in the occupied West Bank</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-006">cluster 6</a>: States the demolished buildings were constructed without permits. (<a href="#src-010">src-010</a>)</p></div>
-</li>
-<li id="actor-040" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>Yonathan Mizrahi</strong> <span class="actor-role">Member of Israeli NGO Peace Now</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-006">cluster 6</a>: Warns that the E1 project&#x27;s goal is the expulsion of Palestinians and the creation of an area for Israelis with as few Palestinians as possible. <em class="actor-verbatim">&ldquo;&quot;Die Straße zeigt, dass es bei E1 nicht nur um mehr Häuser für Israelis im Westjordanland geht. Sondern darum, Israelis von Palästinensern abzuschirmen&quot; ... &quot;Es geht darum, einen Bereich für Israelis mit so wenig Palästinensern wie möglich zu kreieren.&quot;&rdquo;</em> (<a href="#src-010">src-010</a>)</p></div>
-</li>
-<li id="actor-041" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>Fahed al-Jabary</strong> <span class="actor-role">Owner of a demolished car wash in Al-Eizariya</span> <span class="actor-type">affected_community</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-006">cluster 6</a>: Vows to remain on his land and rebuild even if the authorities demolish it again, holding court documents from his failed legal challenge. <em class="actor-verbatim">&ldquo;&quot;Sie entscheiden ja sowieso, was sie wollen&quot; ... &quot;Aber wir bleiben hier, so Gott will. Wir bleiben standhaft. Und selbst wenn sie wieder abreißen, bauen wir wieder auf.&quot;&rdquo;</em> (<a href="#src-010">src-010</a>)</p></div>
-</li>
-<li id="actor-042" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Park Il</strong> <span class="actor-role">South Korean Foreign Ministry Spokesperson</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-009">cluster 9</a>: States the government requested through its embassy in Israel that Israeli authorities prioritize the safety of the detained national and will continue to provide consular assistance. <em class="actor-verbatim">&ldquo;&quot;Shortly after becoming aware of the incident, we requested through the South Korean Embassy in Israel that the Israeli authorities take necessary measures by prioritizing the safety of our national&quot; ... &quot;The foreign ministry will continue to actively provide necessary consular assistance to our nationals.&quot;&rdquo;</em> (<a href="#src-011">src-011</a>)</p></div>
-</li>
-<li id="actor-043" class="actor" data-clusters="cluster-pc-010">
-  <div class="actor-header"><strong>U.S. State Department</strong> <span class="actor-role">Government department</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-010">cluster 10</a>: Warned of potential &#x27;consequences&#x27; for those supporting the flotilla and labeled it &#x27;pro-Hamas,&#x27; signaling U.S. political support for Israel&#x27;s action. (<a href="#src-019">src-019</a>)</p></div>
-</li>
-<li id="actor-045" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Government of Sweden</strong> <span class="actor-role">National government</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-002">cluster 2</a>: Expresses concern for the safety of its citizens and calls for respect for international law and freedom of navigation. (<a href="#src-022">src-022</a>)</p></div>
-</li>
-<li id="actor-047" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Germany and Italy</strong> <span class="actor-role">National governments</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-002">cluster 2</a>: Expressed doubts about the legality of Israel&#x27;s interception under international law and admonished Israel in a joint statement. (<a href="#src-027">src-027</a>)</p></div>
-</li>
-</ol>
+<p class="actors-meta">38 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<div class="actors-tabs" role="tablist">
+<button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">38</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">19</span></button><button class="actor-tab" type="button" data-type-target="legislature"><span class="actor-tab-name">LEGISLATURE</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITARY</span> <span class="actor-tab-count">5</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">8</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONAL ORG</span> <span class="actor-tab-count">3</span></button><button class="actor-tab" type="button" data-type-target="affected_community"><span class="actor-tab-name">AFFECTED COMMUNITY</span> <span class="actor-tab-count">2</span></button>
+</div>
+<div class="actor-card-grid">
+<article id="actor-007" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Benjamin Netanyahu</strong>
+    <span class="actor-card-src-count">4 SRC</span>
+  </div>
+  <p class="actor-card-role">Prime Minister of Israel</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-003" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Israel&#x27;s Ministry of Foreign Affairs</strong>
+    <span class="actor-card-src-count">4 SRC</span>
+  </div>
+  <p class="actor-card-role">Israeli Ministry of Foreign Affairs</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+</article>
+<article id="actor-008" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Recep Tayyip Erdogan</strong>
+    <span class="actor-card-src-count">3 SRC</span>
+  </div>
+  <p class="actor-card-role">President of Turkey</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-020">src-020</a></div>
+</article>
+<article id="actor-010" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Micheál Martin</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Taoiseach (Prime Minister) of Ireland</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-026">src-026</a></div>
+</article>
+<article id="actor-005" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">President Catherine Connolly</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">President of Ireland</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+</article>
+<article id="actor-023" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Turkish Ministry of Foreign Affairs</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Ministry of Foreign Affairs of Turkey</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-029">src-029</a></div>
+</article>
+<article id="actor-011" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Basem Naim</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Hamas official</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+</article>
+<article id="actor-038" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Bezalel Smotrich</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Israeli Finance Minister</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
+</article>
+<article id="actor-002" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Foreign ministers of Turkiye, Spain, Jordan, Pakistan, Bangladesh, Brazil, Indonesia, Colombia, Libya, and the Maldives</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Foreign ministers of 10 countries</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+</article>
+<article id="actor-047" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Germany and Italy</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">National governments</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-027">src-027</a></div>
+</article>
+<article id="actor-033" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Gideon Sa&#x27;ar</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Foreign Minister of Israel</p>
+    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-045" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Government of Sweden</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">National government</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-022">src-022</a></div>
+</article>
+<article id="actor-029" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Israeli authorities <em class="actor-anonymous">(anonymous)</em></strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Authorities of the State of Israel</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+</article>
+<article id="actor-014" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">José Manuel Albares</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Spanish Minister of Foreign Affairs</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-025" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Lebanese security sources <em class="actor-anonymous">(anonymous)</em></strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Security sources in Lebanon</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+</article>
+<article id="actor-028" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Lebanon&#x27;s health ministry</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Ministry of Public Health of Lebanon</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+</article>
+<article id="actor-031" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Nikos Christodoulides</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">President of Cyprus</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+</article>
+<article id="actor-042" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Park Il</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">South Korean Foreign Ministry Spokesperson</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-043" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">U.S. State Department</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Government department</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-019">src-019</a></div>
+</article>
+<article id="actor-035" class="actor-card" data-actor-type="legislature">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Lynn Boylan</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Spokeswoman for the Left Group in the European Parliament, from Ireland</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-024" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Avichai Adrai</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Arabic-language spokesperson for the Israeli military</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-007">src-007</a></div>
+</article>
+<article id="actor-026" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Hezbollah</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Iran-backed Lebanese militant group</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-024">src-024</a></div>
+</article>
+<article id="actor-039" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">COGAT</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Israeli authority responsible for administration in the occupied West Bank</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
+</article>
+<article id="actor-017" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Forces of Marshal Haftar</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Libyan National Army under Marshal Khalifa Haftar</p>
+    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-027" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Israeli military</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Israel Defense Forces</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+</article>
+<article id="actor-001" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Global Sumud Flotilla organisers</strong>
+    <span class="actor-card-src-count">5 SRC</span>
+  </div>
+  <p class="actor-card-role">Organisers of the Gaza aid flotilla</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-004" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Margaret Connolly</strong>
+    <span class="actor-card-src-count">4 SRC</span>
+  </div>
+  <p class="actor-card-role">Irish doctor and sister of President Catherine Connolly</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-026">src-026</a></div>
+</article>
+<article id="actor-021" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ahmet Söylemez</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Activist on the boat &#x27;L&#x27;ark&#x27;</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-022" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mehmet Yasir Cebeci</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Psychologist and activist on the boat &#x27;Girolama&#x27;</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-034" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Peace Now</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Israeli NGO</p>
+    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-016" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Saif Abukeshek</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">One of the leaders of the flotilla, Spanish-Palestinian activist</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-040" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Yonathan Mizrahi</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Member of Israeli NGO Peace Now</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
+</article>
+<article id="actor-020" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Özkan Özer</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Educator and activist on the boat &#x27;Munki&#x27;</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-036" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">EU Commission</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Executive body of the European Union</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-032" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Kaja Kallas</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">EU High Representative for Foreign Policy</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-013" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">UN</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">United Nations</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+</article>
+<article id="actor-041" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Fahed al-Jabary</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Owner of a demolished car wash in Al-Eizariya</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
+</article>
+<article id="actor-037" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mohammad Rahayal</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Palestinian metal trader and resident of Al-Eizariya</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
+</article>
+</div>
 <script>
 (function() {
-  const list = document.querySelector('.actor-list');
-  const showAll = document.getElementById('actors-show-all');
-  if (!list || !showAll) return;
-  function applyFilter() {
-    const m = (window.location.hash || '').match(/^#cluster-(\S+)$/);
-    if (!m) {
-      list.querySelectorAll('.actor').forEach(li => { li.hidden = false; });
-      showAll.hidden = true;
-      return;
-    }
-    const target = 'cluster-' + m[1];
-    list.querySelectorAll('.actor').forEach(li => {
-      const tags = (li.dataset.clusters || '').split(/\s+/);
-      li.hidden = !tags.includes(target);
+  const section = document.getElementById('actors-section');
+  if (!section) return;
+  const tabs = section.querySelectorAll('.actor-tab');
+  const cards = section.querySelectorAll('.actor-card');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.typeTarget || 'all';
+      cards.forEach(card => {
+        card.hidden = (target !== 'all' && card.dataset.actorType !== target);
+      });
+      tabs.forEach(t => t.classList.toggle('actor-tab--active', t === tab));
     });
-    showAll.hidden = false;
-  }
-  showAll.addEventListener('click', () => {
-    history.pushState('', document.title, window.location.pathname);
-    applyFilter();
   });
-  window.addEventListener('hashchange', applyFilter);
-  applyFilter();
 })();
 </script>
 </section>
@@ -1034,6 +1302,10 @@ footer a { color: #000; text-decoration: underline; }
   <p class="source-summary">Reports that Israeli forces intercepted 41 of 51 boats in the Global Sumud Flotilla, with 10 still sailing 121 nautical miles from Gaza. Notes a joint statement by foreign ministers of 10 countries condemning the interception as a violation of international law, and highlights the detention of Irish President Catherine Connolly&#x27;s sister, Margaret Connolly.</p>
   <p class="source-bias-note"><em>Qatar-funded, strong Global South coverage</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Global Sumud Flotilla organisers</a>, <a href="#actor-002">Foreign ministers of Turkiye, Spain, Jordan, Pakistan, Bangladesh, Brazil, Indonesia, Colombia, Libya, and the Maldives</a>, <a href="#actor-003">Israel&#x27;s Ministry of Foreign Affairs</a>, <a href="#actor-004">Margaret Connolly</a>, <a href="#actor-005">President Catherine Connolly</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Global Sumud Flotilla organisers</a></strong> <span class="actor-role">Organisers of the Gaza aid flotilla</span><p class="source-quote-position">States that Israeli forces raided 41 of their boats in the eastern Mediterranean Sea while 10 vessels continue to sail towards Gaza.</p></li><li class="source-quote-entry"><strong><a href="#actor-002">Foreign ministers of Turkiye, Spain, Jordan, Pakistan, Bangladesh, Brazil, Indonesia, Colombia, Libya, and the Maldives</a></strong> <span class="actor-role">Foreign ministers of 10 countries</span><p class="source-quote-position">Describe Israeli forces&#x27; actions as blatant violations of international law and international humanitarian law, express serious concern for civilian participants, and call for the immediate release of all detained activists.</p></li><li class="source-quote-entry"><strong><a href="#actor-003">Israel&#x27;s Ministry of Foreign Affairs</a></strong> <span class="actor-role">Israeli Ministry of Foreign Affairs</span><p class="source-quote-position">Directed the flotilla to abandon its mission, stating &#x27;Change course and turn back immediately.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Change course and turn back immediately.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-004">Margaret Connolly</a></strong> <span class="actor-role">Irish doctor and sister of President Catherine Connolly</span><p class="source-quote-position">Was among those &#x27;illegally kidnapped&#x27; by Israel, according to organisers.</p></li><li class="source-quote-entry"><strong><a href="#actor-005">President Catherine Connolly</a></strong> <span class="actor-role">President of Ireland</span><p class="source-quote-position">Said the news of her sister&#x27;s detention was &#x27;upsetting&#x27; and expressed worry about her sister and her colleagues on board.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;I&#x27;m very worried about her, and I&#x27;m also very concerned about her colleagues on board.&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 <li id="src-019" class="source">
   <div class="source-header"><span class="source-id">[19]</span> <a class="source-headline" href="https://www.aljazeera.com/news/2026/5/1/gaza-aid-flotilla-vessels-taken-to-crete-after-israeli-interception" target="_blank" rel="noopener">Gaza aid flotilla vessels taken to Crete after Israeli interception</a></div>
@@ -1041,6 +1313,10 @@ footer a { color: #000; text-decoration: underline; }
   <p class="source-summary">Reports strong criticism from Turkey, Spain, Germany, and Italy who call the operation illegal and a breach of international law, while noting the U.S. State Department warned of &#x27;consequences&#x27; for supporters and labeled the flotilla &#x27;pro-Hamas&#x27;.</p>
   <p class="source-bias-note"><em>Qatar-funded, strong Global South coverage</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-043">U.S. State Department</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-043">U.S. State Department</a></strong> <span class="actor-role">Government department</span><p class="source-quote-position">Warned of potential &#x27;consequences&#x27; for those supporting the flotilla and labeled it &#x27;pro-Hamas,&#x27; signaling U.S. political support for Israel&#x27;s action.</p></li></ul>
+  </details>
 </li>
 <li id="src-024" class="source">
   <div class="source-header"><span class="source-id">[24]</span> <a class="source-headline" href="https://www.aljazeera.com/news/2026/4/26/israel-issues-forced-evacuation-orders-for-southern-lebanon-in-escalation" target="_blank" rel="noopener">Israel issues forced evacuation orders for southern Lebanon in escalation after ceasefire</a></div>
@@ -1048,6 +1324,10 @@ footer a { color: #000; text-decoration: underline; }
   <p class="source-summary">Reports on new mandatory evacuation orders for seven towns beyond Israel&#x27;s declared buffer zone during a U.S.-brokered ceasefire, with Hezbollah rejecting responsibility and citing over 500 alleged Israeli violations.</p>
   <p class="source-bias-note"><em>Qatar-funded, strong Global South coverage</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-026">Hezbollah</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-026">Hezbollah</a></strong> <span class="actor-role">Iran-backed Lebanese militant group</span><p class="source-quote-position">Rejected responsibility for the ceasefire, saying its attacks were a response to more than 500 alleged Israeli violations.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1069,6 +1349,10 @@ footer a { color: #000; text-decoration: underline; }
   <div class="source-meta"><span>Saudi Arabia</span> &middot; <span>ar</span></div>
   <p class="source-summary">Provides a regional Arab perspective linking the flotilla interception to broader UNRWA funding disputes and warnings of famine in Gaza, quoting the Israeli foreign ministry&#x27;s characterization of the flotilla as a &#x27;political provocation&#x27; serving Hamas.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Israel&#x27;s Ministry of Foreign Affairs</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Israel&#x27;s Ministry of Foreign Affairs</a></strong> <span class="actor-role">Israeli Ministry of Foreign Affairs</span><p class="source-quote-position">Accuses flotilla organizers of a &#x27;political provocation&#x27; that serves Hamas and insists on preventing any breach of the naval blockade.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1080,6 +1364,10 @@ footer a { color: #000; text-decoration: underline; }
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-18</span></div>
   <p class="source-summary">Provides detailed timeline of the interception, reporting that Israeli commandos boarded boats in broad daylight 250 nautical miles from Gaza, with 41 of 51 boats seized and 10 still sailing. Includes Netanyahu&#x27;s praise for the operation, Erdogan&#x27;s condemnation, Irish Taoiseach Micheál Martin calling it &#x27;absolutely unacceptable,&#x27; and Hamas official Basem Naim accusing Israel of &#x27;state terrorism.&#x27; Notes the Israeli foreign ministry&#x27;s claim that the flotilla serves Hamas and obstructs Trump&#x27;s peace plan, and includes UN data on aid access restrictions.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Global Sumud Flotilla organisers</a>, <a href="#actor-007">Benjamin Netanyahu</a>, <a href="#actor-008">Recep Tayyip Erdogan</a>, <a href="#actor-005">President Catherine Connolly</a>, <a href="#actor-010">Micheál Martin</a>, <a href="#actor-011">Basem Naim</a>, <a href="#actor-003">Israel&#x27;s Ministry of Foreign Affairs</a>, <a href="#actor-013">UN</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Global Sumud Flotilla organisers</a></strong> <span class="actor-role">Organisers of the Gaza aid flotilla</span><p class="source-quote-position">Called the interception &#x27;another illegal, high-seas aggression,&#x27; demanded safe passage for their &#x27;legal, non-violent humanitarian mission,&#x27; and urged governments to stop &#x27;these illegal acts or piracy meant to maintain Israel&#x27;s genocidal siege on Gaza.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;We demand safe passage for our legal, non-violent humanitarian mission. Governments must act now to stop these illegal acts or piracy meant to maintain Israel&#x27;s genocidal siege on Gaza.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Israel&#x27;s Ministry of Foreign Affairs</a></strong> <span class="actor-role">Israeli Ministry of Foreign Affairs</span><p class="source-quote-position">Called the flotilla &#x27;a provocation for the sake of provocation: another so-called &#x27;humanitarian aid flotilla&#x27; with no humanitarian aid,&#x27; claimed two violent Turkish groups were involved, and said the purpose was to &#x27;serve Hamas, to divert attention from Hamas&#x27;s refusal to disarm, and to obstruct progress on President Trump&#x27;s peace plan.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Once again, a provocation for the sake of provocation: another so-called &#x27;humanitarian aid flotilla&#x27; with no humanitarian aid.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-005">President Catherine Connolly</a></strong> <span class="actor-role">President of Ireland</span><p class="source-quote-position">Said she had not spoken to her sister Margaret, had no details about the interception, and stated &#x27;It seems like this happened in international waters and it&#x27;s a cause of worry really, and I&#x27;m very proud of my sister but I&#x27;m worried about her.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;It seems like this happened in international waters and it&#x27;s a cause of worry really, and I&#x27;m very proud of my sister but I&#x27;m worried about her.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-007">Benjamin Netanyahu</a></strong> <span class="actor-role">Prime Minister of Israel</span><p class="source-quote-position">Said the raid was &#x27;effectively neutralizing a malicious plan designed to break the isolation we have imposed on Hamas terrorists in Gaza&#x27; and congratulated naval forces on &#x27;doing an outstanding job.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;effectively neutralizing a malicious plan designed to break the isolation we have imposed on Hamas terrorists in Gaza&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-008">Recep Tayyip Erdogan</a></strong> <span class="actor-role">President of Turkey</span><p class="source-quote-position">Condemned in the strongest terms Israel&#x27;s &#x27;piracy and banditry&#x27; against the &#x27;voyagers of hope.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;piracy and banditry&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Micheál Martin</a></strong> <span class="actor-role">Taoiseach (Prime Minister) of Ireland</span><p class="source-quote-position">Called the interception &#x27;absolutely unacceptable&#x27; and &#x27;wrong,&#x27; adding that people had a right to protest and take part in a mission to highlight the &#x27;shocking&#x27; humanitarian situation in Gaza.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;absolutely unacceptable&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-011">Basem Naim</a></strong> <span class="actor-role">Hamas official</span><p class="source-quote-position">Accused Israel of &#x27;state terrorism and systematic undermining of the entire international order.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;state terrorism and systematic undermining of the entire international order&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-013">UN</a></strong> <span class="actor-role">United Nations</span><p class="source-quote-position">Reported that many displaced families in Gaza still shelter in overcrowded tents or severely damaged structures, access to basic services remains limited, and humanitarian operations continue to be undermined by restrictions on critical spare parts and essential inputs.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1091,6 +1379,10 @@ footer a { color: #000; text-decoration: underline; }
   <div class="source-meta"><span>Germany</span> &middot; <span>de</span> &middot; <span>2026-04-01</span></div>
   <p class="source-summary">Reports that Germany and Italy expressed doubts about the legality of Israel&#x27;s interception under international law and admonished Israel, providing a key European diplomatic reaction.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-047">Germany and Italy</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-047">Germany and Italy</a></strong> <span class="actor-role">National governments</span><p class="source-quote-position">Expressed doubts about the legality of Israel&#x27;s interception under international law and admonished Israel in a joint statement.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1102,6 +1394,10 @@ footer a { color: #000; text-decoration: underline; }
   <div class="source-meta"><span>Spain</span> &middot; <span>es</span> &middot; <span>2026-05-18</span></div>
   <p class="source-summary">Reports from a Spanish perspective that at least 10-20 Spanish nationals are among those detained after Israeli forces boarded approximately 30 of 54 boats near Cyprus. Details the Spanish foreign minister&#x27;s urgent summons of the Israeli chargé d&#x27;affaires for a &#x27;formal and energetic protest,&#x27; describes the flotilla&#x27;s tactical preparations including decentralized navigation in 13 groups, and notes internal disagreements among activists about whether the mission&#x27;s purpose is to challenge the Zionist establishment, break the siege, or reach Gaza&#x27;s coast. Also reports that a parallel land convoy has been stopped in Libya by forces loyal to Marshal Haftar.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-014">José Manuel Albares</a>, <a href="#actor-007">Benjamin Netanyahu</a>, <a href="#actor-003">Israel&#x27;s Ministry of Foreign Affairs</a>, <a href="#actor-016">Saif Abukeshek</a>, <a href="#actor-004">Margaret Connolly</a>, <a href="#actor-017">Forces of Marshal Haftar</a>, <a href="#actor-001">Global Sumud Flotilla organisers</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Global Sumud Flotilla organisers</a></strong> <span class="actor-role">Organisers of the Gaza aid flotilla</span><p class="source-quote-position">Denounced that the naval interception occurred in parallel with an &#x27;aggressive strategy of containment on land&#x27; and that eastern Libyan authorities, under political pressure from Egypt, sent military forces to block the humanitarian route toward the Rafah crossing.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;La interceptación naval de la flotilla ha ocurrido en paralelo a la agresiva estrategia de contención en tierra, donde el Convoy Terrestre de la Global Sumud, fue detenida cerca de Sirte, en Libia. Las autoridades del este de Libia, actuando bajo la presión política de Egipto, han enviado fuerzas militares a bloquear la ruta humanitaria hacia el paso de Rafah.&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Israel&#x27;s Ministry of Foreign Affairs</a></strong> <span class="actor-role">Israeli Ministry of Foreign Affairs</span><p class="source-quote-position">Dismissed the flotilla as a new &#x27;provocation for the sake of provoking.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;provocación por el simple hecho de provocar&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-004">Margaret Connolly</a></strong> <span class="actor-role">Irish doctor and sister of President Catherine Connolly</span><p class="source-quote-position">Before the interception, called on EU governments, stating &#x27;We have come too far. We can hold the Irish government responsible if we are intercepted. Let&#x27;s make the European Union ashamed of its complicity.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Hemos llegado demasiado lejos. Podemos responsabilizar al Gobierno irlandés si somos interceptados. Hagamos que la Unión Europea se avergüence de su complicidad.&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-007">Benjamin Netanyahu</a></strong> <span class="actor-role">Prime Minister of Israel</span><p class="source-quote-position">Congratulated soldiers for &#x27;neutralizing a malicious plan designed to break the isolation of Hamas terrorists in Gaza&#x27; and mocked that the interception had &#x27;less visibility than our enemies expected.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;neutralizar un plan malicioso diseñado para romper el aislamiento a los terroristas de Hamás en Gaza&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-014">José Manuel Albares</a></strong> <span class="actor-role">Spanish Minister of Foreign Affairs</span><p class="source-quote-position">Summoned the Israeli chargé d&#x27;affaires to convey the Spanish government&#x27;s &#x27;formal and energetic protest&#x27; over the illegal detention of a flotilla he described as &#x27;humanitarian,&#x27; and demanded the immediate release of those detained.</p></li><li class="source-quote-entry"><strong><a href="#actor-016">Saif Abukeshek</a></strong> <span class="actor-role">One of the leaders of the flotilla, Spanish-Palestinian activist</span><p class="source-quote-position">Stated that Brazil, Turkey, and Spain opposed the illegality of the interception, and said &#x27;Israel acts this way because nobody opposes it and appeals to international law.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Brasil, Turquía y España se opusieron a la ilegalidad de la interceptación. Es parte de nuestro trabajo: queremos que los gobiernos se enfrenten a ello. Israel actúa así porque nadie se opone y apela al derecho internacional.&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li><li class="source-quote-entry"><strong><a href="#actor-017">Forces of Marshal Haftar</a></strong> <span class="actor-role">Libyan National Army under Marshal Khalifa Haftar</span><p class="source-quote-position">Stopped the parallel land convoy near Sirte and communicated that no foreign activists would be permitted to pass.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1113,6 +1409,10 @@ footer a { color: #000; text-decoration: underline; }
   <div class="source-meta"><span>Sweden</span> &middot; <span>en</span> &middot; <span>2026-04-01</span></div>
   <p class="source-summary">Official Swedish government statement expressing concern for its citizens on board and calling for respect for international law and freedom of navigation, contrasting with the U.S. position.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-045">Government of Sweden</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-045">Government of Sweden</a></strong> <span class="actor-role">National government</span><p class="source-quote-position">Expresses concern for the safety of its citizens and calls for respect for international law and freedom of navigation.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1125,6 +1425,10 @@ footer a { color: #000; text-decoration: underline; }
   <p class="source-summary">Reports from a Turkish perspective that 66 Turkish citizens are among the detained activists, with the Turkish Foreign Ministry condemning the interception as &#x27;a new act of piracy.&#x27; Provides on-the-ground accounts from three Turkish activists still sailing, including educator Özkan Özer who described Israeli warships and assault boats surrounding them and asked &#x27;Is there no one to stop this piracy?&#x27;, and notes that the flotilla participants had already planned next year&#x27;s actions while in Marmaris.</p>
   <p class="source-bias-note"><em>Major Turkish newspaper, Demiroren Media Group</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Global Sumud Flotilla organisers</a>, <a href="#actor-020">Özkan Özer</a>, <a href="#actor-021">Ahmet Söylemez</a>, <a href="#actor-022">Mehmet Yasir Cebeci</a>, <a href="#actor-023">Turkish Ministry of Foreign Affairs</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Global Sumud Flotilla organisers</a></strong> <span class="actor-role">Organisers of the Gaza aid flotilla</span><p class="source-quote-position">Announced that communication had been completely cut off with 39 boats in the flotilla after the Israeli military attack in international waters.</p></li><li class="source-quote-entry"><strong><a href="#actor-020">Özkan Özer</a></strong> <span class="actor-role">Educator and activist on the boat &#x27;Munki&#x27;</span><p class="source-quote-position">Described seeing Israeli warships and three assault boats surrounding them, stated that harassment by Israeli drones, ships, and boats began as soon as they left Turkish territorial waters, and asked &#x27;Is there no one to stop this piracy?&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Bu korsanlığa dur diyecek kimse yok mu&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li><li class="source-quote-entry"><strong><a href="#actor-021">Ahmet Söylemez</a></strong> <span class="actor-role">Activist on the boat &#x27;L&#x27;ark&#x27;</span><p class="source-quote-position">Reported seeing Israeli assault boats intercepting nearby vessels before they quickly moved away, and stated that the flotilla had already planned next year&#x27;s actions while in Marmaris, saying &#x27;Allah toppled Nemrut with a mosquito; no one can say we cannot defeat Israel with a 12-metre boat.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Allah Nemrut&#x27;u bir sivrisinekle devirdi, İsrail&#x27;i de 12 metrelik bir tekneyle mağlup edemeyeceğimizi kimse söyleyemez.&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li><li class="source-quote-entry"><strong><a href="#actor-022">Mehmet Yasir Cebeci</a></strong> <span class="actor-role">Psychologist and activist on the boat &#x27;Girolama&#x27;</span><p class="source-quote-position">Stated they were continuing their journey 300 kilometres from Gaza, that motivation among the 10 people on board was very high, and said &#x27;What matters is not the flotilla, but Gaza. Palestinians are being killed and oppressed every day.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Ne için mücadele ettiğimizi biliyoruz. Önemli olan filo değil, Gazze. Her gün öldürülen, zulme uğrayan Filistinliler var. Odaklanacaksak lütfen oraya odaklanalım.&quot;&rdquo;</em> <code class="source-quote-lang">tr</code></p></li><li class="source-quote-entry"><strong><a href="#actor-023">Turkish Ministry of Foreign Affairs</a></strong> <span class="actor-role">Ministry of Foreign Affairs of Turkey</span><p class="source-quote-position">Condemned the intervention against the Sumud Flotilla as &#x27;a new act of piracy,&#x27; stated that Israel&#x27;s attacks and intimidation policies cannot prevent the international community&#x27;s pursuit of justice and solidarity with the Palestinian people, and demanded the immediate cessation of the intervention and unconditional release of detained participants.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1137,6 +1441,10 @@ footer a { color: #000; text-decoration: underline; }
   <p class="source-summary">Reports that the Israeli military issued new evacuation orders for 12 towns in southern Lebanon, citing Hezbollah&#x27;s violation of the ceasefire agreement. Israeli army spokesperson Avichai Adrai warned residents to move at least 1,000 metres away and stated that anyone near Hezbollah elements endangers their life. Notes the context of renewed hostilities since March 2 following the assassination of Iran&#x27;s supreme leader, with approximately 3,000 killed in Lebanon since then.</p>
   <p class="source-bias-note"><em>Pan-LatAm digital news, strong in AR/MX/CO</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-024">Avichai Adrai</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-024">Avichai Adrai</a></strong> <span class="actor-role">Arabic-language spokesperson for the Israeli military</span><p class="source-quote-position">Stated that Hezbollah&#x27;s violation of the ceasefire agreement compels the army to act forcefully against it, and ordered residents of 12 towns to evacuate immediately to a distance of no less than 1,000 metres, warning that anyone near Hezbollah elements, facilities, or combat means endangers their life.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;La violación del acuerdo de alto el fuego por parte del grupo terrorista Hezbolá obliga al Ejército a actuar con fuerza contra él&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li></ul>
+  </details>
 </li>
 <li id="src-012" class="source">
   <div class="source-header"><span class="source-id">[12]</span> <a class="source-headline" href="https://www.infobae.com/america/agencias/2026/05/19/israel-intercepta-uno-de-los-diez-barcos-que-todavia-navegan-rumbo-a-gaza/" target="_blank" rel="noopener">Israel intercepta uno de los diez barcos que todavía navegan rumbo a Gaza</a></div>
@@ -1155,6 +1463,10 @@ footer a { color: #000; text-decoration: underline; }
   <p class="source-summary">Reports that Israel carried out airstrikes in southern Lebanon and Hezbollah launched new attacks on Israeli forces despite a 45-day ceasefire extension brokered by the US. Notes Lebanon&#x27;s death toll has passed 3,000, including 619 women, children, and healthcare workers. Details an Israeli strike near Baalbeck that killed a Palestinian Islamic Jihad commander and his daughter, and Hezbollah&#x27;s claim of launching an explosive drone at an Iron Dome position in Galilee. Includes Israeli military reports of striking over 30 Hezbollah sites in 24 hours.</p>
   <p class="source-bias-note"><em>English-language Japanese news (Atom format)</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-025">Lebanese security sources</a>, <a href="#actor-026">Hezbollah</a>, <a href="#actor-027">Israeli military</a>, <a href="#actor-028">Lebanon&#x27;s health ministry</a>, <a href="#actor-029">Israeli authorities</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-025">Lebanese security sources</a></strong> <span class="actor-role">Security sources in Lebanon</span><p class="source-quote-position">Reported that an Israeli strike near Baalbeck killed a Palestinian Islamic Jihad commander, Wael Mahmoud Abd al-Halim, along with his daughter.</p></li><li class="source-quote-entry"><strong><a href="#actor-026">Hezbollah</a></strong> <span class="actor-role">Iran-backed Lebanese militant group</span><p class="source-quote-position">Announced it launched an explosive drone at an Iron Dome air defence position in the Galilee area of northern Israel and carried out other attacks on Israeli forces in Lebanon.</p></li><li class="source-quote-entry"><strong><a href="#actor-027">Israeli military</a></strong> <span class="actor-role">Israel Defense Forces</span><p class="source-quote-position">Said it killed commander Wael Mahmoud Abd al-Halim in a strike after taking steps to &#x27;mitigate the risk of harm to civilians,&#x27; reported striking more than 30 Hezbollah sites in southern Lebanon in the previous 24 hours, and warned residents of three villages to leave their homes.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;mitigate the risk of harm to civilians&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-028">Lebanon&#x27;s health ministry</a></strong> <span class="actor-role">Ministry of Public Health of Lebanon</span><p class="source-quote-position">Reported that the death toll in Lebanon had risen to 3,020 people, among them 619 women, children, and healthcare workers.</p></li><li class="source-quote-entry"><strong><a href="#actor-029">Israeli authorities</a></strong> <span class="actor-role">Authorities of the State of Israel</span><p class="source-quote-position">Reported that 18 soldiers have been killed by Hezbollah attacks or while operating in south Lebanon since March 2, in addition to a contractor, and that Hezbollah attacks have killed two civilians in northern Israel.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1167,6 +1479,10 @@ footer a { color: #000; text-decoration: underline; }
   <p class="source-summary">Reports that Israel issued expulsion orders to a dozen towns and villages in southern Lebanon, with Israeli army Arabic-language spokesperson Avichay Adraee stating on X that Hezbollah&#x27;s violation of the ceasefire compelled the army to &#x27;act against it forcefully.&#x27; Orders residents to evacuate immediately to open areas at least 1,000 metres from the named towns, warning that anyone near Hezbollah elements endangers their life.</p>
   <p class="source-bias-note"><em>Independent, UK-based MENA focus</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-024">Avichai Adrai</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-024">Avichai Adrai</a></strong> <span class="actor-role">Arabic-language spokesperson for the Israeli military</span><p class="source-quote-position">Stated that Hezbollah&#x27;s violation of the ceasefire agreement compels the army to act forcefully, and ordered residents of 12 named towns to evacuate immediately to open areas at least 1,000 metres away, warning that anyone near Hezbollah elements, facilities, or combat endangers their life.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;To ensure your safety, you must evacuate your homes immediately and stay away from the villages and towns for a distance of no less than 1000 meters to open areas. Anyone present near Hezbollah elements, their facilities, and combat endangers their life.&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 <li id="src-015" class="source">
   <div class="source-header"><span class="source-id">[15]</span> <a class="source-headline" href="https://www.middleeasteye.net/live-blog/live-blog-update/morning-update-538" target="_blank" rel="noopener">Morning update</a></div>
@@ -1185,6 +1501,10 @@ footer a { color: #000; text-decoration: underline; }
   <p class="source-summary">Contrasts Israel&#x27;s security justification for the blockade with critics&#x27; view that it amounts to collective punishment, and reports Turkey&#x27;s characterization of the interception as an &#x27;act of piracy&#x27;.</p>
   <p class="source-bias-note"><em>US public radio, member-funded</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-008">Recep Tayyip Erdogan</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-008">Recep Tayyip Erdogan</a></strong> <span class="actor-role">President of Turkey</span><p class="source-quote-position">Called the interception an &#x27;act of piracy&#x27; and accused Israel of violating humanitarian principles and international law.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1196,6 +1516,10 @@ footer a { color: #000; text-decoration: underline; }
   <div class="source-meta"><span>Turkey</span> &middot; <span>tr</span></div>
   <p class="source-summary">Official Turkish government statement denouncing the interception as an &#x27;act of piracy&#x27; and a clear violation of international law, representing the strongest state-level condemnation from a regional power.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-023">Turkish Ministry of Foreign Affairs</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-023">Turkish Ministry of Foreign Affairs</a></strong> <span class="actor-role">Ministry of Foreign Affairs of Turkey</span><p class="source-quote-position">Denounced the interception as an &#x27;act of piracy&#x27; and a clear violation of international law and the principle of freedom of navigation on the high seas.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1208,6 +1532,10 @@ footer a { color: #000; text-decoration: underline; }
   <p class="source-summary">Argues that the EU&#x27;s recent sanctions on a handful of violent Israeli settlers are a symbolic half-measure while the bloc continues to enable the settlement enterprise through trade. The piece details how the EU still refuses to suspend the EU-Israel Association Agreement or ban trade with settlements, despite an ICJ ruling and internal legal opinions, and notes that Germany and Italy blocked a push by Spain, Ireland, and Slovenia to suspend the agreement.</p>
   <p class="source-bias-note"><em>Quincy Institute, restraint-oriented foreign policy</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-032">Kaja Kallas</a>, <a href="#actor-007">Benjamin Netanyahu</a>, <a href="#actor-033">Gideon Sa&#x27;ar</a>, <a href="#actor-034">Peace Now</a>, <a href="#actor-035">Lynn Boylan</a>, <a href="#actor-036">EU Commission</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-007">Benjamin Netanyahu</a></strong> <span class="actor-role">Prime Minister of Israel</span><p class="source-quote-position">Slams the EU&#x27;s &#x27;moral bankruptcy,&#x27; asserting that Israel and the U.S. are doing Europe&#x27;s dirty work by fighting for civilization against jihadist lunatics.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;moral bankruptcy&quot; as &quot;Israel and the U.S. are doing Europe’s dirty work by fighting for civilization against jihadist lunatics in Iran and elsewhere.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-032">Kaja Kallas</a></strong> <span class="actor-role">EU High Representative for Foreign Policy</span><p class="source-quote-position">States it is high time to move from deadlock to delivery and that extremisms and violence carry consequences.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;high time we move from deadlock to delivery. Extremisms and violence carry consequences.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-033">Gideon Sa&#x27;ar</a></strong> <span class="actor-role">Foreign Minister of Israel</span><p class="source-quote-position">Calls the EU move arbitrary and political, without any basis.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;arbitrary and political, and without any basis.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-034">Peace Now</a></strong> <span class="actor-role">Israeli NGO</span><p class="source-quote-position">Describes Amana as one of the most powerful settler organizations.</p></li><li class="source-quote-entry"><strong><a href="#actor-035">Lynn Boylan</a></strong> <span class="actor-role">Spokeswoman for the Left Group in the European Parliament, from Ireland</span><p class="source-quote-position">Insists the EU needs a Union-wide ban on illegal settlement goods, suspension of the EU-Israel Association Agreement, and a two-way embargo.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;a Union-wide ban on illegal settlement goods, suspension of the EU-Israel Association Agreement and a two-way embargo.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-036">EU Commission</a></strong> <span class="actor-role">Executive body of the European Union</span><p class="source-quote-position">Says it neither commits nor refuses to present a proposal to ban trade with Israeli settlements.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;neither commits nor refuses to present a proposal to ban trade with Israeli settlements, as some countries have demanded.&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1230,6 +1558,10 @@ footer a { color: #000; text-decoration: underline; }
   <p class="source-summary">Reports that Israeli forces seized at least 39 of 51 boats of the Global Sumud Flotilla carrying humanitarian aid to Gaza, with over 420 activists from 39 countries aboard. Notes that the interception occurred off the coast of Cyprus outside Cypriot territorial waters, and that Cypriot President Nikos Christodoulides said Israel had not informed Nicosia of its plans. Includes Netanyahu&#x27;s praise for the commandos, Erdogan&#x27;s description of the interception as &#x27;piracy and banditry,&#x27; and the detention of Irish President Catherine Connolly&#x27;s sister Margaret Connolly.</p>
   <p class="source-bias-note"><em>Russian state media, included for transparency</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Global Sumud Flotilla organisers</a>, <a href="#actor-031">Nikos Christodoulides</a>, <a href="#actor-007">Benjamin Netanyahu</a>, <a href="#actor-008">Recep Tayyip Erdogan</a>, <a href="#actor-004">Margaret Connolly</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Global Sumud Flotilla organisers</a></strong> <span class="actor-role">Organisers of the Gaza aid flotilla</span><p class="source-quote-position">Stated that &#x27;military vessels are currently intercepting our fleet and Israel Occupation Forces are boarding the first of our boats in broad daylight&#x27; and later said Israeli troops had &#x27;illegally and violently&#x27; seized their ships and &#x27;abducted our volunteers.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;military vessels are currently intercepting our fleet and Israel Occupation Forces are boarding the first of our boats in broad daylight&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-004">Margaret Connolly</a></strong> <span class="actor-role">Irish doctor and sister of President Catherine Connolly</span><p class="source-quote-position">Was among the hundreds detained, according to the organisers.</p></li><li class="source-quote-entry"><strong><a href="#actor-007">Benjamin Netanyahu</a></strong> <span class="actor-role">Prime Minister of Israel</span><p class="source-quote-position">Praised &#x27;an outstanding job&#x27; by the commandos, claiming they were &#x27;effectively thwarting a malicious plan intended to break the isolation we are imposing on Hamas terrorists in Gaza.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;&quot;effectively thwarting a malicious plan intended to break the isolation we are imposing on Hamas terrorists in Gaza&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-008">Recep Tayyip Erdogan</a></strong> <span class="actor-role">President of Turkey</span><p class="source-quote-position">Described the interception of the flotilla as &#x27;piracy and banditry&#x27; and demanded that Israel release those detained, including more than 40 Turkish residents.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;piracy and banditry&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-031">Nikos Christodoulides</a></strong> <span class="actor-role">President of Cyprus</span><p class="source-quote-position">Said Israel had not informed Nicosia of its plans to act against the flotilla.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1241,6 +1573,10 @@ footer a { color: #000; text-decoration: underline; }
   <div class="source-meta"><span>Ireland</span> &middot; <span>en</span></div>
   <p class="source-summary">Reports Taoiseach Micheál Martin&#x27;s condemnation of the interception as a violation of international law and the detention of at least 10 Irish citizens including the Irish president&#x27;s sister, adding a high-profile diplomatic dimension.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-010">Micheál Martin</a>, <a href="#actor-004">Margaret Connolly</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-004">Margaret Connolly</a></strong> <span class="actor-role">Irish doctor and sister of President Catherine Connolly</span><p class="source-quote-position">Was among the detained Irish citizens on board the flotilla; her husband criticized the Irish government&#x27;s response as too slow.</p></li><li class="source-quote-entry"><strong><a href="#actor-010">Micheál Martin</a></strong> <span class="actor-role">Taoiseach (Prime Minister) of Ireland</span><p class="source-quote-position">Condemned Israel&#x27;s interception of the flotilla in international waters as a violation of international law and demanded the immediate release of those detained.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1253,6 +1589,10 @@ footer a { color: #000; text-decoration: underline; }
   <p class="source-summary">Reports on the ground from Al-Eizariya in the West Bank, where Israel has begun demolishing Palestinian businesses to make way for the E1 settlement project, which plans 3,400 new housing units. The piece features testimony from affected Palestinian business owners and an Israeli NGO warning that the project aims to bisect the West Bank and drive out Palestinians.</p>
   <p class="source-bias-note"><em>German public broadcaster ARD</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-037">Mohammad Rahayal</a>, <a href="#actor-038">Bezalel Smotrich</a>, <a href="#actor-039">COGAT</a>, <a href="#actor-040">Yonathan Mizrahi</a>, <a href="#actor-041">Fahed al-Jabary</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-037">Mohammad Rahayal</a></strong> <span class="actor-role">Palestinian metal trader and resident of Al-Eizariya</span><p class="source-quote-position">Describes the demolition of his family&#x27;s shops and his own warehouse, stating he has no alternative livelihood and fears the project will leave nothing for Palestinians.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Hier war der Gemüseladen, hier ein Elektromarkt, eine Fleischerei, ein Supermarkt&quot; ... &quot;Mein ganzes Leben arbeite ich für mein Geschäft, damit ich mich und meine Kinder ernähren kann. In Israel können wir nicht arbeiten, im Westjordanland gibt es keine Arbeit, die Wirtschaft liegt am Boden. Wo sollen wir hin? Es gibt keine Alternative.&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-038">Bezalel Smotrich</a></strong> <span class="actor-role">Israeli Finance Minister</span><p class="source-quote-position">Said the E1 project should create facts on the ground and bury the dream of a Palestinian state.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;begraben&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-039">COGAT</a></strong> <span class="actor-role">Israeli authority responsible for administration in the occupied West Bank</span><p class="source-quote-position">States the demolished buildings were constructed without permits.</p></li><li class="source-quote-entry"><strong><a href="#actor-040">Yonathan Mizrahi</a></strong> <span class="actor-role">Member of Israeli NGO Peace Now</span><p class="source-quote-position">Warns that the E1 project&#x27;s goal is the expulsion of Palestinians and the creation of an area for Israelis with as few Palestinians as possible.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Die Straße zeigt, dass es bei E1 nicht nur um mehr Häuser für Israelis im Westjordanland geht. Sondern darum, Israelis von Palästinensern abzuschirmen&quot; ... &quot;Es geht darum, einen Bereich für Israelis mit so wenig Palästinensern wie möglich zu kreieren.&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-041">Fahed al-Jabary</a></strong> <span class="actor-role">Owner of a demolished car wash in Al-Eizariya</span><p class="source-quote-position">Vows to remain on his land and rebuild even if the authorities demolish it again, holding court documents from his failed legal challenge.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Sie entscheiden ja sowieso, was sie wollen&quot; ... &quot;Aber wir bleiben hier, so Gott will. Wir bleiben standhaft. Und selbst wenn sie wieder abreißen, bauen wir wieder auf.&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1285,6 +1625,10 @@ footer a { color: #000; text-decoration: underline; }
   <p class="source-summary">Reports that Israeli forces seized the Gaza-bound aid boat Kyriakos X carrying South Korean activist Kim Dong-hyeon, who is now detained aboard an Israeli warship. The article includes the South Korean foreign ministry&#x27;s statement that it has requested Israeli authorities prioritize the activist&#x27;s safety and will provide consular assistance.</p>
   <p class="source-bias-note"><em>South Korean national news agency</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-042">Park Il</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-042">Park Il</a></strong> <span class="actor-role">South Korean Foreign Ministry Spokesperson</span><p class="source-quote-position">States the government requested through its embassy in Israel that Israeli authorities prioritize the safety of the detained national and will continue to provide consular assistance.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Shortly after becoming aware of the incident, we requested through the South Korean Embassy in Israel that the Israeli authorities take necessary measures by prioritizing the safety of our national&quot; ... &quot;The foreign ministry will continue to actively provide necessary consular assistance to our nationals.&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 <li id="src-014" class="source">
   <div class="source-header"><span class="source-id">[14]</span> <a class="source-headline" href="https://en.yna.co.kr/view/AEN20260519002200315" target="_blank" rel="noopener">Israeli forces seize humanitarian aid flotilla carrying S. Korean activist: civic group</a></div>
