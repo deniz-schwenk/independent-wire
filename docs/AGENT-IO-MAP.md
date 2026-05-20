@@ -424,7 +424,7 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 - **Reads (Bus):** `qa_corrected_article`, `final_sources`, `canonical_actors`, `perspective_clusters_synced`, `perspective_missing_positions`, `qa_problems_found`, `qa_corrections`, `qa_divergences`, `coverage_gaps_validated` — TopicBus. All inputs are post-prune + post-cleanup, so the `reader_note` source/country counts match what the rendered TP carries.
 - **Writes (Bus):** `bias_language_findings`, `bias_reader_note` — TopicBus
 - **Originarity check:**
-  - Fields the LLM produces: `language_bias.findings[]` (`excerpt`, `issue`, `explanation`), `reader_note`
+  - Fields the LLM produces: `language_bias.findings[]` (`excerpt`, `issue`, `explanation`, `finding_valid`), `reader_note`. The mandatory `finding_valid: bool` field (since 2026-05-19 commit `6f59fb4`) lets the agent self-retract a finding mid-draft when the `explanation` reveals the finding does not hold (excerpt not in `article_body`, legitimate-practice case, etc.). Retracted findings (`finding_valid: false`) persist in the TP JSON as the audit trail; the renderer drops them from the published HTML.
   - Fields the wrapper merges in deterministically: bias-card context assembled via `_build_bias_card_for_agent_input` and supplied as context (not echoed back).
   - No pass-through fields detected.
 
