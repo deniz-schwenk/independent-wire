@@ -124,7 +124,7 @@ Catalogued for future activation. 10-combination sweep against the 2026-05-05 ba
 
 ### H3.2.7 — Renderer-hygiene sweep ✅ Complete (2026-05-19/20)
 
-2026-05-19/20 — Renderer-hygiene sweep across published TPs. Seven issues fixed end-to-end: actor dedup per source; structured self-retraction of invalid bias findings; per-cluster quote dedup across actor lines; per-actor source-list moved from cluster cards into the Actors-section; the cluster-formation single-actor backlog activated by a production signal (DR Congo Health Minister with 6 quotes orphaned in tp-2026-05-19-003); coverage gaps and missing stakeholder voices consolidated under a unified renderer header with deterministic dedup; Actors-section refactored into a navigation table; verbatim quotes relocated to a third-level disclosure under each source.
+2026-05-19/20 — Renderer-hygiene sweep across published TPs. Seven issues fixed end-to-end: actor dedup per source; structured self-retraction of invalid bias findings; per-cluster quote dedup across actor lines; per-actor source-list moved from cluster cards into the Actors-section; the cluster-formation single-actor backlog activated by a production signal (DR Congo Health Minister with 6 quotes orphaned in tp-2026-05-19-003); coverage gaps and missing stakeholder voices consolidated under a unified renderer header with deterministic dedup; Actors-section refactored into a navigation table; verbatim quotes relocated to a third-level disclosure under each source. Single-voices bracket added 2026-05-20 (`4e7da5d`) as deterministic complement to the single-actor cluster backlog, surfacing structurally-central orphan actors in their own visually-distinguished section.
 
 ### H3.3 — Architecture-quality follow-ups (catalogued, queued)
 
