@@ -288,6 +288,16 @@ Schema implication: the QA agent's `article` output field is **optional** (not i
 
 In the production variant, `perspective_sync` does not run. The mirror stage still runs and produces `perspective_clusters_synced` as a 1:1 copy of `perspective_clusters` — render layers always read `perspective_clusters_synced`, never the unsynced version, regardless of variant.
 
+#### 4B.8b Single-voices bracket
+
+| Slot | Owner | Initial | Final | Visibility |
+|---|---|---|---|---|
+| `single_voices` | init (`derive_single_voices`, deterministic Python stage, runs after `consolidate_missing_coverage` and before `BiasLanguageStage`) | `{}` | `{position_label, summary, actors_stated, actors_reported, actors_mentioned, actor_ids, source_ids, counts}` — deterministic bracket of structurally-central orphan actors: each canonical actor absent from every `perspective_clusters_synced[].actor_ids[]` AND quoted by ≥ 2 unique sources is admitted with a tier derived from quotes (verbatim → stated; else position → reported; else mentioned). `position_label` / `summary` are fixed module-level constants. `counts` carries actors / sources / regions / languages. `optional_write=True` so legacy / replay paths that bypass the stage validate. | `tp`, `mcp` |
+
+The bracket sits structurally next to `perspective_clusters_synced[]`, not inside it: API / MCP / RSS consumers must be able to distinguish a real shared-position cluster (≥ 2 voices, agent-formed) from the deterministically-grouped bracket (disparate single-actor positions, ≥ 2 sources each). The bracket's DOM anchor is `id="single-voices"`, explicitly separate from `pc-NNN`. Empty `actor_ids[]` is equivalent to an absent slot — the renderer omits the section entirely.
+
+This slot is the deterministic complement to the strategic Perspective-prompt-rework tracked in `BACKLOG-CLUSTER-FORMATION-SINGLE-ACTOR.md`. The bracket doubles as a diagnostic: persistent ≥ 5 protagonist-class entries across multiple dossiers signals systematic over-rejection of single-actor positions by the agent and motivates activating the prompt-rework.
+
 #### 4B.9 Bias Detector phase
 
 | Slot | Owner | Initial | Final | Visibility |
@@ -384,6 +394,7 @@ TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
 17. compute_source_balance        — Python: aggregates final_sources into source_balance
 18. validate_coverage_gaps        — Python: filters merged_coverage_gaps against source_balance; populates coverage_gaps_validated
 18b. consolidate_missing_coverage  — Python: token-Jaccard (≥ 0.5) dedup of `perspective_missing_positions[].description` vs `coverage_gaps_validated[]`; populates `consolidated_missing_coverage` with `{missing_stakeholder_voices, missing_topic_dimensions}` (the two source slots persist unchanged as audit trail).
+18c. derive_single_voices          — Python: collects orphan actors (in `canonical_actors[]` but in no cluster's `actor_ids[]`) with ≥ 2 unique source_ids into a deterministically-grouped bracket; tier derived per actor from quotes (verbatim → stated, else position → reported, else mentioned). Writes `single_voices` `{position_label, summary, actors_stated, actors_reported, actors_mentioned, actor_ids, source_ids, counts}`.
 19. bias_language                 — Reads qa_corrected_article; populates bias_language_findings, bias_reader_note
 20. compose_transparency_card     — Python: assembles transparency_card from editor_selected_topic.selection_reason (cleaned), the parent RunBus's run_id and run_date, qa_problems_found, qa_corrections, and writer_article (as article_original) if qa modified anything
 
@@ -433,6 +444,7 @@ TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
 25. compute_source_balance        — Same as production stage 17
 26. validate_coverage_gaps        — Same as production stage 18
 26b. consolidate_missing_coverage  — Same as production stage 18b
+26c. derive_single_voices          — Same as production stage 18c
 27. bias_language                 — Same as production stage 19
 28. compose_transparency_card     — Same as production stage 20
 
