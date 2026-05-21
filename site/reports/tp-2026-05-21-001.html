@@ -404,6 +404,15 @@ details[open] summary::before {
   line-height: 1.55;
 }
 .coverage-limits li { margin: 0.25rem 0; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -756,10 +765,10 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
 </div>
 <p class="word-count">1,047 words</p>
 
-<h2>Perspectives &mdash; Position Clusters</h2>
+<h2>Perspectives &mdash; Positions</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
-  <a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>
+  <a class="actor-card-cluster-box" href="#pc-001">Position 1</a>
   <div class="card-header"><span class="card-actor">Ben-Gvir&#x27;s humiliation of detained flotilla activists reflects moral depravity and sadism at the highest levels of the Israeli government</span></div>
   <div class="card-position">Hamas, flotilla organizers, and Palestinian-aligned civil society actors characterize the video and treatment of activists as evidence of systemic cruelty and moral degradation among Israeli leaders, calling for ICC complaints and international accountability. They frame the episode not as an isolated act by one minister but as representative of a broader culture of abuse.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -769,7 +778,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">4 actors</a></span> &middot; <span>5 sources</span> &middot; <span>4 regions</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-002">
-  <a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a>
+  <a class="actor-card-cluster-box" href="#pc-002">Position 2</a>
   <div class="card-header"><span class="card-actor">Ben-Gvir&#x27;s conduct was unacceptable and contrary to Israel&#x27;s values, but Israel retains the right to enforce its naval blockade and deport the activists</span></div>
   <div class="card-position">Netanyahu, Saar, and the Israeli Foreign Ministry condemn Ben-Gvir&#x27;s personal behavior as damaging to Israel&#x27;s image and inconsistent with national norms, while simultaneously affirming Israel&#x27;s legal right to intercept flotillas they characterize as provocations by Hamas supporters and to deport detained activists swiftly.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -779,7 +788,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">3 actors</a></span> &middot; <span>9 sources</span> &middot; <span>5 regions</span> &middot; <span>4 languages</span></p>
 </div>
 <div class="card" id="pc-003">
-  <a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a>
+  <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
   <div class="card-header"><span class="card-actor">The treatment of detained activists violates human dignity and basic international norms, warranting strong diplomatic consequences including ambassador summonings and travel bans</span></div>
   <div class="card-position">A broad coalition of European, Australasian, and other governments condemns the treatment shown in Ben-Gvir&#x27;s video as degrading, shocking, and unacceptable, summoning Israeli ambassadors, demanding explanations and apologies, and in some cases imposing or seeking travel bans on Ben-Gvir. They frame the issue primarily as a violation of the dignity of their own citizens and of universal human rights standards.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -793,7 +802,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">18 actors</a></span> &middot; <span>8 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-004">
-  <a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a>
+  <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">Detained activists suffered systematic physical and psychological abuse including broken ribs, Taser use, rubber bullets, stress positions, and sexual harassment</span></div>
   <div class="card-position">Adalah and its lawyers documented widespread injuries and due-process violations among the approximately 428 detained activists, describing a pattern of criminal abuse and humiliation by Israeli authorities that extends beyond Ben-Gvir&#x27;s video to include physical violence during interception and detention.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -803,7 +812,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">2 actors</a></span> &middot; <span>6 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-005">
-  <a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a>
+  <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
   <div class="card-header"><span class="card-actor">European verbal condemnations are insufficient posturing and must be replaced by concrete punitive measures such as suspending the EU-Israel association agreement</span></div>
   <div class="card-position">Flotilla organizers and activist coordinators argue that diplomatic statements and ambassador summonings amount to empty gestures unless followed by tangible policy actions like trade agreement suspensions, and that European governments have consistently failed to condemn the underlying acts — such as the interception itself — while only objecting to the treatment of their own citizens.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -813,7 +822,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">2 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-006">
-  <a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a>
+  <a class="actor-card-cluster-box" href="#pc-006">Position 6</a>
   <div class="card-header"><span class="card-actor">The flotilla was a pro-terror provocation and its organizers deserve sanctions, not sympathy</span></div>
   <div class="card-position">The US Treasury Department designated four flotilla organizers as Hamas-linked and part of Muslim Brotherhood networks, with Treasury Secretary Scott Bessent describing them as &quot;pro-terror,&quot; while US Ambassador Huckabee called the flotilla a &quot;stupid stunt&quot; even as he condemned Ben-Gvir&#x27;s personal conduct. Israeli ministers Regev and Ben-Gvir labeled the activists &quot;terror supporters,&quot; framing the flotilla as a security threat rather than a humanitarian mission.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -827,7 +836,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">5 actors</a></span> &middot; <span>9 sources</span> &middot; <span>6 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-007">
-  <a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a>
+  <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">Israel&#x27;s interception of the flotilla in international waters constitutes illegal high-seas aggression that violates international law</span></div>
   <div class="card-position">Flotilla organizers, several governments including Turkey, Ireland, Spain, and South Korea, and some international law scholars argue that seizing vessels and detaining civilians in international waters lacks legal justification and constitutes piracy or unlawful aggression, questioning the legality of the blockade enforcement beyond Israeli territorial waters.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -841,7 +850,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">6 actors</a></span> &middot; <span>8 sources</span> &middot; <span>6 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-008">
-  <a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a>
+  <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">The UN demands dignified treatment and swift repatriation of all detained flotilla activists</span></div>
   <div class="card-position">UN spokesperson Dujarric and the broader UN system call for all detained activists to be treated with respect and dignity and returned to their home countries promptly, while noting that humanitarian conditions in Gaza remain dire with limited access to basic services.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -855,7 +864,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">2 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-009">
-  <a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a>
+  <a class="actor-card-cluster-box" href="#pc-009">Position 9</a>
   <div class="card-header"><span class="card-actor">Turkey is actively working to secure the safe return of its citizens and third-country nationals detained from the flotilla</span></div>
   <div class="card-position">Turkish Foreign Minister Fidan confirms Ankara is arranging special flights for the repatriation of Turkish citizens and participants from other countries, while the Turkish Foreign Ministry frames the episode as further evidence of the Netanyahu government&#x27;s violent and barbaric character.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -865,7 +874,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-009">2 actors</a></span> &middot; <span>5 sources</span> &middot; <span>4 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-010">
-  <a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a>
+  <a class="actor-card-cluster-box" href="#pc-010">Position 10</a>
   <div class="card-header"><span class="card-actor">The ICC should pursue arrest warrants against senior Israeli officials for their treatment of Palestinians and flotilla activists</span></div>
   <div class="card-position">The ICC prosecutor has requested arrest warrants for Ben-Gvir, Smotrich, and other Israeli officials, while Hamas calls for ICC complaints and civil society groups frame the abuse as part of a broader pattern of impunity that warrants international criminal accountability.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -880,19 +889,28 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
 </div>
 </div>
 
-<div class="card single-voices-bracket" id="single-voices">
-  <div class="card-header"><span class="card-actor">Single voices</span><span class="single-voices-bracket-tag">Bracket</span></div>
-  <div class="card-position">Actors with unique positions that cannot be grouped with other positions into a shared cluster, but are referenced by multiple sources and are therefore considered important to the dossier.</div>
+<details class="mentioned-actors-wrapper">
+  <summary>Mentioned Actors &mdash; <strong>10 noted</strong></summary>
+  <div class="mentioned-actors-body">
+<div class="card single-voices-bracket" id="mentioned-actors">
+  <div class="card-header"><span class="card-actor">Mentioned actors</span><span class="single-voices-bracket-tag">Bracket</span></div>
+  <div class="card-position">Actors named in the corpus who are not grouped into any of the documented positions. Listed here for transparency about who appears in the source material.</div>
   <div class="cluster-tier cluster-tier-actors_stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-029">Antonio Costa</a></strong> <span class="cluster-actor-role">European Council President</span> <span class="cluster-actor-type">international_org</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-010">Helen McEntee</a></strong> <span class="cluster-actor-role">Irish Foreign Minister</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-021">Hadja Lahbib</a></strong> <span class="cluster-actor-role">European Commissioner for Equality, Preparedness and Crisis Management</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-029">Antonio Costa</a></strong> <span class="cluster-actor-role">European Council President</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-044">Giuseppe Bettoni</a></strong> <span class="cluster-actor-role">Professeur de sciences politiques à l&#x27;université Tor Vergata de Rome</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-051">Britain&#x27;s foreign ministry</a></strong> <span class="cluster-actor-role">Foreign ministry of the United Kingdom</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-052">Anwar Gargash</a></strong> <span class="cluster-actor-role">UAE presidential advisor</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
-  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#single-voices">1 actor</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>1 language</span></p>
+  <div class="cluster-tier cluster-tier-actors_reported">
+    <h4 class="cluster-tier-label">Reported</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-032">Bezalel Smotrich</a></strong> <span class="cluster-actor-role">Israeli Finance Minister</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-056">Yuval Shany</a></strong> <span class="cluster-actor-role">International law expert</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-057">Robbie Sabel</a></strong> <span class="cluster-actor-role">International law expert</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-059">Pakistan Ministry of Foreign Affairs</a></strong> <span class="cluster-actor-role">Government body</span> <span class="cluster-actor-type">government</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#mentioned-actors">10 actors</a></span> &middot; <span>7 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
+  </div>
+</details>
 
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">50 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<p class="actors-meta">50 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
 <div class="actors-tabs" role="tablist">
 <button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">50</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">34</span></button><button class="actor-tab" type="button" data-type-target="judiciary"><span class="actor-tab-name">JUDICIARY</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">7</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">ACADEMIA</span> <span class="actor-tab-count">4</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONAL ORG</span> <span class="actor-tab-count">4</span></button>
 </div>
@@ -903,7 +921,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">10 SRC</span>
   </div>
   <p class="actor-card-role">Israeli National Security Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-004" class="actor-card" data-actor-type="government">
@@ -912,7 +930,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">8 SRC</span>
   </div>
   <p class="actor-card-role">Israeli Prime Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-021">src-021</a><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-011" class="actor-card" data-actor-type="government">
@@ -921,7 +939,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">7 SRC</span>
   </div>
   <p class="actor-card-role">Israeli Foreign Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-020">src-020</a></div>
 </article>
 <article id="actor-015" class="actor-card" data-actor-type="government">
@@ -930,7 +948,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">Italian Prime Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-023" class="actor-card" data-actor-type="government">
@@ -939,7 +957,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">Spanish Foreign Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-006" class="actor-card" data-actor-type="government">
@@ -948,7 +966,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">US Ambassador to Israel</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-019" class="actor-card" data-actor-type="government">
@@ -957,7 +975,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">Turkish government ministry</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-007" class="actor-card" data-actor-type="government">
@@ -966,7 +984,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">UK Foreign Secretary</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-026" class="actor-card" data-actor-type="government">
@@ -975,7 +993,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">Conservative Greek government</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-009" class="actor-card" data-actor-type="government">
@@ -984,7 +1002,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">Australian Foreign Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-020" class="actor-card" data-actor-type="government">
@@ -993,7 +1011,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Canadian Foreign Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-043" class="actor-card" data-actor-type="government">
@@ -1002,7 +1020,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Chef de la diplomatie italienne</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-017" class="actor-card" data-actor-type="government">
@@ -1011,7 +1029,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">French Foreign Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-005">src-005</a></div>
 </article>
 <article id="actor-028" class="actor-card" data-actor-type="government">
@@ -1020,7 +1038,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">President of South Korea</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-003" class="actor-card" data-actor-type="government">
@@ -1029,7 +1047,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Israeli Transportation Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-016" class="actor-card" data-actor-type="government">
@@ -1038,7 +1056,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">German Ambassador to Israel</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-018" class="actor-card" data-actor-type="government">
@@ -1047,7 +1065,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Dutch Foreign Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-005">src-005</a></div>
 </article>
 <article id="actor-052" class="actor-card" data-actor-type="government">
@@ -1056,7 +1074,8 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">UAE presidential advisor</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-032" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1064,7 +1083,8 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Israeli Finance Minister</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-051" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1072,7 +1092,8 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Foreign ministry of the United Kingdom</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-034" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1080,7 +1101,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Ministro de Exteriores de Turquía</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-010" class="actor-card" data-actor-type="government">
@@ -1089,7 +1110,8 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Irish Foreign Minister</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-013" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1097,7 +1119,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Israeli government ministry</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-046" class="actor-card" data-actor-type="government">
@@ -1106,7 +1128,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Außenminister (CDU-Politiker)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-008" class="actor-card" data-actor-type="government">
@@ -1115,7 +1137,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Canadian Prime Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-024" class="actor-card" data-actor-type="government">
@@ -1124,7 +1146,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Belgian Foreign Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a></div>
 </article>
 <article id="actor-040" class="actor-card" data-actor-type="government">
@@ -1133,7 +1155,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Irish Prime Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-059" class="actor-card" data-actor-type="government">
@@ -1142,7 +1164,8 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Government body</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-026">src-026</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-026">src-026</a></div>
 </article>
 <article id="actor-050" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1150,7 +1173,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Greek government spokesperson</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-053" class="actor-card" data-actor-type="government">
@@ -1159,7 +1182,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Spanish Prime Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-049" class="actor-card" data-actor-type="government">
@@ -1168,7 +1191,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Poland&#x27;s foreign minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-041" class="actor-card" data-actor-type="government">
@@ -1177,7 +1200,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">U.S. Treasury Secretary</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-060" class="actor-card" data-actor-type="government">
@@ -1186,7 +1209,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Government body</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-027">src-027</a></div>
 </article>
 <article id="actor-030" class="actor-card" data-actor-type="government">
@@ -1195,7 +1218,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">New Zealand Foreign Affairs Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-033" class="actor-card" data-actor-type="judiciary">
@@ -1204,7 +1227,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">International Criminal Court Prosecutor</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-005" class="actor-card" data-actor-type="civil_society">
@@ -1213,7 +1236,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">7 SRC</span>
   </div>
   <p class="actor-card-role">Israeli legal rights group</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-001" class="actor-card" data-actor-type="civil_society">
@@ -1222,7 +1245,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">Palestinian group</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-042" class="actor-card" data-actor-type="civil_society">
@@ -1231,7 +1254,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Coordinatrice nationale en France de la Global Sumud Flotilla</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-012" class="actor-card" data-actor-type="civil_society">
@@ -1240,7 +1263,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Organizers of the aid flotilla</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-037" class="actor-card" data-actor-type="civil_society">
@@ -1249,7 +1272,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Flotilla spokesperson</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-031" class="actor-card" data-actor-type="civil_society">
@@ -1258,7 +1281,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Director of Public Committee Against Torture in Israel</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-036" class="actor-card" data-actor-type="civil_society">
@@ -1267,7 +1290,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Adalah lawyer</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-055" class="actor-card" data-actor-type="academia">
@@ -1276,7 +1299,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">International law expert</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a></div>
 </article>
 <article id="actor-044" class="actor-card" data-actor-type="academia">
@@ -1285,7 +1308,8 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Professeur de sciences politiques à l&#x27;université Tor Vergata de Rome</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-057" class="actor-card" data-actor-type="academia">
   <div class="actor-card-header">
@@ -1293,7 +1317,8 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">International law expert</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a></div>
 </article>
 <article id="actor-056" class="actor-card" data-actor-type="academia">
   <div class="actor-card-header">
@@ -1301,7 +1326,8 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">International law expert</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a></div>
 </article>
 <article id="actor-029" class="actor-card" data-actor-type="international_org">
   <div class="actor-card-header">
@@ -1309,7 +1335,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">European Council President</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-021" class="actor-card" data-actor-type="international_org">
@@ -1318,7 +1344,8 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">European Commissioner for Equality, Preparedness and Crisis Management</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-048" class="actor-card" data-actor-type="international_org">
   <div class="actor-card-header">
@@ -1326,7 +1353,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">UN spokesperson</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-014" class="actor-card" data-actor-type="international_org">
@@ -1335,7 +1362,7 @@ Follow-up to: &ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacua
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">United Nations</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 </div>

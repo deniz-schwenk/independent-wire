@@ -404,6 +404,15 @@ details[open] summary::before {
   line-height: 1.55;
 }
 .coverage-limits li { margin: 0.25rem 0; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -752,10 +761,10 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
 </div>
 <p class="word-count">1,025 words</p>
 
-<h2>Perspectives &mdash; Position Clusters</h2>
+<h2>Perspectives &mdash; Positions</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
-  <a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>
+  <a class="actor-card-cluster-box" href="#pc-001">Position 1</a>
   <div class="card-header"><span class="card-actor">The Bundibugyo Ebola outbreak is unprecedented in scale and severity, with massive under-detection meaning the true burden far exceeds official figures</span></div>
   <div class="card-position">Multiple WHO officials, epidemiologists, and health experts warn that the outbreak has been circulating undetected for months, that confirmed cases represent only the tip of the iceberg, and that numbers will continue to rise sharply. Modelling suggests over 1,000 active cases, and the outbreak was already far larger at detection than the 2014 West Africa epidemic was at its recognition.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -765,7 +774,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">10 actors</a></span> &middot; <span>13 sources</span> &middot; <span>9 regions</span> &middot; <span>5 languages</span></p>
 </div>
 <div class="card" id="pc-002">
-  <a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a>
+  <a class="actor-card-cluster-box" href="#pc-002">Position 2</a>
   <div class="card-header"><span class="card-actor">US dismantling of global health infrastructure — including USAID dissolution, WHO withdrawal, and CDC cuts — directly worsened the outbreak&#x27;s detection and response</span></div>
   <div class="card-position">Multiple sources and experts argue that the Trump administration&#x27;s defunding of USAID, withdrawal from the WHO, and CDC staffing reductions removed critical on-the-ground surveillance, diagnostic, and funding capacity in the DRC, creating a 73% drop in health spending that delayed outbreak detection and left the response architecture underfunded and understaffed. Elon Musk&#x27;s admission of accidentally terminating Ebola containment programs is cited as emblematic.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -775,7 +784,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">6 actors</a></span> &middot; <span>4 sources</span> &middot; <span>3 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-003">
-  <a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a>
+  <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
   <div class="card-header"><span class="card-actor">The US government is actively re-engaging in the Ebola response and the WHO bears responsibility for delayed identification</span></div>
   <div class="card-position">US Secretary of State Marco Rubio pledges significant US funding for 50 emergency clinics and criticizes the WHO as having been late to identify the outbreak, while the CDC incident manager affirms US testing capacity. This position frames the US as stepping up despite prior cuts and deflects blame toward international organizations.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -785,7 +794,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">2 actors</a></span> &middot; <span>3 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-004">
-  <a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a>
+  <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">No approved vaccine or therapeutic exists for the Bundibugyo strain, and development will take months to years, leaving non-pharmaceutical interventions as the only immediate tools</span></div>
   <div class="card-position">WHO vaccine officials, virologists, and biosecurity researchers emphasize that existing Zaire-strain vaccines provide no cross-protection against Bundibugyo, that the two most promising candidates are six to nine months and two to three months respectively from clinical trial doses, and that pharmaceutical companies are reluctant due to cost and limited market incentives. The ChAdOx1-based candidate has limited animal data rather than none. In the interim, surveillance, contact tracing, safe burial practices, and community engagement are the sole containment tools.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -799,7 +808,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">6 actors</a></span> &middot; <span>9 sources</span> &middot; <span>6 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-005">
-  <a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a>
+  <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
   <div class="card-header"><span class="card-actor">Community trust, local engagement, and culturally sensitive communication are essential to stopping transmission, especially given funeral-related spread and mistrust of health authorities</span></div>
   <div class="card-position">WHO emergency directors, Red Cross officials, DRC health authorities, and local researchers stress that the epidemic began and will end in communities, that funeral practices drove explosive early transmission, and that populations initially attributed deaths to witchcraft or turned to traditional medicine. Effective response requires working with communities rather than imposing top-down measures, and community radio and local volunteers are critical for countering disinformation.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -809,7 +818,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">9 actors</a></span> &middot; <span>10 sources</span> &middot; <span>6 regions</span> &middot; <span>4 languages</span></p>
 </div>
 <div class="card" id="pc-006">
-  <a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a>
+  <a class="actor-card-cluster-box" href="#pc-006">Position 6</a>
   <div class="card-header"><span class="card-actor">Conflict, insecurity, and population displacement in eastern DRC make containment extraordinarily difficult and distinguish this outbreak from previous ones</span></div>
   <div class="card-position">The outbreak is centered in a conflict zone with active armed groups, millions of displaced people, and frequent cross-border population movements. Cheaper transport and war-driven flight massively increase virus spread risk. The AFC-M23 rebel group has created its own response team in areas it controls, and health workers have continued operating in rebel-held Goma, but insecurity hampers surveillance, supply delivery, and case detection.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -819,7 +828,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">5 actors</a></span> &middot; <span>7 sources</span> &middot; <span>7 regions</span> &middot; <span>4 languages</span></p>
 </div>
 <div class="card" id="pc-007">
-  <a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a>
+  <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">Travel bans and border closures are counterproductive and not supported by International Health Regulations, though multiple countries are imposing them</span></div>
   <div class="card-position">The WHO Emergency Committee chair and Africa CDC director general explicitly state that Ebola is transmitted through direct contact, not airborne, and that travel restrictions are not supported under IHR recommendations. They urge countries to support outbreak control at the source rather than impose fear-driven bans. Nevertheless, the US, Bahrain, Rwanda, and South Korea have imposed entry restrictions or travel advisories, disrupting travel, trade, and even the DRC football team&#x27;s World Cup preparations.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -833,7 +842,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">6 actors</a></span> &middot; <span>9 sources</span> &middot; <span>6 regions</span> &middot; <span>4 languages</span></p>
 </div>
 <div class="card" id="pc-008">
-  <a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a>
+  <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">Women and girls bear a disproportionate burden from the outbreak due to caregiving roles and gender barriers to healthcare access</span></div>
   <div class="card-position">UNFPA analysis highlights that women and girls are disproportionately affected because they serve as primary caregivers in homes and health facilities, face greater exposure during body preparation for funerals, and encounter gender-specific barriers to accessing health information and services. The ReliefWeb situation report also notes the disproportionate impact on women and health workers.</div>
   <div class="cluster-tier cluster-tier-reported">
@@ -843,7 +852,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">1 actor</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-009">
-  <a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a>
+  <a class="actor-card-cluster-box" href="#pc-009">Position 9</a>
   <div class="card-header"><span class="card-actor">The diagnostic delay was caused by testing optimized for the Zaire strain, allowing the Bundibugyo virus to spread undetected for weeks</span></div>
   <div class="card-position">Multiple sources detail that initial Ebola tests returned negative because diagnostic platforms were designed to detect only the more common Zaire species, not Bundibugyo. Samples were also transported at incorrect temperatures. This three-week diagnostic gap, compounded by symptoms mimicking malaria and typhoid, allowed the virus to circulate and spread through funeral gatherings before the true cause was identified. Jean-Jacques Muyembe stated that there was a very large weakness in the surveillance and tracking system and that the surveillance system had failed entirely.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -854,19 +863,28 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
 </div>
 </div>
 
-<div class="card single-voices-bracket" id="single-voices">
-  <div class="card-header"><span class="card-actor">Single voices</span><span class="single-voices-bracket-tag">Bracket</span></div>
-  <div class="card-position">Actors with unique positions that cannot be grouped with other positions into a shared cluster, but are referenced by multiple sources and are therefore considered important to the dossier.</div>
+<details class="mentioned-actors-wrapper">
+  <summary>Mentioned Actors &mdash; <strong>10 noted</strong></summary>
+  <div class="mentioned-actors-body">
+<div class="card single-voices-bracket" id="mentioned-actors">
+  <div class="card-header"><span class="card-actor">Mentioned actors</span><span class="single-voices-bracket-tag">Bracket</span></div>
+  <div class="card-position">Actors named in the corpus who are not grouped into any of the documented positions. Listed here for transparency about who appears in the source material.</div>
+  <div class="cluster-tier cluster-tier-actors_stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-020">Scott Myhre</a></strong> <span class="cluster-actor-role">Area director for Serge</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-027">Megan Coffee</a></strong> <span class="cluster-actor-role">Infectious Diseases Advisor at the International Rescue Committee (IRC)</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-043">Trish Newport</a></strong> <span class="cluster-actor-role">MSF emergency programme manager</span> <span class="cluster-actor-type">civil_society</span></li></ul>
+  </div>
   <div class="cluster-tier cluster-tier-actors_reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-048">WHO</a></strong> <span class="cluster-actor-role">International health organization</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-049">Africa CDC</a></strong> <span class="cluster-actor-role">African health agency</span> <span class="cluster-actor-type">international_org</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-002">Alan Kasujja</a></strong> <span class="cluster-actor-role">Uganda government spokesperson</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-008">Ashley Quigley</a></strong> <span class="cluster-actor-role">Senior Research Associate, Global Biosecurity, UNSW Sydney</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-009">Mohana Priya Kunasekaran</a></strong> <span class="cluster-actor-role">Research Associate, Biosecurity Program, Kirby Institute, UNSW Sydney</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Noor Jahan Begum Bari</a></strong> <span class="cluster-actor-role">Research Officer, Infectious Disease and Biosecurity, UNSW Sydney</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-040">Project HOPE</a></strong> <span class="cluster-actor-role">Humanitarian organization</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-048">WHO</a></strong> <span class="cluster-actor-role">International health organization</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-049">Africa CDC</a></strong> <span class="cluster-actor-role">African health agency</span> <span class="cluster-actor-type">international_org</span></li></ul>
   </div>
-  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#single-voices">2 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>1 language</span></p>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#mentioned-actors">10 actors</a></span> &middot; <span>9 sources</span> &middot; <span>5 regions</span> &middot; <span>2 languages</span></p>
 </div>
+  </div>
+</details>
 
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">48 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<p class="actors-meta">48 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
 <div class="actors-tabs" role="tablist">
 <button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">48</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">7</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITARY</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">13</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">ACADEMIA</span> <span class="actor-tab-count">13</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONAL ORG</span> <span class="actor-tab-count">12</span></button><button class="actor-tab" type="button" data-type-target="affected_community"><span class="actor-tab-name">AFFECTED COMMUNITY</span> <span class="actor-tab-count">2</span></button>
 </div>
@@ -877,7 +895,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">5 SRC</span>
   </div>
   <p class="actor-card-role">Health Minister of the Democratic Republic of the Congo</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-017" class="actor-card" data-actor-type="government">
@@ -886,7 +904,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">US Secretary of State</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-002" class="actor-card" data-actor-type="government">
@@ -895,7 +913,8 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Uganda government spokesperson</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-015" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -903,7 +922,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Head of the US Department of Government Efficiency (DOGE)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-038" class="actor-card" data-actor-type="government">
@@ -912,7 +931,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Incident manager for the CDC&#x27;s Ebola response</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-019">src-019</a></div>
 </article>
 <article id="actor-052" class="actor-card" data-actor-type="government">
@@ -921,7 +940,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Government ministry</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-039">src-039</a></div>
 </article>
 <article id="actor-051" class="actor-card" data-actor-type="government">
@@ -930,7 +949,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">U.S. public health agency</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-038">src-038</a></div>
 </article>
 <article id="actor-012" class="actor-card" data-actor-type="military">
@@ -939,7 +958,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Spokesman for the AFC-M23 rebel group</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-035" class="actor-card" data-actor-type="civil_society">
@@ -948,7 +967,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Spokesperson for the DRC national football team</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-026" class="actor-card" data-actor-type="civil_society">
@@ -957,7 +976,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Vice President of the International Rescue Committee (IRC)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-013" class="actor-card" data-actor-type="civil_society">
@@ -966,7 +985,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Country director for the Danish Refugee Council</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-039" class="actor-card" data-actor-type="civil_society">
@@ -975,7 +994,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Cadre du staff technique de l&#x27;équipe du Congo</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-020">src-020</a></div>
 </article>
 <article id="actor-046" class="actor-card" data-actor-type="civil_society">
@@ -984,7 +1003,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">National President of the DRC RC Secretary General in Kinshasa</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-026">src-026</a></div>
 </article>
 <article id="actor-023" class="actor-card" data-actor-type="civil_society">
@@ -993,7 +1012,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">President of Refugees International</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-016" class="actor-card" data-actor-type="civil_society">
@@ -1002,7 +1021,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Country director for Action Against Hunger in Congo</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-029" class="actor-card" data-actor-type="civil_society">
@@ -1011,7 +1030,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Ebola expert with Doctors Without Borders (MSF)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-027" class="actor-card" data-actor-type="civil_society">
@@ -1020,7 +1039,8 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Infectious Diseases Advisor at the International Rescue Committee (IRC)</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-040" class="actor-card" data-actor-type="civil_society">
   <div class="actor-card-header">
@@ -1028,7 +1048,8 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Humanitarian organization</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-021">src-021</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-021">src-021</a></div>
 </article>
 <article id="actor-047" class="actor-card" data-actor-type="civil_society">
   <div class="actor-card-header">
@@ -1036,7 +1057,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Secretary General, Uganda Red Cross Society in Kampala</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-026">src-026</a></div>
 </article>
 <article id="actor-020" class="actor-card" data-actor-type="civil_society">
@@ -1045,7 +1066,8 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Area director for Serge</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-043" class="actor-card" data-actor-type="civil_society">
   <div class="actor-card-header">
@@ -1053,7 +1075,8 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">MSF emergency programme manager</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-024">src-024</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-024">src-024</a></div>
 </article>
 <article id="actor-006" class="actor-card" data-actor-type="academia">
   <div class="actor-card-header">
@@ -1061,7 +1084,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">Virus expert at the DRC&#x27;s National Institute of Biomedical Research</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-004">Position 4</a><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-008" class="actor-card" data-actor-type="academia">
@@ -1070,7 +1093,8 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Senior Research Associate, Global Biosecurity, UNSW Sydney</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-007" class="actor-card" data-actor-type="academia">
   <div class="actor-card-header">
@@ -1078,7 +1102,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Professor of Global Biosecurity, NHMRC L3 Research Fellow, Head, Biosecurity Program, Kirby Institute, UNSW Sydney</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-022" class="actor-card" data-actor-type="academia">
@@ -1087,7 +1111,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Emergency Medicine Specialist</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-014" class="actor-card" data-actor-type="academia">
@@ -1096,7 +1120,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">US epidemiologist</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-036" class="actor-card" data-actor-type="academia">
@@ -1105,7 +1129,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Professor of immunology and microbiology at Scripps Research</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-019">src-019</a></div>
 </article>
 <article id="actor-004" class="actor-card" data-actor-type="academia">
@@ -1114,7 +1138,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Associate professor at the Infectious Diseases and School of Public Health at UT Southwestern Medical Center</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-004">Position 4</a><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-024" class="actor-card" data-actor-type="academia">
@@ -1123,7 +1147,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Researcher at Lwiro Natural Sciences Research Center</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-037" class="actor-card" data-actor-type="academia">
@@ -1132,7 +1156,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Director of the Center for Global Health Policy and Politics at Georgetown University</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-019">src-019</a></div>
 </article>
 <article id="actor-009" class="actor-card" data-actor-type="academia">
@@ -1141,7 +1165,8 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Research Associate, Biosecurity Program, Kirby Institute, UNSW Sydney</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-010" class="actor-card" data-actor-type="academia">
   <div class="actor-card-header">
@@ -1149,7 +1174,8 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Research Officer, Infectious Disease and Biosecurity, UNSW Sydney</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-030" class="actor-card" data-actor-type="academia">
   <div class="actor-card-header">
@@ -1157,7 +1183,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Virologist at the University of Marburg</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-050" class="actor-card" data-actor-type="academia">
@@ -1166,7 +1192,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Virologist</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-029">src-029</a></div>
 </article>
 <article id="actor-003" class="actor-card" data-actor-type="international_org">
@@ -1175,7 +1201,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">12 SRC</span>
   </div>
   <p class="actor-card-role">Director-General of the World Health Organization</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-006">Position 6</a><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-019">src-019</a><a class="actor-card-source-box" href="#src-024">src-024</a></div>
 </article>
 <article id="actor-005" class="actor-card" data-actor-type="international_org">
@@ -1184,7 +1210,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">WHO representative in the Democratic Republic of the Congo&#x27;s Ituri province</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-031" class="actor-card" data-actor-type="international_org">
@@ -1193,7 +1219,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">WHO Regional Emergency Director (ad interim) and Incident Manager</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-016">src-016</a><a class="actor-card-source-box" href="#src-022">src-022</a></div>
 </article>
 <article id="actor-018" class="actor-card" data-actor-type="international_org">
@@ -1202,7 +1228,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">Head of clinical trials at the WHO</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-024">src-024</a><a class="actor-card-source-box" href="#src-028">src-028</a></div>
 </article>
 <article id="actor-048" class="actor-card" data-actor-type="international_org">
@@ -1211,7 +1237,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">International health organization</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-027">src-027</a><a class="actor-card-source-box" href="#src-029">src-029</a><a class="actor-card-source-box" href="#src-037">src-037</a></div>
 </article>
 <article id="actor-049" class="actor-card" data-actor-type="international_org">
@@ -1220,7 +1246,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">African health agency</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-027">src-027</a><a class="actor-card-source-box" href="#src-029">src-029</a></div>
 </article>
 <article id="actor-019" class="actor-card" data-actor-type="international_org">
@@ -1229,7 +1255,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Technician in the WHO Health Emergencies Programme</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-014">src-014</a></div>
 </article>
 <article id="actor-011" class="actor-card" data-actor-type="international_org">
@@ -1238,7 +1264,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Director of the Africa Centres for Disease Control and Prevention</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-019">src-019</a></div>
 </article>
 <article id="actor-045" class="actor-card" data-actor-type="international_org">
@@ -1247,7 +1273,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">IFRC Head of Delegation in Kinshasa</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-026">src-026</a></div>
 </article>
 <article id="actor-032" class="actor-card" data-actor-type="international_org">
@@ -1256,7 +1282,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">WHO Regional Director for Africa</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a></div>
 </article>
 <article id="actor-034" class="actor-card" data-actor-type="international_org">
@@ -1265,7 +1291,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Chair of the WHO Emergency Committee</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a></div>
 </article>
 <article id="actor-053" class="actor-card" data-actor-type="international_org">
@@ -1274,7 +1300,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">United Nations sexual and reproductive health agency</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-041">src-041</a></div>
 </article>
 <article id="actor-044" class="actor-card" data-actor-type="affected_community">
@@ -1283,7 +1309,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Lecturer living in Bunia</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-024">src-024</a></div>
 </article>
 <article id="actor-025" class="actor-card" data-actor-type="affected_community">
@@ -1292,7 +1318,7 @@ Follow-up to: &ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Esti
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Resident of the affected area</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 </div>

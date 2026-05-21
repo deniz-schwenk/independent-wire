@@ -391,6 +391,28 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
+/* Coverage Limits — same collapsible-footnote treatment as
+   QA Corrections. Reads `consolidated_missing_coverage
+   .missing_topic_dimensions` (2026-05-21 relocation from the
+   prominent Missing-Coverage section). */
+.coverage-limits-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.coverage-limits {
+  margin-top: 0.5rem; padding-left: 1.2rem;
+  line-height: 1.55;
+}
+.coverage-limits li { margin: 0.25rem 0; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -717,10 +739,10 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
 </div>
 <p class="word-count">1,047 words</p>
 
-<h2>Perspectives &mdash; Position Clusters</h2>
+<h2>Perspectives &mdash; Positions</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
-  <a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>
+  <a class="actor-card-cluster-box" href="#pc-001">Position 1</a>
   <div class="card-header"><span class="card-actor">Trump suspended a planned major attack on Iran at the request of Gulf states because serious negotiations may yield a deal</span></div>
   <div class="card-position">Multiple sources across languages and regions report that Trump called off a military strike scheduled for Tuesday after Saudi Arabia, the UAE, and Qatar asked for more time, citing a &#x27;very good chance&#x27; of reaching an agreement. He simultaneously warned the military remains prepared for a full-scale assault if talks fail.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -734,7 +756,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">4 actors</a></span> &middot; <span>19 sources</span> &middot; <span>9 regions</span> &middot; <span>7 languages</span></p>
 </div>
 <div class="card" id="pc-002">
-  <a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a>
+  <a class="actor-card-cluster-box" href="#pc-002">Position 2</a>
   <div class="card-header"><span class="card-actor">Iran will not surrender and is prepared to open new fronts and escalate militarily if the US resumes attacks</span></div>
   <div class="card-position">Iranian military commanders and senior officials have issued defiant warnings that dialogue does not equal capitulation, that Iran&#x27;s forces are stronger than before and &#x27;ready to pull the trigger,&#x27; and that new fronts with new methods will be opened if hostilities resume. Mojtaba Khamenei, identified by BBC as a senior Iranian official, warned new fronts would be opened &#x27;where the enemy had little experience and would be highly vulnerable.&#x27; This position spans the IRGC, the regular army, and senior political figures.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -748,7 +770,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">7 actors</a></span> &middot; <span>10 sources</span> &middot; <span>5 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-003">
-  <a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a>
+  <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
   <div class="card-header"><span class="card-actor">Gulf Arab states and Pakistan played a decisive diplomatic role in brokering the pause and mediating between Washington and Tehran</span></div>
   <div class="card-position">Qatar, Saudi Arabia, and the UAE are credited with directly requesting the attack suspension, while Pakistan served as the primary channel for transmitting Iran&#x27;s 14-point proposal to Washington. Both US and Iranian officials have praised Pakistan&#x27;s mediation, and Gulf leaders are framed as drivers of the diplomatic opening rather than passive bystanders.</div>
   <div class="cluster-tier cluster-tier-reported">
@@ -758,7 +780,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">10 actors</a></span> &middot; <span>5 sources</span> &middot; <span>4 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-004">
-  <a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a>
+  <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">Iran&#x27;s proposal is serious but insufficient, and the US zero-enrichment demand may itself be an obstacle to a deal</span></div>
   <div class="card-position">US officials describe Iran&#x27;s 14-point offer as &#x27;serious but incomplete,&#x27; particularly on uranium enrichment and missile limits. Simultaneously, analysts argue that Trump&#x27;s insistence on zero enrichment is a &#x27;poison pill&#x27; that makes agreement impossible, and Israeli officials fear Trump may settle for a partial deal that neglects nuclear and proxy concerns.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -772,7 +794,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">5 actors</a></span> &middot; <span>7 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-005">
-  <a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a>
+  <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
   <div class="card-header"><span class="card-actor">The Strait of Hormuz disruption is creating a global food and energy crisis that disproportionately harms vulnerable nations</span></div>
   <div class="card-position">The UK Foreign Secretary warns the world is &#x27;sleepwalking into a global food crisis&#x27; due to the Hormuz closure, while African and East Asian coverage details collapsing maritime traffic, soaring import costs, fertilizer shortages, and energy supply instability for import-dependent countries. G7 finance ministers call for IMF and World Bank intervention.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -782,7 +804,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">2 actors</a></span> &middot; <span>3 sources</span> &middot; <span>2 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-006">
-  <a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a>
+  <a class="actor-card-cluster-box" href="#pc-006">Position 6</a>
   <div class="card-header"><span class="card-actor">The US is using temporary sanctions waivers on Russian oil to cushion the global energy shock caused by the Iran war</span></div>
   <div class="card-position">The US Treasury Secretary announced a 30-day extension of a sanctions waiver allowing vulnerable nations to purchase Russian seaborne oil stranded at sea, framing it as humanitarian relief for countries hit hardest by the Iran conflict&#x27;s disruption of global energy markets.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -792,7 +814,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">1 actor</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-007">
-  <a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a>
+  <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">Iran&#x27;s 14-point proposal demands a comprehensive end to the war — including sanctions relief, asset unfreezing, and compensation — before any nuclear agreement is announced</span></div>
   <div class="card-position">Iran&#x27;s proposal, transmitted via Pakistan, calls for ending hostilities on all fronts, lifting the naval blockade, releasing frozen assets, US non-aggression guarantees, war damage compensation, and a new Strait of Hormuz mechanism. Tehran insists on a phased approach where the war ends before nuclear terms are finalized, while Washington wants all elements announced simultaneously.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -806,7 +828,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">3 actors</a></span> &middot; <span>7 sources</span> &middot; <span>3 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-008">
-  <a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a>
+  <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">Israel fears a partial US-Iran deal that neglects the nuclear program, missile capabilities, and Iran&#x27;s proxy network</span></div>
   <div class="card-position">Israeli officials worry that Trump will accept an interim agreement extending the ceasefire and easing sanctions without addressing enrichment, missile development, or Iran&#x27;s regional proxy forces. Israel is attempting to influence the deal&#x27;s terms by demanding complete enrichment bans and facility dismantlement, while Netanyahu insists on responding to perceived Iranian truce violations.</div>
   <div class="cluster-tier cluster-tier-reported">
@@ -816,7 +838,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">2 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-009">
-  <a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a>
+  <a class="actor-card-cluster-box" href="#pc-009">Position 9</a>
   <div class="card-header"><span class="card-actor">Attacks on Gulf infrastructure — including the UAE&#x27;s Barakah nuclear plant — represent a dangerous escalation that violates international norms</span></div>
   <div class="card-position">A drone attack on the UAE&#x27;s Barakah nuclear power plant and Saudi interception of drones from Iraq are framed by Gulf officials as a dangerous escalation and a violation of international law, highlighting the vulnerability of Gulf states&#x27; critical infrastructure amid the broader conflict.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -827,19 +849,28 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
 </div>
 </div>
 
-<div class="card single-voices-bracket" id="single-voices">
-  <div class="card-header"><span class="card-actor">Single voices</span><span class="single-voices-bracket-tag">Bracket</span></div>
-  <div class="card-position">Actors with unique positions that cannot be grouped with other positions into a shared cluster, but are referenced by multiple sources and are therefore considered important to the dossier.</div>
+<details class="mentioned-actors-wrapper">
+  <summary>Mentioned Actors &mdash; <strong>5 noted</strong></summary>
+  <div class="mentioned-actors-body">
+<div class="card single-voices-bracket" id="mentioned-actors">
+  <div class="card-header"><span class="card-actor">Mentioned actors</span><span class="single-voices-bracket-tag">Bracket</span></div>
+  <div class="card-position">Actors named in the corpus who are not grouped into any of the documented positions. Listed here for transparency about who appears in the source material.</div>
   <div class="cluster-tier cluster-tier-actors_stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-016">Hakan Fidan</a></strong> <span class="cluster-actor-role">Foreign Minister of Turkey</span> <span class="cluster-actor-type">government</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-016">Hakan Fidan</a></strong> <span class="cluster-actor-role">Foreign Minister of Turkey</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-023">Bezalel Smotrich</a></strong> <span class="cluster-actor-role">Israeli Finance Minister</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-024">Avichay Adraee</a></strong> <span class="cluster-actor-role">IDF Arabic-language spokesperson</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-027">Joseph Aoun</a></strong> <span class="cluster-actor-role">Lebanese President</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
-  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#single-voices">1 actor</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>1 language</span></p>
+  <div class="cluster-tier cluster-tier-actors_reported">
+    <h4 class="cluster-tier-label">Reported</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-010">Hezbollah</a></strong> <span class="cluster-actor-role">Lebanese political and military group</span> <span class="cluster-actor-type">military</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#mentioned-actors">5 actors</a></span> &middot; <span>4 sources</span> &middot; <span>3 regions</span> &middot; <span>1 language</span></p>
 </div>
+  </div>
+</details>
 
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">33 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<p class="actors-meta">33 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
 <div class="actors-tabs" role="tablist">
 <button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">33</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">25</span></button><button class="actor-tab" type="button" data-type-target="legislature"><span class="actor-tab-name">LEGISLATURE</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITARY</span> <span class="actor-tab-count">6</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">1</span></button>
 </div>
@@ -850,7 +881,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">19 SRC</span>
   </div>
   <p class="actor-card-role">President of the United States</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-017">src-017</a><a class="actor-card-source-box" href="#src-019">src-019</a><a class="actor-card-source-box" href="#src-020">src-020</a><a class="actor-card-source-box" href="#src-025">src-025</a><a class="actor-card-source-box" href="#src-029">src-029</a><a class="actor-card-source-box" href="#src-030">src-030</a></div>
 </article>
 <article id="actor-012" class="actor-card" data-actor-type="government">
@@ -859,7 +890,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">Iranian Foreign Ministry Spokesperson</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a><a class="actor-card-cluster-box" href="#pc-003">Position 3</a><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-023">src-023</a></div>
 </article>
 <article id="actor-007" class="actor-card" data-actor-type="government">
@@ -868,7 +899,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">US Treasury Secretary</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-015">src-015</a></div>
 </article>
 <article id="actor-016" class="actor-card" data-actor-type="government">
@@ -877,7 +908,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Foreign Minister of Turkey</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-015">src-015</a></div>
 </article>
 <article id="actor-002" class="actor-card" data-actor-type="government">
@@ -886,7 +917,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">President of Iran</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-020" class="actor-card" data-actor-type="government">
@@ -895,7 +926,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Senior foreign policy adviser to the UAE president</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-036" class="actor-card" data-actor-type="government">
@@ -904,7 +935,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Prime Minister of Israel</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-026">src-026</a></div>
 </article>
 <article id="actor-023" class="actor-card" data-actor-type="government">
@@ -913,7 +944,8 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Israeli Finance Minister</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-009" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -921,7 +953,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Former US Ambassador to Algeria</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-037" class="actor-card" data-actor-type="government">
@@ -930,7 +962,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Unnamed officials in Jerusalem</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-027">src-027</a></div>
 </article>
 <article id="actor-033" class="actor-card" data-actor-type="government">
@@ -939,7 +971,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Vice President of the United States</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
 </article>
 <article id="actor-027" class="actor-card" data-actor-type="government">
@@ -948,7 +980,8 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Lebanese President</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a></div>
 </article>
 <article id="actor-025" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -956,7 +989,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Iran&#x27;s deputy foreign minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-029" class="actor-card" data-actor-type="government">
@@ -965,7 +998,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">U.S. Secretary of State</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-019" class="actor-card" data-actor-type="government">
@@ -974,7 +1007,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">UAE President</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-017" class="actor-card" data-actor-type="government">
@@ -983,7 +1016,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Saudi Crown Prince</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-004" class="actor-card" data-actor-type="government">
@@ -992,7 +1025,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Member of Iran’s Expediency Discernment Council</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-011" class="actor-card" data-actor-type="government">
@@ -1001,7 +1034,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Supreme Leader of Iran</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-030" class="actor-card" data-actor-type="government">
@@ -1010,7 +1043,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Unnamed Pakistani officials</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-021">src-021</a></div>
 </article>
 <article id="actor-026" class="actor-card" data-actor-type="government">
@@ -1019,7 +1052,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">French finance minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-031" class="actor-card" data-actor-type="government">
@@ -1028,7 +1061,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Prime Minister of Pakistan</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-022">src-022</a></div>
 </article>
 <article id="actor-006" class="actor-card" data-actor-type="government">
@@ -1037,7 +1070,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Prime Minister of Qatar</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-018" class="actor-card" data-actor-type="government">
@@ -1046,7 +1079,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Qatar&#x27;s Emir</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-028" class="actor-card" data-actor-type="government">
@@ -1055,7 +1088,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Unnamed U.S. administration officials</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-022" class="actor-card" data-actor-type="government">
@@ -1064,7 +1097,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">UK Foreign Secretary</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-035" class="actor-card" data-actor-type="legislature">
@@ -1073,7 +1106,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Speaker of the Iranian Parliament</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
 </article>
 <article id="actor-005" class="actor-card" data-actor-type="military">
@@ -1082,7 +1115,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">Commander of Iran’s Khatam al-Anbiya Central Headquarters</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-003" class="actor-card" data-actor-type="military">
@@ -1091,7 +1124,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Iranian military force</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-005">src-005</a></div>
 </article>
 <article id="actor-015" class="actor-card" data-actor-type="military">
@@ -1100,7 +1133,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Spokesperson for the Iranian Army</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-032" class="actor-card" data-actor-type="military">
@@ -1109,7 +1142,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Field Marshal of Pakistan</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-022">src-022</a></div>
 </article>
 <article id="actor-024" class="actor-card" data-actor-type="military">
@@ -1118,7 +1151,8 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">IDF Arabic-language spokesperson</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-010" class="actor-card" data-actor-type="military">
   <div class="actor-card-header">
@@ -1126,7 +1160,8 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Lebanese political and military group</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-008" class="actor-card" data-actor-type="civil_society">
   <div class="actor-card-header">
@@ -1134,7 +1169,7 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Executive Vice President at the Center for International Policy</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 </div>

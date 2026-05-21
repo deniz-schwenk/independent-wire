@@ -404,6 +404,15 @@ details[open] summary::before {
   line-height: 1.55;
 }
 .coverage-limits li { margin: 0.25rem 0; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -713,10 +722,10 @@ footer a { color: #000; text-decoration: underline; }
 </div>
 <p class="word-count">976 words</p>
 
-<h2>Perspectives &mdash; Position Clusters</h2>
+<h2>Perspectives &mdash; Positions</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
-  <a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>
+  <a class="actor-card-cluster-box" href="#pc-001">Position 1</a>
   <div class="card-header"><span class="card-actor">Russia-China relations have reached an unprecedented level and serve as a stabilizing force for a multipolar world order</span></div>
   <div class="card-position">Both leaders and their official spokespeople frame the partnership as historically deep, mutually beneficial, and essential for global stability. They present their cooperation as a model for major-power relations and a counterweight to unilateralism, emphasizing shared commitments to sovereign foreign policy, UN Charter principles, and a more just international governance system.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -726,7 +735,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">4 actors</a></span> &middot; <span>11 sources</span> &middot; <span>9 regions</span> &middot; <span>5 languages</span></p>
 </div>
 <div class="card" id="pc-002">
-  <a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a>
+  <a class="actor-card-cluster-box" href="#pc-002">Position 2</a>
   <div class="card-header"><span class="card-actor">The partnership is structurally asymmetric, with Russia increasingly dependent on China and Beijing holding the upper hand</span></div>
   <div class="card-position">Multiple analysts and Western-oriented outlets emphasize that Russia needs China far more than the reverse — Russia accounts for only 4–5% of China&#x27;s trade, while China is Russia&#x27;s dominant economic partner. The stalled Power of Siberia 2 pipeline illustrates China&#x27;s leverage: Beijing deliberately delays to extract maximum concessions, willing to commit to only a fraction of the pipeline&#x27;s capacity while keeping the rest as optional leverage over other suppliers.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -736,7 +745,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">4 actors</a></span> &middot; <span>9 sources</span> &middot; <span>8 regions</span> &middot; <span>6 languages</span></p>
 </div>
 <div class="card" id="pc-003">
-  <a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a>
+  <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
   <div class="card-header"><span class="card-actor">China is strategically projecting itself as the indispensable center of global diplomacy by hosting both Trump and Putin in quick succession</span></div>
   <div class="card-position">Analysts interpret the back-to-back visits as a deliberate Chinese strategy to demonstrate Beijing&#x27;s centrality on the world stage, boost domestic prestige, and signal to Washington that China has robust alternative partnerships that insulate it from US pressure. Chinese state media reinforce this by framing Beijing as the new hub of world diplomacy.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -746,7 +755,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">4 actors</a></span> &middot; <span>7 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-004">
-  <a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a>
+  <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">The summit&#x27;s signed agreements are largely symbolic and lack binding substance, masking the absence of breakthrough deals</span></div>
   <div class="card-position">Despite the headline figure of 20-plus cooperation documents, expert analysis reveals that most are non-binding memoranda of understanding designed to project momentum. The most consequential potential deal — the Power of Siberia 2 gas pipeline — remains unresolved, with the Kremlin acknowledging only &#x27;progress&#x27; and no concrete timeline, undermining the narrative of deepening practical cooperation.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -756,7 +765,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">3 actors</a></span> &middot; <span>7 sources</span> &middot; <span>6 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-005">
-  <a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a>
+  <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
   <div class="card-header"><span class="card-actor">Putin is seeking Chinese support to sustain Russia&#x27;s war effort in Ukraine, including military and economic assistance</span></div>
   <div class="card-position">Some outlets frame the visit primarily through the lens of Russia&#x27;s battlefield difficulties, noting Ukrainian drone strikes on Moscow and Putin&#x27;s desire to secure increased energy exports, dual-use equipment, and a halt to Chinese drone-component supplies reaching Ukraine. A Reuters exclusive published on the eve of the summit reported that the Chinese military secretly trained approximately 200 Russian personnel in 2025, some of whom later fought in Ukraine, citing European intelligence sources — adding a concrete military dimension to this interpretation.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -766,7 +775,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">1 actor</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-006">
-  <a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a>
+  <a class="actor-card-cluster-box" href="#pc-006">Position 6</a>
   <div class="card-header"><span class="card-actor">Xi selectively addresses international conflicts, calling for a Middle East ceasefire while conspicuously avoiding the Ukraine war</span></div>
   <div class="card-position">Multiple sources note that Xi urged an end to hostilities in the Middle East with language of &#x27;utmost urgency&#x27; but made no comparable call regarding Russia&#x27;s invasion of Ukraine, and reportedly told Trump privately that Putin may regret the war. This selective engagement is interpreted as China balancing its partnership with Russia against its desire to appear as a responsible global actor.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -776,7 +785,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">1 actor</a></span> &middot; <span>4 sources</span> &middot; <span>3 regions</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-007">
-  <a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a>
+  <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">The summit reflects China&#x27;s energy security calculus, with the Iran war increasing Beijing&#x27;s incentive to secure overland Russian supplies</span></div>
   <div class="card-position">Rising oil prices driven by the Iran conflict heighten China&#x27;s vulnerability to maritime energy disruptions through the Strait of Hormuz, creating a strategic rationale for deepening overland energy ties with Russia. Analysts note this dynamic could push China toward purchasing more Russian oil even as it resists committing to long-term gas pipeline volumes.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -786,7 +795,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">1 actor</a></span> &middot; <span>5 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-008">
-  <a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a>
+  <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">The Russia-China axis poses direct security threats to the Korean Peninsula and the Indo-Pacific region</span></div>
   <div class="card-position">Japanese and South Korean coverage frames the summit through the lens of regional security, linking the joint statement&#x27;s criticism of US-led military activities near the Korean Peninsula to potential deepening of North Korea-Russia-China security cooperation and broader challenges to the US alliance system in the Indo-Pacific.</div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">0 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
@@ -795,7 +804,7 @@ footer a { color: #000; text-decoration: underline; }
 
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">14 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<p class="actors-meta">14 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
 <div class="actors-tabs" role="tablist">
 <button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">14</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">5</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">ACADEMIA</span> <span class="actor-tab-count">8</span></button>
 </div>
@@ -806,7 +815,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">12 SRC</span>
   </div>
   <p class="actor-card-role">President of China</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-021">src-021</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-004" class="actor-card" data-actor-type="government">
@@ -815,7 +824,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">10 SRC</span>
   </div>
   <p class="actor-card-role">President of Russia</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-016">src-016</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-005" class="actor-card" data-actor-type="government">
@@ -824,7 +833,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">5 SRC</span>
   </div>
   <p class="actor-card-role">Kremlin spokesman</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-009" class="actor-card" data-actor-type="government">
@@ -833,7 +842,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">Kremlin foreign policy adviser</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-016">src-016</a><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-007" class="actor-card" data-actor-type="government">
@@ -842,7 +851,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Spokesperson for China&#x27;s Ministry of Foreign Affairs</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-006" class="actor-card" data-actor-type="civil_society">
@@ -851,7 +860,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Senior analyst at the International Crisis Group</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-008" class="actor-card" data-actor-type="academia">
@@ -860,7 +869,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Senior fellow at the Australian National University&#x27;s Pacific Affairs department</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-017" class="actor-card" data-actor-type="academia">
@@ -869,7 +878,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">senior fellow at the Atlantic Council’s Global Energy Center</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a></div>
 </article>
 <article id="actor-023" class="actor-card" data-actor-type="academia">
@@ -878,7 +887,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">chinesischer Außenpolitikexperte</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-018" class="actor-card" data-actor-type="academia">
@@ -887,7 +896,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">analyst</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a></div>
 </article>
 <article id="actor-001" class="actor-card" data-actor-type="academia">
@@ -896,7 +905,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Analyst at Kings College London</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-002" class="actor-card" data-actor-type="academia">
@@ -905,7 +914,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Analyst at the Centre for Russian Studies at the East China Normal University in Shanghai</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-020" class="actor-card" data-actor-type="academia">
@@ -914,7 +923,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">глава Берлинского центра Карнеги по изучению России и Евразии, китаист</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-019" class="actor-card" data-actor-type="academia">
@@ -923,7 +932,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">научный сотрудник Берлинского центра Карнеги по изучению России и Евразии, китаист</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 </div>

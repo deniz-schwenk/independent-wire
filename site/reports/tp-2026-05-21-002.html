@@ -404,6 +404,15 @@ details[open] summary::before {
   line-height: 1.55;
 }
 .coverage-limits li { margin: 0.25rem 0; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -727,10 +736,10 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
 </div>
 <p class="word-count">1,073 words</p>
 
-<h2>Perspectives &mdash; Position Clusters</h2>
+<h2>Perspectives &mdash; Positions</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
-  <a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>
+  <a class="actor-card-cluster-box" href="#pc-001">Position 1</a>
   <div class="card-header"><span class="card-actor">The US is in the final stage of negotiations and Iran must accept a deal or face devastating military consequences</span></div>
   <div class="card-position">The Trump administration frames the situation as a binary choice for Tehran: accept the US-backed peace framework within days or face a rapid resumption of military operations of unprecedented severity. This position is reinforced by the Vice President&#x27;s acknowledgment that the military campaign is the explicit Plan B and by White House officials warning of consequences unseen in modern history.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -740,7 +749,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">3 actors</a></span> &middot; <span>9 sources</span> &middot; <span>8 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-002">
-  <a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a>
+  <a class="actor-card-cluster-box" href="#pc-002">Position 2</a>
   <div class="card-header"><span class="card-actor">Iran is open to diplomacy but suspects the US is preparing a new war rather than genuinely seeking peace</span></div>
   <div class="card-position">Iranian officials acknowledge reviewing the latest US proposal and affirm that all diplomatic paths remain open, but simultaneously accuse Washington of covert and overt preparations for renewed aggression. Iran&#x27;s chief negotiator and foreign ministry spokesperson express deep suspicion of US intentions, framing Iran&#x27;s engagement as serious and good-faith while characterizing American behavior as unreliable and potentially duplicitous.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -750,7 +759,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">4 actors</a></span> &middot; <span>6 sources</span> &middot; <span>5 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-003">
-  <a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a>
+  <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
   <div class="card-header"><span class="card-actor">Iran has established de facto control over the Strait of Hormuz and claims regulatory authority extending to UAE waters near Fujairah</span></div>
   <div class="card-position">Through the newly created Persian Gulf Strait Authority and IRGC Navy operations, Iran asserts sovereign control over Hormuz transit, requiring all vessels to obtain Iranian authorization and declaring unauthorized passage illegal. Iran&#x27;s claimed jurisdiction extends south to Fujairah port in UAE territory, and the IRGC boasts of facilitating 26 vessel transits in 24 hours while declaring the US has failed to reopen the strait despite numerous attempts.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -760,7 +769,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">3 actors</a></span> &middot; <span>6 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-004">
-  <a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a>
+  <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">Iran&#x27;s Strait of Hormuz claims are illegitimate pipe dreams born of military defeat and infringe on UAE sovereignty</span></div>
   <div class="card-position">The UAE sharply rejects Iran&#x27;s assertion of control over Hormuz waters, with a senior presidential adviser dismissing the claims as a chimera and an attempt to fabricate a new reality from a clear military defeat. The UAE also demanded that Iraq prevent hostile acts from its territory after drones targeted the Barakah nuclear plant — UAE defense sources reported six drones launched from Iraq, five intercepted, with one striking a generator outside the facility&#x27;s inner perimeter, though other reports cited a smaller number of drones.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -770,7 +779,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">2 actors</a></span> &middot; <span>4 sources</span> &middot; <span>4 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-005">
-  <a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a>
+  <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
   <div class="card-header"><span class="card-actor">Renewed aggression against Iran would trigger a war extending beyond the Middle East with devastating strikes in unexpected locations</span></div>
   <div class="card-position">The IRGC explicitly warns that any resumption of US or Israeli military operations would not be met with a merely regional response but would escalate to strikes beyond the Middle East in unexpected places, framing this as a credible deterrent against further attacks on Iranian territory.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -780,7 +789,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">1 actor</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-006">
-  <a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a>
+  <a class="actor-card-cluster-box" href="#pc-006">Position 6</a>
   <div class="card-header"><span class="card-actor">Israel should resume strikes immediately because diplomatic delay only benefits Iran</span></div>
   <div class="card-position">Israeli leadership argues that pausing military operations to pursue diplomacy is strategically counterproductive, as any delay allows Iran to regroup and strengthen its position. Israel&#x27;s military maintains its highest alert level and readiness for any development.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -794,7 +803,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">2 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-007">
-  <a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a>
+  <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">Regional and international actors support continued diplomacy and Pakistani mediation to end the conflict</span></div>
   <div class="card-position">Turkey, Saudi Arabia, and China all endorse the diplomatic track, with Erdogan calling the ceasefire extension positive, Saudi Arabia urging Tehran to make a deal, and China explicitly backing Pakistan&#x27;s mediation role. This cluster reflects a broad international consensus favoring negotiated resolution over military escalation.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -808,7 +817,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">3 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-008">
-  <a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a>
+  <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">The conflict has produced severe oil market volatility and energy supply disruption without resolving the underlying Hormuz closure</span></div>
   <div class="card-position">Financial analysts and market observers note that the on-again-off-again diplomacy generates massive price swings — Brent crude dropping nearly 5% on deal hopes — but has not achieved the only outcome that matters: actual reopening of the strait and normalization of energy flows. Investors face daily uncertainty as the US stance shifts constantly, and maritime insurance premiums have surged over 1,000%.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -822,7 +831,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">3 actors</a></span> &middot; <span>4 sources</span> &middot; <span>4 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-009">
-  <a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a>
+  <a class="actor-card-cluster-box" href="#pc-009">Position 9</a>
   <div class="card-header"><span class="card-actor">Iran has seized the diplomatic initiative by shifting the negotiation focus to the Strait of Hormuz rather than its nuclear program</span></div>
   <div class="card-position">Academic analysis argues that Iran&#x27;s 14-point proposal strategically reframed the negotiations around Hormuz control rather than nuclear concessions, putting Washington on the defensive. Bloomberg Economics analysts assessed that after nearly three months of conflict, Trump&#x27;s objectives appeared far from achieved and Iran had emerged battered but strengthened with new global influence. While a settlement is considered likely, the risk of war resumption cannot be excluded because the two sides remain far apart on core demands.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -836,7 +845,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-009">2 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-010">
-  <a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a>
+  <a class="actor-card-cluster-box" href="#pc-010">Position 10</a>
   <div class="card-header"><span class="card-actor">Iran&#x27;s domestic repression continues during the war with protest-linked executions reaching record levels</span></div>
   <div class="card-position">Iran&#x27;s judiciary has executed two more men for alleged involvement in anti-government protests, characterizing them as terrorists, while Amnesty International reports that Iran carried out at least 2,159 executions in the previous year — the highest since 1981. This human rights dimension persists alongside the diplomatic and military developments.</div>
   <div class="cluster-tier cluster-tier-reported">
@@ -847,9 +856,28 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
 </div>
 </div>
 
+<details class="mentioned-actors-wrapper">
+  <summary>Mentioned Actors &mdash; <strong>3 noted</strong></summary>
+  <div class="mentioned-actors-body">
+<div class="card single-voices-bracket" id="mentioned-actors">
+  <div class="card-header"><span class="card-actor">Mentioned actors</span><span class="single-voices-bracket-tag">Bracket</span></div>
+  <div class="card-position">Actors named in the corpus who are not grouped into any of the documented positions. Listed here for transparency about who appears in the source material.</div>
+  <div class="cluster-tier cluster-tier-actors_stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-027">Jean-Yves Le Drian</a></strong> <span class="cluster-actor-role">Envoyé spécial du président français pour le Liban</span> <span class="cluster-actor-type">government</span></li></ul>
+  </div>
+  <div class="cluster-tier cluster-tier-actors_reported">
+    <h4 class="cluster-tier-label">Reported</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-010">Hezbollah</a></strong> <span class="cluster-actor-role">Lebanese militant group</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-020">South Korea&#x27;s foreign minister</a></strong> <span class="cluster-actor-role">South Korean foreign minister</span> <span class="cluster-actor-type">government</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#mentioned-actors">3 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
+</div>
+  </div>
+</details>
+
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">27 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<p class="actors-meta">27 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
 <div class="actors-tabs" role="tablist">
 <button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">27</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">16</span></button><button class="actor-tab" type="button" data-type-target="judiciary"><span class="actor-tab-name">JUDICIARY</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITARY</span> <span class="actor-tab-count">5</span></button><button class="actor-tab" type="button" data-type-target="industry"><span class="actor-tab-name">INDUSTRY</span> <span class="actor-tab-count">3</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">ACADEMIA</span> <span class="actor-tab-count">1</span></button>
 </div>
@@ -860,7 +888,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">10 SRC</span>
   </div>
   <p class="actor-card-role">US President</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-005" class="actor-card" data-actor-type="government">
@@ -869,7 +897,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">5 SRC</span>
   </div>
   <p class="actor-card-role">Iran&#x27;s Foreign Ministry spokesperson</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-014">src-014</a></div>
 </article>
 <article id="actor-002" class="actor-card" data-actor-type="government">
@@ -878,7 +906,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">Iran&#x27;s parliament speaker and chief negotiator</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-004" class="actor-card" data-actor-type="government">
@@ -887,7 +915,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">Newly established Iranian body overseeing the Strait of Hormuz</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-012" class="actor-card" data-actor-type="government">
@@ -896,7 +924,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">United Arab Emirates presidential adviser</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-032" class="actor-card" data-actor-type="government">
@@ -905,7 +933,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Premier ministre israélien</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-017" class="actor-card" data-actor-type="government">
@@ -914,7 +942,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">US Vice President</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-006" class="actor-card" data-actor-type="government">
@@ -923,7 +951,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">UAE Ministry of Foreign Affairs</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-028">src-028</a></div>
 </article>
 <article id="actor-029" class="actor-card" data-actor-type="government">
@@ -932,7 +960,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Ministre des Affaires étrangères iranien</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-026" class="actor-card" data-actor-type="government">
@@ -941,7 +969,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Porte-parole des Affaires étrangères chinois</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-027" class="actor-card" data-actor-type="government">
@@ -950,7 +978,8 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Envoyé spécial du président français pour le Liban</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-001" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -958,7 +987,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">President of Iran</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-011" class="actor-card" data-actor-type="government">
@@ -967,7 +996,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Turkish President</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-022" class="actor-card" data-actor-type="government">
@@ -976,7 +1005,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Saudi government</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-020" class="actor-card" data-actor-type="government">
@@ -985,7 +1014,8 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">South Korean foreign minister</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-007" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -993,7 +1023,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">White House Deputy Chief of Staff</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-013" class="actor-card" data-actor-type="judiciary">
@@ -1002,7 +1032,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Iranian judiciary</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-015" class="actor-card" data-actor-type="military">
@@ -1011,7 +1041,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">Islamic Revolutionary Guard Corps</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-033" class="actor-card" data-actor-type="military">
@@ -1020,7 +1050,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Adjoint politique de la marine du IRGC</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-021">src-021</a></div>
 </article>
 <article id="actor-009" class="actor-card" data-actor-type="military">
@@ -1029,7 +1059,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Israeli army chief Lieutenant General</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-010" class="actor-card" data-actor-type="military">
@@ -1038,7 +1068,8 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Lebanese militant group</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-003" class="actor-card" data-actor-type="military">
   <div class="actor-card-header">
@@ -1046,7 +1077,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">IRGC Navy</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-016" class="actor-card" data-actor-type="industry">
@@ -1055,7 +1086,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Analysts Dina Esfandiary, Becca Wasser, and Ziad Daoud</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-025" class="actor-card" data-actor-type="industry">
@@ -1064,7 +1095,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Analyste chez Saxo Bank</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-021" class="actor-card" data-actor-type="industry">
@@ -1073,7 +1104,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Analyst at Fujitomi Securities</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-014" class="actor-card" data-actor-type="civil_society">
@@ -1082,7 +1113,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Human rights organization</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-031" class="actor-card" data-actor-type="academia">
@@ -1091,7 +1122,7 @@ Follow-up to: &ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Co
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Professeur de politique américaine et internationale au Clinton Institute de l&#x27;University College Dublin</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 </div>

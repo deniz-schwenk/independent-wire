@@ -561,6 +561,15 @@ details[open] summary::before {
   line-height: 1.55;
 }
 .coverage-limits li { margin: 0.25rem 0; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -943,15 +952,20 @@ _CLUSTER_TIERS: tuple[tuple[str, str], ...] = (
 
 
 def _cluster_id_pill(cluster_id: str, idx: int) -> str:
-    """Cluster-ID pill — the small ``Cluster N`` box shared between
-    the Actors-section (per-actor cluster references) and the
-    Perspectives-section (top-of-card identifier on each cluster
+    """Position-ID pill — the small ``Position N`` box shared between
+    the Actors-section (per-actor cross-references) and the
+    Perspectives-section (top-of-card identifier on each position
     card). Same text, same styling, same anchor target — so the two
     sides of the cross-reference render identically. Returns the
-    bare ``<a>`` element; wrapping context is up to the caller."""
+    bare ``<a>`` element; wrapping context is up to the caller.
+
+    The function and CSS-class names retain the legacy ``cluster``
+    token (internal identifiers, not user-visible). Only the rendered
+    text was renamed from ``Cluster N`` to ``Position N`` on
+    2026-05-21."""
     return (
         f'<a class="actor-card-cluster-box" href="#{_esc(cluster_id)}">'
-        f'Cluster {idx}</a>'
+        f'Position {idx}</a>'
     )
 
 
@@ -1087,47 +1101,58 @@ def build_perspectives(tp: dict) -> str:
             f'  {counts_line}'
             f'</div>\n'
         )
-    return f'<h2>Perspectives &mdash; Position Clusters</h2>\n<div class="card-grid">\n{"".join(cards)}</div>\n'
+    return f'<h2>Perspectives &mdash; Positions</h2>\n<div class="card-grid">\n{"".join(cards)}</div>\n'
 
 
-# Tier sub-list field names on the single_voices bracket. Mirrors the
-# tier-label pairs in `_CLUSTER_TIERS` but the bracket uses the
+# Tier sub-list field names on the mentioned_actors bracket. Mirrors
+# the tier-label pairs in `_CLUSTER_TIERS` but the bracket uses the
 # `actors_*` prefix to make it textually obvious that the bracket is
-# not a regular cluster.
-_SINGLE_VOICES_TIERS: tuple[tuple[str, str], ...] = (
+# not a regular position cluster. CSS class names retain the legacy
+# ``single-voices-bracket`` / ``cluster-tier-*`` tokens — internal
+# identifiers, not user-visible.
+_MENTIONED_ACTORS_TIERS: tuple[tuple[str, str], ...] = (
     ("actors_stated", "Stated"),
     ("actors_reported", "Reported"),
     ("actors_mentioned", "Mentioned"),
 )
 
 
-def build_single_voices_bracket(tp: dict) -> str:
-    """Render the deterministic single-voices bracket, when present.
+def build_mentioned_actors_section(tp: dict) -> str:
+    """Render the deterministic mentioned-actors section, when present.
 
-    Reads `tp["perspectives"]["single_voices"]` — a dict written by the
-    `derive_single_voices` topic-stage. Mirrors the structural shape of
-    a cluster card (position label + summary + tier-grouped actor list
-    + counts) but is visually distinguished via the
-    ``single-voices-bracket`` CSS class (dashed left accent + tinted
-    background) and a small "BRACKET" tag in the header. The DOM
-    anchor is ``id="single-voices"`` — explicitly separate from cluster
+    Reads `tp["perspectives"]["mentioned_actors"]` — a dict written by
+    the `derive_mentioned_actors` topic-stage (renamed 2026-05-21 from
+    `derive_single_voices`; threshold dropped so every non-cluster
+    actor qualifies).
+
+    The card itself mirrors the structural shape of a position card
+    (position label + summary + tier-grouped actor list + counts) and
+    is visually distinguished via the legacy ``single-voices-bracket``
+    CSS class (dashed left accent + tinted background) and a small
+    "Bracket" tag in the header. The DOM anchor is
+    ``id="mentioned-actors"`` — explicitly separate from position-card
     ``pc-NNN`` anchors so cross-references from the Actors-section can
     distinguish the two.
 
-    The section is omitted entirely when:
+    The card is wrapped in a default-closed
+    ``<details class="mentioned-actors-wrapper">`` collapsible. The
+    summary line reads ``Mentioned Actors — N noted`` (singular ``note``
+    when N=1) — mirroring the QA Corrections / Coverage Limits
+    collapsible-footnote pattern.
+
+    The section is omitted entirely (no empty ``<details>`` shell) when:
     - the slot is absent (legacy fallback for pre-this-change TPs); or
-    - `actor_ids[]` is empty (no orphan met the structural-centrality
-      floor of ≥ 2 sources).
+    - `actor_ids[]` is empty (no non-cluster actor exists).
     """
-    sv = tp.get("perspectives", {}).get("single_voices")
-    if not isinstance(sv, dict) or not sv:
+    ma = tp.get("perspectives", {}).get("mentioned_actors")
+    if not isinstance(ma, dict) or not ma:
         return ""
-    actor_ids = [a for a in (sv.get("actor_ids") or []) if isinstance(a, str)]
+    actor_ids = [a for a in (ma.get("actor_ids") or []) if isinstance(a, str)]
     if not actor_ids:
         return ""
 
-    label = sv.get("position_label", "Single voices")
-    summary = sv.get("summary", "")
+    label = ma.get("position_label", "Mentioned actors")
+    summary = ma.get("summary", "")
 
     actors = tp.get("actors") or []
     actor_index: dict[str, dict] = {}
@@ -1138,9 +1163,9 @@ def build_single_voices_bracket(tp: dict) -> str:
                 actor_index[aid] = actor
 
     tier_blocks: list[str] = []
-    for tier_key, tier_label in _SINGLE_VOICES_TIERS:
+    for tier_key, tier_label in _MENTIONED_ACTORS_TIERS:
         tier_aids = [
-            a for a in (sv.get(tier_key) or []) if isinstance(a, str)
+            a for a in (ma.get(tier_key) or []) if isinstance(a, str)
         ]
         if not tier_aids:
             continue
@@ -1158,7 +1183,7 @@ def build_single_voices_bracket(tp: dict) -> str:
             f'  </div>\n'
         )
 
-    counts = sv.get("counts") or {}
+    counts = ma.get("counts") or {}
     n_actors = int(counts.get("actors", 0) or 0)
     n_sources = int(counts.get("sources", 0) or 0)
     n_regions = int(counts.get("regions", 0) or 0)
@@ -1166,7 +1191,7 @@ def build_single_voices_bracket(tp: dict) -> str:
     counts_line = (
         f'<p class="cluster-counts">'
         f'<span class="cluster-counts-actors">'
-        f'<a href="#single-voices">{_plural(n_actors, "actor")}</a>'
+        f'<a href="#mentioned-actors">{_plural(n_actors, "actor")}</a>'
         f'</span>'
         f' &middot; '
         f'<span>{_plural(n_sources, "source")}</span>'
@@ -1177,8 +1202,8 @@ def build_single_voices_bracket(tp: dict) -> str:
         f'</p>\n'
     )
 
-    return (
-        '<div class="card single-voices-bracket" id="single-voices">\n'
+    inner_card = (
+        '<div class="card single-voices-bracket" id="mentioned-actors">\n'
         '  <div class="card-header">'
         f'<span class="card-actor">{_esc(label)}</span>'
         '<span class="single-voices-bracket-tag">Bracket</span>'
@@ -1187,6 +1212,22 @@ def build_single_voices_bracket(tp: dict) -> str:
         f'{"".join(tier_blocks)}'
         f'  {counts_line}'
         '</div>\n'
+    )
+
+    # Singular `note` for N=1, plural `noted` otherwise — mirrors the
+    # "X note(s)" pattern of QA Corrections / Coverage Limits but uses
+    # the verb-form "noted" to read as "N actors noted in the corpus."
+    summary_line = (
+        f'Mentioned Actors &mdash; <strong>{n_actors} '
+        f'note{"d" if n_actors != 1 else ""}</strong>'
+    )
+    return (
+        f'<details class="mentioned-actors-wrapper">\n'
+        f'  <summary>{summary_line}</summary>\n'
+        f'  <div class="mentioned-actors-body">\n'
+        f'{inner_card}'
+        f'  </div>\n'
+        f'</details>\n'
     )
 
 
@@ -1221,14 +1262,14 @@ def build_actors_section(tp: dict) -> str:
     Replaces the prior 4-column table (Issue 7, commit 557cea5) and
     its first iteration (commit 5c51953, grouped sub-headings) with a
     single continuous card grid. The section serves as a navigation
-    bridge — cluster cards and the single-voices bracket back-link to
-    ``#actor-NNN`` anchors that live on the cards.
+    bridge — position cards and the mentioned-actors bracket back-link
+    to ``#actor-NNN`` anchors that live on the cards.
 
     Layout:
     - Header: plain ``<h2>Actors</h2>`` (matches every other section
       heading — no §-prefix, no right-aligned count).
     - Sub-line: ``N actors quoted across this topic. Jump from any
-      name above to find every cluster and source the actor figures
+      name above to find every position and source the actor figures
       in.``
     - Tab bar: ``ALL N`` first, then one tab per populated
       `_ACTOR_TYPE_ENUM` entry in declared order. Tabs with zero
@@ -1246,9 +1287,9 @@ def build_actors_section(tp: dict) -> str:
       ``(anonymous)`` suffix preserved when ``actor.is_anonymous``.
     - Top-right: ``N SRC``.
     - Second line: role text.
-    - Cluster-ref boxes: outlined boxes labelled ``Cluster N`` linking
-      to ``#pc-NNN``. Bracket actors get a dashed-border
-      ``Single voices`` box linking to ``#single-voices``.
+    - Position-ref boxes: outlined boxes labelled ``Position N``
+      linking to ``#pc-NNN``. Bracket actors get a dashed-border
+      ``Mentioned actors`` box linking to ``#mentioned-actors``.
     - Source-ref boxes: filled boxes labelled ``src-NNN`` linking to
       ``#src-NNN``. Tightened so ≥ 5 boxes fit in a single card-width
       row at desktop.
@@ -1259,10 +1300,12 @@ def build_actors_section(tp: dict) -> str:
     """
     actors_in = tp.get("actors") or []
     clusters = tp.get("perspectives", {}).get("position_clusters", []) or []
-    single_voices = tp.get("perspectives", {}).get("single_voices") or {}
+    mentioned_actors = (
+        tp.get("perspectives", {}).get("mentioned_actors") or {}
+    )
 
     # cluster_id → 1-based emission index. Drives the human-readable
-    # "Cluster N" link text.
+    # "Position N" link text.
     cluster_index: dict[str, int] = {}
     for i, c in enumerate(clusters, start=1):
         if not isinstance(c, dict):
@@ -1287,9 +1330,9 @@ def build_actors_section(tp: dict) -> str:
 
     # Bracket-actor set.
     bracket_actor_ids: set[str] = {
-        a for a in (single_voices.get("actor_ids") or [])
+        a for a in (mentioned_actors.get("actor_ids") or [])
         if isinstance(a, str)
-    } if isinstance(single_voices, dict) else set()
+    } if isinstance(mentioned_actors, dict) else set()
 
     # Filter to dict-shaped actors and bucket by type.
     actors: list[dict] = [a for a in actors_in if isinstance(a, dict)]
@@ -1313,7 +1356,7 @@ def build_actors_section(tp: dict) -> str:
     actors_meta_html = (
         f'<p class="actors-meta">{n_total} '
         f'actor{"" if n_total == 1 else "s"} quoted across this topic. '
-        f'Jump from any name above to find every cluster and source '
+        f'Jump from any name above to find every position and source '
         f'the actor figures in.</p>\n'
     )
 
@@ -1384,7 +1427,7 @@ def build_actors_section(tp: dict) -> str:
         if aid in bracket_actor_ids:
             cluster_boxes.append(
                 '<a class="actor-card-cluster-box actor-card-cluster-box--bracket"'
-                ' href="#single-voices">Single voices</a>'
+                ' href="#mentioned-actors">Mentioned actors</a>'
             )
         cluster_refs_html = (
             f'<div class="actor-card-cluster-refs">{"".join(cluster_boxes)}</div>\n'
@@ -2383,7 +2426,7 @@ def render(tp: dict) -> str:
         build_reader_note(tp),
         build_article_body(tp),
         build_perspectives(tp),
-        build_single_voices_bracket(tp),
+        build_mentioned_actors_section(tp),
         build_actors_section(tp),
         # Unified section when the consolidated slot is present.
         # Legacy `build_missing_voices` + `build_coverage_gaps` calls

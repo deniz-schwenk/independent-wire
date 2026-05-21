@@ -346,8 +346,8 @@ def test_topicbus_slot_count_regression_guard():
     by the empty-output retry mitigation, 2026-05-19), 4B.4d=3
     (canonical_actors_stated / _reported / _mentioned — pools from
     TASK-EVIDENCE-TYPE-MIGRATION), 4B.5=2, 4B.6=1, 4B.7=4, 4B.8=1,
-    4B.8b=1 (single_voices bracket added by the structurally-central
-    orphan-actor mitigation, 2026-05-20), 4B.9=2, 4B.10=2
+    4B.8b=1 (mentioned_actors bracket — renamed 2026-05-21 from
+    single_voices; threshold dropped so all non-cluster actors qualify), 4B.9=2, 4B.10=2
     (consolidated_missing_coverage added by the missing-voices / gaps
     dedup mitigation, 2026-05-20), 4B.10b=2 (prune_dropped_*), 4B.11=2.
     """

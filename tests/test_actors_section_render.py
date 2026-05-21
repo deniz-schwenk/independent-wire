@@ -61,7 +61,7 @@ def test_header_is_plain_h2_no_section_number_no_right_count():
     # Sub-line in full.
     assert (
         "2 actors quoted across this topic. Jump from any name above "
-        "to find every cluster and source the actor figures in."
+        "to find every position and source the actor figures in."
     ) in html
     # No type-count phrasing leaks in.
     assert "TYPES" not in html
@@ -279,9 +279,11 @@ def test_card_renders_name_src_count_role_and_anchor():
     assert "President of the United States" in html
 
 
-def test_card_renders_cluster_box_for_each_membership_with_pc_anchor():
-    """Acceptance criterion: cluster-ref boxes use the existing
-    ``Cluster N`` label and anchor at ``#pc-NNN``."""
+def test_card_renders_position_box_for_each_membership_with_pc_anchor():
+    """Acceptance criterion: cross-reference boxes use the ``Position N``
+    label (renamed 2026-05-21 from ``Cluster N``) and anchor at
+    ``#pc-NNN``. The internal CSS class name (`actor-card-cluster-box`)
+    is unchanged — it's an internal identifier, not user-visible."""
     tp = {
         "actors": [
             {"id": "actor-001", "name": "A", "role": "r", "type": "government",
@@ -295,8 +297,11 @@ def test_card_renders_cluster_box_for_each_membership_with_pc_anchor():
         },
     }
     html = build_actors_section(tp)
-    assert '<a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>' in html
-    assert '<a class="actor-card-cluster-box" href="#pc-003">Cluster 2</a>' in html
+    assert '<a class="actor-card-cluster-box" href="#pc-001">Position 1</a>' in html
+    assert '<a class="actor-card-cluster-box" href="#pc-003">Position 2</a>' in html
+    # Legacy "Cluster N" wording must no longer surface anywhere.
+    assert "Cluster 1" not in html
+    assert "Cluster 2" not in html
 
 
 def test_card_renders_source_box_for_each_source_id_with_src_anchor():
@@ -318,11 +323,11 @@ def test_card_renders_source_box_for_each_source_id_with_src_anchor():
     ) == 1
 
 
-def test_bracket_actor_card_renders_single_voices_box_to_single_voices():
-    """Acceptance criterion: an actor in the single-voices bracket sees
-    a cluster-ref box reading ``Single voices`` linking to
-    ``#single-voices``. The box carries the bracket-variant CSS class
-    (visually distinct from regular Cluster-N boxes)."""
+def test_bracket_actor_card_renders_mentioned_actors_box_to_mentioned_actors():
+    """Acceptance criterion: an actor in the mentioned-actors bracket
+    sees a cross-reference box reading ``Mentioned actors`` linking to
+    ``#mentioned-actors``. The box carries the bracket-variant CSS class
+    (visually distinct from regular Position-N boxes)."""
     tp = {
         "actors": [
             {"id": "actor-001", "name": "Orphan", "role": "r", "type": "government",
@@ -330,7 +335,7 @@ def test_bracket_actor_card_renders_single_voices_box_to_single_voices():
         ],
         "perspectives": {
             "position_clusters": [],
-            "single_voices": {
+            "mentioned_actors": {
                 "actors_stated": ["actor-001"],
                 "actors_reported": [],
                 "actors_mentioned": [],
@@ -343,8 +348,10 @@ def test_bracket_actor_card_renders_single_voices_box_to_single_voices():
     html = build_actors_section(tp)
     assert (
         '<a class="actor-card-cluster-box actor-card-cluster-box--bracket"'
-        ' href="#single-voices">Single voices</a>'
+        ' href="#mentioned-actors">Mentioned actors</a>'
     ) in html
+    # Legacy vocab gone.
+    assert "Single voices" not in html
 
 
 def test_actor_anchor_id_present_on_each_card():

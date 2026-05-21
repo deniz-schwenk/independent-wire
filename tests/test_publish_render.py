@@ -16,7 +16,7 @@ from scripts.render import (
     build_missing_coverage_section,
     build_missing_voices,
     build_perspectives,
-    build_single_voices_bracket,
+    build_mentioned_actors_section,
     build_sources_table,
     build_transparency,
 )
@@ -269,16 +269,16 @@ def test_cluster_card_actor_count_is_clickable_when_id_present():
 
 
 # ---------------------------------------------------------------------------
-# Single-voices bracket (build_single_voices_bracket + Actors-section row)
+# Mentioned-actors section (build_mentioned_actors_section + Actors-section row)
 # ---------------------------------------------------------------------------
 
 
-def test_single_voices_bracket_renders_with_full_shape():
-    """Acceptance criterion: the bracket renders the position label,
-    summary, tier-grouped actor names, and counts. It carries the
-    `single-voices-bracket` CSS class (visually distinguished from
-    regular cluster cards) and the `single-voices` DOM anchor (not a
-    `pc-NNN` cluster id)."""
+def test_mentioned_actors_section_renders_with_full_shape():
+    """Acceptance criterion: the section renders inside a default-closed
+    `<details class="mentioned-actors-wrapper">` collapsible with a
+    summary line of the form ``Mentioned Actors — N noted``. The inner
+    card retains its bracket-specific CSS class (`single-voices-bracket`)
+    and the `mentioned-actors` DOM anchor."""
     tp = {
         "actors": [
             {"id": "actor-001", "name": "Health Minister",
@@ -290,9 +290,9 @@ def test_single_voices_bracket_renders_with_full_shape():
         ],
         "perspectives": {
             "position_clusters": [],
-            "single_voices": {
-                "position_label": "Single voices",
-                "summary": "Actors with unique positions ...",
+            "mentioned_actors": {
+                "position_label": "Mentioned actors",
+                "summary": "Actors named in the corpus who are not grouped ...",
                 "actors_stated": ["actor-001"],
                 "actors_reported": ["actor-002"],
                 "actors_mentioned": [],
@@ -304,17 +304,23 @@ def test_single_voices_bracket_renders_with_full_shape():
             },
         },
     }
-    html = build_single_voices_bracket(tp)
-    # Card present with bracket-specific CSS class and DOM anchor.
+    html = build_mentioned_actors_section(tp)
+    # Collapsible wrapper present, default closed (no `open` attribute).
+    assert '<details class="mentioned-actors-wrapper">' in html
+    assert '<details class="mentioned-actors-wrapper" open' not in html
+    # Summary line uses the "N noted" pattern (plural for N != 1).
+    assert "Mentioned Actors" in html
+    assert "2 noted" in html
+    # Inner card retains the bracket-specific CSS class and the
+    # `mentioned-actors` DOM anchor.
     assert 'class="card single-voices-bracket"' in html
-    assert 'id="single-voices"' in html
-    # Header carries the position-label and the "Bracket" tag for
-    # visual distinction from real clusters.
-    assert "Single voices" in html
+    assert 'id="mentioned-actors"' in html
+    # Header carries the position-label and the "Bracket" tag.
+    assert "Mentioned actors" in html
     assert 'class="single-voices-bracket-tag"' in html
     assert "Bracket" in html
     # Position summary surfaces.
-    assert "unique positions" in html
+    assert "not grouped" in html
     # Tier sub-blocks render with the expected labels and actors.
     assert ">Stated<" in html
     assert ">Reported<" in html
@@ -328,16 +334,48 @@ def test_single_voices_bracket_renders_with_full_shape():
     assert "2 languages" in html
 
 
-def test_single_voices_bracket_omitted_when_actor_ids_empty():
-    """Acceptance criterion: section omitted entirely when the slot
-    carries zero qualifying actors. Empty `actor_ids[]` is treated the
-    same as an absent slot — empty string returned, render() skips it."""
+def test_mentioned_actors_section_summary_singular_when_one_actor():
+    """Singular `1 noted` for the N=1 case (the only edge that needs the
+    pluralisation rule)."""
+    tp = {
+        "actors": [
+            {"id": "actor-001", "name": "Sole Witness",
+             "role": "r", "type": "government",
+             "source_ids": ["src-001"], "quotes": []},
+        ],
+        "perspectives": {
+            "position_clusters": [],
+            "mentioned_actors": {
+                "position_label": "Mentioned actors",
+                "summary": "...",
+                "actors_stated": ["actor-001"],
+                "actors_reported": [],
+                "actors_mentioned": [],
+                "actor_ids": ["actor-001"],
+                "source_ids": ["src-001"],
+                "counts": {
+                    "actors": 1, "sources": 1, "regions": 0, "languages": 0,
+                },
+            },
+        },
+    }
+    html = build_mentioned_actors_section(tp)
+    assert "1 note</strong>" in html
+    # Singular `note` is NOT followed by 'd' or 's' here — guard
+    # against accidental "1 noted" / "1 notes" emission.
+    assert "1 noted" not in html
+    assert "1 notes" not in html
+
+
+def test_mentioned_actors_section_omitted_when_actor_ids_empty():
+    """Acceptance criterion: section omitted entirely (no empty
+    `<details>` shell) when the slot carries zero qualifying actors."""
     tp = {
         "actors": [],
         "perspectives": {
             "position_clusters": [],
-            "single_voices": {
-                "position_label": "Single voices",
+            "mentioned_actors": {
+                "position_label": "Mentioned actors",
                 "summary": "...",
                 "actors_stated": [],
                 "actors_reported": [],
@@ -350,24 +388,24 @@ def test_single_voices_bracket_omitted_when_actor_ids_empty():
             },
         },
     }
-    assert build_single_voices_bracket(tp) == ""
+    assert build_mentioned_actors_section(tp) == ""
 
 
-def test_single_voices_bracket_omitted_when_slot_absent():
+def test_mentioned_actors_section_omitted_when_slot_absent():
     """Acceptance criterion: legacy-permissive. A TP JSON without the
-    `single_voices` slot (pre-this-change publish) renders the rest of
-    the page unchanged — the bracket function returns empty string."""
+    `mentioned_actors` slot (pre-this-change publish) renders the rest
+    of the page unchanged — the function returns empty string."""
     tp = {
         "actors": [],
         "perspectives": {"position_clusters": []},
     }
-    assert build_single_voices_bracket(tp) == ""
+    assert build_mentioned_actors_section(tp) == ""
 
 
-def test_actors_section_card_for_bracket_actor_shows_single_voices_box():
-    """An actor in the single-voices bracket sees a Single voices
-    cluster-ref box on their card, anchored at `#single-voices`. The
-    box carries the bracket-variant CSS class."""
+def test_actors_section_card_for_bracket_actor_shows_mentioned_actors_box():
+    """An actor in the mentioned-actors bracket sees a ``Mentioned actors``
+    cluster-ref box on their card, anchored at ``#mentioned-actors``.
+    The box carries the bracket-variant CSS class."""
     tp = {
         "actors": [
             {"id": "actor-001", "name": "Orphan Protagonist",
@@ -376,7 +414,7 @@ def test_actors_section_card_for_bracket_actor_shows_single_voices_box():
         ],
         "perspectives": {
             "position_clusters": [],
-            "single_voices": {
+            "mentioned_actors": {
                 "actors_stated": ["actor-001"],
                 "actors_reported": [],
                 "actors_mentioned": [],
@@ -391,14 +429,16 @@ def test_actors_section_card_for_bracket_actor_shows_single_voices_box():
     html = build_actors_section(tp)
     assert (
         '<a class="actor-card-cluster-box actor-card-cluster-box--bracket"'
-        ' href="#single-voices">Single voices</a>'
+        ' href="#mentioned-actors">Mentioned actors</a>'
     ) in html
-    # No spurious Cluster-N box for this orphan.
+    # No spurious Cluster/Position-N box for this orphan.
     assert 'href="#pc-' not in html
+    # Legacy vocab should no longer surface anywhere in the section.
+    assert "Single voices" not in html
 
 
-def test_actors_section_card_for_non_bracket_actor_omits_single_voices_box():
-    """An actor NOT in the bracket must not see a Single voices box on
+def test_actors_section_card_for_non_bracket_actor_omits_mentioned_actors_box():
+    """An actor NOT in the bracket must not see a Mentioned actors box on
     their card, even when a bracket exists in the TP."""
     tp = {
         "actors": [
@@ -414,7 +454,7 @@ def test_actors_section_card_for_non_bracket_actor_omits_single_voices_box():
                 {"id": "pc-001", "actor_ids": ["actor-001"],
                  "source_ids": ["src-001"]},
             ],
-            "single_voices": {
+            "mentioned_actors": {
                 "actors_stated": ["actor-002"],
                 "actors_reported": [],
                 "actors_mentioned": [],
@@ -427,17 +467,20 @@ def test_actors_section_card_for_non_bracket_actor_omits_single_voices_box():
         },
     }
     html = build_actors_section(tp)
-    # actor-001's card carries the Cluster 1 box but no Single voices.
+    # actor-001's card carries the Position 1 box but no Mentioned actors.
     actor1_start = html.find('id="actor-001"')
     actor1_end = html.find('</article>', actor1_start)
     actor1_card = html[actor1_start:actor1_end]
-    assert 'href="#pc-001">Cluster 1' in actor1_card
-    assert "Single voices" not in actor1_card
-    # actor-002's card carries Single voices (and no cluster ref).
+    assert 'href="#pc-001">Position 1' in actor1_card
+    assert "Mentioned actors" not in actor1_card
+    # actor-002's card carries Mentioned actors (and no cluster ref).
     actor2_start = html.find('id="actor-002"')
     actor2_end = html.find('</article>', actor2_start)
     actor2_card = html[actor2_start:actor2_end]
-    assert 'href="#single-voices">Single voices' in actor2_card
+    assert 'href="#mentioned-actors">Mentioned actors' in actor2_card
+    # Legacy vocab gone everywhere.
+    assert "Cluster 1" not in html
+    assert "Single voices" not in html
 
 
 def test_bias_card_renders_findings():

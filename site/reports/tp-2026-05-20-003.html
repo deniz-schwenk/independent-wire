@@ -404,6 +404,15 @@ details[open] summary::before {
   line-height: 1.55;
 }
 .coverage-limits li { margin: 0.25rem 0; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -748,10 +757,10 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
 </div>
 <p class="word-count">1,099 words</p>
 
-<h2>Perspectives &mdash; Position Clusters</h2>
+<h2>Perspectives &mdash; Positions</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
-  <a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>
+  <a class="actor-card-cluster-box" href="#pc-001">Position 1</a>
   <div class="card-header"><span class="card-actor">The Ebola outbreak is a serious regional emergency but does not constitute a global pandemic threat</span></div>
   <div class="card-position">WHO leadership and European government officials assess the risk as high at national and regional levels within DRC and neighboring countries, but low globally. They stress that Ebola is transmitted through direct contact with bodily fluids, not airborne, and that travel restrictions are not supported under International Health Regulations, while reassuring populations in Europe and beyond that the risk to them is minimal.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -765,7 +774,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">6 actors</a></span> &middot; <span>13 sources</span> &middot; <span>8 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-002">
-  <a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a>
+  <a class="actor-card-cluster-box" href="#pc-002">Position 2</a>
   <div class="card-header"><span class="card-actor">The true scale of the outbreak is far larger than official figures suggest, with cases likely two to five times higher than reported</span></div>
   <div class="card-position">Epidemiological modeling from Imperial College London and WHO, along with assessments from MSF and the IRC, indicate substantial under-detection due to limited laboratory capacity, remote geography, and delayed identification of the Bundibugyo strain. Hospitals in the epicenter are overwhelmed and turning patients away, and the outbreak may already exceed 1,000 active cases.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -779,7 +788,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">4 actors</a></span> &middot; <span>8 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-003">
-  <a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a>
+  <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
   <div class="card-header"><span class="card-actor">Structural failures in DRC&#x27;s healthcare system, compounded by armed conflict and poverty, are the root causes of recurring Ebola outbreaks</span></div>
   <div class="card-position">Congolese doctors, geopolitical analysts, and humanitarian organizations attribute the recurrence and severity of Ebola epidemics to a broken healthcare system, inaccessible facilities, unsafe food practices, deforestation bringing humans into contact with animal reservoirs, and ongoing armed conflict that diverts resources and attention from health infrastructure. Communities lack basic protective equipment and often cannot afford hospital care.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -789,7 +798,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">7 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-004">
-  <a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a>
+  <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">Delayed detection caused by testing for the wrong Ebola strain and community mistrust allowed the outbreak to spread unchecked for weeks</span></div>
   <div class="card-position">The outbreak went unrecognized for weeks because initial laboratory tests targeted the more common Zaire strain and returned negative, while community beliefs that the illness was witchcraft or mystical led people to seek treatment from prayer centers and traditional healers rather than health facilities. The repatriation of the first victim&#x27;s body to a densely populated mining area for a funeral further accelerated transmission.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -799,7 +808,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">3 actors</a></span> &middot; <span>9 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-005">
-  <a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a>
+  <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
   <div class="card-header"><span class="card-actor">The WHO was too slow to identify and respond to the outbreak</span></div>
   <div class="card-position">US Secretary of State Marco Rubio criticizes the WHO as having been &#x27;a little late&#x27; in recognizing the Ebola outbreak, while US public health experts note the CDC only learned of the outbreak upon public confirmation despite weeks of prior rumors, representing a departure from the US government&#x27;s historical role in early outbreak response.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -809,7 +818,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">2 actors</a></span> &middot; <span>4 sources</span> &middot; <span>2 regions</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-006">
-  <a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a>
+  <a class="actor-card-cluster-box" href="#pc-006">Position 6</a>
   <div class="card-header"><span class="card-actor">Criticism of the WHO&#x27;s response speed is misplaced and reflects a misunderstanding of how international health governance works</span></div>
   <div class="card-position">WHO Director-General Tedros defends the organization&#x27;s response, noting he declared a public health emergency of international concern before even convening the emergency committee — an unprecedented step — and suggests that US criticism may stem from a lack of understanding of how International Health Regulations assign responsibilities. Public health academics argue that blaming the WHO is misplaced given the organization operates with limited resources in an insecure, conflict-affected setting.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -819,7 +828,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">2 actors</a></span> &middot; <span>6 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-007">
-  <a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a>
+  <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">US funding cuts have weakened global health infrastructure and left the US itself poorly prepared for Ebola</span></div>
   <div class="card-position">American public health experts warn that sweeping US aid cuts have degraded Ebola surveillance, stockpiles, and health systems in the DRC, while also slashing domestic public health capacity to the point where even a small number of US cases would be challenging. The US government appears to be on the sidelines of outbreak response for the first time in its history.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -829,7 +838,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">2 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-008">
-  <a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a>
+  <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">No approved vaccine or treatment exists for the Bundibugyo strain, but experimental candidates offer hope within months</span></div>
   <div class="card-position">WHO vaccine experts and Congolese virologists confirm there is no approved vaccine or therapeutic for the rare Bundibugyo Ebola strain driving this outbreak, but two promising candidates — an rVSV-based vaccine six to nine months from human trials and a ChAdOx1-based vaccine that could have doses for clinical trials in two to three months, though no animal data yet supports its efficacy and safety — are under evaluation. Experimental vaccine shipments from the US and UK are expected, though the immediate priority remains cutting transmission chains through conventional public health measures.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -839,7 +848,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">3 actors</a></span> &middot; <span>6 sources</span> &middot; <span>6 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-009">
-  <a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a>
+  <a class="actor-card-cluster-box" href="#pc-009">Position 9</a>
   <div class="card-header"><span class="card-actor">Affected communities are terrified, lack protective supplies, and demand urgent government action</span></div>
   <div class="card-position">Residents across DRC and Uganda — motorcycle riders, street vendors, lecturers, and bereaved parents — express deep fear of contracting Ebola, describe changing daily habits like avoiding handshakes, and report lacking basic protective equipment such as face masks. A motorcycle rider in eastern DRC, Legende Buhendwa, said he fears bringing the disease home to his family. They call on their governments and international partners to find real solutions and act faster, recalling the devastating impact of previous outbreaks and lockdowns.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -849,7 +858,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-009">9 actors</a></span> &middot; <span>6 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-010">
-  <a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a>
+  <a class="actor-card-cluster-box" href="#pc-010">Position 10</a>
   <div class="card-header"><span class="card-actor">Regional governments are taking precautionary border and public gathering measures to prevent cross-border spread</span></div>
   <div class="card-position">Rwanda has closed border crossings with DRC, Uganda has postponed the major Martyrs&#x27; Day pilgrimage and restricted hospital access in Mubende, Mexico has activated special surveillance protocols for travelers from affected countries ahead of the 2026 World Cup, and South Korea has designated DRC, Uganda, and South Sudan as enhanced quarantine management areas. These measures reflect a precautionary approach despite WHO guidance against blanket travel restrictions.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -863,7 +872,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-010">5 actors</a></span> &middot; <span>8 sources</span> &middot; <span>7 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-011">
-  <a class="actor-card-cluster-box" href="#pc-011">Cluster 11</a>
+  <a class="actor-card-cluster-box" href="#pc-011">Position 11</a>
   <div class="card-header"><span class="card-actor">Germany&#x27;s specialized hospital infrastructure can safely treat Ebola patients with no risk to the general public</span></div>
   <div class="card-position">German government officials and medical experts emphasize that the Charité hospital and the STAKOB network of specialized isolation units are fully equipped to handle Ebola patients, with negative-pressure rooms, HEPA filtration, decontamination protocols, and specially trained teams. They reassure the German public that there is no danger of the virus spreading to the general population.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -878,23 +887,28 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
 </div>
 </div>
 
-<div class="card single-voices-bracket" id="single-voices">
-  <div class="card-header"><span class="card-actor">Single voices</span><span class="single-voices-bracket-tag">Bracket</span></div>
-  <div class="card-position">Actors with unique positions that cannot be grouped with other positions into a shared cluster, but are referenced by multiple sources and are therefore considered important to the dossier.</div>
+<details class="mentioned-actors-wrapper">
+  <summary>Mentioned Actors &mdash; <strong>18 noted</strong></summary>
+  <div class="mentioned-actors-body">
+<div class="card single-voices-bracket" id="mentioned-actors">
+  <div class="card-header"><span class="card-actor">Mentioned actors</span><span class="single-voices-bracket-tag">Bracket</span></div>
+  <div class="card-position">Actors named in the corpus who are not grouped into any of the documented positions. Listed here for transparency about who appears in the source material.</div>
   <div class="cluster-tier cluster-tier-actors_stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-032">Marie Roseline Belizaire</a></strong> <span class="cluster-actor-role">WHO Regional Emergency Director (ad interim) and Incident Manager</span> <span class="cluster-actor-type">international_org</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-009">Patrick Schnieder</a></strong> <span class="cluster-actor-role">German Transport Minister</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-010">Max Kownatzki</a></strong> <span class="cluster-actor-role">Eurowings CEO</span> <span class="cluster-actor-type">industry</span></li><li class="cluster-tier-actor"><strong><a href="#actor-011">Anja Weigel</a></strong> <span class="cluster-actor-role">Local fire brigade chief in Görlitz</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-012">Julian Schuster</a></strong> <span class="cluster-actor-role">SC Freiburg head coach</span> <span class="cluster-actor-type">industry</span></li><li class="cluster-tier-actor"><strong><a href="#actor-013">Christian Günter</a></strong> <span class="cluster-actor-role">SC Freiburg captain</span> <span class="cluster-actor-type">industry</span></li><li class="cluster-tier-actor"><strong><a href="#actor-022">David Matthews</a></strong> <span class="cluster-actor-role">Professor of Virology, University of Bristol</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-032">Marie Roseline Belizaire</a></strong> <span class="cluster-actor-role">WHO Regional Emergency Director (ad interim) and Incident Manager</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-033">Mohamed Yakub Janabi</a></strong> <span class="cluster-actor-role">WHO Regional Director for Africa</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-047">Lawrence Kanyuka</a></strong> <span class="cluster-actor-role">Spokesman for AFC-M23 rebel group</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-048">Caitlin Brady</a></strong> <span class="cluster-actor-role">Country Director for the Danish Refugee Council in DRC</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-053">Scott Myhre</a></strong> <span class="cluster-actor-role">Area director for Serge</span> <span class="cluster-actor-type">civil_society</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-actors_reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-028">Jean Kaseya</a></strong> <span class="cluster-actor-role">Director General of Africa CDC</span> <span class="cluster-actor-type">international_org</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-008">Félix Tshisekedi</a></strong> <span class="cluster-actor-role">DR Congo President</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-025">World Health Organization (WHO)</a></strong> <span class="cluster-actor-role">International Health Agency</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-028">Jean Kaseya</a></strong> <span class="cluster-actor-role">Director General of Africa CDC</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-030">Reem Alabali Radovan</a></strong> <span class="cluster-actor-role">German Federal Development Minister (SPD)</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-031">Stephan Becker</a></strong> <span class="cluster-actor-role">Virologist at the University of Marburg</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-038">Africa Centres for Disease Control and Prevention (Africa CDC)</a></strong> <span class="cluster-actor-role">African Union health agency</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-046">US Centers for Disease Control and Prevention (CDC)</a></strong> <span class="cluster-actor-role">US federal health agency</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
-  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#single-voices">2 actors</a></span> &middot; <span>4 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#mentioned-actors">18 actors</a></span> &middot; <span>11 sources</span> &middot; <span>6 regions</span> &middot; <span>4 languages</span></p>
 </div>
+  </div>
+</details>
 
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">58 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<p class="actors-meta">58 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
 <div class="actors-tabs" role="tablist">
 <button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">58</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">15</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITARY</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="industry"><span class="actor-tab-name">INDUSTRY</span> <span class="actor-tab-count">3</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">8</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">ACADEMIA</span> <span class="actor-tab-count">11</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONAL ORG</span> <span class="actor-tab-count">11</span></button><button class="actor-tab" type="button" data-type-target="affected_community"><span class="actor-tab-name">AFFECTED COMMUNITY</span> <span class="actor-tab-count">9</span></button>
 </div>
@@ -905,7 +919,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">5 SRC</span>
   </div>
   <p class="actor-card-role">Congo&#x27;s health minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-018">src-018</a><a class="actor-card-source-box" href="#src-028">src-028</a><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-017" class="actor-card" data-actor-type="government">
@@ -914,7 +928,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">US Secretary of State</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-022">src-022</a><a class="actor-card-source-box" href="#src-027">src-027</a><a class="actor-card-source-box" href="#src-035">src-035</a></div>
 </article>
 <article id="actor-060" class="actor-card" data-actor-type="government">
@@ -923,7 +937,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">President of Uganda</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-031">src-031</a><a class="actor-card-source-box" href="#src-040">src-040</a></div>
 </article>
 <article id="actor-011" class="actor-card" data-actor-type="government">
@@ -932,7 +946,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Local fire brigade chief in Görlitz</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-029" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -940,7 +955,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Federal Ministry of Health</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-011">Cluster 11</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-011">Position 11</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-026" class="actor-card" data-actor-type="government">
@@ -949,7 +964,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Government Ministry</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-052" class="actor-card" data-actor-type="government">
@@ -958,7 +973,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Secretario de Salud (Secretary of Health)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-020">src-020</a></div>
 </article>
 <article id="actor-003" class="actor-card" data-actor-type="government">
@@ -967,7 +982,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">European Union spokesperson</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-008" class="actor-card" data-actor-type="government">
@@ -976,7 +991,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">DR Congo President</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-062" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -984,7 +1000,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">National public health authority</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-042">src-042</a></div>
 </article>
 <article id="actor-055" class="actor-card" data-actor-type="government">
@@ -993,7 +1009,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Senior Hospital Administrator</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-024">src-024</a></div>
 </article>
 <article id="actor-009" class="actor-card" data-actor-type="government">
@@ -1002,7 +1018,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">German Transport Minister</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-030" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1010,7 +1027,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">German Federal Development Minister (SPD)</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-061" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1018,7 +1036,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">National health authority</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-032">src-032</a></div>
 </article>
 <article id="actor-046" class="actor-card" data-actor-type="government">
@@ -1027,7 +1045,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">US federal health agency</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-047" class="actor-card" data-actor-type="military">
   <div class="actor-card-header">
@@ -1035,7 +1054,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Spokesman for AFC-M23 rebel group</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-013" class="actor-card" data-actor-type="industry">
   <div class="actor-card-header">
@@ -1043,7 +1063,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">SC Freiburg captain</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-012" class="actor-card" data-actor-type="industry">
   <div class="actor-card-header">
@@ -1051,7 +1072,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">SC Freiburg head coach</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-010" class="actor-card" data-actor-type="industry">
   <div class="actor-card-header">
@@ -1059,7 +1081,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Eurowings CEO</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-054" class="actor-card" data-actor-type="civil_society">
   <div class="actor-card-header">
@@ -1067,7 +1090,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Responsable adjointe aux opérations d&#x27;urgence (Deputy head of emergency operations)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
 </article>
 <article id="actor-048" class="actor-card" data-actor-type="civil_society">
@@ -1076,7 +1099,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Country Director for the Danish Refugee Council in DRC</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-042" class="actor-card" data-actor-type="civil_society">
   <div class="actor-card-header">
@@ -1084,7 +1108,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">DRC Country Director for Save the Children</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-020" class="actor-card" data-actor-type="civil_society">
@@ -1093,7 +1117,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Vaccination and epidemic response advisor at MSF</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-023" class="actor-card" data-actor-type="civil_society">
@@ -1102,7 +1126,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">International medical secretary at MSF</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-021" class="actor-card" data-actor-type="civil_society">
@@ -1111,7 +1135,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Senior director of health at the International Rescue Committee</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-053" class="actor-card" data-actor-type="civil_society">
@@ -1120,7 +1144,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Area director for Serge</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-022">src-022</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-022">src-022</a></div>
 </article>
 <article id="actor-024" class="actor-card" data-actor-type="civil_society">
   <div class="actor-card-header">
@@ -1128,7 +1153,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">MSF Emergency Manager</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-015" class="actor-card" data-actor-type="academia">
@@ -1137,7 +1162,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">6 SRC</span>
   </div>
   <p class="actor-card-role">Virologist at the National Institute of Biomedical Research</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-018">src-018</a><a class="actor-card-source-box" href="#src-021">src-021</a><a class="actor-card-source-box" href="#src-029">src-029</a><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-040" class="actor-card" data-actor-type="academia">
@@ -1146,7 +1171,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Congolese doctor</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-014" class="actor-card" data-actor-type="academia">
@@ -1155,7 +1180,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Doctor at Leipzig clinic</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-011">Cluster 11</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-011">Position 11</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a></div>
 </article>
 <article id="actor-022" class="actor-card" data-actor-type="academia">
@@ -1164,7 +1189,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Professor of Virology, University of Bristol</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-037" class="actor-card" data-actor-type="academia">
   <div class="actor-card-header">
@@ -1172,7 +1198,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Congolese doctor who helped fight Ebola in North Kivu (2018-2020)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-058" class="actor-card" data-actor-type="academia">
@@ -1181,7 +1207,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Immunologist and professor at the Johns Hopkins Bloomberg School of Public Health</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-027">src-027</a></div>
 </article>
 <article id="actor-041" class="actor-card" data-actor-type="academia">
@@ -1190,7 +1216,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Geopolitical analyst</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-059" class="actor-card" data-actor-type="academia">
@@ -1199,7 +1225,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Epidemiology professor and director of the Pandemic Center at Brown School of Public Health</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-027">src-027</a></div>
 </article>
 <article id="actor-045" class="actor-card" data-actor-type="academia">
@@ -1208,7 +1234,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Research centre at Imperial College London</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-039" class="actor-card" data-actor-type="academia">
@@ -1217,7 +1243,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Doctor specialising in environmental health</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-031" class="actor-card" data-actor-type="academia">
@@ -1226,7 +1252,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Virologist at the University of Marburg</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-001" class="actor-card" data-actor-type="international_org">
   <div class="actor-card-header">
@@ -1234,7 +1261,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">14 SRC</span>
   </div>
   <p class="actor-card-role">Director-General of the WHO</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-013">src-013</a><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-017">src-017</a><a class="actor-card-source-box" href="#src-018">src-018</a><a class="actor-card-source-box" href="#src-021">src-021</a><a class="actor-card-source-box" href="#src-022">src-022</a><a class="actor-card-source-box" href="#src-025">src-025</a><a class="actor-card-source-box" href="#src-036">src-036</a></div>
 </article>
 <article id="actor-005" class="actor-card" data-actor-type="international_org">
@@ -1243,7 +1270,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">WHO doctor</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-019" class="actor-card" data-actor-type="international_org">
@@ -1252,7 +1279,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Technician in the WHO Health Emergencies Programme</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-014">src-014</a></div>
 </article>
 <article id="actor-028" class="actor-card" data-actor-type="international_org">
@@ -1261,7 +1288,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Director General of Africa CDC</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-032" class="actor-card" data-actor-type="international_org">
@@ -1270,7 +1297,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">WHO Regional Emergency Director (ad interim) and Incident Manager</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-038" class="actor-card" data-actor-type="international_org">
@@ -1279,7 +1306,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">African Union health agency</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-002" class="actor-card" data-actor-type="international_org">
   <div class="actor-card-header">
@@ -1287,7 +1315,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">WHO emergencies chief</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-035" class="actor-card" data-actor-type="international_org">
@@ -1296,7 +1324,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Chair of the WHO Emergency Committee panel</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a></div>
 </article>
 <article id="actor-033" class="actor-card" data-actor-type="international_org">
@@ -1305,7 +1333,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">WHO Regional Director for Africa</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a></div>
 </article>
 <article id="actor-018" class="actor-card" data-actor-type="international_org">
   <div class="actor-card-header">
@@ -1313,7 +1342,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Head of clinical trials at the WHO</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-025" class="actor-card" data-actor-type="international_org">
@@ -1322,7 +1351,8 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">International Health Agency</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-007" class="actor-card" data-actor-type="affected_community">
   <div class="actor-card-header">
@@ -1330,7 +1360,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Local resident in Ituri province</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-057" class="actor-card" data-actor-type="affected_community">
@@ -1339,7 +1369,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Lecturer living in Bunia</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-025">src-025</a></div>
 </article>
 <article id="actor-006" class="actor-card" data-actor-type="affected_community">
@@ -1348,7 +1378,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Local resident in Ituri province</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-043" class="actor-card" data-actor-type="affected_community">
@@ -1357,7 +1387,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Resident of Goma and motorbike taxi driver</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-051" class="actor-card" data-actor-type="affected_community">
@@ -1366,7 +1396,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Motorradfahrer (Motorcycle rider)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-019">src-019</a></div>
 </article>
 <article id="actor-049" class="actor-card" data-actor-type="affected_community">
@@ -1375,7 +1405,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Motorradfahrer (Motorcycle rider)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-019">src-019</a></div>
 </article>
 <article id="actor-050" class="actor-card" data-actor-type="affected_community">
@@ -1384,7 +1414,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Straßenverkäuferin (Street vendor)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-019">src-019</a></div>
 </article>
 <article id="actor-036" class="actor-card" data-actor-type="affected_community">
@@ -1393,7 +1423,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Resident of Mongbwalu and father of Ebola victim</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-056" class="actor-card" data-actor-type="affected_community">
@@ -1402,7 +1432,7 @@ Follow-up to: &ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Con
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Resident of Mubende</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-024">src-024</a></div>
 </article>
 </div>

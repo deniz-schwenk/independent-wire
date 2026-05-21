@@ -391,6 +391,28 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
+/* Coverage Limits — same collapsible-footnote treatment as
+   QA Corrections. Reads `consolidated_missing_coverage
+   .missing_topic_dimensions` (2026-05-21 relocation from the
+   prominent Missing-Coverage section). */
+.coverage-limits-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.coverage-limits {
+  margin-top: 0.5rem; padding-left: 1.2rem;
+  line-height: 1.55;
+}
+.coverage-limits li { margin: 0.25rem 0; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -716,10 +738,10 @@ footer a { color: #000; text-decoration: underline; }
 </div>
 <p class="word-count">1,188 words</p>
 
-<h2>Perspectives &mdash; Position Clusters</h2>
+<h2>Perspectives &mdash; Positions</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
-  <a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>
+  <a class="actor-card-cluster-box" href="#pc-001">Position 1</a>
   <div class="card-header"><span class="card-actor">Israel&#x27;s interception of the flotilla is a lawful security operation to maintain the blockade on Hamas</span></div>
   <div class="card-position">Israeli officials frame the flotilla as a political provocation with no genuine humanitarian cargo, designed to break the isolation imposed on Hamas, obstruct peace efforts, and serve terrorist interests. They praise the naval operation as an outstanding success that neutralized a malicious plan.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -729,7 +751,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">2 actors</a></span> &middot; <span>5 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-002">
-  <a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a>
+  <a class="actor-card-cluster-box" href="#pc-002">Position 2</a>
   <div class="card-header"><span class="card-actor">The flotilla interception is an illegal act of piracy and aggression in international waters that violates international law</span></div>
   <div class="card-position">A broad coalition of governments, flotilla organisers, and activists condemn the interception as a violation of international law, freedom of navigation, and humanitarian principles. They characterize it as piracy, banditry, or kidnapping, and demand the immediate release of all detained participants and safe passage for the humanitarian mission.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -743,7 +765,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">15 actors</a></span> &middot; <span>11 sources</span> &middot; <span>9 regions</span> &middot; <span>4 languages</span></p>
 </div>
 <div class="card" id="pc-003">
-  <a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a>
+  <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
   <div class="card-header"><span class="card-actor">Israel&#x27;s actions constitute state terrorism and a systematic assault on the international order</span></div>
   <div class="card-position">Hamas and aligned voices go beyond the piracy framing to characterize Israel&#x27;s conduct as state terrorism that systematically undermines the entire international legal and political order, not merely a single illegal act but a pattern of deliberate destruction of global norms.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -753,7 +775,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">1 actor</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-004">
-  <a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a>
+  <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">The humanitarian crisis in Gaza remains severe and aid access is being systematically obstructed</span></div>
   <div class="card-position">UN agencies and humanitarian observers report that displaced families in Gaza shelter in overcrowded and damaged structures, basic services remain limited, and restrictions on spare parts and essential inputs continue to undermine humanitarian operations, providing the underlying justification for the flotilla mission.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -763,7 +785,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">1 actor</a></span> &middot; <span>2 sources</span> &middot; <span>1 region</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-005">
-  <a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a>
+  <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
   <div class="card-header"><span class="card-actor">EU sanctions on Israeli settlers are a symbolic half-measure while the bloc enables the settlement enterprise through trade</span></div>
   <div class="card-position">Policy analysts and some European parliamentarians argue that the EU&#x27;s targeted sanctions on a handful of violent settlers are inadequate because the bloc refuses to suspend the EU-Israel Association Agreement or ban settlement trade, with Germany and Italy blocking stronger measures despite ICJ rulings and internal legal opinions.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -773,7 +795,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">3 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-006">
-  <a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a>
+  <a class="actor-card-cluster-box" href="#pc-006">Position 6</a>
   <div class="card-header"><span class="card-actor">Israel&#x27;s E1 settlement project aims to bisect the West Bank and eliminate the possibility of a Palestinian state</span></div>
   <div class="card-position">Israeli and Palestinian civil society voices, along with affected Palestinian residents, warn that the E1 project&#x27;s demolitions and planned 3,400 housing units are designed to create facts on the ground that permanently sever Palestinian territorial contiguity and drive out the Palestinian population, with Israeli officials openly stating the goal of burying Palestinian statehood.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -787,7 +809,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">5 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-007">
-  <a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a>
+  <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">Israel&#x27;s evacuation orders in southern Lebanon are a justified response to Hezbollah ceasefire violations</span></div>
   <div class="card-position">Israeli military spokespeople assert that Hezbollah&#x27;s violations of the ceasefire agreement compel the army to act forcefully, issuing evacuation orders to protect civilians while striking Hezbollah positions, and claiming to take steps to mitigate civilian harm.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -797,7 +819,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">3 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-008">
-  <a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a>
+  <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">The Israel-Hezbollah conflict persists despite the ceasefire, causing mounting Lebanese civilian casualties</span></div>
   <div class="card-position">Lebanese authorities and health officials report that the death toll in Lebanon has surpassed 3,000, including hundreds of women, children, and healthcare workers, while both sides continue military operations in violation of the ceasefire extension, with Hezbollah claiming its attacks are responses to over 500 Israeli violations.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -807,7 +829,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">3 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-009">
-  <a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a>
+  <a class="actor-card-cluster-box" href="#pc-009">Position 9</a>
   <div class="card-header"><span class="card-actor">Governments with detained nationals prioritize consular protection while avoiding broader political condemnation</span></div>
   <div class="card-position">Some governments, notably South Korea, respond to the flotilla interception primarily through consular channels — requesting the safety of their detained nationals and providing assistance — without joining the broader international legal condemnation or taking a strong political stance on the blockade itself.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -817,7 +839,7 @@ footer a { color: #000; text-decoration: underline; }
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-009">1 actor</a></span> &middot; <span>3 sources</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-010">
-  <a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a>
+  <a class="actor-card-cluster-box" href="#pc-010">Position 10</a>
   <div class="card-header"><span class="card-actor">The U.S. politically supports Israel&#x27;s flotilla interception and frames the mission as pro-Hamas</span></div>
   <div class="card-position">The U.S. State Department warned of consequences for flotilla supporters and labeled the mission &#x27;pro-Hamas,&#x27; signaling alignment with Israel&#x27;s security framing and diverging sharply from the international condemnation expressed by European, Middle Eastern, and Global South governments.</div>
   <div class="cluster-tier cluster-tier-reported">
@@ -828,9 +850,28 @@ footer a { color: #000; text-decoration: underline; }
 </div>
 </div>
 
+<details class="mentioned-actors-wrapper">
+  <summary>Mentioned Actors &mdash; <strong>3 noted</strong></summary>
+  <div class="mentioned-actors-body">
+<div class="card single-voices-bracket" id="mentioned-actors">
+  <div class="card-header"><span class="card-actor">Mentioned actors</span><span class="single-voices-bracket-tag">Bracket</span></div>
+  <div class="card-position">Actors named in the corpus who are not grouped into any of the documented positions. Listed here for transparency about who appears in the source material.</div>
+  <div class="cluster-tier cluster-tier-actors_stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-033">Gideon Sa&#x27;ar</a></strong> <span class="cluster-actor-role">Foreign Minister of Israel</span> <span class="cluster-actor-type">government</span></li></ul>
+  </div>
+  <div class="cluster-tier cluster-tier-actors_reported">
+    <h4 class="cluster-tier-label">Reported</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-017">Forces of Marshal Haftar</a></strong> <span class="cluster-actor-role">Libyan National Army under Marshal Khalifa Haftar</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-034">Peace Now</a></strong> <span class="cluster-actor-role">Israeli NGO</span> <span class="cluster-actor-type">civil_society</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#mentioned-actors">3 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
+</div>
+  </div>
+</details>
+
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">38 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<p class="actors-meta">38 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
 <div class="actors-tabs" role="tablist">
 <button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">38</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">19</span></button><button class="actor-tab" type="button" data-type-target="legislature"><span class="actor-tab-name">LEGISLATURE</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITARY</span> <span class="actor-tab-count">5</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">8</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONAL ORG</span> <span class="actor-tab-count">3</span></button><button class="actor-tab" type="button" data-type-target="affected_community"><span class="actor-tab-name">AFFECTED COMMUNITY</span> <span class="actor-tab-count">2</span></button>
 </div>
@@ -841,7 +882,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">Prime Minister of Israel</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-003" class="actor-card" data-actor-type="government">
@@ -850,7 +891,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">Israeli Ministry of Foreign Affairs</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-008" class="actor-card" data-actor-type="government">
@@ -859,7 +900,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">President of Turkey</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-020">src-020</a></div>
 </article>
 <article id="actor-010" class="actor-card" data-actor-type="government">
@@ -868,7 +909,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Taoiseach (Prime Minister) of Ireland</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-026">src-026</a></div>
 </article>
 <article id="actor-005" class="actor-card" data-actor-type="government">
@@ -877,7 +918,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">President of Ireland</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-023" class="actor-card" data-actor-type="government">
@@ -886,7 +927,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Ministry of Foreign Affairs of Turkey</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-029">src-029</a></div>
 </article>
 <article id="actor-011" class="actor-card" data-actor-type="government">
@@ -895,7 +936,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Hamas official</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-038" class="actor-card" data-actor-type="government">
@@ -904,7 +945,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Israeli Finance Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-002" class="actor-card" data-actor-type="government">
@@ -913,7 +954,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Foreign ministers of 10 countries</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-047" class="actor-card" data-actor-type="government">
@@ -922,7 +963,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">National governments</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-027">src-027</a></div>
 </article>
 <article id="actor-033" class="actor-card" data-actor-type="government">
@@ -931,7 +972,8 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Foreign Minister of Israel</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-045" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -939,7 +981,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">National government</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-022">src-022</a></div>
 </article>
 <article id="actor-029" class="actor-card" data-actor-type="government">
@@ -948,7 +990,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Authorities of the State of Israel</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-014" class="actor-card" data-actor-type="government">
@@ -957,7 +999,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Spanish Minister of Foreign Affairs</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-025" class="actor-card" data-actor-type="government">
@@ -966,7 +1008,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Security sources in Lebanon</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-028" class="actor-card" data-actor-type="government">
@@ -975,7 +1017,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Ministry of Public Health of Lebanon</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-031" class="actor-card" data-actor-type="government">
@@ -984,7 +1026,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">President of Cyprus</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-042" class="actor-card" data-actor-type="government">
@@ -993,7 +1035,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">South Korean Foreign Ministry Spokesperson</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-043" class="actor-card" data-actor-type="government">
@@ -1002,7 +1044,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Government department</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Cluster 10</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-019">src-019</a></div>
 </article>
 <article id="actor-035" class="actor-card" data-actor-type="legislature">
@@ -1011,7 +1053,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Spokeswoman for the Left Group in the European Parliament, from Ireland</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-024" class="actor-card" data-actor-type="military">
@@ -1020,7 +1062,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Arabic-language spokesperson for the Israeli military</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-026" class="actor-card" data-actor-type="military">
@@ -1029,7 +1071,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Iran-backed Lebanese militant group</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-024">src-024</a></div>
 </article>
 <article id="actor-039" class="actor-card" data-actor-type="military">
@@ -1038,7 +1080,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Israeli authority responsible for administration in the occupied West Bank</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-017" class="actor-card" data-actor-type="military">
@@ -1047,7 +1089,8 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Libyan National Army under Marshal Khalifa Haftar</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-027" class="actor-card" data-actor-type="military">
   <div class="actor-card-header">
@@ -1055,7 +1098,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Israel Defense Forces</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-001" class="actor-card" data-actor-type="civil_society">
@@ -1064,7 +1107,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">5 SRC</span>
   </div>
   <p class="actor-card-role">Organisers of the Gaza aid flotilla</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-004" class="actor-card" data-actor-type="civil_society">
@@ -1073,7 +1116,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">Irish doctor and sister of President Catherine Connolly</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-026">src-026</a></div>
 </article>
 <article id="actor-021" class="actor-card" data-actor-type="civil_society">
@@ -1082,7 +1125,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Activist on the boat &#x27;L&#x27;ark&#x27;</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-022" class="actor-card" data-actor-type="civil_society">
@@ -1091,7 +1134,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Psychologist and activist on the boat &#x27;Girolama&#x27;</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-034" class="actor-card" data-actor-type="civil_society">
@@ -1100,7 +1143,8 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Israeli NGO</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-016" class="actor-card" data-actor-type="civil_society">
   <div class="actor-card-header">
@@ -1108,7 +1152,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">One of the leaders of the flotilla, Spanish-Palestinian activist</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-040" class="actor-card" data-actor-type="civil_society">
@@ -1117,7 +1161,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Member of Israeli NGO Peace Now</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-020" class="actor-card" data-actor-type="civil_society">
@@ -1126,7 +1170,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Educator and activist on the boat &#x27;Munki&#x27;</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-036" class="actor-card" data-actor-type="international_org">
@@ -1135,7 +1179,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Executive body of the European Union</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-032" class="actor-card" data-actor-type="international_org">
@@ -1144,7 +1188,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">EU High Representative for Foreign Policy</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-013" class="actor-card" data-actor-type="international_org">
@@ -1153,7 +1197,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">United Nations</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-041" class="actor-card" data-actor-type="affected_community">
@@ -1162,7 +1206,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Owner of a demolished car wash in Al-Eizariya</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-037" class="actor-card" data-actor-type="affected_community">
@@ -1171,7 +1215,7 @@ footer a { color: #000; text-decoration: underline; }
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Palestinian metal trader and resident of Al-Eizariya</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 </div>

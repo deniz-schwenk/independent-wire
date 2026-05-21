@@ -125,8 +125,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
 }
 
-/* Stakeholder cards */
-.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+/* Cluster cards — one card per row, full container width. Two-
+   column variant retired so the Cluster-ID pill, position label,
+   summary, tier-grouped actors, and counts row all read across the
+   full width (the cluster card is information-dense and benefits
+   from the horizontal space). */
+.card-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+/* Cluster-ID pill at top-left of each cluster card. Shares
+   ``.actor-card-cluster-box`` styling with the actor-card pills so
+   the cross-reference renders identically on both sides. The pill
+   needs a margin below to separate it from the position-label
+   header that follows. */
+.card > .actor-card-cluster-box {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
 .card {
   border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
   background: var(--color-bg);
@@ -144,6 +157,21 @@ h2 {
 .cluster-counts a { color: inherit; text-decoration: underline; }
 .cluster-counts a:hover { color: var(--color-text); }
 .card:target { background: var(--color-bg-subtle, #f5f5f4); }
+
+/* Single-voices bracket — visually distinguished from real shared-
+   position clusters. Dashed left accent + neutral tinted background
+   read as "this is a different kind of grouping" without breaking the
+   page's existing card rhythm. */
+.single-voices-bracket {
+  border-left: 4px dashed #000;
+  background: var(--color-bg-subtle, #f5f5f4);
+  margin-top: 1rem;
+}
+.single-voices-bracket-tag {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-left: 0.5rem;
+}
 
 /* Cluster three-level actor sub-blocks (stated / reported / mentioned) */
 .cluster-tier { margin-top: 0.85rem; }
@@ -168,54 +196,102 @@ h2 {
   color: var(--color-text-subtle); margin-left: 0.25rem;
   text-transform: uppercase; letter-spacing: 0.05em;
 }
-.cluster-actor-srcs {
-  font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle);
+
+/* Actors section — flat card grid with type-tab filter */
+.actors h2 { margin-top: 2.5rem; }
+.actors-meta {
+  font-family: var(--font-sans); font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin: 1rem 0 1.5rem;
+  border-left: 3px solid #000; padding-left: 0.75rem;
 }
 
-/* Actors section */
-.actors h2 { margin-top: 2rem; }
-.actors-meta {
-  font-family: var(--font-mono); font-size: 0.85rem;
-  color: var(--color-text-secondary); margin: 0 0 1rem;
+.actors-tabs {
+  display: flex; flex-wrap: wrap; gap: 0;
+  margin-bottom: 1.5rem;
 }
-#actors-show-all {
+.actor-tab {
+  font-family: var(--font-mono); font-size: 0.8rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.5rem 1rem; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; margin: 0 -1px -1px 0;
+}
+.actor-tab-count { margin-left: 0.4rem; color: var(--color-text-subtle); }
+.actor-tab--active { background: #000; color: var(--color-bg); }
+.actor-tab--active .actor-tab-count { color: var(--color-bg); }
+.actor-tab:not(.actor-tab--active):hover {
+  background: var(--color-bg-subtle, #f5f5f4);
+}
+
+/* Two-column grid with a vertical centre rule. The ::before pseudo
+   spans the full grid height and sits in the middle of the column
+   gap, matching the horizontal `border-top` rhythm on each card.
+   Disabled on mobile via the @media block when the grid collapses
+   to a single column. */
+.actor-card-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem;
+  position: relative;
+}
+.actor-card-grid::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%; width: 1px;
+  background: var(--color-border-light);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.actor-card {
+  border-top: 1px solid var(--color-border-light);
+  padding: 1rem 0;
+}
+.actor-card[hidden] { display: none; }
+.actor-card:target { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 0.25rem; gap: 0.5rem;
+}
+.actor-card-name {
+  font-family: var(--font-sans); font-weight: 700; font-size: 1rem;
+}
+.actor-card-name a { color: inherit; text-decoration: none; }
+.actor-card-src-count {
   font-family: var(--font-mono); font-size: 0.75rem;
-  background: transparent; border: 1px solid #000; cursor: pointer;
-  padding: 0.3rem 0.75rem; margin-bottom: 1rem;
+  color: var(--color-text-subtle);
   text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap;
 }
-#actors-show-all:hover { background: #000; color: var(--color-bg); }
-.actor-list { list-style: none; padding: 0; margin: 0; }
-.actor {
-  padding: 1rem 0; border-top: 1px solid var(--color-border-light);
+.actor-card-role {
+  font-family: var(--font-sans); font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem;
 }
-.actor:first-child { border-top: 0; padding-top: 0; }
-.actor[hidden] { display: none; }
-.actor:target { background: var(--color-bg-subtle, #f5f5f4); }
-.actor-header {
-  font-family: var(--font-sans); font-size: 1rem; margin-bottom: 0.4rem;
+.actor-card-cluster-refs, .actor-card-source-refs {
+  display: flex; flex-wrap: wrap; gap: 0.2rem;
+  margin-top: 0.4rem;
 }
-.actor-header strong { font-weight: 700; }
-.actor-role { color: var(--color-text-secondary); margin-left: 0.4rem; }
-.actor-type {
+.actor-card-cluster-box {
   font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle); margin-left: 0.4rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.2rem 0.5rem;
   text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; text-decoration: none;
 }
-.actor-position-line {
-  font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55;
-  color: var(--color-text-secondary); margin: 0.35rem 0 0;
-}
-.actor-position-line a { color: inherit; text-decoration: underline; }
-.actor-verbatim { font-style: italic; }
-.actor-no-cluster { color: var(--color-text-subtle); font-size: 0.85rem; }
-.actor-position-tier {
+.actor-card-cluster-box:hover { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-cluster-box--bracket { border-style: dashed; }
+/* Source-ref boxes — tightened (Correction 3, 2026-05-20) so ≥ 5
+   `src-NNN` boxes fit per row at the desktop card width
+   (container 740px → ~334px per card column). Lowercase label,
+   minimal horizontal padding, no letter-spacing. */
+.actor-card-source-box {
   font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle); font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  margin-right: 0.15rem;
+  background: var(--color-bg-subtle, #f5f5f4);
+  padding: 0.2rem 0.35rem;
+  color: #000; text-decoration: none;
+  letter-spacing: 0;
 }
+.actor-card-source-box:hover { background: var(--color-border-light); }
 
 /* Missing voices */
 .missing-voice {
@@ -315,6 +391,28 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
+/* Coverage Limits — same collapsible-footnote treatment as
+   QA Corrections. Reads `consolidated_missing_coverage
+   .missing_topic_dimensions` (2026-05-21 relocation from the
+   prominent Missing-Coverage section). */
+.coverage-limits-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.coverage-limits {
+  margin-top: 0.5rem; padding-left: 1.2rem;
+  line-height: 1.55;
+}
+.coverage-limits li { margin: 0.25rem 0; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -454,7 +552,10 @@ footer a { color: #000; text-decoration: underline; }
 @media (max-width: 768px) {
   .container { padding: 1rem; }
   h1 { font-size: 1.4rem; }
-  .card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid::before { display: none; }
+  .actors-tabs { font-size: 0.7rem; }
+  .actor-tab { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
   .meta-bar { flex-wrap: wrap; }
   .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
   .meta-item:last-child { border-bottom: none; }
@@ -657,332 +758,579 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
 </div>
 <p class="word-count">1,137 words</p>
 
-<h2>Perspectives &mdash; Position Clusters</h2>
+<h2>Perspectives &mdash; Positions</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
+  <a class="actor-card-cluster-box" href="#pc-001">Position 1</a>
   <div class="card-header"><span class="card-actor">Ukraine&#x27;s drone strikes on Moscow are entirely justified retaliation for Russia&#x27;s ongoing attacks on Ukrainian cities</span></div>
   <div class="card-position">Ukrainian government and military officials frame the massive drone operation as a proportionate and fair response to sustained Russian bombardment of Ukrainian population centers, emphasizing that Ukraine&#x27;s growing long-range capability can now overcome even the densest Russian air defenses around Moscow and that the strikes target military-industrial infrastructure to degrade Russia&#x27;s war-making capacity.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="cluster-actor-role">President of Ukraine</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-003">src-003</a>, <a href="#src-005">src-005</a>, <a href="#src-006">src-006</a>, <a href="#src-008">src-008</a>, <a href="#src-015">src-015</a>, <a href="#src-026">src-026</a>, <a href="#src-027">src-027</a>, <a href="#src-002">src-002</a>, <a href="#src-009">src-009</a>, <a href="#src-010">src-010</a>, <a href="#src-017">src-017</a>, <a href="#src-020">src-020</a>, <a href="#src-004">src-004</a>, <a href="#src-013">src-013</a>, <a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-006">Ukraine&#x27;s General Staff</a></strong> <span class="cluster-actor-role">General Staff of the Ukrainian Armed Forces</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-008">src-008</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-017">Ukraine&#x27;s state security service SBU</a></strong> <span class="cluster-actor-role">Security Service of Ukraine</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-005">src-005</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-018">Ukraine&#x27;s air force</a></strong> <span class="cluster-actor-role">Ukrainian Air Force</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-005">src-005</a>, <a href="#src-003">src-003</a>, <a href="#src-020">src-020</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-044">Ukraine&#x27;s Defense Ministry</a></strong> <span class="cluster-actor-role">Ministry of Defense of Ukraine</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-010">src-010</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-048">Евгений Хмара</a></strong> <span class="cluster-actor-role">Глава ведомства (СБУ)</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-049">Сергей Стерненко</a></strong> <span class="cluster-actor-role">Советник министра обороны Украины</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-041">Robert &#x27;Madyar&#x27; Brovdi</a></strong> <span class="cluster-actor-role">Commander of Ukraine&#x27;s Unmanned Systems Forces</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-009">src-009</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="cluster-actor-role">President of Ukraine</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-006">Ukraine&#x27;s General Staff</a></strong> <span class="cluster-actor-role">General Staff of the Ukrainian Armed Forces</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-017">Ukraine&#x27;s state security service SBU</a></strong> <span class="cluster-actor-role">Security Service of Ukraine</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-018">Ukraine&#x27;s air force</a></strong> <span class="cluster-actor-role">Ukrainian Air Force</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-044">Ukraine&#x27;s Defense Ministry</a></strong> <span class="cluster-actor-role">Ministry of Defense of Ukraine</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-048">Евгений Хмара</a></strong> <span class="cluster-actor-role">Глава ведомства (СБУ)</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-049">Сергей Стерненко</a></strong> <span class="cluster-actor-role">Советник министра обороны Украины</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-041">Robert &#x27;Madyar&#x27; Brovdi</a></strong> <span class="cluster-actor-role">Commander of Ukraine&#x27;s Unmanned Systems Forces</span> <span class="cluster-actor-type">military</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-039">Andrii Kovalenko</a></strong> <span class="cluster-actor-role">official at Ukraine&#x27;s National Security and Defense Council</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-009">src-009</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-039">Andrii Kovalenko</a></strong> <span class="cluster-actor-role">official at Ukraine&#x27;s National Security and Defense Council</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">9 actors</a></span> &middot; <span>16 sources</span> &middot; <span>8 regions</span> &middot; <span>4 languages</span></p>
 </div>
 <div class="card" id="pc-002">
+  <a class="actor-card-cluster-box" href="#pc-002">Position 2</a>
   <div class="card-header"><span class="card-actor">The Ukrainian drone strikes on Moscow constitute a mass terrorist attack targeting civilians</span></div>
   <div class="card-position">Russian government officials and state media characterize the strikes as deliberate terrorism against civilian areas, emphasizing deaths and injuries among non-combatants including foreign workers, damage to residential buildings, and the targeting of civilian infrastructure, while framing the EU and Western backers as complicit financiers of the attacks.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-004">Maria Zakharova</a></strong> <span class="cluster-actor-role">Russian Foreign Ministry spokesperson</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-008">src-008</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-034">Russian embassy in New Delhi</a></strong> <span class="cluster-actor-role">Embassy of Russia in New Delhi</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-006">src-006</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-004">Maria Zakharova</a></strong> <span class="cluster-actor-role">Russian Foreign Ministry spokesperson</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-034">Russian embassy in New Delhi</a></strong> <span class="cluster-actor-role">Embassy of Russia in New Delhi</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">2 actors</a></span> &middot; <span>5 sources</span> &middot; <span>4 regions</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-003">
+  <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
   <div class="card-header"><span class="card-actor">Russian air defenses successfully intercepted the vast majority of Ukrainian drones, limiting damage</span></div>
   <div class="card-position">Russian defense and municipal officials emphasize the scale of interceptions — claiming 556 to over 1,000 drones shot down — and stress that critical infrastructure like the Moscow Oil Refinery remained operationally intact, framing the defensive response as largely effective despite the unprecedented scale of the attack.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Russian Defense Ministry</a></strong> <span class="cluster-actor-role">Defense Ministry of Russia</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-020">src-020</a>, <a href="#src-002">src-002</a>, <a href="#src-003">src-003</a>, <a href="#src-005">src-005</a>, <a href="#src-007">src-007</a>, <a href="#src-008">src-008</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="cluster-actor-role">Mayor of Moscow</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-006">src-006</a>, <a href="#src-012">src-012</a>, <a href="#src-020">src-020</a>, <a href="#src-002">src-002</a>, <a href="#src-003">src-003</a>, <a href="#src-005">src-005</a>, <a href="#src-008">src-008</a>, <a href="#src-010">src-010</a>, <a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="cluster-actor-role">Governor of Moscow region</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-005">src-005</a>, <a href="#src-008">src-008</a>, <a href="#src-002">src-002</a>, <a href="#src-003">src-003</a>, <a href="#src-010">src-010</a>, <a href="#src-011">src-011</a>, <a href="#src-012">src-012</a>, <a href="#src-020">src-020</a>, <a href="#src-013">src-013</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-040">Vladimir Vladimirov</a></strong> <span class="cluster-actor-role">Stavropol Krai Governor</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-016">Sheremetyevo airport authorities</a></strong> <span class="cluster-actor-role">Authorities of Sheremetyevo Airport</span> <span class="cluster-actor-type">industry</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-005">src-005</a>, <a href="#src-008">src-008</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Russian Defense Ministry</a></strong> <span class="cluster-actor-role">Defense Ministry of Russia</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="cluster-actor-role">Mayor of Moscow</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="cluster-actor-role">Governor of Moscow region</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-040">Vladimir Vladimirov</a></strong> <span class="cluster-actor-role">Stavropol Krai Governor</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-016">Sheremetyevo airport authorities</a></strong> <span class="cluster-actor-role">Authorities of Sheremetyevo Airport</span> <span class="cluster-actor-type">industry</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">5 actors</a></span> &middot; <span>12 sources</span> &middot; <span>9 regions</span> &middot; <span>4 languages</span></p>
 </div>
 <div class="card" id="pc-004">
+  <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">The strikes demonstrate Ukraine&#x27;s growing drone capability and signal that even more intense attacks on Moscow are coming</span></div>
   <div class="card-position">Ukrainian military experts and defense advisors assess that Ukraine&#x27;s expanding drone production and the progressive depletion of Russian air defenses mean that strikes of this scale will become more frequent and effective, with some arguing the operation could have been even more impactful if timed differently.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-050">Александр Коваленко</a></strong> <span class="cluster-actor-role">Военно-политический обозреватель группы «Информационное сопротивление»</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-049">Сергей Стерненко</a></strong> <span class="cluster-actor-role">Советник министра обороны Украины</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-051">Роман Свитан</a></strong> <span class="cluster-actor-role">Военный эксперт, полковник ВСУ в запасе</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-011">src-011</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-050">Александр Коваленко</a></strong> <span class="cluster-actor-role">Военно-политический обозреватель группы «Информационное сопротивление»</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-049">Сергей Стерненко</a></strong> <span class="cluster-actor-role">Советник министра обороны Украины</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-051">Роман Свитан</a></strong> <span class="cluster-actor-role">Военный эксперт, полковник ВСУ в запасе</span> <span class="cluster-actor-type">military</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">3 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-005">
+  <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
   <div class="card-header"><span class="card-actor">Russian attacks on Ukrainian cities are causing severe civilian harm across multiple regions</span></div>
   <div class="card-position">Ukrainian regional officials document extensive damage from Russian drone, missile, and artillery strikes on residential areas, schools, kindergartens, and infrastructure across Dnipropetrovsk, Odesa, Kharkiv, Zaporizhzhia, and other oblasts, with dozens of civilians injured including children, framing these attacks as the context that necessitates Ukrainian retaliation.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-007">Oleksandr Hanzha</a></strong> <span class="cluster-actor-role">Governor of Dnipropetrovsk</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-002">src-002</a>, <a href="#src-015">src-015</a>, <a href="#src-021">src-021</a>, <a href="#src-022">src-022</a>, <a href="#src-004">src-004</a>, <a href="#src-016">src-016</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-008">Oleh Synehubov</a></strong> <span class="cluster-actor-role">Head of Kharkiv regional state administration</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-017">src-017</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-009">Ivan Fedorov</a></strong> <span class="cluster-actor-role">Governor of Zaporizhzhia</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-001">src-001</a>, <a href="#src-017">src-017</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-022">Serhij Lyssak</a></strong> <span class="cluster-actor-role">Head of the local military administration in Odessa</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-004">src-004</a>, <a href="#src-015">src-015</a>, <a href="#src-022">src-022</a>, <a href="#src-024">src-024</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-059">Fuerzas Armadas de Ucrania</a></strong> <span class="cluster-actor-role">Fuerzas Armadas de Ucrania</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-016">src-016</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-007">Oleksandr Hanzha</a></strong> <span class="cluster-actor-role">Governor of Dnipropetrovsk</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-008">Oleh Synehubov</a></strong> <span class="cluster-actor-role">Head of Kharkiv regional state administration</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-009">Ivan Fedorov</a></strong> <span class="cluster-actor-role">Governor of Zaporizhzhia</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-022">Serhij Lyssak</a></strong> <span class="cluster-actor-role">Head of the local military administration in Odessa</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-059">Fuerzas Armadas de Ucrania</a></strong> <span class="cluster-actor-role">Fuerzas Armadas de Ucrania</span> <span class="cluster-actor-type">military</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-060">Vadym Filashkin</a></strong> <span class="cluster-actor-role">Governor of Donetsk Oblast</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-017">src-017</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-018">Ukraine&#x27;s air force</a></strong> <span class="cluster-actor-role">Ukrainian Air Force</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-014">src-014</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-060">Vadym Filashkin</a></strong> <span class="cluster-actor-role">Governor of Donetsk Oblast</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-018">Ukraine&#x27;s air force</a></strong> <span class="cluster-actor-role">Ukrainian Air Force</span> <span class="cluster-actor-type">military</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">7 actors</a></span> &middot; <span>10 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-006">
+  <a class="actor-card-cluster-box" href="#pc-006">Position 6</a>
   <div class="card-header"><span class="card-actor">The death of an Indian national highlights the vulnerability of foreign workers in Russia and a broader pattern of exploitation</span></div>
   <div class="card-position">Indian media and diplomatic sources focus on the killing of an Indian citizen and injury of three others as a humanitarian concern, contextualizing it within a wider pattern of Indian nationals being lured to Russia under false pretenses and sometimes forced into military service. India&#x27;s Ministry of External Affairs reported 12 Indian nationals in the Russian armed forces have died, though the same outlet also cited an estimate of 22 Indians killed since the war began, with roughly 27 Indians recently enrolled. The Indian Express noted this was possibly the first Indian casualty in the Moscow region itself.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-012">India&#x27;s Moscow embassy</a></strong> <span class="cluster-actor-role">Embassy of India in Moscow</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-002">src-002</a>, <a href="#src-005">src-005</a>, <a href="#src-006">src-006</a>, <a href="#src-019">src-019</a>, <a href="#src-030">src-030</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-035">Ministry of External Affairs</a></strong> <span class="cluster-actor-role">Ministry of External Affairs of India</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-006">src-006</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-012">India&#x27;s Moscow embassy</a></strong> <span class="cluster-actor-role">Embassy of India in Moscow</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-035">Ministry of External Affairs</a></strong> <span class="cluster-actor-role">Ministry of External Affairs of India</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">2 actors</a></span> &middot; <span>5 sources</span> &middot; <span>3 regions</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-007">
+  <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">Stray drones entering NATO airspace pose a growing security risk that will persist as long as the war continues</span></div>
   <div class="card-position">Baltic state officials and military authorities report that Ukrainian drones have entered Lithuanian and Latvian airspace undetected, triggering NATO fighter scrambles and political crises, and warn that such incidents will recur for as long as Russian aggression in Ukraine continues.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-031">Vilmantas Vitkauskas</a></strong> <span class="cluster-actor-role">Chief of Lithuania&#x27;s national crisis management centre</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-005">src-005</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-032">Latvian army</a></strong> <span class="cluster-actor-role">Armed forces of Latvia</span> <span class="cluster-actor-type">military</span> <span class="cluster-actor-srcs">(<a href="#src-005">src-005</a>, <a href="#src-020">src-020</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-031">Vilmantas Vitkauskas</a></strong> <span class="cluster-actor-role">Chief of Lithuania&#x27;s national crisis management centre</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-032">Latvian army</a></strong> <span class="cluster-actor-role">Armed forces of Latvia</span> <span class="cluster-actor-type">military</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">2 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-008">
+  <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">Moscow-area residents experienced terror and inadequate official warnings during the drone attack</span></div>
   <div class="card-position">Eyewitness accounts from residents of Khimki, Kurkino, and Putilkovo describe being jolted awake by powerful explosions, seeing smoke and drone interceptions, and receiving no sirens, SMS alerts, or organized evacuation despite casualties and structural damage in their neighborhoods.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-043">Konstantin</a></strong> <span class="cluster-actor-role">39-year-old resident of Putilkovo</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-010">src-010</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-043">Konstantin</a></strong> <span class="cluster-actor-role">39-year-old resident of Putilkovo</span> <span class="cluster-actor-type">affected_community</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-070">Residents of Khimki and Kurkino</a></strong> <span class="cluster-actor-role">Local residents and eyewitnesses</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-028">src-028</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="cluster-actor-role">Mayor of Moscow</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-010">src-010</a>, <a href="#src-029">src-029</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="cluster-actor-role">Governor of Moscow region</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-029">src-029</a>, <a href="#src-010">src-010</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-070">Residents of Khimki and Kurkino</a></strong> <span class="cluster-actor-role">Local residents and eyewitnesses</span> <span class="cluster-actor-type">affected_community</span></li><li class="cluster-tier-actor"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="cluster-actor-role">Mayor of Moscow</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="cluster-actor-role">Governor of Moscow region</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">4 actors</a></span> &middot; <span>3 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-009">
+  <a class="actor-card-cluster-box" href="#pc-009">Position 9</a>
   <div class="card-header"><span class="card-actor">Civilian casualties from both sides&#x27; long-range strikes are at their highest level in three years, demanding IHL compliance</span></div>
   <div class="card-position">International organizations and humanitarian law experts note that civilian casualties in early 2026 have reached a three-year peak driven by escalating long-range weapon use, and emphasize that drone strikes — while not prohibited per se — must comply with the principles of distinction, proportionality, and precaution regardless of which side employs them.</div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-073">UN Human Rights Monitoring Mission in Ukraine (HRMMU)</a></strong> <span class="cluster-actor-role">UN monitoring body</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-032">src-032</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-074">Human Rights Watch</a></strong> <span class="cluster-actor-role">International human rights NGO</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-035">src-035</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-075">International Committee of the Red Cross</a></strong> <span class="cluster-actor-role">Humanitarian organization</span> <span class="cluster-actor-type">international_org</span> <span class="cluster-actor-srcs">(<a href="#src-036">src-036</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-073">UN Human Rights Monitoring Mission in Ukraine (HRMMU)</a></strong> <span class="cluster-actor-role">UN monitoring body</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-074">Human Rights Watch</a></strong> <span class="cluster-actor-role">International human rights NGO</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-075">International Committee of the Red Cross</a></strong> <span class="cluster-actor-role">Humanitarian organization</span> <span class="cluster-actor-type">international_org</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-009">3 actors</a></span> &middot; <span>3 sources</span> &middot; <span>2 regions</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-010">
+  <a class="actor-card-cluster-box" href="#pc-010">Position 10</a>
   <div class="card-header"><span class="card-actor">Diplomatic mediation efforts remain stalled as maximalist demands from both sides prevent a ceasefire</span></div>
   <div class="card-position">Turkish and Arab diplomatic sources, along with Western analytical outlets, note that despite renewed mediation proposals — including reviving the Black Sea Grain Initiative and prisoner exchanges — the escalation of strikes on both sides and irreconcilable territorial demands make a ceasefire unlikely in the near term.</div>
   <div class="cluster-tier cluster-tier-reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-072">Government of Turkey</a></strong> <span class="cluster-actor-role">Mediating state</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-031">src-031</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-078">Arab governments (general)</a></strong> <span class="cluster-actor-role">Regional states</span> <span class="cluster-actor-type">government</span> <span class="cluster-actor-srcs">(<a href="#src-039">src-039</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-072">Government of Turkey</a></strong> <span class="cluster-actor-role">Mediating state</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-078">Arab governments (general)</a></strong> <span class="cluster-actor-role">Regional states</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-010">2 actors</a></span> &middot; <span>4 sources</span> &middot; <span>3 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-011">
+  <a class="actor-card-cluster-box" href="#pc-011">Position 11</a>
   <div class="card-header"><span class="card-actor">Russia is systematically forcing wounded and disabled soldiers back to the front in violation of their rights</span></div>
   <div class="card-position">Investigative reporting documents hundreds of cases where the Russian military sends injured soldiers back to combat before rehabilitation is complete, with human rights lawyers confirming that legal protections have collapsed since 2022 and that authorities resist discharges to avoid setting precedents and paying compensation.</div>
   <div class="cluster-tier cluster-tier-stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-065">Karina</a></strong> <span class="cluster-actor-role">Wife of soldier Ivan D.</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-023">src-023</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-066">Sergey Krivenko</a></strong> <span class="cluster-actor-role">Director of the human rights group &#x27;Citizen. Army. Law&#x27;</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-023">src-023</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-067">Artem Klyga</a></strong> <span class="cluster-actor-role">Head of the legal department of the Movement of Conscious Objectors</span> <span class="cluster-actor-type">civil_society</span> <span class="cluster-actor-srcs">(<a href="#src-023">src-023</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-068">Viktoria</a></strong> <span class="cluster-actor-role">Wife of soldier Daniil K.</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-023">src-023</a>)</span></li><li class="cluster-tier-actor"><strong><a href="#actor-069">Dmitry Mishin</a></strong> <span class="cluster-actor-role">Wounded soldier from Krasnoyarsk</span> <span class="cluster-actor-type">affected_community</span> <span class="cluster-actor-srcs">(<a href="#src-023">src-023</a>)</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-065">Karina</a></strong> <span class="cluster-actor-role">Wife of soldier Ivan D.</span> <span class="cluster-actor-type">affected_community</span></li><li class="cluster-tier-actor"><strong><a href="#actor-066">Sergey Krivenko</a></strong> <span class="cluster-actor-role">Director of the human rights group &#x27;Citizen. Army. Law&#x27;</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-067">Artem Klyga</a></strong> <span class="cluster-actor-role">Head of the legal department of the Movement of Conscious Objectors</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-068">Viktoria</a></strong> <span class="cluster-actor-role">Wife of soldier Daniil K.</span> <span class="cluster-actor-type">affected_community</span></li><li class="cluster-tier-actor"><strong><a href="#actor-069">Dmitry Mishin</a></strong> <span class="cluster-actor-role">Wounded soldier from Krasnoyarsk</span> <span class="cluster-actor-type">affected_community</span></li></ul>
   </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-011">5 actors</a></span> &middot; <span>2 sources</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 </div>
 
+<details class="mentioned-actors-wrapper">
+  <summary>Mentioned Actors &mdash; <strong>5 noted</strong></summary>
+  <div class="mentioned-actors-body">
+<div class="card single-voices-bracket" id="mentioned-actors">
+  <div class="card-header"><span class="card-actor">Mentioned actors</span><span class="single-voices-bracket-tag">Bracket</span></div>
+  <div class="card-position">Actors named in the corpus who are not grouped into any of the documented positions. Listed here for transparency about who appears in the source material.</div>
+  <div class="cluster-tier cluster-tier-actors_stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-005">Aleksandr Hinshtein</a></strong> <span class="cluster-actor-role">Governor of Kursk region</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-024">Juri Sljussar</a></strong> <span class="cluster-actor-role">Governor of Rostov region</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-026">Ukrainian Center for Prisoners of War</a></strong> <span class="cluster-actor-role">Ukrainian government body handling prisoners of war</span> <span class="cluster-actor-type">government</span></li></ul>
+  </div>
+  <div class="cluster-tier cluster-tier-actors_reported">
+    <h4 class="cluster-tier-label">Reported</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-052">Анна Кротова</a></strong> <span class="cluster-actor-role">Глава города Лобня</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-057">Yuri Slyusar</a></strong> <span class="cluster-actor-role">governor of Russia&#x27;s Rostov Oblast</span> <span class="cluster-actor-type">government</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#mentioned-actors">5 actors</a></span> &middot; <span>4 sources</span> &middot; <span>3 regions</span> &middot; <span>3 languages</span></p>
+</div>
+  </div>
+</details>
+
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">45 actors quoted across this topic. Click a cluster card&rsquo;s actor count above to filter, or jump to a specific actor.</p>
-<button id="actors-show-all" type="button" hidden>Show all actors</button>
-<ol class="actor-list">
-<li id="actor-001" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Russian Defense Ministry</strong> <span class="actor-role">Defense Ministry of Russia</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: States that air defense systems intercepted and destroyed 556 Ukrainian drones overnight in several regions. <em class="actor-verbatim">&ldquo;its air defense systems intercepted and destroyed 556 Ukrainian drones overnight in several regions&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-002" class="actor" data-clusters="cluster-pc-003 cluster-pc-008">
-  <div class="actor-header"><strong>Sergey Sobyanin</strong> <span class="actor-role">Mayor of Moscow</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: Says air defenses shot down 81 drones heading toward the capital overnight, injuring 12 people, mostly construction workers near the Moscow Oil Refinery. <em class="actor-verbatim">&ldquo;air defenses shot down 81 drones heading toward the capital overnight&rdquo;</em> (<a href="#src-001">src-001</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-008">cluster 8</a>: Reported that air defense systems intercepted more than 80 drones, wounding 12 people, and that refinery production was not disrupted. <em class="actor-verbatim">&ldquo;Minor damage has been recorded at the sites where debris fell&rdquo;</em> (<a href="#src-010">src-010</a>)</p></div>
-</li>
-<li id="actor-003" class="actor" data-clusters="cluster-pc-003 cluster-pc-008">
-  <div class="actor-header"><strong>Andrei Vorobyov</strong> <span class="actor-role">Governor of Moscow region</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: Says three people were killed and four others injured in a drone attack. <em class="actor-verbatim">&ldquo;three people were killed and four others injured in a drone attack&rdquo;</em> (<a href="#src-001">src-001</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-008">cluster 8</a>: Issued official statements about the drone attack on the Moscow region. (<a href="#src-029">src-029</a>)</p></div>
-</li>
-<li id="actor-004" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Maria Zakharova</strong> <span class="actor-role">Russian Foreign Ministry spokesperson</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Describes the drone strikes targeting Moscow and the surrounding region as a &#x27;mass terrorist attack&#x27;. <em class="actor-verbatim">&ldquo;a &quot;mass terrorist attack&quot;&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-005" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Aleksandr Hinshtein</strong> <span class="actor-role">Governor of Kursk region</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-006" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>Ukraine&#x27;s General Staff</strong> <span class="actor-role">General Staff of the Ukrainian Armed Forces</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: States that Ukrainian air defenses shot down 279 of the drones launched by Russia overnight. <em class="actor-verbatim">&ldquo;Ukrainian air defenses shot down 279 of the drones&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-007" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Oleksandr Hanzha</strong> <span class="actor-role">Governor of Dnipropetrovsk</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-005">cluster 5</a>: Says eight people were injured in Russian drone and artillery attacks across four districts of the region. <em class="actor-verbatim">&ldquo;eight people were injured in Russian drone and artillery attacks across four districts of the region&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-008" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Oleh Synehubov</strong> <span class="actor-role">Head of Kharkiv regional state administration</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-005">cluster 5</a>: Says seven people were injured in Russian attacks over the past 24 hours. <em class="actor-verbatim">&ldquo;seven people were injured in Russian attacks over the past 24 hours&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-009" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Ivan Fedorov</strong> <span class="actor-role">Governor of Zaporizhzhia</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-005">cluster 5</a>: Reports that seven people were injured in attacks across the region during the same period. <em class="actor-verbatim">&ldquo;seven people were injured in attacks across the region during the same period&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-010" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>Volodymyr Zelenskyy</strong> <span class="actor-role">President of Ukraine</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: Accuses Russia of launching over 3,170 attack drones, 1,300 guided aerial bombs, and 74 missiles in the past week, and states that Ukrainian long-range strikes reached the Moscow region to tell Russia to end its war. <em class="actor-verbatim">&ldquo;clearly telling the Russians: their state must end its war&rdquo;</em> (<a href="#src-001">src-001</a>)</p></div>
-</li>
-<li id="actor-012" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>India&#x27;s Moscow embassy</strong> <span class="actor-role">Embassy of India in Moscow</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-006">cluster 6</a>: States that a male Indian citizen was killed and three others injured. <em class="actor-verbatim">&ldquo;A male Indian citizen was killed and three others injured&rdquo;</em> (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-016" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Sheremetyevo airport authorities</strong> <span class="actor-role">Authorities of Sheremetyevo Airport</span> <span class="actor-type">industry</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a>: Reports drone wreckage on its territory with no injuries and stable passenger and aircraft services. <em class="actor-verbatim">&ldquo;The situation in the passenger terminals is calm. Sheremetyevo Airport is providing stable passenger and aircraft services&rdquo;</em> (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-017" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>Ukraine&#x27;s state security service SBU</strong> <span class="actor-role">Security Service of Ukraine</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: States that together with Ukraine&#x27;s military it struck several oil facilities, a semiconductor-making plant in the Moscow region, and air defense systems at the Belbek military airfield in Crimea. <em class="actor-verbatim">&ldquo;it had struck several oil facilities and a semiconductor-making plant in the Moscow region&rdquo;</em> (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-018" class="actor" data-clusters="cluster-pc-001 cluster-pc-005">
-  <div class="actor-header"><strong>Ukraine&#x27;s air force</strong> <span class="actor-role">Ukrainian Air Force</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: Says Russia launched 287 drones since late Saturday, with 279 shot down or intercepted and eight direct hits in seven locations. <em class="actor-verbatim">&ldquo;279 drones were shot down or intercepted, but there were eight direct hits in seven locations&rdquo;</em> (<a href="#src-002">src-002</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-005">cluster 5</a>: Says Russia launched 287 drones since late Saturday, with 279 shot down or intercepted and eight direct hits in seven locations. <em class="actor-verbatim">&ldquo;279 drones were shot down or intercepted, but there were eight direct hits in seven locations&rdquo;</em> (<a href="#src-002">src-002</a>)</p></div>
-</li>
-<li id="actor-022" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Serhij Lyssak</strong> <span class="actor-role">Head of the local military administration in Odessa</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-005">cluster 5</a>: States that drones hit residential buildings, a school, and a kindergarten, injuring an 11-year-old boy and a 59-year-old man. <em class="actor-verbatim">&ldquo;Drohnen zuletzt unter anderem Wohngebäude, eine Schule und einen Kindergarten&rdquo;</em> (<a href="#src-004">src-004</a>)</p></div>
-</li>
-<li id="actor-024" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Juri Sljussar</strong> <span class="actor-role">Governor of Rostov region</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-026" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Ukrainian Center for Prisoners of War</strong> <span class="actor-role">Ukrainian government body handling prisoners of war</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-031" class="actor" data-clusters="cluster-pc-007">
-  <div class="actor-header"><strong>Vilmantas Vitkauskas</strong> <span class="actor-role">Chief of Lithuania&#x27;s national crisis management centre</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-007">cluster 7</a>: Says a suspected Ukrainian military drone was found crashed in Lithuania, entering undetected and not armed with explosives. <em class="actor-verbatim">&ldquo;The drone entered Lithuania undetected and was not armed with explosives&rdquo;</em> (<a href="#src-005">src-005</a>)</p></div>
-</li>
-<li id="actor-032" class="actor" data-clusters="cluster-pc-007">
-  <div class="actor-header"><strong>Latvian army</strong> <span class="actor-role">Armed forces of Latvia</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-007">cluster 7</a>: Says a drone alert was issued along its border with Russia and one drone entered Latvia for a short time. <em class="actor-verbatim">&ldquo;a drone alert was issued on Sunday morning along its border with Russia&rdquo;</em> (<a href="#src-005">src-005</a>)</p></div>
-</li>
-<li id="actor-034" class="actor" data-clusters="cluster-pc-002">
-  <div class="actor-header"><strong>Russian embassy in New Delhi</strong> <span class="actor-role">Embassy of Russia in New Delhi</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-002">cluster 2</a>: Mourns the death of the Indian worker and blames Ukraine for the attack on civilian facilities in the Moscow region. <em class="actor-verbatim">&ldquo;&quot;The Russian Embassy mourns together with the family of the Indian worker and extends its sympathy to those injured by the Ukrainian attack on civilian facilities in the Moscow region&quot;&rdquo;</em> (<a href="#src-006">src-006</a>)</p></div>
-</li>
-<li id="actor-035" class="actor" data-clusters="cluster-pc-006">
-  <div class="actor-header"><strong>Ministry of External Affairs</strong> <span class="actor-role">Ministry of External Affairs of India</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-006">cluster 6</a>: States that 12 Indian nationals in the Russian armed forces were reported to have lost their lives in the conflict and that roughly 27 Indians had been recently enrolled in Russian forces. <em class="actor-verbatim">&ldquo;12 Indian nationals in the Russian armed forces were reported to have lost their lives in the conflict&rdquo;</em> (<a href="#src-006">src-006</a>)</p></div>
-</li>
-<li id="actor-039" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>Andrii Kovalenko</strong> <span class="actor-role">official at Ukraine&#x27;s National Security and Defense Council</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-001">cluster 1</a>: Described the Nevinnomyssk Azot plant as &#x27;a critical component&#x27; of Russia&#x27;s defense-industrial complex. (<a href="#src-009">src-009</a>)</p></div>
-</li>
-<li id="actor-040" class="actor" data-clusters="cluster-pc-003">
-  <div class="actor-header"><strong>Vladimir Vladimirov</strong> <span class="actor-role">Stavropol Krai Governor</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-003">cluster 3</a></p></div>
-</li>
-<li id="actor-041" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>Robert &#x27;Madyar&#x27; Brovdi</strong> <span class="actor-role">Commander of Ukraine&#x27;s Unmanned Systems Forces</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: Said Ukrainian drones struck a Russian patrol boat near Kaspiysk in Russia&#x27;s Dagestan republic. (<a href="#src-009">src-009</a>)</p></div>
-</li>
-<li id="actor-043" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Konstantin</strong> <span class="actor-role">39-year-old resident of Putilkovo</span> <span class="actor-type">affected_community</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-008">cluster 8</a>: Described the powerful impact of a strike that nearly knocked him out of bed and caused visible smoke. <em class="actor-verbatim">&ldquo;The hit was so powerful that it almost knocked me out [of bed], and I weigh a lot. I opened my window and saw smoke rising&rdquo;</em> (<a href="#src-010">src-010</a>)</p></div>
-</li>
-<li id="actor-044" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>Ukraine&#x27;s Defense Ministry</strong> <span class="actor-role">Ministry of Defense of Ukraine</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: Stated the attack hit the Moscow Oil Refinery, the Solnechnogorsk oil depot, and several microelectronics manufacturing facilities for the first time, adding &#x27;The war is returning to where it came from.&#x27; <em class="actor-verbatim">&ldquo;The war is returning to where it came from&rdquo;</em> (<a href="#src-010">src-010</a>)</p></div>
-</li>
-<li id="actor-048" class="actor" data-clusters="cluster-pc-001">
-  <div class="actor-header"><strong>Евгений Хмара</strong> <span class="actor-role">Глава ведомства (СБУ)</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: Сказал, что подобные атаки «имеют критическое значение для ослабления военного потенциала РФ» и «демонстрируют, что даже самая защищенная Московская область не является безопасной». <em class="actor-verbatim">&ldquo;имеют критическое значение для ослабления военного потенциала РФ&rdquo;</em> (<a href="#src-011">src-011</a>)</p></div>
-</li>
-<li id="actor-049" class="actor" data-clusters="cluster-pc-001 cluster-pc-004">
-  <div class="actor-header"><strong>Сергей Стерненко</strong> <span class="actor-role">Советник министра обороны Украины</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-001">cluster 1</a>: Утверждает, что на Московскую область была совершена самая масштабная атака с начала войны и столицу РФ ждут «еще более масштабные атаки». <em class="actor-verbatim">&ldquo;еще более масштабные атаки&rdquo;</em> (<a href="#src-011">src-011</a>)</p><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-004">cluster 4</a>: Утверждает, что на Московскую область была совершена самая масштабная атака с начала войны и столицу РФ ждут «еще более масштабные атаки». <em class="actor-verbatim">&ldquo;еще более масштабные атаки&rdquo;</em> (<a href="#src-011">src-011</a>)</p></div>
-</li>
-<li id="actor-050" class="actor" data-clusters="cluster-pc-004">
-  <div class="actor-header"><strong>Александр Коваленко</strong> <span class="actor-role">Военно-политический обозреватель группы «Информационное сопротивление»</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-004">cluster 4</a>: Утверждает, что ударов, подобных сегодняшней атаке на Москву, будет больше из-за роста украинского производства дронов и истощения российской ПВО, а также что Киев мог бы легко сорвать парад 9 мая. <em class="actor-verbatim">&ldquo;ВСУ даже в случае высокой насыщенности региона ЗРК достигли бы своих целей. Но Киев пошел навстречу просьбам о мире в этот важный день.&rdquo;</em> (<a href="#src-011">src-011</a>)</p></div>
-</li>
-<li id="actor-051" class="actor" data-clusters="cluster-pc-004">
-  <div class="actor-header"><strong>Роман Свитан</strong> <span class="actor-role">Военный эксперт, полковник ВСУ в запасе</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-004">cluster 4</a>: Считает сегодняшнюю операцию ВСУ нерациональной, так как большинство дронов и ракет были сбиты, и утверждает, что удар надо было наносить 9 мая для большего эффекта. <em class="actor-verbatim">&ldquo;Сегодняшний удар надо было наносить 9 мая, тогда эффект от него был бы на порядок выше&rdquo;</em> (<a href="#src-011">src-011</a>)</p></div>
-</li>
-<li id="actor-052" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Анна Кротова</strong> <span class="actor-role">Глава города Лобня</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-057" class="actor" data-clusters="">
-  <div class="actor-header"><strong>Yuri Slyusar</strong> <span class="actor-role">governor of Russia&#x27;s Rostov Oblast</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line actor-no-cluster">Actors with no positional alignment.</p></div>
-</li>
-<li id="actor-059" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Fuerzas Armadas de Ucrania</strong> <span class="actor-role">Fuerzas Armadas de Ucrania</span> <span class="actor-type">military</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-005">cluster 5</a>: Informaron de que sus defensas aéreas lograron interceptar 503 drones y cuatro misiles de crucero Iskander-K. (<a href="#src-016">src-016</a>)</p></div>
-</li>
-<li id="actor-060" class="actor" data-clusters="cluster-pc-005">
-  <div class="actor-header"><strong>Vadym Filashkin</strong> <span class="actor-role">Governor of Donetsk Oblast</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-005">cluster 5</a>: Reported that Russian attacks in Donetsk Oblast killed one civilian. (<a href="#src-017">src-017</a>)</p></div>
-</li>
-<li id="actor-065" class="actor" data-clusters="cluster-pc-011">
-  <div class="actor-header"><strong>Karina</strong> <span class="actor-role">Wife of soldier Ivan D.</span> <span class="actor-type">affected_community</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-011">cluster 11</a>: States that her husband Ivan was told he &#x27;as a man&#x27; had to return to his unit despite being on crutches, that she showed all medical documents to the deputy commander who replied &#x27;He&#x27;s a man, he&#x27;ll manage,&#x27; and that Ivan has been missing since December 14, 2025. <em class="actor-verbatim">&ldquo;&quot;Он же у вас мужчина, справится.&quot;&rdquo;</em> (<a href="#src-023">src-023</a>)</p></div>
-</li>
-<li id="actor-066" class="actor" data-clusters="cluster-pc-011">
-  <div class="actor-header"><strong>Sergey Krivenko</strong> <span class="actor-role">Director of the human rights group &#x27;Citizen. Army. Law&#x27;</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-011">cluster 11</a>: Explains that military hospitals are overcrowded and try to patch up soldiers quickly to free beds and send them back to the front, and that the only way to avoid service is active resistance including independent medical examination and appeals to the military prosecutor. <em class="actor-verbatim">&ldquo;&quot;В армии все смотрят только на документы, на справки. Если есть справка военно-врачебной комиссии, что он прошел лечение и годен, то всё. Никого не интересует реальная ситуация.&quot;&rdquo;</em> (<a href="#src-023">src-023</a>)</p></div>
-</li>
-<li id="actor-067" class="actor" data-clusters="cluster-pc-011">
-  <div class="actor-header"><strong>Artem Klyga</strong> <span class="actor-role">Head of the legal department of the Movement of Conscious Objectors</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-011">cluster 11</a>: States that after February 2022 it is difficult to speak about processes in the Russian army from a legal perspective because law does not work, and that the authorities do not want to create any illusion that it is possible to be released from military service. <em class="actor-verbatim">&ldquo;&quot;Я могу вам описать, как должно быть. Но потом сто́ит зайти в любой новостной телеграм-канал, и там будет масса историй, которые показывают, что право не работает.&quot;&rdquo;</em> (<a href="#src-023">src-023</a>)</p></div>
-</li>
-<li id="actor-068" class="actor" data-clusters="cluster-pc-011">
-  <div class="actor-header"><strong>Viktoria</strong> <span class="actor-role">Wife of soldier Daniil K.</span> <span class="actor-type">affected_community</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-011">cluster 11</a>: States that her husband Daniil was taken for a &#x27;storm&#x27; assault after being declared temporarily unfit due to severe injuries, and that the deputy commander later told her he had probably been killed but his body could not be evacuated. <em class="actor-verbatim">&ldquo;&quot;Понятно же, что они оттуда уже не вернутся.&quot;&rdquo;</em> (<a href="#src-023">src-023</a>)</p></div>
-</li>
-<li id="actor-069" class="actor" data-clusters="cluster-pc-011">
-  <div class="actor-header"><strong>Dmitry Mishin</strong> <span class="actor-role">Wounded soldier from Krasnoyarsk</span> <span class="actor-type">affected_community</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Stated in</span> <a href="#pc-011">cluster 11</a>: Objected to being sent back to the front after his arm was blown off, asking sarcastically whether he was supposed to grow a new arm during his leave. <em class="actor-verbatim">&ldquo;&quot;А что, я за время отпуска руку новую отращу, что ли?&quot;&rdquo;</em> (<a href="#src-023">src-023</a>)</p></div>
-</li>
-<li id="actor-070" class="actor" data-clusters="cluster-pc-008">
-  <div class="actor-header"><strong>Residents of Khimki and Kurkino</strong> <span class="actor-role">Local residents and eyewitnesses</span> <span class="actor-type">affected_community</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-008">cluster 8</a>: Describe being woken by loud explosions, seeing drones being shot down, and experiencing fear and panic without sirens or SMS alerts or organized evacuation. <em class="actor-verbatim">&ldquo;Кошка вся дыбом встала&rdquo;</em> (<a href="#src-028">src-028</a>)</p></div>
-</li>
-<li id="actor-072" class="actor" data-clusters="cluster-pc-010">
-  <div class="actor-header"><strong>Government of Turkey</strong> <span class="actor-role">Mediating state</span> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-010">cluster 10</a>: Proposed new diplomatic initiatives including reviving the Black Sea Grain Initiative, prisoner exchanges, and preventing nuclear escalation. (<a href="#src-031">src-031</a>)</p></div>
-</li>
-<li id="actor-073" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>UN Human Rights Monitoring Mission in Ukraine (HRMMU)</strong> <span class="actor-role">UN monitoring body</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-009">cluster 9</a>: Data shows civilian casualties in the first four months of 2026 are the highest in three years, largely due to increased use of long-range weapons. (<a href="#src-032">src-032</a>)</p></div>
-</li>
-<li id="actor-074" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>Human Rights Watch</strong> <span class="actor-role">International human rights NGO</span> <span class="actor-type">civil_society</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-009">cluster 9</a>: Explains that civilian infrastructure becomes a lawful military objective only if used for concrete and direct military purposes, and that proportionality and precaution rules apply. (<a href="#src-035">src-035</a>)</p></div>
-</li>
-<li id="actor-075" class="actor" data-clusters="cluster-pc-009">
-  <div class="actor-header"><strong>International Committee of the Red Cross</strong> <span class="actor-role">Humanitarian organization</span> <span class="actor-type">international_org</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-009">cluster 9</a>: States that armed drones are not prohibited per se and are legally comparable to crewed aircraft; what matters is how they are used, requiring compliance with distinction, proportionality, and precaution. (<a href="#src-036">src-036</a>)</p></div>
-</li>
-<li id="actor-078" class="actor" data-clusters="cluster-pc-010">
-  <div class="actor-header"><strong>Arab governments (general)</strong> <span class="actor-role">Regional states</span> <em class="actor-anonymous">(anonymous)</em> <span class="actor-type">government</span></div>
-  <div class="actor-positions"><p class="actor-position-line"><span class="actor-position-tier">Reported in</span> <a href="#pc-010">cluster 10</a>: Most maintain relative neutrality, call for dialogue and respect for international law, avoiding direct alignment with either side due to intertwined interests with Russia and the West. (<a href="#src-039">src-039</a>)</p></div>
-</li>
-</ol>
+<p class="actors-meta">45 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
+<div class="actors-tabs" role="tablist">
+<button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">45</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">27</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITARY</span> <span class="actor-tab-count">6</span></button><button class="actor-tab" type="button" data-type-target="industry"><span class="actor-tab-name">INDUSTRY</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">4</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONAL ORG</span> <span class="actor-tab-count">2</span></button><button class="actor-tab" type="button" data-type-target="affected_community"><span class="actor-tab-name">AFFECTED COMMUNITY</span> <span class="actor-tab-count">5</span></button>
+</div>
+<div class="actor-card-grid">
+<article id="actor-010" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Volodymyr Zelenskyy</strong>
+    <span class="actor-card-src-count">16 SRC</span>
+  </div>
+  <p class="actor-card-role">President of Ukraine</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-026">src-026</a><a class="actor-card-source-box" href="#src-027">src-027</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-017">src-017</a><a class="actor-card-source-box" href="#src-020">src-020</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-013">src-013</a><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-003" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Andrei Vorobyov</strong>
+    <span class="actor-card-src-count">13 SRC</span>
+  </div>
+  <p class="actor-card-role">Governor of Moscow region</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-029">src-029</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-019">src-019</a><a class="actor-card-source-box" href="#src-020">src-020</a><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+</article>
+<article id="actor-002" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Sergey Sobyanin</strong>
+    <span class="actor-card-src-count">12 SRC</span>
+  </div>
+  <p class="actor-card-role">Mayor of Moscow</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-020">src-020</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-029">src-029</a><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-007" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Oleksandr Hanzha</strong>
+    <span class="actor-card-src-count">7 SRC</span>
+  </div>
+  <p class="actor-card-role">Governor of Dnipropetrovsk</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-021">src-021</a><a class="actor-card-source-box" href="#src-022">src-022</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-016">src-016</a></div>
+</article>
+<article id="actor-001" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Russian Defense Ministry</strong>
+    <span class="actor-card-src-count">7 SRC</span>
+  </div>
+  <p class="actor-card-role">Defense Ministry of Russia</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-020">src-020</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+</article>
+<article id="actor-012" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">India&#x27;s Moscow embassy</strong>
+    <span class="actor-card-src-count">5 SRC</span>
+  </div>
+  <p class="actor-card-role">Embassy of India in Moscow</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-019">src-019</a><a class="actor-card-source-box" href="#src-030">src-030</a></div>
+</article>
+<article id="actor-022" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Serhij Lyssak</strong>
+    <span class="actor-card-src-count">4 SRC</span>
+  </div>
+  <p class="actor-card-role">Head of the local military administration in Odessa</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-022">src-022</a><a class="actor-card-source-box" href="#src-024">src-024</a></div>
+</article>
+<article id="actor-009" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ivan Fedorov</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Governor of Zaporizhzhia</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-017">src-017</a></div>
+</article>
+<article id="actor-004" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Maria Zakharova</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Russian Foreign Ministry spokesperson</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+</article>
+<article id="actor-008" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Oleh Synehubov</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Head of Kharkiv regional state administration</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-017">src-017</a></div>
+</article>
+<article id="actor-017" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ukraine&#x27;s state security service SBU</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Security Service of Ukraine</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-005">src-005</a></div>
+</article>
+<article id="actor-005" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Aleksandr Hinshtein</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Governor of Kursk region</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+</article>
+<article id="actor-039" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Andrii Kovalenko</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">official at Ukraine&#x27;s National Security and Defense Council</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-078" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Arab governments (general) <em class="actor-anonymous">(anonymous)</em></strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Regional states</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-039">src-039</a></div>
+</article>
+<article id="actor-072" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Government of Turkey</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Mediating state</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-031">src-031</a></div>
+</article>
+<article id="actor-024" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Juri Sljussar</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Governor of Rostov region</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-035" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ministry of External Affairs</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Ministry of External Affairs of India</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+</article>
+<article id="actor-034" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Russian embassy in New Delhi</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Embassy of Russia in New Delhi</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+</article>
+<article id="actor-044" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ukraine&#x27;s Defense Ministry</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Ministry of Defense of Ukraine</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
+</article>
+<article id="actor-026" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ukrainian Center for Prisoners of War</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Ukrainian government body handling prisoners of war</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-060" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Vadym Filashkin</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Governor of Donetsk Oblast</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-017">src-017</a></div>
+</article>
+<article id="actor-031" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Vilmantas Vitkauskas</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Chief of Lithuania&#x27;s national crisis management centre</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a></div>
+</article>
+<article id="actor-040" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Vladimir Vladimirov</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Stavropol Krai Governor</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-057" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Yuri Slyusar</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">governor of Russia&#x27;s Rostov Oblast</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a></div>
+</article>
+<article id="actor-052" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Анна Кротова</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Глава города Лобня</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-048" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Евгений Хмара</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Глава ведомства (СБУ)</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-049" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Сергей Стерненко</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Советник министра обороны Украины</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-018" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ukraine&#x27;s air force</strong>
+    <span class="actor-card-src-count">5 SRC</span>
+  </div>
+  <p class="actor-card-role">Ukrainian Air Force</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-020">src-020</a></div>
+</article>
+<article id="actor-032" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Latvian army</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Armed forces of Latvia</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-020">src-020</a></div>
+</article>
+<article id="actor-006" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ukraine&#x27;s General Staff</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">General Staff of the Ukrainian Armed Forces</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+</article>
+<article id="actor-059" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Fuerzas Armadas de Ucrania</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Fuerzas Armadas de Ucrania</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
+</article>
+<article id="actor-041" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Robert &#x27;Madyar&#x27; Brovdi</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Commander of Ukraine&#x27;s Unmanned Systems Forces</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-051" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Роман Свитан</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Военный эксперт, полковник ВСУ в запасе</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-016" class="actor-card" data-actor-type="industry">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Sheremetyevo airport authorities</strong>
+    <span class="actor-card-src-count">3 SRC</span>
+  </div>
+  <p class="actor-card-role">Authorities of Sheremetyevo Airport</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+</article>
+<article id="actor-067" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Artem Klyga</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Head of the legal department of the Movement of Conscious Objectors</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-011">Position 11</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
+</article>
+<article id="actor-074" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Human Rights Watch</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">International human rights NGO</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-035">src-035</a></div>
+</article>
+<article id="actor-066" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Sergey Krivenko</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Director of the human rights group &#x27;Citizen. Army. Law&#x27;</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-011">Position 11</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
+</article>
+<article id="actor-050" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Александр Коваленко</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Военно-политический обозреватель группы «Информационное сопротивление»</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-075" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">International Committee of the Red Cross</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Humanitarian organization</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-036">src-036</a></div>
+</article>
+<article id="actor-073" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">UN Human Rights Monitoring Mission in Ukraine (HRMMU)</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">UN monitoring body</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-032">src-032</a></div>
+</article>
+<article id="actor-069" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Dmitry Mishin</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Wounded soldier from Krasnoyarsk</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-011">Position 11</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
+</article>
+<article id="actor-065" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Karina</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Wife of soldier Ivan D.</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-011">Position 11</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
+</article>
+<article id="actor-043" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Konstantin</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">39-year-old resident of Putilkovo</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
+</article>
+<article id="actor-070" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Residents of Khimki and Kurkino</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Local residents and eyewitnesses</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-028">src-028</a></div>
+</article>
+<article id="actor-068" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Viktoria</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Wife of soldier Daniil K.</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-011">Position 11</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
+</article>
+</div>
 <script>
 (function() {
-  const list = document.querySelector('.actor-list');
-  const showAll = document.getElementById('actors-show-all');
-  if (!list || !showAll) return;
-  function applyFilter() {
-    const m = (window.location.hash || '').match(/^#cluster-(\S+)$/);
-    if (!m) {
-      list.querySelectorAll('.actor').forEach(li => { li.hidden = false; });
-      showAll.hidden = true;
-      return;
-    }
-    const target = 'cluster-' + m[1];
-    list.querySelectorAll('.actor').forEach(li => {
-      const tags = (li.dataset.clusters || '').split(/\s+/);
-      li.hidden = !tags.includes(target);
+  const section = document.getElementById('actors-section');
+  if (!section) return;
+  const tabs = section.querySelectorAll('.actor-tab');
+  const cards = section.querySelectorAll('.actor-card');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.typeTarget || 'all';
+      cards.forEach(card => {
+        card.hidden = (target !== 'all' && card.dataset.actorType !== target);
+      });
+      tabs.forEach(t => t.classList.toggle('actor-tab--active', t === tab));
     });
-    showAll.hidden = false;
-  }
-  showAll.addEventListener('click', () => {
-    history.pushState('', document.title, window.location.pathname);
-    applyFilter();
   });
-  window.addEventListener('hashchange', applyFilter);
-  applyFilter();
 })();
 </script>
 </section>
@@ -1079,6 +1427,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Covers Arab world reactions, noting that most Arab governments maintain relative neutrality, calling for dialogue and respect for international law, due to intertwined interests with both Russia and the West.</p>
   <p class="source-bias-note"><em>Qatar-funded, strong Global South coverage</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-078">Arab governments (general)</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-078">Arab governments (general)</a></strong> <span class="actor-role">Regional states</span><p class="source-quote-position">Most maintain relative neutrality, call for dialogue and respect for international law, avoiding direct alignment with either side due to intertwined interests with Russia and the West.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1091,6 +1443,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports Russian officials&#x27; claims that 556 Ukrainian drones were intercepted overnight, killing four and injuring 21 across multiple regions, with Moscow&#x27;s mayor stating 81 drones were downed near the capital. Also includes Ukrainian accusations of over 280 Russian drones launched overnight, killing one and injuring 25, and President Zelenskyy&#x27;s statement that long-range strikes reached Moscow to tell Russia to end its war.</p>
   <p class="source-bias-note"><em>Turkish state news agency</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Russian Defense Ministry</a>, <a href="#actor-002">Sergey Sobyanin</a>, <a href="#actor-003">Andrei Vorobyov</a>, <a href="#actor-004">Maria Zakharova</a>, <a href="#actor-005">Aleksandr Hinshtein</a>, <a href="#actor-006">Ukraine&#x27;s General Staff</a>, <a href="#actor-007">Oleksandr Hanzha</a>, <a href="#actor-008">Oleh Synehubov</a>, <a href="#actor-009">Ivan Fedorov</a>, <a href="#actor-010">Volodymyr Zelenskyy</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Russian Defense Ministry</a></strong> <span class="actor-role">Defense Ministry of Russia</span><p class="source-quote-position">States that air defense systems intercepted and destroyed 556 Ukrainian drones overnight in several regions.</p><p class="source-quote-verbatim"><em>&ldquo;its air defense systems intercepted and destroyed 556 Ukrainian drones overnight in several regions&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="actor-role">Mayor of Moscow</span><p class="source-quote-position">Says air defenses shot down 81 drones heading toward the capital overnight, injuring 12 people, mostly construction workers near the Moscow Oil Refinery.</p><p class="source-quote-verbatim"><em>&ldquo;air defenses shot down 81 drones heading toward the capital overnight&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Says three people were killed and four others injured in a drone attack.</p><p class="source-quote-verbatim"><em>&ldquo;three people were killed and four others injured in a drone attack&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-004">Maria Zakharova</a></strong> <span class="actor-role">Russian Foreign Ministry spokesperson</span><p class="source-quote-position">Describes the drone strikes targeting Moscow and the surrounding region as a &#x27;mass terrorist attack&#x27;.</p><p class="source-quote-verbatim"><em>&ldquo;a &quot;mass terrorist attack&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-005">Aleksandr Hinshtein</a></strong> <span class="actor-role">Governor of Kursk region</span><p class="source-quote-position">Says three people were injured over the past 24 hours as a result of Ukrainian attacks in the border area.</p><p class="source-quote-verbatim"><em>&ldquo;three people were injured over the past 24 hours as a result of the Ukrainian attacks in the border area&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-006">Ukraine&#x27;s General Staff</a></strong> <span class="actor-role">General Staff of the Ukrainian Armed Forces</span><p class="source-quote-position">States that Ukrainian air defenses shot down 279 of the drones launched by Russia overnight.</p><p class="source-quote-verbatim"><em>&ldquo;Ukrainian air defenses shot down 279 of the drones&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-007">Oleksandr Hanzha</a></strong> <span class="actor-role">Governor of Dnipropetrovsk</span><p class="source-quote-position">Says eight people were injured in Russian drone and artillery attacks across four districts of the region.</p><p class="source-quote-verbatim"><em>&ldquo;eight people were injured in Russian drone and artillery attacks across four districts of the region&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-008">Oleh Synehubov</a></strong> <span class="actor-role">Head of Kharkiv regional state administration</span><p class="source-quote-position">Says seven people were injured in Russian attacks over the past 24 hours.</p><p class="source-quote-verbatim"><em>&ldquo;seven people were injured in Russian attacks over the past 24 hours&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-009">Ivan Fedorov</a></strong> <span class="actor-role">Governor of Zaporizhzhia</span><p class="source-quote-position">Reports that seven people were injured in attacks across the region during the same period.</p><p class="source-quote-verbatim"><em>&ldquo;seven people were injured in attacks across the region during the same period&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Accuses Russia of launching over 3,170 attack drones, 1,300 guided aerial bombs, and 74 missiles in the past week, and states that Ukrainian long-range strikes reached the Moscow region to tell Russia to end its war.</p><p class="source-quote-verbatim"><em>&ldquo;clearly telling the Russians: their state must end its war&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1102,6 +1458,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-17</span></div>
   <p class="source-summary">Reports at least three killed in the Moscow region from a large-scale Ukrainian drone attack, with India&#x27;s embassy confirming one Indian national among the dead. Includes Zelenskyy calling the strikes &#x27;entirely justified&#x27; retaliation for Russian attacks on Kyiv, and Ukraine&#x27;s SBU claiming strikes on oil facilities, a semiconductor plant, and air defense systems in Crimea.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Andrei Vorobyov</a>, <a href="#actor-012">India&#x27;s Moscow embassy</a>, <a href="#actor-010">Volodymyr Zelenskyy</a>, <a href="#actor-002">Sergey Sobyanin</a>, <a href="#actor-001">Russian Defense Ministry</a>, <a href="#actor-016">Sheremetyevo airport authorities</a>, <a href="#actor-017">Ukraine&#x27;s state security service SBU</a>, <a href="#actor-007">Oleksandr Hanzha</a>, <a href="#actor-018">Ukraine&#x27;s air force</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Russian Defense Ministry</a></strong> <span class="actor-role">Defense Ministry of Russia</span><p class="source-quote-position">Says 556 drones were intercepted around the country, about 130 of them in Moscow region.</p><p class="source-quote-verbatim"><em>&ldquo;556 drones were intercepted around the country, about 130 of them in Moscow region&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="actor-role">Mayor of Moscow</span><p class="source-quote-position">Says 12 people were injured when drones hit an entrance to the city&#x27;s oil refinery and three nearby houses were damaged.</p><p class="source-quote-verbatim"><em>&ldquo;12 people were injured when drones hit an entrance to the city&#x27;s oil refinery&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Says a woman died in Khimki and a man and a woman were killed in Pogorelki, with air defense forces repelling a large-scale UAV attack since 3 a.m.</p><p class="source-quote-verbatim"><em>&ldquo;since three o&#x27;clock in the morning, air defence forces have been repelling a large-scale UAV [drone] attack on the capital region&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-007">Oleksandr Hanzha</a></strong> <span class="actor-role">Governor of Dnipropetrovsk</span><p class="source-quote-position">Says eight people were injured and a number of houses damaged or destroyed in overnight Russian attacks.</p><p class="source-quote-verbatim"><em>&ldquo;eight people were injured, and a number of houses were damaged or destroyed&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Says the strikes are an &#x27;entirely justified&#x27; response to deadly Russian attacks on Ukrainian cities and that Ukraine&#x27;s long-range sanctions have reached the Moscow region.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;entirely justified&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-012">India&#x27;s Moscow embassy</a></strong> <span class="actor-role">Embassy of India in Moscow</span><p class="source-quote-position">States that a male Indian citizen was killed and three others injured.</p><p class="source-quote-verbatim"><em>&ldquo;A male Indian citizen was killed and three others injured&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-016">Sheremetyevo airport authorities</a></strong> <span class="actor-role">Authorities of Sheremetyevo Airport</span><p class="source-quote-position">Reports drone wreckage on its territory with no injuries and stable passenger and aircraft services.</p><p class="source-quote-verbatim"><em>&ldquo;The situation in the passenger terminals is calm. Sheremetyevo Airport is providing stable passenger and aircraft services&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-017">Ukraine&#x27;s state security service SBU</a></strong> <span class="actor-role">Security Service of Ukraine</span><p class="source-quote-position">States that together with Ukraine&#x27;s military it struck several oil facilities, a semiconductor-making plant in the Moscow region, and air defense systems at the Belbek military airfield in Crimea.</p><p class="source-quote-verbatim"><em>&ldquo;it had struck several oil facilities and a semiconductor-making plant in the Moscow region&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-018">Ukraine&#x27;s air force</a></strong> <span class="actor-role">Ukrainian Air Force</span><p class="source-quote-position">Says Russia launched 287 drones since late Saturday, with 279 shot down or intercepted and eight direct hits in seven locations.</p><p class="source-quote-verbatim"><em>&ldquo;279 drones were shot down or intercepted, but there were eight direct hits in seven locations&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1113,6 +1473,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>ru</span></div>
   <p class="source-summary">Provides a balanced summary of official statements from Moscow Mayor Sobyanin and Moscow Region Governor Vorobyov alongside witness accounts, detailing drone hits on residential buildings and evacuation of several entrances.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-002">Sergey Sobyanin</a>, <a href="#actor-003">Andrei Vorobyov</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="actor-role">Mayor of Moscow</span><p class="source-quote-position">Issued official statements about the drone attack on Moscow.</p></li><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Issued official statements about the drone attack on the Moscow region.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1125,6 +1489,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports on the massive Ukrainian drone attack on the Moscow region that killed at least four, followed by Russian retaliatory strikes on Odessa and Dnipro injuring eleven including two children. Includes Zelenskyy calling the attacks &#x27;completely justified&#x27; and notes the ongoing prisoner exchange, with Ukraine receiving 528 bodies from Russia.</p>
   <p class="source-bias-note"><em>German investigative newsmagazine</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-022">Serhij Lyssak</a>, <a href="#actor-007">Oleksandr Hanzha</a>, <a href="#actor-024">Juri Sljussar</a>, <a href="#actor-010">Volodymyr Zelenskyy</a>, <a href="#actor-026">Ukrainian Center for Prisoners of War</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-007">Oleksandr Hanzha</a></strong> <span class="actor-role">Governor of Dnipropetrovsk</span><p class="source-quote-position">States that Dnipro was shelled with rockets in a separate attack, injuring nine people including a 10-year-old boy.</p><p class="source-quote-verbatim"><em>&ldquo;die südöstliche Großstadt Dnipro sei in einem separaten Angriff mit Raketen beschossen worden&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">States that Ukraine&#x27;s response to Russia&#x27;s continuation of the war and attacks on Ukrainian cities is &#x27;completely justified&#x27; and that the attack on Moscow tells Russians their state must end the war.</p><p class="source-quote-verbatim"><em>&ldquo;»Unsere Antwort auf Russlands Fortsetzung des Kriegs und seine Attacken auf unsere Städte und Gemeinden sind vollkommen gerechtfertigt.«&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-022">Serhij Lyssak</a></strong> <span class="actor-role">Head of the local military administration in Odessa</span><p class="source-quote-position">States that drones hit residential buildings, a school, and a kindergarten, injuring an 11-year-old boy and a 59-year-old man.</p><p class="source-quote-verbatim"><em>&ldquo;Drohnen zuletzt unter anderem Wohngebäude, eine Schule und einen Kindergarten&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-024">Juri Sljussar</a></strong> <span class="actor-role">Governor of Rostov region</span><p class="source-quote-position">Reports new drone attacks from Ukraine on the southern Rostov region, with drones shot down over the port city of Taganrog.</p><p class="source-quote-verbatim"><em>&ldquo;Drohnen seien unter anderem über der Hafenstadt Taganrog am Asowschen Meer abgeschossen worden&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-026">Ukrainian Center for Prisoners of War</a></strong> <span class="actor-role">Ukrainian government body handling prisoners of war</span><p class="source-quote-position">States that Ukraine received 528 bodies handed over by Russia, which according to the Russian side could be Ukrainian soldiers.</p><p class="source-quote-verbatim"><em>&ldquo;die Ukraine erhielt eigenen Angaben zufolge am Samstag 528 von Russland übergebene Leichen&rdquo;</em> <code class="source-quote-lang">de</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1136,6 +1504,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <div class="source-meta"><span>Germany</span> &middot; <span>tr</span></div>
   <p class="source-summary">Connects the drone strikes to Turkey&#x27;s renewed diplomatic mediation efforts, including proposals to revive the Black Sea Grain Initiative and prisoner exchanges, while noting that maximalist demands from both sides make a ceasefire unlikely.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-072">Government of Turkey</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-072">Government of Turkey</a></strong> <span class="actor-role">Mediating state</span><p class="source-quote-position">Proposed new diplomatic initiatives including reviving the Black Sea Grain Initiative, prisoner exchanges, and preventing nuclear escalation.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1148,6 +1520,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports almost 600 Ukrainian drones targeted Russia overnight, killing three in the Moscow region and one in Belgorod, with Russian air defenses claiming 556 drones shot down. Frames the attack as Zelenskyy&#x27;s &#x27;entirely justified&#x27; retaliation for a Russian assault on Kyiv that killed 24, and notes diplomatic efforts remain at a standstill with Kyiv rejecting Moscow&#x27;s maximalist territorial demands.</p>
   <p class="source-bias-note"><em>German state-funded, editorially independent</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Andrei Vorobyov</a>, <a href="#actor-002">Sergey Sobyanin</a>, <a href="#actor-001">Russian Defense Ministry</a>, <a href="#actor-010">Volodymyr Zelenskyy</a>, <a href="#actor-018">Ukraine&#x27;s air force</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Russian Defense Ministry</a></strong> <span class="actor-role">Defense Ministry of Russia</span><p class="source-quote-position">Says air defenses shot down 556 drones across the country overnight, with another 30 intercepted after dawn.</p><p class="source-quote-verbatim"><em>&ldquo;air defenses shot down 556 drones across the country overnight, with another 30 drones intercepted after dawn&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="actor-role">Mayor of Moscow</span><p class="source-quote-position">Says strikes wounded at least 12 people, most of them construction workers near an oil and gas refinery, but production was not disrupted.</p><p class="source-quote-verbatim"><em>&ldquo;strikes there had wounded at least 12 people, most of them construction workers at a job site near an oil and gas refinery&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Says a drone attack killed a woman in Khimki and two men in Pogoreliki.</p><p class="source-quote-verbatim"><em>&ldquo;a drone attack killed a woman in her home in Khimki&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Calls Ukraine&#x27;s attacks on Russia &#x27;entirely justified&#x27; in view of continued Russian aggression and states Ukraine is overcoming Russian air defense concentrated in the Moscow region.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Our responses to Russia&#x27;s prolongation of the war and its attacks on our cities and communities are entirely justified&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-018">Ukraine&#x27;s air force</a></strong> <span class="actor-role">Ukrainian Air Force</span><p class="source-quote-position">Reports that Russia sent 287 drones over Ukraine overnight, 279 of which were shot down or jammed.</p><p class="source-quote-verbatim"><em>&ldquo;287 drones over Ukraine overnight to Sunday, 279 of which were shot down or jammed&rdquo;</em></p></li></ul>
+  </details>
 </li>
 <li id="src-015" class="source">
   <div class="source-header"><span class="source-id">[15]</span> <a class="source-headline" href="https://www.dw.com/en/ukraine-s-dnipro-and-odesa-targeted-in-russian-strikes/a-77192579?maca=en-rss-en-all-1573-xml-mrss" target="_blank" rel="noopener">Ukraine&#x27;s Dnipro and Odesa targeted in Russian strikes</a></div>
@@ -1155,6 +1531,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports on a fresh wave of Russian drone and missile strikes on Ukrainian cities, with over 20 people injured, including 26 in Dnipro. The article frames the strikes as part of a cycle of retaliation following a Ukrainian drone attack on Moscow and a prior Russian strike on Kyiv that killed 24 people, and quotes President Zelenskyy saying Ukraine&#x27;s long-range capabilities are &#x27;changing the situation.&#x27;</p>
   <p class="source-bias-note"><em>German state-funded, editorially independent</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-022">Serhij Lyssak</a>, <a href="#actor-007">Oleksandr Hanzha</a>, <a href="#actor-010">Volodymyr Zelenskyy</a>, <a href="#actor-057">Yuri Slyusar</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-007">Oleksandr Hanzha</a></strong> <span class="actor-role">Governor of Dnipropetrovsk</span><p class="source-quote-position">Stated that 26 people were wounded and six districts were attacked with missiles, drones, artillery, and aerial bombs.</p><p class="source-quote-verbatim"><em>&ldquo;Twenty-six people were wounded. The enemy attacked six districts of the region with missiles, drones, artillery and aerial bombs&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Said that Ukraine&#x27;s long-range capabilities were &#x27;significantly changing the situation&#x27; and that the war is &#x27;returning to its native harbor.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;The war is quite predictably returning to its &#x27;native harbor,&#x27; and this is a clear signal that one should not pick a fight with Ukraine or wage an unjust war of conquest against another people&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-022">Serhij Lyssak</a></strong> <span class="actor-role">Head of the local military administration in Odessa</span><p class="source-quote-position">Reported that residential buildings, a school, and a kindergarten were hit in Odesa.</p></li><li class="source-quote-entry"><strong><a href="#actor-057">Yuri Slyusar</a></strong> <span class="actor-role">governor of Russia&#x27;s Rostov Oblast</span><p class="source-quote-position">Said that forces had repelled an air attack in the region with drones destroyed in Taganrog, Kamensky and Azov districts.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1166,6 +1546,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <div class="source-meta"><span>Ukraine</span> &middot; <span>uk</span> &middot; <span>2026-05-17</span></div>
   <p class="source-summary">Quotes President Zelenskyy directly calling the drone strikes &#x27;completely fair responses&#x27; to Russian attacks, emphasizing that Ukrainian long-range drones overcame the densest air defense in Russia to reach Moscow over 500 km away.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-010">Volodymyr Zelenskyy</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Describes the drone strikes on Moscow as completely fair responses to Russia&#x27;s prolongation of the war and shelling of Ukrainian cities, and thanks the SBU and defense forces.</p><p class="source-quote-verbatim"><em>&ldquo;цілком справедливими відповідями&rdquo;</em> <code class="source-quote-lang">uk</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1177,6 +1561,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <div class="source-meta"><span>United States</span> &middot; <span>en</span> &middot; <span>2026-04-08</span></div>
   <p class="source-summary">Provides the legal framework for assessing attacks on dual-use infrastructure like oil refineries and power plants under international humanitarian law, relevant to evaluating the legality of Ukrainian strikes on Russian energy and industrial targets.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-074">Human Rights Watch</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-074">Human Rights Watch</a></strong> <span class="actor-role">International human rights NGO</span><p class="source-quote-position">Explains that civilian infrastructure becomes a lawful military objective only if used for concrete and direct military purposes, and that proportionality and precaution rules apply.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1189,6 +1577,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Focuses on the death of an Indian worker and injury of three others in the Moscow region drone attack, which the Indian embassy confirms as possibly the first Indian casualty in the Moscow region. Also contextualizes the incident within the broader pattern of Indian nationals being lured to Russia and forced into military service, with 22 Indians estimated killed since the war began.</p>
   <p class="source-bias-note"><em>Indian newspaper, investigative strength</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-012">India&#x27;s Moscow embassy</a>, <a href="#actor-034">Russian embassy in New Delhi</a>, <a href="#actor-002">Sergey Sobyanin</a>, <a href="#actor-010">Volodymyr Zelenskyy</a>, <a href="#actor-035">Ministry of External Affairs</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="actor-role">Mayor of Moscow</span><p class="source-quote-position">Says air defenses shot down over 120 drones heading to Moscow in the past 24 hours, with 81 destroyed after midnight, and 12 people injured.</p><p class="source-quote-verbatim"><em>&ldquo;air defences shot down over 120 drones heading to Moscow in the past 24 hours&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Confirms the drone strikes and says they were &#x27;entirely justified&#x27;.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;entirely justified&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-012">India&#x27;s Moscow embassy</a></strong> <span class="actor-role">Embassy of India in Moscow</span><p class="source-quote-position">States that one Indian worker has lost his life and three others have been injured in a drone attack in the Moscow region, and is working with company management and local authorities to provide assistance.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;One Indian worker has lost his life and three others have been injured in a drone attack in the Moscow region earlier today. Embassy officials have visited the location and met the injured workers in the hospital&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-034">Russian embassy in New Delhi</a></strong> <span class="actor-role">Embassy of Russia in New Delhi</span><p class="source-quote-position">Mourns the death of the Indian worker and blames Ukraine for the attack on civilian facilities in the Moscow region.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;The Russian Embassy mourns together with the family of the Indian worker and extends its sympathy to those injured by the Ukrainian attack on civilian facilities in the Moscow region&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-035">Ministry of External Affairs</a></strong> <span class="actor-role">Ministry of External Affairs of India</span><p class="source-quote-position">States that 12 Indian nationals in the Russian armed forces were reported to have lost their lives in the conflict and that roughly 27 Indians had been recently enrolled in Russian forces.</p><p class="source-quote-verbatim"><em>&ldquo;12 Indian nationals in the Russian armed forces were reported to have lost their lives in the conflict&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1201,6 +1593,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports a sharp decline in Ukrainian drone attacks the following night, with Russian air defenses shooting down only 50 drones compared to 556 the previous day, across seven regions, Crimea, and the Sea of Azov. Notes no damages or casualties were reported from the reduced attack.</p>
   <p class="source-bias-note"><em>Pan-LatAm digital news, strong in AR/MX/CO</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Russian Defense Ministry</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Russian Defense Ministry</a></strong> <span class="actor-role">Defense Ministry of Russia</span><p class="source-quote-position">States that air defenses intercepted and destroyed 50 Ukrainian fixed-wing drones overnight, eleven times fewer than the previous day&#x27;s massive attack of 556.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Entre las 21:00 hora de Moscú del 17 de mayo (18:00 GMT) hasta las 07:00 (04:00 GMT) del 18 de mayo, las defensas antiaéreas interceptaron y aniquilaron 50 drones ucranianos de ala fija&quot;&rdquo;</em> <code class="source-quote-lang">es</code></p></li></ul>
+  </details>
 </li>
 <li id="src-016" class="source">
   <div class="source-header"><span class="source-id">[16]</span> <a class="source-headline" href="https://www.infobae.com/america/agencias/2026/05/18/al-menos-26-heridos-en-un-ataque-nocturno-del-ejercito-ruso-sobre-la-provincia-ucraniana-de-dnipropetrovsk/" target="_blank" rel="noopener">Al menos 26 heridos en un ataque nocturno del Ejército ruso sobre la provincia ucraniana de Dnipropetrovsk</a></div>
@@ -1208,6 +1604,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports on a Russian night attack on Ukraine&#x27;s Dnipropetrovsk province that wounded at least 26 people, including minors, across six cities using drones, artillery, and aerial bombs. The article also notes that Ukrainian air defenses intercepted 503 drones and four Iskander-K cruise missiles overnight.</p>
   <p class="source-bias-note"><em>Pan-LatAm digital news, strong in AR/MX/CO</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-007">Oleksandr Hanzha</a>, <a href="#actor-059">Fuerzas Armadas de Ucrania</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-007">Oleksandr Hanzha</a></strong> <span class="actor-role">Governor of Dnipropetrovsk</span><p class="source-quote-position">Detalló que los ataques cayeron sobre seis ciudades, que entre los heridos hay menores de edad, y que el Ejército ruso empleó drones, artillería y bombas aéreas.</p></li><li class="source-quote-entry"><strong><a href="#actor-059">Fuerzas Armadas de Ucrania</a></strong> <span class="actor-role">Fuerzas Armadas de Ucrania</span><p class="source-quote-position">Informaron de que sus defensas aéreas lograron interceptar 503 drones y cuatro misiles de crucero Iskander-K.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1219,6 +1619,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <div class="source-meta"><span>United States</span> &middot; <span>en</span> &middot; <span>2026-05-18</span></div>
   <p class="source-summary">Provides a UN-centered perspective on the attack, citing OCHA and HRMMU data showing that civilian casualties in the first four months of 2026 are the highest in three years, and noting the UN&#x27;s operational difficulties after a marked vehicle was hit.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-073">UN Human Rights Monitoring Mission in Ukraine (HRMMU)</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-073">UN Human Rights Monitoring Mission in Ukraine (HRMMU)</a></strong> <span class="actor-role">UN monitoring body</span><p class="source-quote-position">Data shows civilian casualties in the first four months of 2026 are the highest in three years, largely due to increased use of long-range weapons.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1230,6 +1634,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <div class="source-meta"><span>Switzerland</span> &middot; <span>en</span></div>
   <p class="source-summary">ICRC&#x27;s FAQ clarifies that armed drones are not prohibited per se under IHL, but their use must comply with distinction, proportionality, and precaution; provides authoritative legal context for evaluating the drone strikes.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-075">International Committee of the Red Cross</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-075">International Committee of the Red Cross</a></strong> <span class="actor-role">Humanitarian organization</span><p class="source-quote-position">States that armed drones are not prohibited per se and are legally comparable to crewed aircraft; what matters is how they are used, requiring compliance with distinction, proportionality, and precaution.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1242,6 +1650,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports at least four killed in Ukraine&#x27;s biggest overnight drone attack on Moscow in over a year, with Russia&#x27;s defense ministry claiming more than 1,000 drones downed in 24 hours. Includes Zelenskyy&#x27;s &#x27;entirely justified&#x27; framing, Russia&#x27;s foreign ministry accusing Kyiv of a &#x27;mass terrorist attack&#x27;, and Ukraine&#x27;s General Staff claiming strikes on a high-precision weapons plant and a drone command point.</p>
   <p class="source-bias-note"><em>English-language Japanese news (Atom format)</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Russian Defense Ministry</a>, <a href="#actor-010">Volodymyr Zelenskyy</a>, <a href="#actor-006">Ukraine&#x27;s General Staff</a>, <a href="#actor-004">Maria Zakharova</a>, <a href="#actor-002">Sergey Sobyanin</a>, <a href="#actor-003">Andrei Vorobyov</a>, <a href="#actor-016">Sheremetyevo airport authorities</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Russian Defense Ministry</a></strong> <span class="actor-role">Defense Ministry of Russia</span><p class="source-quote-position">Says by midday more than 1,000 Ukrainian drones had been downed over the country in the past 24 hours.</p><p class="source-quote-verbatim"><em>&ldquo;by midday more than 1,000 Ukrainian drones had been downed over the country in the past 24 hours&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="actor-role">Mayor of Moscow</span><p class="source-quote-position">Says air defenses destroyed 81 drones headed for Moscow since midnight, the largest attack on the capital in more than a year, with 12 people wounded.</p><p class="source-quote-verbatim"><em>&ldquo;air defenses had destroyed 81 drones headed for Moscow since midnight, the largest attack on the capital in more than a year&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Says a woman was killed in Khimki and two men killed in Pogorelki, with several residential high-rises and infrastructure facilities damaged.</p><p class="source-quote-verbatim"><em>&ldquo;a woman was killed when a home was hit in Khimki&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-004">Maria Zakharova</a></strong> <span class="actor-role">Russian Foreign Ministry spokesperson</span><p class="source-quote-position">Accuses Kyiv of targeting civilians, calling it a &#x27;mass terrorist attack&#x27; carried out to the sound of Eurovision songs and financed by the EU.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;To the sound of Eurovision songs, the Kyiv regime, financed by the EU, carried out yet another mass terrorist attack&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-006">Ukraine&#x27;s General Staff</a></strong> <span class="actor-role">General Staff of the Ukrainian Armed Forces</span><p class="source-quote-position">Says one strike triggered a fire at a plant outside Moscow producing high-precision weapons and a command point overseeing drone flights was hit in Russian-occupied Donetsk.</p><p class="source-quote-verbatim"><em>&ldquo;one strike had triggered a fire at a plant outside Moscow engaged in production of high-precision weapons&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Calls the responses to Russia&#x27;s prolongation of the war &#x27;entirely justified&#x27; and says Ukraine is able to strike targets more than 500 km from the border, telling Russians their state must end its war.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Our responses to Russia&#x27;s prolongation of the war and its attacks on our cities and communities are entirely justified&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-016">Sheremetyevo airport authorities</a></strong> <span class="actor-role">Authorities of Sheremetyevo Airport</span><p class="source-quote-position">Says drone debris fell on its territory but caused no damage.</p><p class="source-quote-verbatim"><em>&ldquo;drone debris had fallen on its territory but caused no damage&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1254,6 +1666,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports a Ukrainian drone strike on the Nevinnomyssk Azot fertilizer plant in Stavropol Krai, which produces chemicals used in explosives, citing Russian independent media and a Ukrainian defense official. Also covers the repatriation of 528 bodies to Ukraine and President Zelensky&#x27;s release of footage showing strikes on Russian military targets, including a Be-200 aircraft, which he calls a &#x27;justified response.&#x27;</p>
   <p class="source-bias-note"><em>Ukrainian independent, pro-Ukraine perspective</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-039">Andrii Kovalenko</a>, <a href="#actor-040">Vladimir Vladimirov</a>, <a href="#actor-010">Volodymyr Zelenskyy</a>, <a href="#actor-041">Robert &#x27;Madyar&#x27; Brovdi</a>, <a href="#actor-003">Andrei Vorobyov</a>, <a href="#actor-002">Sergey Sobyanin</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="actor-role">Mayor of Moscow</span><p class="source-quote-position">Said 12 people were injured near the Moscow Oil Refinery in the Kapotnya district, which he described as one of the targets of the attack.</p></li><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Confirmed that at least three people were killed in the attack, including two in the village of Pogorelki and one in Khimki.</p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Called the strikes on Russian military targets a &#x27;justified response&#x27; and the attack on the Moscow region a &#x27;completely fair response&#x27; to Russia&#x27;s strikes on Ukrainian cities.</p><p class="source-quote-verbatim"><em>&ldquo;These are entirely justified responses to what the Russians are doing.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-039">Andrii Kovalenko</a></strong> <span class="actor-role">official at Ukraine&#x27;s National Security and Defense Council</span><p class="source-quote-position">Described the Nevinnomyssk Azot plant as &#x27;a critical component&#x27; of Russia&#x27;s defense-industrial complex.</p></li><li class="source-quote-entry"><strong><a href="#actor-040">Vladimir Vladimirov</a></strong> <span class="actor-role">Stavropol Krai Governor</span><p class="source-quote-position">Claimed Russian air defense systems had &#x27;repelled an attack by enemy drones.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;repelled an attack by enemy drones&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-041">Robert &#x27;Madyar&#x27; Brovdi</a></strong> <span class="actor-role">Commander of Ukraine&#x27;s Unmanned Systems Forces</span><p class="source-quote-position">Said Ukrainian drones struck a Russian patrol boat near Kaspiysk in Russia&#x27;s Dagestan republic.</p></li></ul>
+  </details>
 </li>
 <li id="src-017" class="source">
   <div class="source-header"><span class="source-id">[17]</span> <a class="source-headline" href="https://kyivindependent.com/at-least-2-killed-41-injured-in-russian-attacks-across-ukraine-over-past-day/" target="_blank" rel="noopener">At least 2 killed, 41 injured in Russian attacks across Ukraine over past day</a></div>
@@ -1261,6 +1677,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports on Russian attacks across Ukraine that killed at least two civilians and injured 41 over the past day, detailing strikes in Kherson, Donetsk, Dnipropetrovsk, Zaporizhzhia, Kharkiv, and Sumy oblasts. The article notes that Russia launched 287 attack drones overnight, of which 279 were shot down or suppressed, and quotes President Zelensky stating that Russia launched over 3,170 drones, 1,300 guided bombs, and 74 missiles in the past week, killing 52 people.</p>
   <p class="source-bias-note"><em>Ukrainian independent, pro-Ukraine perspective</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-010">Volodymyr Zelenskyy</a>, <a href="#actor-060">Vadym Filashkin</a>, <a href="#actor-009">Ivan Fedorov</a>, <a href="#actor-008">Oleh Synehubov</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-008">Oleh Synehubov</a></strong> <span class="actor-role">Head of Kharkiv regional state administration</span><p class="source-quote-position">Reported that Russian strikes in Kharkiv Oblast injured seven people.</p></li><li class="source-quote-entry"><strong><a href="#actor-009">Ivan Fedorov</a></strong> <span class="actor-role">Governor of Zaporizhzhia</span><p class="source-quote-position">Reported that seven people were injured in attacks on Zaporizhzhia, Polohy, and Zaporizhzhia districts, and that Russian forces carried out 960 strikes against 49 settlements.</p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">States that Russia launched over 3,170 attack drones, more than 1,300 guided aerial bombs, and 74 missiles against Ukraine over the past week, killing 52 people and injuring 346 others, and that Ukrainian people need more air defense protection.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Our people need more protection, and everything that supports Ukrainian air defense ultimately helps save lives.&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-060">Vadym Filashkin</a></strong> <span class="actor-role">Governor of Donetsk Oblast</span><p class="source-quote-position">Reported that Russian attacks in Donetsk Oblast killed one civilian.</p></li></ul>
+  </details>
 </li>
 <li id="src-022" class="source">
   <div class="source-header"><span class="source-id">[22]</span> <a class="source-headline" href="https://kyivindependent.com/russian-attack-may-18/" target="_blank" rel="noopener">Russian drones, missiles strike residential buildings in multiple Ukrainian regions, injuring at least 20</a></div>
@@ -1268,6 +1688,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports on a combined Russian drone and missile attack on central and southern Ukraine overnight on May 18 that injured at least 20 people, including two children, with 18 injured in Dnipro where a 24-storey residential building was struck. The article also notes drone strikes on residential buildings in Odesa that injured an 11-year-old boy and a 59-year-old man and damaged an educational lecture hall and a kindergarten.</p>
   <p class="source-bias-note"><em>Ukrainian independent, pro-Ukraine perspective</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-007">Oleksandr Hanzha</a>, <a href="#actor-022">Serhij Lyssak</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-007">Oleksandr Hanzha</a></strong> <span class="actor-role">Governor of Dnipropetrovsk</span><p class="source-quote-position">Reported that a strike hit a 24-storey residential building in Dnipro, with several fires burning throughout the city, and that at least 18 people including two children were injured, with eight hospitalized in moderate condition.</p></li><li class="source-quote-entry"><strong><a href="#actor-022">Serhij Lyssak</a></strong> <span class="actor-role">Head of the local military administration in Odessa</span><p class="source-quote-position">Reported that Russian drones struck residential buildings in Odesa, injuring an 11-year-old boy and a 59-year-old man, and damaged an educational lecture hall and a kindergarten.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1280,6 +1704,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Offers a ground-level, witness-driven account from residents of Khimki and Kurkino, describing the terror of the attack, the lack of official warnings, and the absence of organized evacuation despite damage and casualties.</p>
   <p class="source-bias-note"><em>Russian independent media in exile (Latvia)</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-070">Residents of Khimki and Kurkino</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-070">Residents of Khimki and Kurkino</a></strong> <span class="actor-role">Local residents and eyewitnesses</span><p class="source-quote-position">Describe being woken by loud explosions, seeing drones being shot down, and experiencing fear and panic without sirens or SMS alerts or organized evacuation.</p><p class="source-quote-verbatim"><em>&ldquo;Кошка вся дыбом встала&rdquo;</em> <code class="source-quote-lang">ru</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1292,6 +1720,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports on a massive Ukrainian drone barrage of over 500 drones targeting Moscow and 14 other Russian regions, killing three people in the Moscow region and wounding 12 in the capital. The article notes that one victim was an Indian citizen, quotes a local resident describing the impact, and frames the attack as retaliation for a Russian strike on Kyiv that killed 24 people.</p>
   <p class="source-bias-note"><em>Independent English-language Russian news outlet</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Andrei Vorobyov</a>, <a href="#actor-010">Volodymyr Zelenskyy</a>, <a href="#actor-002">Sergey Sobyanin</a>, <a href="#actor-043">Konstantin</a>, <a href="#actor-044">Ukraine&#x27;s Defense Ministry</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="actor-role">Mayor of Moscow</span><p class="source-quote-position">Reported that air defense systems intercepted more than 80 drones, wounding 12 people, and that refinery production was not disrupted.</p><p class="source-quote-verbatim"><em>&ldquo;Minor damage has been recorded at the sites where debris fell&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Announced that a woman was killed by a UAV hitting a private house, one person was trapped under rubble, and two men were also killed.</p><p class="source-quote-verbatim"><em>&ldquo;A woman was killed as a result of a UAV hitting a private house. One more person is trapped under rubble&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Vowed to launch more retaliatory strikes and insisted that Kyiv&#x27;s strategy of targeting military and energy sites within Russia was &#x27;entirely justified.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;entirely justified&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-043">Konstantin</a></strong> <span class="actor-role">39-year-old resident of Putilkovo</span><p class="source-quote-position">Described the powerful impact of a strike that nearly knocked him out of bed and caused visible smoke.</p><p class="source-quote-verbatim"><em>&ldquo;The hit was so powerful that it almost knocked me out [of bed], and I weigh a lot. I opened my window and saw smoke rising&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-044">Ukraine&#x27;s Defense Ministry</a></strong> <span class="actor-role">Ministry of Defense of Ukraine</span><p class="source-quote-position">Stated the attack hit the Moscow Oil Refinery, the Solnechnogorsk oil depot, and several microelectronics manufacturing facilities for the first time, adding &#x27;The war is returning to where it came from.&#x27;</p><p class="source-quote-verbatim"><em>&ldquo;The war is returning to where it came from&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1304,6 +1736,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports the death of an Indian citizen in the attack, citing the Indian Embassy in Moscow&#x27;s confirmation and consular response, adding a specific humanitarian dimension from a non-Western, non-aligned country.</p>
   <p class="source-bias-note"><em>Major Indian English-language news outlet</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-012">India&#x27;s Moscow embassy</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-012">India&#x27;s Moscow embassy</a></strong> <span class="actor-role">Embassy of India in Moscow</span><p class="source-quote-position">Confirmed the death of an Indian worker, visited the site and hospital, and offered condolences.</p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1316,6 +1752,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Provides expert military analysis of the massive Ukrainian drone strike on Moscow, detailing the specific targets hit, including the Angstrem plant and Solnechnogorsk fuel station. Quotes Ukrainian military experts who assess the operation&#x27;s effectiveness, criticize its timing relative to the May 9 parade, and predict an increase in such attacks due to growing Ukrainian drone production and the depletion of Russian air defenses.</p>
   <p class="source-bias-note"><em>Russian independent media in exile, Nobel Prize newsroom</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Andrei Vorobyov</a>, <a href="#actor-002">Sergey Sobyanin</a>, <a href="#actor-010">Volodymyr Zelenskyy</a>, <a href="#actor-048">Евгений Хмара</a>, <a href="#actor-049">Сергей Стерненко</a>, <a href="#actor-050">Александр Коваленко</a>, <a href="#actor-051">Роман Свитан</a>, <a href="#actor-052">Анна Кротова</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="actor-role">Mayor of Moscow</span><p class="source-quote-position">Рассказал о двенадцати пострадавших, в основном строителях Московского НПЗ, и заявил, что технология завода не нарушена.</p><p class="source-quote-verbatim"><em>&ldquo;В результате попадания беспилотников, по предварительным данным, ранено двенадцать человек. В основном, возле проходной МНПЗ, пострадала смена строителей. Технология завода не нарушена&rdquo;</em> <code class="source-quote-lang">ru</code></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Сообщил о трех погибших в Московской области в результате атаки.</p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Назвал атаку на Москву «справедливым ответом» на недавние удары по Украине и заявил, что Россия должна закончить войну.</p><p class="source-quote-verbatim"><em>&ldquo;Мы четко говорим россиянам: их государство должно закончить свою войну&rdquo;</em> <code class="source-quote-lang">ru</code></p></li><li class="source-quote-entry"><strong><a href="#actor-048">Евгений Хмара</a></strong> <span class="actor-role">Глава ведомства (СБУ)</span><p class="source-quote-position">Сказал, что подобные атаки «имеют критическое значение для ослабления военного потенциала РФ» и «демонстрируют, что даже самая защищенная Московская область не является безопасной».</p><p class="source-quote-verbatim"><em>&ldquo;имеют критическое значение для ослабления военного потенциала РФ&rdquo;</em> <code class="source-quote-lang">ru</code></p></li><li class="source-quote-entry"><strong><a href="#actor-049">Сергей Стерненко</a></strong> <span class="actor-role">Советник министра обороны Украины</span><p class="source-quote-position">Утверждает, что на Московскую область была совершена самая масштабная атака с начала войны и столицу РФ ждут «еще более масштабные атаки».</p><p class="source-quote-verbatim"><em>&ldquo;еще более масштабные атаки&rdquo;</em> <code class="source-quote-lang">ru</code></p></li><li class="source-quote-entry"><strong><a href="#actor-050">Александр Коваленко</a></strong> <span class="actor-role">Военно-политический обозреватель группы «Информационное сопротивление»</span><p class="source-quote-position">Утверждает, что ударов, подобных сегодняшней атаке на Москву, будет больше из-за роста украинского производства дронов и истощения российской ПВО, а также что Киев мог бы легко сорвать парад 9 мая.</p><p class="source-quote-verbatim"><em>&ldquo;ВСУ даже в случае высокой насыщенности региона ЗРК достигли бы своих целей. Но Киев пошел навстречу просьбам о мире в этот важный день.&rdquo;</em> <code class="source-quote-lang">ru</code></p></li><li class="source-quote-entry"><strong><a href="#actor-051">Роман Свитан</a></strong> <span class="actor-role">Военный эксперт, полковник ВСУ в запасе</span><p class="source-quote-position">Считает сегодняшнюю операцию ВСУ нерациональной, так как большинство дронов и ракет были сбиты, и утверждает, что удар надо было наносить 9 мая для большего эффекта.</p><p class="source-quote-verbatim"><em>&ldquo;Сегодняшний удар надо было наносить 9 мая, тогда эффект от него был бы на порядок выше&rdquo;</em> <code class="source-quote-lang">ru</code></p></li><li class="source-quote-entry"><strong><a href="#actor-052">Анна Кротова</a></strong> <span class="actor-role">Глава города Лобня</span><p class="source-quote-position">Сообщила, что обломки БПЛА упали на территорию поликлиники.</p></li></ul>
+  </details>
 </li>
 <li id="src-018" class="source">
   <div class="source-header"><span class="source-id">[18]</span> <a class="source-headline" href="https://novayagazeta.eu/articles/2026/05/17/v-latviiu-vnov-zaletel-neopoznannyi-dron-news" target="_blank" rel="noopener">В Латвию вновь залетел неопознанный дрон</a></div>
@@ -1329,6 +1769,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Investigates the Russian military&#x27;s practice of forcibly sending wounded and disabled soldiers back to the front before they complete rehabilitation, documenting at least 319 such cases from Telegram channels and presenting detailed accounts of soldiers Ivan D., Daniil K., and Dmitry Mishin. The article quotes human rights lawyers who describe the practice as illegal but note that legal protections have collapsed since 2022, and reports that authorities resist discharging soldiers to avoid creating precedents and to save on compensation payments.</p>
   <p class="source-bias-note"><em>Russian independent media in exile, Nobel Prize newsroom</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-065">Karina</a>, <a href="#actor-066">Sergey Krivenko</a>, <a href="#actor-067">Artem Klyga</a>, <a href="#actor-068">Viktoria</a>, <a href="#actor-069">Dmitry Mishin</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-065">Karina</a></strong> <span class="actor-role">Wife of soldier Ivan D.</span><p class="source-quote-position">States that her husband Ivan was told he &#x27;as a man&#x27; had to return to his unit despite being on crutches, that she showed all medical documents to the deputy commander who replied &#x27;He&#x27;s a man, he&#x27;ll manage,&#x27; and that Ivan has been missing since December 14, 2025.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Он же у вас мужчина, справится.&quot;&rdquo;</em> <code class="source-quote-lang">ru</code></p></li><li class="source-quote-entry"><strong><a href="#actor-066">Sergey Krivenko</a></strong> <span class="actor-role">Director of the human rights group &#x27;Citizen. Army. Law&#x27;</span><p class="source-quote-position">Explains that military hospitals are overcrowded and try to patch up soldiers quickly to free beds and send them back to the front, and that the only way to avoid service is active resistance including independent medical examination and appeals to the military prosecutor.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;В армии все смотрят только на документы, на справки. Если есть справка военно-врачебной комиссии, что он прошел лечение и годен, то всё. Никого не интересует реальная ситуация.&quot;&rdquo;</em> <code class="source-quote-lang">ru</code></p></li><li class="source-quote-entry"><strong><a href="#actor-067">Artem Klyga</a></strong> <span class="actor-role">Head of the legal department of the Movement of Conscious Objectors</span><p class="source-quote-position">States that after February 2022 it is difficult to speak about processes in the Russian army from a legal perspective because law does not work, and that the authorities do not want to create any illusion that it is possible to be released from military service.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Я могу вам описать, как должно быть. Но потом сто́ит зайти в любой новостной телеграм-канал, и там будет масса историй, которые показывают, что право не работает.&quot;&rdquo;</em> <code class="source-quote-lang">ru</code></p></li><li class="source-quote-entry"><strong><a href="#actor-068">Viktoria</a></strong> <span class="actor-role">Wife of soldier Daniil K.</span><p class="source-quote-position">States that her husband Daniil was taken for a &#x27;storm&#x27; assault after being declared temporarily unfit due to severe injuries, and that the deputy commander later told her he had probably been killed but his body could not be evacuated.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Понятно же, что они оттуда уже не вернутся.&quot;&rdquo;</em> <code class="source-quote-lang">ru</code></p></li><li class="source-quote-entry"><strong><a href="#actor-069">Dmitry Mishin</a></strong> <span class="actor-role">Wounded soldier from Krasnoyarsk</span><p class="source-quote-position">Objected to being sent back to the front after his arm was blown off, asking sarcastically whether he was supposed to grow a new arm during his leave.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;А что, я за время отпуска руку новую отращу, что ли?&quot;&rdquo;</em> <code class="source-quote-lang">ru</code></p></li></ul>
+  </details>
 </li>
 <li id="src-038" class="source">
   <div class="source-header"><span class="source-id">[38]</span> <a class="source-headline" href="https://novayagazeta.eu/amp/articles/2026/05/18/on-zhe-u-vas-muzhchina-spravitsia" target="_blank" rel="noopener">«Он же у вас мужчина. Справится». Россия сотнями принудительно отправляет на фронт раненых</a></div>
@@ -1346,6 +1790,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <div class="source-meta"><span>Ukraine</span> &middot; <span>uk</span></div>
   <p class="source-summary">Provides additional detail on Zelenskyy&#x27;s Telegram address, listing specific targets hit (oil refinery, technopark, enterprise, airport, fuel station) and repeating his framing of the attack as a justified response.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-010">Volodymyr Zelenskyy</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">States that the strikes on the Moscow region are completely fair responses to Russia&#x27;s dragging out of the war and its strikes on Ukrainian cities, thanking drone and missile manufacturers, the SBU, and defense forces.</p><p class="source-quote-verbatim"><em>&ldquo;цілком справедливими відповідями&rdquo;</em> <code class="source-quote-lang">uk</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1358,6 +1806,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Describes the Ukrainian drone raid on Moscow as a &#x27;terrorist attack&#x27; that killed three civilians and wounded over a dozen, detailing the destruction of 127 UAVs over the capital. The article reports on fatalities in the Moscow region, a strike on the Moscow Oil Refinery, and air traffic disruptions, while framing the escalation as a response to Ukrainian battlefield setbacks and contrasting it with Russia&#x27;s claimed focus on military and dual-use infrastructure.</p>
   <p class="source-bias-note"><em>Russian state media, included for transparency</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-002">Sergey Sobyanin</a>, <a href="#actor-003">Andrei Vorobyov</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="actor-role">Mayor of Moscow</span><p class="source-quote-position">Described the raid as &#x27;massive&#x27; and said 127 UAVs were destroyed by air defenses, with 12 people wounded, mostly construction workers near the Moscow Oil Refinery.</p></li><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Confirmed three people were killed, including two men at a home construction site in Pogorelki and a female resident in Khimki.</p></li></ul>
+  </details>
 </li>
 <li id="src-019" class="source">
   <div class="source-header"><span class="source-id">[19]</span> <a class="source-headline" href="https://www.rt.com/india/640102-ukrainian-drone-attack-embassy/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=RSS" target="_blank" rel="noopener">Indian national killed in Ukrainian drone attack on Moscow</a></div>
@@ -1365,6 +1817,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports that one Indian national was killed and three wounded in a large-scale Ukrainian kamikaze drone raid on Moscow Region, citing a statement from the Indian Embassy in Russia. The article notes that local Governor Andrey Vorobyev said at least three civilians were killed, and frames the attack as part of intensified Ukrainian long-range strikes that Moscow condemns as &#x27;terrorist&#x27; attacks targeting civilian sites.</p>
   <p class="source-bias-note"><em>Russian state media, included for transparency</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-012">India&#x27;s Moscow embassy</a>, <a href="#actor-003">Andrei Vorobyov</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Said at least three civilians were killed and several wounded across Moscow Region in the strikes.</p></li><li class="source-quote-entry"><strong><a href="#actor-012">India&#x27;s Moscow embassy</a></strong> <span class="actor-role">Embassy of India in Moscow</span><p class="source-quote-position">Describes the victims as &#x27;workers&#x27; and states it is closely cooperating with the company&#x27;s management and local authorities to provide assistance.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Today in the Moscow region, as a result of a drone attack, one citizen of India was killed and three others were injured. Embassy staff traveled to the scene of the incident and visited the victims in the hospital.&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1387,6 +1843,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports on a massive Ukrainian drone attack on Russia, with the Russian Defense Ministry claiming 556 drones were intercepted over more than a dozen regions, killing four people. The article notes disruptions at Moscow airports, damage in Sevastopol, and quotes President Zelenskyy calling the strikes a &#x27;completely justified&#x27; response, while also covering a separate incident of a drone entering Latvian airspace.</p>
   <p class="source-bias-note"><em>German public broadcaster ARD</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Andrei Vorobyov</a>, <a href="#actor-010">Volodymyr Zelenskyy</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Teilte mit, dass bei den Angriffen drei Menschen in der Region um Moskau getötet wurden.</p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Bezeichnete die Drohnenangriffe als &#x27;völlig gerechtfertigt&#x27; und sagte, die Ukraine überwinde die russische Luftabwehr, um Ziele in 500 Kilometer Entfernung zu erreichen.</p><p class="source-quote-verbatim"><em>&ldquo;Wir sagen den Russen ganz klar: Ihr Staat muss diesen Krieg beenden.&rdquo;</em> <code class="source-quote-lang">de</code></p></li></ul>
+  </details>
 </li>
 <li id="src-020" class="source">
   <div class="source-header"><span class="source-id">[20]</span> <a class="source-headline" href="https://www.tagesschau.de/ausland/europa/ukraine-russland-216.html" target="_blank" rel="noopener">Tote bei ukrainischen Angriffen auf Region Moskau</a></div>
@@ -1394,6 +1854,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports on massive Ukrainian drone attacks on the Moscow region that killed at least four people, with Russian authorities claiming to have shot down 586 drones, and describes damage to residential buildings and an oil refinery. The article quotes President Zelensky calling the strikes &#x27;completely justified&#x27; retaliation for ongoing Russian attacks, notes that a three-day ceasefire had just ended, and reports a simultaneous drone alert in Latvia where NATO fighter jets were scrambled.</p>
   <p class="source-bias-note"><em>German public broadcaster ARD</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Andrei Vorobyov</a>, <a href="#actor-002">Sergey Sobyanin</a>, <a href="#actor-010">Volodymyr Zelenskyy</a>, <a href="#actor-001">Russian Defense Ministry</a>, <a href="#actor-018">Ukraine&#x27;s air force</a>, <a href="#actor-032">Latvian army</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Russian Defense Ministry</a></strong> <span class="actor-role">Defense Ministry of Russia</span><p class="source-quote-position">Reported shooting down 586 drones in various regions.</p></li><li class="source-quote-entry"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="actor-role">Mayor of Moscow</span><p class="source-quote-position">Reported twelve injured in an attack on an oil refinery, noting that construction workers near the facility were hit but the plant itself remained technically intact.</p></li><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Stated that three of the four deaths occurred near Moscow, that there were five injured, and that numerous residential buildings were damaged, pledging assistance to the families of the dead and injured.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Allen Verletzten wird die notwendige medizinische Hilfe zuteil. Den Familien der Verstorbenen und Verletzten werden wir auf jeden Fall helfen.&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Called the attacks on the Moscow region &#x27;completely justified&#x27; as a response to the ongoing Russian war of aggression, stated that Ukrainian long-range drones reached targets 500 km from the border, and declared that Russia must end the war.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Die Konzentration der russischen Flugabwehr in der Region Moskau ist am größten. Aber wir überwinden sie.&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li><li class="source-quote-entry"><strong><a href="#actor-018">Ukraine&#x27;s air force</a></strong> <span class="actor-role">Ukrainian Air Force</span><p class="source-quote-position">Reported 287 Russian drones, of which 279 were shot down or jammed.</p></li><li class="source-quote-entry"><strong><a href="#actor-032">Latvian army</a></strong> <span class="actor-role">Armed forces of Latvia</span><p class="source-quote-position">Informed residents of a possible threat from a drone in the east of the country and stated that as long as Russian aggression in Ukraine continues, incidents of foreign drones entering or approaching Latvian airspace remain possible.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Solange die russische Aggression in der Ukraine andauert, ist es möglich, dass es erneut zu Vorfällen kommt, bei denen ausländische Drohnen in den lettischen Luftraum eindringen oder sich diesem nähern.&quot;&rdquo;</em> <code class="source-quote-lang">de</code></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1405,6 +1869,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-05-17</span></div>
   <p class="source-summary">Reports one of Ukraine&#x27;s largest drone strikes against Russia killed at least four and wounded a dozen, with 556 drones shot down across 14 regions. Includes Zelenskyy confirming the strikes as &#x27;entirely justified&#x27; retaliation for a deadly Russian attack on Kyiv that killed 24, and notes stray Ukrainian drones entering NATO airspace in Lithuania and Latvia.</p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Russian Defense Ministry</a>, <a href="#actor-010">Volodymyr Zelenskyy</a>, <a href="#actor-003">Andrei Vorobyov</a>, <a href="#actor-012">India&#x27;s Moscow embassy</a>, <a href="#actor-002">Sergey Sobyanin</a>, <a href="#actor-017">Ukraine&#x27;s state security service SBU</a>, <a href="#actor-016">Sheremetyevo airport authorities</a>, <a href="#actor-018">Ukraine&#x27;s air force</a>, <a href="#actor-031">Vilmantas Vitkauskas</a>, <a href="#actor-032">Latvian army</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Russian Defense Ministry</a></strong> <span class="actor-role">Defense Ministry of Russia</span><p class="source-quote-position">Says almost 600 Ukrainian drones struck overnight across 14 Russian regions, with air defenses shooting down 556 drones and neutralizing another 30 after dawn.</p><p class="source-quote-verbatim"><em>&ldquo;The wave of almost 600 Ukrainian drones struck overnight across 14 Russian regions&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-002">Sergey Sobyanin</a></strong> <span class="actor-role">Mayor of Moscow</span><p class="source-quote-position">Says air defense systems intercepted more than 80 drones overnight, 12 people were wounded, and minor damage was recorded.</p><p class="source-quote-verbatim"><em>&ldquo;air defence systems intercepted more than 80 drones overnight&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-003">Andrei Vorobyov</a></strong> <span class="actor-role">Governor of Moscow region</span><p class="source-quote-position">Says a woman was killed in Khimki, two men killed in Pogorelki, and several residential high-rises and infrastructure facilities were damaged in a &#x27;massive&#x27; strike.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Since 3am this morning, air defence forces have been repelling a large-scale UAV [unmanned aerial vehicle] attack on the capital region&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Volodymyr Zelenskyy</a></strong> <span class="actor-role">President of Ukraine</span><p class="source-quote-position">Confirms the strikes, says drones flew more than 500km, and calls the responses &#x27;entirely justified&#x27;, telling Russians their state must end its war.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;Our responses to Russia&#x27;s prolongation of the war and attacks on our cities and communities are entirely justified&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-012">India&#x27;s Moscow embassy</a></strong> <span class="actor-role">Embassy of India in Moscow</span><p class="source-quote-position">Says one of its nationals was among the dead.</p><p class="source-quote-verbatim"><em>&ldquo;one of its nationals was among the dead&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-016">Sheremetyevo airport authorities</a></strong> <span class="actor-role">Authorities of Sheremetyevo Airport</span><p class="source-quote-position">Says drone debris fell inside its perimeter without causing any damage.</p><p class="source-quote-verbatim"><em>&ldquo;drone debris had fallen inside its perimeter without causing any damage&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-017">Ukraine&#x27;s state security service SBU</a></strong> <span class="actor-role">Security Service of Ukraine</span><p class="source-quote-position">Says an oil refinery and two pumping stations were hit around Moscow, reducing the enemy&#x27;s ability to continue its war and showing even the heavily protected Moscow region is not safe.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;reduce the enemy&#x27;s ability to continue its war&quot;&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-018">Ukraine&#x27;s air force</a></strong> <span class="actor-role">Ukrainian Air Force</span><p class="source-quote-position">Says it intercepted 279 Russian drones overnight out of 287 launched.</p><p class="source-quote-verbatim"><em>&ldquo;it had intercepted a further 279 Russian drones overnight, out of a total of 287 launched&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-031">Vilmantas Vitkauskas</a></strong> <span class="actor-role">Chief of Lithuania&#x27;s national crisis management centre</span><p class="source-quote-position">Says a suspected Ukrainian military drone was found crashed in Lithuania, entering undetected and not armed with explosives.</p><p class="source-quote-verbatim"><em>&ldquo;The drone entered Lithuania undetected and was not armed with explosives&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-032">Latvian army</a></strong> <span class="actor-role">Armed forces of Latvia</span><p class="source-quote-position">Says a drone alert was issued along its border with Russia and one drone entered Latvia for a short time.</p><p class="source-quote-verbatim"><em>&ldquo;a drone alert was issued on Sunday morning along its border with Russia&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>
@@ -1417,6 +1885,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports on a massive overnight Russian combined strike on Ukraine involving 22 missiles and 524 drones, with the Ukrainian Air Force claiming to have downed 503 drones and four Iskander-K cruise missiles. The article details the types of weaponry used, the regions targeted including Dnipro and Odesa, and notes that the attack was ongoing at the time of reporting.</p>
   <p class="source-bias-note"><em>Ukrainian state news agency</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-018">Ukraine&#x27;s air force</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-018">Ukraine&#x27;s air force</a></strong> <span class="actor-role">Ukrainian Air Force</span><p class="source-quote-position">Announced the interception of 503 drones and four Iskander-K cruise missiles out of a total of 546 aerial targets launched by Russia.</p></li></ul>
+  </details>
 </li>
 <li id="src-021" class="source">
   <div class="source-header"><span class="source-id">[21]</span> <a class="source-headline" href="https://www.ukrinform.net/rubric-ato/4124427-russian-strikes-hit-dnipropetrovsk-region-26-injured.html" target="_blank" rel="noopener">Russian strikes hit Dnipropetrovsk region, 26 injured</a></div>
@@ -1424,6 +1896,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports on Russian strikes across the Dnipropetrovsk region that injured 26 people, detailing damage to residential buildings, vehicles, an agricultural enterprise, and infrastructure in the Dnipro, Samar, Kryvyi Rih, Kamianske, Synelnykove, and Nikopol districts. The article notes that 18 people were injured in overnight strikes on residential areas of Dnipro, which damaged apartment blocks, a religious institution, a university, and an enterprise.</p>
   <p class="source-bias-note"><em>Ukrainian state news agency</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-007">Oleksandr Hanzha</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-007">Oleksandr Hanzha</a></strong> <span class="actor-role">Governor of Dnipropetrovsk</span><p class="source-quote-position">Reported on Telegram that a fire broke out in the Dnipro district, private houses and cars were damaged, and two women were injured, one hospitalized, and detailed injuries and damage across multiple districts.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;In the Dnipro district, a fire broke out. Private houses and cars were damaged. Two women were injured. One of them, aged 76, was hospitalized.&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 <li id="src-024" class="source">
   <div class="source-header"><span class="source-id">[24]</span> <a class="source-headline" href="https://www.ukrinform.net/rubric-ato/4124410-russian-drone-attack-on-odesa-leaves-two-people-injured-homes-damaged.html" target="_blank" rel="noopener">Russian drone attack on Odesa leaves two people injured, homes damaged</a></div>
@@ -1431,6 +1907,10 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
   <p class="source-summary">Reports on a Russian drone attack on Odesa that left two people injured — an 11-year-old boy and a 59-year-old man — and damaged residential buildings, a school, and a kindergarten. The article notes that operational headquarters are being set up to assist residents and references a previous drone attack on May 13 that injured one person and set cars on fire.</p>
   <p class="source-bias-note"><em>Ukrainian state news agency</em></p>
   <div class="source-actors-refs">Actors quoted: <a href="#actor-022">Serhij Lyssak</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-022">Serhij Lyssak</a></strong> <span class="actor-role">Head of the local military administration in Odessa</span><p class="source-quote-position">Confirmed that two people were injured in the enemy attack — an 11-year-old boy and a 59-year-old man — and that residential buildings, a school, and a kindergarten were damaged, with operational headquarters being set up to assist residents.</p><p class="source-quote-verbatim"><em>&ldquo;&quot;It has been confirmed that two people were injured in the enemy attack. They are an 11-year-old boy and a 59-year-old man. They are receiving all necessary medical assistance.&quot;&rdquo;</em></p></li></ul>
+  </details>
 </li>
 </ol>
 </details>

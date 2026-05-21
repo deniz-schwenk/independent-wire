@@ -125,8 +125,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
 }
 
-/* Stakeholder cards */
-.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+/* Cluster cards — one card per row, full container width. Two-
+   column variant retired so the Cluster-ID pill, position label,
+   summary, tier-grouped actors, and counts row all read across the
+   full width (the cluster card is information-dense and benefits
+   from the horizontal space). */
+.card-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+/* Cluster-ID pill at top-left of each cluster card. Shares
+   ``.actor-card-cluster-box`` styling with the actor-card pills so
+   the cross-reference renders identically on both sides. The pill
+   needs a margin below to separate it from the position-label
+   header that follows. */
+.card > .actor-card-cluster-box {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
 .card {
   border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
   background: var(--color-bg);
@@ -184,42 +197,101 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
-/* Actors section */
-.actors h2 { margin-top: 2rem; }
+/* Actors section — flat card grid with type-tab filter */
+.actors h2 { margin-top: 2.5rem; }
 .actors-meta {
-  font-family: var(--font-mono); font-size: 0.85rem;
-  color: var(--color-text-secondary); margin: 0 0 1rem;
+  font-family: var(--font-sans); font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin: 1rem 0 1.5rem;
+  border-left: 3px solid #000; padding-left: 0.75rem;
 }
-.actor-list { list-style: none; padding: 0; margin: 0; }
-.actor {
-  padding: 1rem 0; border-top: 1px solid var(--color-border-light);
+
+.actors-tabs {
+  display: flex; flex-wrap: wrap; gap: 0;
+  margin-bottom: 1.5rem;
 }
-.actor:first-child { border-top: 0; padding-top: 0; }
-.actor[hidden] { display: none; }
-.actor:target { background: var(--color-bg-subtle, #f5f5f4); }
-.actor-header {
-  font-family: var(--font-sans); font-size: 1rem; margin-bottom: 0.4rem;
-}
-.actor-header strong { font-weight: 700; }
-.actor-role { color: var(--color-text-secondary); margin-left: 0.4rem; }
-.actor-type {
-  font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle); margin-left: 0.4rem;
+.actor-tab {
+  font-family: var(--font-mono); font-size: 0.8rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.5rem 1rem; cursor: pointer;
   text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; margin: 0 -1px -1px 0;
 }
-.actor-position-line {
-  font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55;
-  color: var(--color-text-secondary); margin: 0.35rem 0 0;
+.actor-tab-count { margin-left: 0.4rem; color: var(--color-text-subtle); }
+.actor-tab--active { background: #000; color: var(--color-bg); }
+.actor-tab--active .actor-tab-count { color: var(--color-bg); }
+.actor-tab:not(.actor-tab--active):hover {
+  background: var(--color-bg-subtle, #f5f5f4);
 }
-.actor-position-line a { color: inherit; text-decoration: underline; }
-.actor-verbatim { font-style: italic; }
-.actor-no-cluster { color: var(--color-text-subtle); font-size: 0.85rem; }
-.actor-position-tier {
+
+/* Two-column grid with a vertical centre rule. The ::before pseudo
+   spans the full grid height and sits in the middle of the column
+   gap, matching the horizontal `border-top` rhythm on each card.
+   Disabled on mobile via the @media block when the grid collapses
+   to a single column. */
+.actor-card-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem;
+  position: relative;
+}
+.actor-card-grid::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%; width: 1px;
+  background: var(--color-border-light);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.actor-card {
+  border-top: 1px solid var(--color-border-light);
+  padding: 1rem 0;
+}
+.actor-card[hidden] { display: none; }
+.actor-card:target { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 0.25rem; gap: 0.5rem;
+}
+.actor-card-name {
+  font-family: var(--font-sans); font-weight: 700; font-size: 1rem;
+}
+.actor-card-name a { color: inherit; text-decoration: none; }
+.actor-card-src-count {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle);
+  text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.actor-card-role {
+  font-family: var(--font-sans); font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem;
+}
+.actor-card-cluster-refs, .actor-card-source-refs {
+  display: flex; flex-wrap: wrap; gap: 0.2rem;
+  margin-top: 0.4rem;
+}
+.actor-card-cluster-box {
   font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--color-text-subtle); font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  margin-right: 0.15rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.2rem 0.5rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; text-decoration: none;
 }
+.actor-card-cluster-box:hover { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-cluster-box--bracket { border-style: dashed; }
+/* Source-ref boxes — tightened (Correction 3, 2026-05-20) so ≥ 5
+   `src-NNN` boxes fit per row at the desktop card width
+   (container 740px → ~334px per card column). Lowercase label,
+   minimal horizontal padding, no letter-spacing. */
+.actor-card-source-box {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  background: var(--color-bg-subtle, #f5f5f4);
+  padding: 0.2rem 0.35rem;
+  color: #000; text-decoration: none;
+  letter-spacing: 0;
+}
+.actor-card-source-box:hover { background: var(--color-border-light); }
 
 /* Missing voices */
 .missing-voice {
@@ -319,6 +391,28 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
+/* Coverage Limits — same collapsible-footnote treatment as
+   QA Corrections. Reads `consolidated_missing_coverage
+   .missing_topic_dimensions` (2026-05-21 relocation from the
+   prominent Missing-Coverage section). */
+.coverage-limits-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.coverage-limits {
+  margin-top: 0.5rem; padding-left: 1.2rem;
+  line-height: 1.55;
+}
+.coverage-limits li { margin: 0.25rem 0; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -458,7 +552,10 @@ footer a { color: #000; text-decoration: underline; }
 @media (max-width: 768px) {
   .container { padding: 1rem; }
   h1 { font-size: 1.4rem; }
-  .card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid::before { display: none; }
+  .actors-tabs { font-size: 0.7rem; }
+  .actor-tab { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
   .meta-bar { flex-wrap: wrap; }
   .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
   .meta-item:last-child { border-bottom: none; }
@@ -644,9 +741,10 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
 </div>
 <p class="word-count">1,124 words</p>
 
-<h2>Perspectives &mdash; Position Clusters</h2>
+<h2>Perspectives &mdash; Positions</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
+  <a class="actor-card-cluster-box" href="#pc-001">Position 1</a>
   <div class="card-header"><span class="card-actor">Iran must capitulate quickly or face total destruction by the United States</span></div>
   <div class="card-position">The US president and aligned officials threaten Iran with annihilation if it does not rapidly accept American terms, accusing Tehran of stalling and reneging on prior agreements. Pentagon leadership states it has multiple contingency plans — to escalate, reverse the situation, or reassign resources — and hawkish legislators urge targeting Iran&#x27;s energy infrastructure to force compliance.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -656,6 +754,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">3 actors</a></span> &middot; <span>12 sources</span> &middot; <span>8 regions</span> &middot; <span>4 languages</span></p>
 </div>
 <div class="card" id="pc-002">
+  <a class="actor-card-cluster-box" href="#pc-002">Position 2</a>
   <div class="card-header"><span class="card-actor">Iran will not surrender under coercion and possesses the military capacity to inflict severe costs on the United States</span></div>
   <div class="card-position">Iranian military officials, senior government figures, and Mojtaba Khamenei — identified in Turkish-language reporting as a senior Iranian figure — warn that any US attack will be met with crushing retaliation, including opening new fronts, breaking the naval blockade, and turning the Sea of Oman into America&#x27;s &#x27;cemetery.&#x27; They frame the conflict as a &#x27;Third Imposed War&#x27; and assert that Iran&#x27;s armed forces remain ready and capable.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -669,6 +768,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">7 actors</a></span> &middot; <span>7 sources</span> &middot; <span>5 regions</span> &middot; <span>5 languages</span></p>
 </div>
 <div class="card" id="pc-003">
+  <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
   <div class="card-header"><span class="card-actor">Iran&#x27;s negotiating demands are reasonable and the US must accept Iran&#x27;s 14-point proposal for a just peace</span></div>
   <div class="card-position">Iran&#x27;s chief negotiator and foreign ministry insist that Tehran&#x27;s conditions — including a full ceasefire, sanctions relief, release of frozen assets, war reparations, and sovereignty over the Strait of Hormuz — are &#x27;responsible&#x27; and &#x27;generous,&#x27; and that Washington&#x27;s refusal to offer tangible concessions is the real obstacle to peace. They argue US regional presence creates insecurity rather than providing it.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -678,6 +778,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">4 actors</a></span> &middot; <span>6 sources</span> &middot; <span>5 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-004">
+  <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">Trump&#x27;s rhetoric may be performative posturing aimed at domestic audiences rather than a genuine operational signal</span></div>
   <div class="card-position">An independent foreign policy analyst suggests that Trump&#x27;s bombastic threats should be evaluated by watching whether senior officials echo them and whether military deployments actually increase, noting his history of inflammatory statements designed for domestic political consumption rather than as direct policy signals.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -687,6 +788,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">1 actor</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-005">
+  <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
   <div class="card-header"><span class="card-actor">Deploying US troops to Iran would provoke a domestic political revolt and must be opposed</span></div>
   <div class="card-position">A former Trump-allied congresswoman breaks with the administration&#x27;s escalatory posture, warning that any ground deployment to Iran would trigger a &#x27;political revolution&#x27; in the United States, insisting the anti-foreign-war coalition is serious and will mobilize to stop it.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -696,6 +798,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">1 actor</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-006">
+  <a class="actor-card-cluster-box" href="#pc-006">Position 6</a>
   <div class="card-header"><span class="card-actor">Military activity near nuclear facilities is unacceptable and threatens catastrophic safety risks</span></div>
   <div class="card-position">The IAEA and its director general express grave concern over the drone strike near the UAE&#x27;s Barakah nuclear power plant, calling for maximum military restraint near nuclear installations and warning that any military activity threatening nuclear safety violates fundamental international norms. The IAEA has separately flagged that Iran holds approximately 400 kilograms of uranium enriched to 60 percent — enough, according to the agency, for about ten nuclear weapons if further enriched to weapons grade — and that verification gaps persist.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -705,6 +808,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">2 actors</a></span> &middot; <span>5 sources</span> &middot; <span>4 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-007">
+  <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">The drone strike on the Barakah nuclear plant is a dangerous escalation by Iran or its proxies that violates international law</span></div>
   <div class="card-position">UAE officials blame Iran or a regional proxy for the drone attack near the Barakah nuclear facility, calling it a terrorist act and a dangerous escalation that violates international laws and norms. Saudi Arabia similarly reports intercepting drones from Iraq and reserves the right to respond, framing the attacks as sovereignty violations.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -718,6 +822,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">5 actors</a></span> &middot; <span>5 sources</span> &middot; <span>5 regions</span> &middot; <span>4 languages</span></p>
 </div>
 <div class="card" id="pc-008">
+  <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">Gulf states and third-party mediators are working to prevent further escalation and broker a diplomatic resolution</span></div>
   <div class="card-position">Gulf leaders reportedly persuaded Trump to postpone a planned military strike, Pakistan is actively mediating between Washington and Tehran through its interior minister&#x27;s visit to Tehran, and Russia emphasizes the importance of continuing political and diplomatic processes for a compromise-based peace.</div>
   <div class="cluster-tier cluster-tier-reported">
@@ -727,6 +832,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">4 actors</a></span> &middot; <span>7 sources</span> &middot; <span>5 regions</span> &middot; <span>4 languages</span></p>
 </div>
 <div class="card" id="pc-009">
+  <a class="actor-card-cluster-box" href="#pc-009">Position 9</a>
   <div class="card-header"><span class="card-actor">The US-Iran conflict is destabilizing the broader region and creating dangerous secondary consequences for neighboring states</span></div>
   <div class="card-position">The war&#x27;s spillover effects include the Strait of Hormuz blockade disrupting global energy markets, drone attacks on Gulf state infrastructure, the stalling of the Caucasus Corridor project that would have exposed Armenia to Iranian retaliation, and Hezbollah&#x27;s continued attacks on Israel complicating Lebanon&#x27;s diplomatic position. European states are negotiating with Iran&#x27;s Revolutionary Guards for Hormuz transit, and the energy crisis is accelerating interest in renewable alternatives.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -740,6 +846,7 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-009">5 actors</a></span> &middot; <span>6 sources</span> &middot; <span>5 regions</span> &middot; <span>4 languages</span></p>
 </div>
 <div class="card" id="pc-010">
+  <a class="actor-card-cluster-box" href="#pc-010">Position 10</a>
   <div class="card-header"><span class="card-actor">The US blockade of the Strait of Hormuz constitutes an act of war under international law</span></div>
   <div class="card-position">International law experts and Iranian military officials characterize the US naval blockade as an illegal act of war, arguing it violates the UN Charter and the law of naval warfare, while Iranian sources frame the broader US-Israeli military campaign as aggression contravening international legal norms.</div>
   <div class="cluster-tier cluster-tier-reported">
@@ -750,49 +857,365 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
 </div>
 </div>
 
+<details class="mentioned-actors-wrapper">
+  <summary>Mentioned Actors &mdash; <strong>3 noted</strong></summary>
+  <div class="mentioned-actors-body">
+<div class="card single-voices-bracket" id="mentioned-actors">
+  <div class="card-header"><span class="card-actor">Mentioned actors</span><span class="single-voices-bracket-tag">Bracket</span></div>
+  <div class="card-position">Actors named in the corpus who are not grouped into any of the documented positions. Listed here for transparency about who appears in the source material.</div>
+  <div class="cluster-tier cluster-tier-actors_stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-007">Benjamin Netanyahu</a></strong> <span class="cluster-actor-role">Prime Minister of Israel</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-024">Iran&#x27;s Supreme National Security Council</a></strong> <span class="cluster-actor-role">Iran&#x27;s highest security body</span> <span class="cluster-actor-type">government</span></li></ul>
+  </div>
+  <div class="cluster-tier cluster-tier-actors_reported">
+    <h4 class="cluster-tier-label">Reported</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-035">Ilham Aliyev</a></strong> <span class="cluster-actor-role">President of Azerbaijan</span> <span class="cluster-actor-type">government</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#mentioned-actors">3 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
+</div>
+  </div>
+</details>
+
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">35 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
-<table class="actors-table">
-<thead><tr><th>Actor</th><th>Role &middot; Type</th><th>Cluster refs</th><th>Source refs</th></tr></thead>
-<tbody>
-<tr id="actor-001" class="actor-row"><td class="actor-name"><strong>Donald Trump</strong></td><td class="actor-role-type">President of the United States &middot; government</td><td class="actor-cluster-refs"><a href="#pc-001">Cluster 1</a>, <a href="#pc-008">Cluster 8</a></td><td class="actor-source-refs"><a href="#src-001">src-001</a>, <a href="#src-002">src-002</a>, <a href="#src-003">src-003</a>, <a href="#src-004">src-004</a>, <a href="#src-005">src-005</a>, <a href="#src-006">src-006</a>, <a href="#src-007">src-007</a>, <a href="#src-008">src-008</a>, <a href="#src-009">src-009</a>, <a href="#src-011">src-011</a>, <a href="#src-012">src-012</a>, <a href="#src-013">src-013</a>, <a href="#src-014">src-014</a>, <a href="#src-015">src-015</a>, <a href="#src-019">src-019</a></td></tr>
-<tr id="actor-002" class="actor-row"><td class="actor-name"><strong>Abolfazl Shakarchi</strong></td><td class="actor-role-type">Spokesperson for Iran&#x27;s armed forces &middot; military</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a></td><td class="actor-source-refs"><a href="#src-001">src-001</a>, <a href="#src-008">src-008</a></td></tr>
-<tr id="actor-003" class="actor-row"><td class="actor-name"><strong>Adam Clements</strong></td><td class="actor-role-type">Foreign policy analyst &middot; civil_society</td><td class="actor-cluster-refs"><a href="#pc-004">Cluster 4</a></td><td class="actor-source-refs"><a href="#src-001">src-001</a></td></tr>
-<tr id="actor-004" class="actor-row"><td class="actor-name"><strong>Iran&#x27;s foreign ministry spokesperson</strong></td><td class="actor-role-type">Spokesperson for Iran&#x27;s foreign ministry &middot; government</td><td class="actor-cluster-refs"><a href="#pc-003">Cluster 3</a></td><td class="actor-source-refs"><a href="#src-002">src-002</a></td></tr>
-<tr id="actor-006" class="actor-row"><td class="actor-name"><strong>Saudi Arabia&#x27;s Defense Ministry</strong></td><td class="actor-role-type">Defense Ministry of Saudi Arabia &middot; government</td><td class="actor-cluster-refs"><a href="#pc-007">Cluster 7</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a>, <a href="#src-007">src-007</a></td></tr>
-<tr id="actor-007" class="actor-row"><td class="actor-name"><strong>Benjamin Netanyahu</strong></td><td class="actor-role-type">Prime Minister of Israel &middot; government</td><td class="actor-cluster-refs"></td><td class="actor-source-refs"><a href="#src-003">src-003</a></td></tr>
-<tr id="actor-008" class="actor-row"><td class="actor-name"><strong>UAE defense ministry</strong></td><td class="actor-role-type">Defense ministry of the United Arab Emirates &middot; government</td><td class="actor-cluster-refs"><a href="#pc-007">Cluster 7</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a>, <a href="#src-006">src-006</a>, <a href="#src-008">src-008</a>, <a href="#src-020">src-020</a></td></tr>
-<tr id="actor-009" class="actor-row"><td class="actor-name"><strong>IAEA</strong></td><td class="actor-role-type">International Atomic Energy Agency &middot; international_org</td><td class="actor-cluster-refs"><a href="#pc-006">Cluster 6</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a>, <a href="#src-008">src-008</a>, <a href="#src-025">src-025</a></td></tr>
-<tr id="actor-010" class="actor-row"><td class="actor-name"><strong>Rafael Grossi</strong></td><td class="actor-role-type">Director General of the IAEA &middot; international_org</td><td class="actor-cluster-refs"><a href="#pc-006">Cluster 6</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a>, <a href="#src-006">src-006</a>, <a href="#src-026">src-026</a></td></tr>
-<tr id="actor-011" class="actor-row"><td class="actor-name"><strong>Hussein Hajj Hassan</strong></td><td class="actor-role-type">Hezbollah lawmaker &middot; government</td><td class="actor-cluster-refs"><a href="#pc-009">Cluster 9</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a></td></tr>
-<tr id="actor-012" class="actor-row"><td class="actor-name"><strong>Vladimir Putin</strong></td><td class="actor-role-type">President of Russia &middot; government</td><td class="actor-cluster-refs"><a href="#pc-008">Cluster 8</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a></td></tr>
-<tr id="actor-013" class="actor-row"><td class="actor-name"><strong>Mohammad Bagher Qalibaf</strong></td><td class="actor-role-type">Iran&#x27;s chief negotiator and parliament speaker &middot; government</td><td class="actor-cluster-refs"><a href="#pc-003">Cluster 3</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a>, <a href="#src-005">src-005</a>, <a href="#src-009">src-009</a></td></tr>
-<tr id="actor-014" class="actor-row"><td class="actor-name"><strong>Tommy Pigott</strong></td><td class="actor-role-type">US State Department spokesman &middot; government</td><td class="actor-cluster-refs"><a href="#pc-009">Cluster 9</a></td><td class="actor-source-refs"><a href="#src-003">src-003</a></td></tr>
-<tr id="actor-015" class="actor-row"><td class="actor-name"><strong>Pete Hegseth</strong></td><td class="actor-role-type">US Secretary of War &middot; government</td><td class="actor-cluster-refs"><a href="#pc-001">Cluster 1</a></td><td class="actor-source-refs"><a href="#src-004">src-004</a></td></tr>
-<tr id="actor-017" class="actor-row"><td class="actor-name"><strong>Xi Jinping</strong></td><td class="actor-role-type">President of China &middot; government</td><td class="actor-cluster-refs"><a href="#pc-008">Cluster 8</a></td><td class="actor-source-refs"><a href="#src-005">src-005</a>, <a href="#src-009">src-009</a></td></tr>
-<tr id="actor-018" class="actor-row"><td class="actor-name"><strong>UAE foreign minister</strong></td><td class="actor-role-type">Foreign minister of the United Arab Emirates &middot; government</td><td class="actor-cluster-refs"><a href="#pc-007">Cluster 7</a></td><td class="actor-source-refs"><a href="#src-006">src-006</a></td></tr>
-<tr id="actor-020" class="actor-row"><td class="actor-name"><strong>Anwar Gargash</strong></td><td class="actor-role-type">Emirati presidential adviser &middot; government</td><td class="actor-cluster-refs"><a href="#pc-007">Cluster 7</a></td><td class="actor-source-refs"><a href="#src-006">src-006</a></td></tr>
-<tr id="actor-021" class="actor-row"><td class="actor-name"><strong>Mojtaba Khamenei</strong></td><td class="actor-role-type">Leader of Iran &middot; government</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a></td><td class="actor-source-refs"><a href="#src-007">src-007</a></td></tr>
-<tr id="actor-022" class="actor-row"><td class="actor-name"><strong>Mesud Pezeşkiyan</strong></td><td class="actor-role-type">President of Iran &middot; government</td><td class="actor-cluster-refs"><a href="#pc-003">Cluster 3</a></td><td class="actor-source-refs"><a href="#src-007">src-007</a></td></tr>
-<tr id="actor-024" class="actor-row"><td class="actor-name"><strong>Iran&#x27;s Supreme National Security Council</strong></td><td class="actor-role-type">Iran&#x27;s highest security body &middot; government</td><td class="actor-cluster-refs"></td><td class="actor-source-refs"><a href="#src-007">src-007</a></td></tr>
-<tr id="actor-025" class="actor-row"><td class="actor-name"><strong>İsmail Bekayi</strong></td><td class="actor-role-type">Spokesperson for Iran&#x27;s Foreign Ministry &middot; government</td><td class="actor-cluster-refs"><a href="#pc-003">Cluster 3</a></td><td class="actor-source-refs"><a href="#src-007">src-007</a></td></tr>
-<tr id="actor-026" class="actor-row"><td class="actor-name"><strong>Lindsey Graham</strong></td><td class="actor-role-type">Republican Senator &middot; legislature</td><td class="actor-cluster-refs"><a href="#pc-001">Cluster 1</a></td><td class="actor-source-refs"><a href="#src-007">src-007</a>, <a href="#src-016">src-016</a></td></tr>
-<tr id="actor-027" class="actor-row"><td class="actor-name"><strong>Marjorie Taylor Greene</strong></td><td class="actor-role-type">Former US Congress member &middot; legislature</td><td class="actor-cluster-refs"><a href="#pc-005">Cluster 5</a></td><td class="actor-source-refs"><a href="#src-007">src-007</a>, <a href="#src-010">src-010</a></td></tr>
-<tr id="actor-028" class="actor-row"><td class="actor-name"><strong>Muhsin Rızai</strong></td><td class="actor-role-type">Member of Iran&#x27;s Expediency Discernment Council and former IRGC General Commander &middot; government</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a></td><td class="actor-source-refs"><a href="#src-007">src-007</a>, <a href="#src-008">src-008</a></td></tr>
-<tr id="actor-031" class="actor-row"><td class="actor-name"><strong>Saudi Arabia</strong></td><td class="actor-role-type">Kingdom of Saudi Arabia &middot; government</td><td class="actor-cluster-refs"><a href="#pc-007">Cluster 7</a></td><td class="actor-source-refs"><a href="#src-008">src-008</a></td></tr>
-<tr id="actor-032" class="actor-row"><td class="actor-name"><strong>Mohsin Naqvi</strong></td><td class="actor-role-type">Interior Minister of Pakistan &middot; government</td><td class="actor-cluster-refs"><a href="#pc-008">Cluster 8</a></td><td class="actor-source-refs"><a href="#src-009">src-009</a>, <a href="#src-021">src-021</a></td></tr>
-<tr id="actor-033" class="actor-row"><td class="actor-name"><strong>Nikol Pashinyan</strong></td><td class="actor-role-type">Prime Minister of Armenia &middot; government</td><td class="actor-cluster-refs"><a href="#pc-009">Cluster 9</a></td><td class="actor-source-refs"><a href="#src-011">src-011</a></td></tr>
-<tr id="actor-034" class="actor-row"><td class="actor-name"><strong>Narek Karapetyan</strong></td><td class="actor-role-type">Opposition leader in Armenia &middot; government</td><td class="actor-cluster-refs"><a href="#pc-009">Cluster 9</a></td><td class="actor-source-refs"><a href="#src-011">src-011</a></td></tr>
-<tr id="actor-035" class="actor-row"><td class="actor-name"><strong>Ilham Aliyev</strong></td><td class="actor-role-type">President of Azerbaijan &middot; government</td><td class="actor-cluster-refs"></td><td class="actor-source-refs"><a href="#src-011">src-011</a></td></tr>
-<tr id="actor-036" class="actor-row"><td class="actor-name"><strong>Former IRGC commander</strong></td><td class="actor-role-type">Former commander of Iran&#x27;s Islamic Revolutionary Guard Corps &middot; military</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a>, <a href="#pc-010">Cluster 10</a></td><td class="actor-source-refs"><a href="#src-015">src-015</a></td></tr>
-<tr id="actor-037" class="actor-row"><td class="actor-name"><strong>Iranian officials</strong></td><td class="actor-role-type">Unnamed Iranian government officials &middot; government</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a></td><td class="actor-source-refs"><a href="#src-017">src-017</a></td></tr>
-<tr id="actor-038" class="actor-row"><td class="actor-name"><strong>IRGC Navy Public Relations</strong></td><td class="actor-role-type">Public Relations of the Islamic Revolutionary Guard Corps Navy &middot; military</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a></td><td class="actor-source-refs"><a href="#src-018">src-018</a></td></tr>
-<tr id="actor-040" class="actor-row"><td class="actor-name"><strong>Marc Weller</strong></td><td class="actor-role-type">Professor of International Law at Chatham House &middot; academia</td><td class="actor-cluster-refs"><a href="#pc-010">Cluster 10</a></td><td class="actor-source-refs"><a href="#src-022">src-022</a></td></tr>
-<tr id="actor-041" class="actor-row"><td class="actor-name"><strong>Emmanuel Macron</strong></td><td class="actor-role-type">President of France &middot; government</td><td class="actor-cluster-refs"><a href="#pc-009">Cluster 9</a></td><td class="actor-source-refs"><a href="#src-027">src-027</a></td></tr>
-<tr id="actor-042" class="actor-row"><td class="actor-name"><strong>Ali Abdollahi</strong></td><td class="actor-role-type">Commander of the Khatam al-Anbia Headquarters of the Iranian Armed Forces &middot; military</td><td class="actor-cluster-refs"><a href="#pc-002">Cluster 2</a></td><td class="actor-source-refs"><a href="#src-028">src-028</a></td></tr>
-</tbody>
-</table>
+<p class="actors-meta">35 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
+<div class="actors-tabs" role="tablist">
+<button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">35</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">25</span></button><button class="actor-tab" type="button" data-type-target="legislature"><span class="actor-tab-name">LEGISLATURE</span> <span class="actor-tab-count">2</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITARY</span> <span class="actor-tab-count">4</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">ACADEMIA</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONAL ORG</span> <span class="actor-tab-count">2</span></button>
+</div>
+<div class="actor-card-grid">
+<article id="actor-001" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Donald Trump</strong>
+    <span class="actor-card-src-count">15 SRC</span>
+  </div>
+  <p class="actor-card-role">President of the United States</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-013">src-013</a><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-019">src-019</a></div>
+</article>
+<article id="actor-008" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">UAE defense ministry</strong>
+    <span class="actor-card-src-count">4 SRC</span>
+  </div>
+  <p class="actor-card-role">Defense ministry of the United Arab Emirates</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-020">src-020</a></div>
+</article>
+<article id="actor-013" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mohammad Bagher Qalibaf</strong>
+    <span class="actor-card-src-count">3 SRC</span>
+  </div>
+  <p class="actor-card-role">Iran&#x27;s chief negotiator and parliament speaker</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-032" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mohsin Naqvi</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Interior Minister of Pakistan</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-021">src-021</a></div>
+</article>
+<article id="actor-028" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Muhsin Rızai</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Member of Iran&#x27;s Expediency Discernment Council and former IRGC General Commander</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+</article>
+<article id="actor-006" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Saudi Arabia&#x27;s Defense Ministry</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Defense Ministry of Saudi Arabia</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-007">src-007</a></div>
+</article>
+<article id="actor-017" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Xi Jinping</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">President of China</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-020" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Anwar Gargash</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Emirati presidential adviser</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+</article>
+<article id="actor-007" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Benjamin Netanyahu</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Prime Minister of Israel</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-041" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Emmanuel Macron</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">President of France</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-027">src-027</a></div>
+</article>
+<article id="actor-011" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Hussein Hajj Hassan</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Hezbollah lawmaker</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-035" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ilham Aliyev</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">President of Azerbaijan</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-004" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Iran&#x27;s foreign ministry spokesperson</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Spokesperson for Iran&#x27;s foreign ministry</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+</article>
+<article id="actor-024" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Iran&#x27;s Supreme National Security Council</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Iran&#x27;s highest security body</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
+</article>
+<article id="actor-037" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Iranian officials</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Unnamed Iranian government officials</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-017">src-017</a></div>
+</article>
+<article id="actor-025" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">İsmail Bekayi</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Spokesperson for Iran&#x27;s Foreign Ministry</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
+</article>
+<article id="actor-022" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mesud Pezeşkiyan</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">President of Iran</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
+</article>
+<article id="actor-021" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mojtaba Khamenei</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Leader of Iran</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
+</article>
+<article id="actor-034" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Narek Karapetyan</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Opposition leader in Armenia</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-033" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Nikol Pashinyan</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Prime Minister of Armenia</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+</article>
+<article id="actor-015" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Pete Hegseth</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">US Secretary of War</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-031" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Saudi Arabia</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Kingdom of Saudi Arabia</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+</article>
+<article id="actor-014" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Tommy Pigott</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">US State Department spokesman</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-018" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">UAE foreign minister</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Foreign minister of the United Arab Emirates</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+</article>
+<article id="actor-012" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Vladimir Putin</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">President of Russia</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-026" class="actor-card" data-actor-type="legislature">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Lindsey Graham</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Republican Senator</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-016">src-016</a></div>
+</article>
+<article id="actor-027" class="actor-card" data-actor-type="legislature">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Marjorie Taylor Greene</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Former US Congress member</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-010">src-010</a></div>
+</article>
+<article id="actor-002" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Abolfazl Shakarchi</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Spokesperson for Iran&#x27;s armed forces</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+</article>
+<article id="actor-042" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Ali Abdollahi</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Commander of the Khatam al-Anbia Headquarters of the Iranian Armed Forces</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-028">src-028</a></div>
+</article>
+<article id="actor-036" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Former IRGC commander</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Former commander of Iran&#x27;s Islamic Revolutionary Guard Corps</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a></div>
+</article>
+<article id="actor-038" class="actor-card" data-actor-type="military">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">IRGC Navy Public Relations</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Public Relations of the Islamic Revolutionary Guard Corps Navy</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
+</article>
+<article id="actor-003" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Adam Clements</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Foreign policy analyst</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+</article>
+<article id="actor-040" class="actor-card" data-actor-type="academia">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Marc Weller</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Professor of International Law at Chatham House</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-010">Position 10</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-022">src-022</a></div>
+</article>
+<article id="actor-009" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">IAEA</strong>
+    <span class="actor-card-src-count">3 SRC</span>
+  </div>
+  <p class="actor-card-role">International Atomic Energy Agency</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-008">src-008</a><a class="actor-card-source-box" href="#src-025">src-025</a></div>
+</article>
+<article id="actor-010" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Rafael Grossi</strong>
+    <span class="actor-card-src-count">3 SRC</span>
+  </div>
+  <p class="actor-card-role">Director General of the IAEA</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-026">src-026</a></div>
+</article>
+</div>
+<script>
+(function() {
+  const section = document.getElementById('actors-section');
+  if (!section) return;
+  const tabs = section.querySelectorAll('.actor-tab');
+  const cards = section.querySelectorAll('.actor-card');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.typeTarget || 'all';
+      cards.forEach(card => {
+        card.hidden = (target !== 'all' && card.dataset.actorType !== target);
+      });
+      tabs.forEach(t => t.classList.toggle('actor-tab--active', t === tab));
+    });
+  });
+})();
+</script>
 </section>
 
 <h2>What's missing</h2>

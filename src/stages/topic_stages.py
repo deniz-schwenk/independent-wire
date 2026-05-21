@@ -1242,30 +1242,26 @@ async def consolidate_missing_coverage(
 
 
 # ---------------------------------------------------------------------------
-# 18c. derive_single_voices
+# 18c. derive_mentioned_actors
 # ---------------------------------------------------------------------------
 
 
 # Fixed strings rendered into the bracket card. Module-level so the
 # renderer and tests can refer to them without round-tripping the bus.
-_SINGLE_VOICES_POSITION_LABEL: str = "Single voices"
-_SINGLE_VOICES_SUMMARY: str = (
-    "Actors with unique positions that cannot be grouped with other "
-    "positions into a shared cluster, but are referenced by multiple "
-    "sources and are therefore considered important to the dossier."
+_MENTIONED_ACTORS_POSITION_LABEL: str = "Mentioned actors"
+_MENTIONED_ACTORS_SUMMARY: str = (
+    "Actors named in the corpus who are not grouped into any of the "
+    "documented positions. Listed here for transparency about who "
+    "appears in the source material."
 )
-# Source-count threshold for inclusion. An orphan with only 1 source
-# stays out of the bracket — those are tangential mentions that the
-# regular Actors-section already surfaces with an empty Cluster-refs
-# cell (per Issue 7).
-_SINGLE_VOICES_MIN_SOURCES: int = 2
 
 
 def _derive_orphan_tier(actor: dict) -> str:
-    """Tier derivation rule for orphan actors who lack an agent-assigned
-    tier (because they sit outside every position cluster).
+    """Tier derivation rule for non-cluster actors who lack an
+    agent-assigned tier (because they sit outside every position
+    cluster).
 
-    Rule (per the single-voices brief, 2026-05-20):
+    Rule (per the mentioned-actors brief, 2026-05-21):
     - any `quotes[i].verbatim` non-empty → "stated"   (direct quote on record)
     - else any `quotes[i].position` non-empty → "reported"  (paraphrased)
     - else → "mentioned"                              (named without position)
@@ -1301,37 +1297,34 @@ def _derive_orphan_tier(actor: dict) -> str:
         "perspective_clusters_synced",
         "final_sources",
     ),
-    writes=("single_voices",),
+    writes=("mentioned_actors",),
 )
-async def derive_single_voices(
+async def derive_mentioned_actors(
     topic_bus: TopicBus, run_bus: RunBusReadOnly
 ) -> TopicBus:
-    """Deterministic bracket for structurally-central orphan actors.
+    """Deterministic bracket for every non-cluster actor.
 
     Reads `canonical_actors[]`, `perspective_clusters_synced[]`, and
-    `final_sources[]`. An actor qualifies for the bracket when:
-
-    - the actor's `id` is absent from every cluster's `actor_ids[]`
-      (i.e. Perspective did not place them in any shared-position
-      cluster); AND
-    - `len(set(actor.source_ids))` is at least
-      `_SINGLE_VOICES_MIN_SOURCES` (a structural-centrality floor — 1-
-      source orphans stay out and surface in the Actors-section with
-      an empty Cluster-refs cell, per Issue 7).
+    `final_sources[]`. The rule is binary (2026-05-21 simplification —
+    the prior ≥ 2-source structural-centrality floor was dropped): an
+    actor qualifies for the bracket when their `id` is absent from
+    every cluster's `actor_ids[]`. Every non-cluster actor regardless
+    of source count is included.
 
     Qualifying actors get a tier assignment from `_derive_orphan_tier`.
-    The bracket dict (see `single_voices` slot docstring in `src/bus.py`)
-    holds `position_label`, `summary`, the three tier sub-lists, the
-    flat `actor_ids[]` (union, ordered stated → reported → mentioned and
-    within each tier preserving canonical_actors emission order), the
-    union `source_ids[]` (first-appearance order across included actors),
-    and the `counts` dict (actors, sources, regions, languages).
+    The bracket dict (see `mentioned_actors` slot docstring in
+    `src/bus.py`) holds `position_label`, `summary`, the three tier
+    sub-lists, the flat `actor_ids[]` (union, ordered stated → reported
+    → mentioned and within each tier preserving canonical_actors
+    emission order), the union `source_ids[]` (first-appearance order
+    across included actors), and the `counts` dict (actors, sources,
+    regions, languages).
 
     Region/language counts are derived against `final_sources[]` using
     the same `normalise_country` / `normalise_language` helpers the
     cluster-enrichment stage uses, so the count semantics match.
 
-    When no orphan qualifies, the stage writes an empty bracket
+    When no non-cluster actor exists, the stage writes an empty bracket
     (`actor_ids=[]`, counts zero). The renderer treats both that and an
     absent slot as "section omitted entirely", so legacy / replay paths
     that bypass this stage render the page unchanged.
@@ -1374,13 +1367,6 @@ async def derive_single_voices(
             continue
         if aid in clustered_ids:
             continue
-        # Dedup actor.source_ids for the centrality check.
-        actor_sids = {
-            sid for sid in (actor.get("source_ids") or [])
-            if isinstance(sid, str) and sid
-        }
-        if len(actor_sids) < _SINGLE_VOICES_MIN_SOURCES:
-            continue
         tier = _derive_orphan_tier(actor)
         actors_by_tier[tier].append(aid)
         qualifying_actors.append(actor)
@@ -1414,8 +1400,8 @@ async def derive_single_voices(
                 languages_seen.add(language)
 
     bracket = {
-        "position_label": _SINGLE_VOICES_POSITION_LABEL,
-        "summary": _SINGLE_VOICES_SUMMARY,
+        "position_label": _MENTIONED_ACTORS_POSITION_LABEL,
+        "summary": _MENTIONED_ACTORS_SUMMARY,
         "actors_stated": actors_by_tier["stated"],
         "actors_reported": actors_by_tier["reported"],
         "actors_mentioned": actors_by_tier["mentioned"],
@@ -1428,7 +1414,7 @@ async def derive_single_voices(
             "languages": len(languages_seen),
         },
     }
-    return topic_bus.model_copy(update={"single_voices": bracket})
+    return topic_bus.model_copy(update={"mentioned_actors": bracket})
 
 
 # ---------------------------------------------------------------------------
@@ -2272,5 +2258,5 @@ __all__ = [
     "renumber_sources",
     "validate_coverage_gaps_stage",
     "consolidate_missing_coverage",
-    "derive_single_voices",
+    "derive_mentioned_actors",
 ]

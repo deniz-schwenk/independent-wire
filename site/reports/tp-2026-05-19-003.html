@@ -391,6 +391,28 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
+/* Coverage Limits — same collapsible-footnote treatment as
+   QA Corrections. Reads `consolidated_missing_coverage
+   .missing_topic_dimensions` (2026-05-21 relocation from the
+   prominent Missing-Coverage section). */
+.coverage-limits-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.coverage-limits {
+  margin-top: 0.5rem; padding-left: 1.2rem;
+  line-height: 1.55;
+}
+.coverage-limits li { margin: 0.25rem 0; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -752,10 +774,10 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
 </div>
 <p class="word-count">1,105 words</p>
 
-<h2>Perspectives &mdash; Position Clusters</h2>
+<h2>Perspectives &mdash; Positions</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
-  <a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>
+  <a class="actor-card-cluster-box" href="#pc-001">Position 1</a>
   <div class="card-header"><span class="card-actor">The Ebola outbreak&#x27;s scale and speed demand the highest level of international alarm and coordinated response</span></div>
   <div class="card-position">WHO leadership, Africa CDC, and multiple international health bodies argue that the rapid spread of the Bundibugyo Ebola outbreak across DRC and into Uganda — with over 500 suspected cases and 130 deaths — justifies both a PHEIC declaration and a continental emergency, requiring unprecedented international surveillance and coordination.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -769,7 +791,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">5 actors</a></span> &middot; <span>14 sources</span> &middot; <span>8 regions</span> &middot; <span>5 languages</span></p>
 </div>
 <div class="card" id="pc-002">
-  <a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a>
+  <a class="actor-card-cluster-box" href="#pc-002">Position 2</a>
   <div class="card-header"><span class="card-actor">Delayed detection, wrong diagnostic reagents, and weakened surveillance systems allowed the outbreak to grow undetected for weeks</span></div>
   <div class="card-position">Multiple experts and organizations argue that the outbreak was identified too late because laboratories only had reagents for the Zaire strain, initial cases were misdiagnosed as malaria or salmonellosis, and years of international aid cuts had degraded disease surveillance and water/sanitation infrastructure in the affected region. The IRC attributed the surveillance failure in part to donor funding cuts, while WHO representative Anne Ancia noted a 73 percent reduction in water and sanitation funding.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -783,7 +805,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">8 actors</a></span> &middot; <span>6 sources</span> &middot; <span>4 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-003">
-  <a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a>
+  <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
   <div class="card-header"><span class="card-actor">Conflict, displacement, poverty, and fragile health systems in eastern DRC make containment exceptionally difficult</span></div>
   <div class="card-position">Aid agencies, academics, and on-the-ground observers emphasize that the outbreak is occurring in one of the continent&#x27;s most complex operational areas, marked by insecurity, population movements, and fragile health systems, where armed conflict, mass displacement, extreme poverty, distrust of authorities, and overwhelmed health infrastructure compound the challenge of containing Ebola.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -793,7 +815,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">6 actors</a></span> &middot; <span>7 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-004">
-  <a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a>
+  <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">The absence of an approved vaccine or treatment for the Bundibugyo strain is the outbreak&#x27;s most critical vulnerability</span></div>
   <div class="card-position">Scientists, health officials, and the Africa CDC stress that unlike previous Zaire-strain outbreaks, no approved vaccine or therapy exists for Bundibugyo, leaving responders reliant on traditional public health measures. International experts are working with institutions including the University of Oxford and hope to have vaccine candidates in trials within two months, though WHO representative Ancia cautioned the outbreak will not be over in that timeframe.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -807,7 +829,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">6 actors</a></span> &middot; <span>9 sources</span> &middot; <span>8 regions</span> &middot; <span>6 languages</span></p>
 </div>
 <div class="card" id="pc-005">
-  <a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a>
+  <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
   <div class="card-header"><span class="card-actor">Discriminatory travel bans targeting non-citizens are ineffective and counterproductive to outbreak containment</span></div>
   <div class="card-position">The Infectious Diseases Society of America and Africa CDC argue that the US entry ban for non-citizens from affected countries is discriminatory and will not prevent viral spread, since pathogens do not recognize passports, and such measures risk undermining the cooperative international response the WHO recommends.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -821,7 +843,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">2 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-006">
-  <a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a>
+  <a class="actor-card-cluster-box" href="#pc-006">Position 6</a>
   <div class="card-header"><span class="card-actor">Countries outside Africa should implement proportionate health monitoring for travelers rather than blanket travel bans</span></div>
   <div class="card-position">Multiple governments — including Italy, Singapore, Turkey, Japan, and India — have activated health surveillance, traveler advisories, and self-monitoring requirements at points of entry without imposing outright travel bans, aligning with WHO guidance that risk-based measures are more appropriate than blanket restrictions.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -835,7 +857,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">6 actors</a></span> &middot; <span>5 sources</span> &middot; <span>5 regions</span> &middot; <span>5 languages</span></p>
 </div>
 <div class="card" id="pc-007">
-  <a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a>
+  <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">The risk of Ebola spreading to high-income countries or becoming a global pandemic is extremely low</span></div>
   <div class="card-position">Germany&#x27;s health minister and a Mexican epidemiologist assert that while the outbreak is devastating in the affected region, Ebola&#x27;s transmission characteristics make a global pandemic nearly impossible, and countries like Germany face an extremely low domestic risk requiring no special precautions.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -845,7 +867,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">2 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-008">
-  <a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a>
+  <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">Affected communities in Ituri are gripped by fear, economic hardship, and lack of protective resources</span></div>
   <div class="card-position">Residents of Ituri province describe widespread panic, economic devastation from health restrictions in an already impoverished region, a lack of access to basic protective supplies like face masks, and confusion about how to respond if family members fall ill, compounded by cultural practices like open-casket funerals that accelerate transmission.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -855,7 +877,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">6 actors</a></span> &middot; <span>2 sources</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-009">
-  <a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a>
+  <a class="actor-card-cluster-box" href="#pc-009">Position 9</a>
   <div class="card-header"><span class="card-actor">Regional actors including rebel groups, neighboring governments, and Russia are mobilizing their own containment and assistance responses</span></div>
   <div class="card-position">The M23/AFC rebel group claims to have activated health response mechanisms in its territories, Rwanda has closed its border, Uganda has enhanced surveillance and social distancing measures, the EAC has urged regional solidarity, and Russia is sending epidemiological specialists and diagnostic tests to Uganda at Kampala&#x27;s request.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -874,23 +896,28 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
 </div>
 </div>
 
-<div class="card single-voices-bracket" id="single-voices">
-  <div class="card-header"><span class="card-actor">Single voices</span><span class="single-voices-bracket-tag">Bracket</span></div>
-  <div class="card-position">Actors with unique positions that cannot be grouped with other positions into a shared cluster, but are referenced by multiple sources and are therefore considered important to the dossier.</div>
+<details class="mentioned-actors-wrapper">
+  <summary>Mentioned Actors &mdash; <strong>6 noted</strong></summary>
+  <div class="mentioned-actors-body">
+<div class="card single-voices-bracket" id="mentioned-actors">
+  <div class="card-header"><span class="card-actor">Mentioned actors</span><span class="single-voices-bracket-tag">Bracket</span></div>
+  <div class="card-position">Actors named in the corpus who are not grouped into any of the documented positions. Listed here for transparency about who appears in the source material.</div>
   <div class="cluster-tier cluster-tier-actors_stated">
     <h4 class="cluster-tier-label">Stated</h4>
     <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-002">Samuel Roger Kamba</a></strong> <span class="cluster-actor-role">Health Minister of the Democratic Republic of the Congo</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-actors_reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-006">German Ministry of Health</a></strong> <span class="cluster-actor-role">German Ministry of Health</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-024">Centers for Disease Control and Prevention (CDC)</a></strong> <span class="cluster-actor-role">US public health agency</span> <span class="cluster-actor-type">government</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-006">German Ministry of Health</a></strong> <span class="cluster-actor-role">German Ministry of Health</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-008">Doctors Without Borders</a></strong> <span class="cluster-actor-role">Medical charity</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-018">Satish Pillai</a></strong> <span class="cluster-actor-role">Coordinator of the CDC&#x27;s Ebola response</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-024">Centers for Disease Control and Prevention (CDC)</a></strong> <span class="cluster-actor-role">US public health agency</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-030">Félix Tshisekedi</a></strong> <span class="cluster-actor-role">DR Congo President</span> <span class="cluster-actor-type">government</span></li></ul>
   </div>
-  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#single-voices">3 actors</a></span> &middot; <span>10 sources</span> &middot; <span>7 regions</span> &middot; <span>5 languages</span></p>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#mentioned-actors">6 actors</a></span> &middot; <span>12 sources</span> &middot; <span>7 regions</span> &middot; <span>5 languages</span></p>
 </div>
+  </div>
+</details>
 
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">41 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<p class="actors-meta">41 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
 <div class="actors-tabs" role="tablist">
 <button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">41</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">17</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITARY</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">7</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">ACADEMIA</span> <span class="actor-tab-count">4</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONAL ORG</span> <span class="actor-tab-count">7</span></button><button class="actor-tab" type="button" data-type-target="affected_community"><span class="actor-tab-name">AFFECTED COMMUNITY</span> <span class="actor-tab-count">5</span></button>
 </div>
@@ -901,7 +928,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">6 SRC</span>
   </div>
   <p class="actor-card-role">Health Minister of the Democratic Republic of the Congo</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-018">src-018</a><a class="actor-card-source-box" href="#src-021">src-021</a><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-006" class="actor-card" data-actor-type="government">
@@ -910,7 +937,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">German Ministry of Health</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-024" class="actor-card" data-actor-type="government">
@@ -919,7 +946,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">US public health agency</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-034">src-034</a></div>
 </article>
 <article id="actor-027" class="actor-card" data-actor-type="government">
@@ -928,7 +955,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Russian consumer rights and health protection agency</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-027">src-027</a></div>
 </article>
 <article id="actor-014" class="actor-card" data-actor-type="government">
@@ -937,7 +964,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Singapore&#x27;s Communicable Diseases Agency</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a></div>
 </article>
 <article id="actor-030" class="actor-card" data-actor-type="government">
@@ -946,7 +973,8 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">DR Congo President</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-048" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -954,7 +982,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">National government</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-035">src-035</a></div>
 </article>
 <article id="actor-036" class="actor-card" data-actor-type="government">
@@ -963,7 +991,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Former mayor of Mongbwalu</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-001" class="actor-card" data-actor-type="government">
@@ -972,7 +1000,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Italian Ministry of Health</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-047" class="actor-card" data-actor-type="government">
@@ -981,7 +1009,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">National government ministry</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-032">src-032</a></div>
 </article>
 <article id="actor-040" class="actor-card" data-actor-type="government">
@@ -990,7 +1018,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">German Federal Health Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-019">src-019</a></div>
 </article>
 <article id="actor-015" class="actor-card" data-actor-type="government">
@@ -999,7 +1027,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Health Minister of Singapore</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a></div>
 </article>
 <article id="actor-012" class="actor-card" data-actor-type="government">
@@ -1008,7 +1036,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Government of Rwanda</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-018" class="actor-card" data-actor-type="government">
@@ -1017,7 +1045,8 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Coordinator of the CDC&#x27;s Ebola response</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-046" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1025,7 +1054,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">General Directorate General of Border and Coastal Health, Turkey</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-028">src-028</a></div>
 </article>
 <article id="actor-045" class="actor-card" data-actor-type="government">
@@ -1034,7 +1063,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">National health authority</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-024">src-024</a></div>
 </article>
 <article id="actor-013" class="actor-card" data-actor-type="government">
@@ -1043,7 +1072,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">President of Uganda</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-011" class="actor-card" data-actor-type="military">
@@ -1052,7 +1081,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Spokesman for the AFC-M23 group</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-008" class="actor-card" data-actor-type="civil_society">
@@ -1061,7 +1090,8 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Medical charity</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-037" class="actor-card" data-actor-type="civil_society">
   <div class="actor-card-header">
@@ -1069,7 +1099,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">DRC country director at the International Rescue Committee</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-019" class="actor-card" data-actor-type="civil_society">
@@ -1078,7 +1108,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">US medical association</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-008">src-008</a></div>
 </article>
 <article id="actor-009" class="actor-card" data-actor-type="civil_society">
@@ -1087,7 +1117,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Aid agency</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-021" class="actor-card" data-actor-type="civil_society">
@@ -1096,7 +1126,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Head of Clinical Care and Public Health in Emergencies at the International Federation of Red Cross and Red Crescent Societies</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-038" class="actor-card" data-actor-type="civil_society">
@@ -1105,7 +1135,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">DRC country director at Oxfam</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-031" class="actor-card" data-actor-type="civil_society">
@@ -1114,7 +1144,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Humanitarian organization</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-007" class="actor-card" data-actor-type="academia">
@@ -1123,7 +1153,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Congolese scientist who co-discovered the Ebola virus and head of Kinshasa&#x27;s National Institute of Biomedical Research (INRB)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a><a class="actor-card-cluster-box" href="#pc-003">Position 3</a><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-032" class="actor-card" data-actor-type="academia">
@@ -1132,7 +1162,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Infectious disease doctor and epidemiologist</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-042" class="actor-card" data-actor-type="academia">
@@ -1141,7 +1171,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Professor of Clinical Medicine and Laboratory Medicine, Universidade Federal de São Paulo (UNIFESP)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-020">src-020</a></div>
 </article>
 <article id="actor-041" class="actor-card" data-actor-type="academia">
@@ -1150,7 +1180,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Specialist in internal medicine, emergency medicine, tropical medicine, and epidemiology at Berlin&#x27;s Charité</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-019">src-019</a></div>
 </article>
 <article id="actor-003" class="actor-card" data-actor-type="international_org">
@@ -1159,7 +1189,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">12 SRC</span>
   </div>
   <p class="actor-card-role">Director General of the World Health Organization</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-013">src-013</a><a class="actor-card-source-box" href="#src-016">src-016</a><a class="actor-card-source-box" href="#src-019">src-019</a><a class="actor-card-source-box" href="#src-033">src-033</a></div>
 </article>
 <article id="actor-010" class="actor-card" data-actor-type="international_org">
@@ -1168,7 +1198,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">7 SRC</span>
   </div>
   <p class="actor-card-role">Director of the Africa Centres for Disease Control and Prevention</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-002">Position 2</a><a class="actor-card-cluster-box" href="#pc-003">Position 3</a><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-018">src-018</a><a class="actor-card-source-box" href="#src-019">src-019</a><a class="actor-card-source-box" href="#src-013">src-013</a><a class="actor-card-source-box" href="#src-022">src-022</a></div>
 </article>
 <article id="actor-005" class="actor-card" data-actor-type="international_org">
@@ -1177,7 +1207,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">5 SRC</span>
   </div>
   <p class="actor-card-role">WHO Representative in the Democratic Republic of the Congo&#x27;s Ituri province</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a><a class="actor-card-cluster-box" href="#pc-002">Position 2</a><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-044" class="actor-card" data-actor-type="international_org">
@@ -1186,7 +1216,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">International health agency</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a><a class="actor-card-source-box" href="#src-025">src-025</a></div>
 </article>
 <article id="actor-025" class="actor-card" data-actor-type="international_org">
@@ -1195,7 +1225,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">African Union public health agency</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-014">src-014</a></div>
 </article>
 <article id="actor-026" class="actor-card" data-actor-type="international_org">
@@ -1204,7 +1234,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">EAC Deputy Secretary General in charge of Infrastructure, Productive, Social and Political Sectors</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-015">src-015</a></div>
 </article>
 <article id="actor-004" class="actor-card" data-actor-type="international_org">
@@ -1213,7 +1243,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Acting director of the science department at the Africa Centres for Disease Control and Prevention</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-029" class="actor-card" data-actor-type="affected_community">
@@ -1222,7 +1252,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Ituri resident</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-028" class="actor-card" data-actor-type="affected_community">
@@ -1231,7 +1261,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Ituri resident</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-016">src-016</a></div>
 </article>
 <article id="actor-035" class="actor-card" data-actor-type="affected_community">
@@ -1240,7 +1270,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Resident of Irumu territory</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-034" class="actor-card" data-actor-type="affected_community">
@@ -1249,7 +1279,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Resident of Bunia city</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-033" class="actor-card" data-actor-type="affected_community">
@@ -1258,7 +1288,7 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Resident of Mongbwalu</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 </div>

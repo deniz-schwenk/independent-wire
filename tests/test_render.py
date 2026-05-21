@@ -142,7 +142,7 @@ def _make_topicbus(
 def test_select_by_visibility_topicbus_tp():
     """tp-tagged TopicBus slots: final_sources + final_actors + qa_problems_found +
     qa_corrections + qa_corrected_article + qa_divergences +
-    perspective_clusters_synced + single_voices + bias_language_findings +
+    perspective_clusters_synced + mentioned_actors + bias_language_findings +
     bias_reader_note + coverage_gaps_validated + consolidated_missing_coverage +
     source_balance + transparency_card."""
     tb = _make_topicbus()
@@ -157,9 +157,9 @@ def test_select_by_visibility_topicbus_tp():
         "qa_corrected_article",
         "qa_divergences",
         "perspective_clusters_synced",
-        # Single-voices bracket written by `derive_single_voices`
-        # (2026-05-20).
-        "single_voices",
+        # Mentioned-actors bracket written by `derive_mentioned_actors`
+        # (renamed 2026-05-21 from `single_voices`; threshold dropped).
+        "mentioned_actors",
         "bias_language_findings",
         "bias_reader_note",
         "coverage_gaps_validated",
@@ -297,14 +297,14 @@ def test_render_tp_public_perspectives_reshape_to_dict():
     out = render_tp_public(tb, rb)
     persp = out["perspectives"]
     assert isinstance(persp, dict)
-    # `single_voices` joined the perspectives sub-dict 2026-05-20
-    # (deterministic bracket for structurally-central orphan actors).
-    assert set(persp) == {"position_clusters", "missing_positions", "single_voices"}
+    # `mentioned_actors` joined the perspectives sub-dict (renamed from
+    # `single_voices` on 2026-05-21; all non-cluster actors now qualify).
+    assert set(persp) == {"position_clusters", "missing_positions", "mentioned_actors"}
     assert persp["position_clusters"] == tb.perspective_clusters_synced
     assert persp["missing_positions"] == tb.perspective_missing_positions
-    # When the stage has not run, single_voices is an empty dict (the
+    # When the stage has not run, mentioned_actors is an empty dict (the
     # slot's typed default) — rendered through as {} for consumers.
-    assert persp["single_voices"] == dict(tb.single_voices or {})
+    assert persp["mentioned_actors"] == dict(tb.mentioned_actors or {})
 
 
 # ---------------------------------------------------------------------------

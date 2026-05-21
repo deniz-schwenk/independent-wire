@@ -404,6 +404,15 @@ details[open] summary::before {
   line-height: 1.55;
 }
 .coverage-limits li { margin: 0.25rem 0; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -744,10 +753,10 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
 </div>
 <p class="word-count">1,033 words</p>
 
-<h2>Perspectives &mdash; Position Clusters</h2>
+<h2>Perspectives &mdash; Positions</h2>
 <div class="card-grid">
 <div class="card" id="pc-001">
-  <a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a>
+  <a class="actor-card-cluster-box" href="#pc-001">Position 1</a>
   <div class="card-header"><span class="card-actor">Iran will escalate the war far beyond the Middle East if the US resumes attacks, deploying capabilities not yet revealed</span></div>
   <div class="card-position">Iranian military and political leaders warn that any renewed US aggression will trigger a wider conflict extending beyond the region, with Iran opening new fronts using new weapons and methods. They assert Iran has not yet deployed its full military power and that the ceasefire period was used to consolidate combat capabilities. Foreign Minister Arakçi claimed Iranian forces were the first to down an American F-35 fighter jet, a claim not independently verified.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -757,7 +766,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">7 actors</a></span> &middot; <span>11 sources</span> &middot; <span>10 regions</span> &middot; <span>5 languages</span></p>
 </div>
 <div class="card" id="pc-002">
-  <a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a>
+  <a class="actor-card-cluster-box" href="#pc-002">Position 2</a>
   <div class="card-header"><span class="card-actor">The US is making good progress toward a deal but remains ready to resume devastating military operations if diplomacy fails</span></div>
   <div class="card-position">Trump and Vance oscillate between optimism about negotiations and explicit threats of imminent strikes, claiming Iran is eager for a deal while setting short deadlines of days. Vance frames the situation as a choice between a negotiated agreement preventing Iranian nuclear weapons or a return to war, with the US military &#x27;locked on target.&#x27;</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -767,7 +776,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">3 actors</a></span> &middot; <span>12 sources</span> &middot; <span>9 regions</span> &middot; <span>5 languages</span></p>
 </div>
 <div class="card" id="pc-003">
-  <a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a>
+  <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
   <div class="card-header"><span class="card-actor">Trump&#x27;s threats have lost credibility and both sides are stuck in a stalemate neither knows how to escape</span></div>
   <div class="card-position">Analysts and market observers argue that Trump&#x27;s repeated verbal escalations are having diminishing impact because they are not backed by action, while neither Washington nor Tehran is willing to accept the other&#x27;s terms or return to full-scale war, leaving the conflict frozen. Financial markets swing on each statement but increasingly discount the rhetoric.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -777,7 +786,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">4 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-004">
-  <a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a>
+  <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">Israeli influence drove the US into the Iran war and restraining Israel is the prerequisite for ending it</span></div>
   <div class="card-position">A former senior Trump administration official argues that Iran never posed an imminent nuclear threat, that Netanyahu&#x27;s lobbying convinced Trump to abandon a promising deal and pursue regime change, and that the war cannot end until Israeli influence over US policy is curtailed. Critics dismiss this framing as antisemitic.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -795,7 +804,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">7 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-005">
-  <a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a>
+  <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
   <div class="card-header"><span class="card-actor">A comprehensive ceasefire is urgently needed and resuming hostilities would be counterproductive for all parties</span></div>
   <div class="card-position">China&#x27;s Xi Jinping and other international voices call for an immediate and total cessation of hostilities, arguing that the Gulf situation is at a pivotal juncture between war and peace and that continued negotiations are more essential than ever. Gulf states intervened to delay US strikes, warning of catastrophic consequences including during the Hajj pilgrimage.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -813,7 +822,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">4 actors</a></span> &middot; <span>6 sources</span> &middot; <span>4 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-006">
-  <a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a>
+  <a class="actor-card-cluster-box" href="#pc-006">Position 6</a>
   <div class="card-header"><span class="card-actor">The Strait of Hormuz blockade threatens a global food and energy crisis that will hit the poorest countries hardest</span></div>
   <div class="card-position">The UK Foreign Secretary, the FAO chief economist, and market analysts warn that continued disruption of shipping through the Strait of Hormuz will spike global food prices by blocking fertilizer and energy exports, with developing nations most vulnerable during the planting season. German bond yields and oil prices already reflect the inflationary pressure.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -827,7 +836,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">3 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-007">
-  <a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a>
+  <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">Iran maintains sovereign control over the Strait of Hormuz and is selectively permitting commercial transit under its coordination</span></div>
   <div class="card-position">The IRGC Navy announces that 26 ships transited the Strait in 24 hours under Iranian armed forces&#x27; permission, while South Korean and Chinese tankers crossed in cooperation with Tehran. This framing positions Iran as the gatekeeper of the waterway rather than a blockading force, asserting operational sovereignty over a critical chokepoint.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -837,7 +846,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">3 actors</a></span> &middot; <span>5 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-008">
-  <a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a>
+  <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">Iranian civilians are trapped in a psychological limbo of neither war nor peace, unable to plan their lives amid constant uncertainty</span></div>
   <div class="card-position">Tehran residents describe a suspended existence where daily routines have resumed but pervasive fear persists—children mistake thunder for bombs, personal and economic plans are frozen, and mental exhaustion is widespread. The ceasefire has not brought peace of mind, only a fragile pause that could shatter at any moment.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -847,7 +856,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">4 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-009">
-  <a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a>
+  <a class="actor-card-cluster-box" href="#pc-009">Position 9</a>
   <div class="card-header"><span class="card-actor">The US war on Iran is making Americans less safe and eroding domestic support, including among Republicans</span></div>
   <div class="card-position">Polling data shows nearly half of Americans feel less safe because of the war, with 46% of Republicans reporting difficulty affording necessities. No majority supports any proposed war justification, and bipartisan congressional action—including Republican senators advancing a War Powers Resolution—reflects growing domestic opposition to the conflict&#x27;s cost and direction.</div>
   <div class="cluster-tier cluster-tier-stated">
@@ -862,23 +871,28 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
 </div>
 </div>
 
-<div class="card single-voices-bracket" id="single-voices">
-  <div class="card-header"><span class="card-actor">Single voices</span><span class="single-voices-bracket-tag">Bracket</span></div>
-  <div class="card-position">Actors with unique positions that cannot be grouped with other positions into a shared cluster, but are referenced by multiple sources and are therefore considered important to the dossier.</div>
+<details class="mentioned-actors-wrapper">
+  <summary>Mentioned Actors &mdash; <strong>21 noted</strong></summary>
+  <div class="mentioned-actors-body">
+<div class="card single-voices-bracket" id="mentioned-actors">
+  <div class="card-header"><span class="card-actor">Mentioned actors</span><span class="single-voices-bracket-tag">Bracket</span></div>
+  <div class="card-position">Actors named in the corpus who are not grouped into any of the documented positions. Listed here for transparency about who appears in the source material.</div>
   <div class="cluster-tier cluster-tier-actors_stated">
     <h4 class="cluster-tier-label">Stated</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-023">Giorgia Meloni</a></strong> <span class="cluster-actor-role">Italian Prime Minister</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-028">Mesud Pezeşkiyan</a></strong> <span class="cluster-actor-role">President of Iran</span> <span class="cluster-actor-type">government</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-006">Israeli military</a></strong> <span class="cluster-actor-role">Israeli armed forces</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-015">US State Department</a></strong> <span class="cluster-actor-role">US State Department</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-020">Hamas</a></strong> <span class="cluster-actor-role">Palestinian militant and political organization</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-021">Gideon Saar</a></strong> <span class="cluster-actor-role">Israeli Foreign Minister</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-022">Itamar Ben-Gvir</a></strong> <span class="cluster-actor-role">Israeli National Security Minister</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-023">Giorgia Meloni</a></strong> <span class="cluster-actor-role">Italian Prime Minister</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-024">UAE&#x27;s foreign ministry</a></strong> <span class="cluster-actor-role">United Arab Emirates Ministry of Foreign Affairs</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-028">Mesud Pezeşkiyan</a></strong> <span class="cluster-actor-role">President of Iran</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-029">Catherine Vautrin</a></strong> <span class="cluster-actor-role">French Defense Minister</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-030">Ihor Romanenko</a></strong> <span class="cluster-actor-role">Former Deputy Chief of General Staff of the Ukrainian Armed Forces</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-052">Tony Sycamore</a></strong> <span class="cluster-actor-role">Analyst at IG</span> <span class="cluster-actor-type">industry</span></li></ul>
   </div>
   <div class="cluster-tier cluster-tier-actors_reported">
     <h4 class="cluster-tier-label">Reported</h4>
-    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-039">Kazem Gharibabadi</a></strong> <span class="cluster-actor-role">Deputy Foreign Minister of Iran</span> <span class="cluster-actor-type">government</span></li></ul>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-004">Hezbollah</a></strong> <span class="cluster-actor-role">Lebanese militant group</span> <span class="cluster-actor-type">military</span></li><li class="cluster-tier-actor"><strong><a href="#actor-005">Lebanon&#x27;s Ministry of Public Health</a></strong> <span class="cluster-actor-role">Lebanese health ministry</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-012">Israel&#x27;s parliament</a></strong> <span class="cluster-actor-role">The Knesset</span> <span class="cluster-actor-type">legislature</span></li><li class="cluster-tier-actor"><strong><a href="#actor-026">Israel&#x27;s Knesset</a></strong> <span class="cluster-actor-role">Israeli parliament</span> <span class="cluster-actor-type">legislature</span></li><li class="cluster-tier-actor"><strong><a href="#actor-037">UAE Defense Ministry</a></strong> <span class="cluster-actor-role">United Arab Emirates Ministry of Defense</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-039">Kazem Gharibabadi</a></strong> <span class="cluster-actor-role">Deputy Foreign Minister of Iran</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-042">Antonio Tajani</a></strong> <span class="cluster-actor-role">Minister of Foreign Affairs of Italy</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-044">Mohsen Naqvi</a></strong> <span class="cluster-actor-role">Minister of the Interior of Pakistan</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-055">Human Rights Activists news agency (Hrana)</a></strong> <span class="cluster-actor-role">US- and Netherlands-based monitoring group</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-065">Pentagon officials</a></strong> <span class="cluster-actor-role">US Department of Defense officials</span> <span class="cluster-actor-type">military</span></li></ul>
   </div>
-  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#single-voices">3 actors</a></span> &middot; <span>6 sources</span> &middot; <span>4 regions</span> &middot; <span>3 languages</span></p>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#mentioned-actors">21 actors</a></span> &middot; <span>10 sources</span> &middot; <span>6 regions</span> &middot; <span>4 languages</span></p>
 </div>
+  </div>
+</details>
 
 <section id="actors-section" class="actors">
 <h2>Actors</h2>
-<p class="actors-meta">59 actors quoted across this topic. Jump from any name above to find every cluster and source the actor figures in.</p>
+<p class="actors-meta">59 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
 <div class="actors-tabs" role="tablist">
 <button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">59</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">28</span></button><button class="actor-tab" type="button" data-type-target="legislature"><span class="actor-tab-name">LEGISLATURE</span> <span class="actor-tab-count">8</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITARY</span> <span class="actor-tab-count">10</span></button><button class="actor-tab" type="button" data-type-target="industry"><span class="actor-tab-name">INDUSTRY</span> <span class="actor-tab-count">4</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">3</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">ACADEMIA</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONAL ORG</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="affected_community"><span class="actor-tab-name">AFFECTED COMMUNITY</span> <span class="actor-tab-count">4</span></button>
 </div>
@@ -889,7 +903,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">16 SRC</span>
   </div>
   <p class="actor-card-role">US President</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-013">src-013</a><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-017">src-017</a><a class="actor-card-source-box" href="#src-022">src-022</a><a class="actor-card-source-box" href="#src-025">src-025</a><a class="actor-card-source-box" href="#src-026">src-026</a><a class="actor-card-source-box" href="#src-029">src-029</a></div>
 </article>
 <article id="actor-002" class="actor-card" data-actor-type="government">
@@ -898,7 +912,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">7 SRC</span>
   </div>
   <p class="actor-card-role">US Vice President</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-004">src-004</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-019" class="actor-card" data-actor-type="government">
@@ -907,7 +921,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">Israeli Prime Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-012">src-012</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-022">src-022</a></div>
 </article>
 <article id="actor-014" class="actor-card" data-actor-type="government">
@@ -916,7 +930,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">President of China</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-010">src-010</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-029">src-029</a></div>
 </article>
 <article id="actor-013" class="actor-card" data-actor-type="government">
@@ -925,7 +939,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">3 SRC</span>
   </div>
   <p class="actor-card-role">South Korean Foreign Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-023" class="actor-card" data-actor-type="government">
@@ -934,7 +948,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Italian Prime Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-039" class="actor-card" data-actor-type="government">
@@ -943,7 +957,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Deputy Foreign Minister of Iran</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-028" class="actor-card" data-actor-type="government">
@@ -952,7 +966,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">President of Iran</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#single-voices">Single voices</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-022">src-022</a></div>
 </article>
 <article id="actor-011" class="actor-card" data-actor-type="government">
@@ -961,7 +975,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Iranian parliament speaker and chief negotiator</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-064" class="actor-card" data-actor-type="government">
@@ -970,7 +984,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Senior official in the Trump administration</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
 </article>
 <article id="actor-033" class="actor-card" data-actor-type="government">
@@ -979,7 +993,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Iranian Foreign Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-042" class="actor-card" data-actor-type="government">
@@ -988,7 +1002,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Minister of Foreign Affairs of Italy</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-029" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -996,7 +1011,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">French Defense Minister</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-021" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1004,7 +1020,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Israeli Foreign Minister</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-022" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1012,7 +1029,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Israeli National Security Minister</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-045" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1020,7 +1038,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Former head of the National Counterterrorism Center, U.S. combat veteran</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-025" class="actor-card" data-actor-type="government">
@@ -1029,7 +1047,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Supreme Leader of Iran</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-005" class="actor-card" data-actor-type="government">
@@ -1038,7 +1056,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Lebanese health ministry</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-047" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1046,7 +1065,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">U.S. Secretary of State</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-044" class="actor-card" data-actor-type="government">
@@ -1055,7 +1074,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Minister of the Interior of Pakistan</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-011">src-011</a></div>
 </article>
 <article id="actor-048" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1063,7 +1083,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">U.S. Secretary of Defense</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-008" class="actor-card" data-actor-type="government">
@@ -1072,7 +1092,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">South Korean Foreign Minister</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-063" class="actor-card" data-actor-type="government">
@@ -1081,7 +1101,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Senior officials from Gulf states</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
 </article>
 <article id="actor-037" class="actor-card" data-actor-type="government">
@@ -1090,7 +1110,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">United Arab Emirates Ministry of Defense</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-024" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1098,7 +1119,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">United Arab Emirates Ministry of Foreign Affairs</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-015" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1106,7 +1128,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">US State Department</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-040" class="actor-card" data-actor-type="government">
   <div class="actor-card-header">
@@ -1114,7 +1137,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">President of Russia</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Cluster 5</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-010">src-010</a></div>
 </article>
 <article id="actor-032" class="actor-card" data-actor-type="government">
@@ -1123,7 +1146,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">UK Foreign Secretary</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-016" class="actor-card" data-actor-type="legislature">
@@ -1132,7 +1155,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">US Senator from Louisiana</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-036" class="actor-card" data-actor-type="legislature">
@@ -1141,7 +1164,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Member of the US House Armed Services Committee</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-038" class="actor-card" data-actor-type="legislature">
@@ -1150,7 +1173,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Head of the Iranian parliament&#x27;s national security committee</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
 </article>
 <article id="actor-026" class="actor-card" data-actor-type="legislature">
@@ -1159,7 +1182,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Israeli parliament</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-012" class="actor-card" data-actor-type="legislature">
   <div class="actor-card-header">
@@ -1167,7 +1191,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">The Knesset</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
 </article>
 <article id="actor-049" class="actor-card" data-actor-type="legislature">
   <div class="actor-card-header">
@@ -1175,7 +1200,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">U.S. Senator</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-035" class="actor-card" data-actor-type="legislature">
@@ -1184,7 +1209,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Democratic member of the US House Armed Services Committee</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-046" class="actor-card" data-actor-type="legislature">
@@ -1193,7 +1218,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">U.S. Representative (R-Ky.)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-031" class="actor-card" data-actor-type="military">
@@ -1202,7 +1227,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">6 SRC</span>
   </div>
   <p class="actor-card-role">Islamic Revolutionary Guard Corps</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-011">src-011</a><a class="actor-card-source-box" href="#src-015">src-015</a><a class="actor-card-source-box" href="#src-019">src-019</a><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-024">src-024</a></div>
 </article>
 <article id="actor-001" class="actor-card" data-actor-type="military">
@@ -1211,7 +1236,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">4 SRC</span>
   </div>
   <p class="actor-card-role">Iranian army spokesman</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-014">src-014</a><a class="actor-card-source-box" href="#src-003">src-003</a><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-034" class="actor-card" data-actor-type="military">
@@ -1220,7 +1245,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Commander of US CENTCOM</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Cluster 2</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-020" class="actor-card" data-actor-type="military">
@@ -1229,7 +1254,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Palestinian militant and political organization</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-006">src-006</a></div>
 </article>
 <article id="actor-004" class="actor-card" data-actor-type="military">
   <div class="actor-card-header">
@@ -1237,7 +1263,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Lebanese militant group</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-030" class="actor-card" data-actor-type="military">
   <div class="actor-card-header">
@@ -1245,7 +1272,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Former Deputy Chief of General Staff of the Ukrainian Armed Forces</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-027" class="actor-card" data-actor-type="military">
   <div class="actor-card-header">
@@ -1253,7 +1281,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Islamic Revolutionary Guard Corps Navy</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Cluster 7</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-007">src-007</a></div>
 </article>
 <article id="actor-006" class="actor-card" data-actor-type="military">
@@ -1262,7 +1290,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Israeli armed forces</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
 </article>
 <article id="actor-065" class="actor-card" data-actor-type="military">
   <div class="actor-card-header">
@@ -1270,7 +1299,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">US Department of Defense officials</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-023">src-023</a></div>
 </article>
 <article id="actor-007" class="actor-card" data-actor-type="military">
   <div class="actor-card-header">
@@ -1278,7 +1308,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Iran&#x27;s Islamic Revolutionary Guard Corps</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Cluster 1</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
 </article>
 <article id="actor-009" class="actor-card" data-actor-type="industry">
@@ -1287,7 +1317,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">2 SRC</span>
   </div>
   <p class="actor-card-role">Analyst at Fujitomi Securities</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a><a class="actor-card-source-box" href="#src-015">src-015</a></div>
 </article>
 <article id="actor-017" class="actor-card" data-actor-type="industry">
@@ -1296,7 +1326,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Chief commodities analyst at SEB AB</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
 </article>
 <article id="actor-051" class="actor-card" data-actor-type="industry">
@@ -1305,7 +1335,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Analyst at Emden Research</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-052" class="actor-card" data-actor-type="industry">
@@ -1314,7 +1344,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Analyst at IG</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-013">src-013</a></div>
 </article>
 <article id="actor-061" class="actor-card" data-actor-type="civil_society">
   <div class="actor-card-header">
@@ -1322,7 +1353,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Polling and research institute</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Cluster 9</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-021">src-021</a></div>
 </article>
 <article id="actor-055" class="actor-card" data-actor-type="civil_society">
@@ -1331,7 +1362,8 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">US- and Netherlands-based monitoring group</p>
-    <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-017">src-017</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box actor-card-cluster-box--bracket" href="#mentioned-actors">Mentioned actors</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-050" class="actor-card" data-actor-type="civil_society">
   <div class="actor-card-header">
@@ -1339,7 +1371,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">J Street official</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Cluster 4</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-012">src-012</a></div>
 </article>
 <article id="actor-054" class="actor-card" data-actor-type="academia">
@@ -1348,7 +1380,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Analyst at Chatham House</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Cluster 3</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-017">src-017</a></div>
 </article>
 <article id="actor-067" class="actor-card" data-actor-type="international_org">
@@ -1357,7 +1389,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Chief Economist, Food and Agriculture Organization (FAO)</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Cluster 6</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-006">Position 6</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-027">src-027</a></div>
 </article>
 <article id="actor-056" class="actor-card" data-actor-type="affected_community">
@@ -1366,7 +1398,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Civil engineer, 33, Tehran resident</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-059" class="actor-card" data-actor-type="affected_community">
@@ -1375,7 +1407,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Tehran resident, 42</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-058" class="actor-card" data-actor-type="affected_community">
@@ -1384,7 +1416,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">Street vendor, 35, Tehran resident</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 <article id="actor-057" class="actor-card" data-actor-type="affected_community">
@@ -1393,7 +1425,7 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
     <span class="actor-card-src-count">1 SRC</span>
   </div>
   <p class="actor-card-role">English teacher, Tehran resident</p>
-  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Cluster 8</a></div>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-008">Position 8</a></div>
   <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-018">src-018</a></div>
 </article>
 </div>

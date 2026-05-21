@@ -722,19 +722,21 @@ class TopicBus(BaseModel):
         mirror_granularity="element",
     )
 
-    # 4B.8b Single-voices bracket (1 derived slot).
-    # Written by `derive_single_voices` — deterministic Python stage that
-    # collects actors present in `canonical_actors[]` but absent from
-    # every `perspective_clusters_synced[].actor_ids[]`, filtered to those
-    # quoted by ≥ 2 sources (structurally-central orphans). The bracket
-    # is rendered as a single visually-distinguished card after the
-    # regular clusters; consumers must distinguish it from real shared-
-    # position clusters because the actors inside hold disparate
-    # positions deterministically grouped, not a shared cluster.
+    # 4B.8b Mentioned-actors bracket (1 derived slot).
+    # Written by `derive_mentioned_actors` — deterministic Python stage
+    # that collects every actor present in `canonical_actors[]` but
+    # absent from every `perspective_clusters_synced[].actor_ids[]`.
+    # 2026-05-21: renamed from `single_voices` and the prior ≥ 2-source
+    # threshold dropped — the rule is now binary ("in a cluster? full
+    # Position card. otherwise: Mentioned actor."). The bracket renders
+    # as a single visually-distinguished card after the regular position
+    # cards; consumers must distinguish it from real shared-position
+    # clusters because the actors inside hold disparate positions
+    # deterministically grouped, not a shared cluster.
     #
     # Shape:
     #   {
-    #     "position_label": "Single voices",
+    #     "position_label": "Mentioned actors",
     #     "summary": "<fixed module-level string>",
     #     "actors_stated":    [actor-NNN, …],
     #     "actors_reported":  [actor-NNN, …],
@@ -746,11 +748,11 @@ class TopicBus(BaseModel):
     #
     # `optional_write=True` because legacy / replay paths that bypass the
     # stage validate, and because the bracket is legitimately empty when
-    # every orphan is below the 2-source threshold. When `actor_ids[]` is
+    # every actor lives inside a position cluster. When `actor_ids[]` is
     # empty, the renderer omits the section entirely. The bracket does
-    # NOT mint a `pc-NNN` id — its DOM anchor is `id="single-voices"`,
-    # explicitly separate from cluster anchors.
-    single_voices: dict = Slot(
+    # NOT mint a `pc-NNN` id — its DOM anchor is `id="mentioned-actors"`,
+    # explicitly separate from position-card anchors.
+    mentioned_actors: dict = Slot(
         default_factory=dict,
         visibility=["tp", "mcp"],
         optional_write=True,
