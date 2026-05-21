@@ -595,10 +595,16 @@ def test_coverage_gaps_falls_back_to_top_level_gaps():
 # ---------------------------------------------------------------------------
 
 
-def test_missing_coverage_unified_section_renders_both_sub_sections():
-    """When `consolidated_missing_coverage` is present and populated,
-    the unified section is emitted with both sub-section headings; the
-    legacy builders self-skip."""
+def test_missing_coverage_section_renders_only_stakeholder_voices():
+    """After the 2026-05-21 relocation, `build_missing_coverage_section`
+    renders only the stakeholder-voices axis under a single
+    ``<h2>Missing stakeholder voices</h2>`` heading. The other axis
+    (``missing_topic_dimensions``) moved to the Transparency Trail as
+    a collapsible "Coverage Limits" footnote — see
+    `test_transparency_renders_coverage_limits_collapsible`. The
+    outer ``What this dossier does not cover`` wrapper plus the
+    ``<h3>Missing stakeholder voices</h3>`` sub-heading collapsed
+    into one ``<h2>`` since there is now only one axis here."""
     tp = {
         "consolidated_missing_coverage": {
             "missing_stakeholder_voices": [
@@ -612,8 +618,8 @@ def test_missing_coverage_unified_section_renders_both_sub_sections():
                 "European Union diplomatic response to the crisis",
             ],
         },
-        # Audit-trail source fields still carry data; the unified
-        # renderer reads the consolidated slot, not these.
+        # Audit-trail source fields still carry data; the renderer
+        # reads the consolidated slot, not these.
         "perspectives": {
             "missing_positions": [
                 {"type": "industry", "description": "oil traders..."},
@@ -626,14 +632,16 @@ def test_missing_coverage_unified_section_renders_both_sub_sections():
     legacy_voices = build_missing_voices(tp)
     legacy_gaps = build_coverage_gaps(tp)
 
-    # Unified section emitted with the new header.
-    assert "<h2>What this dossier does not cover</h2>" in unified
-    # Both sub-sections render with their `h3` headings.
-    assert "Missing stakeholder voices" in unified
-    assert "Missing topic dimensions" in unified
-    # Voice and dimension content surface within the unified section.
+    # Single H2, plain (no outer "What this dossier does not cover").
+    assert "<h2>Missing stakeholder voices</h2>" in unified
+    assert "What this dossier does not cover" not in unified
+    # Stakeholder-voice content surfaces in this section.
     assert "oil traders" in unified
-    assert "European Union diplomatic response" in unified
+    # The topic-dimension axis no longer renders here — relocated to
+    # `build_transparency`. Heading, sub-heading and gap text are all
+    # absent from the prominent section.
+    assert "Missing topic dimensions" not in unified
+    assert "European Union diplomatic response" not in unified
     # Legacy builders self-skip when the consolidated slot is present.
     assert legacy_voices == ""
     assert legacy_gaps == ""
@@ -667,10 +675,13 @@ def test_missing_coverage_legacy_fallback_when_slot_absent():
     assert "European Union diplomatic response" in legacy_gaps
 
 
-def test_missing_coverage_unified_section_omits_empty_sub_section():
-    """An empty list in one of the two axes drops only that sub-section;
-    the other still renders. Both empty → whole section omitted."""
-    # Only voices populated.
+def test_missing_coverage_section_omits_when_no_stakeholder_voices():
+    """The prominent section is gated solely on
+    `missing_stakeholder_voices` after the 2026-05-21 relocation —
+    `missing_topic_dimensions` no longer affects this section. So:
+    voices populated → section renders; voices empty (regardless of
+    dimensions) → section omitted; both empty → section omitted."""
+    # Voices populated, dimensions empty → section renders.
     tp_voices_only = {
         "consolidated_missing_coverage": {
             "missing_stakeholder_voices": [
@@ -681,20 +692,19 @@ def test_missing_coverage_unified_section_omits_empty_sub_section():
     }
     html = build_missing_coverage_section(tp_voices_only)
     assert "Missing stakeholder voices" in html
-    assert "Missing topic dimensions" not in html
+    assert "oil traders" in html
 
-    # Only dimensions populated.
+    # Voices empty, dimensions populated → section omitted entirely.
+    # The dimensions render in `build_transparency` instead.
     tp_dims_only = {
         "consolidated_missing_coverage": {
             "missing_stakeholder_voices": [],
             "missing_topic_dimensions": ["A topic dimension"],
         }
     }
-    html = build_missing_coverage_section(tp_dims_only)
-    assert "Missing topic dimensions" in html
-    assert "Missing stakeholder voices" not in html
+    assert build_missing_coverage_section(tp_dims_only) == ""
 
-    # Both empty.
+    # Both empty → section omitted.
     tp_empty = {
         "consolidated_missing_coverage": {
             "missing_stakeholder_voices": [],
@@ -1227,6 +1237,95 @@ def test_qa_corrections_wrapper_renders_with_counts():
     # Default closed — the wrapper element has no `open` attribute. The
     # inner per-correction details may still render `open=False` too.
     assert 'class="qa-corrections-wrapper" open' not in html
+
+
+def test_transparency_renders_coverage_limits_collapsible():
+    """Coverage Limits sub-section relocated 2026-05-21 from the
+    prominent Missing-Coverage section into the Transparency Trail.
+    Renders inside a ``<details class="coverage-limits-wrapper">``
+    block (default closed), positioned between QA Corrections and
+    the strict-drop block, with a count-bearing summary line."""
+    tp = {
+        "transparency": {
+            "selection_reason": "x",
+            "qa_corrections": [],
+            "qa_problems_found": [],
+        },
+        "consolidated_missing_coverage": {
+            "missing_stakeholder_voices": [],
+            "missing_topic_dimensions": [
+                "European Union diplomatic response to the crisis",
+                "Industry actors on the disruption to artisanal mining",
+            ],
+        },
+    }
+    html = build_transparency(tp)
+    # Wrapper rendered with the new class.
+    assert 'class="coverage-limits-wrapper"' in html
+    # Default closed — no `open` attribute on the wrapper.
+    assert 'class="coverage-limits-wrapper" open' not in html
+    # <dt> uses the editorial "Coverage Limits" label, not "missing"
+    # or "gaps" wording.
+    assert "<dt>Coverage Limits</dt>" in html
+    # Summary carries the count with the "notes" plural form (n=2).
+    assert "2 note" in html
+    assert "1 note" not in html
+    # The two dimension entries surface as <li> items inside the
+    # collapsible.
+    assert "European Union diplomatic response" in html
+    assert "artisanal mining" in html
+    assert 'class="coverage-limits"' in html
+
+
+def test_transparency_coverage_limits_omitted_when_dimensions_empty():
+    """If `missing_topic_dimensions` is empty (or the consolidated
+    slot absent), `build_transparency` emits no Coverage Limits
+    block — same gating pattern as QA Corrections and the strict-
+    drop block."""
+    # Slot present but list empty.
+    tp_empty = {
+        "transparency": {"selection_reason": "x"},
+        "consolidated_missing_coverage": {
+            "missing_stakeholder_voices": [],
+            "missing_topic_dimensions": [],
+        },
+    }
+    html_empty = build_transparency(tp_empty)
+    assert "coverage-limits-wrapper" not in html_empty
+    assert "Coverage Limits" not in html_empty
+
+    # Slot absent entirely (pre-2026-05-20 TPs).
+    tp_pre = {"transparency": {"selection_reason": "x"}}
+    html_pre = build_transparency(tp_pre)
+    assert "coverage-limits-wrapper" not in html_pre
+    assert "Coverage Limits" not in html_pre
+
+
+def test_transparency_coverage_limits_sits_between_qa_and_dropped_block():
+    """Acceptance criterion: the Coverage Limits collapsible is
+    positioned between QA Corrections and the strict-drop block."""
+    tp = {
+        "transparency": {
+            "selection_reason": "x",
+            "qa_corrections": [
+                {"correction_needed": True, "proposed_correction": "a"},
+            ],
+            "qa_problems_found": [{"problem": "p"}],
+            "dropped_sources": [
+                {"id": "src-001", "outlet": "X", "summary": "s"},
+            ],
+            "dropped_clusters": [],
+        },
+        "consolidated_missing_coverage": {
+            "missing_stakeholder_voices": [],
+            "missing_topic_dimensions": ["A topic dimension"],
+        },
+    }
+    html = build_transparency(tp)
+    qa_idx = html.find("qa-corrections-wrapper")
+    cl_idx = html.find("coverage-limits-wrapper")
+    drop_idx = html.find("dropped-id")  # marker class on dropped-block items
+    assert 0 <= qa_idx < cl_idx < drop_idx
 
 
 def test_qa_corrections_wrapper_omitted_when_no_corrections():

@@ -548,6 +548,19 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
+/* Coverage Limits — same collapsible-footnote treatment as
+   QA Corrections. Reads `consolidated_missing_coverage
+   .missing_topic_dimensions` (2026-05-21 relocation from the
+   prominent Missing-Coverage section). */
+.coverage-limits-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.coverage-limits {
+  margin-top: 0.5rem; padding-left: 1.2rem;
+  line-height: 1.55;
+}
+.coverage-limits li { margin: 0.25rem 0; }
 
 /* Sources section — two-level outlet blocks */
 .sources-meta {
@@ -1488,31 +1501,36 @@ def build_missing_voices(tp: dict) -> str:
 
 
 def build_missing_coverage_section(tp: dict) -> str:
-    """Unified "What this dossier does not cover" section.
+    """Render the "Missing stakeholder voices" prominent section.
 
-    Reads the consolidated view written by the deterministic
-    `consolidate_missing_coverage` topic-stage. Renders two
-    sub-sections in order:
-      1. Missing stakeholder voices (Perspective's structured
-         missing_positions, grouped by type).
-      2. Missing topic dimensions (gaps that did not overlap any
-         missing_position description).
+    Reads `consolidated_missing_coverage.missing_stakeholder_voices`
+    (Perspective's structured missing_positions, grouped by type) from
+    the consolidated view written by the deterministic
+    `consolidate_missing_coverage` topic-stage. Renders it under a
+    plain ``<h2>Missing stakeholder voices</h2>`` heading.
 
-    A sub-section whose list is empty is omitted entirely. If both
-    are empty, the whole section is omitted.
+    The other axis on the consolidated slot ―
+    ``missing_topic_dimensions`` ― relocated 2026-05-21 to the
+    Transparency Trail as a collapsible "Coverage Limits" footnote;
+    see `build_transparency`. The relocation reduces the topic-
+    dimensions list's visual dominance without removing it
+    (honest-about-limits principle).
+
+    With only one axis remaining in the prominent slot, the previous
+    outer ``<h2>What this dossier does not cover</h2>`` wrapper plus
+    the sub-section ``<h3>Missing stakeholder voices</h3>`` heading
+    collapse into a single ``<h2>Missing stakeholder voices</h2>`` —
+    one less heading layer, no information lost.
 
     Legacy-permissive: when the consolidated slot is absent
-    (pre-2026-05-20 TPs), this function returns empty and the legacy
-    `build_missing_voices` + `build_coverage_gaps` render in their
-    original positions.
+    (pre-2026-05-20 TPs) or contains no stakeholder voices, this
+    function returns empty and the legacy `build_missing_voices`
+    renders in its original position.
     """
     consolidated = tp.get("consolidated_missing_coverage")
     if not isinstance(consolidated, dict) or not consolidated:
         return ""
     voices = consolidated.get("missing_stakeholder_voices") or []
-    dimensions = consolidated.get("missing_topic_dimensions") or []
-
-    sub_sections: list[str] = []
 
     voice_items: list[str] = []
     for m in voices:
@@ -1523,30 +1541,13 @@ def build_missing_coverage_section(tp: dict) -> str:
         if not desc:
             continue
         voice_items.append(f'<li><strong>{mtype}</strong> — {desc}</li>')
-    if voice_items:
-        sub_sections.append(
-            '<h3 class="missing-coverage-sub">Missing stakeholder voices</h3>\n'
-            f'<ul class="missing-positions">{"".join(voice_items)}</ul>'
-        )
 
-    dimension_items: list[str] = []
-    for g in dimensions:
-        if not isinstance(g, str) or not g:
-            continue
-        dimension_items.append(f'<div class="coverage-gap">{_esc(g)}</div>')
-    if dimension_items:
-        sub_sections.append(
-            '<h3 class="missing-coverage-sub">Missing topic dimensions</h3>\n'
-            f'{"".join(dimension_items)}'
-        )
-
-    if not sub_sections:
+    if not voice_items:
         return ""
 
     return (
-        '<h2>What this dossier does not cover</h2>\n'
-        + "\n".join(sub_sections)
-        + "\n"
+        '<h2>Missing stakeholder voices</h2>\n'
+        f'<ul class="missing-positions">{"".join(voice_items)}</ul>\n'
     )
 
 
@@ -2114,6 +2115,37 @@ def build_transparency(tp: dict) -> str:
             f'<details class="qa-corrections-wrapper">'
             f'<summary>{outer_summary}</summary>'
             f'<ul class="qa-corrections">{"".join(items)}</ul>'
+            f'</details></dd>\n'
+        )
+
+    # Coverage Limits — collapsible footnote relocated 2026-05-21
+    # from the prominent Missing-Coverage section. Reads the same
+    # `consolidated_missing_coverage.missing_topic_dimensions` list
+    # written by the `consolidate_missing_coverage` topic-stage; the
+    # data path is unchanged, only the rendering destination moved.
+    # "Noted" wording over "missing" / "gaps" — these are honest
+    # limits of what the corpus contains, not failures.
+    coverage_limits = [
+        g for g in (
+            tp.get("consolidated_missing_coverage", {})
+              .get("missing_topic_dimensions") or []
+        )
+        if isinstance(g, str) and g
+    ]
+    if coverage_limits:
+        cl_items = "".join(
+            f'<li>{_esc(g)}</li>' for g in coverage_limits
+        )
+        n = len(coverage_limits)
+        cl_summary = (
+            f'Coverage Limits &mdash; <strong>{n} '
+            f'note{"s" if n != 1 else ""}</strong>'
+        )
+        parts.append(
+            f'<dt>Coverage Limits</dt><dd>'
+            f'<details class="coverage-limits-wrapper">'
+            f'<summary>{cl_summary}</summary>'
+            f'<ul class="coverage-limits">{cl_items}</ul>'
             f'</details></dd>\n'
         )
 
