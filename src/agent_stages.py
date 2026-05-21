@@ -1269,7 +1269,7 @@ class ResearcherAssembleStage(_AgentStageBase):
         assignment = topic_bus.editor_selected_topic
         message = (
             "Build a research dossier from these search results. "
-            "Extract sources, actors, divergences, and coverage gaps."
+            "Extract sources, actors, and divergences."
         )
         context = {
             "assignment": {
@@ -1317,10 +1317,16 @@ class ResearcherAssembleStage(_AgentStageBase):
                 if est:
                     source["estimated_date"] = est
 
+        # ``coverage_gaps`` deliberately not read from ``parsed`` —
+        # the hydrated pipeline routes coverage_gaps through
+        # HydrationPhase2 as the single source of truth. The field
+        # stays on ``ResearcherAssembleDossier`` (defaults to empty
+        # list) so the legacy non-hydrated stage list still
+        # type-checks; if the LLM ignores the updated prompt and
+        # still emits a ``coverage_gaps`` key, we drop it silently.
         dossier = ResearcherAssembleDossier(
             sources=sources,
             preliminary_divergences=list(parsed.get("preliminary_divergences") or []),
-            coverage_gaps=list(parsed.get("coverage_gaps") or []),
         )
         return topic_bus.model_copy(update={
             "researcher_assemble_dossier": dossier,

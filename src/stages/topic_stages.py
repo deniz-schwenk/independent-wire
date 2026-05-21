@@ -91,7 +91,11 @@ async def merge_sources(topic_bus: TopicBus, run_bus: RunBusReadOnly) -> TopicBu
 
     merged_sources = list(hpd.sources) + list(rad.sources)
     merged_divs = list(hpd.preliminary_divergences) + list(rad.preliminary_divergences)
-    merged_gaps = list(hpd.coverage_gaps) + list(rad.coverage_gaps)
+    # coverage_gaps: HydrationPhase2 single source of truth
+    # (2026-05-21). ResearcherAssemble's contribution dropped so the
+    # Researcher Assemble agent no longer re-reports gaps that the
+    # upstream HydrationPhase2 already flagged.
+    merged_gaps = list(hpd.coverage_gaps)
 
     return topic_bus.model_copy(
         update={

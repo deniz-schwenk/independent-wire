@@ -535,6 +535,9 @@ def test_researcher_assemble_assigns_research_rsrc_ids_and_dates():
                 },
             ],
             "preliminary_divergences": [{"description": "div"}],
+            # Test fixture continues to emit ``coverage_gaps`` to
+            # confirm ResearcherAssembleStage silently drops it
+            # (HydrationPhase2 single source of truth, 2026-05-21).
             "coverage_gaps": ["gap"],
         }
     )
@@ -554,7 +557,10 @@ def test_researcher_assemble_assigns_research_rsrc_ids_and_dates():
     # No date in URL → estimated_date stays absent
     assert "estimated_date" not in dossier.sources[1] or dossier.sources[1].get("estimated_date") is None
     assert dossier.preliminary_divergences == [{"description": "div"}]
-    assert dossier.coverage_gaps == ["gap"]
+    # ResearcherAssembleStage no longer populates coverage_gaps; the
+    # field stays on the dossier model with its default empty list
+    # so the legacy non-hydrated stage list still type-checks.
+    assert dossier.coverage_gaps == []
 
 
 def test_researcher_assemble_empty_output():

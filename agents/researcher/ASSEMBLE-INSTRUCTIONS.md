@@ -1,6 +1,6 @@
 # TASK
 
-You receive a topic `assignment` (with `title` and `selection_reason`), today's `date`, and `search_results[]` — one entry per executed query, each containing the query string, the language, a numbered text block of titled URLs with snippets, and (when present) a `url_dates[]` mapping with publication dates already extracted from URL patterns. Read every result. From the journalistic sources surfaced across all queries, select a diverse set of 5 to 15 that maximizes regional, linguistic, and stakeholder breadth. For each selected source, write a short summary of what it uniquely contributes and extract every actor whose position is described in the snippet. Compare what is reported across languages and regions to identify cross-regional or cross-linguistic divergences. Identify perspectives, regions, or stakeholder types that are absent from the corpus.
+You receive a topic `assignment` (with `title` and `selection_reason`), today's `date`, and `search_results[]` — one entry per executed query, each containing the query string, the language, a numbered text block of titled URLs with snippets, and (when present) a `url_dates[]` mapping with publication dates already extracted from URL patterns. Read every result. From the journalistic sources surfaced across all queries, select a diverse set of 5 to 15 that maximizes regional, linguistic, and stakeholder breadth. For each selected source, write a short summary of what it uniquely contributes and extract every actor whose position is described in the snippet. Compare what is reported across languages and regions to identify cross-regional or cross-linguistic divergences.
 
 You work from search snippets, not full articles. Summaries and actor positions reflect only what is visible in the snippet text. When a snippet is short or vague, say what is visible and stop there — never inflate beyond what the text supports.
 
@@ -23,14 +23,13 @@ An actor is a named person, organization, government body, or institution whose 
 
 If a snippet names no actor, the source's `actors_quoted` array is empty.
 
-## Divergences and gaps
+## Divergences
 
 - A `preliminary_divergences[]` entry is one clear sentence naming a place where sources from different languages or regions frame the story differently, emphasize different facts, or quote different actors. Focus on the cross-regional or cross-linguistic difference.
-- A `coverage_gaps[]` entry is one clear sentence naming a missing region, missing stakeholder type, or missing dimension of the story that no source addresses. Be specific — "No sources from the directly affected country despite being the subject of the regulation" is useful; "could use more sources" is not.
 
 # OUTPUT FORMAT
 
-A single JSON object with three top-level fields. Example:
+A single JSON object with  top-level fields. Example:
 
 ```json
 {
@@ -55,9 +54,6 @@ A single JSON object with three top-level fields. Example:
   ],
   "preliminary_divergences": [
     "French sources emphasize the regulatory burden on EU startups and quote industry groups warning of competitive disadvantage, while English-language sources focus on big tech compliance timelines and consumer protection benefits."
-  ],
-  "coverage_gaps": [
-    "No sources from emerging-market regulators despite the regulation having extraterritorial effect on non-EU exporters."
   ]
 }
 ```
@@ -73,7 +69,6 @@ Field notes:
 - `sources[].summary` — one to two sentences on what this source uniquely contributes.
 - `sources[].actors_quoted[]` — array per the actor extraction guidance above. Empty array when no actor is named in the snippet.
 - `preliminary_divergences[]` — array of single-sentence strings. May be empty if no clear cross-regional divergence is visible.
-- `coverage_gaps[]` — array of single-sentence strings. May be empty if the corpus is genuinely well-balanced.
 
 Output only the JSON object. No commentary, no markdown fences, no preamble.
 

@@ -142,7 +142,6 @@ def test_merge_sources_concatenates_in_order():
             {"id": "research-rsrc-002", "outlet": "AFP"},
         ],
         preliminary_divergences=[{"description": "r-div"}],
-        coverage_gaps=["r-gap-1", "r-gap-2"],
     )
 
     tb_after = _run(merge_sources, tb, _ro())
@@ -156,7 +155,9 @@ def test_merge_sources_concatenates_in_order():
         {"description": "h-div"},
         {"description": "r-div"},
     ]
-    assert tb_after.merged_coverage_gaps == ["h-gap", "r-gap-1", "r-gap-2"]
+    # HydrationPhase2 is the single source of truth for coverage_gaps
+    # since 2026-05-21 — ResearcherAssemble's contribution dropped.
+    assert tb_after.merged_coverage_gaps == ["h-gap"]
 
 
 def test_merge_sources_production_variant_hydration_empty():
