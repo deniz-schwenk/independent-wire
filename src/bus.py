@@ -763,7 +763,16 @@ class TopicBus(BaseModel):
     bias_reader_note: str = Slot("", visibility=["tp", "mcp"])
 
     # 4B.10 Coverage gaps (1 slot + 1 consolidation slot)
-    coverage_gaps_validated: list = Slot(default_factory=list, visibility=["tp", "mcp"])
+    # `optional_write=True` because the validation stage legitimately
+    # produces an empty list in two cases observed in production
+    # (2026-05-23 Cuba dossier): (a) no upstream gaps to validate at all,
+    # and (b) every input gap was falsified by `source_balance` (e.g.
+    # "No Y-language sources" when sources do include language Y).
+    coverage_gaps_validated: list = Slot(
+        default_factory=list,
+        visibility=["tp", "mcp"],
+        optional_write=True,
+    )
     # Consolidated view written by `consolidate_missing_coverage` —
     # deterministic dedup of `perspective_missing_positions[]` (Perspective
     # agent, structured with `type`) against `coverage_gaps_validated[]`

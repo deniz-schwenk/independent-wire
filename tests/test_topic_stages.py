@@ -668,6 +668,35 @@ def test_validate_coverage_gaps_stage_dedupes_jaccard():
     assert len(kept) == 2  # near-duplicate dropped
 
 
+def test_validate_coverage_gaps_stage_empty_write_is_optional():
+    """Acceptance criterion (2026-05-23 regression fix): `coverage_gaps_validated`
+    is a legitimate-empty slot.
+
+    Two empty-result paths existed in production but both tripped the
+    postcondition gate at the runner:
+
+    1. No input gaps at all (Cuba 2026-05-23: `merged_coverage_gaps == []`)
+    2. All input gaps falsified by `source_balance` (e.g. the only gap was
+       "No Y-language sources" and Y-language sources are in fact present)
+
+    Both produce `kept == []`. The slot is declared `optional_write=True`
+    on the bus so the runner accepts the empty write; this asserts that
+    declaration is present, so the production failure does not recur.
+    """
+    from src.bus import TopicBus
+    field = TopicBus.model_fields["coverage_gaps_validated"]
+    extra = (field.json_schema_extra or {}) if hasattr(field, "json_schema_extra") else {}
+    if callable(extra):
+        # When json_schema_extra is callable, Pydantic stashes the dict
+        # under ``__schema_extra__`` — fall back to that.
+        extra = getattr(field, "__schema_extra__", {}) or {}
+    assert extra.get("optional_write") is True, (
+        "coverage_gaps_validated slot must carry optional_write=True "
+        "so legitimately-empty writes (e.g. all gaps falsified) do not "
+        "trip the postcondition gate in production"
+    )
+
+
 # ---------------------------------------------------------------------------
 # consolidate_missing_coverage — token-Jaccard dedup of voices vs gaps
 # ---------------------------------------------------------------------------
