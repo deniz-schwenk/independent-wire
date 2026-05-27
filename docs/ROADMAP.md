@@ -1,7 +1,7 @@
 # Independent Wire — Open Source Roadmap
 
 **Created:** 2026-03-26
-**Updated:** 2026-05-17 (post `TASK-DOC-RECONCILE` / Brief 6 — H3.1 expanded with the Triple-Stage Curator brief sequence; Phase 1 unchanged in rank, Curator machinery substantively updated).
+**Updated:** 2026-05-28 (post Consolidator refactor + Diagnostic A/B/C/D resolution — H3.2.8 added; three post-QA stages collapsed into one LLM-backed `ConsolidatorStage`; legacy two-surface renderer removed; zero-actor cards now carry editorial-outlet attribution; historical TPs backfilled).
 **Status:** Living document — strategic overview.
 **Basis:** Vision paper (March 2026) + PoC experience (Sessions 1–12) + Model Evals (Sessions 4–5) + Cost Optimization (Session 6) + Rendering + Website (Session 7) + V2 architecture (April–May 2026) + B-full canonical-actors migration + render restructure (May 2026) + Triple-Stage Curator brief sequence (May 12–17 2026, `docs/ADR-CURATOR-TRIPLE-STAGE.md` + `docs/AUDIT-TIMELINE.md`)
 
@@ -125,6 +125,10 @@ Catalogued for future activation. 10-combination sweep against the 2026-05-05 ba
 ### H3.2.7 — Renderer-hygiene sweep ✅ Complete (2026-05-19/20)
 
 2026-05-19/20 — Renderer-hygiene sweep across published TPs. Seven issues fixed end-to-end: actor dedup per source; structured self-retraction of invalid bias findings; per-cluster quote dedup across actor lines; per-actor source-list moved from cluster cards into the Actors-section; the cluster-formation single-actor backlog activated by a production signal (DR Congo Health Minister with 6 quotes orphaned in tp-2026-05-19-003); coverage gaps and missing stakeholder voices consolidated under a unified renderer header with deterministic dedup; Actors-section refactored into a navigation table; verbatim quotes relocated to a third-level disclosure under each source. Single-voices bracket added 2026-05-20 (`4e7da5d`) as deterministic complement to the single-actor cluster backlog, surfacing structurally-central orphan actors in their own visually-distinguished section.
+
+### H3.2.8 — Consolidator refactor + Diagnostic-issue resolution ✅ Complete (2026-05-26/27)
+
+2026-05-26/27 — `REPORT-DIAGNOSTIC-2026-05-23.md` identified three live issues (A: an over-aggressive deterministic `validate_coverage_gaps_stage` falsifying 5 of 5 entries on the Cuba dossier; B: non-English `role` and `position` text on non-English sources; C: visually-empty position cards where `n_actors == 0`) plus one observational follow-up (D: the page carrying two distinct "what's missing" surfaces — Bias-Card commentary plus the H3.2.7 unified header). Resolution collapsed three post-QA stages (`validate_coverage_gaps_stage`, `consolidate_missing_coverage`, `PerspectiveSyncStage`) into one LLM-backed `ConsolidatorStage` owning a new `what_is_missing` bus slot, renamed `single_voices` → `mentioned_actors` in supporting documentation (rename itself landed earlier in `7726fac`), removed both legacy renderer paths in favor of a single "What is missing" section before Sources, introduced editorial-outlet attribution on zero-actor position cards, and backfilled `what_is_missing` into 48 historical TPs via the new migration script. Bus field count dropped 40 → 39, stage-list counts 25 → 24 (production) / 32 → 29 (hydrated), net codebase reduction ~600 lines. Test suite 679 → 705 green. The diagnostic surface is fully closed; `docs/AGENT-IO-MAP.md` reconciliation explicitly deferred to a subsequent session.
 
 ### H3.3 — Architecture-quality follow-ups (catalogued, queued)
 

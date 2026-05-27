@@ -1,7 +1,7 @@
 # Independent Wire — Task Tracker
 
 **Created:** 2026-03-30
-**Updated:** 2026-05-17 (post `TASK-DOC-RECONCILE` / Brief 6: triple-stage Curator brief sequence marked complete with commit hashes; future workstreams carried forward; BACKLOG / TASK naming applied)
+**Updated:** 2026-05-28 (post Consolidator refactor + Diagnostic A/B/C/D resolution: three post-QA stages collapsed into one LLM-backed `ConsolidatorStage`; legacy "missing voices" + "coverage gaps" rendering paths removed; editorial-outlet attribution added for zero-actor position cards; historical TPs backfilled with `what_is_missing`)
 **Purpose:** Living document — updated after each session
 
 ## Naming conventions
@@ -126,6 +126,25 @@ A two-day sweep across the published TP rendering. Seven journalistic-transparen
 | `TASK-DOC-CONSOLIDATION-2026-05-20` (this brief) | Five atomic doc commits aligning `docs/` to the post-sweep state: ARCHITECTURE (`6267600`), ARCH-V2-BUS-SCHEMA (`d309e7f`), AGENT-IO-MAP (`4afd4c9`), ROADMAP (`aba9f9f`), TASKS (this commit). |
 
 Test suite: 602 / 0 at the sweep start → **679 / 0** at the end (added: 6 consolidation tests in `932c5c2`, 10 actors-section tests rewritten end-to-end + 4 sources third-level tests in `557cea5`; minus 3 Issue-3 dedup tests removed in the same commit; plus the empty-retry tests landed in the DeepSeek hardening sequence).
+
+---
+
+## Consolidator refactor + Diagnostic A/B/C/D (May 26–27 2026) — all ✅
+
+A two-day architectural session driven by `REPORT-DIAGNOSTIC-2026-05-23.md`. The diagnostic surfaced three live issues (A: over-aggressive `validate_coverage_gaps_stage`; B: actor `role` and `position` defaulting to source language on non-English sources; C: visually-empty position cards with `n_actors == 0`) and one observational follow-up (D: duplicated "what's missing" surfaces across the page). Resolution collapsed three post-QA stages into one LLM-backed Consolidator, removed the legacy two-section renderer paths, added editorial-outlet attribution for zero-actor cards, and backfilled `what_is_missing` into historical TPs.
+
+| Task | Description |
+|------|-------------|
+| Issue B + prune-truncation fix — English-only `role` + `position`, full-summary preservation | `d71fc01`: prune's `dropped_sources[].summary` field no longer truncated to 60 chars (full summary retained, only the log line is snipped); companion `agents/hydration_aggregator/PHASE1-INSTRUCTIONS.md` + `agents/researcher/ASSEMBLE-INSTRUCTIONS.md` prompt updates constrain `role` and `position` outputs to English regardless of source language. |
+| Issue A+D Step 1 — Bias-Detector prompt simplification | `2887573`: `agents/bias_detector/SYSTEM.md` + `INSTRUCTIONS.md` narrow `reader_note` scope to language balance + source-divergence framing. Gap commentary (previously duplicated across Bias-Card and the future Consolidator surface) moves to Consolidator. |
+| Issue A+D Step 2 — Consolidator stage + bus + stage-list cutover | `3f59ab9`: hard-cut on the bus schema. Three post-QA stages (`validate_coverage_gaps_stage`, `consolidate_missing_coverage`, `PerspectiveSyncStage`) replaced by one LLM-backed `ConsolidatorStage` owning a new `what_is_missing` bus slot (with `voices_missing[]` + `topics_missing[]`). Two old bus slots removed; field count 40 → 39. New `consolidator` agent (DeepSeek V4 Pro, t=0.3, r=none); PE-authored `agents/consolidator/SYSTEM.md` + `INSTRUCTIONS.md`. Stage-list counts 25 → 24 (production) / 32 → 29 (hydrated). |
+| Issue A+D Step 3 — Renderer cutover (new "What is missing" section) | `ae5607c`: `build_what_is_missing_section()` rendered directly before Sources, with optional `<h3>Voices missing</h3>` + `<h3>Topics missing</h3>` sub-headers. Deprecated `build_missing_coverage_section`, `.coverage-limits-wrapper` CSS, and dead `consolidated_missing_coverage` checks removed. Section order: Mentioned Actors → Actors → Divergences → Bias → What is missing → Sources → Transparency Trail. |
+| Issue A+D Step 3 follow-up — legacy `build_missing_voices` + `build_coverage_gaps` removal | `abe8139`: remaining legacy renderer paths and their `.coverage-gap` CSS removed (would have produced a duplicate H2 alongside the new section). Net −135 lines across `scripts/render.py` + `tests/test_publish_render.py`. |
+| Issue C — Editorial-outlet attribution on zero-actor position cards | `5352386`: position cards with `n_actors == 0` and `n_sources > 0` now render an inline "Editorial position attributed to: {outlets}" block in place of the missing tier sub-lists. Outlets derived from `tp["sources"]` by `source_id`, deduplicated, ordered to match the rest of the dossier. New `.cluster-editorial-attribution` CSS — lighter visual weight (italic, muted) than tier blocks. Outlets named here remain sources, not actors. |
+| Doc-reconcile — ARCHITECTURE + ARCH-V2-BUS-SCHEMA | `02c0b4b`: both authoritative docs reconciled with the Consolidator refactor (`3f59ab9`) and the prior `single_voices` → `mentioned_actors` rename (`7726fac`). `docs/AGENT-IO-MAP.md` reconciliation explicitly deferred to a later session. |
+| Migration — historical TP backfill | `b10b3dc`: new `scripts/migrate_what_is_missing_in_tp_json.py`. Walks `output/2026-*/tp-*.json`; for each TP lacking a non-empty `what_is_missing`, invokes the Consolidator once with the legacy inputs (`perspectives.missing_positions` + `bias_analysis.selection.coverage_gaps`) and writes the result back. Hard-cut removal of `consolidated_missing_coverage` + `bias_analysis.selection.coverage_gaps`. Run live: 48 migrated, 33 skipped (no inputs), 0 errors. Idempotent re-run reports zero changes. Output TPs are gitignored — migration's effect lives locally; HTML re-render intentionally out of scope. |
+
+Test suite: 679 / 0 at start → **705 / 0** at end (+9 `build_what_is_missing_section` tests, +4 editorial-attribution tests, +6 migration tests, +7 ConsolidatorStage tests; minus the deleted PerspectiveSync / `validate_coverage_gaps` / `consolidate_missing_coverage` tests).
 
 ---
 
