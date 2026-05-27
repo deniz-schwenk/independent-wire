@@ -13,12 +13,13 @@ from scripts.render import (
     build_bias_card,
     build_coverage_gaps,
     build_meta_bar,
-    build_missing_coverage_section,
     build_missing_voices,
     build_perspectives,
     build_mentioned_actors_section,
     build_sources_table,
     build_transparency,
+    build_what_is_missing_section,
+    render,
 )
 
 
@@ -634,127 +635,215 @@ def test_coverage_gaps_falls_back_to_top_level_gaps():
 
 
 # ---------------------------------------------------------------------------
-# Unified "What this dossier does not cover" + legacy fallback
+# What is missing — Consolidator output section
 # ---------------------------------------------------------------------------
 
 
-def test_missing_coverage_section_renders_only_stakeholder_voices():
-    """After the 2026-05-21 relocation, `build_missing_coverage_section`
-    renders only the stakeholder-voices axis under a single
-    ``<h2>Missing stakeholder voices</h2>`` heading. The other axis
-    (``missing_topic_dimensions``) moved to the Transparency Trail as
-    a collapsible "Coverage Limits" footnote — see
-    `test_transparency_renders_coverage_limits_collapsible`. The
-    outer ``What this dossier does not cover`` wrapper plus the
-    ``<h3>Missing stakeholder voices</h3>`` sub-heading collapsed
-    into one ``<h2>`` since there is now only one axis here."""
+def test_what_is_missing_section_renders_both_lists():
+    """Both voices and topics populated → section renders with the
+    "What is missing" H2 and both sub-headers. Voices come first."""
     tp = {
-        "consolidated_missing_coverage": {
-            "missing_stakeholder_voices": [
-                {
-                    "type": "industry",
-                    "description": "oil traders, shipping companies, "
-                                   "and insurance underwriters",
-                }
+        "what_is_missing": {
+            "voices_missing": [
+                "Iraqi government and media voices",
+                "International humanitarian organizations",
             ],
-            "missing_topic_dimensions": [
-                "European Union diplomatic response to the crisis",
+            "topics_missing": [
+                "Humanitarian dimension of the US oil blockade",
             ],
         },
-        # Audit-trail source fields still carry data; the renderer
-        # reads the consolidated slot, not these.
-        "perspectives": {
-            "missing_positions": [
-                {"type": "industry", "description": "oil traders..."},
-            ],
-        },
-        "gaps": ["oil traders, shipping companies, insurance underwriters",
-                 "European Union diplomatic response to the crisis"],
     }
-    unified = build_missing_coverage_section(tp)
-    legacy_voices = build_missing_voices(tp)
-    legacy_gaps = build_coverage_gaps(tp)
-
-    # Single H2, plain (no outer "What this dossier does not cover").
-    assert "<h2>Missing stakeholder voices</h2>" in unified
-    assert "What this dossier does not cover" not in unified
-    # Stakeholder-voice content surfaces in this section.
-    assert "oil traders" in unified
-    # The topic-dimension axis no longer renders here — relocated to
-    # `build_transparency`. Heading, sub-heading and gap text are all
-    # absent from the prominent section.
-    assert "Missing topic dimensions" not in unified
-    assert "European Union diplomatic response" not in unified
-    # Legacy builders self-skip when the consolidated slot is present.
-    assert legacy_voices == ""
-    assert legacy_gaps == ""
+    html = build_what_is_missing_section(tp)
+    assert "<h2>What is missing</h2>" in html
+    assert "Voices missing" in html
+    assert "Topics missing" in html
+    assert "Iraqi government and media voices" in html
+    assert "International humanitarian organizations" in html
+    assert "Humanitarian dimension of the US oil blockade" in html
+    # Voices section comes before Topics section in the rendered HTML.
+    assert html.find("Voices missing") < html.find("Topics missing")
 
 
-def test_missing_coverage_legacy_fallback_when_slot_absent():
-    """Pre-2026-05-20 TP JSONs do not carry the consolidated slot. The
-    unified renderer returns empty, and the legacy
-    `build_missing_voices` + `build_coverage_gaps` render in their
-    original positions, unchanged."""
+def test_what_is_missing_section_only_voices():
+    """Topics empty → only the Voices sub-header renders."""
+    tp = {
+        "what_is_missing": {
+            "voices_missing": ["A missing voice"],
+            "topics_missing": [],
+        },
+    }
+    html = build_what_is_missing_section(tp)
+    assert "<h2>What is missing</h2>" in html
+    assert "Voices missing" in html
+    assert "A missing voice" in html
+    assert "Topics missing" not in html
+
+
+def test_what_is_missing_section_only_topics():
+    """Voices empty → only the Topics sub-header renders."""
+    tp = {
+        "what_is_missing": {
+            "voices_missing": [],
+            "topics_missing": ["A missing topic"],
+        },
+    }
+    html = build_what_is_missing_section(tp)
+    assert "<h2>What is missing</h2>" in html
+    assert "Topics missing" in html
+    assert "A missing topic" in html
+    assert "Voices missing" not in html
+
+
+def test_what_is_missing_section_both_empty_omits_section():
+    """Both lists empty → empty string (section omitted from page)."""
+    tp = {
+        "what_is_missing": {
+            "voices_missing": [],
+            "topics_missing": [],
+        },
+    }
+    assert build_what_is_missing_section(tp) == ""
+
+
+def test_what_is_missing_section_key_absent_omits_section():
+    """Legacy TP rendered before the Consolidator landed — no
+    `what_is_missing` key in the JSON; section is omitted."""
+    tp = {"perspectives": {"position_clusters": []}}
+    assert build_what_is_missing_section(tp) == ""
+
+
+def test_what_is_missing_section_non_dict_value_omits_section():
+    """Defensive — `what_is_missing` value must be a dict; non-dict
+    types (None, string, list, int) return empty so a malformed legacy
+    TP cannot crash the renderer."""
+    assert build_what_is_missing_section({"what_is_missing": None}) == ""
+    assert build_what_is_missing_section({"what_is_missing": "x"}) == ""
+    assert build_what_is_missing_section({"what_is_missing": []}) == ""
+
+
+def test_what_is_missing_section_filters_non_string_entries():
+    """Defensive — only non-empty string entries surface; null/empty/
+    non-string entries are silently dropped rather than crashing or
+    rendering as ``None``."""
+    tp = {
+        "what_is_missing": {
+            "voices_missing": ["valid voice", "", None, 42, "another voice"],
+            "topics_missing": [None, "valid topic", ""],
+        },
+    }
+    html = build_what_is_missing_section(tp)
+    assert "valid voice" in html
+    assert "another voice" in html
+    assert "valid topic" in html
+    # The non-string entries must not appear as their str() rendering.
+    assert ">None<" not in html
+    assert ">42<" not in html
+    # Empty <li></li> entries are not emitted.
+    assert "<li></li>" not in html
+
+
+def test_what_is_missing_section_escapes_html_in_entries():
+    """Defensive — entries containing HTML special chars are escaped
+    (no raw ``<``, ``&``, etc. surface into the output)."""
+    tp = {
+        "what_is_missing": {
+            "voices_missing": ["A voice with <script>alert(1)</script>"],
+            "topics_missing": ["Topic with & ampersand"],
+        },
+    }
+    html = build_what_is_missing_section(tp)
+    assert "<script>" not in html
+    assert "&lt;script&gt;" in html
+    assert "& ampersand" not in html  # raw `&` would mean `&` then space
+    assert "&amp; ampersand" in html
+
+
+def test_what_is_missing_section_renders_before_sources_in_full_page():
+    """Integration: in the full rendered page, the new "What is
+    missing" section appears directly before the Sources section."""
+    tp = {
+        "id": "tp-2026-05-27-001",
+        "metadata": {
+            "title": "Test Topic", "date": "2026-05-27", "topic_slug": "t",
+            "priority": 5, "selection_reason": "r",
+        },
+        "article": {"headline": "H", "body": "B", "summary": "S"},
+        "sources": [
+            {"id": "src-001", "outlet": "Reuters", "url": "https://r/", "title": "t"},
+        ],
+        "actors": [],
+        "final_actors": [],
+        "perspectives": {"position_clusters": [], "missing_positions": []},
+        "what_is_missing": {
+            "voices_missing": ["MARKER_VOICE_FROM_CONSOLIDATOR"],
+            "topics_missing": ["MARKER_TOPIC_FROM_CONSOLIDATOR"],
+        },
+        "divergences": [],
+        "transparency": {"selection_reason": "r"},
+        "bias_analysis": {
+            "language": [], "source": {"by_country": {}, "by_language": {}, "represented": [], "total": 1},
+            "geographical": {"represented": [], "by_country": {}, "missing_from_dossier": []},
+            "selection": {"missing_positions": [], "qa_problems_found": []},
+            "framing": {"position_clusters_summary": [], "cross_source_divergences": [], "cluster_count": 0, "distinct_actor_count": 0},
+            "reader_note": "",
+        },
+    }
+    page = render(tp)
+    voice_marker_idx = page.find("MARKER_VOICE_FROM_CONSOLIDATOR")
+    topic_marker_idx = page.find("MARKER_TOPIC_FROM_CONSOLIDATOR")
+    sources_h2_idx = page.find("<h2>Sources</h2>")
+
+    assert voice_marker_idx >= 0, "voice entry must appear in the page"
+    assert topic_marker_idx >= 0, "topic entry must appear in the page"
+    assert sources_h2_idx >= 0, "Sources H2 must appear in the page"
+    # The new section's content sits before the Sources H2.
+    assert voice_marker_idx < sources_h2_idx, (
+        "Voices entry from what_is_missing must render before Sources"
+    )
+    assert topic_marker_idx < sources_h2_idx, (
+        "Topics entry from what_is_missing must render before Sources"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Legacy missing-positions + coverage-gaps fallback (pre-Consolidator TPs)
+# ---------------------------------------------------------------------------
+
+
+def test_missing_voices_renders_legacy_perspectives_field():
+    """``build_missing_voices`` continues to render
+    ``perspectives.missing_positions`` for legacy TP JSONs as a simple
+    bulleted list. With the Consolidator refactor this surface is
+    superseded by ``build_what_is_missing_section`` for new TPs, but
+    the legacy path stays for historical JSONs."""
     tp = {
         "perspectives": {
             "missing_positions": [
                 {"type": "civil_society", "description": "Affected communities"},
             ],
         },
-        "gaps": [
-            "European Union diplomatic response to the crisis",
-        ],
     }
-    unified = build_missing_coverage_section(tp)
     legacy_voices = build_missing_voices(tp)
-    legacy_gaps = build_coverage_gaps(tp)
-
-    # Unified is empty — no consolidated slot present.
-    assert unified == ""
-    # Legacy renderers fire with their original headings + content.
     assert "What's missing" in legacy_voices
     assert "Affected communities" in legacy_voices
+
+
+def test_coverage_gaps_renders_legacy_keys():
+    """``build_coverage_gaps`` continues to render the legacy
+    ``bias_analysis.selection.coverage_gaps`` / top-level ``gaps``
+    keys for pre-Consolidator TP JSONs. New TPs no longer carry either
+    key (post 3f59ab9), so this renderer naturally yields empty for
+    them."""
+    tp = {
+        "gaps": ["European Union diplomatic response to the crisis"],
+    }
+    legacy_gaps = build_coverage_gaps(tp)
     assert "<h2>Coverage Gaps</h2>" in legacy_gaps
     assert "European Union diplomatic response" in legacy_gaps
 
-
-def test_missing_coverage_section_omits_when_no_stakeholder_voices():
-    """The prominent section is gated solely on
-    `missing_stakeholder_voices` after the 2026-05-21 relocation —
-    `missing_topic_dimensions` no longer affects this section. So:
-    voices populated → section renders; voices empty (regardless of
-    dimensions) → section omitted; both empty → section omitted."""
-    # Voices populated, dimensions empty → section renders.
-    tp_voices_only = {
-        "consolidated_missing_coverage": {
-            "missing_stakeholder_voices": [
-                {"type": "industry", "description": "oil traders"},
-            ],
-            "missing_topic_dimensions": [],
-        }
-    }
-    html = build_missing_coverage_section(tp_voices_only)
-    assert "Missing stakeholder voices" in html
-    assert "oil traders" in html
-
-    # Voices empty, dimensions populated → section omitted entirely.
-    # The dimensions render in `build_transparency` instead.
-    tp_dims_only = {
-        "consolidated_missing_coverage": {
-            "missing_stakeholder_voices": [],
-            "missing_topic_dimensions": ["A topic dimension"],
-        }
-    }
-    assert build_missing_coverage_section(tp_dims_only) == ""
-
-    # Both empty → section omitted.
-    tp_empty = {
-        "consolidated_missing_coverage": {
-            "missing_stakeholder_voices": [],
-            "missing_topic_dimensions": [],
-        }
-    }
-    assert build_missing_coverage_section(tp_empty) == ""
+    # New-shaped TP (no `gaps`, no `bias_analysis.selection.coverage_gaps`):
+    # legacy renderer returns empty.
+    assert build_coverage_gaps({"perspectives": {}}) == ""
 
 
 def test_meta_bar_languages_count_correct():
@@ -1280,95 +1369,6 @@ def test_qa_corrections_wrapper_renders_with_counts():
     # Default closed — the wrapper element has no `open` attribute. The
     # inner per-correction details may still render `open=False` too.
     assert 'class="qa-corrections-wrapper" open' not in html
-
-
-def test_transparency_renders_coverage_limits_collapsible():
-    """Coverage Limits sub-section relocated 2026-05-21 from the
-    prominent Missing-Coverage section into the Transparency Trail.
-    Renders inside a ``<details class="coverage-limits-wrapper">``
-    block (default closed), positioned between QA Corrections and
-    the strict-drop block, with a count-bearing summary line."""
-    tp = {
-        "transparency": {
-            "selection_reason": "x",
-            "qa_corrections": [],
-            "qa_problems_found": [],
-        },
-        "consolidated_missing_coverage": {
-            "missing_stakeholder_voices": [],
-            "missing_topic_dimensions": [
-                "European Union diplomatic response to the crisis",
-                "Industry actors on the disruption to artisanal mining",
-            ],
-        },
-    }
-    html = build_transparency(tp)
-    # Wrapper rendered with the new class.
-    assert 'class="coverage-limits-wrapper"' in html
-    # Default closed — no `open` attribute on the wrapper.
-    assert 'class="coverage-limits-wrapper" open' not in html
-    # <dt> uses the editorial "Coverage Limits" label, not "missing"
-    # or "gaps" wording.
-    assert "<dt>Coverage Limits</dt>" in html
-    # Summary carries the count with the "notes" plural form (n=2).
-    assert "2 note" in html
-    assert "1 note" not in html
-    # The two dimension entries surface as <li> items inside the
-    # collapsible.
-    assert "European Union diplomatic response" in html
-    assert "artisanal mining" in html
-    assert 'class="coverage-limits"' in html
-
-
-def test_transparency_coverage_limits_omitted_when_dimensions_empty():
-    """If `missing_topic_dimensions` is empty (or the consolidated
-    slot absent), `build_transparency` emits no Coverage Limits
-    block — same gating pattern as QA Corrections and the strict-
-    drop block."""
-    # Slot present but list empty.
-    tp_empty = {
-        "transparency": {"selection_reason": "x"},
-        "consolidated_missing_coverage": {
-            "missing_stakeholder_voices": [],
-            "missing_topic_dimensions": [],
-        },
-    }
-    html_empty = build_transparency(tp_empty)
-    assert "coverage-limits-wrapper" not in html_empty
-    assert "Coverage Limits" not in html_empty
-
-    # Slot absent entirely (pre-2026-05-20 TPs).
-    tp_pre = {"transparency": {"selection_reason": "x"}}
-    html_pre = build_transparency(tp_pre)
-    assert "coverage-limits-wrapper" not in html_pre
-    assert "Coverage Limits" not in html_pre
-
-
-def test_transparency_coverage_limits_sits_between_qa_and_dropped_block():
-    """Acceptance criterion: the Coverage Limits collapsible is
-    positioned between QA Corrections and the strict-drop block."""
-    tp = {
-        "transparency": {
-            "selection_reason": "x",
-            "qa_corrections": [
-                {"correction_needed": True, "proposed_correction": "a"},
-            ],
-            "qa_problems_found": [{"problem": "p"}],
-            "dropped_sources": [
-                {"id": "src-001", "outlet": "X", "summary": "s"},
-            ],
-            "dropped_clusters": [],
-        },
-        "consolidated_missing_coverage": {
-            "missing_stakeholder_voices": [],
-            "missing_topic_dimensions": ["A topic dimension"],
-        },
-    }
-    html = build_transparency(tp)
-    qa_idx = html.find("qa-corrections-wrapper")
-    cl_idx = html.find("coverage-limits-wrapper")
-    drop_idx = html.find("dropped-id")  # marker class on dropped-block items
-    assert 0 <= qa_idx < cl_idx < drop_idx
 
 
 def test_qa_corrections_wrapper_omitted_when_no_corrections():

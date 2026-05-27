@@ -548,21 +548,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -1519,15 +1506,12 @@ def build_actors_section(tp: dict) -> str:
 def build_missing_voices(tp: dict) -> str:
     """Render Perspective V2 missing_positions as a simple bulleted list.
 
-    Legacy renderer. Returns empty when the consolidated slot is
-    present — the unified section in `build_missing_coverage_section`
-    has already covered the missing-voices content there. Stays here
-    as the fallback for pre-consolidation TP JSONs.
+    Pre-Consolidator legacy renderer. Reads ``perspectives.missing_positions``
+    (the Perspective agent's structured "what's missing" output, by type).
+    Kept in place as a fallback shape; on new TPs the same conceptual
+    surface is owned by ``build_what_is_missing_section`` (post-3f59ab9
+    Consolidator output).
     """
-    if isinstance(tp.get("consolidated_missing_coverage"), dict) and (
-        tp["consolidated_missing_coverage"]
-    ):
-        return ""
     missing = tp.get("perspectives", {}).get("missing_positions", [])
     if not missing:
         return ""
@@ -1543,55 +1527,52 @@ def build_missing_voices(tp: dict) -> str:
     return f'<h2>What\'s missing</h2>\n<ul class="missing-positions">{"".join(items)}</ul>'
 
 
-def build_missing_coverage_section(tp: dict) -> str:
-    """Render the "Missing stakeholder voices" prominent section.
+def build_what_is_missing_section(tp: dict) -> str:
+    """Render the Consolidator's ``what_is_missing`` output as a
+    prominent section directly before Sources.
 
-    Reads `consolidated_missing_coverage.missing_stakeholder_voices`
-    (Perspective's structured missing_positions, grouped by type) from
-    the consolidated view written by the deterministic
-    `consolidate_missing_coverage` topic-stage. Renders it under a
-    plain ``<h2>Missing stakeholder voices</h2>`` heading.
+    Reads ``tp["what_is_missing"]`` (written by the LLM
+    ``ConsolidatorStage`` — see ``REPORT-DIAGNOSTIC-2026-05-23.md``)
+    and surfaces its two arrays under sub-headers:
 
-    The other axis on the consolidated slot ―
-    ``missing_topic_dimensions`` ― relocated 2026-05-21 to the
-    Transparency Trail as a collapsible "Coverage Limits" footnote;
-    see `build_transparency`. The relocation reduces the topic-
-    dimensions list's visual dominance without removing it
-    (honest-about-limits principle).
+    - ``Voices missing`` — stakeholders, regions, languages, or media
+      spheres whose perspective the corpus does not reach.
+    - ``Topics missing`` — aspects, dimensions, angles, or themes the
+      corpus does not cover.
 
-    With only one axis remaining in the prominent slot, the previous
-    outer ``<h2>What this dossier does not cover</h2>`` wrapper plus
-    the sub-section ``<h3>Missing stakeholder voices</h3>`` heading
-    collapse into a single ``<h2>Missing stakeholder voices</h2>`` —
-    one less heading layer, no information lost.
+    Edge cases:
 
-    Legacy-permissive: when the consolidated slot is absent
-    (pre-2026-05-20 TPs) or contains no stakeholder voices, this
-    function returns empty and the legacy `build_missing_voices`
-    renders in its original position.
+    - Both lists empty → return empty string (section omitted).
+    - Only one list populated → render that sub-header alone.
+    - ``what_is_missing`` key absent or non-dict (legacy TP rendered
+      before the Consolidator landed) → return empty string.
+    - Non-string entries in either list are silently dropped — only
+      non-empty strings survive into the rendered ``<li>`` items.
     """
-    consolidated = tp.get("consolidated_missing_coverage")
-    if not isinstance(consolidated, dict) or not consolidated:
-        return ""
-    voices = consolidated.get("missing_stakeholder_voices") or []
-
-    voice_items: list[str] = []
-    for m in voices:
-        if not isinstance(m, dict):
-            continue
-        mtype = _esc(m.get("type", ""))
-        desc = _esc(m.get("description", ""))
-        if not desc:
-            continue
-        voice_items.append(f'<li><strong>{mtype}</strong> — {desc}</li>')
-
-    if not voice_items:
+    raw = tp.get("what_is_missing")
+    if not isinstance(raw, dict):
         return ""
 
-    return (
-        '<h2>Missing stakeholder voices</h2>\n'
-        f'<ul class="missing-positions">{"".join(voice_items)}</ul>\n'
-    )
+    def _clean(entries: object) -> list[str]:
+        if not isinstance(entries, list):
+            return []
+        return [e for e in entries if isinstance(e, str) and e]
+
+    voices = _clean(raw.get("voices_missing"))
+    topics = _clean(raw.get("topics_missing"))
+    if not voices and not topics:
+        return ""
+
+    parts: list[str] = ["<h2>What is missing</h2>\n"]
+    if voices:
+        items = "".join(f"<li>{_esc(v)}</li>" for v in voices)
+        parts.append('<h3>Voices missing</h3>\n')
+        parts.append(f'<ul class="missing-positions">{items}</ul>\n')
+    if topics:
+        items = "".join(f"<li>{_esc(t)}</li>" for t in topics)
+        parts.append('<h3>Topics missing</h3>\n')
+        parts.append(f'<ul class="missing-positions">{items}</ul>\n')
+    return "".join(parts)
 
 
 def build_divergences(tp: dict) -> str:
@@ -1731,14 +1712,12 @@ def build_bias_card(tp: dict) -> str:
 
 
 def build_coverage_gaps(tp: dict) -> str:
-    """Legacy Coverage Gaps section. Returns empty when the consolidated
-    slot is present — `build_missing_coverage_section` already rendered
-    the deduped gap list under "Missing topic dimensions". Stays here
-    as the fallback for pre-consolidation TP JSONs."""
-    if isinstance(tp.get("consolidated_missing_coverage"), dict) and (
-        tp["consolidated_missing_coverage"]
-    ):
-        return ""
+    """Pre-Consolidator legacy Coverage Gaps section. The
+    bus-side data sources (``gaps`` and ``bias_analysis.selection.
+    coverage_gaps``) are gone on TPs produced after 3f59ab9, so this
+    function naturally returns empty for new TPs and renders only when
+    a legacy TP JSON still carries the keys.
+    """
     gaps = (
         tp.get("bias_analysis", {})
           .get("selection", {})
@@ -2161,37 +2140,6 @@ def build_transparency(tp: dict) -> str:
             f'</details></dd>\n'
         )
 
-    # Coverage Limits — collapsible footnote relocated 2026-05-21
-    # from the prominent Missing-Coverage section. Reads the same
-    # `consolidated_missing_coverage.missing_topic_dimensions` list
-    # written by the `consolidate_missing_coverage` topic-stage; the
-    # data path is unchanged, only the rendering destination moved.
-    # "Noted" wording over "missing" / "gaps" — these are honest
-    # limits of what the corpus contains, not failures.
-    coverage_limits = [
-        g for g in (
-            tp.get("consolidated_missing_coverage", {})
-              .get("missing_topic_dimensions") or []
-        )
-        if isinstance(g, str) and g
-    ]
-    if coverage_limits:
-        cl_items = "".join(
-            f'<li>{_esc(g)}</li>' for g in coverage_limits
-        )
-        n = len(coverage_limits)
-        cl_summary = (
-            f'Coverage Limits &mdash; <strong>{n} '
-            f'note{"s" if n != 1 else ""}</strong>'
-        )
-        parts.append(
-            f'<dt>Coverage Limits</dt><dd>'
-            f'<details class="coverage-limits-wrapper">'
-            f'<summary>{cl_summary}</summary>'
-            f'<ul class="coverage-limits">{cl_items}</ul>'
-            f'</details></dd>\n'
-        )
-
     dropped_sources = [
         d for d in (t.get("dropped_sources") or []) if isinstance(d, dict)
     ]
@@ -2428,15 +2376,14 @@ def render(tp: dict) -> str:
         build_perspectives(tp),
         build_mentioned_actors_section(tp),
         build_actors_section(tp),
-        # Unified section when the consolidated slot is present.
-        # Legacy `build_missing_voices` + `build_coverage_gaps` calls
-        # below stay in place and self-skip in the consolidated case;
-        # they fire in their original positions for pre-2026-05-20 TPs.
-        build_missing_coverage_section(tp),
         build_missing_voices(tp),
         build_divergences(tp),
         build_bias_card(tp),
         build_coverage_gaps(tp),
+        # New Consolidator-output section — voices + topics missing.
+        # Positioned directly before Sources per architectural intent
+        # (post 3f59ab9 Consolidator refactor).
+        build_what_is_missing_section(tp),
         build_sources_section(tp),
         build_transparency(tp),
         build_glossary(),
