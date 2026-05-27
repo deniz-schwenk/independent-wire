@@ -268,6 +268,156 @@ def test_cluster_card_actor_count_is_clickable_when_id_present():
 
 
 # ---------------------------------------------------------------------------
+# Zero-actor position cards: editorial-outlet attribution block
+# ---------------------------------------------------------------------------
+
+
+def test_cluster_card_editorial_attribution_when_no_actors_and_sources_present():
+    """When a position cluster has zero actors across all tiers but its
+    source_ids reference outlets in tp["sources"], the card renders an
+    "Editorial position attributed to: <outlets>" block in place of the
+    missing tier sub-lists."""
+    tp = {
+        "sources": [
+            {"id": "src-001", "outlet": "Le Monde",
+             "title": "t", "summary": "x", "actors_quoted": []},
+            {"id": "src-002", "outlet": "Süddeutsche Zeitung",
+             "title": "t", "summary": "x", "actors_quoted": []},
+            {"id": "src-003", "outlet": "Reuters",
+             "title": "t", "summary": "x", "actors_quoted": []},
+        ],
+        "perspectives": {
+            "position_clusters": [
+                {
+                    "id": "pc-001",
+                    "position_label": "Editorial framing",
+                    "position_summary": "Sources interpret events through ...",
+                    "actor_ids": [],
+                    "stated": [],
+                    "reported": [],
+                    "mentioned": [],
+                    "source_ids": ["src-001", "src-002", "src-003"],
+                    "n_actors": 0,
+                    "n_sources": 3,
+                    "n_regions": 3,
+                    "n_languages": 2,
+                }
+            ],
+            "missing_positions": [],
+        },
+    }
+    html = build_perspectives(tp)
+    assert "Editorial position attributed to:" in html
+    assert 'class="cluster-editorial-attribution"' in html
+    assert "<strong>Le Monde</strong>" in html
+    assert "<strong>Süddeutsche Zeitung</strong>" in html
+    assert "<strong>Reuters</strong>" in html
+
+
+def test_cluster_card_no_editorial_attribution_when_actors_present():
+    """When the cluster has at least one actor in a tier sub-list, the
+    tier blocks own the surface — no editorial-attribution block."""
+    tp = {
+        "actors": [
+            {"id": "actor-001", "name": "X", "role": "r", "type": "government",
+             "source_ids": ["src-001"], "quotes": []},
+        ],
+        "sources": [
+            {"id": "src-001", "outlet": "Le Monde",
+             "title": "t", "summary": "x", "actors_quoted": []},
+        ],
+        "perspectives": {
+            "position_clusters": [
+                {
+                    "id": "pc-001",
+                    "position_label": "L",
+                    "position_summary": "s",
+                    "actor_ids": ["actor-001"],
+                    "stated": ["actor-001"],
+                    "source_ids": ["src-001"],
+                    "n_actors": 1,
+                    "n_sources": 1,
+                    "n_regions": 1,
+                    "n_languages": 1,
+                }
+            ],
+            "missing_positions": [],
+        },
+    }
+    html = build_perspectives(tp)
+    assert "Editorial position attributed to:" not in html
+    assert 'class="cluster-editorial-attribution"' not in html
+
+
+def test_cluster_card_no_editorial_attribution_when_zero_actors_and_zero_sources():
+    """Defensive edge case: card with 0 actors and 0 sources renders
+    label + summary + counts line only — no attribution block (would
+    produce 'Editorial position attributed to:' with nothing after)."""
+    tp = {
+        "sources": [],
+        "perspectives": {
+            "position_clusters": [
+                {
+                    "id": "pc-001",
+                    "position_label": "Empty",
+                    "position_summary": "",
+                    "actor_ids": [],
+                    "source_ids": [],
+                    "n_actors": 0,
+                    "n_sources": 0,
+                    "n_regions": 0,
+                    "n_languages": 0,
+                }
+            ],
+            "missing_positions": [],
+        },
+    }
+    html = build_perspectives(tp)
+    assert "Editorial position attributed to:" not in html
+    assert 'class="cluster-editorial-attribution"' not in html
+
+
+def test_cluster_card_editorial_attribution_deduplicates_outlets():
+    """Two source_ids pointing to the same outlet name produce one
+    entry in the attribution block (preserving order from tp["sources"])."""
+    tp = {
+        "sources": [
+            {"id": "src-001", "outlet": "Reuters",
+             "title": "t", "summary": "x", "actors_quoted": []},
+            {"id": "src-002", "outlet": "Reuters",
+             "title": "t", "summary": "x", "actors_quoted": []},
+            {"id": "src-003", "outlet": "Le Monde",
+             "title": "t", "summary": "x", "actors_quoted": []},
+        ],
+        "perspectives": {
+            "position_clusters": [
+                {
+                    "id": "pc-001",
+                    "position_label": "Editorial framing",
+                    "position_summary": "...",
+                    "actor_ids": [],
+                    "source_ids": ["src-001", "src-002", "src-003"],
+                    "n_actors": 0,
+                    "n_sources": 3,
+                    "n_regions": 1,
+                    "n_languages": 1,
+                }
+            ],
+            "missing_positions": [],
+        },
+    }
+    html = build_perspectives(tp)
+    assert "Editorial position attributed to:" in html
+    # Outlet appears exactly once even though two source_ids point to it
+    assert html.count("<strong>Reuters</strong>") == 1
+    assert html.count("<strong>Le Monde</strong>") == 1
+    # Order matches tp["sources"] order: Reuters first, then Le Monde
+    reuters_pos = html.find("<strong>Reuters</strong>")
+    lemonde_pos = html.find("<strong>Le Monde</strong>")
+    assert reuters_pos < lemonde_pos
+
+
+# ---------------------------------------------------------------------------
 # Mentioned-actors section (build_mentioned_actors_section + Actors-section row)
 # ---------------------------------------------------------------------------
 

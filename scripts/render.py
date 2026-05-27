@@ -354,6 +354,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -1005,6 +1020,19 @@ def build_perspectives(tp: dict) -> str:
             if isinstance(aid, str) and aid:
                 actor_index[aid] = actor
 
+    # Index sources by id, retaining the order they appear in tp["sources"]
+    # so the editorial-attribution block (rendered for zero-actor cards)
+    # lists outlets in the same visual order as the rest of the dossier.
+    sources_seq = tp.get("sources") or []
+    source_outlet_by_id: dict[str, str] = {}
+    for src in sources_seq:
+        if not isinstance(src, dict):
+            continue
+        sid = src.get("id")
+        outlet = src.get("outlet")
+        if isinstance(sid, str) and sid and isinstance(outlet, str) and outlet:
+            source_outlet_by_id[sid] = outlet
+
     cards = []
     # 1-based emission index matches `build_actors_section`'s
     # cluster-index, so the ``Cluster N`` pill on a cluster card
@@ -1044,6 +1072,37 @@ def build_perspectives(tp: dict) -> str:
                 f'  </div>\n'
             )
 
+        # Editorial-attribution fallback for zero-actor cards. When the
+        # cluster has no actors backing it across any tier, the position
+        # is editorially carried by the outlets in its source set; name
+        # them inline so the card isn't visually empty. Outlets here do
+        # NOT enter the actor list (they remain sources, not actors).
+        attribution_block = ""
+        if not tier_blocks:
+            seen: set[str] = set()
+            ordered_outlets: list[str] = []
+            for src in sources_seq:
+                if not isinstance(src, dict):
+                    continue
+                sid = src.get("id")
+                if not (isinstance(sid, str) and sid in cluster_source_ids):
+                    continue
+                outlet = source_outlet_by_id.get(sid)
+                if not outlet or outlet in seen:
+                    continue
+                seen.add(outlet)
+                ordered_outlets.append(outlet)
+            if ordered_outlets:
+                outlets_html = ", ".join(
+                    f"<strong>{_esc(o)}</strong>" for o in ordered_outlets
+                )
+                attribution_block = (
+                    f'  <div class="cluster-editorial-attribution">\n'
+                    f'    <p>Editorial position attributed to: '
+                    f'{outlets_html}</p>\n'
+                    f'  </div>\n'
+                )
+
         actors_label = _plural(n_actors, "actor")
         if cluster_id:
             actors_html = (
@@ -1079,6 +1138,7 @@ def build_perspectives(tp: dict) -> str:
             f'  <div class="card-header"><span class="card-actor">{_esc(label)}</span></div>\n'
             f'  <div class="card-position">{_esc(summary)}</div>\n'
             f'{"".join(tier_blocks)}'
+            f'{attribution_block}'
             f'  {counts_line}'
             f'</div>\n'
         )
