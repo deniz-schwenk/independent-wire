@@ -500,12 +500,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -1503,30 +1497,6 @@ def build_actors_section(tp: dict) -> str:
     )
 
 
-def build_missing_voices(tp: dict) -> str:
-    """Render Perspective V2 missing_positions as a simple bulleted list.
-
-    Pre-Consolidator legacy renderer. Reads ``perspectives.missing_positions``
-    (the Perspective agent's structured "what's missing" output, by type).
-    Kept in place as a fallback shape; on new TPs the same conceptual
-    surface is owned by ``build_what_is_missing_section`` (post-3f59ab9
-    Consolidator output).
-    """
-    missing = tp.get("perspectives", {}).get("missing_positions", [])
-    if not missing:
-        return ""
-    items = []
-    for m in missing:
-        if not isinstance(m, dict):
-            continue
-        mtype = _esc(m.get("type", ""))
-        desc = _esc(m.get("description", ""))
-        items.append(f'<li><strong>{mtype}</strong> — {desc}</li>')
-    if not items:
-        return ""
-    return f'<h2>What\'s missing</h2>\n<ul class="missing-positions">{"".join(items)}</ul>'
-
-
 def build_what_is_missing_section(tp: dict) -> str:
     """Render the Consolidator's ``what_is_missing`` output as a
     prominent section directly before Sources.
@@ -1709,25 +1679,6 @@ def build_bias_card(tp: dict) -> str:
         )
 
     return "".join(parts)
-
-
-def build_coverage_gaps(tp: dict) -> str:
-    """Pre-Consolidator legacy Coverage Gaps section. The
-    bus-side data sources (``gaps`` and ``bias_analysis.selection.
-    coverage_gaps``) are gone on TPs produced after 3f59ab9, so this
-    function naturally returns empty for new TPs and renders only when
-    a legacy TP JSON still carries the keys.
-    """
-    gaps = (
-        tp.get("bias_analysis", {})
-          .get("selection", {})
-          .get("coverage_gaps", [])
-        or tp.get("gaps", [])
-    )
-    if not gaps:
-        return ""
-    items = "\n".join(f'<div class="coverage-gap">{_esc(g)}</div>' for g in gaps)
-    return f'<h2>Coverage Gaps</h2>\n{items}\n'
 
 
 _OUTLET_COUNTRY_BY_NAME: dict[str, str] | None = None
@@ -2376,11 +2327,9 @@ def render(tp: dict) -> str:
         build_perspectives(tp),
         build_mentioned_actors_section(tp),
         build_actors_section(tp),
-        build_missing_voices(tp),
         build_divergences(tp),
         build_bias_card(tp),
-        build_coverage_gaps(tp),
-        # New Consolidator-output section — voices + topics missing.
+        # Consolidator-output section — voices + topics missing.
         # Positioned directly before Sources per architectural intent
         # (post 3f59ab9 Consolidator refactor).
         build_what_is_missing_section(tp),

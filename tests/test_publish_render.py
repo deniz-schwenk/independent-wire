@@ -11,9 +11,7 @@ from scripts.publish import extract_metadata
 from scripts.render import (
     build_actors_section,
     build_bias_card,
-    build_coverage_gaps,
     build_meta_bar,
-    build_missing_voices,
     build_perspectives,
     build_mentioned_actors_section,
     build_sources_table,
@@ -594,46 +592,6 @@ def test_bias_card_legacy_findings_without_finding_valid_all_render():
     assert "utterly" in html
 
 
-def test_missing_voices_section_renders_when_data_present():
-    """Bug 3: V2 path is `perspectives.missing_positions`, not nested
-    under `bias_analysis.perspectives`."""
-    tp = {
-        "perspectives": {
-            "position_clusters": [],
-            "missing_positions": [
-                {
-                    "type": "affected_community",
-                    "description": "Civilians in the strait region.",
-                }
-            ],
-        }
-    }
-    html = build_missing_voices(tp)
-    assert "Civilians in the strait region." in html
-    assert "affected_community" in html
-
-
-def test_coverage_gaps_section_renders_when_data_present():
-    """Bug 4: V2 path is `bias_analysis.selection.coverage_gaps`."""
-    tp = {
-        "bias_analysis": {
-            "selection": {
-                "coverage_gaps": ["No on-the-ground reporting from Yemen."]
-            }
-        }
-    }
-    html = build_coverage_gaps(tp)
-    assert "No on-the-ground reporting from Yemen." in html
-    assert "<h2>Coverage Gaps</h2>" in html
-
-
-def test_coverage_gaps_falls_back_to_top_level_gaps():
-    """Bug 4 fallback: top-level `gaps` carries the same content."""
-    tp = {"gaps": ["Statement from the affected ministry was not available."]}
-    html = build_coverage_gaps(tp)
-    assert "Statement from the affected ministry was not available." in html
-
-
 # ---------------------------------------------------------------------------
 # What is missing — Consolidator output section
 # ---------------------------------------------------------------------------
@@ -803,47 +761,6 @@ def test_what_is_missing_section_renders_before_sources_in_full_page():
     assert topic_marker_idx < sources_h2_idx, (
         "Topics entry from what_is_missing must render before Sources"
     )
-
-
-# ---------------------------------------------------------------------------
-# Legacy missing-positions + coverage-gaps fallback (pre-Consolidator TPs)
-# ---------------------------------------------------------------------------
-
-
-def test_missing_voices_renders_legacy_perspectives_field():
-    """``build_missing_voices`` continues to render
-    ``perspectives.missing_positions`` for legacy TP JSONs as a simple
-    bulleted list. With the Consolidator refactor this surface is
-    superseded by ``build_what_is_missing_section`` for new TPs, but
-    the legacy path stays for historical JSONs."""
-    tp = {
-        "perspectives": {
-            "missing_positions": [
-                {"type": "civil_society", "description": "Affected communities"},
-            ],
-        },
-    }
-    legacy_voices = build_missing_voices(tp)
-    assert "What's missing" in legacy_voices
-    assert "Affected communities" in legacy_voices
-
-
-def test_coverage_gaps_renders_legacy_keys():
-    """``build_coverage_gaps`` continues to render the legacy
-    ``bias_analysis.selection.coverage_gaps`` / top-level ``gaps``
-    keys for pre-Consolidator TP JSONs. New TPs no longer carry either
-    key (post 3f59ab9), so this renderer naturally yields empty for
-    them."""
-    tp = {
-        "gaps": ["European Union diplomatic response to the crisis"],
-    }
-    legacy_gaps = build_coverage_gaps(tp)
-    assert "<h2>Coverage Gaps</h2>" in legacy_gaps
-    assert "European Union diplomatic response" in legacy_gaps
-
-    # New-shaped TP (no `gaps`, no `bias_analysis.selection.coverage_gaps`):
-    # legacy renderer returns empty.
-    assert build_coverage_gaps({"perspectives": {}}) == ""
 
 
 def test_meta_bar_languages_count_correct():
