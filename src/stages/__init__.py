@@ -40,7 +40,6 @@ from src.stages.topic_stages import (
     compose_transparency_card,
     compute_source_balance,
     consolidate_actors,
-    consolidate_missing_coverage,
     derive_mentioned_actors,
     enrich_perspective_clusters,
     filter_media_actors_quoted,
@@ -55,7 +54,6 @@ from src.stages.topic_stages import (
     propagate_outlet_metadata,
     prune_unused_sources_and_clusters,
     renumber_sources,
-    validate_coverage_gaps_stage,
 )
 
 __all__ = [
@@ -70,7 +68,6 @@ __all__ = [
     "compose_transparency_card",
     "compute_source_balance",
     "consolidate_actors",
-    "consolidate_missing_coverage",
     "derive_mentioned_actors",
     "enrich_perspective_clusters",
     "fetch_findings",
@@ -99,5 +96,4 @@ __all__ = [
     "prune_unused_sources_and_clusters",
     "renumber_sources",
     "select_topics",
-    "validate_coverage_gaps_stage",
 ]

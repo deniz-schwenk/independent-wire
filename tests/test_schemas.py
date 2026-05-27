@@ -26,9 +26,9 @@ import pytest
 from src.schemas import (
     BIAS_DETECTOR_SCHEMA,
     CLUSTER_ASSIGNMENT_SCHEMA,
+    CONSOLIDATOR_SCHEMA,
     HYDRATION_PHASE1_SCHEMA,
     HYDRATION_PHASE2_SCHEMA,
-    PERSPECTIVE_SYNC_SCHEMA,
 )
 
 
@@ -163,19 +163,38 @@ def test_hydration_phase2_schema_rejects_missing_key():
         _validate({"preliminary_divergences": []}, HYDRATION_PHASE2_SCHEMA)
 
 
-# -- PERSPECTIVE_SYNC_SCHEMA --------------------------------------------------
+# -- CONSOLIDATOR_SCHEMA ------------------------------------------------------
 
-def test_perspective_sync_schema_already_correct():
+def test_consolidator_schema_accepts_two_string_arrays():
     output = {
-        "position_cluster_updates": [
-            {
-                "id": "pc-001",
-                "position_label": "x",
-                "position_summary": None,
-            },
+        "voices_missing": [
+            "Iraqi government and media voices",
+            "International humanitarian organizations",
         ],
+        "topics_missing": ["Humanitarian dimension of US oil blockade"],
     }
-    _validate(output, PERSPECTIVE_SYNC_SCHEMA)
+    _validate(output, CONSOLIDATOR_SCHEMA)
+
+
+def test_consolidator_schema_accepts_empty_arrays():
+    """Either list may be empty per the prompt's OUTPUT FORMAT field notes."""
+    _validate(
+        {"voices_missing": [], "topics_missing": []},
+        CONSOLIDATOR_SCHEMA,
+    )
+
+
+def test_consolidator_schema_rejects_missing_key():
+    with pytest.raises(SchemaError):
+        _validate({"voices_missing": []}, CONSOLIDATOR_SCHEMA)
+
+
+def test_consolidator_schema_rejects_extra_key():
+    with pytest.raises(SchemaError):
+        _validate(
+            {"voices_missing": [], "topics_missing": [], "extra": []},
+            CONSOLIDATOR_SCHEMA,
+        )
 
 
 # -- CLUSTER_ASSIGNMENT_SCHEMA -----------------------------------------------

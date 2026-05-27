@@ -167,7 +167,6 @@ def render_tp_public(
         "actors": list(topic_bus.canonical_actors),
         "final_actors": list(topic_bus.final_actors),
         "actor_alias_mapping": list(topic_bus.actor_alias_mapping),
-        "gaps": list(topic_bus.coverage_gaps_validated),
         "perspectives": {
             "position_clusters": list(topic_bus.perspective_clusters_synced),
             "missing_positions": list(topic_bus.perspective_missing_positions),
@@ -180,14 +179,12 @@ def render_tp_public(
             # slot → renderer omits the section.
             "mentioned_actors": dict(topic_bus.mentioned_actors or {}),
         },
-        # Consolidated dedup view written by `consolidate_missing_coverage`.
-        # Surfaced under a top-level key so the public renderer can prefer
-        # the unified "What this dossier does not cover" section when this
-        # slot is populated; falls back to the legacy two sections when
-        # absent (e.g. pre-consolidation TP JSON re-render).
-        "consolidated_missing_coverage": dict(
-            topic_bus.consolidated_missing_coverage or {}
-        ),
+        # Consolidator output (LLM): two compact-English-string arrays
+        # classifying gaps as missing voices vs missing topics. The
+        # JSON surfaces the slot to satisfy the bus visibility
+        # contract; the HTML renderer side is a separate workstream
+        # and still ignores the key for now.
+        "what_is_missing": topic_bus.what_is_missing.model_dump(),
         "article": topic_bus.qa_corrected_article.model_dump(),
         "divergences": list(topic_bus.qa_divergences),
         "bias_analysis": compose_bias_card(topic_bus),
@@ -207,7 +204,6 @@ _TP_RESHAPED_SLOTS: dict[str, str] = {
     "mentioned_actors": "perspectives.mentioned_actors",
     "qa_corrected_article": "article",
     "qa_divergences": "divergences",
-    "coverage_gaps_validated": "gaps",
     "final_sources": "sources",
     # `actors` top-level key carries `canonical_actors` (consumer-facing,
     # post alias resolution). `final_actors` (raw, pre-resolution) is
@@ -311,8 +307,7 @@ def compose_bias_card(topic_bus: TopicBus) -> dict:
     - language: bias_language_findings (LLM-emitted linguistic findings)
     - source: source_balance.{by_country, by_language, represented} + total
     - geographical: source_balance.{represented, by_country, missing_from_dossier}
-    - selection: coverage_gaps_validated + perspective_missing_positions +
-                 qa_problems_found
+    - selection: perspective_missing_positions + qa_problems_found
     - framing: position_clusters_summary (high-level projection of
                perspective_clusters_synced) + qa_divergences plus two
                deterministic counts (cluster_count, distinct_actor_count).
@@ -340,7 +335,6 @@ def compose_bias_card(topic_bus: TopicBus) -> dict:
             "missing_from_dossier": list(sb.missing_from_dossier),
         },
         "selection": {
-            "coverage_gaps": list(topic_bus.coverage_gaps_validated),
             "missing_positions": list(topic_bus.perspective_missing_positions),
             "qa_problems_found": list(topic_bus.qa_problems_found),
         },

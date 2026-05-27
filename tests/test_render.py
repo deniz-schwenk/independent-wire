@@ -113,7 +113,6 @@ def _make_topicbus(
             "resolution_note": "both attributed",
         }
     ]
-    tb.coverage_gaps_validated = ["No civil-society voices in the dossier"]
     tb.source_balance = SourceBalance(
         by_country={"United States": 1, "France": 1, "Iran": 1},
         by_language={"en": 1, "fr": 1, "fa": 1},
@@ -143,8 +142,7 @@ def test_select_by_visibility_topicbus_tp():
     """tp-tagged TopicBus slots: final_sources + final_actors + qa_problems_found +
     qa_corrections + qa_corrected_article + qa_divergences +
     perspective_clusters_synced + mentioned_actors + bias_language_findings +
-    bias_reader_note + coverage_gaps_validated + consolidated_missing_coverage +
-    source_balance + transparency_card."""
+    bias_reader_note + what_is_missing + source_balance + transparency_card."""
     tb = _make_topicbus()
     out = select_by_visibility(tb, "tp")
     expected = {
@@ -162,10 +160,9 @@ def test_select_by_visibility_topicbus_tp():
         "mentioned_actors",
         "bias_language_findings",
         "bias_reader_note",
-        "coverage_gaps_validated",
-        # Deduped voices-vs-gaps view written by
-        # `consolidate_missing_coverage` (2026-05-20).
-        "consolidated_missing_coverage",
+        # Consolidator output (LLM); replaces the legacy pair
+        # `coverage_gaps_validated` + `consolidated_missing_coverage`.
+        "what_is_missing",
         "source_balance",
         "transparency_card",
     }
@@ -218,10 +215,11 @@ def test_render_tp_public_shape():
         "actor_alias_mapping",
         "perspectives",
         "divergences",
-        "gaps",
-        # Deduped voices-vs-gaps view written by
-        # `consolidate_missing_coverage` (2026-05-20).
-        "consolidated_missing_coverage",
+        # Consolidator refactor: legacy `gaps` + `consolidated_missing_coverage`
+        # collapsed into `what_is_missing` (LLM output). Surfaced in the
+        # JSON to honour the bus tp-visibility contract; the HTML renderer
+        # is a separate workstream and still ignores the key for now.
+        "what_is_missing",
         "article",
         "bias_analysis",
         "transparency",
@@ -236,7 +234,7 @@ def test_render_tp_public_shape():
     assert isinstance(out["actors"], list)
     assert isinstance(out["perspectives"], dict)
     assert isinstance(out["divergences"], list)
-    assert isinstance(out["gaps"], list)
+    assert isinstance(out["what_is_missing"], dict)
     assert isinstance(out["article"], dict)
     assert isinstance(out["bias_analysis"], dict)
     assert isinstance(out["transparency"], dict)
@@ -422,9 +420,9 @@ def test_compose_bias_card_shape():
     assert card["source"]["total"] == 3
     # geographical
     assert set(card["geographical"]) == {"represented", "by_country", "missing_from_dossier"}
-    # selection
-    assert set(card["selection"]) == {"coverage_gaps", "missing_positions", "qa_problems_found"}
-    assert card["selection"]["coverage_gaps"] == tb.coverage_gaps_validated
+    # selection — `coverage_gaps` dropped in the Consolidator refactor
+    # (the `coverage_gaps_validated` slot no longer exists).
+    assert set(card["selection"]) == {"missing_positions", "qa_problems_found"}
     assert card["selection"]["missing_positions"] == tb.perspective_missing_positions
     # framing — representation_distribution is gone; objective counts only
     assert set(card["framing"]) == {
@@ -455,7 +453,7 @@ def test_compose_bias_card_empty_state_robustness():
     assert card["source"]["total"] == 0
     assert card["source"]["by_country"] == {}
     assert card["geographical"]["represented"] == []
-    assert card["selection"]["coverage_gaps"] == []
+    assert card["selection"]["missing_positions"] == []
     assert card["framing"]["position_clusters_summary"] == []
     assert card["framing"]["cross_source_divergences"] == []
     assert card["framing"]["cluster_count"] == 0

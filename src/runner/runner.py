@@ -107,9 +107,11 @@ def _stage_label(stage: Any) -> str:
 def _index_of(stages: list, name: str) -> int:
     """Return the *first* index matching ``name``. Returns ``-1`` if absent.
 
-    The hydrated variant has ``mirror_perspective_synced`` twice; for
-    ``--from`` matching we cut at the first occurrence so the second
-    instance still runs.
+    Both variants now have ``mirror_perspective_synced`` exactly once
+    (after the Consolidator refactor removed the trailing pass that
+    used to follow ``PerspectiveSyncStage``); ``_index_of`` keeps the
+    first-match semantics for defence-in-depth against future
+    re-introductions.
     """
     for i, stage in enumerate(stages):
         if _stage_label(stage) == name:

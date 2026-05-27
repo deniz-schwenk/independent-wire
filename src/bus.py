@@ -180,6 +180,21 @@ class HydrationPhase2Corpus(_StrictSubModel):
     coverage_gaps: list = Field(default_factory=list)
 
 
+class WhatIsMissing(_StrictSubModel):
+    """Consolidator output — the deduplicated, classified view of what
+    the dossier lacks. Replaces the legacy pair
+    `coverage_gaps_validated` + `consolidated_missing_coverage`. Owned
+    by `ConsolidatorStage` (LLM-backed), which reads
+    `perspective_missing_positions` and `merged_coverage_gaps`, dedupes
+    semantically across the two streams, and classifies each entry as
+    either a missing voice (stakeholder/region/language/media-sphere)
+    or a missing topic (aspect/dimension/angle).
+    """
+
+    voices_missing: list[str] = Field(default_factory=list)
+    topics_missing: list[str] = Field(default_factory=list)
+
+
 class TransparencyCard(_StrictSubModel):
     """ARCH-V2 §4B.11. `pipeline_run` is `{run_id, date}` per the doc.
 
@@ -762,29 +777,20 @@ class TopicBus(BaseModel):
     bias_language_findings: list = Slot(default_factory=list, visibility=["tp", "mcp"])
     bias_reader_note: str = Slot("", visibility=["tp", "mcp"])
 
-    # 4B.10 Coverage gaps (1 slot + 1 consolidation slot)
-    # `optional_write=True` because the validation stage legitimately
-    # produces an empty list in two cases observed in production
-    # (2026-05-23 Cuba dossier): (a) no upstream gaps to validate at all,
-    # and (b) every input gap was falsified by `source_balance` (e.g.
-    # "No Y-language sources" when sources do include language Y).
-    coverage_gaps_validated: list = Slot(
-        default_factory=list,
-        visibility=["tp", "mcp"],
-        optional_write=True,
-    )
-    # Consolidated view written by `consolidate_missing_coverage` —
-    # deterministic dedup of `perspective_missing_positions[]` (Perspective
-    # agent, structured with `type`) against `coverage_gaps_validated[]`
-    # (Curator / Hydration, free-text). Shape:
-    #   {missing_stakeholder_voices: [...], missing_topic_dimensions: [...]}
-    # The two source slots persist unchanged as the audit trail; this slot
-    # is a derived view for the renderer. `optional_write=True` because
-    # the consolidation can legitimately produce an empty view when both
-    # input lists are empty, and so legacy / replay paths that bypass the
-    # consolidation stage still validate.
-    consolidated_missing_coverage: dict = Slot(
-        default_factory=dict,
+    # 4B.10 What-is-missing (single slot owned by ConsolidatorStage).
+    # The LLM Consolidator reads `perspective_missing_positions[]`
+    # (structured, with `type` + `description`) and
+    # `merged_coverage_gaps[]` (free-text), dedupes semantically across
+    # the two streams, and emits two arrays of compact English strings.
+    # Replaces the legacy pair `coverage_gaps_validated` (deterministic
+    # keyword-substring validator — over-aggressive on Cuba 2026-05-23
+    # per REPORT-DIAGNOSTIC-2026-05-23.md §A) and
+    # `consolidated_missing_coverage` (Jaccard dedup — redundant once
+    # the LLM owns dedup). `optional_write=True` because the
+    # consolidator legitimately produces empty arrays when both input
+    # streams are empty.
+    what_is_missing: WhatIsMissing = Slot(
+        default_factory=WhatIsMissing,
         visibility=["tp", "mcp"],
         optional_write=True,
     )
@@ -828,6 +834,7 @@ __all__ = [
     "TopicBus",
     "TransparencyCard",
     "VisibilityTag",
+    "WhatIsMissing",
     "WriterArticle",
     "is_empty",
 ]

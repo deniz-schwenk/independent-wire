@@ -79,12 +79,12 @@ _PRODUCTION_AGENTS = [
     "editor", "researcher_plan", "researcher_assemble",
     "resolve_actor_aliases",
     "perspective", "writer", "qa_analyze", "bias_language",
+    "consolidator",
 ]
 _HYDRATED_AGENTS = _PRODUCTION_AGENTS + [
     "researcher_hydrated_plan",
     "hydration_aggregator_phase1",
     "hydration_aggregator_phase2",
-    "perspective_sync",
 ]
 
 
@@ -110,14 +110,24 @@ def test_build_production_stages_returns_three_lists():
     assert run_stages, "run_stages should not be empty"
     assert topic_stages, "topic_stages should not be empty"
     assert post_run_stages == [], "production post_run_stages reserved for runner-built handlers"
-    assert len(topic_stages) == 25, f"expected 25 production topic-stages (V2-06b + prune + cleanup_stale_references + filter_media_actors_quoted + consolidate_actors + propagate_outlet_metadata + resolve_actor_aliases + partition_canonical_actors_by_evidence + consolidate_missing_coverage + derive_mentioned_actors), got {len(topic_stages)}"
+    assert len(topic_stages) == 24, (
+        f"expected 24 production topic-stages post Consolidator refactor "
+        f"(net -1 vs pre-refactor 25: removed validate_coverage_gaps_stage + "
+        f"consolidate_missing_coverage, added ConsolidatorStage), got {len(topic_stages)}"
+    )
 
 
 def test_build_hydrated_stages_returns_three_lists():
     agents = _fake_agent_dict(_HYDRATED_AGENTS)
     run_stages, topic_stages, post_run_stages = build_hydrated_stages(agents)
     assert run_stages, "run_stages should not be empty"
-    assert len(topic_stages) == 32, f"expected 32 hydrated topic-stages (V2-06b + prune + cleanup_stale_references + filter_media_actors_quoted + consolidate_actors + propagate_outlet_metadata + resolve_actor_aliases + partition_canonical_actors_by_evidence + consolidate_missing_coverage + derive_mentioned_actors), got {len(topic_stages)}"
+    assert len(topic_stages) == 29, (
+        f"expected 29 hydrated topic-stages post Consolidator refactor "
+        f"(net -3 vs pre-refactor 32: removed PerspectiveSyncStage + "
+        f"second mirror_perspective_synced + validate_coverage_gaps_stage + "
+        f"consolidate_missing_coverage, added ConsolidatorStage), got "
+        f"{len(topic_stages)}"
+    )
 
 
 def test_production_stage_names_unique():
@@ -127,13 +137,18 @@ def test_production_stage_names_unique():
     assert len(names) == len(set(names)), f"duplicate stage names: {names}"
 
 
-def test_hydrated_stage_names_repeat_only_for_double_mirror():
+def test_hydrated_stage_names_have_no_duplicates_after_consolidator_refactor():
+    """Post Consolidator refactor: ``mirror_perspective_synced`` now
+    runs exactly once in hydrated (it was twice — the second pass
+    merged ``PerspectiveSyncStage`` deltas, which is gone). No stage
+    name should repeat across the hydrated chain."""
     agents = _fake_agent_dict(_HYDRATED_AGENTS)
     run_stages, topic_stages, _ = build_hydrated_stages(agents)
     names = [_stage_label(s) for s in run_stages + topic_stages]
     duplicates = [n for n in set(names) if names.count(n) > 1]
-    assert duplicates == ["mirror_perspective_synced"], (
-        f"hydrated should have exactly one duplicated stage (mirror_perspective_synced); got {duplicates}"
+    assert duplicates == [], (
+        f"hydrated should have no duplicated stage names after the "
+        f"Consolidator refactor; got {duplicates}"
     )
 
 
@@ -171,11 +186,14 @@ def test_hydrated_run_stages_extends_production_with_hydration_attach():
     ]
 
 
-def test_hydrated_mirror_appears_exactly_twice():
+def test_hydrated_mirror_appears_exactly_once_after_consolidator_refactor():
+    """The trailing ``mirror_perspective_synced`` pass after
+    ``PerspectiveSyncStage`` was removed in the Consolidator refactor;
+    the first (1:1 copy after ``enrich_perspective_clusters``) stays."""
     agents = _fake_agent_dict(_HYDRATED_AGENTS)
     _, topic_stages, _ = build_hydrated_stages(agents)
     names = [_stage_label(s) for s in topic_stages]
-    assert names.count("mirror_perspective_synced") == 2
+    assert names.count("mirror_perspective_synced") == 1
 
 
 # ---------------------------------------------------------------------------
@@ -784,18 +802,10 @@ def test_production_stage_names_matches_builder_output():
     assert production_stage_names() == expected
 
 
-def test_hydrated_stage_names_matches_builder_first_occurrence():
-    """Static name list dedupes mirror_perspective_synced (which appears
-    twice in the hydrated stage list)."""
+def test_hydrated_stage_names_matches_builder_output():
+    """After the Consolidator refactor, no hydrated stage name
+    repeats; the static name list is exactly the builder output."""
     agents = _fake_agent_dict(_HYDRATED_AGENTS)
     runs, topics, _ = build_hydrated_stages(agents)
-    full = [_stage_label(s) for s in runs + topics]
-    # Static list is the deduped order-preserving first-occurrence sequence
-    seen: set = set()
-    expected: list = []
-    for name in full:
-        if name == "mirror_perspective_synced" and name in seen:
-            continue
-        expected.append(name)
-        seen.add(name)
+    expected = [_stage_label(s) for s in runs + topics]
     assert hydrated_stage_names() == expected

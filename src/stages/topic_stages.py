@@ -3,19 +3,24 @@
 Per ARCH-V2-BUS-SCHEMA §5.1 (production) + §5.2 (hydrated additions),
 the deterministic topic-stages are:
 
-    Production (8):
+    Production:
       9.  merge_sources
       10. renumber_sources
       11. normalize_pre_research
       13. mirror_perspective_synced       (also runs in production)
       16. mirror_qa_corrected             (also runs in production)
       17. compute_source_balance
-      18. validate_coverage_gaps_stage
       20. compose_transparency_card
 
-    Hydrated additions (2):
+    Hydrated additions:
       6.  attach_hydration_urls
       10. assemble_hydration_dossier
+
+The "what is missing" output of the dossier is owned by
+``ConsolidatorStage`` (LLM, ``src/agent_stages.py``), which replaced
+three deprecated stages (``PerspectiveSyncStage``,
+``validate_coverage_gaps_stage``, ``consolidate_missing_coverage``)
+in the Consolidator refactor. See ``REPORT-DIAGNOSTIC-2026-05-23.md``.
 
 V1 logic ports (each named in the relevant stage):
 - merge_sources / renumber_sources: distilled from
@@ -24,8 +29,6 @@ V1 logic ports (each named in the relevant stage):
   runs, so there is no body to prune against.
 - compute_source_balance: ports the source-balance bookkeeping from
   src/pipeline.py:_build_bias_card (870-944), reading final_sources only.
-- validate_coverage_gaps: src/stages/_helpers.validate_coverage_gaps
-  (port of src/pipeline.py:_validate_coverage_gaps 1019-1109).
 - compose_transparency_card: assembles the TransparencyCard sub-model
   from editor_selected_topic, qa_*, writer_article, run_bus metadata,
   and src/stages/_helpers.strip_stale_quantifiers (port of V1 1137-1194).
@@ -56,7 +59,6 @@ from src.stages._helpers import (
     normalise_country,
     normalise_language,
     strip_stale_quantifiers,
-    validate_coverage_gaps,
 )
 from src.stages.run_stages import mirror_stage
 
@@ -1000,7 +1002,7 @@ async def enrich_perspective_clusters(
 
 
 # ---------------------------------------------------------------------------
-# 13. mirror_perspective_synced  (universal — production runs as 1:1 copy)
+# 13. mirror_perspective_synced  (universal — 1:1 copy after the Consolidator refactor)
 # ---------------------------------------------------------------------------
 
 
@@ -1011,13 +1013,12 @@ async def enrich_perspective_clusters(
 async def mirror_perspective_synced(
     topic_bus: TopicBus, run_bus: RunBusReadOnly
 ) -> TopicBus:
-    """Per-element mirror per ARCH §3.3 (b). In hydrated, perspective_sync
-    has emitted cluster deltas into perspective_clusters_synced; the
-    mirror merges those deltas with the source clusters by `id`. In
-    production, perspective_sync does not run, so perspective_clusters_synced
-    starts empty and the mirror produces a 1:1 copy of perspective_clusters.
-
-    Either way, the slot is fully populated after this stage runs.
+    """Per-element mirror per ARCH §3.3 (b). Runs once in both variants
+    (after ``enrich_perspective_clusters``): the slot starts empty so
+    the mirror produces a 1:1 copy of ``perspective_clusters``. Before
+    the Consolidator refactor the hydrated variant ran this twice — the
+    second pass merged ``PerspectiveSyncStage`` cluster deltas — but
+    PerspectiveSync was removed and the second pass with it.
     """
     new_bus = topic_bus.model_copy(deep=True)
     mirror_stage(
@@ -1104,145 +1105,7 @@ async def compute_source_balance(
 
 
 # ---------------------------------------------------------------------------
-# 18. validate_coverage_gaps
-# ---------------------------------------------------------------------------
-
-
-@topic_stage_def(
-    reads=("merged_coverage_gaps", "source_balance"),
-    writes=("coverage_gaps_validated",),
-)
-async def validate_coverage_gaps_stage(
-    topic_bus: TopicBus, run_bus: RunBusReadOnly
-) -> TopicBus:
-    """Drop coverage-gap statements falsified by source_balance, plus
-    near-duplicates. Uses the V1-ported helper.
-    """
-    sb = topic_bus.source_balance.model_dump() if topic_bus.source_balance else {}
-    kept, _dropped = validate_coverage_gaps(
-        list(topic_bus.merged_coverage_gaps or []), sb
-    )
-    return topic_bus.model_copy(update={"coverage_gaps_validated": kept})
-
-
-# ---------------------------------------------------------------------------
-# 18b. consolidate_missing_coverage
-# ---------------------------------------------------------------------------
-
-
-# Inline stop-word list. Deliberately small (~30 entries) and inline so the
-# consolidation logic does not gain a new dependency. Covers articles,
-# prepositions, conjunctions, and a handful of bias-relevant filler words
-# that appear in both missing_positions descriptions and gap texts and
-# would otherwise dominate the Jaccard intersection.
-_CONSOLIDATION_STOPWORDS: frozenset[str] = frozenset({
-    "a", "an", "and", "are", "as", "at", "be", "by", "for", "from",
-    "has", "have", "in", "is", "it", "of", "on", "or", "that", "the",
-    "their", "they", "this", "to", "was", "were", "which", "with",
-    "who", "whose", "what", "perspectives", "perspective",
-})
-
-# Jaccard similarity threshold above which a missing_position and a gap
-# are treated as the same item. Conservative — we favour false-negatives
-# (show both lists) over false-positives (silently drop signal). Hand-
-# tuned against the 2026-05-19 Iran dossier where the
-# "oil traders, shipping companies, insurance underwriters" pair scored
-# ~0.55, with non-overlapping pairs in the same TP scoring < 0.20.
-_CONSOLIDATION_JACCARD_THRESHOLD: float = 0.5
-
-
-_TOKEN_NORMALISE_RE = re.compile(r"[^a-z0-9]+")
-
-
-def _consolidation_tokens(text: str) -> frozenset[str]:
-    """Lowercase, strip punctuation, split, drop stopwords. Returns a
-    frozenset of content tokens used for Jaccard comparison.
-
-    A token is kept iff it is ≥ 3 chars after normalisation and not in
-    the inline stopword list. The 3-char floor drops common single-/
-    two-letter noise ("US", "EU", numerals) — empirically the dossier
-    overlap signal lives in 4+ char content words.
-    """
-    if not isinstance(text, str) or not text:
-        return frozenset()
-    normalised = _TOKEN_NORMALISE_RE.sub(" ", text.lower()).split()
-    return frozenset(
-        tok for tok in normalised
-        if len(tok) >= 3 and tok not in _CONSOLIDATION_STOPWORDS
-    )
-
-
-def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
-    if not a or not b:
-        return 0.0
-    intersection = len(a & b)
-    union = len(a | b)
-    return intersection / union if union else 0.0
-
-
-@topic_stage_def(
-    reads=("perspective_missing_positions", "coverage_gaps_validated"),
-    writes=("consolidated_missing_coverage",),
-)
-async def consolidate_missing_coverage(
-    topic_bus: TopicBus, run_bus: RunBusReadOnly
-) -> TopicBus:
-    """Deterministic dedup of missing-position descriptions against
-    coverage-gap texts. Detects literal token-Jaccard overlap and emits a
-    consolidated two-axis view for the renderer.
-
-    Reads `perspective_missing_positions[]` (structured, each entry
-    carries `type` + `description`) and `coverage_gaps_validated[]`
-    (free-text strings). When a gap-text and a missing-position
-    description share token-Jaccard ≥
-    `_CONSOLIDATION_JACCARD_THRESHOLD`, the missing-position entry
-    wins (structured, carries `type`) and the matching gap is dropped
-    from the consolidated view. The two source slots persist unchanged
-    as the audit trail.
-
-    Output shape:
-        {
-          "missing_stakeholder_voices": [<missing_positions entries>],
-          "missing_topic_dimensions": [<surviving gap texts>],
-        }
-    """
-    voices = list(topic_bus.perspective_missing_positions or [])
-    gaps = list(topic_bus.coverage_gaps_validated or [])
-
-    # Pre-tokenise voices once so each gap comparison stays O(|voices|).
-    voice_tokens: list[frozenset[str]] = [
-        _consolidation_tokens(v.get("description", ""))
-        if isinstance(v, dict) else frozenset()
-        for v in voices
-    ]
-
-    surviving_gaps: list = []
-    for gap in gaps:
-        if not isinstance(gap, str) or not gap:
-            # Defensive: pass non-strings through as-is so a future
-            # richer gap shape does not silently drop here.
-            surviving_gaps.append(gap)
-            continue
-        gap_tokens = _consolidation_tokens(gap)
-        matched = False
-        for vt in voice_tokens:
-            if _jaccard(gap_tokens, vt) >= _CONSOLIDATION_JACCARD_THRESHOLD:
-                matched = True
-                break
-        if not matched:
-            surviving_gaps.append(gap)
-
-    consolidated = {
-        "missing_stakeholder_voices": copy.deepcopy(voices),
-        "missing_topic_dimensions": copy.deepcopy(surviving_gaps),
-    }
-    return topic_bus.model_copy(
-        update={"consolidated_missing_coverage": consolidated}
-    )
-
-
-# ---------------------------------------------------------------------------
-# 18c. derive_mentioned_actors
+# 18. derive_mentioned_actors
 # ---------------------------------------------------------------------------
 
 
@@ -1437,14 +1300,13 @@ def _collect_referenced_src_ids(topic_bus: TopicBus) -> set[str]:
     - ``qa_corrected_article`` and ``writer_article`` (body/headline/
       subheadline/summary), via inline ``[src-NNN]`` citations
 
-    ``bias_language_findings`` and ``coverage_gaps_validated`` are
-    intentionally NOT scanned. The bias agent and the gap validator
-    produce secondary commentary on the article, not source-authority,
-    and empirically (verified on the 2026-05-11 V1+V2 baselines) emit
-    no inline ``[src-NNN]`` markers in their prose. Scanning them would
-    create a circular dependency that prevents moving prune earlier in
-    the topic chain (where ``bias_language_findings`` and
-    ``coverage_gaps_validated`` do not yet exist). The contract test
+    ``bias_language_findings`` is intentionally NOT scanned. The bias
+    agent produces secondary commentary on the article, not
+    source-authority, and empirically (verified on the 2026-05-11
+    V1+V2 baselines) emits no inline ``[src-NNN]`` markers in its
+    prose. Scanning it would create a circular dependency that
+    prevents moving prune earlier in the topic chain (where
+    ``bias_language_findings`` does not yet exist). The contract test
     ``test_bias_and_gaps_emit_no_inline_src_markers`` ensures a future
     prompt change reintroducing inline src-markers fails loudly.
 
@@ -1510,12 +1372,11 @@ async def prune_unused_sources_and_clusters(
     ``merged_preliminary_divergences``, and the article bodies
     (``qa_corrected_article`` first, ``writer_article`` fallback) —
     see :func:`_collect_referenced_src_ids` for the full list.
-    ``bias_language_findings`` and ``coverage_gaps_validated`` are NOT
-    scanned (secondary commentary, not source-authority; see
-    ``_collect_referenced_src_ids`` docstring). Content (summary,
-    actors_quoted) is no longer a keep-reprieve: if the synthesis stack
-    chose not to use a source, it is off-topic and drops out of the
-    published TP.
+    ``bias_language_findings`` is NOT scanned (secondary commentary,
+    not source-authority; see ``_collect_referenced_src_ids``
+    docstring). Content (summary, actors_quoted) is no longer a
+    keep-reprieve: if the synthesis stack chose not to use a source,
+    it is off-topic and drops out of the published TP.
 
     A cluster is dropped when both ``actor_ids`` and ``source_ids`` are
     empty — a cluster the agent emitted but for which neither a speaker
@@ -2257,7 +2118,5 @@ __all__ = [
     "propagate_outlet_metadata",
     "prune_unused_sources_and_clusters",
     "renumber_sources",
-    "validate_coverage_gaps_stage",
-    "consolidate_missing_coverage",
     "derive_mentioned_actors",
 ]

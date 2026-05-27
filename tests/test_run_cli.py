@@ -63,7 +63,7 @@ def test_create_agents_hydrated_returns_all_required_agents():
         "researcher_hydrated_plan",
         "hydration_aggregator_phase1", "hydration_aggregator_phase2",
         "perspective", "writer", "qa_analyze", "bias_language",
-        "perspective_sync",
+        "consolidator",
     }
     assert expected.issubset(agents.keys()), (
         f"missing agents: {expected - agents.keys()}"
@@ -79,7 +79,7 @@ def test_create_agents_hydrated_wires_all_schemas():
         "researcher_hydrated_plan",
         "hydration_aggregator_phase1", "hydration_aggregator_phase2",
         "perspective", "writer", "qa_analyze", "bias_language",
-        "perspective_sync",
+        "consolidator",
     ]
     for name in schema_required:
         agent = agents[name]
@@ -226,9 +226,9 @@ def _patch_create_agents(run_module):
         "editor", "researcher_plan", "researcher_assemble",
         "resolve_actor_aliases",
         "perspective", "writer", "qa_analyze", "bias_language",
+        "consolidator",
         "researcher_hydrated_plan",
         "hydration_aggregator_phase1", "hydration_aggregator_phase2",
-        "perspective_sync",
     ]}
     run_module.create_agents = lambda: dict(fake_agents)
     run_module.create_agents_hydrated = lambda: dict(fake_agents)
@@ -393,7 +393,10 @@ def test_main_hydrated_runner_kwargs(tmp_path: Path):
     from src.runner.runner import _stage_label
     topic_stage_names = [_stage_label(s) for s in captured["kwargs"]["topic_stages"]]
     assert "hydration_fetch" in topic_stage_names
-    assert "PerspectiveSyncStage" in topic_stage_names
+    # Post Consolidator refactor: PerspectiveSyncStage is gone; the
+    # hydrated-distinctive marker is the ConsolidatorStage that owns
+    # `what_is_missing`.
+    assert "ConsolidatorStage" in topic_stage_names
 
 
 # ---------------------------------------------------------------------------

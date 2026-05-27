@@ -27,7 +27,6 @@ from src.stages._helpers import (
     normalise_country,
     normalise_language,
     strip_stale_quantifiers,
-    validate_coverage_gaps,
 )
 from src.stages.run_stages import make_topic_bus, select_topics
 from src.stages.topic_stages import (
@@ -36,7 +35,6 @@ from src.stages.topic_stages import (
     cleanup_stale_references,
     compose_transparency_card,
     compute_source_balance,
-    consolidate_missing_coverage,
     derive_mentioned_actors,
     enrich_perspective_clusters,
     merge_sources,
@@ -45,7 +43,6 @@ from src.stages.topic_stages import (
     normalize_pre_research,
     prune_unused_sources_and_clusters,
     renumber_sources,
-    validate_coverage_gaps_stage,
 )
 
 
@@ -263,8 +260,8 @@ def test_normalize_pre_research_rewrites_ids_in_divergences_and_gaps():
         }
     ]
     tb.merged_coverage_gaps = [
-        # Coverage gaps are strings in V2 (per V1 _validate_coverage_gaps signature)
-        # but if a future shape carries source_ids, the rewriter should walk it.
+        # Coverage gaps are strings in V2 today, but if a future shape
+        # carries source_ids the rewriter should walk it.
         {"text": "no UK domestic outlets", "source_ids": ["hydrate-rsrc-001"]},
     ]
 
@@ -633,154 +630,13 @@ def test_compute_source_balance_handles_missing_metadata():
 
 
 # ---------------------------------------------------------------------------
-# validate_coverage_gaps_stage
+# what_is_missing — owned by ConsolidatorStage (LLM); see test_agent_stages
+# for the wrapper tests. The legacy ``validate_coverage_gaps_stage`` and
+# ``consolidate_missing_coverage`` deterministic stages, together with
+# their bus slots ``coverage_gaps_validated`` and
+# ``consolidated_missing_coverage``, were removed in the Consolidator
+# refactor (see REPORT-DIAGNOSTIC-2026-05-23.md §A).
 # ---------------------------------------------------------------------------
-
-
-def test_validate_coverage_gaps_stage_drops_falsified_gaps():
-    tb = TopicBus()
-    tb.merged_coverage_gaps = [
-        "No French-language sources in the dossier",  # falsified
-        "Civilian survivors are absent from the coverage",  # qualitative — kept
-    ]
-    tb.source_balance = SourceBalance(
-        by_language={"fr": 1, "en": 5},
-        by_country={"France": 1},
-    )
-
-    tb_after = _run(validate_coverage_gaps_stage, tb, _ro())
-    kept = tb_after.coverage_gaps_validated
-    assert len(kept) == 1
-    assert "Civilian survivors" in kept[0]
-
-
-def test_validate_coverage_gaps_stage_dedupes_jaccard():
-    tb = TopicBus()
-    tb.merged_coverage_gaps = [
-        "Civilian voices are missing from the coverage of the conflict",
-        "Civilian voices missing from the conflict coverage entirely",  # near-dup
-        "Independent analysts have not been quoted",  # different
-    ]
-    tb.source_balance = SourceBalance()
-
-    tb_after = _run(validate_coverage_gaps_stage, tb, _ro())
-    kept = tb_after.coverage_gaps_validated
-    assert len(kept) == 2  # near-duplicate dropped
-
-
-def test_validate_coverage_gaps_stage_empty_write_is_optional():
-    """Acceptance criterion (2026-05-23 regression fix): `coverage_gaps_validated`
-    is a legitimate-empty slot.
-
-    Two empty-result paths existed in production but both tripped the
-    postcondition gate at the runner:
-
-    1. No input gaps at all (Cuba 2026-05-23: `merged_coverage_gaps == []`)
-    2. All input gaps falsified by `source_balance` (e.g. the only gap was
-       "No Y-language sources" and Y-language sources are in fact present)
-
-    Both produce `kept == []`. The slot is declared `optional_write=True`
-    on the bus so the runner accepts the empty write; this asserts that
-    declaration is present, so the production failure does not recur.
-    """
-    from src.bus import TopicBus
-    field = TopicBus.model_fields["coverage_gaps_validated"]
-    extra = (field.json_schema_extra or {}) if hasattr(field, "json_schema_extra") else {}
-    if callable(extra):
-        # When json_schema_extra is callable, Pydantic stashes the dict
-        # under ``__schema_extra__`` — fall back to that.
-        extra = getattr(field, "__schema_extra__", {}) or {}
-    assert extra.get("optional_write") is True, (
-        "coverage_gaps_validated slot must carry optional_write=True "
-        "so legitimately-empty writes (e.g. all gaps falsified) do not "
-        "trip the postcondition gate in production"
-    )
-
-
-# ---------------------------------------------------------------------------
-# consolidate_missing_coverage — token-Jaccard dedup of voices vs gaps
-# ---------------------------------------------------------------------------
-
-
-def test_consolidate_drops_gap_matching_missing_position_description():
-    """Missing-position description and gap text overlap above the
-    Jaccard threshold → the gap is dropped from the consolidated
-    `missing_topic_dimensions` (the structured missing-position wins).
-    The two source slots persist unchanged as the audit trail."""
-    tb = TopicBus()
-    tb.perspective_missing_positions = [
-        {
-            "type": "industry",
-            "description": (
-                "oil traders, shipping companies, and insurance "
-                "underwriters affected by Strait of Hormuz disruption"
-            ),
-        },
-    ]
-    tb.coverage_gaps_validated = [
-        "oil traders, shipping companies, insurance underwriters",
-        "European Union diplomatic response to the crisis",
-    ]
-
-    tb_after = _run(consolidate_missing_coverage, tb, _ro())
-    consolidated = tb_after.consolidated_missing_coverage
-    voices = consolidated["missing_stakeholder_voices"]
-    dimensions = consolidated["missing_topic_dimensions"]
-
-    # The structured missing-position survives intact.
-    assert len(voices) == 1
-    assert voices[0]["type"] == "industry"
-    assert "oil traders" in voices[0]["description"]
-
-    # The matching gap was dropped; the non-overlapping gap survives.
-    assert len(dimensions) == 1
-    assert "European Union" in dimensions[0]
-    assert all("oil traders" not in g for g in dimensions)
-
-    # Audit trail: source slots are unchanged.
-    assert len(tb_after.perspective_missing_positions) == 1
-    assert len(tb_after.coverage_gaps_validated) == 2
-
-
-def test_consolidate_keeps_non_overlapping_gap():
-    """A gap whose tokens do not exceed the Jaccard threshold against
-    any missing_position description survives into
-    `missing_topic_dimensions`."""
-    tb = TopicBus()
-    tb.perspective_missing_positions = [
-        {
-            "type": "civil_society",
-            "description": (
-                "Iranian civil-society organisations and student "
-                "groups responding to the crisis"
-            ),
-        },
-    ]
-    tb.coverage_gaps_validated = [
-        "European Union diplomatic response to the crisis",
-    ]
-
-    tb_after = _run(consolidate_missing_coverage, tb, _ro())
-    consolidated = tb_after.consolidated_missing_coverage
-
-    # Voice survives (no input dropped).
-    assert len(consolidated["missing_stakeholder_voices"]) == 1
-    # Non-overlapping gap is preserved in the dimensions axis.
-    assert consolidated["missing_topic_dimensions"] == [
-        "European Union diplomatic response to the crisis",
-    ]
-
-
-def test_consolidate_empty_inputs_yield_empty_view():
-    tb = TopicBus()
-    tb.perspective_missing_positions = []
-    tb.coverage_gaps_validated = []
-    tb_after = _run(consolidate_missing_coverage, tb, _ro())
-    consolidated = tb_after.consolidated_missing_coverage
-    assert consolidated == {
-        "missing_stakeholder_voices": [],
-        "missing_topic_dimensions": [],
-    }
 
 
 # ---------------------------------------------------------------------------
@@ -1263,19 +1119,6 @@ def test_strip_stale_quantifiers_keeps_residual_when_substantive():
     assert "covered the regional protest movement" in out
 
 
-def test_validate_coverage_gaps_keeps_qualitative():
-    kept, dropped = validate_coverage_gaps(
-        [
-            "No civilian-survivor testimony in the coverage",
-            "No French-language sources",
-        ],
-        {"by_language": {"fr": 2}, "by_country": {}},
-    )
-    assert len(kept) == 1
-    assert "civilian-survivor" in kept[0]
-    assert "French-language" in dropped[0]
-
-
 # ---------------------------------------------------------------------------
 # model_copy correctness — input bus is not mutated
 # ---------------------------------------------------------------------------
@@ -1691,24 +1534,6 @@ def test_prune_drops_source_referenced_only_in_bias_findings():
     assert tb_after.prune_dropped_sources[0]["id"] == "src-031"
 
 
-def test_prune_drops_source_referenced_only_in_coverage_gaps():
-    """Post-reorder, coverage_gaps_validated is no longer scanned by
-    prune (descriptive commentary, not source-authority). A source
-    cited only in a gap description drops."""
-    tb = TopicBus()
-    tb.final_sources = [
-        {"id": "src-050", "outlet": "Y", "summary": "", "actors_quoted": []},
-    ]
-    tb.coverage_gaps_validated = [
-        "Iranian state media not represented; only [src-050] partially covers the angle.",
-    ]
-
-    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
-
-    assert tb_after.final_sources == []
-    assert tb_after.prune_dropped_sources[0]["id"] == "src-050"
-
-
 def test_prune_keeps_source_referenced_only_in_writer_body_when_qa_article_is_empty():
     """Defence-in-depth: when qa_corrected_article body is empty (no QA
     fixes), the validator must still find references in writer_article.body."""
@@ -1954,6 +1779,12 @@ def test_cleanup_after_prune_smoke_state_has_zero_stale_actor_refs():
         pytest.skip("baseline state file not present")
     state = _json.loads(bus_path.read_text(encoding="utf-8"))
 
+    # Strip slots removed in the Consolidator refactor — the 2026-05-11
+    # baseline state predates that change, so `extra="forbid"` would
+    # reject the snapshot without this prune step.
+    for legacy_key in ("coverage_gaps_validated", "consolidated_missing_coverage"):
+        state.pop(legacy_key, None)
+
     tb = TopicBus.model_validate(state)
     tb_pruned = _run(prune_unused_sources_and_clusters, tb, _ro())
     tb_clean = _run(cleanup_stale_references, tb_pruned, _ro())
@@ -2003,14 +1834,18 @@ def _scan_for_src_markers(items: list, fields: tuple[str, ...]) -> list[str]:
     return hits
 
 
-def test_bias_and_gaps_emit_no_inline_src_markers():
-    """Contract test: the bias agent and coverage-gap validator produce
-    secondary commentary, not source-authority. Their prose must never
-    carry inline ``[src-NNN]`` markers. Verified against the
-    V2 2026-05-11 TP-001 baseline state. If a future prompt change
-    reintroduces such markers, this fails loudly — at which point
-    either roll back the prompt change, or consciously restore the
-    bias/gaps citation harvest in ``_collect_referenced_src_ids``."""
+def test_bias_emits_no_inline_src_markers():
+    """Contract test: the bias agent produces secondary commentary,
+    not source-authority. Its prose must never carry inline
+    ``[src-NNN]`` markers. Verified against the V2 2026-05-11 TP-001
+    baseline state. If a future prompt change reintroduces such
+    markers, this fails loudly — at which point either roll back the
+    prompt change, or consciously restore the bias citation harvest in
+    ``_collect_referenced_src_ids``.
+
+    (The coverage-gap arm of this contract dropped in the Consolidator
+    refactor — the ``coverage_gaps_validated`` slot no longer exists.)
+    """
     import json as _json
     from pathlib import Path as _Path
     bus_path = _Path(
@@ -2025,10 +1860,6 @@ def test_bias_and_gaps_emit_no_inline_src_markers():
         bus.get("bias_language_findings") or [],
         ("excerpt", "issue", "explanation"),
     )
-    gaps_hits = _scan_for_src_markers(
-        bus.get("coverage_gaps_validated") or [],
-        ("description", "explanation", "gap"),
-    )
 
     assert bias_hits == [], (
         f"bias_language_findings carry inline [src-NNN] markers: {bias_hits}. "
@@ -2036,13 +1867,9 @@ def test_bias_and_gaps_emit_no_inline_src_markers():
         "roll back the prompt or restore the harvest in "
         "_collect_referenced_src_ids and revisit the prune-reorder design."
     )
-    assert gaps_hits == [], (
-        f"coverage_gaps_validated carry inline [src-NNN] markers: {gaps_hits}. "
-        "See bias-marker assertion message above."
-    )
 
 
-def test_bias_and_gaps_contract_test_fails_on_positive_case():
+def test_bias_contract_test_fails_on_positive_case():
     """Adversarial check: synthesise a bus state where bias_language_findings
     DOES carry an inline ``[src-NNN]`` marker and assert the scan flags it.
     Codifies that the contract test above isn't trivially-passing on
@@ -2051,14 +1878,7 @@ def test_bias_and_gaps_contract_test_fails_on_positive_case():
         {"excerpt": "..", "issue": "loaded_term",
          "explanation": "framing flagged in [src-031]; see source."},
     ]
-    synthetic_gaps = [
-        "No Hezbollah voice; [src-099] partially covers the angle.",
-    ]
     bias_hits = _scan_for_src_markers(
         synthetic_bias, ("excerpt", "issue", "explanation")
     )
-    gaps_hits = _scan_for_src_markers(
-        synthetic_gaps, ("description", "explanation", "gap")
-    )
     assert bias_hits == ["[src-031]"]
-    assert gaps_hits == ["[src-099]"]

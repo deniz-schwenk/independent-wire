@@ -3,11 +3,16 @@
 Both builders return ``(run_stages, topic_stages, post_run_stages)``
 tuples ready to feed the :class:`PipelineRunner`. The lists match
 ``docs/ARCH-V2-BUS-SCHEMA.md`` §5.1 / §5.2 with the V2-06b post-patch
-applied — `enrich_perspective_clusters` runs after `perspective`, and in
-the hydrated variant `mirror_perspective_synced` runs **twice** (after
-`enrich_perspective_clusters` as 1:1 copy, then after `perspective_sync`
-as element-merge) so `qa_analyze` always reads a populated
-`perspective_clusters_synced` slot.
+applied — `enrich_perspective_clusters` runs after `perspective`. The
+``mirror_perspective_synced`` stage runs **once** in both variants
+(after ``enrich_perspective_clusters``, 1:1 copy) so ``qa_analyze``
+always reads a populated ``perspective_clusters_synced`` slot.
+
+The Consolidator refactor collapsed three legacy stages
+(``PerspectiveSyncStage``, ``validate_coverage_gaps_stage``,
+``consolidate_missing_coverage``) into a single LLM-backed
+``ConsolidatorStage`` that owns the ``what_is_missing`` slot. See
+``REPORT-DIAGNOSTIC-2026-05-23.md``.
 
 The agent dict shape comes from ``scripts/run.py`` ``create_agents()`` /
 ``create_agents_hydrated()``. Tests inject fakes that satisfy the agent
@@ -21,12 +26,12 @@ from typing import Any, Callable, Optional
 from src.agent_stages import (
     AssignClustersStage,
     BiasLanguageStage,
+    ConsolidatorStage,
     CuratorTopicDiscoveryStage,
     EditorStage,
     HydrationPhase1Stage,
     HydrationPhase2Stage,
     PerspectiveStage,
-    PerspectiveSyncStage,
     QaAnalyzeStage,
     ResearcherAssembleStage,
     ResearcherHydratedPlanStage,
@@ -57,7 +62,6 @@ from src.stages import (
     merge_sources,
     mirror_perspective_synced,
     mirror_qa_corrected,
-    consolidate_missing_coverage,
     derive_mentioned_actors,
     normalize_pre_research,
     partition_canonical_actors_by_evidence,
@@ -66,7 +70,6 @@ from src.stages import (
     prune_unused_sources_and_clusters,
     renumber_sources,
     select_topics,
-    validate_coverage_gaps_stage,
 )
 
 
@@ -155,15 +158,14 @@ def build_production_stages(
         normalize_pre_research,
         PerspectiveStage(agents["perspective"]),
         enrich_perspective_clusters,
-        mirror_perspective_synced,  # 1:1 copy because production has no perspective_sync
+        mirror_perspective_synced,  # 1:1 copy (no PerspectiveSync since the Consolidator refactor)
         WriterStage(agents["writer"]),
         QaAnalyzeStage(agents["qa_analyze"]),
         mirror_qa_corrected,
+        ConsolidatorStage(agents["consolidator"]),
         prune_unused_sources_and_clusters,
         cleanup_stale_references,
         compute_source_balance,
-        validate_coverage_gaps_stage,
-        consolidate_missing_coverage,
         derive_mentioned_actors,
         BiasLanguageStage(agents["bias_language"]),
         compose_transparency_card,
@@ -232,11 +234,10 @@ def build_production_stages_llm_assignment(
         WriterStage(agents["writer"]),
         QaAnalyzeStage(agents["qa_analyze"]),
         mirror_qa_corrected,
+        ConsolidatorStage(agents["consolidator"]),
         prune_unused_sources_and_clusters,
         cleanup_stale_references,
         compute_source_balance,
-        validate_coverage_gaps_stage,
-        consolidate_missing_coverage,
         derive_mentioned_actors,
         BiasLanguageStage(agents["bias_language"]),
         compose_transparency_card,
@@ -266,17 +267,17 @@ def build_hydrated_stages(
       ``assemble_hydration_dossier`` (5 hydration stages).
     - ``ResearcherHydratedPlanStage`` replaces ``ResearcherPlanStage``
       (gap-aware planner reads ``hydration_pre_dossier``).
-    - ``PerspectiveSyncStage`` is inserted between ``mirror_qa_corrected``
-      and ``compute_source_balance``.
-    - ``mirror_perspective_synced`` appears **twice**: once after
-      ``enrich_perspective_clusters`` (1:1 copy so ``qa_analyze`` reads a
-      populated slot), once after ``perspective_sync`` (element-merge of
-      cluster deltas).
+
+    The Consolidator refactor removed the hydrated-only
+    ``PerspectiveSyncStage`` + its trailing ``mirror_perspective_synced``
+    pass; both variants now run the single ``ConsolidatorStage`` at the
+    same position (after ``mirror_qa_corrected``).
 
     :param agents: Dict from ``scripts/run.py:create_agents_hydrated()``.
         Required keys add ``researcher_hydrated_plan``,
-        ``hydration_aggregator_phase1``, ``hydration_aggregator_phase2``,
-        ``perspective_sync`` to the production set.
+        ``hydration_aggregator_phase1``, ``hydration_aggregator_phase2``
+        to the production set. (``consolidator`` is shared with
+        production.)
     :param hydration_fetcher: Async ``(list[dict]) -> list[dict]`` fetcher
         injected into ``make_hydration_fetch``. Tests pass a fake;
         production defaults to ``src.hydration.hydrate_urls``.
@@ -324,17 +325,14 @@ def build_hydrated_stages(
         normalize_pre_research,
         PerspectiveStage(agents["perspective"]),
         enrich_perspective_clusters,
-        mirror_perspective_synced,  # 1st: 1:1 copy after enrich (V2-06b stage-order fix)
+        mirror_perspective_synced,  # 1:1 copy after enrich (V2-06b stage-order fix)
         WriterStage(agents["writer"]),
         QaAnalyzeStage(agents["qa_analyze"]),
         mirror_qa_corrected,
-        PerspectiveSyncStage(agents["perspective_sync"]),
-        mirror_perspective_synced,  # 2nd: element-merge of perspective_sync deltas
+        ConsolidatorStage(agents["consolidator"]),
         prune_unused_sources_and_clusters,
         cleanup_stale_references,
         compute_source_balance,
-        validate_coverage_gaps_stage,
-        consolidate_missing_coverage,
         derive_mentioned_actors,
         BiasLanguageStage(agents["bias_language"]),
         compose_transparency_card,
@@ -391,11 +389,10 @@ _PRODUCTION_TOPIC_NAMES = (
     "WriterStage",
     "QaAnalyzeStage",
     "mirror_qa_corrected",
+    "ConsolidatorStage",
     "prune_unused_sources_and_clusters",
     "cleanup_stale_references",
     "compute_source_balance",
-    "validate_coverage_gaps_stage",
-    "consolidate_missing_coverage",
     "derive_mentioned_actors",
     "BiasLanguageStage",
     "compose_transparency_card",
@@ -424,15 +421,10 @@ _HYDRATED_TOPIC_NAMES = (
     "WriterStage",
     "QaAnalyzeStage",
     "mirror_qa_corrected",
-    "PerspectiveSyncStage",
-    # mirror_perspective_synced runs a SECOND time after PerspectiveSyncStage
-    # (V2-06b stage-order fix) — but for `--from`/`--to` matching the first
-    # occurrence is what matters, so the name is not duplicated in this list.
+    "ConsolidatorStage",
     "prune_unused_sources_and_clusters",
     "cleanup_stale_references",
     "compute_source_balance",
-    "validate_coverage_gaps_stage",
-    "consolidate_missing_coverage",
     "derive_mentioned_actors",
     "BiasLanguageStage",
     "compose_transparency_card",

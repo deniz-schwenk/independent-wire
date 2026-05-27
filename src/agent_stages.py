@@ -53,6 +53,7 @@ from src.bus import (
     RunBus,
     RunBusReadOnly,
     TopicBus,
+    WhatIsMissing,
     WriterArticle,
 )
 from src.stage import StageMeta
@@ -1143,7 +1144,6 @@ def _build_bias_card_for_agent_input(topic_bus: TopicBus) -> dict:
     sources = list(topic_bus.final_sources or [])
     clusters = list(topic_bus.perspective_clusters_synced or [])
     actors = list(topic_bus.canonical_actors or [])
-    missing_positions = list(topic_bus.perspective_missing_positions or [])
 
     by_language: dict[str, int] = {}
     by_country: dict[str, int] = {}
@@ -1177,67 +1177,9 @@ def _build_bias_card_for_agent_input(topic_bus: TopicBus) -> dict:
         "perspectives": {
             "cluster_count": len(clusters),
             "distinct_actor_count": distinct_actor_count,
-            "missing_positions": missing_positions,
         },
         "factual_divergences": list(topic_bus.qa_divergences or []),
-        "coverage_gaps": list(topic_bus.coverage_gaps_validated or []),
     }
-
-
-def _merge_perspective_deltas(
-    original_perspectives: dict, sync_output: dict, slug: str = ""
-) -> dict:
-    """Apply position_cluster_updates deltas into a deep copy of the map.
-    V1 reference: src/pipeline_hydrated.py:233-305 `merge_perspektiv_deltas`.
-    Ported here to avoid coupling V2 agent_stages to V1 pipeline_hydrated.
-    """
-    import copy as _copy
-
-    synced = _copy.deepcopy(original_perspectives)
-    updates = sync_output.get("position_cluster_updates") or []
-    clusters_by_id: dict[str, dict] = {}
-    for cluster in synced.get("position_clusters", []) or []:
-        if isinstance(cluster, dict):
-            cid = cluster.get("id")
-            if isinstance(cid, str) and cid:
-                clusters_by_id[cid] = cluster
-
-    mergeable_fields = ("position_label", "position_summary")
-    for entry in updates:
-        if not isinstance(entry, dict):
-            logger.warning(
-                "perspective_sync[%s]: skipping non-dict delta entry %r",
-                slug, entry,
-            )
-            continue
-        entry_id = entry.get("id")
-        if not isinstance(entry_id, str) or not entry_id:
-            logger.warning(
-                "perspective_sync[%s]: skipping delta entry with no id: %r",
-                slug, entry,
-            )
-            continue
-        target = clusters_by_id.get(entry_id)
-        if target is None:
-            logger.warning(
-                "perspective_sync[%s]: delta id=%s not found; skipping",
-                slug, entry_id,
-            )
-            continue
-        for field in mergeable_fields:
-            if field not in entry:
-                continue
-            value = entry[field]
-            if value is None:
-                logger.warning(
-                    "perspective_sync[%s]: delta id=%s has %s=null; "
-                    "treating as absent (V2 forbids null overrides)",
-                    slug, entry_id, field,
-                )
-                continue
-            if isinstance(value, str):
-                target[field] = value
-    return synced
 
 
 # ---------------------------------------------------------------------------
@@ -1674,11 +1616,9 @@ class BiasLanguageStage(_AgentStageBase):
         "final_sources",
         "canonical_actors",
         "perspective_clusters_synced",
-        "perspective_missing_positions",
         "qa_problems_found",
         "qa_corrections",
         "qa_divergences",
-        "coverage_gaps_validated",
     )
     writes = ("bias_language_findings", "bias_reader_note")
     agent_role = "bias_language"
@@ -2306,44 +2246,41 @@ class HydrationPhase2Stage(_AgentStageBase):
 
 
 # ---------------------------------------------------------------------------
-# Wrapper: PerspectiveSyncStage  (topic, hydrated only)
+# Wrapper: ConsolidatorStage  (topic, production + hydrated)
 # ---------------------------------------------------------------------------
 
 
-class PerspectiveSyncStage(_AgentStageBase):
-    """Perspective-Sync agent wrapper. Eligibility-gated on QA having
-    proposed corrections; if not, the agent is not called and the slot is
-    left as-is.
+class ConsolidatorStage(_AgentStageBase):
+    """Consolidator agent wrapper. Owns the dossier's
+    ``what_is_missing`` output — the deduplicated, classified view of
+    what the corpus lacks.
 
-    Reads `perspective_clusters`, `qa_corrected_article`, `qa_problems_found`,
-    `qa_corrections`. Writes `perspective_clusters_synced` (the
-    fully merged per-element list when corrections triggered the run; left
-    untouched when the gate skipped the call).
+    Reads ``perspective_missing_positions`` (structured, with
+    ``type`` + ``description``) and ``merged_coverage_gaps`` (free-text
+    strings). Calls the LLM once with both arrays as context; the agent
+    classifies each entry as either a missing voice (stakeholder,
+    region, language, or media sphere) or a missing topic (aspect,
+    dimension, angle), and dedupes semantic overlaps across the two
+    inputs. Writes ``what_is_missing`` (a :class:`WhatIsMissing` with
+    two compact-English string arrays).
 
-    V1 reference: pipeline_hydrated.py `_run_perspektiv_sync` lines 720-836,
-    `merge_perspektiv_deltas` line 233 (ported as `_merge_perspective_deltas`).
+    Replaces three V1/V2 stages collapsed into one LLM call:
+    ``PerspectiveSyncStage`` (LLM but produced no substantial deltas in
+    practice), ``validate_coverage_gaps_stage`` (deterministic keyword
+    matcher — over-aggressive on Cuba 2026-05-23), and
+    ``consolidate_missing_coverage`` (Jaccard dedup — redundant once
+    the LLM owns dedup). See ``REPORT-DIAGNOSTIC-2026-05-23.md`` for
+    the underlying failure cases.
 
-    Stage-order in the hydrated runner (V2-10): `mirror_perspective_synced`
-    runs **twice** — first immediately after `enrich_perspective_clusters`
-    (the slot is empty there; mirror produces a 1:1 copy of
-    `perspective_clusters`), then again after this stage (element-delta
-    merge over the now-modified slot). `mirror_stage` is idempotent for
-    both granularities, so the double dispatch is safe — when this wrapper
-    skips via the eligibility gate, the second mirror pass is a no-op.
-
-    Slot has `mirrors_from="perspective_clusters"` annotation in bus.py
-    plus `optional_write` on the upstream slot — both writes are safe.
+    Single LLM call, no chunking, no special retry logic — both inputs
+    are small (typically <20 entries combined), output is a small
+    two-array JSON object.
     """
 
     stage_kind = "topic"
-    reads = (
-        "perspective_clusters",
-        "qa_corrected_article",
-        "qa_problems_found",
-        "qa_corrections",
-    )
-    writes = ("perspective_clusters_synced",)
-    agent_role = "perspective_sync"  # V1 folder name; V2-07 anglicises
+    reads = ("perspective_missing_positions", "merged_coverage_gaps")
+    writes = ("what_is_missing",)
+    agent_role = "consolidator"
 
     def __init__(self, agent: Agent) -> None:
         self.agent = agent
@@ -2351,44 +2288,32 @@ class PerspectiveSyncStage(_AgentStageBase):
     async def __call__(
         self, topic_bus: TopicBus, run_bus: RunBusReadOnly
     ) -> TopicBus:
-        # Eligibility gate: skip the call when no entry warrants a body fix
-        # (empty array, or every entry is a retraction).
-        active_fixes = [
-            c.proposed_correction
-            for c in (topic_bus.qa_corrections or [])
-            if c.correction_needed
-        ]
-        if not active_fixes:
-            return topic_bus  # mirror stage downstream produces 1:1 copy
-
         message = (
-            "Re-align the position clusters with the QA-corrected article. "
-            "Emit only deltas — id plus changed fields."
+            "Classify each gap entry as a missing voice or a missing "
+            "topic, deduping semantic overlaps across the two inputs."
         )
         result = await self.agent.run(
             message,
             context={
-                "position_clusters": list(topic_bus.perspective_clusters),
-                "article_body": topic_bus.qa_corrected_article.body,
-                "qa_problems_found": list(topic_bus.qa_problems_found),
-                "qa_proposed_corrections": active_fixes,
+                "perspective_missing_positions": list(
+                    topic_bus.perspective_missing_positions or []
+                ),
+                "merged_coverage_gaps": list(
+                    topic_bus.merged_coverage_gaps or []
+                ),
             },
         )
         parsed = _parse_agent_output(result) or {}
         if not isinstance(parsed, dict):
             parsed = {}
 
-        synced = _merge_perspective_deltas(
-            {"position_clusters": list(topic_bus.perspective_clusters)},
-            parsed,
+        voices_raw = parsed.get("voices_missing") or []
+        topics_raw = parsed.get("topics_missing") or []
+        what = WhatIsMissing(
+            voices_missing=[s for s in voices_raw if isinstance(s, str) and s],
+            topics_missing=[s for s in topics_raw if isinstance(s, str) and s],
         )
-        return topic_bus.model_copy(
-            update={
-                "perspective_clusters_synced": list(
-                    synced.get("position_clusters") or []
-                )
-            }
-        )
+        return topic_bus.model_copy(update={"what_is_missing": what})
 
 
 # ---------------------------------------------------------------------------
@@ -2675,12 +2600,12 @@ class ResolveActorAliasesStage(_AgentStageBase):
 __all__ = [
     "AssignClustersStage",
     "BiasLanguageStage",
+    "ConsolidatorStage",
     "CuratorTopicDiscoveryStage",
     "EditorStage",
     "HydrationPhase1Stage",
     "HydrationPhase2Stage",
     "PerspectiveStage",
-    "PerspectiveSyncStage",
     "QaAnalyzeStage",
     "ResearcherAssembleStage",
     "ResearcherHydratedPlanStage",

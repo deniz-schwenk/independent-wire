@@ -24,12 +24,12 @@ from src.runner.stage_lists import (
 from src.schemas import (
     BIAS_DETECTOR_SCHEMA,
     CLUSTER_ASSIGNMENT_SCHEMA,
+    CONSOLIDATOR_SCHEMA,
     CURATOR_TOPIC_DISCOVERY_SCHEMA,
     EDITOR_SCHEMA,
     HYDRATION_PHASE1_SCHEMA,
     HYDRATION_PHASE2_SCHEMA,
     PERSPECTIVE_SCHEMA,
-    PERSPECTIVE_SYNC_SCHEMA,
     QA_ANALYZE_SCHEMA,
     RESEARCHER_ASSEMBLE_SCHEMA,
     RESEARCHER_PLAN_SCHEMA,
@@ -230,6 +230,27 @@ def create_agents() -> dict[str, Agent]:
             reasoning="none",
             output_schema=BIAS_DETECTOR_SCHEMA,
         ),
+        # Consolidator — replaces the legacy PerspectiveSyncStage,
+        # validate_coverage_gaps_stage, and consolidate_missing_coverage
+        # trio with a single LLM call that classifies + dedupes the
+        # dossier's "what is missing" output. Inputs are small
+        # (perspective_missing_positions ~5-15 entries +
+        # merged_coverage_gaps ~3-10 entries); output is two arrays of
+        # short English strings. Temperature 0.3 + reasoning=none +
+        # max_tokens=32000 mirror the DeepSeek-V4-Pro default for
+        # small structured tasks — see commit rationale.
+        "consolidator": Agent(
+            name="consolidator",
+            model="deepseek/deepseek-v4-pro",
+            system_prompt_path=str(agents_dir / "consolidator" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "consolidator" / "INSTRUCTIONS.md"),
+            tools=[],
+            temperature=0.3,
+            max_tokens=32000,
+            provider="openrouter",
+            reasoning="none",
+            output_schema=CONSOLIDATOR_SCHEMA,
+        ),
     }
 
 
@@ -238,9 +259,9 @@ def create_agents_hydrated() -> dict[str, Agent]:
 
     Mirrors :func:`create_agents` for the agents shared with production,
     and adds the three hydrated-only agents (``researcher_hydrated_plan``,
-    ``hydration_aggregator_phase1``, ``hydration_aggregator_phase2``,
-    ``perspective_sync``). All eleven agents carry their ``output_schema``
-    so strict-mode JSON enforcement applies on every LLM call.
+    ``hydration_aggregator_phase1``, ``hydration_aggregator_phase2``).
+    All agents carry their ``output_schema`` so strict-mode JSON
+    enforcement applies on every LLM call.
     """
     agents_dir = ROOT / "agents"
     base = create_agents()
@@ -309,17 +330,6 @@ def create_agents_hydrated() -> dict[str, Agent]:
             provider="openrouter",
             reasoning="none",
             output_schema=HYDRATION_PHASE2_SCHEMA,
-        ),
-        "perspective_sync": Agent(
-            name="perspective_sync",
-            model="anthropic/claude-opus-4.6",
-            system_prompt_path=str(agents_dir / "perspective_sync" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "perspective_sync" / "INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.1,
-            provider="openrouter",
-            reasoning="none",
-            output_schema=PERSPECTIVE_SYNC_SCHEMA,
         ),
     })
     return base

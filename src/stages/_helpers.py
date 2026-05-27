@@ -5,16 +5,18 @@ V1 references for ports:
 - _normalise_language    src/pipeline.py:370-386
 - LANGUAGE_NAMES         src/pipeline.py:309-319
 - COUNTRY_ALIASES        src/pipeline.py:325-339
-- _LANGUAGE_ALIASES      src/pipeline.py:991-996
-- _COUNTRY_ALIASES_GAP   src/pipeline.py:998-1002 (subset, used by gap-validation only)
-- _GAP_STOPWORDS         src/pipeline.py:1004-1011
-- _gap_tokens            src/pipeline.py:1014-1016
-- _validate_coverage_gaps src/pipeline.py:1019-1109
 - _STALE_QUANTIFIER_PATTERNS src/pipeline.py:1112-1134
 - _strip_stale_quantifiers src/pipeline.py:1137-1194
 
 Logic preserved verbatim where possible; function signatures simplified
 (no `self`, no class-method calls, no logger-on-`self`).
+
+The legacy `_validate_coverage_gaps` helper (V1
+``src/pipeline.py:1019-1109``) was removed in the Consolidator refactor
+together with its caller in ``topic_stages``. The LLM Consolidator now
+owns the "what is missing" output; deterministic keyword-substring
+validation was over-aggressive on Cuba 2026-05-23 (see
+``REPORT-DIAGNOSTIC-2026-05-23.md`` §A).
 """
 
 from __future__ import annotations
@@ -92,115 +94,6 @@ def normalise_language(value: Optional[str]) -> str:
     if v in LANGUAGE_NAMES:
         return v
     return _LANGUAGE_NAME_TO_CODE.get(v, v)
-
-
-# ---------------------------------------------------------------------------
-# Coverage-gap validation (V1 src/pipeline.py:991-1109)
-# ---------------------------------------------------------------------------
-
-_LANGUAGE_ALIASES: dict[str, str] = {
-    "english": "en", "french": "fr", "german": "de", "spanish": "es",
-    "persian": "fa", "farsi": "fa", "russian": "ru", "turkish": "tr",
-    "italian": "it", "arabic": "ar", "chinese": "zh", "hebrew": "he",
-    "ukrainian": "uk", "portuguese": "pt", "japanese": "ja", "korean": "ko",
-}
-
-_COUNTRY_ALIASES_GAP: dict[str, str] = {
-    "uk": "United Kingdom", "u.k.": "United Kingdom",
-    "us": "United States", "u.s.": "United States",
-    "usa": "United States", "u.s.a.": "United States",
-}
-
-_GAP_STOPWORDS = frozenset({
-    "the", "a", "an", "of", "in", "on", "no", "and", "or", "to", "for",
-    "as", "is", "by", "at", "with", "from", "are", "was", "were", "be",
-    "but", "not", "this", "that", "any", "all", "its", "it", "has",
-    "have", "had", "been", "being", "will", "shall", "do", "does", "did",
-    "than", "then", "so", "such", "more", "most", "less", "least",
-    "some", "many", "few",
-})
-
-
-def _gap_tokens(text: str) -> set[str]:
-    """V1: src/pipeline.py:1014-1016."""
-    words = re.findall(r"[a-zA-Z]+", text.lower())
-    return {w for w in words if len(w) >= 3 and w not in _GAP_STOPWORDS}
-
-
-def validate_coverage_gaps(
-    gaps: list[str], source_balance: dict
-) -> tuple[list[str], list[str]]:
-    """V1: src/pipeline.py:1019-1109. Returns (kept, dropped).
-
-    Drops gaps falsified by source_balance.by_language / by_country, plus
-    Jaccard-near-duplicates. Genuinely qualitative gaps survive.
-    """
-    by_language = {
-        (k or "").lower(): v
-        for k, v in (source_balance or {}).get("by_language", {}).items()
-        if v
-    }
-    by_country = {
-        (k or "").lower(): v
-        for k, v in (source_balance or {}).get("by_country", {}).items()
-        if v
-    }
-
-    kept: list[str] = []
-    dropped: list[str] = []
-    kept_token_sets: list[set[str]] = []
-
-    no_pattern = re.compile(
-        r"\b(no|missing|lack(?:ing)?|absence of|absent|without)\b",
-        re.IGNORECASE,
-    )
-
-    for gap in gaps or []:
-        if not isinstance(gap, str) or not gap.strip():
-            continue
-        gap_lower = gap.lower()
-
-        falsified = False
-
-        if no_pattern.search(gap):
-            for alias, code in _LANGUAGE_ALIASES.items():
-                if re.search(rf"\b{alias}\b", gap_lower):
-                    if by_language.get(code, 0) > 0 or by_language.get(alias, 0) > 0:
-                        falsified = True
-                        break
-            if not falsified:
-                for alias, canonical in _COUNTRY_ALIASES_GAP.items():
-                    if re.search(rf"\b{re.escape(alias)}\b", gap_lower):
-                        if by_country.get(canonical.lower(), 0) > 0:
-                            falsified = True
-                            break
-            if not falsified:
-                for country, count in by_country.items():
-                    if count > 0 and re.search(rf"\b{re.escape(country)}\b", gap_lower):
-                        falsified = True
-                        break
-
-        if falsified:
-            dropped.append(gap)
-            continue
-
-        tokens = _gap_tokens(gap)
-        is_dup = False
-        for prev in kept_token_sets:
-            if not tokens or not prev:
-                continue
-            jaccard = len(tokens & prev) / len(tokens | prev)
-            if jaccard > 0.7:
-                is_dup = True
-                break
-        if is_dup:
-            dropped.append(gap)
-            continue
-
-        kept.append(gap)
-        kept_token_sets.append(tokens)
-
-    return kept, dropped
 
 
 # ---------------------------------------------------------------------------
@@ -284,5 +177,4 @@ __all__ = [
     "normalise_country",
     "normalise_language",
     "strip_stale_quantifiers",
-    "validate_coverage_gaps",
 ]

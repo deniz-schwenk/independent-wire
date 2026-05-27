@@ -92,7 +92,6 @@ def test_topicbus_constructs_with_all_typed_empty_defaults():
         "perspective_clusters_synced": [],
         "bias_language_findings": [],
         "bias_reader_note": "",
-        "coverage_gaps_validated": [],
     }
     for name, default in expected_simple.items():
         assert getattr(tb, name) == default, f"{name} != {default!r}"
@@ -347,11 +346,17 @@ def test_topicbus_slot_count_regression_guard():
     (canonical_actors_stated / _reported / _mentioned — pools from
     TASK-EVIDENCE-TYPE-MIGRATION), 4B.5=2, 4B.6=1, 4B.7=4, 4B.8=1,
     4B.8b=1 (mentioned_actors bracket — renamed 2026-05-21 from
-    single_voices; threshold dropped so all non-cluster actors qualify), 4B.9=2, 4B.10=2
-    (consolidated_missing_coverage added by the missing-voices / gaps
-    dedup mitigation, 2026-05-20), 4B.10b=2 (prune_dropped_*), 4B.11=2.
+    single_voices; threshold dropped so all non-cluster actors qualify),
+    4B.9=2, 4B.10=1 (Consolidator refactor collapsed
+    ``coverage_gaps_validated`` + ``consolidated_missing_coverage``
+    into a single ``what_is_missing`` slot owned by the new LLM
+    Consolidator stage), 4B.10b=2 (prune_dropped_*), 4B.11=2.
+
+    Net: 42 → 40 → 39 (2026-05-21 single_voices rename collapsed two
+    slots into one; 2026-05-2X Consolidator refactor collapsed two
+    more into ``what_is_missing``, net -1 again).
     """
-    assert len(TopicBus.model_fields) == 40
+    assert len(TopicBus.model_fields) == 39
 
 
 # ---------------------------------------------------------------------------

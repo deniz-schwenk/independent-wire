@@ -482,16 +482,15 @@ def test_unwrap_list_returns_empty_for_none_or_other():
 
 from src.agent_stages import (  # noqa: E402
     BiasLanguageStage,
+    ConsolidatorStage,
     HydrationPhase1Stage,
     HydrationPhase2Stage,
     PerspectiveStage,
-    PerspectiveSyncStage,
     ResearcherAssembleStage,
     ResearcherHydratedPlanStage,
     WriterStage,
     _build_bias_card_for_agent_input,
     _extract_date_from_url,
-    _merge_perspective_deltas,
 )
 from src.bus import (  # noqa: E402
     Correction,
@@ -499,6 +498,7 @@ from src.bus import (  # noqa: E402
     HydrationPreDossier,
     ResearcherAssembleDossier,
     SourceBalance,
+    WhatIsMissing,
     WriterArticle,
 )
 
@@ -1032,7 +1032,6 @@ def test_build_bias_card_for_agent_input_aggregates():
     ]
     tb.canonical_actors = [{"id": "actor-001", "name": "A"}]
     tb.qa_divergences = [{"type": "factual"}]
-    tb.coverage_gaps_validated = ["a gap"]
     bc = _build_bias_card_for_agent_input(tb)
     assert bc["article_summary"] == "my summary"
     assert bc["source_balance"]["total"] == 2
@@ -1040,7 +1039,11 @@ def test_build_bias_card_for_agent_input_aggregates():
     assert bc["perspectives"]["distinct_actor_count"] == 1
     assert "representation_distribution" not in bc["perspectives"]
     assert bc["factual_divergences"] == [{"type": "factual"}]
-    assert bc["coverage_gaps"] == ["a gap"]
+    # Consolidator refactor: both keys removed from the bias-card input.
+    # The Bias-Detector prompt no longer reads gap or missing-position
+    # commentary; that surface moved to the Consolidator stage.
+    assert "missing_positions" not in bc["perspectives"]
+    assert "coverage_gaps" not in bc
 
 
 # ===========================================================================
@@ -1457,95 +1460,94 @@ def test_hydration_phase2_calls_reducer():
 
 
 # ===========================================================================
-# V2-06: PerspectiveSyncStage  (eligibility-gate logic)
+# ConsolidatorStage — owns what_is_missing (Consolidator refactor)
 # ===========================================================================
 
 
-def test_perspective_sync_metadata():
-    s = PerspectiveSyncStage(FakeAgent())
+def test_consolidator_metadata():
+    s = ConsolidatorStage(FakeAgent())
     m = get_stage_meta(s)
     assert m.kind == "topic"
-    assert "qa_corrected_article" in m.reads
-    assert m.writes == ("perspective_clusters_synced",)
+    assert m.reads == ("perspective_missing_positions", "merged_coverage_gaps")
+    assert m.writes == ("what_is_missing",)
 
 
-def test_perspective_sync_eligibility_gate_skips_when_no_corrections():
-    """qa_corrections empty → wrapper skips agent call, leaves
-    perspective_clusters_synced empty so the V2-03b mirror produces 1:1."""
-    fake = FakeAgent(structured={"position_cluster_updates": []})
-    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
-    tb.perspective_clusters = [{"id": "pc-001", "position_label": "A"}]
-    tb.qa_corrections = []  # gate fires → skip
-    stage = PerspectiveSyncStage(fake)
-    tb_after = _run(stage, tb, _ro())
-    assert tb_after.perspective_clusters_synced == []  # mirror handles it
-    assert len(fake.calls) == 0
-
-
-def test_perspective_sync_eligibility_gate_skips_when_all_retracted():
-    """All entries have correction_needed=False → gate fires → skip."""
-    fake = FakeAgent(structured={"position_cluster_updates": []})
-    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
-    tb.perspective_clusters = [{"id": "pc-001", "position_label": "A"}]
-    tb.qa_corrections = [
-        Correction(proposed_correction="retract reason 1", correction_needed=False),
-        Correction(proposed_correction="retract reason 2", correction_needed=False),
+def test_consolidator_builds_context_and_writes_what_is_missing():
+    """Wrapper builds the two-array context the consolidator agent
+    expects (matching its INSTRUCTIONS contract) and writes the parsed
+    output to ``what_is_missing`` as a typed :class:`WhatIsMissing`."""
+    voices_emitted = [
+        "Iraqi government and media voices",
+        "International humanitarian organizations (ICRC, MSF, UNHCR)",
     ]
-    stage = PerspectiveSyncStage(fake)
-    tb_after = _run(stage, tb, _ro())
-    assert tb_after.perspective_clusters_synced == []
-    assert len(fake.calls) == 0
-
-
-def test_perspective_sync_runs_when_qa_corrections_present():
+    topics_emitted = [
+        "Humanitarian dimension of the US oil blockade",
+    ]
     fake = FakeAgent(
         structured={
-            "position_cluster_updates": [
-                {"id": "pc-001", "position_label": "Strongly Pro"}
-            ]
+            "voices_missing": voices_emitted,
+            "topics_missing": topics_emitted,
         }
     )
     tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
-    tb.perspective_clusters = [
-        {"id": "pc-001", "position_label": "Pro", "position_summary": "supports"},
-        {"id": "pc-002", "position_label": "Anti", "position_summary": "opposes"},
+    tb.perspective_missing_positions = [
+        {"type": "government", "description": "Iraqi government"},
+        {"type": "international_org", "description": "Humanitarian orgs"},
     ]
-    tb.qa_corrected_article = WriterArticle(body="corrected body")
-    tb.qa_corrections = [
-        Correction(proposed_correction="replace X with Y", correction_needed=True),
-        Correction(proposed_correction="retract", correction_needed=False),
+    tb.merged_coverage_gaps = [
+        "No humanitarian-dimension coverage of US oil blockade",
     ]
-    stage = PerspectiveSyncStage(fake)
+    stage = ConsolidatorStage(fake)
     tb_after = _run(stage, tb, _ro())
-    # Only the correction_needed=True text reaches the agent context
-    assert fake.calls[0]["context"]["qa_proposed_corrections"] == ["replace X with Y"]
-    synced = tb_after.perspective_clusters_synced
-    # Delta applied to pc-001, pc-002 unchanged
-    assert synced[0]["position_label"] == "Strongly Pro"
-    assert synced[0]["position_summary"] == "supports"
-    assert synced[1]["position_label"] == "Anti"
+
+    assert isinstance(tb_after.what_is_missing, WhatIsMissing)
+    assert tb_after.what_is_missing.voices_missing == voices_emitted
+    assert tb_after.what_is_missing.topics_missing == topics_emitted
+
+    # Context shape matches the prompt's input contract (the two array
+    # names the INSTRUCTIONS reference).
+    ctx = fake.calls[0]["context"]
+    assert ctx["perspective_missing_positions"] == [
+        {"type": "government", "description": "Iraqi government"},
+        {"type": "international_org", "description": "Humanitarian orgs"},
+    ]
+    assert ctx["merged_coverage_gaps"] == [
+        "No humanitarian-dimension coverage of US oil blockade",
+    ]
 
 
-def test_merge_perspective_deltas_unknown_id_skipped():
-    original = {"position_clusters": [{"id": "pc-001", "position_label": "A"}]}
-    updates = {
-        "position_cluster_updates": [
-            {"id": "pc-999", "position_label": "Ghost"}  # not in original
-        ]
-    }
-    out = _merge_perspective_deltas(original, updates)
-    assert out["position_clusters"][0]["position_label"] == "A"
+def test_consolidator_drops_non_string_entries_defensively():
+    """Defensive filter — if the LLM emits non-string list entries
+    (schema-illegal but observed under JSON-repair fallbacks), the
+    wrapper drops them rather than corrupting the typed slot."""
+    fake = FakeAgent(
+        structured={
+            "voices_missing": ["valid voice", "", None, 42, "another voice"],
+            "topics_missing": [None, "valid topic"],
+        }
+    )
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.perspective_missing_positions = [{"type": "x", "description": "y"}]
+    tb.merged_coverage_gaps = ["z"]
+
+    tb_after = _run(ConsolidatorStage(fake), tb, _ro())
+
+    assert tb_after.what_is_missing.voices_missing == ["valid voice", "another voice"]
+    assert tb_after.what_is_missing.topics_missing == ["valid topic"]
 
 
-def test_merge_perspective_deltas_null_value_skipped():
-    original = {"position_clusters": [{"id": "pc-001", "position_label": "A"}]}
-    updates = {
-        "position_cluster_updates": [
-            {"id": "pc-001", "position_label": None}  # null → no-op
-        ]
-    }
-    out = _merge_perspective_deltas(original, updates)
-    assert out["position_clusters"][0]["position_label"] == "A"
+def test_consolidator_empty_inputs_write_empty_output():
+    """Both inputs empty → wrapper still calls the agent once (the
+    prompt is robust to empty arrays per its OUTPUT FORMAT field-notes)
+    and writes whatever the agent emits."""
+    fake = FakeAgent(structured={"voices_missing": [], "topics_missing": []})
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    # perspective_missing_positions and merged_coverage_gaps default to [].
+    tb_after = _run(ConsolidatorStage(fake), tb, _ro())
+
+    assert tb_after.what_is_missing.voices_missing == []
+    assert tb_after.what_is_missing.topics_missing == []
+    assert len(fake.calls) == 1
 
 
 # ===========================================================================

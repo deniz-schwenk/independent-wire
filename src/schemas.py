@@ -364,24 +364,19 @@ QA_ANALYZE_SCHEMA = {
 # unchanged"; with the schema, the model must emit ``null`` for unchanged
 # fields. ``merge_perspective_deltas`` already treats ``null`` as
 # "no change" (V2 forbids null overrides), so the semantics are preserved.
-PERSPECTIVE_SYNC_SCHEMA = {
+CONSOLIDATOR_SCHEMA = {
     "type": "object",
     "properties": {
-        "position_cluster_updates": {
+        "voices_missing": {
             "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "id": {"type": "string"},
-                    "position_label": {"type": ["string", "null"]},
-                    "position_summary": {"type": ["string", "null"]},
-                },
-                "required": ["id", "position_label", "position_summary"],
-                "additionalProperties": False,
-            },
+            "items": {"type": "string"},
+        },
+        "topics_missing": {
+            "type": "array",
+            "items": {"type": "string"},
         },
     },
-    "required": ["position_cluster_updates"],
+    "required": ["voices_missing", "topics_missing"],
     "additionalProperties": False,
 }
 
