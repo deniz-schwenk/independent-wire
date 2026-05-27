@@ -91,7 +91,7 @@ Each modification target slot is annotated with a `mirrors_from` schema attribut
 | Modification target | Source slot | Mirror granularity | Set by `mirror_*` stage after which agent runs |
 |---|---|---|---|
 | `qa_corrected_article` | `writer_article` | slot-level (a) | after `qa_analyze` |
-| `perspective_clusters_synced` | `perspective_clusters` | per-element (b) | after `perspective_sync` (hydrated) or unchanged (production — `perspective_sync` does not run) |
+| `perspective_clusters_synced` | `perspective_clusters` | slot-level (a) | after `enrich_perspective_clusters` (both variants — 1:1 fill, the `perspective_sync` delta-merge was removed in commit `3f59ab9`) |
 
 **Definition of "empty":**
 
@@ -280,23 +280,23 @@ Mirror semantics: this slot uses **slot-level** empty-then-fill (granularity (a)
 
 Schema implication: the QA agent's `article` output field is **optional** (not in the schema's `required` list at the top level), so strict-mode JSON-schema validation accepts outputs without an `article` field. In V1, `article` is `required` and the prompt emits it unconditionally — the V2 schema change and prompt change ship together.
 
-#### 4B.8 Perspective-Sync phase (hydrated variant)
+#### 4B.8 Perspective-Sync phase (mirror only)
 
 | Slot | Owner | Initial | Final | Visibility | mirrors_from |
 |---|---|---|---|---|---|
-| `perspective_clusters_synced` | perspective_sync + `mirror_perspective_synced` stage | `[]` | After Perspective-Sync emits: a list of cluster delta objects (cluster id plus changed `position_label` and/or `position_summary` only). After the mirror stage: full cluster list with deltas applied where present, original cluster fields elsewhere. | `tp`, `mcp` | `perspective_clusters` |
+| `perspective_clusters_synced` | `mirror_perspective_synced` stage | `[]` | 1:1 copy of `perspective_clusters` after the mirror runs. | `tp`, `mcp` | `perspective_clusters` |
 
-In the production variant, `perspective_sync` does not run. The mirror stage still runs and produces `perspective_clusters_synced` as a 1:1 copy of `perspective_clusters` — render layers always read `perspective_clusters_synced`, never the unsynced version, regardless of variant.
+As of commit `3f59ab9` (Consolidator refactor, 2026-05-27), the `perspective_sync` agent is gone — `perspective_clusters_synced` is always a 1:1 copy of `perspective_clusters`, in both production and hydrated variants. The slot name retains the `_synced` suffix for API/render-contract stability; every downstream consumer (renderer, Writer, QA agent) was written against `perspective_clusters_synced` as the canonical post-perspective surface, so the slot is kept (the mirror is cheap) rather than removed.
 
-#### 4B.8b Single-voices bracket
+#### 4B.8b Mentioned-actors bracket
 
 | Slot | Owner | Initial | Final | Visibility |
 |---|---|---|---|---|
-| `single_voices` | init (`derive_single_voices`, deterministic Python stage, runs after `consolidate_missing_coverage` and before `BiasLanguageStage`) | `{}` | `{position_label, summary, actors_stated, actors_reported, actors_mentioned, actor_ids, source_ids, counts}` — deterministic bracket of structurally-central orphan actors: each canonical actor absent from every `perspective_clusters_synced[].actor_ids[]` AND quoted by ≥ 2 unique sources is admitted with a tier derived from quotes (verbatim → stated; else position → reported; else mentioned). `position_label` / `summary` are fixed module-level constants. `counts` carries actors / sources / regions / languages. `optional_write=True` so legacy / replay paths that bypass the stage validate. | `tp`, `mcp` |
+| `mentioned_actors` | init (`derive_mentioned_actors`, deterministic Python stage, runs after the Consolidator stage and before `BiasLanguageStage`) | `{}` | `{position_label, summary, actors_stated, actors_reported, actors_mentioned, actor_ids, source_ids, counts}` — deterministic bracket of every canonical actor absent from every `perspective_clusters_synced[].actor_ids[]`. Per-actor tier derived from quotes (verbatim → stated; else position → reported; else mentioned). `position_label` / `summary` are fixed module-level constants. `counts` carries actors / sources / regions / languages. `optional_write=True` so legacy / replay paths that bypass the stage validate. | `tp`, `mcp` |
 
-The bracket sits structurally next to `perspective_clusters_synced[]`, not inside it: API / MCP / RSS consumers must be able to distinguish a real shared-position cluster (≥ 2 voices, agent-formed) from the deterministically-grouped bracket (disparate single-actor positions, ≥ 2 sources each). The bracket's DOM anchor is `id="single-voices"`, explicitly separate from `pc-NNN`. Empty `actor_ids[]` is equivalent to an absent slot — the renderer omits the section entirely.
+The bracket sits structurally next to `perspective_clusters_synced[]`, not inside it: API / MCP / RSS consumers must be able to distinguish a real shared-position cluster (≥ 2 voices, agent-formed) from the deterministically-grouped bracket. The bracket's DOM anchor is `id="mentioned-actors"`, explicitly separate from `pc-NNN`. Empty `actor_ids[]` is equivalent to an absent slot — the renderer omits the section entirely.
 
-This slot is the deterministic complement to the strategic Perspective-prompt-rework tracked in `BACKLOG-CLUSTER-FORMATION-SINGLE-ACTOR.md`. The bracket doubles as a diagnostic: persistent ≥ 5 protagonist-class entries across multiple dossiers signals systematic over-rejection of single-actor positions by the agent and motivates activating the prompt-rework.
+The slot was renamed from `single_voices` to `mentioned_actors` in commit `7726fac` (2026-05-21, Option-B Cluster→Position vocab rename); the prior 2-source threshold was dropped at the same time so every non-cluster canonical actor qualifies. Pre-rename `--reuse` snapshots require manual migration via `scripts/migrate_single_voices_in_tp_json.py`.
 
 #### 4B.9 Bias Detector phase
 
@@ -307,14 +307,13 @@ This slot is the deterministic complement to the strategic Perspective-prompt-re
 
 The Bias Language Detector reads the corrected article (`qa_corrected_article`) and emits only what is originary to it: linguistic findings and reader-note. Other bias dimensions (source, geographical, selection, framing) are derived from other slots at render time — see Section 4B.12.
 
-#### 4B.10 Coverage gaps (post-research validation) + missing-coverage consolidation
+#### 4B.10 What is missing (Consolidator output)
 
 | Slot | Owner | Initial | Final | Visibility |
 |---|---|---|---|---|
-| `coverage_gaps_validated` | init (Python validation stage, runs after `final_sources` and `source_balance` exist) | `[]` | `merged_coverage_gaps` filtered against `source_balance` to drop gap statements that the final source pool empirically refutes ("no X-language sources" when X is present, etc.) | `tp`, `mcp` |
-| `consolidated_missing_coverage` | init (`consolidate_missing_coverage`, deterministic Python stage, runs after `validate_coverage_gaps_stage` and before `BiasLanguageStage`) | `{}` | `{missing_stakeholder_voices: [...], missing_topic_dimensions: [...]}` — derived dedup view: tokens of every `coverage_gaps_validated[]` entry are Jaccard-compared against tokens of every `perspective_missing_positions[].description`; gaps matching at ≥ 0.5 are dropped (the structured missing-position entry wins, the gap is removed from `missing_topic_dimensions`). `optional_write=True` so legacy / replay paths that bypass the stage validate. | `tp`, `mcp` |
+| `what_is_missing` | `ConsolidatorStage` (LLM, DeepSeek V4 Pro), runs after `mirror_qa_corrected` and before `prune_unused_sources_and_clusters` | `WhatIsMissing(voices_missing=[], topics_missing=[])` | `{voices_missing: [str, ...], topics_missing: [str, ...]}` — deduped consolidation of `perspective_missing_positions[]` (structured) and `merged_coverage_gaps[]` (free-text), each entry classified as a missing voice (who/where the dossier doesn't reach) or a missing topic (what content the dossier doesn't cover). Ambiguous entries default to voice. Empty lists are valid. | `tp`, `mcp` |
 
-The unvalidated `merged_coverage_gaps` remains in the TopicBus for full provenance. Render layers reference `coverage_gaps_validated` for the audit-trail rendering and `consolidated_missing_coverage` for the unified "What this dossier does not cover" section. The two source slots (`coverage_gaps_validated`, `perspective_missing_positions`) persist unchanged — the consolidation is a derived view, not a mutation of agent output.
+As of commit `3f59ab9` (Consolidator refactor, 2026-05-27), three prior post-QA stages were collapsed into this single LLM-backed Consolidator: `validate_coverage_gaps_stage` (over-aggressive keyword-substring matcher that silently dropped legitimate gaps), `consolidate_missing_coverage` (Jaccard dedup), and `PerspectiveSyncStage` (94% gate-fire rate with 0 substantial structural deltas across 50 measured invocations). The Consolidator owns the full "what is missing" surface; the unvalidated upstream slots (`merged_coverage_gaps`, `perspective_missing_positions`) persist unchanged as the audit trail. Render layers reference `what_is_missing` for the unified "What is missing" section directly before Sources.
 
 #### 4B.11 Source balance and rendered transparency
 
@@ -334,7 +333,7 @@ Mapping of Vision dimensions to TopicBus slots:
 | **Language** | `bias_language_findings` (LLM-emitted linguistic findings) |
 | **Source** | `source_balance.by_country`, `source_balance.by_language`, `source_balance.represented` |
 | **Geographical** | `source_balance.by_country` (regional view subset) |
-| **Selection** | `coverage_gaps_validated`, `perspective_missing_positions`, `qa_problems_found` |
+| **Selection** | `what_is_missing` (Consolidator output), `qa_problems_found` |
 | **Framing** | `perspective_clusters_synced` (cluster-level position framings), `qa_divergences` (cross-source narrative differences) |
 
 The composed `bias_analysis` block in the rendered TP looks like:
@@ -345,8 +344,7 @@ The composed `bias_analysis` block in the rendered TP looks like:
   "source": {...subset of source_balance...},
   "geographical": {...regional breakdown of source_balance.by_country...},
   "selection": {
-    "coverage_gaps": [...from coverage_gaps_validated...],
-    "missing_positions": [...from perspective_missing_positions...],
+    "what_is_missing": {...from what_is_missing slot...},
     "qa_problems_found": [...from qa_problems_found...]
   },
   "framing": {
@@ -387,14 +385,13 @@ TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
 10c. consolidate_actors           — Python: flattens final_sources[].actors_quoted[] into a deduped final_actors[] with stable actor-NNN IDs; logs a per-topic tally. Runs after the media filter so type=media never enters the flat list.
 11. normalize_pre_research        — Python: rewrites IDs in merged_preliminary_divergences and merged_coverage_gaps using id_rename_map
 12. perspective                   — Reads final_sources + final_actors + merged_preliminary_divergences + merged_coverage_gaps; populates perspective_clusters (with per-cluster actor_ids[]), perspective_missing_positions
-13. mirror_perspective_synced     — Python: empty-then-fill mirror. perspective_clusters_synced is empty (production never runs perspective_sync); the stage fills it from perspective_clusters as a 1:1 copy.
+13. mirror_perspective_synced     — Python: empty-then-fill mirror. perspective_clusters_synced is empty; the stage fills it from perspective_clusters as a 1:1 copy.
 14. writer                        — Reads final_sources + perspective_clusters_synced + perspective_missing_positions + merged_coverage_gaps + editor_selected_topic; populates writer_article
 15. qa_analyze                    — Reads writer_article + final_sources + perspective_clusters_synced; populates qa_problems_found, qa_corrections, qa_corrected_article (only changed fields; empty otherwise), qa_divergences
 16. mirror_qa_corrected           — Python: empty-then-fill mirror. Fills empty fields of qa_corrected_article from writer_article. Final state: qa_corrected_article has all four fields populated.
+16b. consolidator                  — LLM (DeepSeek V4 Pro): reads perspective_missing_positions + merged_coverage_gaps; writes what_is_missing as `{voices_missing: [...], topics_missing: [...]}` — deduped consolidation classified per entry as missing voice or missing topic.
 17. compute_source_balance        — Python: aggregates final_sources into source_balance
-18. validate_coverage_gaps        — Python: filters merged_coverage_gaps against source_balance; populates coverage_gaps_validated
-18b. consolidate_missing_coverage  — Python: token-Jaccard (≥ 0.5) dedup of `perspective_missing_positions[].description` vs `coverage_gaps_validated[]`; populates `consolidated_missing_coverage` with `{missing_stakeholder_voices, missing_topic_dimensions}` (the two source slots persist unchanged as audit trail).
-18c. derive_single_voices          — Python: collects orphan actors (in `canonical_actors[]` but in no cluster's `actor_ids[]`) with ≥ 2 unique source_ids into a deterministically-grouped bracket; tier derived per actor from quotes (verbatim → stated, else position → reported, else mentioned). Writes `single_voices` `{position_label, summary, actors_stated, actors_reported, actors_mentioned, actor_ids, source_ids, counts}`.
+18. derive_mentioned_actors       — Python: collects every canonical actor absent from every cluster's actor_ids[] into a deterministically-grouped bracket; tier derived per actor from quotes (verbatim → stated, else position → reported, else mentioned). Writes `mentioned_actors` `{position_label, summary, actors_stated, actors_reported, actors_mentioned, actor_ids, source_ids, counts}`.
 19. bias_language                 — Reads qa_corrected_article; populates bias_language_findings, bias_reader_note
 20. compose_transparency_card     — Python: assembles transparency_card from editor_selected_topic.selection_reason (cleaned), the parent RunBus's run_id and run_date, qa_problems_found, qa_corrections, and writer_article (as article_original) if qa modified anything
 
@@ -408,8 +405,6 @@ RUN STAGES (operate on RunBus again, run once after all topic stages complete)
 Run stages diverge from production: hydrated adds `attach_hydration_urls_to_assignments` between Editor and `select_topics`. Topic stages then diverge further after `instantiate_topic_buses`.
 
 **Why `attach_hydration_urls_to_assignments` is a run-stage and sits where it does.** The stage walks `run_bus.editor_assignments` (every assignment, not just the top-N selection) and matches each to a Curator cluster by token overlap, lifting the cluster's URL list onto `assignment.raw_data.hydration_urls`. The operation is cross-topic by construction — it touches the full assignment list before topic-level work begins — and the data it produces (URL lists per assignment) must exist before `select_topics` runs so that the selected subset enters topic-stage execution with its hydration URLs already attached. Run-stage placement between Editor (which writes `editor_assignments`) and `select_topics` (which trims to `max_produce`) is the only point in the pipeline where (a) the full assignment list is visible and (b) downstream topic-level work has not yet split the work into per-TopicBus lanes. A topic-stage placement would force the runner to re-walk the full Curator output for each TopicBus instance — duplicate work and a violation of the run/topic phase boundary.
-
-**Double dispatch of `mirror_perspective_synced`.** The stage runs twice in the hydrated topic-stage sequence. The first invocation runs immediately after `enrich_perspective_clusters`: at that point `perspective_clusters_synced` is empty, so the mirror does a 1:1 fill from `perspective_clusters` — this is the initialisation pattern (slot is now populated). The second invocation runs after `perspective_sync`: that agent has emitted per-element deltas (cluster IDs plus only the changed `position_label` and/or `position_summary` fields), and the second mirror merges those deltas onto the existing fill, leaving non-delta clusters untouched. Both invocations are deterministic and idempotent for the granularities they encounter — the generic `mirror_stage` engine reads `mirror_granularity` from `bus.py` schema metadata and does the right thing in either case (slot-level fill on the first call when the slot is empty; per-element merge on the second call when the source has updates). The double dispatch is necessary because empty-then-fill cannot meaningfully merge deltas onto an empty target; the second invocation needs an initial state to merge onto, and the first invocation provides it. A single mirror at the end (after `perspective_sync`) would not work because `qa_analyze` reads `perspective_clusters_synced` between the two invocations and requires it to be already populated. Production runs the same stage exactly once (no `perspective_sync` step exists in production) — the single invocation is a 1:1 fill, and `perspective_clusters_synced` is byte-equal to `perspective_clusters` in production output.
 
 ```
 RUN STAGES (operate on RunBus)
@@ -435,27 +430,24 @@ TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
 16. normalize_pre_research        — Python: rewrites IDs in merged_preliminary_divergences and merged_coverage_gaps
 17. perspective                   — Same as production stage 12 (reads final_sources + final_actors)
 18. enrich_perspective_clusters   — Python: attaches pc-NNN ids, validated actor_ids, regions, languages, n_actors, n_sources, n_regions, n_languages to perspective_clusters
-19. mirror_perspective_synced     — Python: first invocation. perspective_clusters_synced is empty; mirror does 1:1 fill from perspective_clusters.
+19. mirror_perspective_synced     — Python: same as production stage 13. perspective_clusters_synced is empty; mirror does 1:1 fill from perspective_clusters.
 20. writer                        — Same as production stage 14
 21. qa_analyze                    — Same as production stage 15
 22. mirror_qa_corrected           — Same as production stage 16
-23. perspective_sync              — Reads perspective_clusters + qa_corrected_article + qa_problems_found + qa_corrections; emits cluster deltas (only changed fields)
-24. mirror_perspective_synced     — Python: second invocation. For clusters where perspective_sync emitted deltas, those are merged onto the slot's existing content (per-element granularity).
-25. compute_source_balance        — Same as production stage 17
-26. validate_coverage_gaps        — Same as production stage 18
-26b. consolidate_missing_coverage  — Same as production stage 18b
-26c. derive_single_voices          — Same as production stage 18c
-27. bias_language                 — Same as production stage 19
-28. compose_transparency_card     — Same as production stage 20
+22b. consolidator                  — Same as production stage 16b
+23. compute_source_balance        — Same as production stage 17
+24. derive_mentioned_actors       — Same as production stage 18
+25. bias_language                 — Same as production stage 19
+26. compose_transparency_card     — Same as production stage 20
 
 RUN STAGES (operate on RunBus again, run once after all topic stages complete)
-29. render                        — Same as production stage 21
-30. finalize_run                  — Same as production stage 22
+27. render                        — Same as production stage 21
+28. finalize_run                  — Same as production stage 22
 ```
 
-The hydrated variant adds one run-stage (`attach_hydration_urls_to_assignments`) between Editor and `select_topics`, plus six hydration/perspective-sync topic stages and a second invocation of `mirror_perspective_synced`. All shared stages reuse the same agent calls and the same deterministic logic.
+The hydrated variant adds one run-stage (`attach_hydration_urls_to_assignments`) between Editor and `select_topics`, plus the hydration topic stages (fetch + phase1 + phase2 + assemble) before the Researcher. All shared stages reuse the same agent calls and the same deterministic logic.
 
-In production, `mirror_perspective_synced` runs once (after `enrich_perspective_clusters`, with `perspective_clusters_synced` empty — produces a 1:1 fill). In hydrated, the same stage runs twice: once after `enrich_perspective_clusters` (1:1 fill), then again after `perspective_sync` (per-element delta merge over the now-modified slot).
+`mirror_perspective_synced` runs exactly once in both variants — after `enrich_perspective_clusters`, with `perspective_clusters_synced` empty, producing a 1:1 fill. The Consolidator owns the full post-QA "what is missing" surface; the prior delta-merge of cluster fields by a `perspective_sync` agent was removed in commit `3f59ab9` after measurement showed 0 substantial structural deltas across 50 invocations.
 
 ### 5.3 Stage interface
 
@@ -512,9 +504,9 @@ The on-disk Topic Package JSON is built by `render_tp_public(topic_bus, run_bus)
 - `metadata`: `{title, date, status, topic_slug, priority, follow_up}` from `topic_bus.editor_selected_topic` and `run_bus.run_date`. When the topic is a follow-up, `follow_up` is `{previous_tp_id, reason, previous_headline, previous_date}` — the headline and date are resolved at render time from `run_bus.previous_coverage` by matching `tp_id`; missing matches render as empty strings. Otherwise `follow_up` is `null`.
 - `article`: from `topic_bus.qa_corrected_article` (always; mirror semantics guarantee completeness)
 - `sources`: from `topic_bus.final_sources`, with internal-prefix fields stripped
-- `perspectives`: `{position_clusters: from topic_bus.perspective_clusters_synced, missing_positions: from topic_bus.perspective_missing_positions}`
+- `perspectives`: `{position_clusters: from topic_bus.perspective_clusters_synced, mentioned_actors: from topic_bus.mentioned_actors}`
 - `divergences`: from `topic_bus.qa_divergences`
-- `gaps`: from `topic_bus.coverage_gaps_validated`
+- `what_is_missing`: from `topic_bus.what_is_missing` (Consolidator output; replaces the legacy `gaps` field)
 - `bias_analysis`: from `compose_bias_card(topic_bus)` — the multi-slot derived view per Section 4B.12
 - `transparency`: from `topic_bus.transparency_card`
 - `source_balance`: from `topic_bus.source_balance`

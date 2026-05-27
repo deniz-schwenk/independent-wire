@@ -125,7 +125,7 @@ class PipelineRunner:
 
 Two stage lists exist (`src/runner/stage_lists.py`):
 - `build_production_stages()` — production variant: pure RSS → Editor → Researcher → Writer → QA → Bias.
-- `build_hydrated_stages()` — hydrated variant: adds the Hydration sub-pipeline (T1 fetch + T2 phase1+phase2 aggregator) before the Researcher, plus a per-element `perspective_sync` step after QA.
+- `build_hydrated_stages()` — hydrated variant: adds the Hydration sub-pipeline (T1 fetch + T2 phase1+phase2 aggregator) before the Researcher. Topic-stage tail after QA is identical to production since commit `3f59ab9` (Consolidator refactor).
 
 The Editor (and any topic-stage agent) sees only the slots it reads from — it does not know whether the pipeline is production or hydrated. Variants are runner-time choices over the same agent code.
 
@@ -179,9 +179,9 @@ The full slot catalogue with owners, visibility, mirrors-from, and initial / fin
 
 All other Bus slots — RunBus init metadata, EditorAssignments, the full TopicBus slot family — are unchanged from the V2 cutover and documented in `docs/ARCH-V2-BUS-SCHEMA.md` §4A / §4B. The Curator-side additions above are the only new slots introduced across Briefs 1–5b.
 
-Post-V2 TopicBus addition (2026-05-20): `consolidated_missing_coverage` is written by the new deterministic `consolidate_missing_coverage` topic-stage. Visibility `tp+mcp`, `optional_write=True`, carrying `{missing_stakeholder_voices, missing_topic_dimensions}` — a derived dedup view over `perspective_missing_positions[]` and `coverage_gaps_validated[]`. The two source slots persist unchanged as the audit trail; canonical slot spec lives in `docs/ARCH-V2-BUS-SCHEMA.md` §4B.
+Post-V2 TopicBus addition (2026-05-27): `what_is_missing` is written by the new `ConsolidatorStage` (LLM, DeepSeek V4 Pro). Visibility `tp+mcp`, `optional_write=True`, carrying `{voices_missing: [...], topics_missing: [...]}` — LLM-consolidated and deduped view over `perspective_missing_positions[]` (structured) and `merged_coverage_gaps[]` (free-text), classified per entry as a missing voice or a missing topic. The Consolidator replaced three earlier post-QA stages (`validate_coverage_gaps_stage`, `consolidate_missing_coverage`, `PerspectiveSyncStage`) collapsed into one. Canonical slot spec lives in `docs/ARCH-V2-BUS-SCHEMA.md` §4B.10.
 
-Post-V2 TopicBus addition (2026-05-20): `single_voices` is written by the new deterministic `derive_single_voices` topic-stage. Visibility `tp+mcp`, `optional_write=True`, carrying `{position_label, summary, actors_stated, actors_reported, actors_mentioned, actor_ids, source_ids, counts}` — a deterministic bracket of structurally-central orphan actors (≥ 2 sources, no cluster membership). Sits next to `perspective_clusters_synced[]` so consumers can distinguish the bracket (disparate positions deterministically grouped) from a real shared-position cluster; the bracket's DOM anchor is `id="single-voices"`, explicitly separate from any `pc-NNN`. Canonical slot spec lives in `docs/ARCH-V2-BUS-SCHEMA.md` §4B.
+Post-V2 TopicBus addition (2026-05-21, renamed from `single_voices` in commit `7726fac`): `mentioned_actors` is written by the deterministic `derive_mentioned_actors` topic-stage. Visibility `tp+mcp`, `optional_write=True`, carrying `{position_label, summary, actors_stated, actors_reported, actors_mentioned, actor_ids, source_ids, counts}` — a deterministic bracket of every canonical actor absent from every cluster's `actor_ids[]`. Sits next to `perspective_clusters_synced[]` so consumers can distinguish the bracket from a real shared-position cluster; the bracket's DOM anchor is `id="mentioned-actors"`, explicitly separate from any `pc-NNN`. The original 2-source threshold was dropped at rename time. Canonical slot spec lives in `docs/ARCH-V2-BUS-SCHEMA.md` §4B.8b.
 
 ---
 
@@ -209,7 +209,6 @@ Hydrated variant:
   → hydration_fetch + HydrationPhase1/2  (topic-stages before Researcher)
   → assemble_hydration_dossier
   → ResearcherHydratedPlanStage          (variant of ResearcherPlan)
-  → PerspectiveSyncStage + mirror_perspective_synced (twice)
 ```
 
 Curator pipeline references:
@@ -266,8 +265,8 @@ These principles are also documented in machine-checkable form in `docs/ARCH-V2-
 Applied in the current V2 pipeline:
 - **Curator pre-clustering and gravitational assignment** are entirely deterministic Python (`pre_cluster_findings`, `gravitational_assign`); only the topic-naming step (`CuratorTopicDiscoveryStage`) is an LLM call. The V1 single-pass Curator that asked one model to simultaneously cluster + assign + score is gone.
 - **Source merge + renumber** (`merge_sources` → `renumber_sources`) lift the hydration and research dossiers into a single sequential `src-NNN` keyspace deterministically; downstream agents never see `rsrc-` IDs.
-- **Coverage-gap validation** (`validate_coverage_gaps_stage`) filters LLM-emitted gap statements against the actual source pool — an LLM that claims "no Hebrew sources" while a Hebrew source is in the dossier is overruled by Python.
-- **Bias-Card aggregation** (`compose_bias_card`): the public bias card is a derived render view over five Bus slots (`bias_language_findings`, `final_sources`, `source_balance`, `coverage_gaps_validated`, `transparency_card`). The bias detector emits only originary linguistic findings; the geographic / source / selection / framing dimensions are computed in Python.
+- **What-is-missing consolidation** (`ConsolidatorStage`, LLM, DeepSeek V4 Pro) consumes the structured `perspective_missing_positions[]` from the Perspective agent and the free-text `merged_coverage_gaps[]` from HydrationPhase2, deduplicates them, and classifies each entry as a missing voice or a missing topic. The earlier deterministic `validate_coverage_gaps_stage` was removed in commit `3f59ab9` after measurement showed it false-falsifying legitimate gaps via keyword-substring matching (Cuba 2026-05-23 dossier: 4 of 7 gaps wrongly dropped). The judgment is semantic; LLM with surgical scope is the right primitive.
+- **Bias-Card aggregation** (`compose_bias_card`): the public bias card is a derived render view over five Bus slots (`bias_language_findings`, `final_sources`, `source_balance`, `what_is_missing`, `transparency_card`). The bias detector emits only originary linguistic findings; the geographic / source / selection / framing dimensions are computed in Python.
 - **Counting is never delegated to LLM.** The Hydration aggregator does not self-verify its array length; the chunk validator in Python catches missing `article_index` values and retries with the missing indices only.
 
 ### Principle 2 — Agents produce only originary output
@@ -359,7 +358,7 @@ Authoritative table in `docs/AGENT-IO-MAP.md` §1; snapshot here. All via OpenRo
 | researcher_hydrated_plan | anthropic/claude-opus-4.6 | 0.5 | none | Hydrated variant of researcher_plan |
 | hydration_aggregator_phase1 | deepseek/deepseek-v4-pro | 0.3 | none | Per-chunk extraction (parallel, chunked) |
 | hydration_aggregator_phase2 | anthropic/claude-opus-4.6 | 0.1 | none | Cross-corpus reducer (single call) |
-| perspective_sync | anthropic/claude-opus-4.6 | 0.1 | none | Hydrated-only; per-element delta-mirror |
+| consolidator | deepseek/deepseek-v4-pro | 0.3 | none | Post-QA: consolidates perspective_missing_positions + merged_coverage_gaps into voices_missing + topics_missing (replaces removed `perspective_sync` agent and two deterministic gap-handling stages, commit `3f59ab9`) |
 
 **Migration pending:** All `anthropic/claude-opus-4.6` agents above are staged for simultaneous migration to `anthropic/claude-opus-4.7` as a single workstream (`WP-OPUS-4.7-MIGRATION`). Opus 4.7 removes `temperature`, `top_p`, `top_k` as supported parameters (returns 400 on any non-default value) and replaces discrete reasoning levels with `output_config.effort` (low / medium / high / xhigh / max, always active). This requires `src/agent.py` refactor plus per-agent effort-level evaluation before cutover — not a drop-in swap.
 
@@ -432,10 +431,9 @@ Production (V2):
     propagate_outlet_metadata → consolidate_actors → ResolveActorAliasesStage →
     partition_canonical_actors_by_evidence → normalize_pre_research →
   PerspectiveStage → enrich_perspective_clusters → mirror_perspective_synced →
-  WriterStage → QaAnalyzeStage → mirror_qa_corrected →
+  WriterStage → QaAnalyzeStage → mirror_qa_corrected → ConsolidatorStage →
     prune_unused_sources_and_clusters → cleanup_stale_references →
-    compute_source_balance → validate_coverage_gaps_stage →
-    consolidate_missing_coverage → derive_single_voices →
+    compute_source_balance → derive_mentioned_actors →
   BiasLanguageStage → compose_transparency_card → finalize_run
 
 Hydrated (V2):
@@ -445,9 +443,8 @@ Hydrated (V2):
     HydrationPhase1Stage → HydrationPhase2Stage → assemble_hydration_dossier →
   ResearcherHydratedPlanStage → researcher_search → ResearcherAssembleStage →
     …same source-merge + actor + perspective head as production…
-  mirror_perspective_synced (1st invocation — 1:1 fill) →
-  WriterStage → QaAnalyzeStage → mirror_qa_corrected →
-  PerspectiveSyncStage → mirror_perspective_synced (2nd invocation — per-element delta merge) →
+  mirror_perspective_synced (1:1 fill) →
+  WriterStage → QaAnalyzeStage → mirror_qa_corrected → ConsolidatorStage →
     …same cleanup + bias + transparency tail as production…
 ```
 
@@ -469,7 +466,7 @@ independent-wire/
 │   │   ├── gravitational_assign.py  # Brief 2 + Brief 5b — cosine-threshold assignment (T=0.55)
 │   │   ├── run_stages.py     # Deterministic run-stages (init_run, fetch_findings, merge, renumber, …)
 │   │   └── topic_stages.py   # Deterministic topic-stages (consolidate_actors, mirror_*, compute_source_balance, …)
-│   ├── agent_stages.py       # Agent-stage wrappers (Curator, Editor, Researcher, Perspective, Writer, QA, Bias, Hydration P1/P2, PerspectiveSync, …)
+│   ├── agent_stages.py       # Agent-stage wrappers (Curator, Editor, Researcher, Perspective, Writer, QA, Bias, Hydration P1/P2, Consolidator, …)
 │   ├── render.py             # Render layer (visibility-driven filter; tp / mcp / rss / internal)
 │   ├── runner/
 │   │   ├── __init__.py       # PipelineRunner
@@ -487,7 +484,7 @@ independent-wire/
 │   ├── researcher/{PLAN,ASSEMBLE}-{SYSTEM,INSTRUCTIONS}.md
 │   ├── researcher_hydrated/PLAN-{SYSTEM,INSTRUCTIONS}.md
 │   ├── perspective/{SYSTEM,INSTRUCTIONS}.md      # Anglicised in V2-07 (was perspektiv/)
-│   ├── perspective_sync/{SYSTEM,INSTRUCTIONS}.md
+│   ├── consolidator/{SYSTEM,INSTRUCTIONS}.md          # Post-QA: voices_missing + topics_missing (replaces perspective_sync, commit 3f59ab9)
 │   ├── writer/{SYSTEM,INSTRUCTIONS}.md
 │   ├── writer/FOLLOWUP.md                        # Addendum (loaded conditionally)
 │   ├── qa_analyze/{SYSTEM,INSTRUCTIONS}.md
