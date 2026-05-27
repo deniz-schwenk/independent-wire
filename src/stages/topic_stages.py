@@ -1541,7 +1541,8 @@ async def prune_unused_sources_and_clusters(
         if is_referenced:
             kept_sources.append(source)
         else:
-            summary_snippet = (source.get("summary") or "").strip()[:60]
+            full_summary = (source.get("summary") or "").strip()
+            summary_snippet = full_summary[:60]
             logger.info(
                 "prune_unused_sources_and_clusters: dropped source %s "
                 "(not referenced in body, clusters, divergences, gaps, or "
@@ -1554,7 +1555,7 @@ async def prune_unused_sources_and_clusters(
                 {
                     "id": sid or "",
                     "outlet": source.get("outlet") or "",
-                    "summary": summary_snippet,
+                    "summary": full_summary,
                 }
             )
 

@@ -1537,15 +1537,51 @@ def test_prune_records_dropped_sources_and_clusters():
     drop = tb_after.prune_dropped_sources[0]
     assert drop["id"] == "src-007"
     assert drop["outlet"] == "Off-topic Daily"
-    assert drop["summary"].startswith("An unrelated story not cited")
-    # Truncated to the same 60-char window the logger uses.
-    assert len(drop["summary"]) <= 60
+    # Persisted summary is the full string; the 60-char window only
+    # constrains the log line.
+    assert drop["summary"] == "An unrelated story not cited anywhere downstream."
 
     # Cluster-side drops.
     assert len(tb_after.prune_dropped_clusters) == 1
     cdrop = tb_after.prune_dropped_clusters[0]
     assert cdrop["id"] == "pc-002"
     assert cdrop["position_label"] == "Dropped position"
+
+
+def test_prune_preserves_full_source_summary_in_dropped_sources():
+    """Regression: persisted ``dropped_sources[].summary`` carries the full
+    summary string, not the 60-char log snippet. The log line still
+    truncates for readability; the persisted dict does not (so the
+    rendered Strict-drop Pruning section can show the real summary).
+    """
+    full_summary = (
+        "Anadolu reports unrelated regional news in roughly two hundred "
+        "characters of background detail about parliamentary committee "
+        "deliberations that the synthesis stack chose not to cite anywhere "
+        "in the published Topic Package."
+    )
+    assert len(full_summary) >= 200, "fixture sanity: summary must be >=200 chars"
+
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-001", "outlet": "Cited", "summary": "x", "actors_quoted": []},
+        {"id": "src-042", "outlet": "Anadolu",
+         "summary": full_summary, "actors_quoted": []},
+    ]
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "position_label": "P", "actors": ["A"],
+         "source_ids": ["src-001"]},
+    ]
+
+    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
+
+    assert len(tb_after.prune_dropped_sources) == 1
+    drop = tb_after.prune_dropped_sources[0]
+    assert drop["id"] == "src-042"
+    assert drop["summary"] == full_summary, (
+        "persisted summary must be the full string, "
+        f"not truncated to {len(drop['summary'])} chars"
+    )
 
 
 def test_compose_transparency_card_propagates_dropped_lists():
