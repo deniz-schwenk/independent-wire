@@ -1287,6 +1287,46 @@ def test_prune_drops_unreferenced_sources_regardless_of_content():
     )
 
 
+def test_prune_does_not_consult_preliminary_divergences_for_src_ids():
+    """`merged_preliminary_divergences` is by design an array of plain
+    text strings on both producer sides (HYDRATION_PHASE2_SCHEMA +
+    RESEARCHER_ASSEMBLE_SCHEMA — `array of string`); it carries no
+    `source_ids[]`. The slot used to be scanned by
+    `_collect_referenced_src_ids`, which (a) warned for every string
+    item ("prune: unexpected non-dict item …") and (b) could never find
+    any ids to add. The scan was removed as a dead hook.
+
+    This test pins behaviour: prune treats the slot as if it were empty.
+    Even when the slot defensively carries a dict with a valid src-NNN
+    in `source_ids[]` (a shape the producers never emit), that id does
+    not earn a keep-reprieve from prune."""
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-001", "outlet": "X", "summary": "x",
+         "actors_quoted": [{"name": "A"}]},
+        {"id": "src-099", "outlet": "Y", "summary": "y",
+         "actors_quoted": [{"name": "B"}]},
+    ]
+    tb.perspective_clusters_synced = [
+        {"id": "pc-001", "position_label": "P", "actors": ["A"],
+         "source_ids": ["src-001"]},
+    ]
+    # Adversarial: stuff src-099 into a dict-shaped item that the
+    # producers never actually emit. The dead hook used to harvest this
+    # and keep src-099; after the removal, src-099 has no live reference
+    # site and drops.
+    tb.merged_preliminary_divergences = [
+        {"description": "stale", "source_ids": ["src-099"]},
+    ]
+
+    tb_after = _run(prune_unused_sources_and_clusters, tb, _ro())
+
+    kept_ids = {s["id"] for s in tb_after.final_sources}
+    assert kept_ids == {"src-001"}, (
+        f"prelim-divs are not a reference site; src-099 must drop. Got: {kept_ids}"
+    )
+
+
 def test_prune_keeps_source_referenced_only_in_article_body():
     """A source cited inline in writer body via [src-NNN] is referenced
     even when no cluster mentions it — pruning must not strip it."""

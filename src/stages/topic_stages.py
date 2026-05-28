@@ -1296,9 +1296,15 @@ def _collect_referenced_src_ids(topic_bus: TopicBus) -> set[str]:
 
     - ``perspective_clusters_synced[i].source_ids[]``
     - ``qa_divergences[i].source_ids[]``
-    - ``merged_preliminary_divergences[i].source_ids[]``
     - ``qa_corrected_article`` and ``writer_article`` (body/headline/
       subheadline/summary), via inline ``[src-NNN]`` citations
+
+    ``merged_preliminary_divergences`` is intentionally NOT scanned. Both
+    producer-side schemas (``HYDRATION_PHASE2_SCHEMA`` and
+    ``RESEARCHER_ASSEMBLE_SCHEMA``) declare it as ``array of string``;
+    items carry no ``source_ids[]``, so the scan can never harvest any
+    ids — it was a dead hook that emitted a per-item warning for every
+    (string) item.
 
     ``bias_language_findings`` is intentionally NOT scanned. The bias
     agent produces secondary commentary on the article, not
@@ -1329,7 +1335,6 @@ def _collect_referenced_src_ids(topic_bus: TopicBus) -> set[str]:
 
     _harvest_source_ids(topic_bus.perspective_clusters_synced, "perspective_clusters_synced")
     _harvest_source_ids(topic_bus.qa_divergences, "qa_divergences")
-    _harvest_source_ids(topic_bus.merged_preliminary_divergences, "merged_preliminary_divergences")
 
     # Article bodies carry [src-NNN] inline citations. qa_corrected_article
     # is post-mirror so it carries the active body; writer_article is the
