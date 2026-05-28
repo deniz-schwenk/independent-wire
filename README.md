@@ -50,23 +50,22 @@ flowchart TD
         direction TB
         HY["hydrate<br/>fetch + extract full article text"]:::det
         RES["Researcher<br/>plan multilingual queries → assemble dossier"]:::llm
-        ACT["resolve actors<br/>dedupe people/orgs by evidence"]:::mix
+        ACT["resolve actors<br/>dedupe people/orgs by evidence"]:::llm
         PER["Perspective<br/>map positions · flag missing voices"]:::llm
         WR["Writer<br/>source-attributed article"]:::llm
         QA["QA / Fact-Check<br/>find errors · propose corrections"]:::llm
         CON["Consolidator<br/>classify what is missing"]:::llm
-        BIAS["Bias Detector<br/>Python aggregation + LLM language analysis"]:::mix
+        BIAS["Bias Detector<br/>Python aggregation + LLM language analysis"]:::llm
         HY --> RES --> ACT --> PER --> WR --> QA --> CON --> BIAS
     end
 
     BIAS --> OUT["Topic Package JSON → HTML → publication"]:::det
 
     classDef llm stroke:#2563eb,stroke-width:2px;
-    classDef det stroke:#9ca3af,stroke-width:1px,stroke-dasharray:4 3;
-    classDef mix stroke:#7c3aed,stroke-width:2px;
+    classDef det stroke:#6b7280,stroke-width:2px,stroke-dasharray:5 4;
 ```
 
-*Solid blue = LLM agent · dashed grey = deterministic Python · purple = both.*
+*Solid blue border = LLM-backed stage · dashed grey border = deterministic Python.*
 
 Two principles run through every stage:
 
