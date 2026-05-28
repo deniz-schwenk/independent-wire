@@ -332,32 +332,55 @@ def test_enrich_curator_output_computes_missing_regions(tmp_path: Path):
     assert "No sources from: Europe, Middle East" in t["missing_perspectives"]
 
 
-def test_enrich_curator_output_source_diversity_from_sources_json(tmp_path: Path):
-    findings = [{"region": "x", "language": "en", "source_name": "Reuters"}]
+def test_enrich_curator_output_source_diversity_from_outlet_registry(monkeypatch):
+    """Post 2026-05-29 migration: source_diversity reads tier and
+    editorial_independence from the outlet registry by lookup_outlet(
+    finding['source_url']), not from sources.json by source_name."""
+    from src import outlet_registry
+    outlet_registry._load_registry.cache_clear()
+    monkeypatch.setattr(
+        outlet_registry,
+        "_load_registry",
+        lambda: {
+            "reuters.com": {
+                "outlet": "Reuters",
+                "tier": 1,
+                "editorial_independence": "independent",
+            },
+        },
+    )
+    findings = [
+        {
+            "region": "x",
+            "language": "en",
+            "source_name": "Reuters",
+            "source_url": "https://www.reuters.com/world/article.html",
+        },
+    ]
     topics = [{"title": "T", "source_ids": ["finding-0"]}]
-    sources_json = tmp_path / "sources.json"
-    sources_json.write_text(
-        json.dumps({"feeds": [
-            {"name": "Reuters", "tier": "tier1", "editorial_independence": "independent"},
-        ]}),
-        encoding="utf-8",
-    )
-    out = _enrich_curator_output(
-        topics, findings, sources_json_path=sources_json
-    )
+    out = _enrich_curator_output(topics, findings)
     diversity = out[0]["source_diversity"]
     assert diversity == [
-        {"name": "Reuters", "tier": "tier1", "editorial_independence": "independent"},
+        {"name": "Reuters", "tier": 1, "editorial_independence": "independent"},
     ]
 
 
-def test_enrich_curator_output_sources_json_missing_is_graceful(tmp_path: Path):
-    findings = [{"region": "x", "language": "en", "source_name": "Unknown"}]
+def test_enrich_curator_output_unknown_hostname_is_graceful(monkeypatch):
+    """A finding whose source_url hostname is not in the registry gets
+    tier and editorial_independence at None — graceful, not crashing."""
+    from src import outlet_registry
+    outlet_registry._load_registry.cache_clear()
+    monkeypatch.setattr(outlet_registry, "_load_registry", lambda: {})
+    findings = [
+        {
+            "region": "x",
+            "language": "en",
+            "source_name": "Unknown",
+            "source_url": "https://unknown-site.example/article",
+        },
+    ]
     topics = [{"title": "T", "source_ids": ["finding-0"]}]
-    nonexistent = tmp_path / "does-not-exist.json"
-    out = _enrich_curator_output(
-        topics, findings, sources_json_path=nonexistent
-    )
+    out = _enrich_curator_output(topics, findings)
     assert out[0]["source_diversity"] == [
         {"name": "Unknown", "tier": None, "editorial_independence": None},
     ]

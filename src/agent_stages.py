@@ -56,6 +56,7 @@ from src.bus import (
     WhatIsMissing,
     WriterArticle,
 )
+from src.outlet_registry import lookup_outlet
 from src.stage import StageMeta
 from src.stages._helpers import normalise_country
 
@@ -265,20 +266,15 @@ def _enrich_curator_output(
     """Add geographic_coverage / missing_perspectives / languages /
     source_diversity deterministically. V1: src/pipeline.py:1698-1792.
 
-    `sources_json_path` defaults to `config/sources.json`; tests inject a
-    tmp_path. Per V2-05 §3.4: the disk read stays here for V2-05 — V1's
-    behaviour preserved. A future refactor may move this into init_run via
-    a new RunBus slot; flagged in CC Report.
+    Outlet metadata (``tier``, ``editorial_independence``) is looked up
+    per finding via :func:`src.outlet_registry.lookup_outlet` against
+    the finding's ``source_url`` — the registry is the single source of
+    truth (migration 2026-05-29). ``sources_json_path`` is retained on
+    the signature for backwards compatibility but no longer consulted;
+    callers passing a tmp_path against the legacy shape will see fields
+    default to ``None``.
     """
-    sources_path = sources_json_path or Path("config") / "sources.json"
-    source_meta: dict[str, dict] = {}
-    if sources_path.exists():
-        try:
-            data = json.loads(sources_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, ValueError) as e:
-            logger.warning("Could not load sources.json: %s", e)
-            data = {"feeds": []}
-        source_meta = {s["name"]: s for s in data.get("feeds", [])}
+    del sources_json_path  # legacy parameter; retained for API stability
 
     finding_index: dict[str, dict] = {}
     for i, f in enumerate(raw_findings):
@@ -310,12 +306,15 @@ def _enrich_curator_output(
             if lang:
                 topic_languages.add(lang)
             sname = finding.get("source_name", "")
-            meta = source_meta.get(sname, {})
+            url = finding.get("source_url", "") or ""
+            entry = lookup_outlet(url) if isinstance(url, str) and url else None
             topic_sources.append(
                 {
                     "name": sname,
-                    "tier": meta.get("tier"),
-                    "editorial_independence": meta.get("editorial_independence"),
+                    "tier": (entry or {}).get("tier"),
+                    "editorial_independence": (entry or {}).get(
+                        "editorial_independence"
+                    ),
                 }
             )
         topic["geographic_coverage"] = sorted(topic_regions)

@@ -237,51 +237,7 @@ async def filter_media_actors_quoted(
 # ---------------------------------------------------------------------------
 
 
-import json as _json
-from pathlib import Path as _Path
-
-_SOURCES_CONFIG_PATH = (
-    _Path(__file__).resolve().parents[2] / "config" / "sources.json"
-)
-_OUTLET_LOOKUP_CACHE: dict[str, dict] | None = None
-
-
-def _load_outlet_lookup() -> dict[str, dict]:
-    """Load and cache the outlet → metadata lookup from
-    ``config/sources.json``.
-
-    Cached at module level so a 72-feed JSON parse runs once per
-    process rather than once per topic. The cache stays valid across
-    pipeline runs in a long-lived process; tests that mutate the file
-    can reset by setting ``_OUTLET_LOOKUP_CACHE = None``.
-    """
-    global _OUTLET_LOOKUP_CACHE
-    if _OUTLET_LOOKUP_CACHE is not None:
-        return _OUTLET_LOOKUP_CACHE
-    try:
-        raw = _json.loads(_SOURCES_CONFIG_PATH.read_text())
-    except FileNotFoundError:
-        logger.warning(
-            "propagate_outlet_metadata: %s not found; lookup empty",
-            _SOURCES_CONFIG_PATH,
-        )
-        _OUTLET_LOOKUP_CACHE = {}
-        return _OUTLET_LOOKUP_CACHE
-    feeds = raw.get("feeds") or []
-    lookup: dict[str, dict] = {}
-    for feed in feeds:
-        if not isinstance(feed, dict):
-            continue
-        name = feed.get("name")
-        if not isinstance(name, str) or not name:
-            continue
-        lookup[name] = {
-            "tier": feed.get("tier"),
-            "editorial_independence": feed.get("editorial_independence"),
-            "bias_note": feed.get("bias_note"),
-        }
-    _OUTLET_LOOKUP_CACHE = lookup
-    return lookup
+from src.outlet_registry import lookup_outlet
 
 
 @topic_stage_def(
@@ -292,25 +248,25 @@ async def propagate_outlet_metadata(
     topic_bus: TopicBus, run_bus: RunBusReadOnly
 ) -> TopicBus:
     """Copy ``tier`` / ``editorial_independence`` / ``bias_note`` from
-    ``config/sources.json`` onto each ``final_sources[i]`` whose
-    ``outlet`` matches a feed name.
+    ``config/outlet_registry.json`` onto each ``final_sources[i]`` whose
+    ``url`` resolves to a registered hostname.
 
-    These three fields exist in the feed configuration but were never
-    propagated through the pipeline — render layers had no way to
-    surface editorial-independence indicators or bias notes per outlet.
+    The registry is the single source of truth for outlet metadata
+    (migrated from config/sources.json on 2026-05-29). The lookup is
+    URL-keyed via :func:`src.outlet_registry.lookup_outlet` — exact
+    hostname match plus parent-domain fallback — so both feed-origin and
+    hydration-origin sources resolve through the same path.
 
-    Researcher-hydrated third-party citations (outlets not in
-    ``config/sources.json``) remain unmatched: their three fields stay
-    ``None`` and the renderer surfaces a "not yet categorized"
-    indicator per Decision 6 of TASK-RENDER-RESTRUCTURE-V2.
+    Researcher-hydrated third-party citations whose hostname is not in
+    the registry remain unmatched: their three fields stay ``None`` and
+    the renderer surfaces a "not yet categorized" indicator per
+    Decision 6 of TASK-RENDER-RESTRUCTURE-V2.
 
     Logs one INFO line per topic with the match tally.
     """
     final_sources = list(topic_bus.final_sources or [])
     if not final_sources:
         return topic_bus
-
-    lookup = _load_outlet_lookup()
 
     new_sources: list = []
     matched = 0
@@ -320,19 +276,26 @@ async def propagate_outlet_metadata(
             new_sources.append(source)
             continue
         total += 1
-        outlet = source.get("outlet")
-        meta = lookup.get(outlet) if isinstance(outlet, str) else None
+        url = source.get("url")
+        entry = lookup_outlet(url) if isinstance(url, str) and url else None
         new_source = copy.deepcopy(source)
-        if meta is not None:
+        if entry is not None and (
+            entry.get("tier") is not None
+            or entry.get("editorial_independence") is not None
+            or entry.get("bias_note") is not None
+        ):
             matched += 1
-            new_source["tier"] = meta.get("tier")
-            new_source["editorial_independence"] = meta.get(
+            new_source["tier"] = entry.get("tier")
+            new_source["editorial_independence"] = entry.get(
                 "editorial_independence"
             )
-            new_source["bias_note"] = meta.get("bias_note")
+            new_source["bias_note"] = entry.get("bias_note")
         else:
-            # Defensive: explicitly set to None when no match so the
-            # rendered TP shape is consistent across all sources.
+            # Either no registry entry, or the entry exists but carries
+            # only country/language/type (Phase 2 web-search
+            # classifications not yet applied). Defensive: explicitly
+            # set to None so the rendered TP shape is consistent across
+            # all sources.
             new_source.setdefault("tier", None)
             new_source.setdefault("editorial_independence", None)
             new_source.setdefault("bias_note", None)

@@ -1,5 +1,5 @@
 {
-  "_comment": "Independent Wire — Feed sources. type: rss or api. All free, no API keys needed.",
+  "_comment": "RSS feed mechanics — name, url, type (feed protocol), region, language, enabled. Outlet-level metadata (country/language/type/tier/editorial_independence/bias_note) lives in config/outlet_registry.json keyed by hostname; migration completed 2026-05-29.",
   "version": "0.3",
   "feeds": [
     {
@@ -8,9 +8,6 @@
       "type": "rss",
       "region": "Middle East",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "Qatar-funded, strong Global South coverage",
       "enabled": true
     },
     {
@@ -19,9 +16,6 @@
       "type": "rss",
       "region": "Middle East",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "state_directed",
-      "bias_note": "Iranian state-affiliated English broadcaster",
       "enabled": true
     },
     {
@@ -30,9 +24,6 @@
       "type": "rss",
       "region": "Middle East",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "state_influenced",
-      "bias_note": "Turkish state news agency",
       "enabled": true
     },
     {
@@ -41,9 +32,6 @@
       "type": "rss",
       "region": "Middle East",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Independent, UK-based MENA focus",
       "enabled": true
     },
     {
@@ -52,9 +40,6 @@
       "type": "rss",
       "region": "East Asia",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "state_influenced",
-      "bias_note": "Hong Kong-based, Beijing-aligned since Alibaba acquisition",
       "enabled": true
     },
     {
@@ -63,9 +48,6 @@
       "type": "rss",
       "region": "East Asia",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "state_directed",
-      "bias_note": "Chinese state broadcaster",
       "enabled": true
     },
     {
@@ -74,9 +56,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Independent English-language Russian news outlet",
       "enabled": true
     },
     {
@@ -85,9 +64,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "state_influenced",
-      "bias_note": "Ukrainian state news agency",
       "enabled": true
     },
     {
@@ -96,9 +72,6 @@
       "type": "rss",
       "region": "Africa",
       "language": "en",
-      "tier": 4,
-      "editorial_independence": "independent",
-      "bias_note": "Pan-African aggregator",
       "enabled": true
     },
     {
@@ -107,9 +80,6 @@
       "type": "rss",
       "region": "Africa",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Leading Kenyan newspaper",
       "enabled": true
     },
     {
@@ -118,9 +88,6 @@
       "type": "rss",
       "region": "Africa",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Major Nigerian investigative newspaper",
       "enabled": true
     },
     {
@@ -129,9 +96,6 @@
       "type": "rss",
       "region": "Latin America",
       "language": "pt",
-      "tier": 2,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "Brazilian public news agency",
       "enabled": true
     },
     {
@@ -140,9 +104,6 @@
       "type": "rss",
       "region": "Latin America",
       "language": "es",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Major Mexican newspaper, centrist/business-oriented",
       "enabled": true
     },
     {
@@ -151,9 +112,6 @@
       "type": "rss",
       "region": "South Asia",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Major Indian English-language news outlet",
       "enabled": true
     },
     {
@@ -162,9 +120,6 @@
       "type": "rss",
       "region": "South Asia",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Leading Pakistani English newspaper",
       "enabled": true
     },
     {
@@ -173,9 +128,6 @@
       "type": "rss",
       "region": "Southeast Asia",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "state_influenced",
-      "bias_note": "Singaporean news channel",
       "enabled": true
     },
     {
@@ -184,9 +136,6 @@
       "type": "rss",
       "region": "East Asia",
       "language": "en",
-      "tier": 1,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "South Korean national news agency",
       "enabled": true
     },
     {
@@ -195,9 +144,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 1,
-      "editorial_independence": "independent",
-      "bias_note": "United Nations official news",
       "enabled": true
     },
     {
@@ -206,9 +152,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 3,
-      "editorial_independence": "independent",
-      "bias_note": "Inter Press Service, development and humanitarian focus",
       "enabled": true
     },
     {
@@ -217,9 +160,6 @@
       "type": "api",
       "region": "Global",
       "language": "multi",
-      "tier": 4,
-      "editorial_independence": "independent",
-      "bias_note": "Open-source global event database, 100+ languages",
       "enabled": true
     },
     {
@@ -228,9 +168,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 1,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "UK public broadcaster, editorial independence charter",
       "enabled": true
     },
     {
@@ -239,9 +176,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Scott Trust ownership, center-left editorial line",
       "enabled": true
     },
     {
@@ -250,9 +184,6 @@
       "type": "rss",
       "region": "North America",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "US public radio, member-funded",
       "enabled": true
     },
     {
@@ -261,9 +192,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "French state-funded, editorially independent",
       "enabled": true
     },
     {
@@ -272,9 +200,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "German state-funded, editorially independent",
       "enabled": true
     },
     {
@@ -283,9 +208,6 @@
       "type": "rss",
       "region": "International",
       "language": "it",
-      "tier": 1,
-      "editorial_independence": "independent",
-      "bias_note": "Italian wire service",
       "enabled": true
     },
     {
@@ -294,9 +216,6 @@
       "type": "rss",
       "region": "North America",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "US policy and business coverage",
       "enabled": true
     },
     {
@@ -305,9 +224,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Nikkei-owned, geopolitical economic reporting",
       "enabled": true
     },
     {
@@ -316,9 +232,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "French newspaper of record, EN edition",
       "enabled": true
     },
     {
@@ -327,9 +240,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "de",
-      "tier": 2,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "German public broadcaster ARD",
       "enabled": true
     },
     {
@@ -338,9 +248,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "de",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "German investigative newsmagazine",
       "enabled": true
     },
     {
@@ -349,9 +256,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "ru",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Russian independent media in exile (Latvia)",
       "enabled": true
     },
     {
@@ -360,9 +264,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "ru",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Russian independent media in exile, Nobel Prize newsroom",
       "enabled": true
     },
     {
@@ -371,9 +272,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Ukrainian independent, pro-Ukraine perspective",
       "enabled": true
     },
     {
@@ -382,9 +280,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "state_directed",
-      "bias_note": "Russian state media, included for transparency",
       "enabled": true
     },
     {
@@ -393,9 +288,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "es",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Spanish newspaper of record",
       "enabled": true
     },
     {
@@ -404,9 +296,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "tr",
-      "tier": 2,
-      "editorial_independence": "state_influenced",
-      "bias_note": "Major Turkish newspaper, Demiroren Media Group",
       "enabled": true
     },
     {
@@ -415,9 +304,6 @@
       "type": "rss",
       "region": "East Asia",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "Japanese public broadcaster",
       "enabled": true
     },
     {
@@ -426,9 +312,6 @@
       "type": "rss",
       "region": "Central Asia",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Central Asia + South Caucasus, Columbia University based",
       "enabled": true
     },
     {
@@ -437,9 +320,6 @@
       "type": "rss",
       "region": "Middle East",
       "language": "ar",
-      "tier": 2,
-      "editorial_independence": "state_influenced",
-      "bias_note": "Saudi-aligned Arabic news, MBC Group. Cloud IPs blocked — content enters via Researcher web_search.",
       "enabled": false
     },
     {
@@ -448,9 +328,6 @@
       "type": "rss",
       "region": "Africa",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Major Nigerian newspaper",
       "enabled": true
     },
     {
@@ -459,9 +336,6 @@
       "type": "rss",
       "region": "Africa",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Egyptian independent investigative, journalist-owned, blocked in Egypt since 2017",
       "enabled": true
     },
     {
@@ -470,9 +344,6 @@
       "type": "rss",
       "region": "Africa",
       "language": "en",
-      "tier": 3,
-      "editorial_independence": "independent",
-      "bias_note": "Largest English-language Moroccan news source",
       "enabled": true
     },
     {
@@ -481,9 +352,6 @@
       "type": "rss",
       "region": "Latin America",
       "language": "es",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Largest Argentine daily newspaper",
       "enabled": true
     },
     {
@@ -492,9 +360,6 @@
       "type": "rss",
       "region": "Latin America",
       "language": "pt",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Largest Brazilian daily newspaper",
       "enabled": true
     },
     {
@@ -503,9 +368,6 @@
       "type": "rss",
       "region": "Latin America",
       "language": "es",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Largest Colombian newspaper",
       "enabled": true
     },
     {
@@ -514,9 +376,6 @@
       "type": "rss",
       "region": "Latin America",
       "language": "es",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Pan-LatAm digital news, strong in AR/MX/CO",
       "enabled": true
     },
     {
@@ -525,9 +384,6 @@
       "type": "rss",
       "region": "Latin America",
       "language": "en",
-      "tier": 3,
-      "editorial_independence": "independent",
-      "bias_note": "OSINT on organized crime in Latin America",
       "enabled": true
     },
     {
@@ -536,9 +392,6 @@
       "type": "rss",
       "region": "East Asia",
       "language": "en",
-      "tier": 3,
-      "editorial_independence": "independent",
-      "bias_note": "Asia-Pacific geopolitical analysis",
       "enabled": true
     },
     {
@@ -547,9 +400,6 @@
       "type": "rss",
       "region": "East Asia",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "English-language Japanese news (Atom format)",
       "enabled": true
     },
     {
@@ -558,9 +408,6 @@
       "type": "rss",
       "region": "South Asia",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "Indian newspaper, investigative strength",
       "enabled": true
     },
     {
@@ -569,9 +416,6 @@
       "type": "rss",
       "region": "Southeast Asia",
       "language": "vi",
-      "tier": 2,
-      "editorial_independence": "state_influenced",
-      "bias_note": "Largest Vietnamese news outlet",
       "enabled": true
     },
     {
@@ -580,9 +424,6 @@
       "type": "rss",
       "region": "Pacific",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "Australian public broadcaster",
       "enabled": true
     },
     {
@@ -591,9 +432,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 3,
-      "editorial_independence": "independent",
-      "bias_note": "OSINT investigations, transparent methodology",
       "enabled": true
     },
     {
@@ -602,9 +440,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 3,
-      "editorial_independence": "independent",
-      "bias_note": "International Crisis Group, conflict prevention",
       "enabled": true
     },
     {
@@ -613,9 +448,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 3,
-      "editorial_independence": "independent",
-      "bias_note": "International relations reference publication",
       "enabled": true
     },
     {
@@ -624,9 +456,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 3,
-      "editorial_independence": "independent",
-      "bias_note": "Quincy Institute, restraint-oriented foreign policy",
       "enabled": true
     },
     {
@@ -635,9 +464,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 1,
-      "editorial_independence": "independent",
-      "bias_note": "International Atomic Energy Agency, primary source",
       "enabled": true
     },
     {
@@ -646,9 +472,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 1,
-      "editorial_independence": "independent",
-      "bias_note": "World Health Organization, primary source",
       "enabled": true
     },
     {
@@ -657,9 +480,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 3,
-      "editorial_independence": "independent",
-      "bias_note": "Investigative cybersecurity journalism",
       "enabled": true
     },
     {
@@ -668,9 +488,6 @@
       "type": "rss",
       "region": "International",
       "language": "fr",
-      "tier": 2,
-      "editorial_independence": "publicly_funded_autonomous",
-      "bias_note": "Radio France Internationale, francophone global. Replaces Jeune Afrique.",
       "enabled": true
     },
     {
@@ -679,9 +496,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
-      "tier": 3,
-      "editorial_independence": "independent",
-      "bias_note": "English-language Polish news and analysis. Replaces TVN24.",
       "enabled": true
     },
     {
@@ -690,9 +504,6 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
-      "tier": 2,
-      "editorial_independence": "independent",
-      "bias_note": "EU politics and policy from Brussels. Replaces EuroNews.",
       "enabled": true
     },
     {
@@ -701,9 +512,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 1,
-      "editorial_independence": "independent",
-      "bias_note": "UN OCHA humanitarian crisis reports. Primary source for underreported crises.",
       "enabled": true
     },
     {
@@ -712,9 +520,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 3,
-      "editorial_independence": "independent",
-      "bias_note": "Citizen journalism from 167 countries. Harvard Berkman Center origin. Covers stories mainstream media ignores.",
       "enabled": true
     },
     {
@@ -723,9 +528,6 @@
       "type": "rss",
       "region": "International",
       "language": "en",
-      "tier": 3,
-      "editorial_independence": "independent",
-      "bias_note": "Academic experts writing for general public. Nonprofit, Creative Commons.",
       "enabled": true
     }
   ]

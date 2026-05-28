@@ -1,12 +1,23 @@
 """Tests for ``propagate_outlet_metadata`` topic-stage.
 
-Covers TASK-RENDER-RESTRUCTURE-V2 Commit 0 contract:
+Post 2026-05-29 migration: the stage reads outlet metadata from
+``config/outlet_registry.json`` keyed by hostname (via
+:func:`src.outlet_registry.lookup_outlet`), not from
+``config/sources.json`` by outlet display name. Tests pin the new
+URL-based contract.
 
-- Outlet match copies tier / editorial_independence / bias_note onto
-  the source record.
-- No match leaves the three fields at ``None``.
-- Mixed batch handles both correctly per source.
-- Missing or non-string ``outlet`` field is defensively handled.
+Contract:
+
+- Source whose ``url`` resolves to a registry entry with non-empty
+  tier/editorial_independence/bias_note: those three fields are copied
+  onto the source record.
+- Source whose ``url`` resolves to a registry entry carrying only
+  country/language/type (no Phase 2 web-search classifications applied):
+  the three fields default to ``None``.
+- Source whose hostname is unknown to the registry: the three fields
+  default to ``None``.
+- Source missing or with non-string ``url``: safe, fields default to
+  ``None``.
 """
 
 from __future__ import annotations
@@ -16,8 +27,8 @@ import asyncio
 import pytest
 
 from src.bus import RunBus, TopicBus
+from src import outlet_registry
 from src.stage import get_stage_meta
-from src.stages import topic_stages
 from src.stages.topic_stages import propagate_outlet_metadata
 
 
@@ -30,12 +41,24 @@ def _ro(rb: RunBus = None):
 
 
 @pytest.fixture(autouse=True)
-def _reset_lookup_cache():
-    # Force a fresh load of config/sources.json per test so a test that
-    # monkeypatches the cache cannot leak into the next.
-    topic_stages._OUTLET_LOOKUP_CACHE = None
+def _reset_registry_cache():
+    # Force a fresh registry load per test so a test that patches
+    # `_load_registry` cannot leak into the next.
+    outlet_registry._load_registry.cache_clear()
+    outlet_registry.reset_miss_cache()
     yield
-    topic_stages._OUTLET_LOOKUP_CACHE = None
+    outlet_registry._load_registry.cache_clear()
+    outlet_registry.reset_miss_cache()
+
+
+def _patch_registry(monkeypatch, entries: dict[str, dict]) -> None:
+    """Replace the cached registry with the supplied hostname → entry dict.
+
+    Uses ``_load_registry.cache_clear`` + a monkey patch of the underlying
+    function so ``lookup_outlet`` consults our fixture instead of disk.
+    """
+    outlet_registry._load_registry.cache_clear()
+    monkeypatch.setattr(outlet_registry, "_load_registry", lambda: entries)
 
 
 def test_propagate_outlet_metadata_metadata():
@@ -46,13 +69,16 @@ def test_propagate_outlet_metadata_metadata():
 
 
 def test_match_populates_three_fields(monkeypatch):
-    """A source whose outlet matches a feed in the lookup gets all
-    three fields copied onto its record."""
-    monkeypatch.setattr(
-        topic_stages,
-        "_OUTLET_LOOKUP_CACHE",
+    """A source whose URL resolves to a registry entry with the three
+    classification fields gets all three copied onto its record."""
+    _patch_registry(
+        monkeypatch,
         {
-            "Al Jazeera": {
+            "aljazeera.com": {
+                "outlet": "Al Jazeera",
+                "country": "Qatar",
+                "language": "en",
+                "type": "broadcaster",
                 "tier": 2,
                 "editorial_independence": "publicly_funded_autonomous",
                 "bias_note": "Qatar-funded, strong Global South coverage",
@@ -61,7 +87,13 @@ def test_match_populates_three_fields(monkeypatch):
     )
     tb = TopicBus()
     tb.final_sources = [
-        {"id": "src-001", "outlet": "Al Jazeera", "title": "T", "country": "Qatar"},
+        {
+            "id": "src-001",
+            "url": "https://www.aljazeera.com/news/2026/5/28/article.html",
+            "outlet": "Al Jazeera",
+            "title": "T",
+            "country": "Qatar",
+        },
     ]
     tb_after = _run(propagate_outlet_metadata, tb, _ro())
     s = tb_after.final_sources[0]
@@ -71,17 +103,28 @@ def test_match_populates_three_fields(monkeypatch):
 
 
 def test_no_match_leaves_fields_none(monkeypatch):
-    """An outlet absent from the lookup produces the three fields at
-    None — explicitly set, not omitted, so the rendered TP shape is
-    consistent."""
-    monkeypatch.setattr(
-        topic_stages,
-        "_OUTLET_LOOKUP_CACHE",
-        {"Al Jazeera": {"tier": 2, "editorial_independence": "x", "bias_note": "y"}},
+    """A URL whose hostname is unknown to the registry produces the
+    three fields at None — explicitly set, not omitted, so the rendered
+    TP shape is consistent."""
+    _patch_registry(
+        monkeypatch,
+        {
+            "aljazeera.com": {
+                "outlet": "Al Jazeera",
+                "tier": 2,
+                "editorial_independence": "publicly_funded_autonomous",
+                "bias_note": "Qatar-funded",
+            },
+        },
     )
     tb = TopicBus()
     tb.final_sources = [
-        {"id": "src-001", "outlet": "Some Researcher Hydrated Site", "title": "T"},
+        {
+            "id": "src-001",
+            "url": "https://some-researcher-hydrated-site.example/article",
+            "outlet": "Some Researcher Hydrated Site",
+            "title": "T",
+        },
     ]
     tb_after = _run(propagate_outlet_metadata, tb, _ro())
     s = tb_after.final_sources[0]
@@ -90,19 +133,54 @@ def test_no_match_leaves_fields_none(monkeypatch):
     assert s["bias_note"] is None
 
 
-def test_source_without_outlet_field_is_safe(monkeypatch):
-    """A source dict missing the `outlet` field (or carrying a non-
-    string outlet) should not crash the stage — fields default to
-    None."""
-    monkeypatch.setattr(
-        topic_stages,
-        "_OUTLET_LOOKUP_CACHE",
-        {"Al Jazeera": {"tier": 2, "editorial_independence": "x", "bias_note": "y"}},
+def test_registry_hit_without_classification_fields_yields_none(monkeypatch):
+    """A registry entry carrying only outlet/country/language/type (no
+    Phase 2 classification yet) does NOT populate tier/independence/
+    bias_note — they stay None. This pins the contract that an entry
+    must opt in to the classification fields explicitly."""
+    _patch_registry(
+        monkeypatch,
+        {
+            "cnn.com": {
+                "outlet": "CNN",
+                "country": "United States",
+                "language": "en",
+                "type": "broadcaster",
+            },
+        },
     )
     tb = TopicBus()
     tb.final_sources = [
-        {"id": "src-001", "title": "no outlet field"},
-        {"id": "src-002", "outlet": None, "title": "non-string outlet"},
+        {
+            "id": "src-001",
+            "url": "https://www.cnn.com/2026/05/28/news.html",
+            "outlet": "CNN",
+        },
+    ]
+    tb_after = _run(propagate_outlet_metadata, tb, _ro())
+    s = tb_after.final_sources[0]
+    assert s["tier"] is None
+    assert s["editorial_independence"] is None
+    assert s["bias_note"] is None
+
+
+def test_source_without_url_field_is_safe(monkeypatch):
+    """A source dict missing the `url` field (or carrying a non-string
+    url) should not crash the stage — fields default to None."""
+    _patch_registry(
+        monkeypatch,
+        {
+            "aljazeera.com": {
+                "tier": 2,
+                "editorial_independence": "x",
+                "bias_note": "y",
+            },
+        },
+    )
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-001", "title": "no url field"},
+        {"id": "src-002", "url": None, "title": "non-string url"},
     ]
     tb_after = _run(propagate_outlet_metadata, tb, _ro())
     for s in tb_after.final_sources:
@@ -112,25 +190,31 @@ def test_source_without_outlet_field_is_safe(monkeypatch):
 
 
 def test_mixed_batch_some_match_some_not(monkeypatch):
-    """A batch where some outlets match and some do not — the matched
-    sources carry meta, the unmatched stay at None. Tally count
-    correct."""
-    monkeypatch.setattr(
-        topic_stages,
-        "_OUTLET_LOOKUP_CACHE",
+    """Mixed batch: matched sources carry registry meta, unmatched stay
+    at None, regardless of how the per-source ``outlet`` field reads."""
+    _patch_registry(
+        monkeypatch,
         {
-            "Al Jazeera": {"tier": 2, "editorial_independence": "publicly_funded_autonomous",
-                           "bias_note": "Qatar-funded"},
-            "Anadolu Agency": {"tier": 2, "editorial_independence": "state_influenced",
-                               "bias_note": "Turkish state news agency"},
+            "aljazeera.com": {
+                "outlet": "Al Jazeera",
+                "tier": 2,
+                "editorial_independence": "publicly_funded_autonomous",
+                "bias_note": "Qatar-funded",
+            },
+            "aa.com.tr": {
+                "outlet": "Anadolu Agency",
+                "tier": 2,
+                "editorial_independence": "state_influenced",
+                "bias_note": "Turkish state news agency",
+            },
         },
     )
     tb = TopicBus()
     tb.final_sources = [
-        {"id": "src-001", "outlet": "Al Jazeera"},
-        {"id": "src-002", "outlet": "Le Figaro"},
-        {"id": "src-003", "outlet": "Anadolu Agency"},
-        {"id": "src-004", "outlet": "Yeni Şafak"},
+        {"id": "src-001", "url": "https://aljazeera.com/x", "outlet": "Al Jazeera"},
+        {"id": "src-002", "url": "https://www.lefigaro.fr/y", "outlet": "Le Figaro"},
+        {"id": "src-003", "url": "https://aa.com.tr/z", "outlet": "Anadolu Agency"},
+        {"id": "src-004", "url": "https://yenisafak.com/k", "outlet": "Yeni Şafak"},
     ]
     tb_after = _run(propagate_outlet_metadata, tb, _ro())
     by_id = {s["id"]: s for s in tb_after.final_sources}
@@ -141,19 +225,47 @@ def test_mixed_batch_some_match_some_not(monkeypatch):
 
 
 def test_empty_final_sources_is_no_op(monkeypatch):
-    monkeypatch.setattr(topic_stages, "_OUTLET_LOOKUP_CACHE", {})
+    _patch_registry(monkeypatch, {})
     tb = TopicBus()
     tb.final_sources = []
     tb_after = _run(propagate_outlet_metadata, tb, _ro())
     assert tb_after.final_sources == []
 
 
-def test_lookup_cache_hits_real_config():
-    """Smoke against the real config/sources.json: at least Al Jazeera
-    is present and yields the documented vocabulary."""
-    lookup = topic_stages._load_outlet_lookup()
-    assert "Al Jazeera" in lookup
-    assert lookup["Al Jazeera"]["editorial_independence"] in {
+def test_parent_domain_fallback_picks_up_subdomain_url(monkeypatch):
+    """lookup_outlet falls back from a subdomain to the parent. A
+    source URL on a subdomain (e.g., world.huanqiu.com) inherits the
+    parent-domain registry entry (huanqiu.com)."""
+    _patch_registry(
+        monkeypatch,
+        {
+            "huanqiu.com": {
+                "outlet": "Huanqiu",
+                "tier": 3,
+                "editorial_independence": "state_directed",
+                "bias_note": "Chinese state media",
+            },
+        },
+    )
+    tb = TopicBus()
+    tb.final_sources = [
+        {"id": "src-001", "url": "https://world.huanqiu.com/article/123", "outlet": "Huanqiu"},
+    ]
+    tb_after = _run(propagate_outlet_metadata, tb, _ro())
+    s = tb_after.final_sources[0]
+    assert s["editorial_independence"] == "state_directed"
+    assert s["bias_note"] == "Chinese state media"
+
+
+def test_lookup_hits_real_registry():
+    """Smoke against the real config/outlet_registry.json: at least
+    Al Jazeera (aljazeera.com) has the migrated classification fields
+    and yields the documented vocabulary."""
+    from src.outlet_registry import lookup_outlet
+    entry = lookup_outlet("https://www.aljazeera.com/news/x")
+    assert entry is not None
+    assert entry.get("editorial_independence") in {
         "independent", "publicly_funded_autonomous",
         "state_directed", "state_influenced",
     }
+    assert entry.get("tier") in {1, 2, 3, 4}
