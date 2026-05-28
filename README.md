@@ -30,32 +30,43 @@ A pipeline of specialized AI agents, orchestrated by deterministic Python. **No 
 
 The pipeline runs on two levels. **Run-level** stages select the day's topics; **topic-level** stages then build one Topic Package per selected topic.
 
+```mermaid
+flowchart TD
+    RSS["RSS fetch<br/>66 sources · 11 language streams · ~1,200 findings"]:::det
+    RSS --> RUN
+
+    subgraph RUN["RUN LEVEL · select the day's topics"]
+        direction TB
+        PC["pre-cluster<br/>embeddings → micro-clusters"]:::det
+        CUR["Curator<br/>discover specific stories, not categories"]:::llm
+        GRAV["gravitational assign<br/>findings → topics"]:::det
+        ED["Editor<br/>prioritize + select, with memory of prior coverage"]:::llm
+        PC --> CUR --> GRAV --> ED
+    end
+
+    ED -->|"selected topics"| TOPIC
+
+    subgraph TOPIC["TOPIC LEVEL · one Topic Package per selected topic"]
+        direction TB
+        HY["hydrate<br/>fetch + extract full article text"]:::det
+        RES["Researcher<br/>plan multilingual queries → assemble dossier"]:::llm
+        ACT["resolve actors<br/>dedupe people/orgs by evidence"]:::mix
+        PER["Perspective<br/>map positions · flag missing voices"]:::llm
+        WR["Writer<br/>source-attributed article"]:::llm
+        QA["QA / Fact-Check<br/>find errors · propose corrections"]:::llm
+        CON["Consolidator<br/>classify what is missing"]:::llm
+        BIAS["Bias Detector<br/>Python aggregation + LLM language analysis"]:::mix
+        HY --> RES --> ACT --> PER --> WR --> QA --> CON --> BIAS
+    end
+
+    BIAS --> OUT["Topic Package JSON → HTML → publication"]:::det
+
+    classDef llm stroke:#2563eb,stroke-width:2px;
+    classDef det stroke:#9ca3af,stroke-width:1px,stroke-dasharray:4 3;
+    classDef mix stroke:#7c3aed,stroke-width:2px;
 ```
-RSS fetch — 66 sources, 11 language streams (~1,200 findings)
-  │
-  ├─ RUN LEVEL ────────────────────────────────────────────────
-  │   pre-cluster        deterministic embeddings → micro-clusters
-  │   → Curator          LLM: discovers specific stories, not categories
-  │   → gravitational    deterministic: assigns findings to topics
-  │   → Editor           LLM: prioritizes, selects the day's topics,
-  │                      with memory of prior coverage
-  │
-  └─ TOPIC LEVEL (per selected topic) ─────────────────────────
-      hydrate            fetch + extract full article text
-      → Researcher       LLM: plans multilingual queries, executes
-                         via Python, assembles the dossier
-      → resolve actors   deterministic + LLM: dedupe people/orgs,
-                         partitioned by evidence strength
-      → Perspective      LLM: maps positions, flags missing voices,
-                         documents divergences
-      → Writer           LLM: source-attributed article
-      → QA / Fact-Check  LLM: finds errors, proposes corrections,
-                         documents every change
-      → Consolidator     LLM: dedupes + classifies what is missing
-      → Bias Detector    Python aggregation + LLM language analysis
-                         → bias card + reader note
-      → Topic Package JSON → HTML → publication
-```
+
+*Solid blue = LLM agent · dashed grey = deterministic Python · purple = both.*
 
 Two principles run through every stage:
 
@@ -103,7 +114,7 @@ Operational and publishing daily at [independent-wire.org](https://independent-w
 
 The system runs on commercial AI APIs via OpenRouter. No advertising. No subscriptions. No data collection. **Operating cost = API cost, and nothing else.** Every run records its actual per-stage cost in the pipeline's run log.
 
-A hydrated run that produces three Topic Packages costs a few euros in API calls — model choices are tuned per stage to keep that number low. <!-- Deniz: drop in the exact current per-run figure here once confirmed. --> The design goal is simple: operating cost must never create pressure to compromise editorial independence.
+A hydrated run that produces three Topic Packages costs a few euros in API calls — model choices are tuned per stage to keep that number low. The design goal is simple: operating cost must never create pressure to compromise editorial independence.
 
 ## Architecture
 
