@@ -4,20 +4,21 @@
     "description": "Authoritative mapping from outlet hostname to canonical metadata. Single source of truth for outlet country/language/type plus tier/editorial_independence/bias_note (migrated from config/sources.json 2026-05-29). Country values match the canonical names in src/stages/_helpers.py:COUNTRY_ALIASES targets so they pass normalise_country() unchanged.",
     "key_format": "Top-level keys are normalised hostnames (lowercase, no leading 'www.'). Subdomain matches fall back to the parent domain when no exact entry is present (see src/outlet_registry.py:lookup_outlet).",
     "type_vocabulary": [
-      "news_agency",
-      "wire_service",
-      "newspaper",
-      "magazine",
+      "academic",
+      "aggregator",
+      "blog",
       "broadcaster",
+      "digital_native",
+      "intergovernmental",
+      "investigative_nonprofit",
+      "magazine",
+      "news_agency",
+      "newspaper",
+      "ngo",
       "public_broadcaster",
       "state_broadcaster",
-      "digital_native",
-      "investigative_nonprofit",
-      "academic",
-      "intergovernmental",
-      "ngo",
-      "aggregator",
-      "blog"
+      "think_tank",
+      "wire_service"
     ],
     "tier_vocabulary": [
       1,
@@ -30,7 +31,44 @@
       "publicly_funded_autonomous",
       "state_directed",
       "state_influenced"
-    ]
+    ],
+    "type_vocabulary_notes": "academic = universities, peer-reviewed journals, state public-health / scientific institutes. think_tank = policy advocacy / research institutions (member-funded, foundation-funded, or government-supervised) with explicit policy-output orientation (Atlantic Council, Brookings, ISW, SWP Berlin, OSW, Baker Institute, Arms Control Association). The distinction is the transparency layer the project surfaces."
+  },
+  "163.com": {
+    "outlet": "NetEase",
+    "country": "China",
+    "language": "zh",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Major Chinese internet technology company (NASDAQ/HKEX-listed), portal subject to PRC content regulations"
+  },
+  "20minutos.es": {
+    "outlet": "20minutos",
+    "country": "Spain",
+    "language": "es",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Spanish free daily; owned by Grupo Henneo since 2015 (previously Schibsted)."
+  },
+  "21news.be": {
+    "outlet": "21News",
+    "country": "Belgium",
+    "language": "fr",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Belgian French-language online outlet launched 2024 by MR councillor Etienne Dujardin; stakes held by Bollore/Lagardere and Louis Sarkozy."
+  },
+  "24tv.ua": {
+    "outlet": "24 Kanal",
+    "country": "Ukraine",
+    "language": "uk",
+    "type": "broadcaster",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Privately owned by TRK Lux Media, controlled by the family of Lviv Mayor Andriy Sadovyi."
   },
   "aa.com.tr": {
     "outlet": "Anadolu Agency",
@@ -45,6 +83,15 @@
     "tier": 2,
     "editorial_independence": "state_influenced",
     "bias_note": "Turkish state news agency"
+  },
+  "aajtak.in": {
+    "outlet": "Aaj Tak",
+    "country": "India",
+    "language": "hi",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Hindi news channel owned by TV Today Network, part of India Today Group (Living Media)"
   },
   "aawsat.com": {
     "outlet": "Asharq Al-Awsat",
@@ -76,6 +123,15 @@
     "language": "en",
     "type": "broadcaster"
   },
+  "abplive.com": {
+    "outlet": "ABP Live",
+    "country": "India",
+    "language": "hi",
+    "type": "digital_native",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Digital arm of ABP Network (Ananda Bazar Patrika Group), private multi-language news publisher"
+  },
   "acp.cd": {
     "outlet": "Agence Congolaise de Presse",
     "country": "Democratic Republic of the Congo",
@@ -88,6 +144,15 @@
     "language": "fr",
     "type": "digital_native"
   },
+  "adevarul.ro": {
+    "outlet": "Adevărul",
+    "country": "Romania",
+    "language": "ro",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Romanian daily owned by Adevărul Holding; private ownership (Cristian Burci since 2012)."
+  },
   "afp.com": {
     "outlet": "AFP",
     "country": "France",
@@ -97,6 +162,15 @@
       "fr"
     ]
   },
+  "afpbb.com": {
+    "outlet": "AFPBB News",
+    "country": "Japan",
+    "language": "ja",
+    "type": "news_agency",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Japanese-language AFP wire syndication operated by Creative Link under licence from AFP"
+  },
   "agenciabrasil.ebc.com.br": {
     "outlet": "Agencia Brasil",
     "country": "Brazil",
@@ -105,6 +179,24 @@
     "tier": 2,
     "editorial_independence": "publicly_funded_autonomous",
     "bias_note": "Brazilian public news agency"
+  },
+  "al-jazirah.com": {
+    "outlet": "Al-Jazirah",
+    "country": "Saudi Arabia",
+    "language": "ar",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Saudi Arabic daily, Riyadh-based; operates within Saudi public-press licensing framework"
+  },
+  "al-monitor.com": {
+    "outlet": "Al-Monitor",
+    "country": "United States",
+    "language": "en",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "US-based privately owned (Crest Media LLC); Middle East coverage in English"
   },
   "alarabiya.net": {
     "outlet": "Al Arabiya",
@@ -117,6 +209,24 @@
     "tier": 2,
     "editorial_independence": "state_influenced",
     "bias_note": "Saudi-aligned Arabic news, MBC Group. Cloud IPs blocked — content enters via Researcher web_search."
+  },
+  "alaraby.co.uk": {
+    "outlet": "Al-Araby Al-Jadeed (The New Arab)",
+    "country": "United Kingdom",
+    "language": "ar",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "London-based pan-Arab outlet owned by Qatari-funded Fadaat Media"
+  },
+  "alghad.tv": {
+    "outlet": "Alghad TV",
+    "country": "Egypt",
+    "language": "ar",
+    "type": "broadcaster",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Privately held pan-Arab news channel operating from Egyptian Media Production City with London office"
   },
   "aljazeera.com": {
     "outlet": "Al Jazeera",
@@ -142,6 +252,15 @@
     "editorial_independence": "publicly_funded_autonomous",
     "bias_note": "Qatar-funded, strong Global South coverage"
   },
+  "alkhaleej.ae": {
+    "outlet": "Al Khaleej",
+    "country": "United Arab Emirates",
+    "language": "ar",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Sharjah-based Arabic daily published by Dar Al Khaleej; UAE market"
+  },
   "allafrica.com": {
     "outlet": "AllAfrica",
     "country": "United States",
@@ -150,6 +269,24 @@
     "tier": 4,
     "editorial_independence": "independent",
     "bias_note": "Pan-African aggregator"
+  },
+  "alquds.co.uk": {
+    "outlet": "Al-Quds Al-Arabi",
+    "country": "United Kingdom",
+    "language": "ar",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "London-based pan-Arab daily; majority shareholder reportedly based in Doha, Qatar since 2013"
+  },
+  "ana.ir": {
+    "outlet": "Azad News Agency",
+    "country": "Iran",
+    "language": "fa",
+    "type": "news_agency",
+    "tier": 4,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Owned by Islamic Azad University; Iran's largest academic-affiliated news agency"
   },
   "anadoluagency.com": {
     "outlet": "Anadolu Agency",
@@ -165,6 +302,15 @@
     "editorial_independence": "state_influenced",
     "bias_note": "Turkish state news agency"
   },
+  "annahar.com": {
+    "outlet": "An-Nahar",
+    "country": "Lebanon",
+    "language": "ar",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Lebanese Arabic daily founded 1933; ownership split among Tueni family, Hariri family and other private shareholders"
+  },
   "ansa.it": {
     "outlet": "ANSA",
     "country": "Italy",
@@ -174,11 +320,47 @@
     "editorial_independence": "independent",
     "bias_note": "Italian wire service"
   },
+  "antena3.com": {
+    "outlet": "Antena 3",
+    "country": "Spain",
+    "language": "es",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Private Spanish broadcaster; flagship of Atresmedia (Grupo Planeta and Bertelsmann/RTL Group shareholders)."
+  },
+  "anzen.mofa.go.jp": {
+    "outlet": "Japan Ministry of Foreign Affairs (Overseas Safety)",
+    "country": "Japan",
+    "language": "ja",
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Japan MFA travel-safety subdomain; official travel advisories for Japanese nationals abroad."
+  },
   "apnews.com": {
     "outlet": "Associated Press",
     "country": "United States",
     "language": "en",
     "type": "wire_service"
+  },
+  "arab48.com": {
+    "outlet": "Arab48",
+    "country": "Israel",
+    "language": "ar",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Arabic-language site serving Palestinian citizens of Israel; owned by Qatari-funded Fadaat Media"
+  },
+  "arabic.news.cn": {
+    "outlet": "Xinhua (Arabic service)",
+    "country": "China",
+    "language": "ar",
+    "type": "news_agency",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Arabic-language service of Xinhua, PRC state news agency under State Council"
   },
   "arabnews.com": {
     "outlet": "Arab News",
@@ -186,11 +368,56 @@
     "language": "en",
     "type": "newspaper"
   },
+  "armscontrol.org": {
+    "outlet": "Arms Control Association",
+    "country": "United States",
+    "language": "en",
+    "type": "think_tank",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "US nonpartisan membership think tank on arms control, foundation-funded (Ploughshares, MacArthur, Carnegie)."
+  },
   "asahi.com": {
     "outlet": "Asahi Shimbun",
     "country": "Japan",
     "language": "ja",
     "type": "newspaper"
+  },
+  "asharq.com": {
+    "outlet": "Asharq News",
+    "country": "Saudi Arabia",
+    "language": "ar",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_influenced",
+    "bias_note": "SRMG (Saudi Research and Media Group) subsidiary, Bloomberg content partnership for business news"
+  },
+  "asriran.com": {
+    "outlet": "Asr Iran",
+    "country": "Iran",
+    "language": "fa",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Persian-language Tehran-based news site founded 2006 by Iranian journalists, operating under Iranian media regulation."
+  },
+  "atlanticcouncil.org": {
+    "outlet": "Atlantic Council",
+    "country": "United States",
+    "language": "en",
+    "type": "think_tank",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "US international-affairs think tank, funded by NATO-allied governments, US government, defense industry, and corporate donors."
+  },
+  "atvnewsonline.com": {
+    "outlet": "ATV (Pakistan)",
+    "country": "Pakistan",
+    "language": "ur",
+    "type": "broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Pakistani terrestrial TV operated by Shalimar Recording & Broadcasting Co. (state-linked SRBC entity)"
   },
   "axios.com": {
     "outlet": "Axios",
@@ -200,6 +427,24 @@
     "tier": 2,
     "editorial_independence": "independent",
     "bias_note": "US policy and business coverage"
+  },
+  "azattyqasia.org": {
+    "outlet": "Azattyq Asia (RFE/RL)",
+    "country": "United States",
+    "language": "ru",
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "US Agency for Global Media outlet (Radio Free Europe / Radio Liberty (Kazakh)); statutory editorial firewall under active litigation (2025–2026)"
+  },
+  "bakerinstitute.org": {
+    "outlet": "Baker Institute for Public Policy",
+    "country": "United States",
+    "language": "en",
+    "type": "think_tank",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Nonpartisan university-affiliated public-policy think tank at Rice University, Houston."
   },
   "bbc.co.uk": {
     "outlet": "BBC",
@@ -237,11 +482,65 @@
     "editorial_independence": "independent",
     "bias_note": "OSINT investigations, transparent methodology"
   },
+  "bianet.org": {
+    "outlet": "Bianet (IPS Communication Foundation)",
+    "country": "Turkey",
+    "language": "tr",
+    "type": "investigative_nonprofit",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Turkish independent news network run by IPS Communication Foundation, primarily funded by European Commission and Nordic agencies."
+  },
   "bloomberg.com": {
     "outlet": "Bloomberg",
     "country": "United States",
     "language": "en",
     "type": "newspaper"
+  },
+  "bloomberght.com": {
+    "outlet": "Bloomberg HT",
+    "country": "Turkey",
+    "language": "tr",
+    "type": "broadcaster",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Turkish business/economics broadcaster; owned by Can Holding (acquired 2025 from Ciner) under Bloomberg brand license"
+  },
+  "bmvg.de": {
+    "outlet": "German Federal Ministry of Defence",
+    "country": "Germany",
+    "language": "de",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "German federal defence ministry; press releases and official statements on Bundeswehr matters."
+  },
+  "bnpp.go.id": {
+    "outlet": "Indonesia National Border Management Agency",
+    "country": "Indonesia",
+    "language": "id",
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Indonesian government agency coordinating land and maritime border management policy."
+  },
+  "brookings.edu": {
+    "outlet": "Brookings Institution",
+    "country": "United States",
+    "language": "en",
+    "type": "think_tank",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "US nonprofit public-policy think tank, funded by endowment, foundations, corporations, and foreign governments (notably Qatar)."
+  },
+  "c-span.org": {
+    "outlet": "C-SPAN",
+    "country": "United States",
+    "language": "en",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "US nonprofit operated by National Cable Satellite Corporation, funded by cable/satellite carriage fees"
   },
   "cbc.ca": {
     "outlet": "CBC",
@@ -254,6 +553,24 @@
     "country": "United States",
     "language": "en",
     "type": "broadcaster"
+  },
+  "cctd.com.cn": {
+    "outlet": "China Coal Transport & Distribution Association (CCTD)",
+    "country": "China",
+    "language": "zh",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Industry body originating from former PRC Ministry of Coal Industry; coal-sector pricing and news platform"
+  },
+  "cdc.gov": {
+    "outlet": "US Centers for Disease Control and Prevention",
+    "country": "United States",
+    "language": "en",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "US federal public-health agency under HHS; primary source for US disease surveillance and guidance."
   },
   "cgtn.com": {
     "outlet": "CGTN",
@@ -285,6 +602,15 @@
     "language": "en",
     "type": "state_broadcaster"
   },
+  "chinanews.com.cn": {
+    "outlet": "China News Service",
+    "country": "China",
+    "language": "zh",
+    "type": "news_agency",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Second-largest PRC state news agency (after Xinhua), administered by CCP United Front Work Department"
+  },
   "chosun.com": {
     "outlet": "The Chosun Ilbo",
     "country": "South Korea",
@@ -299,6 +625,15 @@
     "tier": 2,
     "editorial_independence": "independent",
     "bias_note": "Largest Argentine daily newspaper"
+  },
+  "cnbc.com": {
+    "outlet": "CNBC",
+    "country": "United States",
+    "language": "en",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "US business-news cable channel wholly owned by NBCUniversal (Comcast subsidiary)"
   },
   "cnn.com": {
     "outlet": "CNN",
@@ -321,6 +656,15 @@
     "editorial_independence": "independent",
     "bias_note": "International Crisis Group, conflict prevention"
   },
+  "dailymaverick.co.za": {
+    "outlet": "Daily Maverick",
+    "country": "South Africa",
+    "language": "en",
+    "type": "digital_native",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "South African independent digital outlet, majority-held by non-profits/trusts; reader-membership funded"
+  },
   "dawn.com": {
     "outlet": "Dawn",
     "country": "Pakistan",
@@ -329,6 +673,78 @@
     "tier": 2,
     "editorial_independence": "independent",
     "bias_note": "Leading Pakistani English newspaper"
+  },
+  "ddnews.gov.in": {
+    "outlet": "Doordarshan News (Prasar Bharati)",
+    "country": "India",
+    "language": "hi",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Indian public-broadcast TV news channel operated by Doordarshan under Prasar Bharati."
+  },
+  "de.euronews.com": {
+    "outlet": "Euronews",
+    "country": "France",
+    "language": "de",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Pan-European news channel HQ Lyon/Brussels; 97.6% owned by Portuguese fund Alpac Capital since 2022. Sibling of euronews.com / fr.euronews.com."
+  },
+  "deloitte.com": {
+    "outlet": "Deloitte",
+    "country": "United Kingdom",
+    "language": "en",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Corporate research site of Deloitte global professional-services firm; in-house thought-leadership / industry analysis."
+  },
+  "democrata.es": {
+    "outlet": "Demócrata",
+    "country": "Spain",
+    "language": "es",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Spanish digital native specializing in parliamentary journalism; launched 2023 by Información y Participación S.L."
+  },
+  "deutschlandfunk.de": {
+    "outlet": "Deutschlandfunk",
+    "country": "Germany",
+    "language": "de",
+    "type": "public_broadcaster",
+    "tier": 2,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "German national public radio (Deutschlandradio); news and current affairs channel based in Cologne."
+  },
+  "diplomatie.gouv.fr": {
+    "outlet": "French Ministry for Europe and Foreign Affairs",
+    "country": "France",
+    "language": "fr",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Official site of the French foreign ministry (Quai d'Orsay); diplomatic statements and country files."
+  },
+  "donga.com": {
+    "outlet": "Dong-A Ilbo",
+    "country": "South Korea",
+    "language": "ko",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Major South Korean daily newspaper (est. 1920), part of privately held Dong-a Media Group"
+  },
+  "dunya.com": {
+    "outlet": "Dünya",
+    "country": "Turkey",
+    "language": "tr",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Turkish business and finance daily founded 1981 by Nezih Demirkent; privately held"
   },
   "dw.com": {
     "outlet": "DW News",
@@ -351,6 +767,15 @@
     "language": "en",
     "type": "magazine"
   },
+  "eldiario.es": {
+    "outlet": "elDiario.es",
+    "country": "Spain",
+    "language": "es",
+    "type": "digital_native",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Spanish digital-native daily; >70% staff-owned via Diario de Prensa Digital S.L., reader-funded membership model."
+  },
   "elfinanciero.com.mx": {
     "outlet": "El Financiero",
     "country": "Mexico",
@@ -359,6 +784,15 @@
     "tier": 2,
     "editorial_independence": "independent",
     "bias_note": "Major Mexican newspaper, centrist/business-oriented"
+  },
+  "elimparcial.com": {
+    "outlet": "El Imparcial (Sonora)",
+    "country": "Mexico",
+    "language": "es",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Regional Mexican daily covering Sonora/northwest Mexico, owned by Grupo Healy (Editores del Noroeste)"
   },
   "elmundo.es": {
     "outlet": "El Mundo",
@@ -388,13 +822,61 @@
     "outlet": "Xinhua",
     "country": "China",
     "language": "en",
-    "type": "state_broadcaster"
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Chinese state news agency, ministry-level institution under State Council, head is CCP Central Committee member"
+  },
+  "entekhab.ir": {
+    "outlet": "Entekhab",
+    "country": "Iran",
+    "language": "fa",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Iranian Persian-language news site operating under Iran's Press Law licensing; managed by Mostafa Faghihi"
+  },
+  "err.ee": {
+    "outlet": "Eesti Rahvusringhääling (ERR)",
+    "country": "Estonia",
+    "language": "et",
+    "type": "public_broadcaster",
+    "tier": 2,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Estonian national public broadcaster, established 2007 under National Broadcasting Act; ad-free since 2002."
+  },
+  "es.ara.cat": {
+    "outlet": "Ara",
+    "country": "Spain",
+    "language": "es",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Catalan-language daily Ara; private shareholders including Ferran Rodés, Fundació Carulla; Spanish-language edition."
+  },
+  "es.investing.com": {
+    "outlet": "Investing.com (Spanish)",
+    "country": "Spain",
+    "language": "es",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Spanish-language edition of Investing.com financial portal, owned by Hong Kong-based Joffre Capital"
   },
   "etemadonline.com": {
     "outlet": "Etemad Online",
     "country": "Iran",
     "language": "fa",
     "type": "newspaper"
+  },
+  "euractiv.com": {
+    "outlet": "Euractiv",
+    "country": "Belgium",
+    "language": "en",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "EU-policy news publisher HQ Brussels; owned by Belgian Mediahuis since 2023."
   },
   "eurasianet.org": {
     "outlet": "Eurasianet",
@@ -404,6 +886,24 @@
     "tier": 2,
     "editorial_independence": "independent",
     "bias_note": "Central Asia + South Caucasus, Columbia University based"
+  },
+  "eurointegration.com.ua": {
+    "outlet": "European Pravda",
+    "country": "Ukraine",
+    "language": "uk",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Ukrainska Pravda subsidiary focused on EU/NATO; funded by ads plus EU, NATO, NED, and Czech MFA grants."
+  },
+  "euronews.com": {
+    "outlet": "Euronews",
+    "country": "France",
+    "language": "en",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Pan-European news channel HQ Lyon/Brussels; 97.6% owned by Portuguese fund Alpac Capital since 2022. Sibling of de.euronews.com / fr.euronews.com."
   },
   "express.pk": {
     "outlet": "Express News",
@@ -417,11 +917,38 @@
     "language": "uk",
     "type": "broadcaster"
   },
+  "fararu.com": {
+    "outlet": "Fararu",
+    "country": "Iran",
+    "language": "fa",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Private Iranian news site founded 2006; analysts have noted reported IRGC-linked affiliations, operates under Iranian media regulation."
+  },
   "faz.net": {
     "outlet": "Frankfurter Allgemeine Zeitung",
     "country": "Germany",
     "language": "de",
     "type": "newspaper"
+  },
+  "finam.ru": {
+    "outlet": "Finam",
+    "country": "Russia",
+    "language": "ru",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Financial portal of privately held Finam Holdings (founded 1994 by Viktor Remsha), Russia-based brokerage."
+  },
+  "fmprc.gov.cn": {
+    "outlet": "PRC Ministry of Foreign Affairs",
+    "country": "China",
+    "language": "zh",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "PRC Ministry of Foreign Affairs official site; spokesperson remarks and diplomatic statements."
   },
   "folha.uol.com.br": {
     "outlet": "Folha de S.Paulo",
@@ -431,6 +958,42 @@
     "tier": 2,
     "editorial_independence": "independent",
     "bias_note": "Largest Brazilian daily newspaper"
+  },
+  "fontanka.ru": {
+    "outlet": "Fontanka.ru",
+    "country": "Russia",
+    "language": "ru",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "St Petersburg regional investigative outlet; publisher AZHUR-Media controlled by Hearst Shkulev Publishing's Viktor Shkulev since 2019."
+  },
+  "forbes.com": {
+    "outlet": "Forbes",
+    "country": "United States",
+    "language": "en",
+    "type": "magazine",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "US business magazine majority-owned by Hong Kong-based Integrated Whale Media Investments"
+  },
+  "forbes.ru": {
+    "outlet": "Forbes Russia",
+    "country": "Russia",
+    "language": "ru",
+    "type": "magazine",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Russian-language Forbes licensee; owned by businessman Magomed Musaev since 2018 under Russian foreign-media-ownership cap."
+  },
+  "forbesafrica.com": {
+    "outlet": "Forbes Africa",
+    "country": "South Africa",
+    "language": "en",
+    "type": "magazine",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Pan-African Forbes licensee published by ABN Publishing (Africa Business News); Emerald Group holds 40%"
   },
   "foreignpolicy.com": {
     "outlet": "Foreign Policy",
@@ -447,6 +1010,15 @@
     "language": "en",
     "type": "broadcaster"
   },
+  "fr.euronews.com": {
+    "outlet": "Euronews",
+    "country": "France",
+    "language": "fr",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Pan-European news channel HQ Lyon/Brussels; 97.6% owned by Portuguese fund Alpac Capital since 2022. Sibling of euronews.com / de.euronews.com."
+  },
   "france24.com": {
     "outlet": "France 24",
     "country": "France",
@@ -461,6 +1033,15 @@
     "editorial_independence": "publicly_funded_autonomous",
     "bias_note": "French state-funded, editorially independent"
   },
+  "franceinfo.fr": {
+    "outlet": "franceinfo",
+    "country": "France",
+    "language": "fr",
+    "type": "public_broadcaster",
+    "tier": 2,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "French public-service news brand jointly run by France Télévisions, Radio France, France Médias Monde, and INA."
+  },
   "ft.com": {
     "outlet": "Financial Times",
     "country": "United Kingdom",
@@ -469,6 +1050,33 @@
     "tier": 2,
     "editorial_independence": "independent",
     "bias_note": "Nikkei-owned, geopolitical economic reporting"
+  },
+  "g1.globo.com": {
+    "outlet": "G1 (Globo)",
+    "country": "Brazil",
+    "language": "pt",
+    "type": "digital_native",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "News portal of Grupo Globo, Brazil's largest private media conglomerate (Marinho family-owned)"
+  },
+  "gazeta.ru": {
+    "outlet": "Gazeta.ru",
+    "country": "Russia",
+    "language": "ru",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Owned by Sberbank via Rambler Media Group since 2020 (state-owned bank holding)"
+  },
+  "gazeteoksijen.com": {
+    "outlet": "Gazete Oksijen",
+    "country": "Turkey",
+    "language": "tr",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Turkish weekly founded 2021 by Zafer Mutlu; published by Haftalık Yayıncılık A.Ş. with FT/NYT partnerships"
   },
   "gdeltproject.org": {
     "outlet": "GDELT",
@@ -506,6 +1114,42 @@
     "language": "en",
     "type": "newspaper"
   },
+  "golosameriki.com": {
+    "outlet": "VOA Russian",
+    "country": "United States",
+    "language": "ru",
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "US Agency for Global Media outlet (Voice of America (Russian-language service)); statutory editorial firewall under active litigation (2025–2026)"
+  },
+  "gov.uk": {
+    "outlet": "UK Government",
+    "country": "United Kingdom",
+    "language": "en",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Central UK government information portal run by Government Digital Service; hosts pages for ministerial departments and public bodies."
+  },
+  "government.se": {
+    "outlet": "Government Offices of Sweden (Regeringskansliet)",
+    "country": "Sweden",
+    "language": "en",
+    "type": "news_agency",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Official press portal of the Swedish Government Offices (Regeringskansliet); government communications, not a news outlet."
+  },
+  "haaretz.co.il": {
+    "outlet": "Haaretz",
+    "country": "Israel",
+    "language": "he",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Privately held Israeli daily owned by Schocken family since 1937; longest-running Israeli newspaper"
+  },
   "haaretz.com": {
     "outlet": "Haaretz",
     "country": "Israel",
@@ -513,7 +1157,28 @@
     "type": "newspaper",
     "alt_languages": [
       "he"
-    ]
+    ],
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Privately held Israeli daily owned by Schocken family since 1937; longest-running Israeli newspaper"
+  },
+  "haberler.com": {
+    "outlet": "Haberler.com",
+    "country": "Turkey",
+    "language": "tr",
+    "type": "aggregator",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Turkish news aggregator/portal, Istanbul-based, run by Yenimedya Elektronik Yayıncılık Ltd."
+  },
+  "handelsblatt.com": {
+    "outlet": "Handelsblatt",
+    "country": "Germany",
+    "language": "de",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "German business daily based in Düsseldorf; owned by Dieter von Holtzbrinck Medien (DvH Medien) since 2009."
   },
   "hani.co.kr": {
     "outlet": "The Hankyoreh",
@@ -521,17 +1186,71 @@
     "language": "ko",
     "type": "newspaper"
   },
+  "hindi.economictimes.com": {
+    "outlet": "Economic Times (Hindi)",
+    "country": "India",
+    "language": "hi",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Hindi edition of Economic Times business daily, published by Bennett Coleman & Co. (Times Group)"
+  },
+  "hindi.sputniknews.in": {
+    "outlet": "Sputnik (Hindi)",
+    "country": "Russia",
+    "language": "hi",
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Hindi-language service of Sputnik, Russian state news agency operated by Rossiya Segodnya"
+  },
   "hindustantimes.com": {
     "outlet": "Hindustan Times",
     "country": "India",
     "language": "en",
     "type": "newspaper"
   },
+  "home.treasury.gov": {
+    "outlet": "US Department of the Treasury",
+    "country": "United States",
+    "language": "en",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "US Treasury Department official site; press releases, sanctions designations, and policy statements."
+  },
+  "hra-news.org": {
+    "outlet": "HRANA",
+    "country": "United States",
+    "language": "fa",
+    "type": "ngo",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Persian-language news arm of Human Rights Activists in Iran, a US-based (Fairfax, VA) non-profit human-rights NGO."
+  },
+  "hromadske.radio": {
+    "outlet": "Hromadske Radio",
+    "country": "Ukraine",
+    "language": "uk",
+    "type": "broadcaster",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Ukrainian non-profit public-interest radio (founded 2013), funded by listeners and grants; takes no state budget money."
+  },
   "hrw.org": {
     "outlet": "Human Rights Watch",
     "country": "United States",
     "language": "en",
     "type": "ngo"
+  },
+  "hsph.harvard.edu": {
+    "outlet": "Harvard T.H. Chan School of Public Health",
+    "country": "United States",
+    "language": "en",
+    "type": "academic",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Public-health graduate school of Harvard University, located in Boston's Longwood Medical Area."
   },
   "hurriyet.com.tr": {
     "outlet": "Hurriyet",
@@ -541,6 +1260,15 @@
     "tier": 2,
     "editorial_independence": "state_influenced",
     "bias_note": "Major Turkish newspaper, Demiroren Media Group"
+  },
+  "i24news.tv": {
+    "outlet": "i24NEWS",
+    "country": "Israel",
+    "language": "en",
+    "type": "broadcaster",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Privately owned multilingual news channel founded by Franco-Israeli billionaire Patrick Drahi via Altice"
   },
   "iaea.org": {
     "outlet": "IAEA",
@@ -565,11 +1293,47 @@
       "pt"
     ]
   },
+  "ildubbio.news": {
+    "outlet": "Il Dubbio",
+    "country": "Italy",
+    "language": "it",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Italian newspaper published by Edizioni Legge e Ragione SRL; owned by foundation of Italy's National Bar Council."
+  },
+  "imnews.imbc.com": {
+    "outlet": "MBC News",
+    "country": "South Korea",
+    "language": "ko",
+    "type": "public_broadcaster",
+    "tier": 2,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "News site of MBC (Munhwa Broadcasting Corporation); largest shareholder is the public Foundation of Broadcast Culture"
+  },
+  "impacttransform.org": {
+    "outlet": "IMPACT (formerly Partnership Africa Canada)",
+    "country": "Canada",
+    "language": "en",
+    "type": "ngo",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Ottawa-based non-profit NGO on natural-resource governance in conflict-affected areas, formerly Partnership Africa Canada."
+  },
   "independent.co.uk": {
     "outlet": "The Independent",
     "country": "United Kingdom",
     "language": "en",
     "type": "newspaper"
+  },
+  "independentespanol.com": {
+    "outlet": "The Independent en Español",
+    "country": "United Kingdom",
+    "language": "es",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Spanish edition of UK's Independent; parent Independent Digital News has Saudi shareholder Sultan Abuljadayel (up to 50%)"
   },
   "indianexpress.com": {
     "outlet": "Indian Express",
@@ -580,6 +1344,15 @@
     "editorial_independence": "independent",
     "bias_note": "Indian newspaper, investigative strength"
   },
+  "indyturk.com": {
+    "outlet": "Independent Türkçe",
+    "country": "Saudi Arabia",
+    "language": "tr",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Turkish edition operated by Saudi Research and Marketing Group (SRMG) under Independent brand license"
+  },
   "infobae.com": {
     "outlet": "Infobae",
     "country": "Argentina",
@@ -588,6 +1361,15 @@
     "tier": 2,
     "editorial_independence": "independent",
     "bias_note": "Pan-LatAm digital news, strong in AR/MX/CO"
+  },
+  "infomoney.com.br": {
+    "outlet": "InfoMoney",
+    "country": "Brazil",
+    "language": "pt",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Brazilian financial news portal owned by XP Inc., Nasdaq-listed Brazilian brokerage group"
   },
   "information.tv5monde.com": {
     "outlet": "TV5Monde",
@@ -603,6 +1385,24 @@
     "tier": 3,
     "editorial_independence": "independent",
     "bias_note": "OSINT on organized crime in Latin America"
+  },
+  "interfax.ru": {
+    "outlet": "Interfax",
+    "country": "Russia",
+    "language": "ru",
+    "type": "news_agency",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Privately held Russian news agency founded 1989; controlling shareholder Mikhail Komissar."
+  },
+  "iol.co.za": {
+    "outlet": "Independent Online",
+    "country": "South Africa",
+    "language": "en",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "South African news portal owned by Sekunjalo Group's Independent Media; minority Chinese state-linked stake"
   },
   "ipsnews.net": {
     "outlet": "IPS News",
@@ -628,6 +1428,33 @@
       "fa"
     ]
   },
+  "israelhayom.co.il": {
+    "outlet": "Israel Hayom",
+    "country": "Israel",
+    "language": "he",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Free Israeli daily owned by Adelson family; Miriam Adelson serves as publisher since 2018"
+  },
+  "iss.it": {
+    "outlet": "Istituto Superiore di Sanità",
+    "country": "Italy",
+    "language": "it",
+    "type": "academic",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Italian National Institute of Health, public technical-scientific body of the Italian National Health Service."
+  },
+  "jang.com.pk": {
+    "outlet": "Daily Jang",
+    "country": "Pakistan",
+    "language": "ur",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Largest Urdu daily in Pakistan; owned by Jang Group (Independent Newspaper Corporation), Mir Shakil-ur-Rahman family"
+  },
   "japantimes.co.jp": {
     "outlet": "The Japan Times",
     "country": "Japan",
@@ -643,11 +1470,29 @@
     "editorial_independence": "independent",
     "bias_note": "English-language Japanese news (Atom format)"
   },
+  "jeuneafrique.com": {
+    "outlet": "Jeune Afrique",
+    "country": "France",
+    "language": "fr",
+    "type": "magazine",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Paris-based pan-African French-language weekly published by Jeune Afrique Media Group (private)"
+  },
   "jpost.com": {
     "outlet": "Jerusalem Post",
     "country": "Israel",
     "language": "en",
     "type": "newspaper"
+  },
+  "kettner-edelmetalle.de": {
+    "outlet": "Kettner Edelmetalle",
+    "country": "Germany",
+    "language": "de",
+    "type": "blog",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Commercial German precious-metals dealer with news/blog section; content reflects dealer commercial interest in gold/silver markets."
   },
   "khabaronline.ir": {
     "outlet": "Khabar Online",
@@ -682,6 +1527,15 @@
     "language": "en",
     "type": "digital_native"
   },
+  "kyivcity.gov.ua": {
+    "outlet": "Kyiv City Council / Kyiv City State Administration",
+    "country": "Ukraine",
+    "language": "uk",
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Municipal government portal of Kyiv; official statements from the city council and mayor's office."
+  },
   "kyivindependent.com": {
     "outlet": "Kyiv Independent",
     "country": "Ukraine",
@@ -703,6 +1557,24 @@
     "language": "fr",
     "type": "newspaper"
   },
+  "latimes.com": {
+    "outlet": "Los Angeles Times",
+    "country": "United States",
+    "language": "en",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Major US metropolitan daily owned by billionaire Patrick Soon-Shiong since 2018; IPO process announced 2025"
+  },
+  "lawfaremedia.org": {
+    "outlet": "Lawfare",
+    "country": "United States",
+    "language": "en",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "US non-profit national-security publication produced by The Lawfare Institute in cooperation with Brookings Institution."
+  },
   "leconomistemaghrebin.com": {
     "outlet": "L'Économiste Maghrébin",
     "country": "Tunisia",
@@ -714,6 +1586,15 @@
     "country": "France",
     "language": "fr",
     "type": "newspaper"
+  },
+  "legalactionworldwide.org": {
+    "outlet": "Legal Action Worldwide",
+    "country": "Kenya",
+    "language": "en",
+    "type": "ngo",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Independent non-profit network of human-rights lawyers working in conflict-affected areas; Nairobi office among sites."
   },
   "lemonde.fr": {
     "outlet": "Le Monde",
@@ -727,17 +1608,53 @@
     "editorial_independence": "independent",
     "bias_note": "French newspaper of record, EN edition"
   },
+  "lenta.ru": {
+    "outlet": "Lenta.ru",
+    "country": "Russia",
+    "language": "ru",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Part of Rambler&Co, wholly owned by state bank Sberbank since 2020."
+  },
   "liberation.fr": {
     "outlet": "Libération",
     "country": "France",
     "language": "fr",
     "type": "newspaper"
   },
+  "livehindustan.com": {
+    "outlet": "Hindustan (Live Hindustan)",
+    "country": "India",
+    "language": "hi",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Hindi-language daily Hindustan published by Hindustan Media Ventures (HT Media subsidiary, KK Birla group)"
+  },
   "livemint.com": {
     "outlet": "Mint",
     "country": "India",
     "language": "en",
     "type": "newspaper"
+  },
+  "lorientlejour.com": {
+    "outlet": "L'Orient-Le Jour",
+    "country": "Lebanon",
+    "language": "fr",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Lebanese francophone daily, privately held; main shareholders Eddé family, Choueiri group and Pharaon family"
+  },
+  "m24.ru": {
+    "outlet": "Moscow 24",
+    "country": "Russia",
+    "language": "ru",
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Moscow city government TV channel; operated by AO Moskva Media, owned by Moscow Department of City Property."
   },
   "maariv.co.il": {
     "outlet": "Maariv",
@@ -754,6 +1671,24 @@
     "editorial_independence": "independent",
     "bias_note": "Egyptian independent investigative, journalist-owned, blocked in Egypt since 2017"
   },
+  "mashreghnews.ir": {
+    "outlet": "Mashregh News",
+    "country": "Iran",
+    "language": "fa",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Tehran-based news website affiliated with the IRGC Intelligence Organization"
+  },
+  "medicisenzafrontiere.it": {
+    "outlet": "Médecins Sans Frontières Italia",
+    "country": "Italy",
+    "language": "it",
+    "type": "ngo",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Italian section of MSF/Doctors Without Borders, international medical-humanitarian NGO funded ~98% by private donors."
+  },
   "meduza.io": {
     "outlet": "Meduza",
     "country": "Latvia",
@@ -763,6 +1698,60 @@
     "editorial_independence": "independent",
     "bias_note": "Russian independent media in exile (Latvia)"
   },
+  "mehrnews.com": {
+    "outlet": "Mehr News Agency",
+    "country": "Iran",
+    "language": "fa",
+    "type": "news_agency",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Semi-official Iranian news agency owned by Islamic Ideology Dissemination Organization; director appointed by Supreme Leader."
+  },
+  "mejorenergia.com.ar": {
+    "outlet": "Mejor Energia",
+    "country": "Argentina",
+    "language": "es",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Argentine specialty energy-sector news portal based in Neuquen, part of Prima Multimedios"
+  },
+  "meteoweb.eu": {
+    "outlet": "MeteoWeb",
+    "country": "Italy",
+    "language": "it",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Italian weather/science digital news site covering forecasts, earthquakes, astronomy, and science news."
+  },
+  "mfa.gov.cn": {
+    "outlet": "PRC Ministry of Foreign Affairs",
+    "country": "China",
+    "language": "zh",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "PRC MFA alias domain; mirrors fmprc.gov.cn content with spokesperson remarks and ministry news."
+  },
+  "mfa.gov.tr": {
+    "outlet": "Türkiye Ministry of Foreign Affairs",
+    "country": "Turkey",
+    "language": "tr",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Türkiye's foreign ministry; diplomatic statements, press releases, and country-relations files."
+  },
+  "mickryan.substack.com": {
+    "outlet": "Futura Doctrina (Mick Ryan)",
+    "country": "Australia",
+    "language": "en",
+    "type": "blog",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Substack of retired Australian Army Major General Mick Ryan; military strategy commentary, CSIS and Lowy Institute fellow."
+  },
   "middleeasteye.net": {
     "outlet": "Middle East Eye",
     "country": "United Kingdom",
@@ -771,6 +1760,51 @@
     "tier": 2,
     "editorial_independence": "independent",
     "bias_note": "Independent, UK-based MENA focus"
+  },
+  "militarytimes.com": {
+    "outlet": "Military Times",
+    "country": "United States",
+    "language": "en",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "US military-affairs publication owned by Sightline Media Group (Regent L.P. private equity)"
+  },
+  "mind.ua": {
+    "outlet": "Mind.ua",
+    "country": "Ukraine",
+    "language": "uk",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Independent Ukrainian business/finance portal based in Kyiv; subscriber-supported model."
+  },
+  "missilematters.substack.com": {
+    "outlet": "Missile Matters (Fabian Hoffmann)",
+    "country": "Norway",
+    "language": "en",
+    "type": "blog",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Substack of Fabian Hoffmann, Doctoral Research Fellow at the University of Oslo; missile tech and European defense."
+  },
+  "mk.ru": {
+    "outlet": "Moskovskij Komsomolets",
+    "country": "Russia",
+    "language": "ru",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Moscow daily privately owned by editor-in-chief Pavel Gusev since 1991 privatisation."
+  },
+  "mofcom.gov.cn": {
+    "outlet": "PRC Ministry of Commerce (MOFCOM)",
+    "country": "China",
+    "language": "zh",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "PRC Ministry of Commerce; foreign trade policy, investment regulation, and trade negotiation announcements."
   },
   "monitor.co.ug": {
     "outlet": "Daily Monitor",
@@ -792,6 +1826,24 @@
     "country": "Spain",
     "language": "es",
     "type": "ngo"
+  },
+  "msf.fr": {
+    "outlet": "Médecins Sans Frontières France",
+    "country": "France",
+    "language": "fr",
+    "type": "ngo",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "French section of MSF/Doctors Without Borders, international medical-humanitarian NGO funded ~98% by private donors."
+  },
+  "munhwa.com": {
+    "outlet": "Munhwa Ilbo",
+    "country": "South Korea",
+    "language": "ko",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "South Korean afternoon daily newspaper (est. 1991); formerly Hyundai Group-owned, now privately held"
   },
   "nagasaki-np.co.jp": {
     "outlet": "Nagasaki Shimbun",
@@ -829,6 +1881,60 @@
     "editorial_independence": "independent",
     "bias_note": "Major Indian English-language news outlet"
   },
+  "nettavisen.no": {
+    "outlet": "Nettavisen",
+    "country": "Norway",
+    "language": "no",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Norwegian online newspaper, launched 1996 as first online-only Norwegian outlet; owned by Amedia (foundation-owned media group)."
+  },
+  "news.cn": {
+    "outlet": "Xinhua",
+    "country": "China",
+    "language": "zh",
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Chinese state news agency, ministry-level institution under State Council, head is CCP Central Committee member"
+  },
+  "news.qq.com": {
+    "outlet": "Tencent News",
+    "country": "China",
+    "language": "zh",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "News portal of Tencent (HKEX-listed tech conglomerate); subject to PRC content regulations"
+  },
+  "newser.com": {
+    "outlet": "Newser",
+    "country": "United States",
+    "language": "en",
+    "type": "aggregator",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "US news-aggregation site founded 2007 by Michael Wolff and Patrick Spain; privately held, based in Miami"
+  },
+  "newsis.com": {
+    "outlet": "Newsis",
+    "country": "South Korea",
+    "language": "ko",
+    "type": "news_agency",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "South Korean private news agency, subsidiary of Money Today Media group since 2014"
+  },
+  "newsonair.gov.in": {
+    "outlet": "All India Radio News (Prasar Bharati)",
+    "country": "India",
+    "language": "en",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "News Services Division of All India Radio under Prasar Bharati; 510+ daily bulletins in 82 languages."
+  },
   "newvision.co.ug": {
     "outlet": "New Vision",
     "country": "Uganda",
@@ -853,6 +1959,15 @@
     "language": "ja",
     "type": "newspaper"
   },
+  "nordiskfilmogtvfond.com": {
+    "outlet": "Nordisk Film & TV Fond",
+    "country": "Norway",
+    "language": "en",
+    "type": "intergovernmental",
+    "tier": 4,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Pan-Nordic audiovisual industry fund governed by Nordic Council of Ministers; funded by national film institutes and Nordic public broadcasters."
+  },
   "notesfrompoland.com": {
     "outlet": "Notes from Poland",
     "country": "Poland",
@@ -861,6 +1976,15 @@
     "tier": 3,
     "editorial_independence": "independent",
     "bias_note": "English-language Polish news and analysis. Replaces TVN24."
+  },
+  "noticiasdelacalle.com.ar": {
+    "outlet": "Noticias de la Calle",
+    "country": "Argentina",
+    "language": "es",
+    "type": "newspaper",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Regional Argentine daily covering Misiones province, published by La Verdad SRL from Posadas"
   },
   "novayagazeta.eu": {
     "outlet": "Novaya Gazeta Europe",
@@ -880,17 +2004,83 @@
     "editorial_independence": "publicly_funded_autonomous",
     "bias_note": "US public radio, member-funded"
   },
+  "nrk.no": {
+    "outlet": "Norsk rikskringkasting (NRK)",
+    "country": "Norway",
+    "language": "no",
+    "type": "public_broadcaster",
+    "tier": 1,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Norwegian Broadcasting Corporation; state-owned but charter-protected editorial independence, EBU founding member."
+  },
+  "ntdtv.com": {
+    "outlet": "New Tang Dynasty Television",
+    "country": "United States",
+    "language": "zh",
+    "type": "broadcaster",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "US-based multilingual broadcaster founded by Falun Gong adherents; part of Epoch Media Group"
+  },
   "nytimes.com": {
     "outlet": "The New York Times",
     "country": "United States",
     "language": "en",
     "type": "newspaper"
   },
+  "objectiv.tv": {
+    "outlet": "Objectiv (Media Group OBJECTIVE)",
+    "country": "Ukraine",
+    "language": "uk",
+    "type": "broadcaster",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Kharkiv-based Ukrainian regional media outlet (Media Group OBJECTIVE), historically tied to independent Simon TV channel."
+  },
+  "ohchr.org": {
+    "outlet": "Office of the UN High Commissioner for Human Rights",
+    "country": "Switzerland",
+    "language": "en",
+    "type": "intergovernmental",
+    "tier": 2,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "UN secretariat office on human rights, established by UN General Assembly resolution 48/141 (1993)."
+  },
+  "opeb.org": {
+    "outlet": "OPEB (UFABC)",
+    "country": "Brazil",
+    "language": "pt",
+    "type": "academic",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Brazilian foreign-policy academic observatory based at Federal University of ABC (UFABC), founded 2019."
+  },
+  "osw.waw.pl": {
+    "outlet": "Centre for Eastern Studies (OSW)",
+    "country": "Poland",
+    "language": "pl",
+    "type": "think_tank",
+    "tier": 3,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Warsaw-based research institute on Central/Eastern Europe; fully state-budget funded, supervised by Polish PM's Office."
+  },
   "parsi.euronews.com": {
     "outlet": "Euronews Persian",
     "country": "France",
     "language": "fa",
-    "type": "broadcaster"
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Pan-European news channel HQ Lyon/Brussels; 97.6% owned by Portuguese fund Alpac Capital since 2022. Sibling of de.euronews.com / fr.euronews.com."
+  },
+  "pbs.org": {
+    "outlet": "PBS",
+    "country": "United States",
+    "language": "en",
+    "type": "public_broadcaster",
+    "tier": 1,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "US public broadcaster; federal CPB funding rescinded in 2025, CPB dissolved Jan 2026; member-station funded"
   },
   "politico.eu": {
     "outlet": "Politico Europe",
@@ -900,6 +2090,24 @@
     "tier": 2,
     "editorial_independence": "independent",
     "bias_note": "EU politics and policy from Brussels. Replaces EuroNews."
+  },
+  "polsatnews.pl": {
+    "outlet": "Polsat News",
+    "country": "Poland",
+    "language": "pl",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Polish 24-hour news channel of Grupa Polsat Plus, controlled by businessman Zygmunt Solorz."
+  },
+  "portaltela.com": {
+    "outlet": "Portal Tela",
+    "country": "Brazil",
+    "language": "pt",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Brazilian Portuguese-language general news portal aggregating politics, sports and entertainment"
   },
   "pravda.com.ua": {
     "outlet": "Ukrainska Pravda",
@@ -916,6 +2124,15 @@
     "editorial_independence": "independent",
     "bias_note": "Major Nigerian investigative newspaper"
   },
+  "prensa-latina.cu": {
+    "outlet": "Prensa Latina",
+    "country": "Cuba",
+    "language": "es",
+    "type": "news_agency",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Cuban official state news agency (founded 1959); Latin American-focused wire with global bureaux"
+  },
   "presstv.ir": {
     "outlet": "Press TV",
     "country": "Iran",
@@ -925,11 +2142,47 @@
     "editorial_independence": "state_directed",
     "bias_note": "Iranian state-affiliated English broadcaster"
   },
+  "protocol.ua": {
+    "outlet": "Protocol.ua",
+    "country": "Ukraine",
+    "language": "uk",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Ukrainian legal-services portal offering lawyer directory and free legal-question consultations."
+  },
+  "publico.pt": {
+    "outlet": "Público",
+    "country": "Portugal",
+    "language": "pt",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Portuguese national daily founded 1990; owned by Sonae conglomerate via Sonaecom sub-holding."
+  },
   "radiookapi.net": {
     "outlet": "Radio Okapi",
     "country": "Democratic Republic of the Congo",
     "language": "fr",
     "type": "broadcaster"
+  },
+  "radiosvoboda.org": {
+    "outlet": "Radio Svoboda (RFE/RL Ukrainian Service)",
+    "country": "United States",
+    "language": "uk",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_influenced",
+    "bias_note": "US Agency for Global Media outlet (Radio Free Europe / Radio Liberty (Ukrainian)); statutory editorial firewall under active litigation (2025–2026)"
+  },
+  "rbc.ru": {
+    "outlet": "RBC",
+    "country": "Russia",
+    "language": "ru",
+    "type": "digital_native",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "RBK Group (business news+TV+web) owned by Grigory Berezkin's ESN Group since 2017."
   },
   "rbc.ua": {
     "outlet": "RBC-Ukraine",
@@ -945,6 +2198,15 @@
     "tier": 1,
     "editorial_independence": "independent",
     "bias_note": "UN OCHA humanitarian crisis reports. Primary source for underreported crises."
+  },
+  "renewablematter.eu": {
+    "outlet": "Renewable Matter",
+    "country": "Italy",
+    "language": "en",
+    "type": "magazine",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Bilingual Italian-English magazine covering circular economy and ecological transition, led by journalist Emanuele Bompan."
   },
   "repubblica.it": {
     "outlet": "La Repubblica",
@@ -973,6 +2235,15 @@
     "language": "en",
     "type": "wire_service"
   },
+  "rfa.org": {
+    "outlet": "Radio Free Asia",
+    "country": "United States",
+    "language": "en",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_influenced",
+    "bias_note": "US Agency for Global Media outlet (Radio Free Asia); statutory editorial firewall under active litigation (2025–2026)"
+  },
   "rfi.fr": {
     "outlet": "RFI",
     "country": "France",
@@ -982,11 +2253,65 @@
     "editorial_independence": "publicly_funded_autonomous",
     "bias_note": "Radio France Internationale, francophone global. Replaces Jeune Afrique."
   },
+  "rg.ru": {
+    "outlet": "Rossiyskaya Gazeta",
+    "country": "Russia",
+    "language": "ru",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Official newspaper of the Government of Russia; publishes federal laws and state legal acts."
+  },
   "ria.ru": {
     "outlet": "RIA Novosti",
     "country": "Russia",
     "language": "ru",
     "type": "state_broadcaster"
+  },
+  "richmondregister.com": {
+    "outlet": "Richmond Register",
+    "country": "United States",
+    "language": "en",
+    "type": "newspaper",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Small US local daily covering Madison County, Kentucky; owned by CNHI (Community Newspaper Holdings) since 1999"
+  },
+  "rijksoverheid.nl": {
+    "outlet": "Government of the Netherlands",
+    "country": "Netherlands",
+    "language": "nl",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Dutch central-government portal published by the Ministry of General Affairs; cross-ministry news and law."
+  },
+  "rki.de": {
+    "outlet": "Robert Koch Institute",
+    "country": "Germany",
+    "language": "de",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "German federal public-health institute under the Federal Ministry of Health; disease surveillance and guidance."
+  },
+  "rline.tv": {
+    "outlet": "Krasnaya Liniya",
+    "country": "Russia",
+    "language": "ru",
+    "type": "broadcaster",
+    "tier": 4,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Television channel of the Communist Party of the Russian Federation (KPRF)."
+  },
+  "romania-insider.com": {
+    "outlet": "Romania Insider",
+    "country": "Romania",
+    "language": "en",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Independent English-language Romania news site founded 2010; part of City Compass Media."
   },
   "rt.com": {
     "outlet": "RT",
@@ -1003,6 +2328,51 @@
     "language": "en",
     "type": "public_broadcaster"
   },
+  "rtl.fr": {
+    "outlet": "RTL France",
+    "country": "France",
+    "language": "fr",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "French commercial radio network owned by RTL Group (via Groupe M6); RTL Group majority-controlled by Bertelsmann."
+  },
+  "rts.rs": {
+    "outlet": "Radio Television of Serbia",
+    "country": "Serbia",
+    "language": "sr",
+    "type": "public_broadcaster",
+    "tier": 2,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "National public broadcaster of Serbia, funded by subscription fee and advertising."
+  },
+  "rtv.rs": {
+    "outlet": "Radio Television of Vojvodina",
+    "country": "Serbia",
+    "language": "sr",
+    "type": "public_broadcaster",
+    "tier": 3,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Regional public broadcaster for Vojvodina province; programs in Serbian plus 6 minority languages."
+  },
+  "samizdat2.org": {
+    "outlet": "Samizdat 2",
+    "country": "France",
+    "language": "fr",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "French-language site self-described as voice of Russian opposition and Ukrainian resistance; covers Russia-Ukraine war."
+  },
+  "science.org": {
+    "outlet": "Science (AAAS)",
+    "country": "United States",
+    "language": "en",
+    "type": "academic",
+    "tier": 1,
+    "editorial_independence": "independent",
+    "bias_note": "Peer-reviewed weekly scientific journal published by the American Association for the Advancement of Science (AAAS), founded 1880."
+  },
   "science.ytn.co.kr": {
     "outlet": "YTN Science",
     "country": "South Korea",
@@ -1018,11 +2388,101 @@
     "editorial_independence": "state_influenced",
     "bias_note": "Hong Kong-based, Beijing-aligned since Alibaba acquisition"
   },
+  "scrf.gov.ru": {
+    "outlet": "Russian Security Council",
+    "country": "Russia",
+    "language": "ru",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Constitutional consultative body chaired by the Russian president; national-security policy statements."
+  },
   "setav.org": {
     "outlet": "SETA",
     "country": "Turkey",
     "language": "tr",
     "type": "ngo"
+  },
+  "seyahatsagligi.gov.tr": {
+    "outlet": "Türkiye Ministry of Health (Travel Health)",
+    "country": "Turkey",
+    "language": "tr",
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Türkiye Ministry of Health travel-health portal run by the General Directorate for Borders and Coasts."
+  },
+  "shorouknews.com": {
+    "outlet": "Al-Shorouk",
+    "country": "Egypt",
+    "language": "ar",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Egyptian Arabic daily published by Egyptian Company for Arab and International Publishing; majority owner Qalaa Holdings (Ahmed Heikal)"
+  },
+  "sina.cn": {
+    "outlet": "Sina",
+    "country": "China",
+    "language": "zh",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Major Chinese internet portal (Cayman-incorporated, HQ Beijing); operates Weibo; subject to PRC content regulations"
+  },
+  "skynewsarabia.com": {
+    "outlet": "Sky News Arabia",
+    "country": "United Arab Emirates",
+    "language": "ar",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Abu Dhabi-based 50/50 JV between Sky Group (Comcast) and Abu Dhabi Media Investment Corporation (Sheikh Mansour bin Zayed)"
+  },
+  "slovoidilo.ua": {
+    "outlet": "Slovo i Dilo",
+    "country": "Ukraine",
+    "language": "uk",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Kyiv-based political analytics and fact-checking portal tracking politicians' promises, founded 2008."
+  },
+  "sondakika.com": {
+    "outlet": "Son Dakika",
+    "country": "Turkey",
+    "language": "tr",
+    "type": "aggregator",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Turkish breaking-news aggregator/portal; privately operated commercial news site"
+  },
+  "sosmediasburundi.org": {
+    "outlet": "SOS Médias Burundi",
+    "country": "Burundi",
+    "language": "fr",
+    "type": "investigative_nonprofit",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Independent Burundian media platform created in 2015 after the country's media crackdown; journalists based in-country."
+  },
+  "spacewar.com": {
+    "outlet": "SpaceWar (Space Media Network)",
+    "country": "Australia",
+    "language": "en",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Specialty defense/space site in Space Media Network founded by Simon Mansfield, privately operated"
+  },
+  "spglobal.com": {
+    "outlet": "S&P Global",
+    "country": "United States",
+    "language": "en",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Publicly traded US financial-data, analytics and ratings corporation headquartered in Manhattan; corporate research and market intelligence."
   },
   "spiegel.de": {
     "outlet": "Der Spiegel",
@@ -1045,11 +2505,47 @@
     "language": "zh",
     "type": "newspaper"
   },
+  "stern.de": {
+    "outlet": "Stern",
+    "country": "Germany",
+    "language": "de",
+    "type": "magazine",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "German weekly news magazine published by Gruner + Jahr; subsidiary of RTL Deutschland (Bertelsmann group)."
+  },
   "sueddeutsche.de": {
     "outlet": "Süddeutsche Zeitung",
     "country": "Germany",
     "language": "de",
     "type": "newspaper"
+  },
+  "swp-berlin.org": {
+    "outlet": "German Institute for International and Security Affairs (SWP)",
+    "country": "Germany",
+    "language": "de",
+    "type": "think_tank",
+    "tier": 2,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "German foreign-and-security-policy foundation advising government and parliament; chancellery-supervised but topic-independent."
+  },
+  "taarifa.rw": {
+    "outlet": "Taarifa Rwanda",
+    "country": "Rwanda",
+    "language": "en",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Rwandan online news platform covering Rwandan and African political, business and social affairs."
+  },
+  "tabnak.ir": {
+    "outlet": "Tabnak",
+    "country": "Iran",
+    "language": "fa",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Iranian news website founded 2002 by Mohsen Rezaee, former IRGC commander; affiliated with Expediency Council figures"
   },
   "tagesschau.de": {
     "outlet": "Tagesschau",
@@ -1087,11 +2583,56 @@
     "language": "en",
     "type": "state_broadcaster"
   },
+  "teleceuta.com": {
+    "outlet": "Teleceuta",
+    "country": "Spain",
+    "language": "es",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Digital local news outlet covering Ceuta (Spanish autonomous city); private, locally focused."
+  },
   "telegraph.co.uk": {
     "outlet": "The Telegraph",
     "country": "United Kingdom",
     "language": "en",
     "type": "newspaper"
+  },
+  "telesurtv.net": {
+    "outlet": "teleSUR",
+    "country": "Venezuela",
+    "language": "es",
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Pan-Latin American satellite network headquartered in Caracas, funded by Venezuelan, Cuban and Nicaraguan governments"
+  },
+  "terra.com.br": {
+    "outlet": "Terra",
+    "country": "Brazil",
+    "language": "pt",
+    "type": "digital_native",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Brazilian web portal owned by Telefonica Brasil (Vivo); offers news, entertainment and digital services"
+  },
+  "tg24.sky.it": {
+    "outlet": "Sky TG24",
+    "country": "Italy",
+    "language": "it",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Italian rolling-news channel owned by Sky Italia, fully owned by US-based Comcast via Sky Group since 2018"
+  },
+  "thanhnien.vn": {
+    "outlet": "Thanh Nien",
+    "country": "Vietnam",
+    "language": "vi",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Official organ of Vietnam United Youth League, affiliated with Ho Chi Minh Communist Youth Union"
   },
   "theconversation.com": {
     "outlet": "The Conversation",
@@ -1126,6 +2667,15 @@
     "language": "en",
     "type": "newspaper"
   },
+  "theins.ru": {
+    "outlet": "The Insider",
+    "country": "Latvia",
+    "language": "ru",
+    "type": "investigative_nonprofit",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Russian-language investigative outlet founded 2013 by Roman Dobrokhotov; editorial office in Riga, banned in Russia."
+  },
   "themoscowtimes.com": {
     "outlet": "Moscow Times",
     "country": "Netherlands",
@@ -1140,6 +2690,24 @@
     "country": "United Arab Emirates",
     "language": "en",
     "type": "newspaper"
+  },
+  "thepaper.cn": {
+    "outlet": "The Paper",
+    "country": "China",
+    "language": "zh",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Digital outlet owned by Shanghai United Media Group, a state-owned conglomerate under Shanghai CCP committee"
+  },
+  "thestar.com.my": {
+    "outlet": "The Star (Malaysia)",
+    "country": "Malaysia",
+    "language": "en",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Malaysian English daily; publicly-listed Star Media Group's largest shareholder is political party MCA (42.46%)"
   },
   "thetimes.co.uk": {
     "outlet": "The Times",
@@ -1169,7 +2737,55 @@
     "outlet": "Euronews Turkish",
     "country": "France",
     "language": "tr",
-    "type": "broadcaster"
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Pan-European news channel HQ Lyon/Brussels; 97.6% owned by Portuguese fund Alpac Capital since 2022. Sibling of de.euronews.com / fr.euronews.com."
+  },
+  "trtfarsi.com": {
+    "outlet": "TRT Farsi",
+    "country": "Turkey",
+    "language": "fa",
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Persian-language service of TRT (Turkish Radio and Television Corporation), Turkey's state public broadcaster"
+  },
+  "trthaber.com": {
+    "outlet": "TRT Haber",
+    "country": "Turkey",
+    "language": "tr",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "News channel of TRT, Turkey's state public broadcaster; ~70% funded by license tax"
+  },
+  "ttb.org.tr": {
+    "outlet": "Turkish Medical Association",
+    "country": "Turkey",
+    "language": "tr",
+    "type": "ngo",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Turkish national professional association and trade union for doctors, ~110,000 members, affiliated with World Medical Association."
+  },
+  "turkrus.com": {
+    "outlet": "Turkrus",
+    "country": "Turkey",
+    "language": "tr",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Independent Turkish-language news/analysis site focused on Russia and Turkey-Russia relations; hosted in Turkey"
+  },
+  "twz.com": {
+    "outlet": "The War Zone",
+    "country": "United States",
+    "language": "en",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "US defense-analysis site, relaunched as standalone twz.com in 2024; owned by Recurrent Ventures"
   },
   "ukrinform.net": {
     "outlet": "Ukrinform",
@@ -1189,11 +2805,47 @@
     "editorial_independence": "independent",
     "bias_note": "United Nations official news"
   },
+  "understandingwar.org": {
+    "outlet": "Institute for the Study of War",
+    "country": "United States",
+    "language": "en",
+    "type": "think_tank",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "US non-partisan non-profit military-affairs research organization; board includes retired senior US military officers."
+  },
+  "unfpa.org": {
+    "outlet": "UNFPA",
+    "country": "United States",
+    "language": "en",
+    "type": "intergovernmental",
+    "tier": 2,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "UN sexual-and-reproductive-health agency working across 150+ countries; funded by voluntary government contributions."
+  },
   "uol.com.br": {
     "outlet": "UOL",
     "country": "Brazil",
     "language": "pt",
     "type": "digital_native"
+  },
+  "urdunews.com": {
+    "outlet": "Urdu News",
+    "country": "Saudi Arabia",
+    "language": "ur",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Urdu-language outlet owned by Saudi Research and Marketing Group (SRMG); launched in Jeddah 1994"
+  },
+  "usnews.com": {
+    "outlet": "U.S. News & World Report",
+    "country": "United States",
+    "language": "en",
+    "type": "magazine",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "US digital news and rankings publisher privately owned by Mortimer Zuckerman since 1984"
   },
   "vanguardngr.com": {
     "outlet": "Vanguard Nigeria",
@@ -1204,6 +2856,60 @@
     "editorial_independence": "independent",
     "bias_note": "Major Nigerian newspaper"
   },
+  "vedomosti.ru": {
+    "outlet": "Vedomosti",
+    "country": "Russia",
+    "language": "ru",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Russian business daily founded 1999; since 2022 wholly owned by Oleg Leonov after 2020 sale to Sapport/Yeremin."
+  },
+  "verfassungsblog.de": {
+    "outlet": "Verfassungsblog",
+    "country": "Germany",
+    "language": "de",
+    "type": "academic",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "German-English academic blog on public/constitutional law founded 2009 by Maximilian Steinbeis; cooperation with Berlin IAS and Humboldt University."
+  },
+  "vetogate.com": {
+    "outlet": "Veto Gate",
+    "country": "Egypt",
+    "language": "ar",
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Egyptian Arabic news portal issued by Al-Ahrar for Press and Publishing (Egyptian Joint Stock Company), licensed 2013"
+  },
+  "vg.no": {
+    "outlet": "Verdens Gang (VG)",
+    "country": "Norway",
+    "language": "no",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Norwegian tabloid newspaper, wholly owned by Schibsted ASA; largest online newspaper in Norway."
+  },
+  "vietnamplus.vn": {
+    "outlet": "Vietnam News Agency (VietnamPlus)",
+    "country": "Vietnam",
+    "language": "vi",
+    "type": "news_agency",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Online portal of Vietnam News Agency (VNA), official state news agency of Socialist Republic of Vietnam"
+  },
+  "vneconomy.vn": {
+    "outlet": "Vietnam Economic Times (VnEconomy)",
+    "country": "Vietnam",
+    "language": "vi",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Business publication of the Vietnamese Association of Economists (VEA), which provides editorial oversight"
+  },
   "vnexpress.net": {
     "outlet": "VnExpress",
     "country": "Vietnam",
@@ -1213,11 +2919,29 @@
     "editorial_independence": "state_influenced",
     "bias_note": "Largest Vietnamese news outlet"
   },
+  "voanews.com": {
+    "outlet": "Voice of America",
+    "country": "United States",
+    "language": "en",
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_influenced",
+    "bias_note": "US Agency for Global Media outlet (Voice of America (VOA)); statutory editorial firewall under active litigation (2025–2026)"
+  },
   "washingtonpost.com": {
     "outlet": "The Washington Post",
     "country": "United States",
     "language": "en",
     "type": "newspaper"
+  },
+  "weforum.org": {
+    "outlet": "World Economic Forum",
+    "country": "Switzerland",
+    "language": "en",
+    "type": "ngo",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "International NGO and think tank based in Cologny, Geneva; funded by member corporations; convenes annual Davos meeting."
   },
   "who.int": {
     "outlet": "WHO",
@@ -1228,17 +2952,47 @@
     "editorial_independence": "independent",
     "bias_note": "World Health Organization, primary source"
   },
+  "world.huanqiu.com": {
+    "outlet": "Huanqiu.com",
+    "country": "China",
+    "language": "zh",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Subsidiary of People's Daily Online; tied to Global Times, both under People's Daily Press (CCP organ)"
+  },
+  "ws.china-embassy.gov.cn": {
+    "outlet": "PRC Embassy in Samoa",
+    "country": "China",
+    "language": "zh",
+    "type": "state_broadcaster",
+    "tier": 4,
+    "editorial_independence": "state_directed",
+    "bias_note": "PRC embassy in the Independent State of Samoa; bilateral statements and consular notices."
+  },
   "wsj.com": {
     "outlet": "The Wall Street Journal",
     "country": "United States",
     "language": "en",
     "type": "newspaper"
   },
+  "wsjm.com": {
+    "outlet": "WSJM-FM",
+    "country": "United States",
+    "language": "en",
+    "type": "broadcaster",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Commercial Southwest Michigan News/Talk/Sports radio station (94.9 FM), Benton Harbor; owned by Mid-West Family Broadcasting."
+  },
   "xinhuanet.com": {
     "outlet": "Xinhua",
     "country": "China",
     "language": "en",
-    "type": "state_broadcaster"
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Chinese state news agency, ministry-level institution under State Council, head is CCP Central Committee member"
   },
   "yenisafak.com": {
     "outlet": "Yeni Şafak",
@@ -1249,6 +3003,15 @@
       "ar",
       "en"
     ]
+  },
+  "yicai.com": {
+    "outlet": "Yicai Media Group",
+    "country": "China",
+    "language": "zh",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Financial-news arm of state-owned Shanghai Media Group; Alibaba holds 30% minority stake"
   },
   "yna.co.kr": {
     "outlet": "Yonhap",
@@ -1262,16 +3025,52 @@
     "editorial_independence": "publicly_funded_autonomous",
     "bias_note": "South Korean national news agency"
   },
+  "ynet.co.il": {
+    "outlet": "Ynet",
+    "country": "Israel",
+    "language": "he",
+    "type": "digital_native",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Online outlet of Yedioth Ahronoth Group, privately controlled by Arnon Mozes family; launched 2000"
+  },
+  "ytn.co.kr": {
+    "outlet": "YTN",
+    "country": "South Korea",
+    "language": "ko",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_influenced",
+    "bias_note": "South Korean 24h news channel; 2024 Eugene Group privatization revoked by Korean court in late 2025"
+  },
   "zaobao.com.sg": {
     "outlet": "Lianhe Zaobao",
     "country": "Singapore",
     "language": "zh",
     "type": "newspaper"
   },
+  "zdfheute.de": {
+    "outlet": "ZDF",
+    "country": "Germany",
+    "language": "de",
+    "type": "public_broadcaster",
+    "tier": 1,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "News portal of ZDF, German national public-service broadcaster based in Mainz; founded by federal states."
+  },
   "zeit.de": {
     "outlet": "Die Zeit",
     "country": "Germany",
     "language": "de",
     "type": "newspaper"
+  },
+  "zman.co.il": {
+    "outlet": "Zman Yisrael",
+    "country": "Israel",
+    "language": "he",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Hebrew sister site of The Times of Israel; co-founded by David Horovitz and US investor Seth Klarman"
   }
 }
