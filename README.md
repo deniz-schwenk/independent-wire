@@ -105,7 +105,7 @@ Operational and publishing daily at [independent-wire.org](https://independent-w
 | Publication website | ✅ [independent-wire.org](https://independent-wire.org) |
 | RSS feed | ✅ [independent-wire.org/feed.xml](https://independent-wire.org/feed.xml) |
 | Editor memory (coverage continuity) | ✅ Implemented |
-| Data-driven visualizations | 🔜 Planned |
+| Data-driven visualizations (source-distribution terrain) | ✅ Live — more types planned |
 | MCP server (query Topic Packages from LLM clients) | 🔜 Planned |
 | Source expansion (underrepresented regions) | 🔜 Planned |
 
