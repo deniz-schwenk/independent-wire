@@ -12,7 +12,7 @@ No publisher. No engagement algorithm. No hidden editorial line. Every decision 
 
 ## What It Produces
 
-Independent Wire does not produce articles. It produces **Topic Packages** — structured transparency bundles. Each one contains:
+Independent Wire does not produce articles. It produces **Topic Packages / Dossiers** — structured transparency bundles. Each one contains:
 
 - **The article** — source-based, multi-perspective, every claim traced to a cited source in its original language. Deliberately flat prose: every stylistic flourish is an editorial decision, and this system declines to make those decisions invisibly.
 - **The perspectives** — who says what, how strongly represented, from which region; stakeholders grouped by position.
