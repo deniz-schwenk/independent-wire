@@ -194,7 +194,7 @@ Production variant:
   init_run
   → fetch_findings
   → pre_cluster_findings               (B1, deterministic — agglomerative)
-  → CuratorTopicDiscoveryStage         (B4, LLM — Gemini 3 Flash)
+  → CuratorTopicDiscoveryStage         (LLM — DeepSeek V4 Flash)
   → gravitational_assign               (B2, deterministic — cosine T=0.55)
   → assemble_curator_topics            (B5, deterministic — composition)
   → EditorStage
@@ -228,7 +228,7 @@ Curator pipeline references:
 The Curator's job — turn ~1,200 daily findings into a small set of thematic topic candidates — is now done by three stages, not one LLM pass. Each stage has the task it is structurally suited for, and two of the three are deterministic.
 
 1. **`pre_cluster_findings`** — Embed every finding via the shared fastembed singleton (multilingual MiniLM-L12-v2), cluster into ~250 micro-clusters via Agglomerative clustering (`distance_threshold=0.7`, `linkage='average'`, `metric='cosine'`). Pure Python. Deterministic.
-2. **`CuratorTopicDiscoveryStage`** — A small-input, small-output LLM call (Gemini 3 Flash, temp 0.2). Receives the ~250 micro-clusters in compressed representation (top-K-by-centroid titles, K=8) and identifies the 10–20 superordinate topics of the day. Emits **only** `{topics: [{title, summary}]}` — no per-finding assignments, no relevance scores. Removing the per-finding output pressure eliminated the over-clustering pathology that broke the V1 single-pass Curator.
+2. **`CuratorTopicDiscoveryStage`** — A small-input, small-output LLM call (DeepSeek V4 Flash, temp 0.5). Receives the ~250 micro-clusters in compressed representation (top-K-by-centroid titles, K=8) and identifies the 10–20 superordinate topics of the day. Emits **only** `{topics: [{title, summary}]}` — no per-finding assignments, no relevance scores. Removing the per-finding output pressure eliminated the over-clustering pathology that broke the V1 single-pass Curator.
 3. **`gravitational_assign`** — Embed each topic's title + summary into a topic-centre vector. Embed each finding. Compute cosine similarity. A finding is assigned to every topic centre it scores above the **`GRAVITATIONAL_THRESHOLD`** of 0.55 — capped at `PER_FINDING_CAP=3` topics per finding. Below threshold for every topic → orphan. Pure Python. Deterministic.
 
 The rationale — what V1 broke, what the empirical evidence was, what got resolved — lives in **`docs/ADR-CURATOR-TRIPLE-STAGE.md`**. The empirical validation: the cluster-quality audit at HEAD `6d8ffc4` measured a 69.59 % aggregate off-topic rate at the provisional T=0.30 calibration; the recalibration to T=0.55 (Brief 5b, HEAD `310a55d`) brings that to 8.23 % with no audited top-10 topic above 50 % off-topic. See `docs/AUDIT-TIMELINE.md` for the chronology.
