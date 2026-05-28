@@ -73,3 +73,22 @@ scripts/_audit_*
 
 # Cluster-level gravitation sweep similarity-matrix cache (binary, regeneratable)
 docs/cluster-level-gravitation-*/_cache/
+
+# Architect-internal workbench notes (BACKLOGs, post-mortems, diagnostic reports)
+docs/internal/
+
+# Bulk calibration / audit-trail data dirs (workbench, not public surface)
+docs/cluster-internal-audit/
+docs/cluster-quality-audit/
+docs/cluster-llm-assignment-*/
+docs/cluster-level-gravitation-*/
+docs/coherence-filter/
+docs/cost-efficiency-sweep-*/
+docs/curator-monitor/
+docs/curator-shadow/
+docs/curator-topic-discovery/
+docs/curator-variance-*/
+docs/gravitational-assign/
+docs/gravitational-recalibration-*/
+docs/pre-cluster/
+docs/triple-stage-cutover/
