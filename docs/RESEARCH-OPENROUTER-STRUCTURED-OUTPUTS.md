@@ -52,7 +52,7 @@ Per [OpenRouter Structured Outputs guide](https://openrouter.ai/docs/guides/feat
   "response_format": {
     "type": "json_schema",
     "json_schema": {
-      "name": "perspektiv_output",
+      "name": "perspective_output",
       "strict": true,
       "schema": {
         "type": "object",

@@ -56,7 +56,7 @@ This decision should be revisited when any of the following occur:
 
 1. **Re-baseline run shows geographic monotony.** After the Source-Cap is live and the next baseline produces three TPs, inspect `source_balance` per TP. If any TP shows > 70% of sources from a single country (excluding TPs that are inherently country-specific by topic), the outlet-only round-robin isn't enough.
 
-2. **Coverage gaps flag systematic regional absence.** If `validate_coverage_gaps_stage` repeatedly emits "missing global south perspective" or equivalent as a gap, the cap is filtering out voices it should be preserving.
+2. **Coverage gaps flag systematic regional absence.** If `ConsolidatorStage` repeatedly surfaces "missing global south perspective" or equivalent in `what_is_missing`, the cap is filtering out voices it should be preserving.
 
 3. **Bias Detector reader-notes flag source-bias.** If `bias_language_findings` or `bias_reader_note` repeatedly cites under-represented regions or perspectives, the selection layer is contributing.
 
@@ -64,7 +64,7 @@ This decision should be revisited when any of the following occur:
 
 5. **A TP after Cap still costs > €3.** Means the cascade is starting somewhere else (likely Researcher merging in many additional sources, or per-source actor counts being very high), and cap at a different layer is needed.
 
-6. **Two weeks of production operation, no specific issue.** Default re-evaluation cadence. Take a snapshot of `source_balance` and `coverage_gaps_validated` across all TPs produced, look for patterns.
+6. **Two weeks of production operation, no specific issue.** Default re-evaluation cadence. Take a snapshot of `source_balance` and `what_is_missing` across all TPs produced, look for patterns.
 
 ## References
 

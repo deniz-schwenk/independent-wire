@@ -1,6 +1,6 @@
 # Agent I/O Map
 
-Pipeline-stage inventory mapping every V2 stage to its LLM configuration (for agent stages) and Bus I/O contract (for all stages). Authoritative against HEAD `8ee999e` on 2026-05-17 (parent of `TASK-DOC-RECONCILE` / Brief 6 commits).
+Pipeline-stage inventory mapping every V2 stage to its LLM configuration (for agent stages) and Bus I/O contract (for all stages). Authoritative against HEAD `e2d917f` on 2026-05-28 (post Consolidator refactor `3f59ab9` + public-surface cleanup).
 
 Sources of truth: `src/runner/stage_lists.py` (stage order), `scripts/run.py` (agent registrations), `src/agent_stages.py` (wrapper reads/writes), `src/stages/run_stages.py` + `src/stages/topic_stages.py` (deterministic stages), `src/bus.py` (slot definitions), `src/schemas.py` (LLM output schemas).
 
@@ -22,13 +22,13 @@ Sources of truth: `src/runner/stage_lists.py` (stage order), `scripts/run.py` (a
 | researcher_hydrated_plan | `anthropic/claude-opus-4.6` | 0.5 | none | 16384 |
 | hydration_aggregator_phase1 | `deepseek/deepseek-v4-pro` | 0.3 | none | 32000 |
 | hydration_aggregator_phase2 | `anthropic/claude-opus-4.6` | 0.1 | none | 32000 |
-| perspective_sync | `anthropic/claude-opus-4.6` | 0.1 | none | default |
+| consolidator | `deepseek/deepseek-v4-pro` | 0.3 | none | 32000 |
 
-13 agents registered (`scripts/run.py::create_agents` + `create_agents_hydrated`). `hydration_aggregator_phase1` has a Flash fallback block commented out in `scripts/run.py` per TASK-EVIDENCE-TYPE-MIGRATION A3 — DeepSeek is the active production model. Two-file prompt convention: every agent has `agents/{name}/SYSTEM.md` + `INSTRUCTIONS.md`; researcher uses `PLAN-*.md` + `ASSEMBLE-*.md` and hydration uses `PHASE1-*.md` + `PHASE2-*.md`.
+13 agents are wired across the production and hydrated pipelines (table above). `scripts/run.py::create_agents` also registers `assign_clusters` for the experimental LLM-assignment stage list (`build_production_stages_llm_assignment`), which is not part of either canonical pipeline; `create_agents_hydrated` supplies the two hydration-aggregator agents. `hydration_aggregator_phase1` has a Flash fallback block commented out in `scripts/run.py` per TASK-EVIDENCE-TYPE-MIGRATION A3 — DeepSeek is the active production model. Two-file prompt convention: every agent has `agents/{name}/SYSTEM.md` + `INSTRUCTIONS.md`; researcher uses `PLAN-*.md` + `ASSEMBLE-*.md` and hydration uses `PHASE1-*.md` + `PHASE2-*.md`.
 
 ## §2 Pipeline I/O Map
 
-Hydrated is treated as canonical. Stages that run in only one variant are flagged inline. The full ordered union is 36 unique stages (production: 28, hydrated: 35; `mirror_perspective_synced` counted once even though it dispatches twice in hydrated). Stage names are listed in dispatch order (hydrated first, then the one production-only stage placed at its production position).
+Hydrated is treated as canonical. Stages that run in only one variant are flagged inline. Per `src/runner/stage_lists.py`: production runs 8 run-stages + 24 topic-stages; hydrated runs 9 run-stages + 29 topic-stages. The runner appends `RenderStage` + `FinalizeRunStage` after both variants. `mirror_perspective_synced` runs once per topic in both variants. Stage names are listed in dispatch order (hydrated first, then the one production-only stage placed at its production position).
 
 ### Run-stages
 
@@ -333,7 +333,7 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 - **Kind:** deterministic (Python)
 - **Source:** `src/stages/topic_stages.py::mirror_perspective_synced`
 - **Reads (Bus):** `perspective_clusters` — TopicBus
-- **Writes (Bus):** `perspective_clusters_synced` — TopicBus, per-element mirror. Dispatches twice in hydrated (after `enrich_perspective_clusters` as 1:1 copy, after `PerspectiveSyncStage` as element-delta merge); once in production (1:1 copy only).
+- **Writes (Bus):** `perspective_clusters_synced` — TopicBus, per-element 1:1 copy. Runs once per topic in both variants. The second hydrated dispatch (element-delta merge after `PerspectiveSyncStage`) was removed with `PerspectiveSyncStage` in the Consolidator refactor (`3f59ab9`).
 
 #### §2.27 WriterStage
 
@@ -356,7 +356,7 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 - **Model:** `anthropic/claude-sonnet-4.6`
 - **Params:** temp=0.1, reasoning=none, max_tokens=64000
 - **Prompt:** `agents/qa_analyze/SYSTEM.md` + `INSTRUCTIONS.md`
-- **Reads (Bus):** `writer_article`, `final_sources`, `perspective_clusters_synced`, `merged_preliminary_divergences` (plus `perspective_missing_positions` in context for divergence checks) — TopicBus
+- **Reads (Bus):** `writer_article`, `final_sources`, `perspective_clusters_synced`, `merged_preliminary_divergences` — TopicBus
 - **Writes (Bus):** `qa_problems_found`, `qa_corrections`, `qa_corrected_article` (optional, mirror-pattern), `qa_divergences` — TopicBus
 - **Originarity check:**
   - Fields the LLM produces: `problems_found[]`, `qa_corrections[]` (`proposed_correction`, `correction_needed`), optional `article` (post-correction headline/sub/body/summary), `divergences[]`
@@ -370,18 +370,19 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 - **Reads (Bus):** `writer_article` — TopicBus
 - **Writes (Bus):** `qa_corrected_article` — TopicBus, slot-level empty-then-fill.
 
-#### §2.30 PerspectiveSyncStage (hydrated-only)
+#### §2.30 ConsolidatorStage
 
 - **Kind:** agent (LLM)
-- **Source:** `src/agent_stages.py::PerspectiveSyncStage`
-- **Model:** `anthropic/claude-opus-4.6`
-- **Params:** temp=0.1, reasoning=none, max_tokens=default
-- **Prompt:** `agents/perspective_sync/SYSTEM.md` + `INSTRUCTIONS.md`
-- **Reads (Bus):** `perspective_clusters`, `qa_corrected_article`, `qa_problems_found`, `qa_corrections` — TopicBus
-- **Writes (Bus):** `perspective_clusters_synced` — TopicBus (eligibility-gated: skipped when no correction entry warrants a body fix)
+- **Source:** `src/agent_stages.py::ConsolidatorStage`
+- **Model:** `deepseek/deepseek-v4-pro`
+- **Params:** temp=0.3, reasoning=none, max_tokens=32000
+- **Prompt:** `agents/consolidator/SYSTEM.md` + `INSTRUCTIONS.md`
+- **Reads (Bus):** `perspective_missing_positions`, `merged_coverage_gaps` — TopicBus
+- **Writes (Bus):** `what_is_missing` — TopicBus (a `WhatIsMissing` carrying two compact-English string arrays, `voices_missing[]` + `topics_missing[]`)
+- **Behaviour:** single LLM call, no chunking (both inputs are small, typically <20 entries combined). Classifies each gap entry as a missing voice (stakeholder, region, language, media sphere) or a missing topic (aspect, dimension, angle), and dedupes semantic overlaps across the two inputs. Collapses three stages removed in `3f59ab9`: `PerspectiveSyncStage` (LLM, produced no substantial deltas in practice), `validate_coverage_gaps_stage` (deterministic keyword matcher — over-aggressive; false-falsified a real Cuba gap on 2026-05-23), and `consolidate_missing_coverage` (Jaccard dedup — redundant once the LLM owns dedup). This is the first deliberate exception to "validation is deterministic": whether a gap is real and whether it is voice- or topic-shaped is genuinely semantic.
 - **Originarity check:**
-  - Fields the LLM produces: `position_cluster_updates[]` (deltas: `id`, `position_label`, `position_summary`)
-  - Fields the wrapper merges in deterministically: per-element merge over `perspective_clusters` via `_merge_perspective_deltas` (delta IDs are routing keys, not pass-through data).
+  - Fields the LLM produces: `voices_missing[]`, `topics_missing[]` (string arrays)
+  - Fields the wrapper merges in deterministically: none — the wrapper only filters out non-string entries.
   - No pass-through fields detected.
 
 #### §2.31 prune_unused_sources_and_clusters
@@ -390,7 +391,7 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 - **Source:** `src/stages/topic_stages.py::prune_unused_sources_and_clusters`
 - **Reads (Bus):** `final_sources`, `perspective_clusters_synced`, `writer_article`, `qa_corrected_article`, `qa_divergences`, `merged_preliminary_divergences` — TopicBus
 - **Writes (Bus):** `final_sources`, `perspective_clusters_synced`, `prune_dropped_sources`, `prune_dropped_clusters` — TopicBus, strict-drop of unreferenced sources and empty-bodied clusters.
-- **Position note (2026-05-12 reorder):** prune was moved earlier in the chain — formerly between BiasLanguageStage and compose_transparency_card — so that `compute_source_balance`, `validate_coverage_gaps_stage`, and `BiasLanguageStage` operate on the post-prune source set. The `bias_language_findings` and `coverage_gaps_validated` reads were dropped from the citation harvest in the same change; the bias agent and the gap validator produce secondary commentary, not source-authority, and empirically (V1+V2 2026-05-11 baselines) emit no inline `[src-NNN]` markers. The contract test `test_bias_and_gaps_emit_no_inline_src_markers` codifies this assumption — a future prompt change reintroducing markers fails loudly.
+- **Position note (2026-05-12 reorder):** prune was moved earlier in the chain — formerly between BiasLanguageStage and compose_transparency_card — so that `compute_source_balance` and `BiasLanguageStage` operate on the post-prune source set. The `bias_language_findings` read was dropped from the citation harvest in the same change; the bias agent and the gap validator produce secondary commentary, not source-authority, and empirically (V1+V2 2026-05-11 baselines) emit no inline `[src-NNN]` markers. The contract test `test_bias_and_gaps_emit_no_inline_src_markers` codifies this assumption — a future prompt change reintroducing markers fails loudly.
 
 #### §2.32 cleanup_stale_references
 
@@ -407,12 +408,9 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 - **Reads (Bus):** `final_sources` — TopicBus
 - **Writes (Bus):** `source_balance` — TopicBus, language/country counts + represented-countries set. Now operates on post-prune, post-cleanup `final_sources` so counts match what the rendered TP shows.
 
-#### §2.34 validate_coverage_gaps_stage
+#### §2.34 ~~validate_coverage_gaps_stage~~ — REMOVED (Consolidator refactor `3f59ab9`)
 
-- **Kind:** deterministic (Python)
-- **Source:** `src/stages/topic_stages.py::validate_coverage_gaps_stage`
-- **Reads (Bus):** `merged_coverage_gaps`, `source_balance` — TopicBus
-- **Writes (Bus):** `coverage_gaps_validated` — TopicBus, gaps falsified by `source_balance` dropped, near-duplicates collapsed. Now operates on cleaned `merged_coverage_gaps` (post-`cleanup_stale_references`) and the post-prune `source_balance`.
+Removed in the Consolidator refactor. Its responsibility (falsifying coverage gaps against `source_balance`, collapsing near-duplicates) is now owned by `ConsolidatorStage` (§2.30) as part of the LLM's semantic dedup + classification. The deterministic keyword matcher was over-aggressive — it false-falsified a real Cuba gap on 2026-05-23. The `coverage_gaps_validated` Bus slot was removed in the same change; `what_is_missing` replaces it.
 
 #### §2.35 BiasLanguageStage
 
@@ -421,7 +419,7 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 - **Model:** `anthropic/claude-opus-4.6`
 - **Params:** temp=0.1, reasoning=none, max_tokens=default
 - **Prompt:** `agents/bias_detector/SYSTEM.md` + `INSTRUCTIONS.md`
-- **Reads (Bus):** `qa_corrected_article`, `final_sources`, `canonical_actors`, `perspective_clusters_synced`, `perspective_missing_positions`, `qa_problems_found`, `qa_corrections`, `qa_divergences`, `coverage_gaps_validated` — TopicBus. All inputs are post-prune + post-cleanup, so the `reader_note` source/country counts match what the rendered TP carries.
+- **Reads (Bus):** `qa_corrected_article`, `final_sources`, `canonical_actors`, `perspective_clusters_synced`, `qa_problems_found`, `qa_corrections`, `qa_divergences` — TopicBus. (`perspective_missing_positions` and `coverage_gaps_validated` were dropped in the Consolidator refactor + reader_note scope-narrowing, `3f59ab9`: the reader_note no longer comments on coverage gaps.) All inputs are post-prune + post-cleanup, so the `reader_note` source/country counts match what the rendered TP carries.
 - **Writes (Bus):** `bias_language_findings`, `bias_reader_note` — TopicBus
 - **Originarity check:**
   - Fields the LLM produces: `language_bias.findings[]` (`excerpt`, `issue`, `explanation`, `finding_valid`), `reader_note`. The mandatory `finding_valid: bool` field (since 2026-05-19 commit `6f59fb4`) lets the agent self-retract a finding mid-draft when the `explanation` reveals the finding does not hold (excerpt not in `article_body`, legitimate-practice case, etc.). Retracted findings (`finding_valid: false`) persist in the TP JSON as the audit trail; the renderer drops them from the published HTML.
@@ -441,4 +439,4 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 ## §4 Methodology
 
-Code is the source of truth for this map. Document last reconciled against HEAD `8ee999e` on 2026-05-17 (post `TASK-GRAVITATIONAL-RECALIBRATION` pin + re-audit; this `TASK-DOC-RECONCILE` pass refreshes the header reference and the §2.2c calibration paragraph). When models, parameters, or Bus slots change, this document is updated in the same commit as the code change. The two-file prompt convention for every agent under `agents/` (`SYSTEM.md` + `INSTRUCTIONS.md`, with researcher and hydration using phase-named pairs `PLAN-*.md` / `ASSEMBLE-*.md` / `PHASE1-*.md` / `PHASE2-*.md`) was previously documented in `docs/AGENT-INVENTORY.md`, now archived at `docs/archive/AGENT-INVENTORY-pre-2026-05-11.md`.
+Code is the source of truth for this map. Document last reconciled against HEAD `e2d917f` on 2026-05-28 (post Consolidator refactor `3f59ab9`: removed `PerspectiveSyncStage` + `validate_coverage_gaps_stage`, added `ConsolidatorStage`, corrected `mirror_perspective_synced` to single-dispatch, refreshed BiasLanguage reads). When models, parameters, or Bus slots change, this document is updated in the same commit as the code change. The two-file prompt convention for every agent under `agents/` (`SYSTEM.md` + `INSTRUCTIONS.md`, with researcher and hydration using phase-named pairs `PLAN-*.md` / `ASSEMBLE-*.md` / `PHASE1-*.md` / `PHASE2-*.md`) was previously documented in `docs/AGENT-INVENTORY.md`, since archived.
