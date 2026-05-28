@@ -524,11 +524,11 @@ independent-wire/
 │   ├── ADR-CURATOR-TRIPLE-STAGE.md              # The Curator architectural decision (implemented + validated)
 │   ├── AUDIT-TIMELINE.md                        # Chronological index of V2 calibration / audit artefacts
 │   ├── ROADMAP.md
-│   ├── TASKS.md
 │   ├── VISUALIZATIONS.md
 │   ├── FEED-CATALOG.md
 │   ├── archive/                                 # Completed tasks, WPs, briefings
-│   └── handoffs/                                # Session handoff files
+│   ├── handoffs/                                # Session handoff files
+│   └── internal/                                # Local-only working notes incl. TASKS.md (gitignored)
 ├── tests/                                       # 602 / 0 (V2)
 ├── .env.example
 ├── pyproject.toml
