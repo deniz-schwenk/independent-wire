@@ -1,6 +1,6 @@
 # TASK
 
-You receive `article_body` (the full final article text after corrections, citations in `[src-NNN]` form) and `bias_card` (a pre-aggregated structural profile carrying `source_balance`, `geographic_coverage`, `perspectives`, `factual_divergences`, and `coverage_gaps`). Produce two things in one JSON object: a `language_bias` block carrying findings extracted from the article body, and a `reader_note` that synthesizes the source-divergence facts in the bias card with the language findings into two or three plain-language sentences. The bias card's counts and lists are already aggregated — read them for the synthesis; do not recompute or restate them mechanically.
+You receive `article_body` (the full final article text after corrections, citations in `[src-NNN]` form) and `bias_card` (a pre-aggregated structural profile carrying `source_balance`, `geographic_coverage`, `perspectives`, and `factual_divergences`). Produce two things in one JSON object: a `language_bias` block carrying findings extracted from the article body, and a `reader_note` characterizing how the published text is colored — two or three plain-language sentences on its language, its framing, and its sourcing. The bias card's counts and lists are already aggregated — read them for context; do not recompute or restate them mechanically.
 
 ## Language bias categories
 
@@ -24,11 +24,11 @@ Four cases are not bias and must not be flagged:
 
 ## Reader note style
 
-The reader note speaks to a thoughtful person reading the article, not a developer reading a debug log:
+The reader note characterizes how the published text is colored, for a thoughtful person reading the article, not a developer reading a debug log. Every sentence is a statement about the text on the page, not about what is absent from it.
 
 - Two to three sentences in plain language. No bullet points, no headings, no structured formatting.
-- Pick the two or three most important things to surface — useful candidates: source count and language coverage from `source_balance`, any unresolved entries from `factual_divergences`, and the headline pattern from the language scan if findings are pervasive.
-- Do not enumerate every data point. A reader note that reads like a database dump fails the purpose.
+- Surface the two or three most telling things about the text's coloring — useful candidates: the headline pattern from the language scan if findings are pervasive, the perspective the article's framing foregrounds, the breadth of sources the article draws on, and any unresolved disagreement among those sources from `factual_divergences`. Never an enumeration of every data point.
+- Geographic and institutional framing is described as a slant in the present text — "the article frames events primarily through a European lens," "the coverage foregrounds official government sources." This names how the text leans, not which regions or voices are absent.
 - No internal terminology. The words *"pipeline"*, *"agents"*, *"bias card"*, *"dimensions"*, *"system"* do not appear. The reader does not know how the article was made and does not need to.
 
 # OUTPUT FORMAT
@@ -53,7 +53,7 @@ A single JSON object with exactly two top-level fields. Example:
       }
     ]
   },
-  "reader_note": "This article draws on 22 sources in six languages. Several attributions in the article's own voice use loaded language — 'regime', 'unprecedented' — where the source material is more measured. Iranian and US sources report different timelines for when the new fees take effect; the discrepancy has not been resolved."
+  "reader_note": "This article draws on 22 sources in six languages but frames events through a Western diplomatic lens, foregrounding US and European reactions. Several attributions use loaded language in the article's own voice — 'regime', 'unprecedented' — where the sources are more measured. Iranian and US sources give different timelines for the new fees, a discrepancy left unresolved."
 }
 ```
 
@@ -75,6 +75,6 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 2. The `explanation` field names what the text does — the judgment it embeds, the attribution it lacks, the agent it obscures. "This word is evaluative" fails; "'Devastating' characterizes severity in the article's own voice" passes.
 3. Retraction is a legitimate outcome. When drafting the `explanation` reveals that the finding does not hold — typically because the `excerpt` is not in `article_body` or the flagged pattern is one of the legitimate-practice cases — write the retraction reason in `explanation` and set `finding_valid: false`. The boolean and the explanation agree on outcome; do not edit `excerpt` or `issue` retroactively to make a retracted finding disappear. Hallucinated excerpts (Rule 1) remain the primary discipline — `finding_valid: false` is the escape hatch for catching a mismatch mid-draft, not a licence to draft speculative findings.
 4. Do not flag legitimate practice. Standard attribution, data-backed description, genuinely uncertain language for real ambiguity, and direct quotes from sources are not bias.
-5. Do not re-analyze the bias card. The reader note draws only on `source_balance` and `factual_divergences`. Gap-shaped fields — `perspectives.missing_positions`, `geographic_coverage.missing_from_dossier`, `coverage_gaps` — are rendered elsewhere and do not enter the reader_note.
-6. The reader note synthesizes for a thoughtful reader. Two or three plain-language sentences that pick the most important things — never an enumeration of every data point. Do not use internal terminology.
+5. Every sentence in the reader note is a statement about the text on the page: geographic or institutional slant is named as a property of how the text is written, not as a claim that a region or voice is absent.
+6. The reader note is two or three plain-language sentences picking the most important things — never an enumeration of every data point — and uses no internal terminology.
 7. Empty findings are valid. When the article body has no meaningful language bias, `findings` is an empty array. Do not invent findings to appear thorough.

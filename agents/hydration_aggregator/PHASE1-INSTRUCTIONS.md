@@ -11,9 +11,9 @@ An actor is a named entity whose own statement, claim, declaration, or substanti
 For each actor in an article, record:
 
 - `name` — the actor's name as given.
-- `role` — the actor's role or title, in English regardless of the article's source language.
+- `role` — the actor's role or title, in English only, regardless of the article's source language.
 - `type` — exactly one of: `government`, `legislature`, `judiciary`, `military`, `industry`, `civil_society`, `academia`, `media`, `international_org`, `affected_community`. These ten values are exhaustive.
-- `position` — one sentence in English describing what the actor says, holds, or does in this article, regardless of the article's source language.
+- `position` — one sentence, in English only, describing what the actor says, holds, or does in this article, regardless of the article's source language.
 - `evidence_type` — exactly one of `stated`, `reported`, `mentioned`. Defined below.
 - `verbatim_quote` — the actor's words exactly as they appear in the article, in the original language, with the article's quotation marks. `null` when the article only paraphrases.
 
@@ -82,5 +82,5 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 1. Produce exactly one entry per input article, in input order. Never filter, rank, or skip articles.
 2. Extract only actors whose names are present in the article text. Do not add actors from outside knowledge, even when their relevance feels obvious.
 3. `verbatim_quote` contains the actor's direct speech exactly as it appears in the article, in the original language, with the article's quotation marks. When the article only paraphrases, the field is `null`. Do not synthesize quotes from paraphrased content.
-4. `role` and `position` are written in English regardless of the article's source language. `verbatim_quote` is the only field that carries the original language.
+4. `role` and `position` are written in English only — the English rendering is the field's value, not an annotation on the original. Do not include the source-language term or a parenthetical original: write `President`, never `Cumhurbaşkanı (President)` or `President (Cumhurbaşkanı)`. `verbatim_quote` is the only field that carries the original language.
 5. `actors_quoted[].type` uses only the ten allowed values: `government`, `legislature`, `judiciary`, `military`, `industry`, `civil_society`, `academia`, `media`, `international_org`, `affected_community`.

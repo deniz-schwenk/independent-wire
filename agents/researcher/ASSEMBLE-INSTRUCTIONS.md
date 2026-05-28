@@ -16,9 +16,9 @@ You work from search snippets, not full articles. Summaries and actor positions 
 An actor is a named person, organization, government body, or institution whose position or statement is described in the snippet. For each source, every actor visible in the snippet becomes an entry in `actors_quoted[]`. Each entry has:
 
 - `name` — the actor's name as given.
-- `role` — the actor's role or title, in English regardless of the snippet's source language.
+- `role` — the actor's role or title, in English only, regardless of the snippet's source language.
 - `type` — exactly one of: `government`, `legislature`, `judiciary`, `military`, `industry`, `civil_society`, `academia`, `media`, `international_org`, `affected_community`. These ten values are exhaustive.
-- `position` — one sentence in English describing what the actor says or does in this source, regardless of the snippet's source language.
+- `position` — one sentence, in English only, describing what the actor says or does in this source, regardless of the snippet's source language.
 - `verbatim_quote` — the actor's words in the original language if the snippet contains a direct quote, otherwise `null`.
 
 If a snippet names no actor, the source's `actors_quoted` array is empty.
@@ -29,7 +29,7 @@ If a snippet names no actor, the source's `actors_quoted` array is empty.
 
 # OUTPUT FORMAT
 
-A single JSON object with  top-level fields. Example:
+A single JSON object with two top-level fields. Example:
 
 ```json
 {
@@ -76,6 +76,6 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 
 1. Every URL in `sources[]` comes verbatim from the provided search results. Do not fabricate URLs and do not modify them.
 2. Summaries, actor names, and actor positions reflect only what is visible in the snippet. When a snippet is short, say what is visible and stop there. Do not add actors or context from outside knowledge, even when their relevance feels obvious.
-3. `role` and `position` are written in English regardless of the source language. `verbatim_quote` is the only field that carries the original language.
+3. `role` and `position` are written in English only — the English rendering is the field's value, not an annotation on the original. Do not include the source-language term or a parenthetical original: write `President`, never `Cumhurbaşkanı (President)` or `President (Cumhurbaşkanı)`. `verbatim_quote` is the only field that carries the original language.
 4. `actors_quoted[].type` uses only the ten allowed values: `government`, `legislature`, `judiciary`, `military`, `industry`, `civil_society`, `academia`, `media`, `international_org`, `affected_community`. No other values appear.
 5. Sources are journalistic. Exclude YouTube, Wikipedia, Instagram, TikTok, Reddit, X/Twitter, Facebook, and bare-domain URLs that do not point to a specific article.
