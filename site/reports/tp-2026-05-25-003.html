@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -840,6 +836,9 @@ Follow-up to: &ldquo;Iran Reviews Latest US Peace Proposal While Trump Sets Days
   <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">The Strait of Hormuz crisis and potential deal have divergent economic consequences across regions, with energy importers suffering and exporters benefiting</span></div>
   <div class="card-position">Coverage from Africa, Southeast Asia, Brazil, Turkey, and shipping industry sources highlights that the blockade has driven up oil prices, insurance premiums, and freight costs, creating winners among oil exporters like Nigeria and losers among import-dependent economies in East Africa and Southeast Asia, while a deal reopening the strait would reverse these dynamics and also reduce Russian oil revenue.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>Rossiyskaya Gazeta</strong>, <strong>S&amp;P Global</strong>, <strong>Al Jazeera</strong>, <strong>BBC News Brasil</strong>, <strong>VietnamPlus</strong>, <strong>Bianet</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">0 actors</a></span> &middot; <span>7 sources</span> &middot; <span>6 regions</span> &middot; <span>5 languages</span></p>
 </div>
 </div>
@@ -1227,9 +1226,6 @@ Follow-up to: &ldquo;Iran Reviews Latest US Peace Proposal While Trump Sets Days
 })();
 </script>
 </section>
-
-<h2>Missing stakeholder voices</h2>
-<ul class="missing-positions"><li><strong>affected_community</strong> — No Iranian, Lebanese, or Gulf-region civilians affected by the war, blockade, or economic disruption are quoted, despite the deal&#x27;s direct implications for their livelihoods and safety.</li><li><strong>industry</strong> — No tanker operators, maritime insurers, oil traders, or OPEC officials provide perspectives on the deal&#x27;s impact on shipping routes, insurance premiums, and global energy supply chains.</li><li><strong>academia</strong> — No nuclear scientists, IAEA inspectors, or nonproliferation experts assess the technical feasibility of the proposed uranium disposition mechanisms or the adequacy of the 60-day negotiation timeline.</li><li><strong>government</strong> — No Gulf Arab state officials from Saudi Arabia, UAE, Oman, or Qatar are directly quoted despite being described as endorsing the framework and being directly affected by the Strait of Hormuz closure.</li><li><strong>international_org</strong> — No IAEA officials or UN Security Council representatives weigh in on the verification and enforcement dimensions of the proposed nuclear commitments, despite these being central to the deal&#x27;s credibility.</li></ul>
 
 <h2>Divergences</h2>
 <div class="divergence">
@@ -1770,7 +1766,6 @@ Follow-up to: &ldquo;Iran Reviews Latest US Peace Proposal While Trump Sets Days
 <dl>
 <dt>Selection Reason</dt><dd>The shift from threat-and-deadline posturing to Rubio describing a deal as &#x27;pretty solid&#x27; marks a substantive diplomatic development, with oil prices responding to the optimism. Coverage from across seven regions and seven languages provides rich multi-perspective material, including Iranian state media, Gulf-aligned outlets, European diplomatic coverage, and US domestic political criticism from Republican hawks. The tension between Trump&#x27;s caution and Rubio&#x27;s optimism adds an intra-administration framing divergence.</dd>
 <dt>QA Corrections</dt><dd><details class="qa-corrections-wrapper"><summary>QA Corrections &mdash; <strong>2 applied &middot; 6 retracted</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-applied">applied</span> Remove [src-009] from the Brent crude citation, leaving only [src-013], since only src-013 specifically reports Brent crude falling below $100 a barrel. The corrected text should read: &#x27;with Brent crude falling below $100 a barrel [src-013].&#x27;</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Brent crude falling below $100 a barrel [src-013][src-009]</blockquote><p class="qa-explanation">Source src-009 (The Guardian liveblog) does not report Brent crude falling below $100 a barrel; it reports oil price drops but does not specify that figure. Only src-013 (Middle East Eye morning update) states Brent crude fell below $100 a barrel.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The description of Mojtaba Khamenei as &#x27;the influential son of the supreme leader&#x27; is accurate per src-024. The omission of his clerical role is a minor omission that does not constitute a distortion of the source material. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Euronews Persian reported, citing Reuters sources, that Mojtaba Khamenei — the influential son of the supreme leader — had ordered that Iran&#x27;s high-enriched uranium stockpile must remain inside the country [src-024].</blockquote><p class="qa-explanation">Source src-024 describes Mojtaba Khamenei as an &#x27;influential Iranian cleric and son of Supreme Leader&#x27; who &#x27;opposes transferring Iran&#x27;s high-enriched uranium abroad and orders the stockpile to stay inside Iran.&#x27; The article&#x27;s description of him as &#x27;the influential son of the supreme leader&#x27; is accurate, but the article omits his clerical role, which is part of his identity as described in the source. This is a minor omission rather than a distortion.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> The statement about Islamabad hoping to host another round of talks is attributed to Pakistani Foreign Minister Ishaq Dar in the article, but src-017 attributes this to Pakistani Prime Minister Shehbaz Sharif. Correct the sentence to attribute the hosting statement to Sharif: &#x27;Pakistani Foreign Minister Ishaq Dar praised &quot;meaningful progress&quot; [src-004], while Prime Minister Shehbaz Sharif said Islamabad hoped to host another round of talks [src-017].&#x27;</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Pakistani Foreign Minister Ishaq Dar praised &#x27;meaningful progress&#x27; and said Islamabad hoped to host another round of talks [src-004][src-017].</blockquote><p class="qa-explanation">Source src-017 attributes the statement about hosting another round of talks to Pakistani Prime Minister Shehbaz Sharif, not Foreign Minister Ishaq Dar. Source src-004 quotes Ishaq Dar praising &#x27;meaningful progress,&#x27; but the hosting statement comes from Sharif per src-017.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The description &#x27;Former Obama adviser Ben Rhodes&#x27; is a minor shorthand for &#x27;Former Obama-era foreign policy adviser&#x27; as identified in src-021. This does not misrepresent his position or quote and does not warrant a body change.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Former Obama adviser Ben Rhodes stated that &#x27;nothing was accomplished by Operation Epic Fury except putting the IRGC in charge of Iran and the strait of Hormuz&#x27; [src-021].</blockquote><p class="qa-explanation">Source src-021 identifies Ben Rhodes as a &#x27;Former Obama-era foreign policy adviser,&#x27; not simply a &#x27;Former Obama adviser.&#x27; The article&#x27;s shorthand is not inaccurate but slightly imprecise; however, this is a minor stylistic difference rather than a substantive distortion.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The description &#x27;Ali Vaez of the Crisis Group&#x27; omits his title &#x27;Director of the Iran Project at the Crisis Group&#x27; per src-021, but this is a minor omission that does not distort his position or quote. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Ali Vaez of the Crisis Group argued that hawks in Washington &#x27;got two wars, nearly every conceivable sanction designation, a blockade&#x27; and would still demand more pressure [src-021].</blockquote><p class="qa-explanation">Source src-021 identifies Ali Vaez as &#x27;Director of the Iran Project at the Crisis Group,&#x27; not simply &#x27;of the Crisis Group.&#x27; The article&#x27;s shorthand omits his specific role but does not misrepresent his position or quote.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The paraphrase of Trita Parsi&#x27;s position is accurate and supported by src-021. No correction is needed.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Trita Parsi of the Quincy Institute said Trump had merely negotiated his way back to the position that existed before his blockade decision [src-021].</blockquote><p class="qa-explanation">Source src-021 describes Parsi as a &#x27;Thinktank analyst from Quincy Institute&#x27; and says he &#x27;argues Trump has merely negotiated his way back to the position that was supposed to hold when the original ceasefire was announced, before his blockade decision upended it.&#x27; The article&#x27;s paraphrase is accurate and supported.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The combination of Pezeshkian&#x27;s two quotes with &#x27;but added&#x27; is a framing choice by the Writer. Both quotes are attributed to Pezeshkian in the cited sources (src-003, src-017, src-020). The German-language quote is from src-020 and attributed to Pezeshkian there. The structure is a reasonable editorial combination and does not misrepresent the sources. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Iranian President Masoud Pezeshkian told state television that Iran was ready &#x27;to assure the world that we are not after a nuclear weapon,&#x27; but added: &#x27;Wir sind weiterhin gesprächsbereit, aber die Erfahrungen aus vergangenen Verhandlungen mit den USA zwingen uns zu äußerster Vorsicht&#x27; (We remain open to talks, but past negotiation experiences with the US force us to exercise extreme caution) [src-003][src-020][src-017].</blockquote><p class="qa-explanation">The German-language quote &#x27;Wir sind weiterhin gesprächsbereit...&#x27; is attributed to Pezeshkian in src-020 (Tagesschau), which presents it as his statement. However, src-003 (BBC) quotes Pezeshkian saying &#x27;to assure the world that we are not after a nuclear weapon&#x27; and src-017 (France 24) quotes him saying &#x27;still prepared to assure the world that we are not seeking nuclear weapons.&#x27; The German quote from src-020 is attributed to Pezeshkian there, so the attribution is supported. However, the article combines two separate quotes as if they were a single statement with &#x27;but added,&#x27; which may misrepresent the structure. This is a minor framing issue but the attribution is supported by src-020.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The claim about Rubio&#x27;s &#x27;another way&#x27; statement is supported by src-008 and src-004. No correction is needed.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Rubio said the US would either reach &#x27;a good agreement&#x27; with Iran or deal with the country &#x27;another way,&#x27; adding that diplomacy would be given every chance before alternatives were explored [src-008].</blockquote><p class="qa-explanation">Source src-008 (France 24) quotes Rubio saying &#x27;another way&#x27; and that the US will give diplomacy every chance before exploring alternatives. Source src-004 also supports this. The claim is supported by src-008.</p></div></details></li></ul></details></dd>
-<dt>Coverage Limits</dt><dd><details class="coverage-limits-wrapper"><summary>Coverage Limits &mdash; <strong>2 notes</strong></summary><ul class="coverage-limits"><li>No humanitarian or civilian perspectives from populations affected by the war and blockade — Iranian civilians facing economic hardship, Lebanese civilians under Israeli evacuation orders, or Gulf-region communities dependent on strait commerce — are quoted in any article.</li><li>No arms control or nuclear nonproliferation experts (IAEA officials, independent nuclear scientists, former inspectors) are quoted despite the deal&#x27;s core involving the disposition of highly enriched uranium and the technical feasibility of proposed timelines.</li></ul></details></dd>
 <dt>Strict-drop Pruning</dt><dd><details class="dropped-details"><summary>2 sources dropped</summary><div class="dropped-detail"><p class="dropped-section-label">Sources</p><ul class="dropped-list"><li><span class="dropped-id">src-025</span> <span class="dropped-outlet">Al Jazeera</span> &mdash; Opinion piece describing the emerging deal as a tactical 60-</li><li><span class="dropped-id">src-030</span> <span class="dropped-outlet">Arms Control Association</span> &mdash; Nonproliferation expert analysis of diplomatic options to do</li></ul></div></details></dd>
 <dt class="pipeline-run">Pipeline Run</dt><dd class="pipeline-run">run-2026-05-25-a436cfc8 &middot; 2026-05-25</dd>
 </dl>

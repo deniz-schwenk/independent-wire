@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -1106,9 +1102,6 @@ footer a { color: #000; text-decoration: underline; }
 </script>
 </section>
 
-<h2>Missing stakeholder voices</h2>
-<ul class="missing-positions"><li><strong>military</strong> — No independent military analysts or retired commanders assess the operational significance, force structure implications, or strategic coherence of deploying 5,000 troops to Poland while withdrawing from Germany.</li><li><strong>civil_society</strong> — No European peace organizations, anti-war movements, or Polish community groups near US bases offer perspectives on the social and security implications of increased militarization on NATO&#x27;s eastern flank.</li><li><strong>academia</strong> — No Western defense or security studies scholars evaluate whether the deployment meaningfully changes NATO deterrence posture or whether it is primarily symbolic and politically motivated.</li><li><strong>affected_community</strong> — No voices from Polish communities hosting US military installations or from German communities losing US troop presence address the local economic, social, and security impacts of the redeployment.</li><li><strong>legislature</strong> — No members of the US Congress, European Parliament, or Polish Sejm provide oversight perspectives on the deployment decision, despite reports of bipartisan congressional criticism.</li></ul>
-
 <h2>Divergences</h2>
 <div class="divergence">
   <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
@@ -1594,7 +1587,6 @@ footer a { color: #000; text-decoration: underline; }
 <dl>
 <dt>Selection Reason</dt><dd>A fresh, high-impact geopolitical development with no prior coverage. The troop deployment announcement represents a concrete policy shift with implications for NATO posture, European security architecture, and the Russia-Ukraine conflict. Coverage spans six languages and with strong source diversity including Polish, Russian, American, and European perspectives offering genuinely competing framings about whether this signals alliance strengthening or strategic confusion.</dd>
 <dt>QA Corrections</dt><dd><details class="qa-corrections-wrapper"><summary>QA Corrections &mdash; <strong>3 applied &middot; 3 retracted</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The timing claim (&#x27;two days earlier&#x27;) is broadly supported by src-008 and the overall source record. The framing is not materially misleading. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Vice President JD Vance had told reporters two days earlier that the original deployment had merely been &quot;delayed,&quot; not cancelled, though the Pentagon&#x27;s own communications had used the word cancellation [src-006][src-016][src-027].</blockquote><p class="qa-explanation">The article attributes the &#x27;two days earlier&#x27; timing to Vance&#x27;s statement in the context of the paragraph about the Helsingborg meeting (May 22), which would place Vance&#x27;s statement on May 20. However, src-008 states the announcement came &#x27;two days after Vice President JD Vance said a troop deployment to Poland had been delayed,&#x27; and src-008 is dated May 22, making Vance&#x27;s statement May 20. The cited sources src-006, src-016, and src-027 do not specify &#x27;two days earlier&#x27; relative to the Helsingborg meeting; the timing is supported but the framing in the paragraph is slightly ambiguous. This is a minor issue and the claim is broadly supported.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Separate the general &#x27;very upset and disappointed&#x27; attribution from the Iran-war-specific framing. Change &#x27;Rubio added that Trump remained &quot;very upset and disappointed&quot; with NATO allies over their refusal to support US operations in the Iran war [src-003][src-011]&#x27; to &#x27;Rubio added that Trump remained &quot;very upset and disappointed&quot; with NATO allies [src-003]; multiple sources linked that frustration to allied non-participation in US operations in the Iran war [src-005][src-011].&#x27;</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Rubio added that Trump remained &quot;very upset and disappointed&quot; with NATO allies over their refusal to support US operations in the Iran war [src-003][src-011].</blockquote><p class="qa-explanation">Src-003 (BBC) attributes the &#x27;very upset and disappointed&#x27; quote to Rubio speaking about NATO allies generally, but the specific phrase &#x27;refusal to support US operations in the Iran war&#x27; as the reason is an editorial characterization. Src-003 says Rubio stated Trump remained &#x27;very upset and disappointed&#x27; with NATO allies, and that &#x27;some of those issues&#x27; would be discussed at the summit; the Iran war linkage is present in src-005 and src-011 but the article conflates Rubio&#x27;s general disappointment quote with the Iran-war-specific framing without clearly distinguishing them.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Remove src-004 from the citation for the 5,000-troops-from-Germany figure, since src-004 does not report that specific number. The sentence should cite [src-012][src-024] for the Germany withdrawal figure and brigade reduction respectively. Change &#x27;[src-004][src-012][src-024]&#x27; to &#x27;[src-012][src-024]&#x27; for the withdrawal figure, while keeping src-004 for the brigade combat team reduction. Specifically: &#x27;the withdrawal of approximately 5,000 troops from Germany [src-012] and a reduction of US Army brigade combat teams in Europe from four to three [src-004][src-024]&#x27;.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">the withdrawal of approximately 5,000 troops from Germany and a reduction of US Army brigade combat teams in Europe from four to three [src-004][src-012][src-024]</blockquote><p class="qa-explanation">Src-004 (DW) does not mention the specific figure of 5,000 troops being withdrawn from Germany; it discusses the reduction of brigade combat teams. Src-012 (Tagesschau) reports approximately 5,000 soldiers to be withdrawn from Germany within six to twelve months, attributed to reports about Hegseth. Src-024 (Al Jazeera) mentions the reduction from four to three brigade combat teams. The 5,000 figure for Germany withdrawal is supported by src-012 but not src-004, so the citation to src-004 for that specific figure is partially unsupported.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The Péter Magyar mislabeling as &#x27;Hungarian Prime Minister&#x27; appears only in the source metadata (src-007 actor list), not in the article body. The article body does not mention Péter Magyar at all. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Péter Magyar&quot; role: &quot;Hungarian Prime Minister&quot;</blockquote><p class="qa-explanation">Src-007 (The Guardian) lists Péter Magyar as &#x27;Hungarian Prime Minister,&#x27; but Péter Magyar is the leader of the Tisza party opposition in Hungary, not the Prime Minister. The Hungarian Prime Minister is Viktor Orbán. However, this actor appears only in the source metadata, not in the article body itself, so this error does not propagate into the article text.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> The article attributes Rubio&#x27;s Spain/NATO quote specifically to the Helsingborg meeting, but src-005 does not confirm this location. Src-007 (the Helsingborg live blog) does not include this quote. To avoid unsupported geographic attribution, change &#x27;Rubio used the gathering to press allies on burden-sharing, questioning NATO&#x27;s utility if member states like Spain deny base access for Middle East contingencies&#x27; to &#x27;Rubio pressed allies on burden-sharing, questioning NATO&#x27;s utility if member states like Spain deny base access for Middle East contingencies&#x27; — removing the specific claim that this statement was made at the Helsingborg gathering, since that is not confirmed by the cited source.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Rubio used the gathering to press allies on burden-sharing, questioning NATO&#x27;s utility if member states like Spain deny base access for Middle East contingencies: &quot;Si países miembros como España nos niegan el uso de estas bases, ¿para qué seguimos en la OTAN?&quot; (If member countries like Spain deny us the use of these bases, why do we remain in NATO?) [src-005]</blockquote><p class="qa-explanation">The article presents this Spanish-language quote as Rubio speaking at the Helsingborg NATO foreign ministers&#x27; meeting, but src-005 (El Financiero) is a Mexican outlet reporting on the broader context and does not specify that Rubio made this statement at Helsingborg. Src-007 (The Guardian, covering Helsingborg) does not include this specific quote. The quote may have been made in a different context, and attributing it specifically to the Helsingborg gathering is not directly supported by the cited source.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> This problem was identified in error during review — the article correctly attributes the Stenergard quote. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">the mood was shaped less by celebration than by confusion. Swedish Foreign Minister Maria Malmer Stenergard conceded that US communications were &quot;confusing indeed, and not always easy to navigate&quot; [src-007].</blockquote><p class="qa-explanation">Src-007 attributes the quote &#x27;confusing indeed, and not always easy to navigate&#x27; to Swedish Foreign Minister Maria Malmer Stenergard. However, the article&#x27;s body correctly attributes this to Stenergard, so there is no error in the article body itself. This is not a problem.</p></div></details></li></ul></details></dd>
-<dt>Coverage Limits</dt><dd><details class="coverage-limits-wrapper"><summary>Coverage Limits &mdash; <strong>2 notes</strong></summary><ul class="coverage-limits"><li>No independent military analysts, defense think-tank experts, or academic voices are quoted anywhere in the corpus—every quoted actor is a government official, diplomat, or journalist—leaving the operational significance and strategic coherence of the deployment unexamined by non-governmental experts.</li><li>No article addresses the logistical and operational details of the deployment—such as which units, basing arrangements, timeline, or cost—leaving the practical substance of Trump&#x27;s social-media announcement unscrutinized.</li></ul></details></dd>
 <dt>Strict-drop Pruning</dt><dd><details class="dropped-details"><summary>1 source dropped</summary><div class="dropped-detail"><p class="dropped-section-label">Sources</p><ul class="dropped-list"><li><span class="dropped-id">src-018</span> <span class="dropped-outlet">BBC Russian</span> &mdash; Reports on NATO&#x27;s launch of Operation Eastern Sentry after R</li></ul></div></details></dd>
 <dt class="pipeline-run">Pipeline Run</dt><dd class="pipeline-run">run-2026-05-22-5d9a1bb7 &middot; 2026-05-22</dd>
 </dl>

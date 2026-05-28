@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -765,6 +761,9 @@ footer a { color: #000; text-decoration: underline; }
   <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
   <div class="card-header"><span class="card-actor">China&#x27;s coal mines remain among the world&#x27;s deadliest due to poor safety standards, weak regulation, and corruption</span></div>
   <div class="card-position">Al Jazeera and other international outlets frame the disaster within a broader pattern of deadly Chinese mining accidents driven by structural problems including lax safety protocols, inadequate enforcement, and corrupt practices, characterizing China&#x27;s mines as systematically dangerous despite official improvement campaigns.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>DW News</strong>, <strong>France 24</strong>, <strong>Al Jazeera</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">0 actors</a></span> &middot; <span>4 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-004">
@@ -781,6 +780,9 @@ footer a { color: #000; text-decoration: underline; }
   <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
   <div class="card-header"><span class="card-actor">China&#x27;s dependence on coal as a strategic energy source creates structural tension between production pressure and safety</span></div>
   <div class="card-position">Several sources contextualize the disaster within Shanxi province&#x27;s role producing roughly a quarter to a third of China&#x27;s coal output and China&#x27;s status as the world&#x27;s largest coal consumer and greenhouse gas emitter, noting that coal is treated as a reliable backup for intermittent renewables, which creates production pressures that undermine safety campaigns.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>El País</strong>, <strong>France 24</strong>, <strong>RFI</strong>, <strong>Al Jazeera</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">0 actors</a></span> &middot; <span>4 sources</span> &middot; <span>3 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-006">
@@ -797,12 +799,18 @@ footer a { color: #000; text-decoration: underline; }
   <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">Chinese authorities use rapid compensation to silence victims&#x27; families and prevent public accountability demands</span></div>
   <div class="card-position">Radio Free Asia&#x27;s historical reporting documents a pattern in which Chinese authorities offer large lump-sum payments to families of mining disaster victims in exchange for their swift departure and silence, preempting organized grievances or rights-defense activities.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>自由亚洲电台</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">0 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-008">
   <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">Media transparency around Chinese mining disasters has improved compared to past suppression of information</span></div>
   <div class="card-position">RFI&#x27;s French-language coverage uniquely observes that media coverage of major mining incidents in China has become more open compared to earlier periods when many such disasters were silenced, suggesting a shift in information management even if full transparency remains elusive.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>RFI</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">0 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 </div>
@@ -920,9 +928,6 @@ footer a { color: #000; text-decoration: underline; }
 })();
 </script>
 </section>
-
-<h2>Missing stakeholder voices</h2>
-<ul class="missing-positions"><li><strong>affected_community</strong> — No miners&#x27; families, local community members, or bereaved relatives are quoted anywhere in the dossier, leaving the human toll, grief, and demands for justice from those most directly affected entirely unrepresented.</li><li><strong>civil_society</strong> — No labor rights organizations, mine worker unions, or safety advocacy groups provide independent assessment of working conditions, regulatory failures, or the adequacy of the government&#x27;s response.</li><li><strong>academia</strong> — No mining engineers, occupational safety researchers, or gas-explosion specialists offer independent technical analysis of the explosion&#x27;s cause, the adequacy of ventilation systems, or the effectiveness of China&#x27;s safety regulatory framework.</li><li><strong>industry</strong> — No statement from Tongzhou Group management, industry trade associations, or other coal operators is included to explain the company&#x27;s safety record, its response to prior citations, or broader industry perspectives on production-safety tradeoffs.</li><li><strong>international_org</strong> — No international labor or safety bodies such as the International Labour Organization or the World Health Organization provide comparative context on mining safety standards or offer independent monitoring perspectives on the disaster.</li></ul>
 
 <h2>Divergences</h2>
 <div class="divergence">
@@ -1381,7 +1386,6 @@ footer a { color: #000; text-decoration: underline; }
 <dl>
 <dt>Selection Reason</dt><dd>A major industrial disaster with at least 90 dead and more missing — China&#x27;s deadliest mining accident in over a decade — with no prior coverage. The story has exceptional geographic and linguistic breadth, spanning nine regions and eight languages, with sources ranging from state-influenced Chinese outlets to independent European, African, South Asian, and Latin American media. The divergence between state media framing of the incident and independent reporting on China&#x27;s mining safety record provides strong multi-perspective potential. This is a high-impact breaking news event demanding top priority.</dd>
 <dt>QA Corrections</dt><dd><details class="qa-corrections-wrapper"><summary>QA Corrections &mdash; <strong>2 applied &middot; 6 retracted</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-applied">applied</span> Remove src-004 from the citation for &#x27;more than 120 hospitalized&#x27; since src-004 reports only 27 hospitalized. Change &#x27;[src-004][src-011][src-028]&#x27; to &#x27;[src-011][src-023][src-024][src-028]&#x27; for the hospitalization figure, as those sources support 100+ or 120+ hospitalized.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">more than 120 hospitalized — many for toxic gas poisoning — and at least one in critical condition [src-004][src-011][src-028]</blockquote><p class="qa-explanation">Source src-004 (BBC) reports 27 hospitalized, not more than 120. The figure of more than 120 hospitalized appears in src-028 (G1 Globo) and is confirmed by src-023 (CBS) and src-024 (SCMP), but src-004 specifically states 27 hospitalized. The citation of src-004 for the 120+ figure is therefore inaccurate; src-004 should be removed from this citation cluster or the figure should be attributed only to the sources that support it.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> Source src-022 does not specify Heilongjiang or the 108 death toll, but src-001 does support both details. The citation of src-022 alongside src-001 is a minor over-citation but does not introduce a factual error into the article. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">The disaster is the deadliest in China&#x27;s mining sector since a 2009 explosion at a Heilongjiang mine killed 108 people [src-001][src-022]</blockquote><p class="qa-explanation">Source src-022 (YTN) frames the disaster as the worst in 17 years (since 2009) but does not specify the 2009 mine&#x27;s location as Heilongjiang or the death toll of 108. Source src-001 (ANSA) does reference the 2009 Heilongjiang explosion killing 108, supporting the claim. The citation of src-022 is partially unsupported for the specific detail of Heilongjiang and 108 deaths, but src-001 alone supports the full claim, so this is a minor citation issue rather than a factual error.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The first Wang Yong quote is correctly attributed to src-004. No correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">He told the BBC: &quot;I smelled sulphur, the same smell you get from blasting. I shouted at people to run. As we were running I could see people collapsing from the fumes. Then I blacked out too&quot; [src-004]</blockquote><p class="qa-explanation">Source src-004 (BBC) gives Wang Yong&#x27;s second quote as: &#x27;I lay there for about an hour or so before I came round on my own. I woke up the person next to me and we got out together.&#x27; The article instead attributes to src-007 and src-008 the version &#x27;I lay down for about an hour and woke up by myself. I called the people next to me and got out of the mine together,&#x27; which is the France 24 / Guardian rendering. The first quote in the article matches src-004 correctly.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The second Wang Yong quote is correctly attributed to src-007 and src-008, which use that rendering. No correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">He described lying unconscious for roughly an hour before waking and escaping with another miner: &quot;I lay down for about an hour and woke up by myself. I called the people next to me and got out of the mine together&quot; [src-007][src-008]</blockquote><p class="qa-explanation">Source src-004 (BBC) gives the quote as &#x27;I lay there for about an hour or so before I came round on my own. I woke up the person next to me and we got out together.&#x27; The version quoted in the article (&#x27;I lay down for about an hour and woke up by myself. I called the people next to me and got out of the mine together&#x27;) matches src-007 (France 24) and src-008 (Guardian). The citations src-007 and src-008 are correct for this rendering; no factual error in the citation here.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The translation &#x27;Three-Year Fundamental Improvement Campaign&#x27; cannot be verified from the source summary, but it is an editorial rendering of the Chinese title and the surrounding factual claims about the campaign&#x27;s content are supported by src-018. This is a minor editorial interpretation, not a factual distortion. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">China&#x27;s mine safety regulator had already launched a three-year campaign in 2026 — the &quot;治本攻坚三年行动&quot; (Three-Year Fundamental Improvement Campaign) — that included &quot;八条硬措施&quot; (eight tough measures) aimed at cracking down on data fraud and hidden workfaces [src-018]</blockquote><p class="qa-explanation">Source src-018 describes the 2026 &#x27;治本攻坚三年行动&#x27; and &#x27;八条硬措施&#x27; campaigns, but the article&#x27;s English translation &#x27;Three-Year Fundamental Improvement Campaign&#x27; is an interpretive rendering not verified in the source summary. The source summary describes it as a campaign including crackdowns on data fraud and hidden workfaces, which the article reflects accurately otherwise. The translation itself is an editorial choice that cannot be verified against the source.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The article&#x27;s phrasing &#x27;roughly a quarter to a third&#x27; is a reasonable synthesis of the divergent figures in src-006 and src-013. No correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">missing_divergence</span><blockquote class="qa-excerpt">Shanxi, which produced more than 1.27 billion tonnes of coal in 2024 — roughly a quarter to a third of China&#x27;s total output [src-006][src-013]</blockquote><p class="qa-explanation">Source src-006 (El País) states Shanxi produced 27% of China&#x27;s coal (1.27 billion tonnes in 2024), while src-013 (Al Jazeera) states &#x27;almost a third&#x27; and &#x27;more than one billion tonnes.&#x27; These figures are not identical — 27% vs. &#x27;almost a third&#x27; and 1.27 billion vs. &#x27;more than one billion&#x27; — but the article&#x27;s phrasing &#x27;roughly a quarter to a third&#x27; attempts to bridge them. This is a reasonable resolution of the divergence and is not a distortion.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> The &#x27;at least nine languages&#x27; claim is an editorial inference from the dossier as a whole, not supported by the three cited sources. Change the sentence to remove the specific count or attribute it more accurately. Replace &#x27;reported across at least nine languages [src-019][src-027][src-028]&#x27; with &#x27;reported across multiple languages, including Turkish, Arabic, and Portuguese [src-019][src-027][src-028]&#x27;.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">reported across at least nine languages [src-019][src-027][src-028]</blockquote><p class="qa-explanation">The claim that the official response was reported across &#x27;at least nine languages&#x27; is an editorial count not directly supported by any single cited source. Sources src-019, src-027, and src-028 are individual articles in Turkish, Arabic, and Portuguese respectively and do not themselves make this claim. The count can be inferred from the dossier as a whole but is not supported by these three citations specifically.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> This duplicates the first finding. The correction has already been applied in qa_corrections[0]. No additional change needed.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">more than 120 hospitalized — many for toxic gas poisoning — and at least one in critical condition [src-004][src-011][src-028]</blockquote><p class="qa-explanation">As noted, src-004 reports 27 hospitalized, not 120+. The citation of src-004 alongside src-011 and src-028 for the 120+ figure is inaccurate. src-004 should be removed from this citation and replaced with src-023 and src-024, which confirm 100+ hospitalized, or the citation should be limited to src-028 and src-011 which support the higher figure.</p></div></details></li></ul></details></dd>
-<dt>Coverage Limits</dt><dd><details class="coverage-limits-wrapper"><summary>Coverage Limits &mdash; <strong>5 notes</strong></summary><ul class="coverage-limits"><li>No independent labor rights organizations, mining safety experts, or occupational health specialists are quoted in any article, despite the story&#x27;s core relevance to workplace safety regulation and enforcement.</li><li>No coverage from African, South Asian, or Latin American outlets is present in the corpus despite the assignment noting sources from these regions, leaving out perspectives from major coal-producing and coal-consuming developing nations such as India, South Africa, and Colombia.</li><li>No article addresses the financial or corporate dimensions of the Tongzhou Group beyond its name and the detention of a responsible person — ownership structure, financial condition, prior regulatory history beyond 2024, or connections to local government are absent.</li><li>No environmental impact analysis of the explosion — such as methane release, groundwater contamination, or local air quality effects — is covered in any article, despite the disaster involving a major gas explosion in a coal mine.</li><li>No Vietnamese-language substantive coverage was successfully extracted (article 11 contained only UI elements), leaving the Southeast Asian regional perspective entirely absent from the corpus despite Vietnam&#x27;s own significant coal mining sector.</li></ul></details></dd>
 <dt>Strict-drop Pruning</dt><dd><details class="dropped-details"><summary>2 sources dropped</summary><div class="dropped-detail"><p class="dropped-section-label">Sources</p><ul class="dropped-list"><li><span class="dropped-id">src-012</span> <span class="dropped-outlet">VnExpress</span> &mdash; VnExpress&#x27;s extracted text contains only user interface elem</li><li><span class="dropped-id">src-016</span> <span class="dropped-outlet">BBC News 中文</span> &mdash; Provides historical context on miner compensation in China, </li></ul></div></details></dd>
 <dt class="pipeline-run">Pipeline Run</dt><dd class="pipeline-run">run-2026-05-23-4e29191a &middot; 2026-05-23</dd>
 </dl>

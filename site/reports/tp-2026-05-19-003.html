@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -1311,8 +1307,6 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
 </script>
 </section>
 
-<h2>What's missing</h2>
-<ul class="missing-positions"><li><strong>industry</strong> — No pharmaceutical companies developing Bundibugyo-specific vaccines or treatments (e.g., Merck, Oxford Vaccine Group, Mapp Biopharmaceutical) are quoted on development timelines, regulatory pathways, or manufacturing capacity, despite vaccine availability being identified as the outbreak&#x27;s most critical gap.</li><li><strong>industry</strong> — No mining companies or extractive-sector actors operating in Ituri are quoted on how the outbreak affects operations, worker safety, or population mobility in gold-mining areas identified as transmission hotspots.</li><li><strong>affected_community</strong> — No displaced persons in Ituri&#x27;s camps or their representatives are quoted despite over 100,000 newly displaced people living in high-risk congregate settings where Ebola transmission is especially dangerous.</li><li><strong>government</strong> — No Rwandan government officials explain the rationale, expected duration, or humanitarian impact of Rwanda&#x27;s border closure with DRC, despite this being a major policy action affecting cross-border trade and movement.</li><li><strong>government</strong> — No Ugandan government health officials or media provide the domestic Ugandan perspective on containment strategy, community response, or health-system capacity in Kampala where confirmed cases have appeared.</li></ul>
 <h2>Divergences</h2>
 <div class="divergence">
   <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
@@ -1392,21 +1386,6 @@ Follow-up to: &ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public
 </div>
 </div>
 </details>
-
-<h2>Coverage Gaps</h2>
-<div class="coverage-gap">No Ugandan media outlets are included despite Uganda being the second affected country with confirmed cases in Kampala, leaving the Ugandan government&#x27;s domestic messaging and Ugandan community perspectives underrepresented.</div>
-<div class="coverage-gap">No Rwandan media or government voices are quoted despite Rwanda&#x27;s border closure being a significant policy action mentioned in multiple articles, so the rationale and domestic impact of that closure are unexplored.</div>
-<div class="coverage-gap">No pharmaceutical industry actors (e.g., Merck, Oxford vaccine researchers, or biotech firms working on Bundibugyo-specific candidates) are directly quoted anywhere in the corpus, despite vaccine development being a central theme.</div>
-<div class="coverage-gap">No perspectives from the mining sector or extractive industry companies operating in Ituri are included, despite multiple articles citing mining-related population mobility as a key driver of cross-border transmission risk.</div>
-<div class="coverage-gap">No voices from displaced populations or refugee camp administrators are quoted, even though over 100,000 people have been newly displaced in Ituri and displacement camps are high-risk settings for Ebola transmission.</div>
-<div class="coverage-gap">The M23/AFC rebel group&#x27;s spokesman is quoted once but no independent verification or humanitarian access perspective addresses whether armed groups are facilitating or obstructing the health response in territories they control.</div>
-<div class="coverage-gap">No article addresses the economic impact on DRC&#x27;s national economy, trade flows, or commodity markets (particularly gold and coltan from Ituri), despite the outbreak occurring in a major mining region.</div>
-<div class="coverage-gap">No WHO Emergency Committee members or independent public health ethics experts are quoted on the unprecedented decision to declare a PHEIC before convening the emergency committee, leaving the procedural and governance implications of this precedent unexamined.</div>
-<div class="coverage-gap">No sources from South Sudan, a neighboring country identified as high-risk for cross-border spread, despite the Africa CDC coordinating an emergency meeting with its Ministry of Health.</div>
-<div class="coverage-gap">No sources from the affected community or civil society organizations representing artisanal miners in Ituri, despite the outbreak being centered in gold mining areas with high population mobility.</div>
-<div class="coverage-gap">No sources from pharmaceutical companies (e.g., Merck, Mapp Biopharmaceutical) detailing their development timelines or emergency use authorization plans for Bundibugyo-specific vaccines or treatments.</div>
-<div class="coverage-gap">No sources from the African Union or regional economic communities (e.g., EAC, SADC) beyond the Africa CDC, despite the outbreak being characterized as a continental emergency.</div>
-<div class="coverage-gap">No sources from the World Bank or IMF on the potential macroeconomic impact of the outbreak on DRC&#x27;s mineral exports and fiscal stability.</div>
 
 <section id="sources-section" class="sources">
 <h2>Sources</h2>

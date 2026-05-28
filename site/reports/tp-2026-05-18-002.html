@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -1335,8 +1331,6 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
 </script>
 </section>
 
-<h2>What's missing</h2>
-<ul class="missing-positions"><li><strong>government</strong> — No Western government or NATO official reactions to the escalation are quoted, despite the significant policy implications for arms supply decisions and the fact that stray drones entered NATO member airspace.</li><li><strong>academia</strong> — No independent military-technology or arms-control researchers assess the evolving drone-versus-air-defense dynamic or the legality of targeting dual-use industrial sites, despite these being central contested claims.</li><li><strong>industry</strong> — No drone manufacturers, defense technology firms, or energy sector analysts provide perspectives on Ukraine&#x27;s expanding production capacity or the impact of strikes on Russian oil and semiconductor infrastructure.</li><li><strong>affected_community</strong> — Ordinary Ukrainian civilians living under the Russian retaliatory strikes that followed the Moscow attack are not directly quoted, despite extensive casualty reporting from Ukrainian regional officials speaking on their behalf.</li><li><strong>government</strong> — No Chinese government or official spokesperson reaction to the specific May 2026 escalation is included, despite Beijing&#x27;s role as a major diplomatic actor and its stated interest in promoting peace talks.</li></ul>
 <h2>Divergences</h2>
 <div class="divergence">
   <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
@@ -1407,12 +1401,6 @@ Follow-up to: &ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accus
 </div>
 </div>
 </details>
-
-<h2>Coverage Gaps</h2>
-<div class="coverage-gap">No humanitarian organization (Red Cross, UN OCHA, MSF) voices appear in the corpus despite civilian casualties on both sides and damage to schools, kindergartens, and residential buildings.</div>
-<div class="coverage-gap">No sources from Chinese state media (e.g., Xinhua, Global Times) providing Beijing&#x27;s official reaction to the specific May 2026 attack, despite queries targeting Chinese foreign ministry responses.</div>
-<div class="coverage-gap">No sources from Latin American countries or media analyzing the attack&#x27;s implications for their foreign policy or energy security.</div>
-<div class="coverage-gap">No direct statements from the International Committee of the Red Cross (ICRC) specifically addressing the Moscow drone attack and civilian casualties, despite queries targeting that organization.</div>
 
 <section id="sources-section" class="sources">
 <h2>Sources</h2>

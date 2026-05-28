@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -1238,8 +1234,6 @@ footer a { color: #000; text-decoration: underline; }
 </script>
 </section>
 
-<h2>What's missing</h2>
-<ul class="missing-positions"><li><strong>affected_community</strong> — No Palestinian civilians from Gaza are quoted on the humanitarian crisis or the flotilla&#x27;s significance, despite the entire mission being justified by their plight and the blockade&#x27;s impact on their daily lives.</li><li><strong>academia</strong> — No international law scholars or maritime law experts assess the legality of intercepting vessels in international waters, despite the central legal dispute over whether the interception constitutes piracy or a lawful enforcement of a naval blockade.</li><li><strong>affected_community</strong> — No Lebanese civilians from the towns subject to evacuation orders describe the impact of displacement on their lives, despite evacuation orders covering a dozen communities in southern Lebanon.</li><li><strong>judiciary</strong> — No judicial bodies such as the International Court of Justice or International Criminal Court are quoted on the legal implications of the blockade, the interception, or the settlement expansion, despite multiple actors invoking ICJ rulings.</li><li><strong>international_org</strong> — No UNIFIL, UNRWA, or OCHA officials are directly quoted on the operational impact of the flotilla interception on aid delivery to Gaza or on ceasefire monitoring in Lebanon, despite these agencies being central to both situations.</li></ul>
 <h2>Divergences</h2>
 <div class="divergence">
   <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
@@ -1318,20 +1312,6 @@ footer a { color: #000; text-decoration: underline; }
 </div>
 </div>
 </details>
-
-<h2>Coverage Gaps</h2>
-<div class="coverage-gap">No Palestinian voices from Gaza are quoted anywhere in the corpus despite the flotilla&#x27;s stated destination being Gaza and the humanitarian crisis there being the central justification for the mission; the absence of affected-community perspectives from Gaza itself is a critical gap.</div>
-<div class="coverage-gap">No coverage from Israeli domestic media outlets is included in the corpus, meaning the Israeli government&#x27;s security rationale, domestic public opinion, and legal justifications for the naval blockade are represented only through brief quotes relayed by non-Israeli outlets.</div>
-<div class="coverage-gap">No perspectives from the United Nations agencies operating in Gaza (UNRWA, OCHA) are directly quoted on the flotilla interception or its implications for aid delivery, despite UN data on aid restrictions being briefly referenced in one BBC article.</div>
-<div class="coverage-gap">No coverage from South or Southeast Asian outlets is included despite Pakistan, Bangladesh, and Indonesia being among the ten countries whose foreign ministers issued a joint condemnation, leaving a significant regional stakeholder cluster unrepresented.</div>
-<div class="coverage-gap">No legal expert or international law scholar is quoted anywhere in the corpus to assess the legality of intercepting vessels in international waters, despite multiple outlets framing the event as a violation of international law.</div>
-<div class="coverage-gap">The humanitarian dimension of what cargo the flotilla was actually carrying receives almost no detailed treatment; the Israeli claim that there was &#x27;no humanitarian aid&#x27; aboard is quoted but no outlet independently verifies or refutes the claim with manifest details or inspection evidence.</div>
-<div class="coverage-gap">No coverage addresses the Egyptian government&#x27;s role in the Gaza blockade or its reported political pressure on Libyan authorities to block the land convoy, despite El País&#x27;s mention of this dynamic — Egypt&#x27;s perspective as a key border-state actor is entirely absent.</div>
-<div class="coverage-gap">No sources from Israeli media outlets providing the Israeli government&#x27;s or military&#x27;s detailed operational justification for the interception and evacuation orders.</div>
-<div class="coverage-gap">No sources from Lebanese media outlets covering the impact of the evacuation orders on civilians in southern Lebanon.</div>
-<div class="coverage-gap">No sources from East Asian or Southeast Asian countries (beyond a brief mention of Korean activists) covering the flotilla interception or the Lebanon evacuation orders.</div>
-<div class="coverage-gap">No coverage of the specific humanitarian situation of displaced persons from southern Lebanon as a result of the evacuation orders.</div>
-<div class="coverage-gap">No sources from the United Nations Interim Force in Lebanon (UNIFIL) directly reporting on ceasefire violations or the evacuation orders.</div>
 
 <section id="sources-section" class="sources">
 <h2>Sources</h2>

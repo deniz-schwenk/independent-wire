@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -802,12 +798,18 @@ Follow-up to: &ldquo;Turkish Court Annuls Opposition CHP&#x27;s 2023 Congress, R
   <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">The political crisis is inflicting serious damage on Turkey&#x27;s economy and investor confidence</span></div>
   <div class="card-position">Deutsche Welle&#x27;s Turkish-language analysis reports that the lira hit record lows and the Istanbul stock exchange lost up to 15% of its value, with experts warning that the political instability will cause lasting harm to investor confidence in Turkey.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>Deutsche Welle Türkçe</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">0 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 <div class="card" id="pc-008">
   <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">The court ruling annulling the CHP congress lacks proper jurisdictional basis and should have been handled by election judiciary</span></div>
   <div class="card-position">A Turkish legal analysis argues that disputes over party congress elections fall under the jurisdiction of the Supreme Election Council (YSK) rather than civil courts, questioning the legal foundation of the ruling that annulled the 2023 CHP leadership vote and suggesting the case was improperly adjudicated.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>Kanuniesasi.com</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">0 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 </div>
@@ -991,9 +993,6 @@ Follow-up to: &ldquo;Turkish Court Annuls Opposition CHP&#x27;s 2023 Congress, R
 })();
 </script>
 </section>
-
-<h2>Missing stakeholder voices</h2>
-<ul class="missing-positions"><li><strong>judiciary</strong> — No Turkish judges, constitutional court members, or legal scholars are directly quoted assessing the legitimacy, jurisdictional basis, or precedent of the court ruling that annulled the CHP congress, despite the legal dimension being central to the entire crisis.</li><li><strong>academia</strong> — No political scientists or Turkey specialists provide independent analytical assessment of whether the events constitute democratic backsliding or fit historical patterns of judicial intervention in party politics.</li><li><strong>military</strong> — No perspectives from Turkey&#x27;s military establishment or NATO officials address the security implications of the political crisis for a key alliance member, despite Turkey&#x27;s strategic military importance.</li><li><strong>government</strong> — No direct quotes from AKP ruling party officials, parliamentary spokespersons, or Erdoğan&#x27;s inner circle articulate the governing party&#x27;s detailed rationale beyond generic insistence on judicial independence.</li><li><strong>industry</strong> — No Turkish business leaders, financial analysts, or international investors are quoted on the economic fallout despite reports of a 15% stock market drop and record lira lows, leaving the economic dimension without expert voices.</li></ul>
 
 <h2>Divergences</h2>
 <div class="divergence">
@@ -1350,7 +1349,6 @@ Follow-up to: &ldquo;Turkish Court Annuls Opposition CHP&#x27;s 2023 Congress, R
 <dl>
 <dt>Selection Reason</dt><dd>The physical storming of the main opposition party&#x27;s headquarters by riot police — using tear gas and rubber bullets — is a dramatic escalation from the judicial annulment of CHP&#x27;s congress covered on May 22. This moves from courtroom maneuvering to street-level political violence, with thousands protesting outside parliament. Coverage from European publicly funded outlets, East Asian media, and Latin American sources provides competing framings on democratic backsliding versus rule-of-law enforcement. The absence of Turkish-language sources in the current set is notable and worth flagging in the dossier.</dd>
 <dt>QA Corrections</dt><dd><details class="qa-corrections-wrapper"><summary>QA Corrections &mdash; <strong>1 applied &middot; 3 retracted</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-applied">applied</span> Remove the entire garbled editorial intrusion beginning with &#x27;&quot;Nous refusons que les étudiants soient interdits d&#x27;entrer sur le campus&quot; was not his phrase —&#x27; and ending with &#x27;[src-005].&#x27; in the third paragraph. Replace it with a clean rendering of Özel&#x27;s actual statement as reported in src-005: After leaving the building, he tore up the court order on camera and led an 8-kilometer march through heavy rain and hail to the gates of Parliament, where thousands of supporters had gathered [src-004][src-007]. He declared: &quot;Je me révolte contre l&#x27;alliance de ceux qui veulent s&#x27;emparer du parti d&#x27;Atatürk et de ceux qui veulent livrer au pouvoir le parti d&#x27;Atatürk !&quot; (I revolt against the alliance of those who want to seize Atatürk&#x27;s party and those who want to deliver Atatürk&#x27;s party to the government!) [src-005]. At Parliament he asked the crowd whether they were willing to rebuild the party for a third time [src-004].</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">&quot;Nous refusons que les étudiants soient interdits d&#x27;entrer sur le campus&quot; was not his phrase — his own words in French-language reporting were: &quot;Je me révolte contre l&#x27;alliance de ceux qui veulent s&#x27;emparer du parti d&#x27;Atatürk et de ceux qui veulent livrer au pouvoir le parti d&#x27;Atatürk !&quot;</blockquote><p class="qa-explanation">The article contains a garbled editorial intrusion. The phrase &#x27;Nous refusons que les étudiants soient interdits d&#x27;entrer sur le campus&#x27; is actually a quote from student unionist Emir Aydogan (src-005), not a misattributed Özel quote. The French quote attributed to Özel (&#x27;Je me révolte...&#x27;) is correct per src-005, but the surrounding editorial commentary is confused and inaccurate — it implies the first phrase was wrongly attributed to Özel when it was never attributed to him in the article at all. This entire parenthetical construction is editorially incoherent and unsupported by the sources.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The HRW framing issue is minor — both quotes are correctly attributed to the correct sources and no material distortion is present. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Human Rights Watch called the court order &quot;the latest deeply damaging blow to the rule of law, democracy and human rights&quot; in Turkey and warned of &quot;abusive tactics&quot; by the Erdoğan government to neutralize the CHP [src-003][src-005].</blockquote><p class="qa-explanation">Src-005 attributes the HRW quote about &#x27;abusive maneuvers&#x27; to neutralizing the CHP, and src-003 carries the &#x27;latest deeply damaging blow&#x27; quote. The article combines both quotes and attributes both to src-003 and src-005, which is broadly accurate, but the framing slightly conflates two separate HRW statements. This is a minor issue and the citations are correct; no material distortion is present.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The &#x27;Saturday&#x27; timing ambiguity is a minor contextual issue. Src-005 presents the parliamentary group designation as context without specifying its date relative to the raid, and the article&#x27;s placement does not explicitly claim it happened after the raid. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Özel was designated head of the CHP parliamentary group on Saturday, creating what RFI described as a party &quot;with two heads&quot; [src-005].</blockquote><p class="qa-explanation">Src-005 states Özel was designated head of the CHP parliamentary group on Saturday and describes the party as having &#x27;two heads,&#x27; which matches the article. However, the article does not specify which Saturday — the source context implies it was the Saturday before the May 24 raid, not after. The article&#x27;s placement after the raid events could mislead readers into thinking this happened after the raid, when src-005 presents it as prior context. This is a minor framing issue but not a material factual error given the source does not specify the exact date relative to the raid.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The Aydogan quote issue in the student section is already resolved by the correction to problem 1, which removes the misplaced first sentence of Aydogan&#x27;s quote from the Özel paragraph. The student section&#x27;s rendering of Aydogan&#x27;s quote as only the second sentence is a minor omission but not a distortion. No additional body change is warranted beyond the fix already applied in correction 1.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">student unionist Emir Aydogan declared: &quot;Nous resterons ici jusqu&#x27;à ce que l&#x27;université rouvre ses portes&quot; (We will stay here until the university reopens) [src-005].</blockquote><p class="qa-explanation">Src-005 gives Emir Aydogan&#x27;s full quote as &#x27;Nous refusons que les étudiants soient interdits d&#x27;entrer sur le campus. Nous resterons ici jusqu&#x27;à ce que l&#x27;université rouvre ses portes.&#x27; The article quotes only the second sentence, omitting the first. More critically, the article&#x27;s third paragraph incorrectly uses the first sentence of Aydogan&#x27;s quote (&#x27;Nous refusons que les étudiants soient interdits d&#x27;entrer sur le campus&#x27;) as if it were a misattributed Özel phrase, when it is actually the first part of Aydogan&#x27;s own quote that appears later in the article.</p></div></details></li></ul></details></dd>
-<dt>Coverage Limits</dt><dd><details class="coverage-limits-wrapper"><summary>Coverage Limits &mdash; <strong>3 notes</strong></summary><ul class="coverage-limits"><li>No perspectives from the AKP ruling party or President Erdoğan&#x27;s office are directly quoted anywhere in the corpus; the government position is only paraphrased generically as insisting courts are impartial.</li><li>No voices from Kemal Kilicdaroglu himself appear in any article — his position is only reported indirectly — despite being the court-reinstated CHP leader at the center of the dispute.</li><li>No legal experts or constitutional scholars are directly quoted to assess the legitimacy or precedent of the court ruling, even though the legal dimension is central to the story.</li></ul></details></dd>
 <dt>Strict-drop Pruning</dt><dd><details class="dropped-details"><summary>2 sources dropped</summary><div class="dropped-detail"><p class="dropped-section-label">Sources</p><ul class="dropped-list"><li><span class="dropped-id">src-014</span> <span class="dropped-outlet">The Insider</span> &mdash; Describes the police storming of CHP headquarters with tear </li><li><span class="dropped-id">src-021</span> <span class="dropped-outlet">European Pravda</span> &mdash; Describes clashes between supporters of Kılıçdaroğlu and Öze</li></ul></div></details></dd>
 <dt class="pipeline-run">Pipeline Run</dt><dd class="pipeline-run">run-2026-05-25-a436cfc8 &middot; 2026-05-25</dd>
 </dl>

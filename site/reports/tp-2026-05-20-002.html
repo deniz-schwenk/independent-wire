@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -1448,9 +1444,6 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
 </script>
 </section>
 
-<h2>Missing stakeholder voices</h2>
-<ul class="missing-positions"><li><strong>international_org</strong> — No IAEA, ICRC, MSF, WHO, or UN agency officials are quoted despite the nuclear verification gap, 3,636 reported war fatalities, destruction of 31 health facilities, and a school strike killing 155 people—leaving humanitarian and nonproliferation assessments ungrounded.</li><li><strong>affected_community</strong> — No voices from Gulf-state populations, Filipino workers affected by soaring oil prices, or food-importing developing-country communities are included despite the global economic spillover being a central dimension of the crisis.</li><li><strong>industry</strong> — No shipping companies, maritime insurers, or port operators are quoted despite the Strait of Hormuz blockade and mine threat being the story&#x27;s commercial core, with all shipping information filtered through government and securities analysts.</li><li><strong>government</strong> — No Iraqi government voice is present despite Iraq being identified as the origin of drone attacks on UAE critical infrastructure including the Barakah nuclear plant, leaving a key regional actor&#x27;s perspective entirely absent.</li><li><strong>civil_society</strong> — No Iranian domestic civil society organizations, independent journalists, or human rights groups inside Iran are represented, meaning the internal dissent, repression, and grassroots humanitarian situation are documented only through external monitoring agencies.</li></ul>
-
 <h2>Divergences</h2>
 <div class="divergence">
   <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
@@ -1892,7 +1885,6 @@ Follow-up to: &ldquo;Trump Suspends Planned Strike on Iran After Gulf States Req
 <dl>
 <dt>Selection Reason</dt><dd>Material escalation since previous coverage: IRGC warnings of war &#x27;beyond the region,&#x27; Trump&#x27;s new threat of &#x27;a big hit,&#x27; the first commercial vessel transit of the Strait since hostilities, and a UN warning of a global food crisis all represent substantive new developments. Sharply divergent framings between Western, Middle Eastern, and Southeast Asian outlets on responsibility and escalation risk provide strong multi-perspective treatment potential.</dd>
 <dt>QA Corrections</dt><dd><details class="qa-corrections-wrapper"><summary>QA Corrections &mdash; <strong>2 applied &middot; 3 retracted</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-applied">applied</span> Change &#x27;confirmed that Iranian forces had downed an American F-35 fighter jet&#x27; to &#x27;claimed that Iranian forces were the first to down an American F-35 fighter jet&#x27; to accurately reflect both the &#x27;first&#x27; qualifier and the unverified nature of the assertion as reported in src-007.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Iranian Foreign Minister Abbas Arakçi said a return to war would bring &quot;many more surprises,&quot; and confirmed that Iranian forces had downed an American F-35 fighter jet [src-007].</blockquote><p class="qa-explanation">Source src-007 reports Arakçi as saying Iranian forces were &#x27;the first&#x27; to down an F-35, not simply that they downed one. The article&#x27;s phrasing &#x27;confirmed that Iranian forces had downed an American F-35 fighter jet&#x27; omits the &#x27;first&#x27; qualifier that is central to the claim as stated in the source, and also presents an Iranian government claim as a confirmed fact rather than an assertion.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> Upon review, the article correctly attributes the Xi-Putin ceasefire call to a meeting in Beijing, which is supported by src-003 and src-011. The French quotation is an inline translation of Xi&#x27;s statement from src-011. No error exists in the article on this point.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">China&#x27;s Xi Jinping, meeting Vladimir Putin in Beijing, called for a &quot;comprehensive ceasefire,&quot; saying the Gulf situation was &quot;at a pivotal juncture between war and peace&quot; and that resuming hostilities would be &quot;inadvisable&quot; — &quot;une reprise des hostilités serait inopportune&quot; [src-003][src-011].</blockquote><p class="qa-explanation">Source src-003 attributes the &#x27;comprehensive ceasefire&#x27; call and the &#x27;inadvisable&#x27; language to Xi Jinping speaking to Putin, but the article&#x27;s inline French quotation &#x27;une reprise des hostilités serait inopportune&#x27; is drawn from src-011 (RFI), which attributes it to Xi speaking to Putin. The article attributes the Xi-Putin meeting to Beijing, which is supported. However, the Kommersant source (src-029) reports Xi and Trump discussed the strait, not Xi and Putin — the article conflates two separate diplomatic interactions by attributing the ceasefire call solely to the Xi-Putin meeting context, which is supported by src-003 and src-011, so this is not an error. Retracting this finding upon review.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> Upon review, the article&#x27;s phrasing &#x27;four Republican senators — including Bill Cassidy of Louisiana&#x27; correctly reflects src-004&#x27;s description of Cassidy joining three other Republicans (totaling four). No correction is needed.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">four Republican senators — including Bill Cassidy of Louisiana — advanced a War Powers Resolution to limit the president&#x27;s authority to continue hostilities [src-004][src-021]</blockquote><p class="qa-explanation">Source src-004 states that Bill Cassidy joined &#x27;three other Republicans&#x27; in the procedural vote, meaning Cassidy was one of four total Republican senators, not that there were four senators in addition to Cassidy. The article&#x27;s phrasing &#x27;four Republican senators — including Bill Cassidy&#x27; correctly reflects this reading, so no error exists. Retracting upon review.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Change the citation on the ceasefire consolidation claim from [src-001][src-003] to [src-001][src-003][src-014], since src-014 (VnExpress) is the source that attributes the ceasefire consolidation claim to Akraminia, while src-001 and src-003 support only the &#x27;open new fronts&#x27; and &#x27;new equipment and new methods&#x27; portions.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Iranian army spokesman Mohammad Akraminia said Tehran would &quot;open new fronts&quot; using &quot;new equipment and new methods&quot; if attacked again, adding that the ceasefire period had been used to consolidate combat capabilities [src-001][src-003].</blockquote><p class="qa-explanation">The claim that Akraminia said &#x27;the ceasefire period had been used to consolidate combat capabilities&#x27; is not supported by src-001 or src-003. Source src-014 (VnExpress) attributes this claim to Akraminia, but the cited sources src-001 and src-003 do not include this specific statement.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> This finding duplicates the first finding and the correction has already been applied there (changing &#x27;confirmed&#x27; to &#x27;claimed&#x27; and adding &#x27;first&#x27;). No additional change is needed.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Iranian Foreign Minister Abbas Arakçi said a return to war would bring &quot;many more surprises,&quot; and confirmed that Iranian forces had downed an American F-35 fighter jet [src-007].</blockquote><p class="qa-explanation">The article presents Arakçi&#x27;s claim that Iranian forces downed an F-35 as a confirmed fact (&#x27;confirmed that Iranian forces had downed&#x27;), whereas src-007 presents this as Arakçi&#x27;s own assertion (&#x27;confirms Iranian forces were the first to down an F-35&#x27;). This is an unverified Iranian government claim, not an independently confirmed fact, and should be attributed as such.</p></div></details></li></ul></details></dd>
-<dt>Coverage Limits</dt><dd><details class="coverage-limits-wrapper"><summary>Coverage Limits &mdash; <strong>4 notes</strong></summary><ul class="coverage-limits"><li>No Pakistani media perspective is present despite Pakistan&#x27;s interior minister making two trips to Tehran in under a week for mediation, representing a significant regional diplomatic track.</li><li>No international humanitarian organization (ICRC, MSF, UNHCR, WHO) is quoted anywhere in the corpus despite reports of 3,636 war fatalities including 1,701 civilians, destruction of 31 health facilities in Lebanon, and a school strike killing 155 people.</li><li>No shipping industry or maritime insurance voices are quoted despite the Strait of Hormuz blockade and mine threat being central to the story, with coverage relying on government and securities analysts rather than the commercial actors directly affected.</li><li>No Chinese-language media source is included despite China being a major diplomatic actor (Xi&#x27;s ceasefire call, Xi-Putin summit) and Chinese supertankers being the first commercial vessels to transit the Strait.</li></ul></details></dd>
 <dt>Strict-drop Pruning</dt><dd><details class="dropped-details"><summary>5 sources dropped</summary><div class="dropped-detail"><p class="dropped-section-label">Sources</p><ul class="dropped-list"><li><span class="dropped-id">src-005</span> <span class="dropped-outlet">France 24</span> &mdash; France 24&#x27;s article text is limited to a browser-extension n</li><li><span class="dropped-id">src-008</span> <span class="dropped-outlet">Infobae</span> &mdash; Analyzes the Trump-Xi meeting through the lens of the &#x27;Thucy</li><li><span class="dropped-id">src-016</span> <span class="dropped-outlet">France 24</span> &mdash; The extracted text is a browser-extension error message and </li><li><span class="dropped-id">src-020</span> <span class="dropped-outlet">RFI</span> &mdash; Explains Iran&#x27;s nuclear program from uranium enrichment to w</li><li><span class="dropped-id">src-028</span> <span class="dropped-outlet">Shorouk News</span> &mdash; Reports that the UAE stated six drones were launched from Ir</li></ul></div></details></dd>
 <dt class="pipeline-run">Pipeline Run</dt><dd class="pipeline-run">run-2026-05-20-7d509f17 &middot; 2026-05-20</dd>
 </dl>

@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -1292,9 +1288,6 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 })();
 </script>
 </section>
-
-<h2>Missing stakeholder voices</h2>
-<ul class="missing-positions"><li><strong>affected_community</strong> — No voices from Russian civilians affected by Ukrainian strikes on energy infrastructure and military sites in regions like Tuapse, Voronezh, and Taganrog, despite reported casualties and environmental damage, leaving the human cost on the Russian side unrepresented beyond official tallies.</li><li><strong>civil_society</strong> — No humanitarian organizations operating on the ground in Ukraine (Red Cross, MSF, UNHCR field staff) are quoted despite the WFP warehouse strike and widespread civilian casualties, meaning the independent humanitarian assessment of the escalation&#x27;s toll is absent.</li><li><strong>industry</strong> — No energy industry analysts or traders assess the global market impact of Ukrainian strikes on Russian refineries and ports, despite the strategic significance of these operations for oil prices and Russian war financing.</li><li><strong>military</strong> — No independent arms control or nuclear security experts evaluate the implications of Russia&#x27;s Oreshnik hypersonic missile use and reported malfunctions, despite the weapon&#x27;s significance as a potential strategic escalation tool.</li><li><strong>affected_community</strong> — No Russian soldiers, conscripts, or their families provide perspectives on the war&#x27;s toll inside Russia, despite reporting that nearly 1,000 Russian casualties occurred in a single 24-hour period and growing domestic anxiety about the conflict.</li></ul>
 
 <h2>Bias Analysis</h2>
 <p class="bias-stats"><span><strong>12</strong> position clusters</span><span class="sep">&middot;</span><span><strong>41</strong> distinct actors</span><span class="sep">&middot;</span><span><strong>28</strong> sources</span><span class="sep">&middot;</span><span><strong>8</strong> languages</span></p>

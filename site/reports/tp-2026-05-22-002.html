@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -797,6 +793,9 @@ footer a { color: #000; text-decoration: underline; }
   <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">The ruling triggered severe financial market instability requiring emergency central bank intervention</span></div>
   <div class="card-position">Multiple outlets report that the Borsa Istanbul index fell more than 6%, triggering circuit breakers, and that the central bank sold billions in foreign exchange reserves to stabilize the lira, signaling that the political crisis carried immediate and significant economic costs.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>Al Jazeera</strong>, <strong>DW News</strong>, <strong>Japan Today</strong>, <strong>InfoMoney</strong>, <strong>Al-Araby Al-Jadeed</strong>, <strong>Reuters</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">0 actors</a></span> &middot; <span>6 sources</span> &middot; <span>5 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-008">
@@ -972,9 +971,6 @@ footer a { color: #000; text-decoration: underline; }
 })();
 </script>
 </section>
-
-<h2>Missing stakeholder voices</h2>
-<ul class="missing-positions"><li><strong>judiciary</strong> — No Turkish judges, prosecutors, or judicial council members explain the legal reasoning behind the ruling or defend the court&#x27;s independence, leaving the judicial rationale presented only through external legal commentary.</li><li><strong>government</strong> — No direct statements from President Erdogan or senior AKP officials articulate the governing party&#x27;s detailed position on the ruling, despite the decision being widely attributed to political motivation from the ruling party.</li><li><strong>civil_society</strong> — No Turkish bar associations, human rights organizations, or domestic civil liberties groups assess the ruling&#x27;s implications for rule of law and democratic norms from within Turkey.</li><li><strong>affected_community</strong> — No ordinary CHP members, party delegates, or Turkish citizens affected by the leadership change describe how the ruling impacts their political participation or trust in democratic institutions.</li><li><strong>international_org</strong> — No statements from the EU institutions, the Council of Europe&#x27;s Venice Commission, or NATO officials assess the ruling&#x27;s compatibility with international democratic standards, despite the ruling&#x27;s direct relevance to Turkey&#x27;s EU accession process.</li></ul>
 
 <h2>Divergences</h2>
 <div class="divergence">
@@ -1336,7 +1332,6 @@ footer a { color: #000; text-decoration: underline; }
 <dl>
 <dt>Selection Reason</dt><dd>A significant democratic development with no prior coverage in the archive. A court-ordered removal of the main opposition party&#x27;s leadership is a rare and consequential event for Turkish politics and EU-Turkey relations. Coverage includes Turkish state-influenced media, German public broadcasters, and South Asian outlets, offering competing framings between those who see judicial independence and those who see authoritarian consolidation. The heavy reliance on Hurriyet (state-influenced) itself becomes an analytically useful signal about information control.</dd>
 <dt>QA Corrections</dt><dd><details class="qa-corrections-wrapper"><summary>QA Corrections &mdash; <strong>1 applied &middot; 6 retracted</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-applied">applied</span> Add a brief parenthetical clarification that the German-language quote is a translation of Özel&#x27;s Turkish remarks as reported by Der Spiegel. Change &#x27;declaring: &quot;Dieser Krieg...&#x27; to &#x27;declaring (in a statement reported in German translation by Der Spiegel): &quot;Dieser Krieg...&#x27; to make clear this is a translated rendering, not a statement made in German.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Özel himself announced the party had appealed to the Supreme Court of Appeals and would approach the Supreme Election Board, declaring: &quot;Dieser Krieg wurde nicht gegen uns, sondern gegen das Volk begonnen, dieser Putsch wurde nicht gegen uns, sondern gegen das Volk gemacht&quot;</blockquote><p class="qa-explanation">The article presents the German-language quote as Özel&#x27;s direct declaration in that language, but src-003 (Der Spiegel, a German outlet) is reporting Özel&#x27;s Turkish statement in German translation. The quote is a German rendering of what Özel said, not a statement Özel made in German. The article should clarify this is a translated rendering.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> Upon closer review, the article correctly attributes &#x27;Das ist keine unabhängige Justiz, das ist Machtpolitik&#x27; to Derya Türk-Nachbaur per src-006, which is the source cited. The divergence between src-003 (which quotes Serdar Yüksel) and src-006 (which quotes Türk-Nachbaur) is a source disagreement, not an article error. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">SPD foreign policy spokesperson Derya Türk-Nachbaur went further: &quot;Das ist keine unabhängige Justiz, das ist Machtpolitik&quot;</blockquote><p class="qa-explanation">Source src-006 (Tagesschau) identifies Derya Türk-Nachbaur as the SPD foreign policy spokesperson, which the article correctly states. However, src-003 (Der Spiegel) attributes the SPD quote to Serdar Yüksel, described as SPD chair of the German-Turkish Parliamentary Group, not to Türk-Nachbaur. The article correctly attributes the specific quote &quot;Das ist keine unabhängige Justiz, das ist Machtpolitik&quot; to Türk-Nachbaur per src-006, so this is consistent with that source. No correction needed upon closer review — this is a divergence between sources, not an article error.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The &#x27;promises of jobs to delegates&#x27; characterization is directly supported by src-002. Src-021 is cited alongside it but its summary uses &#x27;bribery and irregularities&#x27; language. The citation of src-021 alongside src-002 for this specific claim is a minor over-attribution but does not introduce a false fact. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">The ruling, issued on May 21, voided all decisions taken at and after the 38th Ordinary Congress, citing allegations of irregularities including promises of jobs to delegates [src-002][src-021]</blockquote><p class="qa-explanation">Src-021 (Al-Araby Al-Jadeed) is cited here but its summary describes the basis as &#x27;allegations of bribery and irregularities,&#x27; not specifically &#x27;promises of jobs to delegates.&#x27; The specific &#x27;promises of jobs&#x27; characterization is supported by src-002 but not clearly by src-021, making the dual citation partially misleading. This is a minor citation over-attribution rather than a factual error in the claim itself.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The article already attributes the information to Hürriyet&#x27;s Hande Fırat as a report, which correctly signals it is reported speech. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Hürriyet&#x27;s Ankara representative Hande Fırat reported that Kılıçdaroğlu told his inner circle he had no personal expectations but needed to return through &quot;political nullity&quot; to cleanse the party of a &quot;theft stigma.&quot;</blockquote><p class="qa-explanation">Src-010 attributes this to Kılıçdaroğlu&#x27;s reported statements to his inner circle, with the Turkish verbatim quote provided. The article renders &#x27;siyasi butlanla gelmek zorundayız&#x27; as &#x27;return through political nullity,&#x27; which is a reasonable translation. However, the article does not note that this is reported speech (Hürriyet&#x27;s account of what Kılıçdaroğlu told his inner circle), not a public statement — src-010 marks the evidence_type as &#x27;reported,&#x27; not &#x27;stated.&#x27; The article does attribute it to Fırat&#x27;s report, so this is adequately framed.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The &#x27;Kremlin levels&#x27; characterization is presented as a reported paraphrase from src-020, which is consistent with that source&#x27;s summary language. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Deutsche Welle&#x27;s Turkish-language service reported that some German politicians compared the judicial intervention to &quot;Kremlin levels&quot; of authoritarian practice [src-020]</blockquote><p class="qa-explanation">Src-020&#x27;s summary states &#x27;Some German politicians describe the judicial intervention as an authoritarian step comparable to Kremlin levels,&#x27; which supports the claim. However, no verbatim quote or named actor is provided in src-020, making the specific phrasing &#x27;Kremlin levels&#x27; an unverified paraphrase. The article presents it as a reported characterization, which is acceptable given the source summary language.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The six percent figure and circuit breakers are supported by src-001 and src-002. Src-023 is cited alongside them but its summary does not specify these details. This is a minor citation over-attribution that does not introduce a false fact. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">The Borsa Istanbul 100 index fell more than six percent, triggering circuit breakers, and Turkey&#x27;s central bank sold billions of dollars in foreign exchange reserves to stabilize the lira [src-001][src-005][src-023]</blockquote><p class="qa-explanation">Src-023 (Reuters) is cited here, but its summary only mentions &#x27;sharp market reactions (Borsa Istanbul drop, bond sell-off)&#x27; without specifying the six percent figure or circuit breakers. The six percent figure and circuit breakers are supported by src-001 and src-002, not src-023. The citation of src-023 for this specific claim is partially over-attributed, though the general market reaction claim is supported.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> This is the same issue as problem 1 (the German-language quote presented without translation attribution). The fix applied for problem 1 addresses this. No additional change needed.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Özel himself announced the party had appealed to the Supreme Court of Appeals and would approach the Supreme Election Board, declaring: &quot;Dieser Krieg wurde nicht gegen uns, sondern gegen das Volk begonnen, dieser Putsch wurde nicht gegen uns, sondern gegen das Volk gemacht&quot; (This war was not started against us but against the people; this coup was not carried out against us but against the people) [src-003]</blockquote><p class="qa-explanation">The article presents this German-language quote inline as if Özel spoke in German, without indicating it is a German translation of his Turkish remarks as reported by Der Spiegel. A brief clarification that this is a translated rendering would prevent the misleading impression that Özel addressed the public in German.</p></div></details></li></ul></details></dd>
-<dt>Coverage Limits</dt><dd><details class="coverage-limits-wrapper"><summary>Coverage Limits &mdash; <strong>1 note</strong></summary><ul class="coverage-limits"><li>The corpus does not address the street protest dimension in any detail—despite multiple articles mentioning planned protests, no article covers the scale, nature, or police response to demonstrations, which is a critical indicator of civic space.</li></ul></details></dd>
 <dt>Strict-drop Pruning</dt><dd><details class="dropped-details"><summary>2 sources dropped</summary><div class="dropped-detail"><p class="dropped-section-label">Sources</p><ul class="dropped-list"><li><span class="dropped-id">src-013</span> <span class="dropped-outlet">Deutsche Welle</span> &mdash; Reports the annulment of the CHP congress and reinstatement </li><li><span class="dropped-id">src-019</span> <span class="dropped-outlet">BBC Türkçe</span> &mdash; BBC Turkish coverage summarizing the court decision annullin</li></ul></div></details></dd>
 <dt class="pipeline-run">Pipeline Run</dt><dd class="pipeline-run">run-2026-05-22-5d9a1bb7 &middot; 2026-05-22</dd>
 </dl>

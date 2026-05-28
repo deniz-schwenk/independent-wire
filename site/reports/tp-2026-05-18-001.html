@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -1218,8 +1214,6 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
 </script>
 </section>
 
-<h2>What's missing</h2>
-<ul class="missing-positions"><li><strong>affected_community</strong> — No Iranian civilians, Gulf residents near the Barakah plant, or shipping workers affected by the Hormuz blockade are quoted, leaving the humanitarian toll and lived experience of the conflict entirely absent from the dossier.</li><li><strong>industry</strong> — No energy industry executives, shipping companies, or oil market analysts provide assessments of the economic consequences of the Strait of Hormuz blockade and surging freight costs, despite these being central to the crisis.</li><li><strong>academia</strong> — No independent nuclear nonproliferation experts or arms control scholars assess the feasibility and implications of US demands that Iran transfer enriched uranium and reduce to one nuclear site, or evaluate Iran&#x27;s breakout capacity.</li><li><strong>judiciary</strong> — No international court officials or legal adjudicators weigh in on the legality of the destruction threats, the naval blockade, or the Barakah plant strike under international humanitarian law, despite multiple actors invoking legal frameworks.</li><li><strong>government</strong> — No Israeli government or military officials are directly quoted despite Israel being a co-belligerent in the conflict, and no Indian or South Korean officials speak to the severe energy security implications for their import-dependent economies.</li></ul>
 <h2>Divergences</h2>
 <div class="divergence">
   <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
@@ -1304,15 +1298,6 @@ Follow-up to: &ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally U
 </div>
 </div>
 </details>
-
-<h2>Coverage Gaps</h2>
-<div class="coverage-gap">No Russian-language or Chinese-language sources are present despite Russia and China being significant diplomatic actors — Putin is mentioned discussing the conflict with the UAE president and Xi Jinping is reported assuring Trump about military aid — leaving their strategic framings and interests unrepresented.</div>
-<div class="coverage-gap">No voices from affected civilian populations — Iranian citizens enduring the war and blockade, Gulf residents near the Barakah plant strike, or shipping industry workers affected by Strait of Hormuz disruptions — appear anywhere in the corpus, leaving the humanitarian dimension entirely unaddressed.</div>
-<div class="coverage-gap">No international law experts, arms control specialists, or nuclear nonproliferation analysts are quoted anywhere in the corpus to assess the legality of Trump&#x27;s destruction threat, the Barakah plant strike, or the naval blockade under international humanitarian law.</div>
-<div class="coverage-gap">The economic and energy market consequences of the conflict — oil price impacts, shipping insurance costs, global supply chain disruptions — receive no substantive treatment in any article despite the Strait of Hormuz blockade being a central element of the crisis.</div>
-<div class="coverage-gap">No sources from Russia covering the current May 2026 developments, despite Russia being a key actor in UN Security Council nuclear deal negotiations.</div>
-<div class="coverage-gap">No sources from India, despite India being one of the most affected countries by the Strait of Hormuz blockade due to its high dependence on Middle Eastern oil.</div>
-<div class="coverage-gap">No sources from China providing an official government or state media position on the Strait of Hormuz blockade or the nuclear deal negotiations.</div>
 
 <section id="sources-section" class="sources">
 <h2>Sources</h2>

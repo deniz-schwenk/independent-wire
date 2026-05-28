@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -754,6 +750,9 @@ footer a { color: #000; text-decoration: underline; }
   <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">The Serbian government deliberately obstructed protest attendance by cancelling railway services</span></div>
   <div class="card-position">Multiple sources report that Serbian state railways cancelled all train services on the day of the Belgrade rally, citing a suspicious bomb alert that organizers and journalists characterize as a deliberate tactic to prevent citizens from travelling to the capital for the demonstration.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>Al Jazeera</strong>, <strong>RFI</strong>, <strong>Tagesschau</strong>, <strong>DW News</strong>, <strong>Reuters</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">0 actors</a></span> &middot; <span>5 sources</span> &middot; <span>4 regions</span> &middot; <span>3 languages</span></p>
 </div>
 <div class="card" id="pc-005">
@@ -1098,9 +1097,6 @@ footer a { color: #000; text-decoration: underline; }
 })();
 </script>
 </section>
-
-<h2>Missing stakeholder voices</h2>
-<ul class="missing-positions"><li><strong>judiciary</strong> — No Spanish judges or prosecutors involved in the corruption investigations against Sánchez&#x27;s circle are quoted, leaving the legal basis and evidentiary strength of the cases entirely unexamined from a judicial perspective.</li><li><strong>civil_society</strong> — No independent Serbian civil-society organizations or human-rights NGOs operating domestically are quoted on the protest movement&#x27;s goals, police conduct, or democratic backsliding, despite the movement&#x27;s civil-society character.</li><li><strong>government</strong> — No voices from Sánchez&#x27;s governing coalition partners (Sumar, Catalan or Basque parties) are included, meaning the coalition&#x27;s substantive defense and the perspective of parties whose support keeps the government in power are absent.</li><li><strong>media</strong> — No Serbian domestic journalists or press-freedom organizations are quoted on the reported attacks against media workers and the government&#x27;s control of public broadcasters, despite multiple sources citing these concerns.</li><li><strong>international_org</strong> — No EU institutional actors — European Commission, European Parliament, or EU foreign-affairs representatives — are quoted on democratic governance concerns in either Serbia (an EU candidate) or Spain (an EU member), despite the direct relevance of EU standards to both situations.</li></ul>
 
 <h2>Divergences</h2>
 <div class="divergence">
@@ -1490,7 +1486,6 @@ footer a { color: #000; text-decoration: underline; }
 <dl>
 <dt>Selection Reason</dt><dd>Parallel anti-government mass protests in two European countries offer a compelling comparative framing about democratic discontent, with police clashes in Serbia and right-wing mobilization in Spain presenting contrasting political dynamics. Coverage from German public broadcasters, Spanish independent press, and Middle Eastern outlets provides enough perspective diversity for a dossier, though the absence of Latin American, North American, and South Asian coverage limits breadth. The story adds needed civil-society and democracy-focused content to the daily run.</dd>
 <dt>QA Corrections</dt><dd><details class="qa-corrections-wrapper"><summary>QA Corrections &mdash; <strong>7 applied &middot; 0 retracted</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-applied">applied</span> Replace &#x27;between April and December of next year&#x27; with &#x27;in April, May, or December of next year&#x27; to match the three options reported in src-019.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Vucic has suggested early elections could be held between April and December of next year, with December as his preference [src-019].</blockquote><p class="qa-explanation">Source src-019 states Vucic mentioned April, May, or December as possible dates, with December as his preference. The article omits May as one of the options Vucic named.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Amend the organizer-claimed figure sentence to note the divergence: change &#x27;Organizers from the Sociedad Civil Española claimed 80,000 attendees&#x27; to &#x27;Organizers from the Sociedad Civil Española claimed 80,000 attendees according to some outlets [src-002][src-015], while Al Jazeera and ANSA reported organizers claiming 120,000 [src-007][src-023]&#x27; to surface the conflicting organizer figures.</summary><div class="qa-detail"><span class="qa-problem-type">missing_divergence</span><blockquote class="qa-excerpt">Organizers from the Sociedad Civil Española claimed 80,000 attendees; the government delegation estimated 40,000 [src-002][src-015]. Voice of America, framing the event as a right-wing rally, reported organizers claiming 400,000 participants against an official estimate of 25,000 [src-016].</blockquote><p class="qa-explanation">Al Jazeera (src-007) and ANSA (src-023) report organizer figures of 120,000, not 80,000. The article presents 80,000 as the organizer figure without noting that other sources cite 120,000, creating an unacknowledged divergence in the organizer-claimed attendance figure.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Add src-001 to the citation for the 16-person death toll: change &#x27;[src-004][src-008]&#x27; to &#x27;[src-001][src-004][src-008]&#x27; so the specific figure is supported by the source that actually states it.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">the November 2024 collapse of a railway station canopy in Novi Sad, which killed 16 people [src-004][src-008]</blockquote><p class="qa-explanation">Source src-004 and src-008 describe the Novi Sad disaster as a rail station collapse but do not specify the death toll as 16. Source src-001 mentions the disaster killed 16 people, so the citation should include src-001 to support the specific figure.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Add an ellipsis to signal truncation: change the closing of the Vucic French quote to &#x27;&quot;Rien ne va changer, l&#x27;État fonctionne et continuera à faire son travail selon la Constitution et les lois…&quot;&#x27; to indicate the quote continues in the source.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">He added: &quot;Rien ne va changer, l&#x27;État fonctionne et continuera à faire son travail selon la Constitution et les lois&quot; (Nothing will change; the state functions and will continue to do its work according to the constitution and laws) [src-005].</blockquote><p class="qa-explanation">The full verbatim quote in src-005 is &quot;Rien ne va changer, l&#x27;État fonctionne et continuera à faire son travail selon la Constitution et les lois, et sera en mesure de préserver l&#x27;ordre et la paix&quot; — the article truncates the quote, omitting the clause about preserving order and peace, without using an ellipsis to signal the truncation.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> The article says &#x27;On German public television&#x27; but src-006 is Tagesschau&#x27;s website (ARD public broadcaster). The characterization is close enough to accurate and the key issue is the truncated quote. Change the fragment quote to include the fuller context: &#x27;he was quoted saying protesters had &quot;once again, as so often before, revealed their violent nature&quot; (&quot;Wie schon so oft zuvor, kehrten sie ihre gewalttätige Natur hervor&quot;) [src-006]&#x27; to reflect the actual verbatim quote in the source.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">On German public television, he was quoted saying protesters had revealed &quot;ihre gewalttätige Natur&quot; (their violent nature) [src-006].</blockquote><p class="qa-explanation">Source src-006 (Tagesschau) is a German public broadcaster&#x27;s website, not specifically &#x27;German public television.&#x27; More importantly, the verbatim quote in src-006 is &quot;Wie schon so oft zuvor, kehrten sie ihre gewalttätige Natur hervor&quot; — the article quotes only the fragment &quot;ihre gewalttätige Natur&quot; without indicating the fuller context of the quote.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Remove src-002 from the citation for Zapatero&#x27;s inclusion in the corruption allegations list, as src-002 does not mention Zapatero. The citation should read [src-007][src-009] only for the Zapatero reference.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">former Prime Minister José Luis Rodríguez Zapatero [src-002][src-007][src-009]</blockquote><p class="qa-explanation">The article lists Zapatero among those whose corruption investigations are driving the protest, but src-002 does not mention Zapatero as a subject of corruption allegations — it covers Sánchez&#x27;s wife and brother. Citing src-002 for Zapatero&#x27;s inclusion in the corruption cluster is unsupported by that source.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Add an ellipsis to signal truncation of the Morales quote: change &#x27;&quot;Es geht nicht mehr nur um Evo. Es geht um das Volk&quot;&#x27; to &#x27;&quot;Es geht nicht mehr nur um Evo. Es geht um das Volk…&quot;&#x27; to indicate the quote continues in src-010.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Evo Morales called for new elections within 90 days, stating: &quot;Es geht nicht mehr nur um Evo. Es geht um das Volk&quot; (It is no longer just about Evo. It is about the people) [src-010].</blockquote><p class="qa-explanation">The verbatim quote in src-010 is &quot;Es geht nicht mehr nur um Evo. Es geht um das Volk. Dieses Volk, mit oder ohne Evo, es wird weiterkämpfen&quot; — the article truncates the quote without an ellipsis, omitting the continuation about the people fighting on with or without Evo.</p></div></details></li></ul></details></dd>
-<dt>Coverage Limits</dt><dd><details class="coverage-limits-wrapper"><summary>Coverage Limits &mdash; <strong>2 notes</strong></summary><ul class="coverage-limits"><li>No coverage from Serbian domestic media is included in the corpus, meaning the framing of pro-government outlets and independent Serbian press — which would reveal how the protests are portrayed to the domestic audience — is entirely absent.</li><li>No EU institutional voices (European Commission, European Parliament) are quoted anywhere in the corpus regarding either protest, despite both countries&#x27; EU membership or candidacy status making Brussels&#x27; perspective directly relevant to the democratic governance dimension.</li></ul></details></dd>
 <dt class="pipeline-run">Pipeline Run</dt><dd class="pipeline-run">run-2026-05-24-638716a2 &middot; 2026-05-24</dd>
 </dl>
 </div>

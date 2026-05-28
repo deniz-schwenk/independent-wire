@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -756,6 +752,9 @@ footer a { color: #000; text-decoration: underline; }
   <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
   <div class="card-header"><span class="card-actor">The film &#x27;Fjord&#x27; constitutes reactionary propaganda that unfairly portrays Norway&#x27;s child-protection system</span></div>
   <div class="card-position">Critics at Cannes accused Mungiu of producing &#x27;reactionary propaganda&#x27; through his depiction of the Norwegian child welfare system (Barnevernet), and Norwegian media noted the film&#x27;s potential to further polarize domestic debate over the treatment of minority families by child-protection authorities.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>Adevărul</strong>, <strong>VG</strong>, <strong>NRK</strong>, <strong>Nettavisen</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">0 actors</a></span> &middot; <span>4 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-005">
@@ -782,6 +781,9 @@ footer a { color: #000; text-decoration: underline; }
   <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">Neon&#x27;s unprecedented streak of distributing seven consecutive Palme d&#x27;Or winners signals a structural shift in independent film distribution</span></div>
   <div class="card-position">Several sources highlight that the US distributor Neon has now acquired seven consecutive Palme d&#x27;Or-winning films. A pre-ceremony Le Monde profile noted six consecutive wins at the time of publication, with &#x27;Fjord&#x27; extending the streak to seven, framing this as a remarkable commercial and curatorial achievement that reshapes the relationship between art-house cinema and the marketplace.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>France 24</strong>, <strong>Japan Today</strong>, <strong>Le Monde</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">0 actors</a></span> &middot; <span>3 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
 </div>
 <div class="card" id="pc-008">
@@ -940,9 +942,6 @@ footer a { color: #000; text-decoration: underline; }
 })();
 </script>
 </section>
-
-<h2>Missing stakeholder voices</h2>
-<ul class="missing-positions"><li><strong>government</strong> — No Norwegian government officials or child-welfare authorities respond to the film&#x27;s portrayal of Barnevernet, leaving the institutional perspective of the system being criticized entirely absent.</li><li><strong>government</strong> — No Russian government or Kremlin-aligned voices react to Zvyagintsev&#x27;s direct public appeal to Putin, despite this being a highly politically charged moment that would likely provoke an official response.</li><li><strong>affected_community</strong> — No Romanian or Eastern European immigrant families who have experienced Norwegian child-protection interventions — the real-world community the film depicts — are heard, despite the Bodnariu case being the film&#x27;s acknowledged inspiration.</li><li><strong>academia</strong> — No film scholars, political scientists, or child-welfare policy researchers provide independent analysis of the film&#x27;s claims about &#x27;left-wing fundamentalism&#x27; or the accuracy of its depiction of Scandinavian social systems.</li><li><strong>affected_community</strong> — No Ukrainian civilians or officials respond to Zvyagintsev&#x27;s anti-war speech, meaning the perspective of the people most directly affected by the war he denounces is absent from the coverage.</li></ul>
 
 <h2>Divergences</h2>
 <div class="divergence">
@@ -1353,7 +1352,6 @@ footer a { color: #000; text-decoration: underline; }
 <dl>
 <dt>Selection Reason</dt><dd>A major cultural event with genuine multi-perspective interest — the film&#x27;s subject matter (political polarization in Norway) resonates with broader European political debates, and coverage spans East Asian, European, Latin American, and Middle Eastern outlets in six languages. The story provides essential domain diversity against the conflict-heavy lineup. Russian independent exile media coverage of a Romanian director winning at Cannes adds an interesting cultural-political dimension.</dd>
 <dt>QA Corrections</dt><dd><details class="qa-corrections-wrapper"><summary>QA Corrections &mdash; <strong>1 applied &middot; 7 retracted</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The framing is slightly imprecise but not factually wrong — Park Chan-wook is the jury president who would announce the award, and the praise is accurately attributed with the verbatim quote in quotation marks. The source&#x27;s paraphrase about &#x27;understanding different views&#x27; is presented as the article&#x27;s own characterization, not as a direct quote. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">The award, Mungiu&#x27;s second after &quot;4 Months, 3 Weeks and 2 Days&quot; in 2007, was announced by jury president Park Chan-wook, who praised the film for shedding light on understanding different perspectives &quot;in an artistically magnificent manner&quot; [src-002].</blockquote><p class="qa-explanation">The article attributes the announcement of the award to Park Chan-wook, but src-002 only records Park Chan-wook praising the film; the article conflates the act of announcing the award with the act of praising it. More importantly, the article states Park Chan-wook &#x27;praised the film for shedding light on understanding different perspectives,&#x27; but src-002&#x27;s verbatim quote is only &#x27;in an artistically magnificent manner&#x27; — the fuller framing about &#x27;understanding different views&#x27; is the source&#x27;s paraphrase, not a direct quote, and the article presents it as if it were Park&#x27;s own words without distinguishing paraphrase from quote.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> Src-005 (Moscow Times) does describe &#x27;Minotaur&#x27; as being about contemporary Russia, and it is cited in the same sentence. The claim is supported by at least one of the cited sources. No body change is warranted.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">The Grand Prix went to Russian director Andrey Zvyagintsev for &quot;Minotaur,&quot; a film about contemporary Russia</blockquote><p class="qa-explanation">The article describes &#x27;Minotaur&#x27; as &#x27;a film about contemporary Russia,&#x27; but none of the cited sources in this sentence (src-003, src-005) provide this description. Src-005 (Moscow Times) and src-018 (Ukrainska Pravda) describe it as being about contemporary Russia, but src-018 is not cited here. Src-003 does not describe the film&#x27;s subject matter in detail. The claim is supportable from the dossier but the citation does not cover it precisely — however, src-005 does support it, so this is a minor citation issue rather than a fabrication.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> The Le Monde profile (src-021, published May 10, 2026) described Neon as having six consecutive Palmes d&#x27;Or, not seven. The seventh is &#x27;Fjord&#x27; itself, awarded after the profile was published. The article should be corrected to clarify that Le Monde&#x27;s pre-ceremony profile noted six consecutive wins, and that &#x27;Fjord&#x27; extended the streak to seven. Change &#x27;a streak Le Monde described in a pre-ceremony profile as reshaping the relationship between art-house cinema and the marketplace&#x27; to reflect that Le Monde&#x27;s profile noted six consecutive wins, with &#x27;Fjord&#x27; making it seven.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Le Monde described in a pre-ceremony profile as reshaping the relationship between art-house cinema and the marketplace [src-021].</blockquote><p class="qa-explanation">The article states Le Monde described Neon&#x27;s streak as &#x27;reshaping the relationship between art-house cinema and the marketplace,&#x27; but src-021&#x27;s title and summary describe Neon as having six consecutive Palmes d&#x27;Or (not seven), and the article was published on May 10 — before the 2026 ceremony. The article body says &#x27;seven consecutive&#x27; while src-021 (the Le Monde pre-ceremony profile) only counted six at the time of writing. The seventh would be &#x27;Fjord&#x27; itself, so the Le Monde profile could not have described a seven-film streak.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> This problem duplicates the previous finding about src-021 and the six-versus-seven count. The correction in the previous entry addresses this. No additional body change needed.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">US distributor Neon has now acquired seven consecutive Palme d&#x27;Or-winning films, a streak Le Monde described in a pre-ceremony profile as reshaping the relationship between art-house cinema and the marketplace [src-021].</blockquote><p class="qa-explanation">Src-021 is a pre-ceremony Le Monde profile that describes six consecutive Palmes d&#x27;Or for Neon, not seven. The article attributes the &#x27;seven consecutive&#x27; characterization to Le Monde&#x27;s profile, but Le Monde could only have written about six at that point. The seventh (Fjord) was awarded after the profile was published. The article should clarify that Le Monde noted six at the time, and that Fjord extended the streak to seven.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> This is not a genuine factual problem — the attribution to Tagesschau for Grisebach&#x27;s Jury Prize is accurate per src-008. Retracting.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Tagesschau reported that German director Valeska Grisebach won the Jury Prize</blockquote><p class="qa-explanation">Src-008 (Tagesschau) reports Valeska Grisebach&#x27;s Jury Prize win, but the article&#x27;s phrasing &#x27;Tagesschau reported that&#x27; is accurate. However, the article does not specify what film Grisebach won for, which is not a factual error per se. This is not a genuine problem — retracting.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> Both attributions are supported by the cited sources. Retracting.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Tagesschau reported that German director Valeska Grisebach won the Jury Prize, and Japanese actress Tao Okamoto received the Best Actress award, according to AFPBB News [src-008][src-025].</blockquote><p class="qa-explanation">The article attributes Tao Okamoto&#x27;s Best Actress award to AFPBB News (src-025), which does support this claim. However, the article also attributes Valeska Grisebach&#x27;s Jury Prize to Tagesschau (src-008), which does support this. No factual error here — retracting.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The selective quotation is not a factual distortion. Retracting.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Virginie Efira, recognized for her role in &quot;Soudain,&quot; described the shoot as &quot;une expérience de vie qui restera gravée à jamais&quot; (a life experience that will remain engraved forever) [src-009].</blockquote><p class="qa-explanation">Src-009 provides a longer quote from Efira: &#x27;C&#x27;est l&#x27;un des tournages où j&#x27;ai le plus senti la collectivité. C&#x27;est une expérience de vie qui restera gravée à jamais.&#x27; The article quotes only the second sentence, omitting the first about the collective nature of the shoot, which is not a factual error but a selective quotation. This is a minor omission rather than a distortion — retracting.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> This duplicates the correction already addressed in entry 3. No additional change needed.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">a streak Le Monde described in a pre-ceremony profile as reshaping the relationship between art-house cinema and the marketplace [src-021]. France 24 and Japan Today both noted the record [src-003][src-004].</blockquote><p class="qa-explanation">Src-021 (Le Monde, published May 10, 2026) describes Neon as having six consecutive Palmes d&#x27;Or, not seven. The article implies Le Monde described a seven-film streak, but the profile predates the 2026 ceremony. The seven-film streak is a post-ceremony fact; Le Monde&#x27;s profile only documented six.</p></div></details></li></ul></details></dd>
-<dt>Coverage Limits</dt><dd><details class="coverage-limits-wrapper"><summary>Coverage Limits &mdash; <strong>5 notes</strong></summary><ul class="coverage-limits"><li>No Romanian media coverage is included despite the Palme d&#x27;Or winner being Romanian and the film centering on a Romanian family, meaning the domestic reception and national pride dimension is entirely absent.</li><li>No film critics, industry analysts, or academic commentators are quoted in any article — every quoted actor is a filmmaker, actor, or jury member, leaving professional critical assessment of the films&#x27; artistic and political significance unrepresented.</li><li>No Latin American, African, or South Asian outlet coverage is present in the corpus despite the assignment noting expected coverage from Latin American outlets, leaving large regions of the Global South without a voice.</li><li>No coverage addresses the real-world Norwegian child-protection controversies (Barnevernet cases involving Romanian and other Eastern European families) that form the factual backdrop to &#x27;Fjord,&#x27; leaving the political and social context of the film&#x27;s subject matter unexplored.</li><li>No voices from film distributors, festival organizers, or the Cannes jury beyond Park Chan-wook are quoted, meaning the institutional and commercial dimensions of the awards process are largely invisible.</li></ul></details></dd>
 <dt>Strict-drop Pruning</dt><dd><details class="dropped-details"><summary>1 source dropped</summary><div class="dropped-detail"><p class="dropped-section-label">Sources</p><ul class="dropped-list"><li><span class="dropped-id">src-010</span> <span class="dropped-outlet">France 24</span> &mdash; A brief television-program summary noting Mungiu&#x27;s Palme d&#x27;O</li></ul></div></details></dd>
 <dt class="pipeline-run">Pipeline Run</dt><dd class="pipeline-run">run-2026-05-24-638716a2 &middot; 2026-05-24</dd>
 </dl>

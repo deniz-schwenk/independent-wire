@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -839,6 +835,9 @@ footer a { color: #000; text-decoration: underline; }
   <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
   <div class="card-header"><span class="card-actor">Reduced international health funding, particularly US cuts, is weakening outbreak surveillance and response in fragile states</span></div>
   <div class="card-position">Arabic-language analytical coverage highlights that reductions in global health aid—especially from the United States—have degraded the surveillance and rapid-response capacity that fragile states depend on, making outbreaks like this one harder to detect and contain early.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>Asharq Al-Awsat</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">0 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
 </div>
 </div>
@@ -1051,8 +1050,6 @@ footer a { color: #000; text-decoration: underline; }
 </script>
 </section>
 
-<h2>What's missing</h2>
-<ul class="missing-positions"><li><strong>affected_community</strong> — No patients, survivors, family members, or community leaders in Ituri, Mongwalu, or Kampala are quoted, leaving the human experience of the outbreak and community attitudes toward response measures entirely absent.</li><li><strong>government</strong> — No DRC national or provincial government officials (beyond anonymous references) or Ugandan government officials are directly quoted on their response strategies, resource needs, or political constraints.</li><li><strong>industry</strong> — No pharmaceutical companies or vaccine developers are quoted on timelines or feasibility for producing a Bundibugyo-specific vaccine or therapeutic, despite every source identifying this gap as the outbreak&#x27;s central vulnerability.</li><li><strong>military</strong> — No armed actors—M23 rebels, FARDC, or UN peacekeeping forces—are quoted on how the conflict affects humanitarian access or whether health corridors are being negotiated, despite conflict being identified as a decisive barrier to response.</li><li><strong>civil_society</strong> — Beyond a single MSF official, no local Congolese or Ugandan civil-society organizations, community health workers, or faith leaders involved in burial practices and community trust-building are represented, despite unsafe funerals being flagged as a major transmission driver.</li></ul>
 <h2>Divergences</h2>
 <div class="divergence">
   <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
@@ -1123,19 +1120,6 @@ footer a { color: #000; text-decoration: underline; }
 </div>
 </div>
 </details>
-
-<h2>Coverage Gaps</h2>
-<div class="coverage-gap">No Congolese or Ugandan media outlets are represented in the corpus, meaning the perspectives of the most directly affected national publics — including local government officials, provincial health authorities, and community leaders in Ituri — are absent.</div>
-<div class="coverage-gap">No voices from affected communities, patients, survivors, or their families are quoted anywhere in the corpus, leaving the human impact of the outbreak entirely mediated through institutional and expert actors.</div>
-<div class="coverage-gap">No coverage from neighboring countries most at risk of cross-border spread — such as Rwanda, Burundi, South Sudan, or the Republic of Congo — despite Rwanda&#x27;s border-tightening measures being mentioned in one BBC article.</div>
-<div class="coverage-gap">The corpus includes no discussion of the economic consequences of the outbreak for DRC&#x27;s mining sector in Ituri or for regional trade, despite the BBC and RFI noting that affected mining towns have highly mobile populations.</div>
-<div class="coverage-gap">No pharmaceutical industry or biomedical research actors are quoted regarding the timeline or feasibility of developing vaccines or therapeutics for the Bundibugyo strain, despite every article identifying this gap as a central challenge.</div>
-<div class="coverage-gap">No sources from South Sudan, despite Africa CDC and WHO documents identifying it as a high-risk neighboring country with active preparedness efforts.</div>
-<div class="coverage-gap">No sources quoting affected community members, survivors, or local health workers in Ituri or Kampala.</div>
-<div class="coverage-gap">No sources from China or Russia detailing their bilateral aid or diplomatic response to the outbreak.</div>
-<div class="coverage-gap">No sources from Latin America or the Caribbean, despite PAHO issuing a regional implications note.</div>
-<div class="coverage-gap">No sources from the pharmaceutical industry or vaccine developers on their R&amp;D timelines for a Bundibugyo-specific vaccine.</div>
-<div class="coverage-gap">No sources from the mining industry or trade associations on the economic impact of the outbreak on gold supply chains in Ituri.</div>
 
 <section id="sources-section" class="sources">
 <h2>Sources</h2>

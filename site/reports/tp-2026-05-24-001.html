@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -797,6 +793,9 @@ Follow-up to: &ldquo;Ben-Gvir&#x27;s Video of Bound Gaza Flotilla Activists Draw
   <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
   <div class="card-header"><span class="card-actor">The ban sets a precedent for European diplomatic action against far-right Israeli officials</span></div>
   <div class="card-position">Several European outlets frame France&#x27;s move — following Spain&#x27;s earlier ban and Poland&#x27;s similar action — as a potential turning point in how European states use targeted individual sanctions against Israeli officials linked to extremist settler policies, with implications for broader EU foreign policy coordination.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>Ynet</strong>, <strong>El País</strong>, <strong>Corriere della Sera</strong></p>
+  </div>
   <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">0 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>3 languages</span></p>
 </div>
 </div>
@@ -917,9 +916,6 @@ Follow-up to: &ldquo;Ben-Gvir&#x27;s Video of Bound Gaza Flotilla Activists Draw
 })();
 </script>
 </section>
-
-<h2>Missing stakeholder voices</h2>
-<ul class="missing-positions"><li><strong>affected_community</strong> — No Palestinian voices or Gaza residents are quoted on how Ben-Gvir&#x27;s policies and the flotilla interception affect them, despite being the population most directly impacted by the blockade and settler violence.</li><li><strong>affected_community</strong> — No firsthand testimonies from detained flotilla activists appear in the corpus, leaving the most direct accounts of alleged abuse entirely absent despite being central to the diplomatic crisis.</li><li><strong>civil_society</strong> — No major international human rights organizations such as Amnesty International, Human Rights Watch, or the ICRC are quoted on the legality of the flotilla interception, detention conditions, or the proportionality of the European response.</li><li><strong>academia</strong> — No international law scholars or diplomatic-relations experts assess the legal basis, precedent, or proportionality of banning a sitting foreign minister from a sovereign state&#x27;s territory.</li><li><strong>government</strong> — No official Israeli government or foreign ministry response to the French ban itself is quoted, leaving Israel&#x27;s formal diplomatic reaction to this specific measure unrepresented beyond Netanyahu&#x27;s earlier rebuke of the video.</li></ul>
 
 <h2>Divergences</h2>
 <div class="divergence">
@@ -1287,7 +1283,6 @@ Follow-up to: &ldquo;Ben-Gvir&#x27;s Video of Bound Gaza Flotilla Activists Draw
 <dl>
 <dt>Selection Reason</dt><dd>This represents a concrete policy escalation — a formal travel ban by a major European state against a sitting Israeli minister — following the flotilla video incident covered on May 21. Coverage from European, South Asian, Turkish, and East Asian outlets shows divergent framings on diplomatic proportionality and Israel-Europe relations. However, the relatively narrow language coverage and absence of Middle Eastern and Latin American sources limits multi-perspective depth.</dd>
 <dt>QA Corrections</dt><dd><details class="qa-corrections-wrapper"><summary>QA Corrections &mdash; <strong>2 applied &middot; 2 retracted</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The ordering &#x27;after Spain and Poland&#x27; is supported by src-018 (El País confirming Spain&#x27;s earlier ban) and src-017 (Ynet mentioning Poland). No correction is needed as the claim is supported by the combined sources.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">The move makes France the latest European state — after Spain and Poland — to bar Ben-Gvir from its soil [src-017][src-018].</blockquote><p class="qa-explanation">Source src-017 (Ynet) states that France joins Poland in banning Ben-Gvir, but src-018 (El País) notes that Spain had already banned Ben-Gvir earlier. The article lists the order as Spain and Poland preceding France, but src-017 only mentions Poland as a prior ban alongside France, and does not mention Spain in this context. However, src-018 does confirm Spain banned Ben-Gvir earlier. The ordering &#x27;after Spain and Poland&#x27; is supported by the combination of sources, so this is not clearly incorrect. Retracting this finding.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Clarify that the German-language characterization is as reported by Tagesschau rather than a direct German-language quote from Barrot. Change the sentence to: &#x27;Barrot framed the entry ban not as a rupture in Franco-Israeli relations but as a sovereign border-control measure aimed at an individual whose conduct he described as part of a long series of shocking statements and actions, incitement and calls for violence against Palestinians, according to Tagesschau [src-004].&#x27; Remove the German-language quotation since it is Tagesschau&#x27;s German rendering of Barrot&#x27;s remarks, not a verbatim quote Barrot made in German.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Barrot framed the entry ban not as a rupture in Franco-Israeli relations but as a sovereign border-control measure aimed at an individual whose conduct he described as part of a &quot;lange Reihe schockierender Aussagen und Handlungen, Hetze und Aufrufe zu Gewalt gegen Palästinenser&quot; (long series of shocking statements and actions, incitement and calls for violence against Palestinians) [src-004].</blockquote><p class="qa-explanation">The article attributes the German-language quote directly to Barrot as if it is a verbatim quote he made in German, but src-004 (Tagesschau) is a German-language article that may be paraphrasing or translating Barrot&#x27;s French remarks into German. The article should clarify this is as reported by Tagesschau rather than presenting it as a direct German-language quote from Barrot.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> Source src-008&#x27;s summary does mention travel bans and asset freezes as the type of EU sanctions being pushed for. The claim is supported by src-008. No correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">France, Italy, and Spain are jointly urging the EU to impose targeted sanctions — including travel bans and asset freezes — against Ben-Gvir personally [src-001][src-008].</blockquote><p class="qa-explanation">Sources src-001 and src-008 (both DW) confirm France, Spain, and Italy are pushing for EU sanctions, but neither source specifically mentions &#x27;asset freezes&#x27; as part of the proposed measures. The asset freeze detail appears in src-008&#x27;s summary description but is not directly attributed to a quoted official or confirmed in the source summaries provided.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Separate the two claims more clearly: flotilla organizers reported at least 15 activists experienced sexualized violence (per src-004), while Adalah documented dozens of broken bones and allegations of rape, forced nudity, and sexually abusive body searches (per src-009, src-012). Revise to: &#x27;Flotilla organizers reported that at least 15 activists experienced sexualized violence in Israeli custody [src-004]. The legal rights group Adalah separately documented dozens of cases of broken bones along with allegations of rape, forced nudity, and sexually abusive body searches, with some claims supported by medical reports and photographic evidence, according to Haaretz, though the outlet noted that many allegations are still being collected and have not been tested in court [src-009][src-012].&#x27;</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Flotilla organizers reported that at least 15 activists experienced sexualized violence in Israeli custody, and the legal rights group Adalah documented dozens of cases of broken bones along with allegations of rape, forced nudity, and sexually abusive body searches [src-004][src-009][src-012].</blockquote><p class="qa-explanation">Source src-009 (Al Jazeera) states Adalah documented dozens of cases of broken bones and at least a dozen to 15+ sexual assaults, while src-012 (Haaretz) attributes the sexual assault documentation to Adalah. However, src-004 attributes the &#x27;15 activists experienced sexualized violence&#x27; claim to flotilla organizers, not Adalah. The article conflates the two by listing both claims in the same sentence without clearly distinguishing which organization reported which figure.</p></div></details></li></ul></details></dd>
-<dt>Coverage Limits</dt><dd><details class="coverage-limits-wrapper"><summary>Coverage Limits &mdash; <strong>5 notes</strong></summary><ul class="coverage-limits"><li>No Palestinian or broader Arab and Middle Eastern media sources are present, despite Palestinians being the population most directly affected by Ben-Gvir&#x27;s policies and the Gaza blockade that the flotilla sought to challenge.</li><li>No voices from the detained flotilla activists themselves are quoted anywhere in the corpus, leaving firsthand accounts of their treatment — including the alleged sexualized violence — entirely absent.</li><li>No Latin American, African, or South/Southeast Asian media coverage is included, limiting understanding of how the Global South frames European diplomatic actions against Israeli officials in the context of the broader Gaza conflict.</li><li>No legal or human rights organization voices (e.g., Amnesty International, Human Rights Watch, ICRC) are quoted in any article, despite the allegations of abuse in detention and the international law dimensions of the flotilla interception.</li><li>No analysis of the legal mechanism or precedent for banning a sitting foreign minister from a country&#x27;s territory appears in any article, leaving the diplomatic and legal proportionality dimension — flagged in the assignment&#x27;s selection reason — unaddressed.</li></ul></details></dd>
 <dt class="pipeline-run">Pipeline Run</dt><dd class="pipeline-run">run-2026-05-24-638716a2 &middot; 2026-05-24</dd>
 </dl>
 </div>

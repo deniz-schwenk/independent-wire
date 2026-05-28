@@ -197,6 +197,21 @@ h2 {
   text-transform: uppercase; letter-spacing: 0.05em;
 }
 
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
 /* Actors section — flat card grid with type-tab filter */
 .actors h2 { margin-top: 2.5rem; }
 .actors-meta {
@@ -343,12 +358,6 @@ details[open] summary::before {
 .bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
 .bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
 
-/* Coverage gaps */
-.coverage-gap {
-  font-family: var(--font-sans); font-size: 0.9rem; color: var(--color-text-secondary); line-height: 1.55;
-  padding: 0.5rem 0; border-bottom: 1px solid var(--color-border-light);
-}
-
 /* Bias-card stat line */
 .bias-stats {
   font-family: var(--font-mono); font-size: 0.85rem;
@@ -391,21 +400,8 @@ details[open] summary::before {
   cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
 }
 .qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
-/* Coverage Limits — same collapsible-footnote treatment as
-   QA Corrections. Reads `consolidated_missing_coverage
-   .missing_topic_dimensions` (2026-05-21 relocation from the
-   prominent Missing-Coverage section). */
-.coverage-limits-wrapper > summary {
-  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
-  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.coverage-limits {
-  margin-top: 0.5rem; padding-left: 1.2rem;
-  line-height: 1.55;
-}
-.coverage-limits li { margin: 0.25rem 0; }
 /* Mentioned Actors — same collapsible-footnote treatment as
-   QA Corrections and Coverage Limits. Wraps the inner bracket card
+   QA Corrections. Wraps the inner bracket card
    (`.single-voices-bracket`) and renders after the Position cards
    (2026-05-21: relocation from prominent section to collapsible). */
 .mentioned-actors-wrapper > summary {
@@ -1192,8 +1188,6 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
 </script>
 </section>
 
-<h2>What's missing</h2>
-<ul class="missing-positions"><li><strong>affected_community</strong> — No Iranian, Lebanese, or Gulf civilians are quoted about the humanitarian impact of the war, the blockade, or military operations on their daily lives, despite documented economic crises and displacement.</li><li><strong>industry</strong> — No shipping executives, maritime insurers, or energy traders are quoted despite the Strait of Hormuz closure and internet cable threats being central to the story&#x27;s economic dimensions.</li><li><strong>international_org</strong> — No representatives from the UN, IAEA, or IEA provide independent assessments of the nuclear proposal&#x27;s viability or the global energy and humanitarian impact, despite multiple references to their warnings.</li><li><strong>legislature</strong> — No US Congressional voices or opposition party perspectives are included despite multiple sources referencing domestic political pressure on Trump, midterm concerns, and a 64% voter disapproval rate for the war.</li><li><strong>academia</strong> — No independent nuclear proliferation experts, Middle East security scholars, or energy economists provide analytical assessments of Iran&#x27;s 14-point proposal or the feasibility of the zero-enrichment demand, leaving policy analysis to a single think-tank voice.</li></ul>
 <h2>Divergences</h2>
 <div class="divergence">
   <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
@@ -1277,16 +1271,6 @@ Follow-up to: &ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows 
 </div>
 </div>
 </details>
-
-<h2>Coverage Gaps</h2>
-<div class="coverage-gap">No Iranian domestic media outlet is included in the corpus; all Iranian positions are reported secondhand through other countries&#x27; outlets, meaning the internal Iranian framing of the proposal and the domestic political dynamics around it are absent.</div>
-<div class="coverage-gap">No Indian or South Asian outlet beyond the absent Pakistani perspective is included, despite India being one of the world&#x27;s largest importers of oil through the Strait of Hormuz and directly affected by the disruption.</div>
-<div class="coverage-gap">No humanitarian organizations, refugee agencies, or affected civilian populations in Iran, Lebanon, or the Gulf are quoted anywhere in the corpus; nearly every quoted actor is a government official or military spokesperson, omitting the human cost dimension of the conflict.</div>
-<div class="coverage-gap">No US Congressional voices or opposition Democratic Party perspectives are quoted despite multiple articles referencing domestic political pressure on Trump and midterm election implications, leaving the US legislative and partisan debate unrepresented.</div>
-<div class="coverage-gap">The global shipping and insurance industry perspective is absent despite the Strait of Hormuz closure and internet cable threats being central to the story; no shipping executives, maritime insurers, or trade association representatives are quoted.</div>
-<div class="coverage-gap">No sources from Iranian domestic outlets (e.g., Tasnim, Mehr, IRNA) that would provide the official Iranian government framing of the proposal and internal political dynamics.</div>
-<div class="coverage-gap">No sources representing the perspective of affected communities, such as civilians in Iran or Lebanon, despite documented humanitarian crises.</div>
-<div class="coverage-gap">No sources from international organizations (e.g., UN, IAEA, IEA) that would provide independent assessment of the nuclear proposal or global energy impact.</div>
 
 <section id="sources-section" class="sources">
 <h2>Sources</h2>
