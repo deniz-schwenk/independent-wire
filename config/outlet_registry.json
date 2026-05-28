@@ -100,13 +100,19 @@
     "type": "newspaper",
     "alt_languages": [
       "en"
-    ]
+    ],
+    "tier": 2,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Pan-Arab Arabic-language daily Asharq Al-Awsat, owned by Saudi Research and Media Group (SRMG), London-headquartered."
   },
   "abc.es": {
     "outlet": "ABC España",
     "country": "Spain",
     "language": "es",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Spanish national daily ABC, owned by Vocento media group (privately held publisher of regional and national press)."
   },
   "abc.net.au": {
     "outlet": "ABC News Australia",
@@ -121,7 +127,10 @@
     "outlet": "ABC News (US)",
     "country": "United States",
     "language": "en",
-    "type": "broadcaster"
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "ABC News, US broadcast news division of ABC, a subsidiary of The Walt Disney Company (NYSE: DIS)."
   },
   "abplive.com": {
     "outlet": "ABP Live",
@@ -136,13 +145,19 @@
     "outlet": "Agence Congolaise de Presse",
     "country": "Democratic Republic of the Congo",
     "language": "fr",
-    "type": "news_agency"
+    "type": "news_agency",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Agence Congolaise de Presse, official state news agency of the Democratic Republic of the Congo, under the Ministry of Communication and Media."
   },
   "actualite.cd": {
     "outlet": "Actualité.cd",
     "country": "Democratic Republic of the Congo",
     "language": "fr",
-    "type": "digital_native"
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Congolese (DRC) French-language news website launched 2016, published by Groupe Next Corp, privately held."
   },
   "adevarul.ro": {
     "outlet": "Adevărul",
@@ -160,7 +175,10 @@
     "type": "wire_service",
     "alt_languages": [
       "fr"
-    ]
+    ],
+    "tier": 1,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Agence France-Presse, French international wire service operating under a 1957 statute guaranteeing editorial autonomy from the French state."
   },
   "afpbb.com": {
     "outlet": "AFPBB News",
@@ -342,7 +360,10 @@
     "outlet": "Associated Press",
     "country": "United States",
     "language": "en",
-    "type": "wire_service"
+    "type": "wire_service",
+    "tier": 1,
+    "editorial_independence": "independent",
+    "bias_note": "Associated Press, US non-profit member-owned news cooperative wire service founded 1846."
   },
   "arab48.com": {
     "outlet": "Arab48",
@@ -366,7 +387,10 @@
     "outlet": "Arab News",
     "country": "Saudi Arabia",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Saudi English-language daily Arab News, owned by Saudi Research and Media Group (SRMG), headquartered in Riyadh."
   },
   "armscontrol.org": {
     "outlet": "Arms Control Association",
@@ -381,7 +405,10 @@
     "outlet": "Asahi Shimbun",
     "country": "Japan",
     "language": "ja",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 1,
+    "editorial_independence": "independent",
+    "bias_note": "Asahi Shimbun, Japanese national daily newspaper owned by The Asahi Shimbun Company, privately held."
   },
   "asharq.com": {
     "outlet": "Asharq News",
@@ -495,7 +522,10 @@
     "outlet": "Bloomberg",
     "country": "United States",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 1,
+    "editorial_independence": "independent",
+    "bias_note": "Bloomberg News, US financial-and-general news division of Bloomberg L.P., majority-owned by Michael Bloomberg."
   },
   "bloomberght.com": {
     "outlet": "Bloomberg HT",
@@ -546,13 +576,19 @@
     "outlet": "CBC",
     "country": "Canada",
     "language": "en",
-    "type": "public_broadcaster"
+    "type": "public_broadcaster",
+    "tier": 1,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Canadian Broadcasting Corporation, a federal Crown corporation operating under the Broadcasting Act with statutory editorial independence."
   },
   "cbsnews.com": {
     "outlet": "CBS News",
     "country": "United States",
     "language": "en",
-    "type": "broadcaster"
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "CBS News, US broadcast news division of CBS, owned by Paramount Global (NASDAQ: PARA)."
   },
   "cctd.com.cn": {
     "outlet": "China Coal Transport & Distribution Association (CCTD)",
@@ -594,13 +630,19 @@
     "outlet": "Chatham House",
     "country": "United Kingdom",
     "language": "en",
-    "type": "ngo"
+    "type": "ngo",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Royal Institute of International Affairs (Chatham House), UK independent policy institute (registered charity), London-based, founded 1920."
   },
   "chinadaily.com.cn": {
     "outlet": "China Daily",
     "country": "China",
     "language": "en",
-    "type": "state_broadcaster"
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "China Daily, PRC English-language newspaper of record, published by China Daily Group under the CCP Publicity Department."
   },
   "chinanews.com.cn": {
     "outlet": "China News Service",
@@ -615,7 +657,10 @@
     "outlet": "The Chosun Ilbo",
     "country": "South Korea",
     "language": "ko",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "The Chosun Ilbo, South Korean Korean-language daily owned by the privately held Chosun Ilbo Co., founded 1920."
   },
   "clarin.com": {
     "outlet": "Clarín",
@@ -639,13 +684,19 @@
     "outlet": "CNN",
     "country": "United States",
     "language": "en",
-    "type": "broadcaster"
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Cable News Network, US cable news channel and website, owned by Warner Bros. Discovery (NASDAQ: WBD)."
   },
   "corriere.it": {
     "outlet": "Corriere della Sera",
     "country": "Italy",
     "language": "it",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Corriere della Sera, Italian national daily owned by RCS MediaGroup, listed on Borsa Italiana."
   },
   "crisisgroup.org": {
     "outlet": "International Crisis Group",
@@ -765,7 +816,10 @@
     "outlet": "The Economist",
     "country": "United Kingdom",
     "language": "en",
-    "type": "magazine"
+    "type": "magazine",
+    "tier": 1,
+    "editorial_independence": "independent",
+    "bias_note": "The Economist, UK weekly published by The Economist Group; majority stake held by the Agnelli family's Exor."
   },
   "eldiario.es": {
     "outlet": "elDiario.es",
@@ -798,7 +852,10 @@
     "outlet": "El Mundo",
     "country": "Spain",
     "language": "es",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "El Mundo, Spanish national daily owned by Unidad Editorial, a subsidiary of Italian RCS MediaGroup."
   },
   "elpais.com": {
     "outlet": "El País",
@@ -867,7 +924,10 @@
     "outlet": "Etemad Online",
     "country": "Iran",
     "language": "fa",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Etemad, Iranian Persian-language reformist daily founded 2002 by Elias Hazrati; operates under Iranian press licensing and judicial oversight regime."
   },
   "euractiv.com": {
     "outlet": "Euractiv",
@@ -909,13 +969,19 @@
     "outlet": "Express News",
     "country": "Pakistan",
     "language": "ur",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Express News Urdu portal, operated by Express Digital (Pvt) Ltd, part of Express Media Group, wholly owned by Pakistan's Lakson Group (Lakhani family)."
   },
   "fakty.com.ua": {
     "outlet": "Fakty ICTV",
     "country": "Ukraine",
     "language": "uk",
-    "type": "broadcaster"
+    "type": "broadcaster",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Ukrainian daily Fakty i Kommentarii; privately owned by editor-in-chief Oleksandr Shvets since 2016 (prior: EastOne Group / Pinchuk)."
   },
   "fararu.com": {
     "outlet": "Fararu",
@@ -930,7 +996,10 @@
     "outlet": "Frankfurter Allgemeine Zeitung",
     "country": "Germany",
     "language": "de",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "German national daily Frankfurter Allgemeine Zeitung; 93.7% held by FAZIT-Stiftung non-profit foundation chartered to preserve editorial independence."
   },
   "finam.ru": {
     "outlet": "Finam",
@@ -1008,7 +1077,10 @@
     "outlet": "Fox News",
     "country": "United States",
     "language": "en",
-    "type": "broadcaster"
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "US cable news division of Fox Corporation; publicly listed (FOXA/FOX) with dual-class share structure giving Murdoch family voting control."
   },
   "fr.euronews.com": {
     "outlet": "Euronews",
@@ -1091,13 +1163,19 @@
     "outlet": "Inter Press Service / GlobalIssues",
     "country": "United States",
     "language": "en",
-    "type": "investigative_nonprofit"
+    "type": "investigative_nonprofit",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Independent global-issues commentary site founded 1998 by Anup Shah; spare-time individual-run project, no organisational owner."
   },
   "globaltimes.cn": {
     "outlet": "Global Times",
     "country": "China",
     "language": "en",
-    "type": "state_broadcaster"
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "PRC English-language daily tabloid published by People's Daily Press (CCP organ); operating under Chinese state media regulation."
   },
   "globalvoices.org": {
     "outlet": "Global Voices",
@@ -1112,7 +1190,10 @@
     "outlet": "The Globe and Mail",
     "country": "Canada",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Canadian national daily; 100% owned by The Woodbridge Company, the private holding vehicle of the Thomson family, since 2015."
   },
   "golosameriki.com": {
     "outlet": "VOA Russian",
@@ -1184,7 +1265,10 @@
     "outlet": "The Hankyoreh",
     "country": "South Korea",
     "language": "ko",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "South Korean daily The Hankyoreh; owned by approximately 62,000 reader-shareholders since founding in 1988, no controlling owner."
   },
   "hindi.economictimes.com": {
     "outlet": "Economic Times (Hindi)",
@@ -1208,7 +1292,10 @@
     "outlet": "Hindustan Times",
     "country": "India",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Indian national English daily; published by HT Media Ltd, controlled by the K.K. Birla family via Shobhana Bhartia (~74%) through Earthstone Holding."
   },
   "home.treasury.gov": {
     "outlet": "US Department of the Treasury",
@@ -1241,7 +1328,10 @@
     "outlet": "Human Rights Watch",
     "country": "United States",
     "language": "en",
-    "type": "ngo"
+    "type": "ngo",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "US-based international human rights NGO; chartered to accept no government funds, financed by private individuals and foundations."
   },
   "hsph.harvard.edu": {
     "outlet": "Harvard T.H. Chan School of Public Health",
@@ -1291,7 +1381,10 @@
       "ru",
       "zh",
       "pt"
-    ]
+    ],
+    "tier": 1,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Swiss-based international humanitarian institution mandated under the Geneva Conventions; sui generis status with international legal personality."
   },
   "ildubbio.news": {
     "outlet": "Il Dubbio",
@@ -1324,7 +1417,10 @@
     "outlet": "The Independent",
     "country": "United Kingdom",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "UK digital-only national daily; published by Independent Digital News & Media, owned by the Lebedev family with a 30% stake held by Saudi investor Sultan Abuljadayel since 2017."
   },
   "independentespanol.com": {
     "outlet": "The Independent en Español",
@@ -1375,7 +1471,10 @@
     "outlet": "TV5Monde",
     "country": "France",
     "language": "fr",
-    "type": "public_broadcaster"
+    "type": "public_broadcaster",
+    "tier": 2,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Francophone international broadcaster jointly funded by France, Canada, Quebec, Switzerland, Federation Wallonie-Bruxelles and Monaco via partner public broadcasters."
   },
   "insightcrime.org": {
     "outlet": "InSight Crime",
@@ -1417,7 +1516,10 @@
     "outlet": "Iran International",
     "country": "United Kingdom",
     "language": "fa",
-    "type": "broadcaster"
+    "type": "broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "London-based Persian-language broadcaster owned by Volant Media UK Ltd; reporting links majority shareholding and funding to Saudi-national investors."
   },
   "irna.ir": {
     "outlet": "IRNA",
@@ -1426,7 +1528,10 @@
     "type": "state_broadcaster",
     "alt_languages": [
       "fa"
-    ]
+    ],
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Official news agency of the Islamic Republic of Iran; government-funded under the Ministry of Culture and Islamic Guidance."
   },
   "israelhayom.co.il": {
     "outlet": "Israel Hayom",
@@ -1459,7 +1564,10 @@
     "outlet": "The Japan Times",
     "country": "Japan",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Japanese English-language daily founded 1897; published by The Japan Times, Ltd., subsidiary of Tokyo PR firm News2u Holdings since 2017."
   },
   "japantoday.com": {
     "outlet": "Japan Today",
@@ -1483,7 +1591,10 @@
     "outlet": "Jerusalem Post",
     "country": "Israel",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Israeli English-language daily The Jerusalem Post; privately owned by Eli Azur via Mirkaei Tikshoret media group since 2004."
   },
   "kettner-edelmetalle.de": {
     "outlet": "Kettner Edelmetalle",
@@ -1498,19 +1609,28 @@
     "outlet": "Khabar Online",
     "country": "Iran",
     "language": "fa",
-    "type": "digital_native"
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Iranian Persian-language news site published by Khabar Publishing Group, associated with politician Ali Larijani; operating under Iranian media regulation."
   },
   "kommersant.ru": {
     "outlet": "Kommersant",
     "country": "Russia",
     "language": "ru",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Russian business daily owned since 2006 by Alisher Usmanov (USM Holdings); operating under Russian media regulation."
   },
   "koreaherald.com": {
     "outlet": "The Korea Herald",
     "country": "South Korea",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "South Korean English-language daily founded 1953; published by Herald Corporation (Herald Media Group), privately controlled by chairman Ryan Jungwook Hong since 2002."
   },
   "krebsonsecurity.com": {
     "outlet": "Krebs on Security",
@@ -1525,7 +1645,10 @@
     "outlet": "KT Press",
     "country": "Rwanda",
     "language": "en",
-    "type": "digital_native"
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Rwandan English-language news site founded 2014; published by Kigali Today Ltd, operating under Rwandan media regulation."
   },
   "kyivcity.gov.ua": {
     "outlet": "Kyiv City Council / Kyiv City State Administration",
@@ -1549,13 +1672,19 @@
     "outlet": "Kyiv Post",
     "country": "Ukraine",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Ukrainian English-language newspaper; privately owned via Businessgroup LLC by the Kivan family (KADORR Group) since 2018."
   },
   "la-croix.com": {
     "outlet": "La Croix",
     "country": "France",
     "language": "fr",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "French Catholic daily founded 1883; published by Bayard Presse, whose sole shareholder is the Assumptionist religious congregation."
   },
   "latimes.com": {
     "outlet": "Los Angeles Times",
@@ -1579,13 +1708,19 @@
     "outlet": "L'Économiste Maghrébin",
     "country": "Tunisia",
     "language": "fr",
-    "type": "magazine"
+    "type": "magazine",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Tunisian economic news magazine and website, published by the Promedia group (Tunis)"
   },
   "lefigaro.fr": {
     "outlet": "Le Figaro",
     "country": "France",
     "language": "fr",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "French paid daily newspaper, owned by Groupe Dassault (Dassault family)"
   },
   "legalactionworldwide.org": {
     "outlet": "Legal Action Worldwide",
@@ -1621,7 +1756,10 @@
     "outlet": "Libération",
     "country": "France",
     "language": "fr",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "French paid daily newspaper, owned by Patrick Drahi via Altice/SFR Presse"
   },
   "livehindustan.com": {
     "outlet": "Hindustan (Live Hindustan)",
@@ -1636,7 +1774,10 @@
     "outlet": "Mint",
     "country": "India",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Indian business daily (Mint), published by HT Media Ltd (BSE/NSE-listed)"
   },
   "lorientlejour.com": {
     "outlet": "L'Orient-Le Jour",
@@ -1660,7 +1801,10 @@
     "outlet": "Maariv",
     "country": "Israel",
     "language": "he",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Israeli Hebrew-language daily, owned by Eli Azur via Jerusalem Post Group since 2014"
   },
   "madamasr.com": {
     "outlet": "Mada Masr",
@@ -1810,7 +1954,10 @@
     "outlet": "Daily Monitor",
     "country": "Uganda",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Ugandan daily (Daily Monitor), owned by Nation Media Group (NSE-listed; Aga Khan-affiliated)"
   },
   "moroccoworldnews.com": {
     "outlet": "Morocco World News",
@@ -1825,7 +1972,10 @@
     "outlet": "Médecins Sans Frontières Spain",
     "country": "Spain",
     "language": "es",
-    "type": "ngo"
+    "type": "ngo",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Spanish section of Médecins Sans Frontières; non-profit funded ~98% from private donors"
   },
   "msf.fr": {
     "outlet": "Médecins Sans Frontières France",
@@ -1849,7 +1999,10 @@
     "outlet": "Nagasaki Shimbun",
     "country": "Japan",
     "language": "ja",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "Japanese regional daily (Nagasaki Shimbun), published by Nagasaki Shimbun Co., Ltd."
   },
   "nation.africa": {
     "outlet": "Daily Nation",
@@ -1864,13 +2017,19 @@
     "outlet": "Navbharat Times",
     "country": "India",
     "language": "hi",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Indian Hindi-language daily (Navbharat Times), published by Bennett, Coleman & Co. (Times Group)"
   },
   "nbcnews.com": {
     "outlet": "NBC News",
     "country": "United States",
     "language": "en",
-    "type": "broadcaster"
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "US commercial broadcaster news division, owned by NBCUniversal (Comcast Corp., NASDAQ-listed)"
   },
   "ndtv.com": {
     "outlet": "NDTV",
@@ -1939,7 +2098,10 @@
     "outlet": "New Vision",
     "country": "Uganda",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Ugandan daily (New Vision), majority-owned (~53%) by the Government of Uganda via Vision Group"
   },
   "nhk.or.jp": {
     "outlet": "NHK",
@@ -1957,7 +2119,10 @@
     "outlet": "Nikkei",
     "country": "Japan",
     "language": "ja",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Japanese business daily (Nihon Keizai Shimbun), privately held by Nikkei Inc.; owns the Financial Times"
   },
   "nordiskfilmogtvfond.com": {
     "outlet": "Nordisk Film & TV Fond",
@@ -2026,7 +2191,10 @@
     "outlet": "The New York Times",
     "country": "United States",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 1,
+    "editorial_independence": "independent",
+    "bias_note": "US daily newspaper, published by The New York Times Company (NYSE-listed; Ochs-Sulzberger family voting trust)"
   },
   "objectiv.tv": {
     "outlet": "Objectiv (Media Group OBJECTIVE)",
@@ -2113,7 +2281,10 @@
     "outlet": "Ukrainska Pravda",
     "country": "Ukraine",
     "language": "uk",
-    "type": "digital_native"
+    "type": "digital_native",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Ukrainian online news outlet (Ukrainska Pravda), owned since 2021 by Tomáš Fiala (Dragon Capital)"
   },
   "premiumtimesng.com": {
     "outlet": "Premium Times Nigeria",
@@ -2164,7 +2335,10 @@
     "outlet": "Radio Okapi",
     "country": "Democratic Republic of the Congo",
     "language": "fr",
-    "type": "broadcaster"
+    "type": "broadcaster",
+    "tier": 3,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "DRC public-interest radio created by UN MONUC (now MONUSCO) and Fondation Hirondelle; broadcasts under MONUSCO mandate"
   },
   "radiosvoboda.org": {
     "outlet": "Radio Svoboda (RFE/RL Ukrainian Service)",
@@ -2188,7 +2362,10 @@
     "outlet": "RBC-Ukraine",
     "country": "Ukraine",
     "language": "uk",
-    "type": "digital_native"
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Ukrainian news agency (RBC-Ukraine), privately owned by Yosyp Pintus (UBT media group); legally separated from Russian RBC in 2014"
   },
   "reliefweb.int": {
     "outlet": "ReliefWeb",
@@ -2212,13 +2389,19 @@
     "outlet": "La Repubblica",
     "country": "Italy",
     "language": "it",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Italian daily newspaper, published by GEDI Gruppo Editoriale (controlled by Exor/Elkann family)"
   },
   "rescue.org": {
     "outlet": "International Rescue Committee",
     "country": "United States",
     "language": "en",
-    "type": "ngo"
+    "type": "ngo",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "International Rescue Committee, US-chartered humanitarian NGO; mixed funding incl. US/UK government grants and private donors"
   },
   "responsiblestatecraft.org": {
     "outlet": "Responsible Statecraft",
@@ -2233,7 +2416,10 @@
     "outlet": "Reuters",
     "country": "United Kingdom",
     "language": "en",
-    "type": "wire_service"
+    "type": "wire_service",
+    "tier": 1,
+    "editorial_independence": "independent",
+    "bias_note": "International wire service, owned by Thomson Reuters Corp (NYSE/TSX-listed); Reuters Trust Principles govern editorial independence"
   },
   "rfa.org": {
     "outlet": "Radio Free Asia",
@@ -2266,7 +2452,10 @@
     "outlet": "RIA Novosti",
     "country": "Russia",
     "language": "ru",
-    "type": "state_broadcaster"
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Russian state news agency (RIA Novosti), operated by FGUP MIA Rossiya Segodnya, a federal state unitary enterprise"
   },
   "richmondregister.com": {
     "outlet": "Richmond Register",
@@ -2326,7 +2515,10 @@
     "outlet": "RTÉ",
     "country": "Ireland",
     "language": "en",
-    "type": "public_broadcaster"
+    "type": "public_broadcaster",
+    "tier": 2,
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Irish national public-service broadcaster (Raidió Teilifís Éireann), statutory semi-state body under the Broadcasting Act 2009"
   },
   "rtl.fr": {
     "outlet": "RTL France",
@@ -2377,7 +2569,10 @@
     "outlet": "YTN Science",
     "country": "South Korea",
     "language": "ko",
-    "type": "broadcaster"
+    "type": "broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Science subdomain of YTN Korea 24-hour news channel; majority of shares historically held by South Korean state-linked entities (KEPCO KDN, KRA, Korea Ginseng Corp)."
   },
   "scmp.com": {
     "outlet": "South China Morning Post",
@@ -2401,7 +2596,10 @@
     "outlet": "SETA",
     "country": "Turkey",
     "language": "tr",
-    "type": "ngo"
+    "type": "ngo",
+    "tier": 4,
+    "editorial_independence": "state_directed",
+    "bias_note": "Turkish think tank founded 2005 by Ibrahim Kalin (later Erdogan presidential spokesperson/adviser); reported funding from Albayrak family."
   },
   "seyahatsagligi.gov.tr": {
     "outlet": "Türkiye Ministry of Health (Travel Health)",
@@ -2497,13 +2695,19 @@
     "outlet": "STAT News",
     "country": "United States",
     "language": "en",
-    "type": "digital_native"
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "US health/life-sciences digital outlet owned by Boston Globe Media Partners (private, John W. Henry)."
   },
   "stcn.com": {
     "outlet": "Securities Times",
     "country": "China",
     "language": "zh",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Securities Times — Chinese state-owned financial daily supervised and organized by People's Daily Press; one of four official PRC securities newspapers."
   },
   "stern.de": {
     "outlet": "Stern",
@@ -2518,7 +2722,10 @@
     "outlet": "Süddeutsche Zeitung",
     "country": "Germany",
     "language": "de",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "German national daily owned by Suddeutscher Verlag (private; Suedwestdeutsche Medien Holding majority since 2007)."
   },
   "swp-berlin.org": {
     "outlet": "German Institute for International and Security Affairs (SWP)",
@@ -2560,7 +2767,10 @@
     "outlet": "Taifa Leo",
     "country": "Kenya",
     "language": "sw",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Kenyan Swahili-language daily published by Nation Media Group (private, Aga Khan Fund for Economic Development largest shareholder)."
   },
   "tass.com": {
     "outlet": "TASS",
@@ -2569,19 +2779,28 @@
     "type": "state_broadcaster",
     "alt_languages": [
       "ru"
-    ]
+    ],
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Russian state news agency; Federal State Unitary Enterprise wholly owned and controlled by the Russian government."
   },
   "tass.ru": {
     "outlet": "TASS",
     "country": "Russia",
     "language": "ru",
-    "type": "state_broadcaster"
+    "type": "state_broadcaster",
+    "tier": 2,
+    "editorial_independence": "state_directed",
+    "bias_note": "Russian state news agency; Federal State Unitary Enterprise wholly owned and controlled by the Russian government."
   },
   "tehrantimes.com": {
     "outlet": "Tehran Times",
     "country": "Iran",
     "language": "en",
-    "type": "state_broadcaster"
+    "type": "state_broadcaster",
+    "tier": 3,
+    "editorial_independence": "state_directed",
+    "bias_note": "Iranian English-language daily owned by the Islamic Ideology Dissemination Organization (a.k.a. Islamic Propagation Organisation), a state-affiliated body."
   },
   "teleceuta.com": {
     "outlet": "Teleceuta",
@@ -2596,7 +2815,10 @@
     "outlet": "The Telegraph",
     "country": "United Kingdom",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "UK national daily; under sale process since 2024 following Barclay family loan default. Privately held during interim."
   },
   "telesurtv.net": {
     "outlet": "teleSUR",
@@ -2659,13 +2881,16 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Scott Trust ownership, center-left editorial line"
+    "bias_note": "Owned by the Scott Trust Limited, a private foundation endowed to secure the paper's financial and editorial independence."
   },
   "thehindu.com": {
     "outlet": "The Hindu",
     "country": "India",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Indian national English daily owned by The Hindu Group / Kasturi & Sons Ltd (private, family-controlled)."
   },
   "theins.ru": {
     "outlet": "The Insider",
@@ -2689,7 +2914,10 @@
     "outlet": "The National",
     "country": "United Arab Emirates",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Abu Dhabi English-language daily owned by International Media Investments (IMI), part of UAE state-linked Mubadala/Royal Group network."
   },
   "thepaper.cn": {
     "outlet": "The Paper",
@@ -2713,25 +2941,37 @@
     "outlet": "The Times",
     "country": "United Kingdom",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "UK national daily; owned by News UK, a subsidiary of News Corp (Murdoch family-controlled)."
   },
   "timesofindia.indiatimes.com": {
     "outlet": "Times of India",
     "country": "India",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Indian English daily published by Bennett, Coleman & Co. Ltd. (Times Group), privately controlled by the Sahu Jain family."
   },
   "timesofisrael.com": {
     "outlet": "Times of Israel",
     "country": "Israel",
     "language": "en",
-    "type": "digital_native"
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Israeli English-language online outlet co-founded 2012 by David Horovitz and US investor Seth Klarman (Baupost Group chairman, who funds without editorial control per founders)."
   },
   "touteleurope.eu": {
     "outlet": "Toute l'Europe",
     "country": "France",
     "language": "fr",
-    "type": "digital_native"
+    "type": "digital_native",
+    "tier": 4,
+    "editorial_independence": "state_influenced",
+    "bias_note": "French EU-affairs site published by GIE Toute l'Europe (economic interest grouping); current members are the SGAE (French state EU affairs secretariat) and SNCF."
   },
   "tr.euronews.com": {
     "outlet": "Euronews Turkish",
@@ -2827,7 +3067,10 @@
     "outlet": "UOL",
     "country": "Brazil",
     "language": "pt",
-    "type": "digital_native"
+    "type": "digital_native",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Brazilian news portal Universo Online operated by UOL Inc., subsidiary of Grupo Folha (private, Frias family)."
   },
   "urdunews.com": {
     "outlet": "Urdu News",
@@ -2932,7 +3175,10 @@
     "outlet": "The Washington Post",
     "country": "United States",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "US national daily owned by Nash Holdings, a private holding company of Jeff Bezos since 2013."
   },
   "weforum.org": {
     "outlet": "World Economic Forum",
@@ -2974,7 +3220,10 @@
     "outlet": "The Wall Street Journal",
     "country": "United States",
     "language": "en",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "US business daily owned by Dow Jones & Company, a subsidiary of News Corp (Murdoch family-controlled, publicly listed)."
   },
   "wsjm.com": {
     "outlet": "WSJM-FM",
@@ -3002,7 +3251,10 @@
     "alt_languages": [
       "ar",
       "en"
-    ]
+    ],
+    "tier": 3,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Turkish daily owned by Albayrak Group (Erdogan-aligned family business; Berat Albayrak, former Finance Minister, is Erdogan's son-in-law)."
   },
   "yicai.com": {
     "outlet": "Yicai Media Group",
@@ -3047,7 +3299,10 @@
     "outlet": "Lianhe Zaobao",
     "country": "Singapore",
     "language": "zh",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "state_influenced",
+    "bias_note": "Singapore Chinese-language daily published by SPH Media Trust, a not-for-profit company receiving S$900M in Singapore government funding support over 5 years (announced 2022)."
   },
   "zdfheute.de": {
     "outlet": "ZDF",
@@ -3062,7 +3317,10 @@
     "outlet": "Die Zeit",
     "country": "Germany",
     "language": "de",
-    "type": "newspaper"
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "German national weekly Die Zeit published by Zeitverlag Gerd Bucerius (private; majority owned by Holtzbrinck Publishing Group)."
   },
   "zman.co.il": {
     "outlet": "Zman Yisrael",
