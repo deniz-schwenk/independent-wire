@@ -624,10 +624,10 @@ def build_feed(all_meta: list[dict]) -> str:
     for meta in sorted(all_meta, key=lambda x: (x["date"], x["id"]), reverse=True):
         items += f"""    <item>
       <title>{xml_escape(meta['headline'])}</title>
-      <link>https://independentwire.org/reports/{xml_escape(meta['id'])}.html</link>
+      <link>{SITE_BASE}/reports/{xml_escape(meta['id'])}.html</link>
       <description>{xml_escape(meta['summary'])}</description>
       <pubDate>{_rfc822_date(meta['date'])}</pubDate>
-      <guid>https://independentwire.org/reports/{xml_escape(meta['id'])}.html</guid>
+      <guid>{SITE_BASE}/reports/{xml_escape(meta['id'])}.html</guid>
     </item>
 """
 
@@ -635,10 +635,10 @@ def build_feed(all_meta: list[dict]) -> str:
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Independent Wire</title>
-    <link>https://independentwire.org</link>
+    <link>{SITE_BASE}</link>
     <description>An independent newsroom. Open. Transparent. For everyone.</description>
     <language>en</language>
-    <atom:link href="https://independentwire.org/feed.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="{SITE_BASE}/feed.xml" rel="self" type="application/rss+xml"/>
 {items}  </channel>
 </rss>"""
 
