@@ -1807,9 +1807,12 @@ def _slugify(value: str) -> str:
 def build_sources_section(tp: dict) -> str:
     """Two-level Sources section grouped by outlet.
 
-    Level 1: ``<details open>`` per outlet with ``<summary>`` showing
-    outlet name, Country &middot; editorial_independence (or "not yet
-    categorized" fallback), and the source count.
+    Level 1: ``<details>`` per outlet (collapsed by default) with
+    ``<summary>`` showing outlet name, Country &middot;
+    editorial_independence (or "not yet categorized" fallback), and the
+    source count. The summary stays visible when collapsed, so source
+    presence and the per-outlet count remain discoverable; only the
+    per-source detail list is hidden until the reader expands it.
 
     Level 2: ``<ol>`` of per-source ``<li id="src-NNN">`` entries with
     headline link, country/language/date metadata, summary, optional
@@ -2053,7 +2056,7 @@ def build_sources_section(tp: dict) -> str:
             )
 
         blocks.append(
-            f'<details class="outlet-block" id="outlet-{_esc(slug)}" open>\n'
+            f'<details class="outlet-block" id="outlet-{_esc(slug)}">\n'
             f'<summary>'
             f'<strong>{_esc(outlet)}</strong> '
             f'<span class="outlet-meta">{outlet_meta}</span> '
