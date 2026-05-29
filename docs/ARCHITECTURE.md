@@ -265,6 +265,7 @@ These principles are also documented in machine-checkable form in `docs/ARCH-V2-
 Applied in the current V2 pipeline:
 - **Curator pre-clustering and gravitational assignment** are entirely deterministic Python (`pre_cluster_findings`, `gravitational_assign`); only the topic-naming step (`CuratorTopicDiscoveryStage`) is an LLM call. The V1 single-pass Curator that asked one model to simultaneously cluster + assign + score is gone.
 - **Source merge + renumber** (`merge_sources` → `renumber_sources`) lift the hydration and research dossiers into a single sequential `src-NNN` keyspace deterministically; downstream agents never see `rsrc-` IDs.
+- **Outlet-metadata propagation** (`propagate_outlet_metadata`): every source's descriptive (`country` / `language` / `type`) and editorial (`tier` / `editorial_independence` / `bias_note`) fields are attached by deterministic hostname lookup (`lookup_outlet(url)`) against `config/outlet_registry.json` — the single source of truth. `config/sources.json` carries feed mechanics only. This replaced a fragile name-match against `sources.json` ("BBC World" matched "BBC" only by coincidence); hydration-origin sources whose hostname is in the registry now pick up the same fields, with sibling propagation across multi-host outlets (Al Jazeera EN/AR, BBC variants) applied deterministically.
 - **What-is-missing consolidation** (`ConsolidatorStage`, LLM, DeepSeek V4 Pro) consumes the structured `perspective_missing_positions[]` from the Perspective agent and the free-text `merged_coverage_gaps[]` from HydrationPhase2, deduplicates them, and classifies each entry as a missing voice or a missing topic. The earlier deterministic `validate_coverage_gaps_stage` was removed in commit `3f59ab9` after measurement showed it false-falsifying legitimate gaps via keyword-substring matching (Cuba 2026-05-23 dossier: 4 of 7 gaps wrongly dropped). The judgment is semantic; LLM with surgical scope is the right primitive.
 - **Bias-Card aggregation** (`compose_bias_card`): the public bias card is a derived render view over five Bus slots (`bias_language_findings`, `final_sources`, `source_balance`, `what_is_missing`, `transparency_card`). The bias detector emits only originary linguistic findings; the geographic / source / selection / framing dimensions are computed in Python.
 - **Counting is never delegated to LLM.** The Hydration aggregator does not self-verify its array length; the chunk validator in Python catches missing `article_index` values and retries with the missing indices only.
@@ -495,8 +496,8 @@ independent-wire/
 │   │   └── PHASE2-{SYSTEM,INSTRUCTIONS}.md       # Cross-corpus reducer
 │   └── _archive/                                 # Deprecated prompts retained for git-blame
 ├── config/
-│   ├── sources.json          # 72 RSS feeds, with tier / editorial_independence / bias_note metadata
-│   ├── outlet_registry.json  # 118+ outlets with country / language / type
+│   ├── sources.json          # RSS feed mechanics only (feed URLs + fetch config); editorial metadata moved to outlet_registry.json
+│   ├── outlet_registry.json  # Single source of truth — 359 outlets, hostname-keyed: country / language / type / tier / editorial_independence / bias_note
 │   ├── style-guide.md
 │   └── profiles/             # Model profile overrides (develop, demo)
 ├── scripts/
