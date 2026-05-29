@@ -522,7 +522,7 @@ def render_rss_entry(topic_bus: TopicBus, run_bus: RunBus) -> dict:
     return {
         "title": topic_bus.qa_corrected_article["headline"],
         "description": topic_bus.qa_corrected_article["summary"],
-        "link": f"https://independentwire.org/{topic_bus.editor_selected_topic['topic_slug']}",
+        "link": f"https://independent-wire.org/{topic_bus.editor_selected_topic['topic_slug']}",
         "pubDate": run_bus.run_date,
         "guid": topic_bus.editor_selected_topic["id"],
     }

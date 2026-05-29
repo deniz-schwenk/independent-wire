@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 VisibilityTag = Literal["tp", "mcp", "rss", "internal"]
 
-RSS_BASE_URL = "https://independentwire.org/"
+RSS_BASE_URL = "https://independent-wire.org/"
 
 
 # ---------------------------------------------------------------------------

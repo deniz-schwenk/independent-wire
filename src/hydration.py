@@ -82,7 +82,7 @@ STATUS_VALUES: tuple[Status, ...] = (
     "timeout",
 )
 
-DEFAULT_USER_AGENT = "Independent-Wire-Bot/1.0 +https://independentwire.org"
+DEFAULT_USER_AGENT = "Independent-Wire-Bot/1.0 +https://independent-wire.org"
 DEFAULT_PER_DOMAIN_RATE_LIMIT_S = 1.0
 DEFAULT_TIMEOUT_S = 30.0
 DEFAULT_PARTIAL_WORD_THRESHOLD = 50
