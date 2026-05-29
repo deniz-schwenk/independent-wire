@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Privacy Policy — Independent Wire</title>
-<link rel="canonical" href="https://independent-wire.org/privacy.html">
+<title>About Independent Wire</title>
+<link rel="canonical" href="https://independent-wire.org/about.html">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta name="robots" content="all">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -70,7 +70,7 @@ header .back-link {
 }
 header .back-link:hover { color: #666; border-color: #666; }
 
-/* Legal content */
+/* Content */
 main h2 {
   font-family: var(--font-sans);
   font-size: 1.25rem;
@@ -87,14 +87,32 @@ main p {
   margin-bottom: 0.75rem;
   line-height: 1.6;
 }
-main .lead {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: #444;
-  letter-spacing: 0.03em;
-}
 main a { color: #000; text-decoration: underline; }
 main a:hover { color: #666; }
+
+/* Vision download */
+.vision-download {
+  margin: 2.5rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+}
+.vision-download a {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.85rem 1.5rem;
+  min-height: 44px;
+  transition: background 120ms ease, color 120ms ease;
+  border: 1.5px solid #000;
+}
+.vision-download a:hover { background: #fff; color: #000; }
+.vision-download a:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
 
 /* Footer */
 footer {
@@ -135,23 +153,24 @@ footer a {
 <body>
 <div class="container">
 <header>
-  <h1>Privacy Policy</h1>
+  <h1>About Independent Wire</h1>
   <p class="tagline">Independent Wire &mdash; An independent newsroom</p>
   <a href="index.html" class="back-link">&larr; Back to home</a>
 </header>
 
 <main>
-  <h2>Controller</h2>
-  <p>Deniz Philipp Schwenk &middot; Schreinerstr. 32 &middot; 10247 Berlin &middot; Germany &middot; <span id="email-privacy"><noscript>deniz.schwenk [at] gmail [dot] com</noscript></span></p>
+  <h2>What it is</h2>
+  <p>The news you read was chosen for you &mdash; someone picked the topic, the angle, the sources. Independent Wire is an open-source AI pipeline that produces multi-perspective news dossiers with full source transparency. It scans sources across many language streams, shows where coverage diverges, documents which voices are missing, and publishes everything &mdash; including its own biases and limitations. No publisher, no engagement algorithm, no hidden editorial line.</p>
 
-  <h2>Hosting</h2>
-  <p>Served via GitHub Pages (GitHub, Inc., USA). On access, GitHub processes technically necessary server log data, including your IP address, to deliver and secure the site. Legal basis: Art. 6(1)(f) GDPR (legitimate interest). GitHub, Inc. is certified under the EU-U.S. Data Privacy Framework; the transfer to the USA is based on the European Commission&rsquo;s adequacy decision (Art. 45 GDPR).</p>
+  <h2>How it works</h2>
+  <p>A pipeline of specialized AI agents, orchestrated by deterministic Python &mdash; no LLM decides what happens next. Each stage does one job: discover the day&rsquo;s topics, research the spectrum of positions, write a source-attributed article, fact-check every claim, and mark linguistic bias. The output is not an article but a Topic Package: the article plus the perspectives, the divergences, what is missing, and a bias card. Every prompt the system runs lives openly in the repository &mdash; readable, forkable, under the same licence as the code.</p>
 
-  <h2>No cookies, no tracking</h2>
-  <p>No own cookies, no analytics, tracking, advertising, or social-media services.</p>
+  <h2>What it is not</h2>
+  <p>Not a chatbot, not an aggregator, not a replacement for investigative journalism. It cannot meet whistleblowers or visit a factory. And it is not neutral &mdash; nothing is. The models carry their training bias; the system offers not the absence of bias but transparency about where it lies. Source balance is uneven too: Western and English-language sources are over-represented. This is documented, not hidden &mdash; and improving it is an open workstream.</p>
 
-  <h2>Your rights</h2>
-  <p>Access, rectification, erasure, restriction, data portability, objection, and the right to lodge a complaint with a supervisory authority. Contact: <span id="email-privacy-rights"><noscript>deniz.schwenk [at] gmail [dot] com</noscript></span>.</p>
+  <div class="vision-download">
+    <a href="/vision.pdf" download>Read the Vision Paper (PDF)</a>
+  </div>
 </main>
 
 <footer>
@@ -169,20 +188,5 @@ footer a {
   </svg></div>
 </footer>
 </div>
-<script>
-// Email is assembled at runtime from separate parts so the contiguous
-// address never appears in the served HTML source (anti-scraping).
-(function () {
-  var user = "deniz.schwenk";
-  var domain = "gmail" + "." + "com";
-  var addr = user + "@" + domain;
-  document.querySelectorAll("#email-privacy, #email-privacy-rights").forEach(function (el) {
-    var a = document.createElement("a");
-    a.href = "mailto:" + addr;
-    a.textContent = addr;
-    el.appendChild(a);
-  });
-})();
-</script>
 </body>
 </html>
