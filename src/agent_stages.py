@@ -359,6 +359,25 @@ _CURATOR_RAW_DATA_FIELDS: tuple[str, ...] = (
     "relevance_score",
 )
 
+# Fields the Editor *agent* is allowed to see — exactly the per-topic inputs the
+# editor prompt declares. EditorStage projects each curator_topics entry down to
+# this allow-list before handing it to the agent, so the agent cannot cite a
+# provisional source_count or read outlet names out of source_diversity /
+# source_ids. Allow-list (not deny-list): a future enrichment field is withheld
+# by default until it is explicitly added here and to the prompt. The full
+# curator_topics dicts are untouched — the deterministic pre-sort and
+# _attach_raw_data_from_curated still see source_count / source_diversity /
+# source_ids.
+_EDITOR_AGENT_TOPIC_FIELDS: tuple[str, ...] = (
+    "title",
+    "summary",
+    "geographic_coverage",
+    "languages",
+    "missing_regions",
+    "missing_languages",
+    "missing_perspectives",
+)
+
 
 def _attach_raw_data_from_curated(
     raw_assignments: list[dict], curated_topics: list[dict]
@@ -1035,6 +1054,18 @@ class EditorStage(_AgentStageBase):
         previous = list(run_bus.previous_coverage or [])
         run_date = run_bus.run_date or ""
 
+        # Project each candidate to the prompt-declared fields only. Build a
+        # fresh copy — `curated` stays intact for the post-decision
+        # _attach_raw_data_from_curated below (and the upstream pre-sort that
+        # produced curator_topics). source_count / source_diversity /
+        # source_ids are withheld so the agent's selection_reason cannot cite
+        # provisional counts or outlet names.
+        agent_topics = [
+            {k: t[k] for k in _EDITOR_AGENT_TOPIC_FIELDS if k in t}
+            for t in curated
+            if isinstance(t, dict)
+        ]
+
         message = (
             "Prioritize these topics for today's report. For each, assign a "
             "priority (1-10) and a selection_reason. Today's date is "
@@ -1042,7 +1073,7 @@ class EditorStage(_AgentStageBase):
         )
         result = await self.agent.run(
             message,
-            context={"topics": curated, "previous_coverage": previous},
+            context={"topics": agent_topics, "previous_coverage": previous},
         )
         parsed = _parse_agent_output(result)
         raw_assignments = _unwrap_list(parsed, "assignments")

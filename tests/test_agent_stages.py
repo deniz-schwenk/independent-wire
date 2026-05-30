@@ -15,6 +15,7 @@ import pytest
 from src.agent_stages import (
     EditorStage,
     ResearcherPlanStage,
+    _EDITOR_AGENT_TOPIC_FIELDS,
     _assign_ids_and_slugs,
     _attach_raw_data_from_curated,
     _enrich_curator_output,
@@ -202,6 +203,77 @@ def test_editor_stage_handles_legacy_top_level_list():
     stage = EditorStage(fake)
     rb_after = _run(stage, rb)
     assert rb_after.editor_assignments[0]["id"] == "tp-2026-04-30-001"
+
+
+def test_editor_agent_view_excludes_source_stats_and_does_not_mutate():
+    """The Editor *agent* sees exactly the allow-listed per-topic fields.
+
+    source_count / source_diversity / source_ids are withheld so the agent's
+    selection_reason cannot cite a provisional source count or read outlet
+    names out of source_diversity. The projection must not mutate
+    curator_topics — the full dicts still carry the stripped fields after the
+    stage runs (the deterministic pre-sort and _attach_raw_data_from_curated
+    depend on them).
+    """
+    curated = [
+        {
+            "title": "US transit fees",
+            "summary": "fees on Strait of Hormuz",
+            "geographic_coverage": ["North America", "Middle East"],
+            "languages": ["en", "fa"],
+            "missing_regions": ["Africa"],
+            "missing_languages": ["zh"],
+            "missing_perspectives": "No coverage in: zh",
+            # Withheld from the agent view:
+            "source_count": 2,
+            "source_diversity": [
+                {"name": "South China Morning Post", "tier": 2},
+            ],
+            "source_ids": ["finding-0", "finding-2"],
+        },
+    ]
+    fake = FakeAgent(
+        structured={
+            "assignments": [
+                {
+                    "title": "US transit fees",
+                    "selection_reason": "strong cross-regional divergence",
+                    "priority": 8,
+                },
+            ]
+        }
+    )
+    rb = RunBus()
+    rb.run_date = "2026-04-30"
+    rb.curator_topics = curated
+
+    stage = EditorStage(fake)
+    rb_after = _run(stage, rb)
+
+    # Exactly one agent call; its context carries the projected topics.
+    assert len(fake.calls) == 1
+    context = fake.calls[0]["context"]
+    agent_topics = context["topics"]
+    assert len(agent_topics) == 1
+    agent_keys = set(agent_topics[0].keys())
+
+    # Agent view == exactly the allow-list, no more. Asserting against the
+    # constant makes adding a field deliberate; accidental passthrough fails.
+    assert agent_keys == set(_EDITOR_AGENT_TOPIC_FIELDS)
+    for withheld in ("source_count", "source_diversity", "source_ids"):
+        assert withheld not in agent_keys
+
+    # previous_coverage still rides alongside as its own context key.
+    assert "previous_coverage" in context
+
+    # Projection did NOT mutate curator_topics — the full dicts still carry
+    # the stripped fields after the stage runs.
+    full = rb_after.curator_topics[0]
+    assert full["source_count"] == 2
+    assert full["source_diversity"] == [
+        {"name": "South China Morning Post", "tier": 2}
+    ]
+    assert full["source_ids"] == ["finding-0", "finding-2"]
 
 
 # ---------------------------------------------------------------------------
