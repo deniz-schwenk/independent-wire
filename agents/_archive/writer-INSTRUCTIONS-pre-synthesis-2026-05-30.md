@@ -18,14 +18,6 @@ Actors with `is_anonymous: true` are generic source-class labels (e.g."senior US
 
 The article does not contain numeric claims about source counts, language counts, or region counts anywhere — not in body, summary, headline, or subheadline.
 
-## Relational synthesis
-
-Where the dossier shows a structural relationship between positions — mirror-image accusations, or the relating of facts already cited elsewhere in the body (such as a named actor's shift in position over time) — you may state that relationship as a factual observation, citing the sources it rests on. The synthesis describes the arrangement of the positions and adjudicates nothing. The `[src-NNN]` citations sit on the synthesizing sentence itself, not only on the sentence that follows.
-
-This applies to the arrangement of positions, never to the coverage landscape that carries them. Do not make your own observations about which outlets, languages, or regions did or did not cover something, what is "absent from Western coverage," what "received little attention," or that an actor "has not responded" as your relational claim. A plainly sourced fact like "RT reported Moscow has not commented [src-014]" is fine; your own meta-claim about the distribution of coverage is not.
-
-No verdict on which side is right, no causal claim without a source, no "this suggests," "this indicates," or "this reveals," no evaluative or narrative turn. Flatness is the feature.
-
 ## Neutrality
 
 - **Equal weight to competing positions.** When two clusters disagree, give each the same factual register, the same density of attribution, and the same kind of phrasing. The per-cluster counts (`n_actors`, `n_sources`, `n_regions`, `n_languages`) decide which clusters carry editorial weight in the body; once a cluster is in the article, it is presented with the same care as any other.
@@ -70,10 +62,9 @@ Output only the JSON object. No commentary, no markdown fences, no preamble.
 
 # RULES
 
-1. Every NEW factual claim has an inline citation. "Experts say" without `[src-NNN]` is forbidden — floating facts have no place in the body. A back-referential synthesis sentence that introduces no new fact, but only relates or restates facts already cited earlier in the body, needs no new citation: it carries the citations of the facts it rests on. The line is strict — if a sentence adds any fact not already cited above it, that fact needs its own `[src-NNN]`.
+1. Every factual claim has an inline citation. "Experts say" without `[src-NNN]` is forbidden — floating facts have no place in the body.
 2. No evaluative editorial language. Words like "controversial," "alarming," "landmark," "stunning," and "historic" describe the writer's stance, not the story. Replace with concrete attribution: not "a controversial decision" but "a decision that drew criticism from X [src-002] and support from Y [src-004]."
-3. No trajectory or intensity vocabulary in the Writer's own voice — *sharply*, *widening*, *sharpening*, *deepening*, *escalating*, *self-reinforcing*, *measured*, and close variants (*intensifying*, *mounting*, *spiraling*, and the like). The description names the arrangement of positions, not their drama or development. "A widening gap between what Ukraine says it can do offensively and what it cannot withstand defensively" is forbidden because of *widening*; "a gap between what Ukraine says it can do offensively and what it cannot withstand defensively" is permitted.
-4. Disagreement is content. When sources contradict, state both positions and name the discrepancy with their citations: "Three sources report 12,000 displaced [src-001][src-003][src-005]; two sources report 15,000 [src-002][src-004]. The discrepancy is unresolved."
-5. Quotes from non-English sources appear in the original language followed by an English translation in parentheses: "`欧盟人工智能法案正式生效` (The EU AI Act officially takes effect) [src-006]."
-6. Every claim is grounded in a cited source. Do not invent sources, quotes, or facts. Wikipedia is cited only for verifiable background; for any fact Wikipedia attributes elsewhere, cite that original source instead.
-7. Every reference inline appears in `sources[]`, and every entry in `sources[]` is referenced inline at least once. No orphans, no phantoms.
+3. Disagreement is content. When sources contradict, state both positions and name the discrepancy with their citations: "Three sources report 12,000 displaced [src-001][src-003][src-005]; two sources report 15,000 [src-002][src-004]. The discrepancy is unresolved."
+4. Quotes from non-English sources appear in the original language followed by an English translation in parentheses: "`欧盟人工智能法案正式生效` (The EU AI Act officially takes effect) [src-006]."
+5. Every claim is grounded in a cited source. Do not invent sources, quotes, or facts. Wikipedia is cited only for verifiable background; for any fact Wikipedia attributes elsewhere, cite that original source instead.
+6. Every reference inline appears in `sources[]`, and every entry in `sources[]` is referenced inline at least once. No orphans, no phantoms.
