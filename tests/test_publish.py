@@ -53,45 +53,104 @@ def _make_meta(tp_id: str, date: str, *, headline: str = "H") -> dict:
 
 
 # ---------------------------------------------------------------------------
-# 1. Per-date numbering reset
+# 1. Age-decay tiers (TODAY / YESTERDAY / EARLIER / ARCHIVE)
 # ---------------------------------------------------------------------------
 
 
-def test_card_index_resets_per_date():
-    """Two dates × three TPs each — each date block must start at TOPIC 01."""
+def test_today_tier_numbers_cards_older_dates_decay():
+    """The newest date (TODAY tier) numbers its hero cards TOPIC 01, 02, 03 —
+    a per-tier reset. Older dates decay into mid / compact / archive cards
+    WITHOUT the ``TOPIC NN`` hero label, but stay linked."""
     publish = _load_publish_module()
     metas = [
-        _make_meta("tp-2026-05-08-001", "2026-05-08"),
+        _make_meta("tp-2026-05-08-001", "2026-05-08"),  # TODAY (hero)
         _make_meta("tp-2026-05-08-002", "2026-05-08"),
         _make_meta("tp-2026-05-08-003", "2026-05-08"),
-        _make_meta("tp-2026-05-07-001", "2026-05-07"),
+        _make_meta("tp-2026-05-07-001", "2026-05-07"),  # YESTERDAY (mid)
         _make_meta("tp-2026-05-07-002", "2026-05-07"),
         _make_meta("tp-2026-05-07-003", "2026-05-07"),
     ]
     html = publish.build_index(metas)
 
-    # Each TP gets a `TOPIC NN / tp-...` label. With per-date reset, both
-    # dates produce 01/02/03; without reset the second date would emit
-    # 04/05/06.
-    for tp_id in [
-        "tp-2026-05-08-001", "tp-2026-05-07-001",
-    ]:
-        assert f'TOPIC 01 / {tp_id}' in html, (
-            f"expected first card of each date to read TOPIC 01; missing for {tp_id}"
-        )
-    for tp_id in [
-        "tp-2026-05-08-002", "tp-2026-05-07-002",
-    ]:
-        assert f'TOPIC 02 / {tp_id}' in html
-    for tp_id in [
-        "tp-2026-05-08-003", "tp-2026-05-07-003",
-    ]:
-        assert f'TOPIC 03 / {tp_id}' in html
+    # TODAY tier (newest date) numbers from 01 — per-tier reset.
+    assert "TOPIC 01 / tp-2026-05-08-001" in html
+    assert "TOPIC 02 / tp-2026-05-08-002" in html
+    assert "TOPIC 03 / tp-2026-05-08-003" in html
 
-    # Negative assertion: the bug-shape labels must not appear.
-    assert 'TOPIC 04' not in html
-    assert 'TOPIC 05' not in html
-    assert 'TOPIC 06' not in html
+    # Older date decays to mid cards: no TOPIC hero label, still linked.
+    assert "TOPIC 01 / tp-2026-05-07-001" not in html
+    assert 'href="reports/tp-2026-05-07-001.html"' in html
+
+    # Per-tier reset — never a global running count.
+    assert "TOPIC 04" not in html
+
+
+def test_decay_tiers_structure_and_counts():
+    """All four tiers render with the correct bucket-bar labels/counts and the
+    right card type per tier."""
+    publish = _load_publish_module()
+    metas = (
+        [_make_meta(f"tp-2026-05-31-{n:03d}", "2026-05-31") for n in (1, 2)]  # TODAY
+        + [_make_meta("tp-2026-05-30-001", "2026-05-30")]                      # YESTERDAY
+        + [_make_meta("tp-2026-05-28-001", "2026-05-28"),                      # EARLIER
+           _make_meta("tp-2026-05-27-001", "2026-05-27")]                      # EARLIER
+        + [_make_meta("tp-2026-05-10-001", "2026-05-10")]                      # ARCHIVE
+    )
+    html = publish.build_index(metas)
+
+    assert '<div class="bucket-bar"><span>TODAY</span><span>2 DOSSIERS</span></div>' in html
+    assert '<div class="bucket-bar"><span>YESTERDAY</span><span>1 DOSSIER</span></div>' in html
+    assert '<div class="bucket-bar"><span>EARLIER</span><span>2 DOSSIERS</span></div>' in html
+    assert '<div class="bucket-bar"><span>ARCHIVE</span><span>1 DOSSIER</span></div>' in html
+
+    assert html.count('class="tp-card"') == 2       # hero (TODAY)
+    assert html.count('class="tp-card-mid"') == 1   # mid (YESTERDAY)
+    assert html.count('class="compact-row"') == 2   # compact (EARLIER)
+    assert html.count('class="archive-row"') == 1   # archive row
+
+    # EARLIER is day-grouped: one light sub-marker per distinct day.
+    assert html.count('class="day-submarker"') == 2
+
+    # The legacy per-date black bar is fully replaced.
+    assert 'class="date-bar"' not in html
+
+
+def test_tier_omits_empty_buckets():
+    """A gap between the newest date and the rest leaves YESTERDAY and EARLIER
+    empty — those bucket bars must not render."""
+    publish = _load_publish_module()
+    metas = [
+        _make_meta("tp-2026-05-31-001", "2026-05-31"),  # TODAY
+        _make_meta("tp-2026-05-10-001", "2026-05-10"),  # ARCHIVE (age 21)
+    ]
+    html = publish.build_index(metas)
+    assert "<span>TODAY</span>" in html
+    assert "<span>ARCHIVE</span>" in html
+    assert "<span>YESTERDAY</span>" not in html
+    assert "<span>EARLIER</span>" not in html
+
+
+def test_archive_monthly_accordions_newest_open():
+    """Archive entries group into one <details> per calendar month — newest
+    month ``open``, older months closed, ordered newest-first."""
+    import re
+    publish = _load_publish_module()
+    metas = [
+        _make_meta("tp-2026-05-31-001", "2026-05-31"),  # TODAY anchor
+        _make_meta("tp-2026-05-10-001", "2026-05-10"),  # ARCHIVE — May
+        _make_meta("tp-2026-05-09-001", "2026-05-09"),  # ARCHIVE — May
+        _make_meta("tp-2026-04-20-001", "2026-04-20"),  # ARCHIVE — April
+    ]
+    html = publish.build_index(metas)
+
+    details = re.findall(r'<details class="archive-month"([^>]*)>', html)
+    titles = re.findall(r'<span class="archive-month-title">([^<]*)</span>', html)
+
+    assert titles == ["MAY 2026", "APRIL 2026"]          # newest month first
+    assert details[0].strip() == "open"                  # newest open
+    assert all(d.strip() == "" for d in details[1:])     # older months closed
+    assert '<span class="archive-month-count">2 DOSSIERS</span>' in html  # May
+    assert '<span class="archive-month-count">1 DOSSIER</span>' in html   # April
 
 
 def test_follow_up_link_degrades_to_text_when_target_missing(tmp_path):

@@ -230,6 +230,175 @@ header .tagline {
   text-decoration: underline;
 }
 
+/* ---- Age-decay tiers: bucket bars + mid / compact / archive ---- */
+.bucket-bar {
+  background: #000;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1.2rem;
+}
+
+/* TIER 1 — YESTERDAY (mid card) */
+.tp-card-mid {
+  border-top: 3px solid #000;
+  padding: 1rem 0;
+  margin-bottom: 0.4rem;
+}
+.tp-card-mid h3 {
+  font-family: var(--font-sans);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin: 0.15rem 0 0.4rem;
+}
+.tp-card-mid h3 a { color: #000; text-decoration: none; }
+.tp-card-mid h3 a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.subheadline-mid {
+  color: #333;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* TIER 2 — EARLIER (compact row, day-grouped) */
+.day-submarker {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #999;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 1rem 0 0.4rem;
+}
+.compact-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 70px;
+  align-items: center;
+  gap: 0.75rem;
+  border-top: 1px solid var(--color-border-light);
+  padding: 0.6rem 0;
+}
+.compact-id {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #999;
+  letter-spacing: 0.1em;
+}
+.compact-body { min-width: 0; }
+.compact-headline {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0;
+}
+.compact-headline a { color: #000; text-decoration: none; }
+.compact-headline a:hover { text-decoration: underline; text-underline-offset: 2px; }
+.compact-sub {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.1rem;
+}
+.compact-src {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+.compact-src-num {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #000;
+  line-height: 1;
+}
+.compact-src-label {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: #666;
+  letter-spacing: 0.1em;
+}
+
+/* TIER 3 — ARCHIVE (monthly accordions, native <details>) */
+.archive-month { margin-bottom: 0.25rem; }
+.archive-month-summary {
+  list-style: none;
+  cursor: pointer;
+  background: #000;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+.archive-month-summary::-webkit-details-marker { display: none; }
+.archive-month-title { display: inline-flex; align-items: center; gap: 0.5rem; }
+.archive-month-title::before {
+  content: "\203a";
+  display: inline-block;
+  font-weight: 700;
+  transition: transform 150ms ease;
+}
+details[open] > .archive-month-summary .archive-month-title::before {
+  transform: rotate(90deg);
+}
+.archive-month-body { padding: 0.1rem 0 0.5rem; }
+.archive-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 40px;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--color-border-light);
+}
+.archive-id {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #999;
+  letter-spacing: 0.08em;
+}
+.archive-headline {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #444;
+  text-decoration: none;
+  line-height: 1.35;
+  min-width: 0;
+}
+.archive-headline:hover { text-decoration: underline; text-underline-offset: 2px; color: #000; }
+.archive-src {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #999;
+  text-align: right;
+  white-space: nowrap;
+}
+.archive-src-label { font-size: 0.6rem; }
+
 /* Footer */
 footer {
   margin-top: 3rem;
@@ -278,6 +447,11 @@ footer a {
   }
   footer { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
   footer .footer-mark { width: 64px; height: 64px; }
+  .tp-card-mid h3 { font-size: 1.1rem; }
+  .compact-row { grid-template-columns: 80px 1fr 52px; gap: 0.5rem; }
+  .compact-headline { font-size: 0.95rem; }
+  .compact-src-num { font-size: 1.1rem; }
+  .archive-row { grid-template-columns: 80px 1fr 40px; gap: 0.5rem; }
 }
 </style>
 </head>
@@ -292,7 +466,7 @@ footer a {
 </header>
 
 <main>
-<div class="date-bar"><span>MAY 31, 2026</span><span>3 DOSSIERS</span></div>
+<div class="bucket-bar"><span>TODAY</span><span>3 DOSSIERS</span></div>
 <article class="tp-card">
   <span class="topic-id">TOPIC 01 / tp-2026-05-31-001</span>
   <h2><a href="reports/tp-2026-05-31-001.html">US Strikes Commercial Vessel in Gulf of Oman as Iran Reports Shooting Down American Drone and Missile Hits Kuwait Base</a></h2>
@@ -334,553 +508,262 @@ footer a {
   </div>
   <div class="card-footer"><span>1,067 words &middot; May 31, 2026</span><a href="reports/tp-2026-05-31-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
 </article>
-<div class="date-bar"><span>MAY 30, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-30-001</span>
-  <h2><a href="reports/tp-2026-05-30-001.html">Federal Judge Orders Trump&#x27;s Name Removed from Kennedy Center, Ruling Only Congress Can Rename the Institution</a></h2>
-  <p class="subheadline">President Trump responded by announcing he would transfer the performing-arts center to Congressional control, calling the Obama-appointed judge &#x27;reckless&#x27;; the Kennedy Center&#x27;s leadership said it would appeal.</p>
-  <p class="summary">A federal judge ruled that the Kennedy Center&#x27;s board of trustees acted unlawfully by adding President Trump&#x27;s name to the institution and ordering a two-year closure, finding that only Congress can alter the center&#x27;s designation under its 1964 founding statute. Trump attacked the ruling and announced he would transfer operational control of the center to Congress, while the Kennedy Center&#x27;s leadership said it would appeal. The dispute has prompted artist boycotts, union labor charges over staff layoffs, and celebrations from the Kennedy family and the lawsuit&#x27;s plaintiff, Representative Joyce Beatty.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">21</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">9</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">21</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>909 words &middot; May 30, 2026</span><a href="reports/tp-2026-05-30-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
+<div class="bucket-bar"><span>YESTERDAY</span><span>3 DOSSIERS</span></div>
+<article class="tp-card-mid">
+  <span class="topic-id">tp-2026-05-30-001</span>
+  <h3><a href="reports/tp-2026-05-30-001.html">Federal Judge Orders Trump&#x27;s Name Removed from Kennedy Center, Ruling Only Congress Can Rename the Institution</a></h3>
+  <p class="subheadline-mid">President Trump responded by announcing he would transfer the performing-arts center to Congressional control, calling the Obama-appointed judge &#x27;reckless&#x27;; the Kennedy Center&#x27;s leadership said it would appeal.</p>
+  <div class="card-footer"><span>21 sources &middot; 909 words &middot; May 30, 2026</span><a href="reports/tp-2026-05-30-001.html" class="read-link">&rarr; READ</a></div>
 </article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-30-002</span>
-  <h2><a href="reports/tp-2026-05-30-002.html">Pentagon Chief Hegseth Demands Allies Spend 3.5% of GDP on Defense, Warns Against Chinese Dominance at Shangri-La Dialogue</a></h2>
-  <p class="subheadline">The US defense secretary&#x27;s speech drew a formal Chinese diplomatic protest over Taiwan remarks while raising questions about the reliability of American security commitments across the Indo-Pacific.</p>
-  <p class="summary">US Defense Secretary Pete Hegseth used the Shangri-La Dialogue to warn against Chinese dominance in Asia and demand that allied nations raise defense spending to 3.5 percent of GDP, prompting a formal diplomatic protest from Beijing over his Taiwan remarks. The speech exposed a tension between Hegseth&#x27;s characterization of an imminent Chinese threat and President Trump&#x27;s treatment of a paused Taiwan arms package as a negotiating chip. Vietnamese leader To Lam offered an alternative framework centered on international law, ASEAN centrality, and preventive diplomacy.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">22</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">9</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>788 words &middot; May 30, 2026</span><a href="reports/tp-2026-05-30-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
+<article class="tp-card-mid">
+  <span class="topic-id">tp-2026-05-30-002</span>
+  <h3><a href="reports/tp-2026-05-30-002.html">Pentagon Chief Hegseth Demands Allies Spend 3.5% of GDP on Defense, Warns Against Chinese Dominance at Shangri-La Dialogue</a></h3>
+  <p class="subheadline-mid">The US defense secretary&#x27;s speech drew a formal Chinese diplomatic protest over Taiwan remarks while raising questions about the reliability of American security commitments across the Indo-Pacific.</p>
+  <div class="card-footer"><span>22 sources &middot; 788 words &middot; May 30, 2026</span><a href="reports/tp-2026-05-30-002.html" class="read-link">&rarr; READ</a></div>
 </article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-30-003</span>
-  <h2><a href="reports/tp-2026-05-30-003.html">UN Adds Israeli and Russian Forces to Sexual Violence Blacklist for First Time</a></h2>
-  <p class="subheadline">The listing, covering 77 parties across 12 countries, drew immediate denunciations from Jerusalem and Moscow and praise from Kyiv, while Washington called it disproportionate.</p>
-  <p class="summary">The United Nations added Israeli and Russian armed and security forces to its conflict-related sexual violence blacklist for the first time, documenting verified cases against Palestinian detainees and Ukrainian prisoners of war. Israel called the listing politically motivated and severed ties with the UN Secretary-General&#x27;s office, while Russia dismissed the findings as fabricated; Ukraine welcomed the decision as a step toward accountability. The report recorded nearly 10,000 cases worldwide in 2025, more than double the previous year.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">15</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">4</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">13</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>983 words &middot; May 30, 2026</span><a href="reports/tp-2026-05-30-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
+<article class="tp-card-mid">
+  <span class="topic-id">tp-2026-05-30-003</span>
+  <h3><a href="reports/tp-2026-05-30-003.html">UN Adds Israeli and Russian Forces to Sexual Violence Blacklist for First Time</a></h3>
+  <p class="subheadline-mid">The listing, covering 77 parties across 12 countries, drew immediate denunciations from Jerusalem and Moscow and praise from Kyiv, while Washington called it disproportionate.</p>
+  <div class="card-footer"><span>15 sources &middot; 983 words &middot; May 30, 2026</span><a href="reports/tp-2026-05-30-003.html" class="read-link">&rarr; READ</a></div>
 </article>
-<div class="date-bar"><span>MAY 29, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-29-001</span>
-  <h2><a href="reports/tp-2026-05-29-001.html">Russian Drone Strikes Apartment Building in NATO Member Romania, Injuring Two</a></h2>
-  <p class="subheadline">The first strike to wound civilians on allied territory since the start of the Ukraine war draws sweeping Western condemnation, a Romanian request for accelerated counter-drone systems, and silence from the Kremlin.</p>
-  <p class="summary">A Russian drone struck an apartment building in Galați, Romania, on the night of 28–29 May, injuring two civilians in the first such incident to cause casualties on NATO territory since the start of the Ukraine war. Western leaders condemned the strike as a reckless escalation and announced new sanctions preparations, while Romania requested accelerated counter-drone capabilities and said the incident warranted NATO Article 4 consultations. Moscow did not comment directly on the Romania strike; Russian state media instead highlighted Ukrainian drone attacks on Russian territory the same night and accused Western governments of selective outrage.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-27-003.html" class="follow-up-link">&ldquo;Germany Summons Russian Ambassador as Ukraine Strikes Russian Port and Refinery Targets&rdquo;</a> <span class="follow-up-date">(May 27, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">37</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">13</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">55</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+<div class="bucket-bar"><span>EARLIER</span><span>15 DOSSIERS</span></div>
+<div class="day-submarker">May 29, 2026</div>
+<div class="compact-row">
+  <span class="compact-id">05-29-001</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-29-001.html">Russian Drone Strikes Apartment Building in NATO Member Romania, Injuring Two</a></h4>
+    <span class="compact-sub">The first strike to wound civilians on allied territory since the start of the Ukraine war draws sweeping Western condemnation, a Romanian request for accelerated counter-drone systems, and silence from the Kremlin.</span>
   </div>
-  <div class="card-footer"><span>1,091 words &middot; May 29, 2026</span><a href="reports/tp-2026-05-29-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-29-002</span>
-  <h2><a href="reports/tp-2026-05-29-002.html">US-Iran Ceasefire Extension Reportedly Agreed by Negotiators, Awaits Trump&#x27;s Sign-Off</a></h2>
-  <p class="subheadline">A 60-day memorandum of understanding covering the Strait of Hormuz, mine removal, and nuclear talks has been drafted, but both sides dispute whether the text is final.</p>
-  <p class="summary">US and Iranian negotiators have reportedly agreed on a 60-day ceasefire extension covering the Strait of Hormuz, mine removal, and nuclear talks, but President Trump has not approved the memorandum and Iran&#x27;s Tasnim news agency denies the text is finalized. Markets rallied on the prospect of de-escalation while military exchanges continued, and a parallel constitutional dispute over the War Powers Resolution&#x27;s applicability has opened in Washington.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-25-003.html" class="follow-up-link">&ldquo;Rubio Calls Emerging US-Iran Deal &#x27;Pretty Solid&#x27; as Republican Hawks and Tehran Each Challenge Its Terms&rdquo;</a> <span class="follow-up-date">(May 25, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">34</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">9</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">59</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">37</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">05-29-002</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-29-002.html">US-Iran Ceasefire Extension Reportedly Agreed by Negotiators, Awaits Trump&#x27;s Sign-Off</a></h4>
+    <span class="compact-sub">A 60-day memorandum of understanding covering the Strait of Hormuz, mine removal, and nuclear talks has been drafted, but both sides dispute whether the text is final.</span>
   </div>
-  <div class="card-footer"><span>1,129 words &middot; May 29, 2026</span><a href="reports/tp-2026-05-29-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-29-003</span>
-  <h2><a href="reports/tp-2026-05-29-003.html">Israel Strikes Beirut Suburbs for First Time in Weeks as Offensive Expands Beyond Southern Lebanon</a></h2>
-  <p class="subheadline">The strike on Dahieh targeted an alleged Hezbollah-allied commander, while UNIFIL recorded the highest projectile activity since the April ceasefire and hundreds of thousands fled evacuation orders.</p>
-  <p class="summary">Israel struck Beirut&#x27;s southern suburbs for the first time in weeks — the BBC described it as the second such strike since the April ceasefire — targeting an alleged Hezbollah-allied commander, as UNIFIL recorded the highest projectile activity since the April ceasefire and hundreds of thousands of Lebanese civilians fled evacuation orders. The geographic expansion of strikes drew competing framings: Israel cited an escalating fibre-optic drone threat from Hezbollah, while Lebanese officials, humanitarian agencies, and regional actors described a humanitarian catastrophe and ceasefire violation. Security negotiations between Israeli and Lebanese military delegations were set to begin at the Pentagon on May 29 amid parallel US-Iran ceasefire talks.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-28-002.html" class="follow-up-link">&ldquo;Israel Declares Southern Lebanon a Combat Zone and Strikes Tyre as Ceasefire Framework Fractures&rdquo;</a> <span class="follow-up-date">(May 28, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">30</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">42</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">34</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">05-29-003</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-29-003.html">Israel Strikes Beirut Suburbs for First Time in Weeks as Offensive Expands Beyond Southern Lebanon</a></h4>
+    <span class="compact-sub">The strike on Dahieh targeted an alleged Hezbollah-allied commander, while UNIFIL recorded the highest projectile activity since the April ceasefire and hundreds of thousands fled evacuation orders.</span>
   </div>
-  <div class="card-footer"><span>1,159 words &middot; May 29, 2026</span><a href="reports/tp-2026-05-29-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<div class="date-bar"><span>MAY 28, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-28-001</span>
-  <h2><a href="reports/tp-2026-05-28-001.html">US and Iran Exchange Strikes Near Bandar Abbas as IRGC Retaliates Against American Base</a></h2>
-  <p class="subheadline">Washington calls its attacks &#x27;measured and purely defensive&#x27;; Tehran condemns them as ceasefire violations and vows escalation, while oil prices surge toward $100 a barrel.</p>
-  <p class="summary">The United States and Iran exchanged direct military strikes on May 28, with Washington hitting an Iranian site near Bandar Abbas and the IRGC retaliating against a US air base in Kuwait, each side accusing the other of violating the ceasefire. Oil prices surged toward $100 a barrel as the IEA warned of the worst energy security crisis in history, while the conflict spread to Kuwait, Lebanon, and the diplomatic track remained stalled over control of the Strait of Hormuz, uranium enrichment, and sanctions relief. The US Senate rejected a War Powers resolution, and analysts across multiple regions warned of lasting economic, military, and geopolitical consequences.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-27-002.html" class="follow-up-link">&ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New US Strikes Near Hormuz Draw Accusations of Ceasefire Violation&rdquo;</a> <span class="follow-up-date">(May 27, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">31</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">43</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">30</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="day-submarker">May 28, 2026</div>
+<div class="compact-row">
+  <span class="compact-id">05-28-001</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-28-001.html">US and Iran Exchange Strikes Near Bandar Abbas as IRGC Retaliates Against American Base</a></h4>
+    <span class="compact-sub">Washington calls its attacks &#x27;measured and purely defensive&#x27;; Tehran condemns them as ceasefire violations and vows escalation, while oil prices surge toward $100 a barrel.</span>
   </div>
-  <div class="card-footer"><span>1,113 words &middot; May 28, 2026</span><a href="reports/tp-2026-05-28-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-28-002</span>
-  <h2><a href="reports/tp-2026-05-28-002.html">Israel Declares Southern Lebanon a Combat Zone and Strikes Tyre as Ceasefire Framework Fractures</a></h2>
-  <p class="subheadline">The largest evacuation order since the April ceasefire displaces over 1.2 million Lebanese while Israel, Hezbollah, and international actors trade accusations of violations.</p>
-  <p class="summary">Israel declared all of southern Lebanon south of the Zahrani River a combat zone and launched large-scale strikes on Tyre and surrounding areas, displacing over 1.2 million people and killing dozens, including a family of six hit by a drone. Israel frames the escalation as a response to Hezbollah ceasefire violations, while Lebanese officials, European governments, UN bodies, and US senators describe the mass displacement orders and strikes as breaches of international humanitarian law and the ceasefire itself. A Lebanese military delegation is expected at Pentagon talks to present a ceasefire plan and a proposal for extending state authority across the country.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-27-001.html" class="follow-up-link">&ldquo;Israel Expands Ground Operations Deep Into Lebanon and Kills Hamas Military Chief in Gaza During Ceasefire&rdquo;</a> <span class="follow-up-date">(May 27, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">27</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">36</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">31</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">05-28-002</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-28-002.html">Israel Declares Southern Lebanon a Combat Zone and Strikes Tyre as Ceasefire Framework Fractures</a></h4>
+    <span class="compact-sub">The largest evacuation order since the April ceasefire displaces over 1.2 million Lebanese while Israel, Hezbollah, and international actors trade accusations of violations.</span>
   </div>
-  <div class="card-footer"><span>1,091 words &middot; May 28, 2026</span><a href="reports/tp-2026-05-28-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-28-003</span>
-  <h2><a href="reports/tp-2026-05-28-003.html">Ukraine Strikes Russian Radar and Oil Targets as Zelensky Warns Trump of Critical Air Defense Shortages</a></h2>
-  <p class="subheadline">Kyiv unveils a &#x27;logistical lockdown&#x27; drone campaign while pleading for Patriot interceptors; analysts and allies disagree on the strikes&#x27; military impact and the path to diplomacy.</p>
-  <p class="summary">Ukraine struck high-value Russian military and oil targets as part of a new &#x27;logistical lockdown&#x27; drone campaign, while President Zelenskyy sent an urgent letter to President Trump warning of critical Patriot air defense shortages. Independent analysts described the cumulative economic damage as significant but said the direct military impact on Russia&#x27;s war effort remains limited. EU foreign ministers split over whether to appoint a peace negotiator, with the bloc&#x27;s foreign policy chief calling the debate a Russian &#x27;trap,&#x27; while Germany proposed doubling NATO military aid to Ukraine.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-27-003.html" class="follow-up-link">&ldquo;Germany Summons Russian Ambassador as Ukraine Strikes Russian Port and Refinery Targets&rdquo;</a> <span class="follow-up-date">(May 27, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">23</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">9</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">19</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">27</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">05-28-003</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-28-003.html">Ukraine Strikes Russian Radar and Oil Targets as Zelensky Warns Trump of Critical Air Defense Shortages</a></h4>
+    <span class="compact-sub">Kyiv unveils a &#x27;logistical lockdown&#x27; drone campaign while pleading for Patriot interceptors; analysts and allies disagree on the strikes&#x27; military impact and the path to diplomacy.</span>
   </div>
-  <div class="card-footer"><span>940 words &middot; May 28, 2026</span><a href="reports/tp-2026-05-28-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<div class="date-bar"><span>MAY 27, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-27-001</span>
-  <h2><a href="reports/tp-2026-05-27-001.html">Israel Expands Ground Operations Deep Into Lebanon and Kills Hamas Military Chief in Gaza During Ceasefire</a></h2>
-  <p class="subheadline">Israeli forces pushed beyond their self-declared security zone as over 120 airstrikes killed at least 31 people in Lebanon; the assassination of Mohammed Odeh in a crowded Gaza City market drew international condemnation and Iranian warnings.</p>
-  <p class="summary">Israel expanded ground operations beyond its self-declared buffer zone in southern Lebanon and killed Mohammed Odeh — whom it described as Hamas military wing chief — in a Gaza City airstrike during Eid al-Adha, escalating on two fronts while ceasefires nominally remain in effect. Lebanese authorities reported at least 31 dead including children, Hezbollah claimed 32 retaliatory operations, and international bodies from the EU to China demanded Israel halt operations, while Iran warned of potential retaliation and the US simultaneously deployed advanced fighter jets to Israel and signaled progress toward a ceasefire with Tehran.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-26-003.html" class="follow-up-link">&ldquo;Netanyahu Orders Intensified Strikes Across Lebanon, Vowing to &#x27;Crush&#x27; Hezbollah as Ceasefire Fractures&rdquo;</a> <span class="follow-up-date">(May 26, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">36</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">44</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">23</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="day-submarker">May 27, 2026</div>
+<div class="compact-row">
+  <span class="compact-id">05-27-001</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-27-001.html">Israel Expands Ground Operations Deep Into Lebanon and Kills Hamas Military Chief in Gaza During Ceasefire</a></h4>
+    <span class="compact-sub">Israeli forces pushed beyond their self-declared security zone as over 120 airstrikes killed at least 31 people in Lebanon; the assassination of Mohammed Odeh in a crowded Gaza City market drew international condemnation and Iranian warnings.</span>
   </div>
-  <div class="card-footer"><span>1,071 words &middot; May 27, 2026</span><a href="reports/tp-2026-05-27-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-27-002</span>
-  <h2><a href="reports/tp-2026-05-27-002.html">Iran Threatens to Strike UAE if Israel Hits Lebanon, as New US Strikes Near Hormuz Draw Accusations of Ceasefire Violation</a></h2>
-  <p class="subheadline">Tehran and Washington trade military blows and diplomatic barbs while negotiators say a deal could still take days; South Korea links an attack on its cargo ship to Iranian-developed missiles.</p>
-  <p class="summary">Iran&#x27;s security establishment is reportedly weighing retaliatory strikes on UAE targets in response to Israeli operations in Lebanon, adding a new escalatory dimension to the conflict as the US and Iran trade accusations over ceasefire violations near the Strait of Hormuz. South Korea linked an attack on one of its cargo ships to Iranian-developed missiles, while negotiators on both sides said a deal could take several more days. The humanitarian toll is deepening, with the WFP warning of record global hunger and Iranian civilians describing severe hardship from a prolonged internet blackout.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-26-001.html" class="follow-up-link">&ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as Both Sides Say a Deal Remains Possible&rdquo;</a> <span class="follow-up-date">(May 26, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">31</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">47</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">36</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">05-27-002</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-27-002.html">Iran Threatens to Strike UAE if Israel Hits Lebanon, as New US Strikes Near Hormuz Draw Accusations of Ceasefire Violation</a></h4>
+    <span class="compact-sub">Tehran and Washington trade military blows and diplomatic barbs while negotiators say a deal could still take days; South Korea links an attack on its cargo ship to Iranian-developed missiles.</span>
   </div>
-  <div class="card-footer"><span>1,229 words &middot; May 27, 2026</span><a href="reports/tp-2026-05-27-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-27-003</span>
-  <h2><a href="reports/tp-2026-05-27-003.html">Germany Summons Russian Ambassador as Ukraine Strikes Russian Port and Refinery Targets</a></h2>
-  <p class="subheadline">European governments refuse to evacuate embassies from Kyiv while Ukrainian drones hit energy infrastructure deep inside Russia, opening new diplomatic and operational fronts in the war.</p>
-  <p class="summary">Germany, the EU, and Norway summoned Russian envoys after Moscow warned foreign diplomats to leave Kyiv ahead of announced systematic strikes, while nearly 50 countries condemned the threats at the United Nations — with the U.S. notably absent. Ukrainian drones struck Russian port, refinery, and military airfield targets overnight, extending a deep-strike campaign that has shut down the Syzran refinery and repeatedly hit Tuapse, as Ukrainian analysts dismissed Russia&#x27;s threats as psychological warfare masking frontline weakness.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-26-002.html" class="follow-up-link">&ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-Making Centers&#x27; and Warns Foreigners to Leave&rdquo;</a> <span class="follow-up-date">(May 26, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">28</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">41</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">0</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">31</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">05-27-003</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-27-003.html">Germany Summons Russian Ambassador as Ukraine Strikes Russian Port and Refinery Targets</a></h4>
+    <span class="compact-sub">European governments refuse to evacuate embassies from Kyiv while Ukrainian drones hit energy infrastructure deep inside Russia, opening new diplomatic and operational fronts in the war.</span>
   </div>
-  <div class="card-footer"><span>1,130 words &middot; May 27, 2026</span><a href="reports/tp-2026-05-27-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<div class="date-bar"><span>MAY 26, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-26-001</span>
-  <h2><a href="reports/tp-2026-05-26-001.html">US Strikes Iranian Missile Sites and Mine-Laying Vessels as Both Sides Say a Deal Remains Possible</a></h2>
-  <p class="subheadline">Washington calls the attacks self-defense under an ongoing ceasefire; Tehran acknowledges negotiating progress but denies an agreement is imminent, while global markets swing on each signal.</p>
-  <p class="summary">US forces struck Iranian missile sites and mine-laying vessels near the Strait of Hormuz on May 26, calling the operation self-defense under an ongoing ceasefire, while Iranian negotiators in Doha acknowledged progress but denied a deal was imminent. Key sticking points include the fate of Iran&#x27;s enriched uranium, the reopening of the Strait of Hormuz, and Trump&#x27;s demand that Muslim-majority states join the Abraham Accords — a proposal rejected by Pakistan and met with skepticism by regional analysts. Global oil prices and currencies swung on each development as mediators in Qatar worked to keep talks alive.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-25-003.html" class="follow-up-link">&ldquo;Rubio Calls Emerging US-Iran Deal &#x27;Pretty Solid&#x27; as Republican Hawks and Tehran Each Challenge Its Terms&rdquo;</a> <span class="follow-up-date">(May 25, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">34</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">45</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">28</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="day-submarker">May 26, 2026</div>
+<div class="compact-row">
+  <span class="compact-id">05-26-001</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-26-001.html">US Strikes Iranian Missile Sites and Mine-Laying Vessels as Both Sides Say a Deal Remains Possible</a></h4>
+    <span class="compact-sub">Washington calls the attacks self-defense under an ongoing ceasefire; Tehran acknowledges negotiating progress but denies an agreement is imminent, while global markets swing on each signal.</span>
   </div>
-  <div class="card-footer"><span>1,080 words &middot; May 26, 2026</span><a href="reports/tp-2026-05-26-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-26-002</span>
-  <h2><a href="reports/tp-2026-05-26-002.html">Russia Announces Systematic Strikes on Kyiv &#x27;Decision-Making Centers&#x27; and Warns Foreigners to Leave</a></h2>
-  <p class="subheadline">Ukraine calls the threat &#x27;shameless blackmail&#x27; as EU and French diplomats refuse to evacuate; the warning follows a massive combined missile-and-drone assault that damaged nearly 300 sites across the Ukrainian capital.</p>
-  <p class="summary">Russia&#x27;s Foreign Ministry announced systematic strikes on Kyiv&#x27;s &#x27;decision-making centers&#x27; and urged foreign nationals and diplomats to leave, framing the campaign as retaliation for a disputed Ukrainian strike in occupied Luhansk Oblast. Ukraine dismissed the warning as blackmail, while EU and French diplomats refused to evacuate and the United States reiterated its readiness to mediate. On-the-ground reporting documented extensive civilian and cultural destruction across Kyiv, with at least five dead and more than 90 wounded from the preceding combined missile-and-drone assault.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-25-001.html" class="follow-up-link">&ldquo;Russia Deploys Oreshnik Hypersonic Missile in Massive Combined Strike on Kyiv, Killing Four&rdquo;</a> <span class="follow-up-date">(May 25, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">34</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">12</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">51</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">34</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">05-26-002</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-26-002.html">Russia Announces Systematic Strikes on Kyiv &#x27;Decision-Making Centers&#x27; and Warns Foreigners to Leave</a></h4>
+    <span class="compact-sub">Ukraine calls the threat &#x27;shameless blackmail&#x27; as EU and French diplomats refuse to evacuate; the warning follows a massive combined missile-and-drone assault that damaged nearly 300 sites across the Ukrainian capital.</span>
   </div>
-  <div class="card-footer"><span>1,069 words &middot; May 26, 2026</span><a href="reports/tp-2026-05-26-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-26-003</span>
-  <h2><a href="reports/tp-2026-05-26-003.html">Netanyahu Orders Intensified Strikes Across Lebanon, Vowing to &#x27;Crush&#x27; Hezbollah as Ceasefire Fractures</a></h2>
-  <p class="subheadline">Far-right Israeli ministers demand bombing Beirut and cutting power to Lebanon; international condemnation mounts from Qatar, Russia, Iran, and humanitarian organizations over civilian casualties.</p>
-  <p class="summary">Benjamin Netanyahu ordered an intensification of Israeli strikes across Lebanon, declaring Israel &quot;at war with Hezbollah&quot; and directing the military to deliver a &quot;crushing blow,&quot; while far-right coalition ministers demanded bombing Beirut and cutting power to Lebanon. Casualty figures from the initial strikes varied across sources, with Anadolu Agency reporting 17 killed and other outlets reporting at least three. Hezbollah said its retaliatory drone and rocket attacks were responses to Israeli ceasefire violations, and international condemnation came from Qatar, Russia, the ICRC, MSF, and Human Rights Watch, which documented the use of white phosphorus in populated areas. The escalation has fractured the U.S.-mediated ceasefire and complicated parallel diplomatic efforts, including U.S.–Iran negotiations and planned Washington talks on Lebanon.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-19-002.html" class="follow-up-link">&ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacuation Orders in Southern Lebanon, Drawing Divergent International Responses&rdquo;</a> <span class="follow-up-date">(May 19, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">25</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">30</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">34</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">05-26-003</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-26-003.html">Netanyahu Orders Intensified Strikes Across Lebanon, Vowing to &#x27;Crush&#x27; Hezbollah as Ceasefire Fractures</a></h4>
+    <span class="compact-sub">Far-right Israeli ministers demand bombing Beirut and cutting power to Lebanon; international condemnation mounts from Qatar, Russia, Iran, and humanitarian organizations over civilian casualties.</span>
   </div>
-  <div class="card-footer"><span>1,086 words &middot; May 26, 2026</span><a href="reports/tp-2026-05-26-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<div class="date-bar"><span>MAY 25, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-25-001</span>
-  <h2><a href="reports/tp-2026-05-25-001.html">Russia Deploys Oreshnik Hypersonic Missile in Massive Combined Strike on Kyiv, Killing Four</a></h2>
-  <p class="subheadline">The third confirmed use of the nuclear-capable intermediate-range ballistic missile accompanied a barrage of 90 missiles and 600 drones, prompting an emergency UN Security Council session and sharp disagreement over targeting, intent, and military significance.</p>
-  <p class="summary">Russia launched one of the war&#x27;s largest combined aerial attacks on Kyiv on May 24, deploying approximately 90 missiles and 600 drones including the nuclear-capable Oreshnik hypersonic missile, killing at least four people and injuring roughly 100. Moscow framed the strikes as retaliation for a Ukrainian attack on a dormitory in Luhansk, while Ukrainian and European leaders condemned the assault as deliberate terror against civilians and nuclear brinkmanship, and military analysts debated whether the Oreshnik represents a genuine military threat or a politically motivated intimidation tool still in pre-serial testing.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-18-002.html" class="follow-up-link">&ldquo;Ukraine Launches One of Its Largest Drone Strikes on Moscow Region, Killing at Least Four&rdquo;</a> <span class="follow-up-date">(May 18, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">32</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">9</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">49</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">25</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="day-submarker">May 25, 2026</div>
+<div class="compact-row">
+  <span class="compact-id">05-25-001</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-25-001.html">Russia Deploys Oreshnik Hypersonic Missile in Massive Combined Strike on Kyiv, Killing Four</a></h4>
+    <span class="compact-sub">The third confirmed use of the nuclear-capable intermediate-range ballistic missile accompanied a barrage of 90 missiles and 600 drones, prompting an emergency UN Security Council session and sharp disagreement over targeting, intent, and military significance.</span>
   </div>
-  <div class="card-footer"><span>1,033 words &middot; May 25, 2026</span><a href="reports/tp-2026-05-25-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-25-002</span>
-  <h2><a href="reports/tp-2026-05-25-002.html">Turkish Riot Police Storm CHP Headquarters With Tear Gas and Rubber Bullets, Triggering Mass Protests</a></h2>
-  <p class="subheadline">The police raid to enforce a court order reinstating former leader Kılıçdaroğlu marks a physical escalation of the opposition crisis, drawing thousands into the streets and sharp international criticism.</p>
-  <p class="summary">Turkish riot police used tear gas and rubber bullets to storm the CHP opposition party&#x27;s Ankara headquarters on May 24, enforcing a court order that annulled the 2023 party congress and reinstated former leader Kemal Kilicdaroğlu. Ousted leader Özgür Özel led thousands of supporters in a march to Parliament, calling the ruling a judicial coup, while the government insisted the courts acted independently. The crisis triggered a parallel crackdown on university protesters, sent the lira to record lows, and drew sharp EU criticism constrained by Europe&#x27;s strategic dependence on Turkey.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-22-002.html" class="follow-up-link">&ldquo;Turkish Court Annuls Opposition CHP&#x27;s 2023 Congress, Removing Leader Özgür Özel and Reinstating Kılıçdaroğlu&rdquo;</a> <span class="follow-up-date">(May 22, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">20</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">17</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">32</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">05-25-002</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-25-002.html">Turkish Riot Police Storm CHP Headquarters With Tear Gas and Rubber Bullets, Triggering Mass Protests</a></h4>
+    <span class="compact-sub">The police raid to enforce a court order reinstating former leader Kılıçdaroğlu marks a physical escalation of the opposition crisis, drawing thousands into the streets and sharp international criticism.</span>
   </div>
-  <div class="card-footer"><span>870 words &middot; May 25, 2026</span><a href="reports/tp-2026-05-25-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-25-003</span>
-  <h2><a href="reports/tp-2026-05-25-003.html">Rubio Calls Emerging US-Iran Deal &#x27;Pretty Solid&#x27; as Republican Hawks and Tehran Each Challenge Its Terms</a></h2>
-  <p class="subheadline">Oil prices fell and stock markets rose on optimism for an agreement, but the framework faces criticism from US senators who call it a capitulation and from Iranian officials who reject key provisions attributed to them.</p>
-  <p class="summary">US Secretary of State Marco Rubio described the emerging US-Iran deal framework as &#x27;pretty solid,&#x27; triggering oil price drops and stock market gains, but the proposal faces opposition from Republican hawks who call it a capitulation and from Iranian officials who reject key provisions attributed to them. The phased framework would first reopen the Strait of Hormuz and then negotiate the disposition of Iran&#x27;s nuclear program within a 60-day window, though the two sides disagree on basic terms including the ceasefire duration and the fate of enriched uranium. Final approval from Iran&#x27;s supreme leader and national security council remains pending.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-21-002.html" class="follow-up-link">&ldquo;Iran Reviews Latest US Peace Proposal While Trump Sets Days-Long Deadline and Tehran Claims Control Over Waters Near Fujairah&rdquo;</a> <span class="follow-up-date">(May 21, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">35</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">12</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">38</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
+  <div class="compact-src"><span class="compact-src-num">20</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">05-25-003</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-05-25-003.html">Rubio Calls Emerging US-Iran Deal &#x27;Pretty Solid&#x27; as Republican Hawks and Tehran Each Challenge Its Terms</a></h4>
+    <span class="compact-sub">Oil prices fell and stock markets rose on optimism for an agreement, but the framework faces criticism from US senators who call it a capitulation and from Iranian officials who reject key provisions attributed to them.</span>
   </div>
-  <div class="card-footer"><span>1,150 words &middot; May 25, 2026</span><a href="reports/tp-2026-05-25-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<div class="date-bar"><span>MAY 24, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-24-001</span>
-  <h2><a href="reports/tp-2026-05-24-001.html">France Bans Israeli Security Minister Ben-Gvir From Its Territory and Pushes for EU-Wide Sanctions</a></h2>
-  <p class="subheadline">The entry ban, announced by French Foreign Minister Jean-Noël Barrot, follows Ben-Gvir&#x27;s video taunting bound Gaza flotilla activists and joins similar measures by Spain and Poland.</p>
-  <p class="summary">France banned Israeli National Security Minister Itamar Ben-Gvir from its territory on May 23, citing his actions toward French and European citizens aboard a Gaza-bound aid flotilla, and joined Italy and Spain in pushing for EU-wide sanctions against him personally. Israel&#x27;s Prime Minister Netanyahu had earlier distanced himself from Ben-Gvir&#x27;s conduct, while Israeli authorities denied allegations of abuse against detained flotilla activists — claims that remain contested and unresolved. EU High Representative Kaja Kallas agreed to work on a targeted sanctions package, though unanimity among member states is required.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-21-001.html" class="follow-up-link">&ldquo;Ben-Gvir&#x27;s Video of Bound Gaza Flotilla Activists Draws Rebuke From Netanyahu and Cascade of European Ambassador Summonings&rdquo;</a> <span class="follow-up-date">(May 21, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">19</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">10</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>794 words &middot; May 24, 2026</span><a href="reports/tp-2026-05-24-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-24-002</span>
-  <h2><a href="reports/tp-2026-05-24-002.html">Tens of Thousands Rally in Belgrade and Madrid Demanding Government Change as Police Clash with Protesters</a></h2>
-  <p class="subheadline">Student-led anti-corruption marchers in Serbia and right-wing opposition demonstrators in Spain converge on a shared demand — the removal of their governments — but the movements diverge sharply in origin, ideology, and international response.</p>
-  <p class="summary">Tens of thousands protested in Belgrade and Madrid on May 23, demanding the removal of their governments — Serbia&#x27;s student-led anti-corruption movement calling for early elections after the 2024 Novi Sad disaster, and Spain&#x27;s right-wing opposition rallying over corruption allegations against Prime Minister Sánchez&#x27;s inner circle. Both rallies ended in clashes near government buildings, but the movements differ in ideology, composition, and international response, with the Council of Europe raising human-rights concerns about Serbia while Spain&#x27;s partisan mobilization drew no comparable institutional scrutiny. A parallel crisis in Bolivia added a third front of mass anti-government protest driven by economic grievances.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">25</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">9</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">25</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,118 words &middot; May 24, 2026</span><a href="reports/tp-2026-05-24-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-24-003</span>
-  <h2><a href="reports/tp-2026-05-24-003.html">Cristian Mungiu Wins Second Palme d&#x27;Or for &#x27;Fjord,&#x27; a Drama About Political Polarization in Norway</a></h2>
-  <p class="subheadline">The Cannes closing ceremony was dominated by calls against fundamentalism and a direct appeal from Russian director Andrey Zvyagintsev to Vladimir Putin to end the war in Ukraine.</p>
-  <p class="summary">Cristian Mungiu won his second Palme d&#x27;Or at Cannes for &quot;Fjord,&quot; a drama about a Romanian family&#x27;s conflict with Norwegian child-protection services that he described as a pledge against all forms of fundamentalism. The ceremony was also marked by Andrey Zvyagintsev&#x27;s Grand Prix acceptance speech directly urging Vladimir Putin to end the war in Ukraine, and by accusations from some critics that Mungiu&#x27;s film constitutes reactionary propaganda in its portrayal of Norway&#x27;s child-welfare system. Norwegian government officials, affected immigrant families, and Ukrainian voices were absent from the coverage examined.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">24</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>983 words &middot; May 24, 2026</span><a href="reports/tp-2026-05-24-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<div class="date-bar"><span>MAY 23, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-23-001</span>
-  <h2><a href="reports/tp-2026-05-23-001.html">Gas Explosion at Shanxi Coal Mine Kills at Least 90, Making It China&#x27;s Deadliest Mining Disaster in Over a Decade</a></h2>
-  <p class="subheadline">The Liushenyu mine had been flagged for severe safety hazards in 2024 and fined twice in 2025, raising questions about regulatory enforcement as Beijing orders a nationwide crackdown.</p>
-  <p class="summary">A gas explosion at the Liushenyu coal mine in Shanxi province killed at least 90 workers and left nine missing, making it China&#x27;s deadliest mining disaster since 2009. The mine had been flagged for severe safety hazards in 2024 and fined twice in 2025, prompting questions about regulatory enforcement even as President Xi Jinping ordered an all-out rescue effort, a thorough investigation, and a nationwide crackdown on illegal mining. No miners&#x27; families, labor organizations, or independent safety experts have been quoted in available reporting.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">26</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>938 words &middot; May 23, 2026</span><a href="reports/tp-2026-05-23-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-23-002</span>
-  <h2><a href="reports/tp-2026-05-23-002.html">US Indicts Raúl Castro for 1996 Shootdown as Thousands Rally in Havana and Latin American Governments Denounce the Move</a></h2>
-  <p class="subheadline">The Department of Justice charges the former Cuban president with murder; Cuba calls it a pretext for military aggression, while Mexico, Brazil, China, and Russia condemn the action as interventionist.</p>
-  <p class="summary">The US Department of Justice indicted former Cuban President Raúl Castro on murder charges for the 1996 Brothers to the Rescue shootdown, prompting mass pro-government rallies in Havana and celebrations among Cuban exiles in Miami. Cuba rejected the charges as a fabricated pretext for military aggression, while Mexico, Brazil, China, Russia, and European governments condemned or questioned the move on sovereignty and international-law grounds. The indictment sits within a broader US maximum-pressure campaign that includes an oil blockade and expanded sanctions, deepening a humanitarian crisis that Caribbean leaders warn could trigger regional instability.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">21</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">10</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">23</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,017 words &middot; May 23, 2026</span><a href="reports/tp-2026-05-23-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-23-003</span>
-  <h2><a href="reports/tp-2026-05-23-003.html">WHO Raises Ebola Risk to &#x27;Very High&#x27; as Suspected Cases Near 750 and the Outbreak Crosses Into Uganda</a></h2>
-  <p class="subheadline">The rare Bundibugyo strain, which has no approved vaccine or treatment, went undetected for two months; armed conflict, aid cuts, and community distrust compound the response challenge.</p>
-  <p class="summary">The WHO raised its Ebola risk assessment for the DRC to &#x27;very high&#x27; as suspected cases neared 750 and deaths reached 177, with Uganda confirming five cases linked to cross-border transmission. The rare Bundibugyo strain has no approved vaccine or treatment, a gap researchers attribute to years of neglect and pharmaceutical disincentives, while armed conflict, U.S. aid cuts, and community distrust compound the response challenge. Neighboring countries have imposed escalating border restrictions including flight suspensions and entry bans, and the UN has allocated up to $60 million as frontline facilities report critical shortages of protective equipment and supplies.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-22-003.html" class="follow-up-link">&ldquo;Ebola Death Toll in Eastern DRC Rises to 160 as Attacks on Treatment Centers and Tightened Border Controls Reshape the Response&rdquo;</a> <span class="follow-up-date">(May 22, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">35</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">53</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,198 words &middot; May 23, 2026</span><a href="reports/tp-2026-05-23-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<div class="date-bar"><span>MAY 22, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-22-001</span>
-  <h2><a href="reports/tp-2026-05-22-001.html">Trump Announces 5,000 Additional US Troops for Poland, Reversing Pentagon Cancellation and Deepening Transatlantic Confusion</a></h2>
-  <p class="subheadline">The deployment, framed by Washington as a reward for a loyal ally, coincides with troop withdrawals from Germany and growing European frustration over erratic US messaging on NATO commitments.</p>
-  <p class="summary">President Trump announced 5,000 additional US troops for Poland, framing the decision as a personal reward for Polish President Nawrocki, days after the Pentagon cancelled a similar deployment. The move was welcomed by Polish officials but deepened European confusion over US reliability, coinciding with troop withdrawals from Germany and sharp US criticism of NATO allies over burden-sharing and the Iran war. Moscow called the deployment an escalation, Beijing opposed it as bloc confrontation, and NATO Secretary General Rutte cautioned that the long-term trajectory remains one of reduced European dependence on the United States.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">27</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">24</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>983 words &middot; May 22, 2026</span><a href="reports/tp-2026-05-22-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-22-002</span>
-  <h2><a href="reports/tp-2026-05-22-002.html">Turkish Court Annuls Opposition CHP&#x27;s 2023 Congress, Removing Leader Özgür Özel and Reinstating Kılıçdaroğlu</a></h2>
-  <p class="subheadline">The ruling triggered a stock market crash, emergency central bank intervention, and sharp disagreement over whether it represents judicial independence or authoritarian consolidation.</p>
-  <p class="summary">An Ankara appeals court annulled the CHP&#x27;s 2023 leadership congress, removing Özgür Özel and provisionally reinstating Kemal Kılıçdaroğlu, triggering a stock market crash and emergency central bank intervention. The opposition and European officials described the ruling as a politically motivated judicial coup, while the Turkish government said it reinforced the rule of law. The CHP has appealed to the Supreme Court, and no statements from President Erdoğan, the ruling judges, or EU institutions have been recorded.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">23</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">15</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,050 words &middot; May 22, 2026</span><a href="reports/tp-2026-05-22-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-22-003</span>
-  <h2><a href="reports/tp-2026-05-22-003.html">Ebola Death Toll in Eastern DRC Rises to 160 as Attacks on Treatment Centers and Tightened Border Controls Reshape the Response</a></h2>
-  <p class="subheadline">Angry crowds burned isolation tents in Ituri over burial disputes, while the United States funneled all travelers from three African countries through a single airport and African health leaders condemned the restrictions as counterproductive.</p>
-  <p class="summary">The DRC Health Ministry raised the suspected Ebola death toll to 160 amid 671 suspected cases, as angry crowds attacked treatment centers in Ituri over burial disputes and the outbreak spread to rebel-held South Kivu. The United States imposed strict entry screening for travelers from three African countries, drawing condemnation from African health leaders who called the restrictions counterproductive, while epidemiologists warned that confirmed cases represent only a fraction of actual infections and that no approved vaccine exists for the Bundibugyo strain.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-21-003.html" class="follow-up-link">&ldquo;WHO Deploys 100 Tonnes of Material to Eastern DRC as Ebola Crosses Into Uganda and Case Estimates Surpass 1,000&rdquo;</a> <span class="follow-up-date">(May 21, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">37</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">52</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,180 words &middot; May 22, 2026</span><a href="reports/tp-2026-05-22-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<div class="date-bar"><span>MAY 21, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-21-001</span>
-  <h2><a href="reports/tp-2026-05-21-001.html">Ben-Gvir&#x27;s Video of Bound Gaza Flotilla Activists Draws Rebuke From Netanyahu and Cascade of European Ambassador Summonings</a></h2>
-  <p class="subheadline">Israel began deporting approximately 428 detained activists as over a dozen governments condemned the footage and the ICC prosecutor sought arrest warrants for senior Israeli ministers.</p>
-  <p class="summary">Israeli National Security Minister Itamar Ben-Gvir posted videos taunting bound and kneeling Gaza flotilla activists, prompting a rare rebuke from Prime Minister Netanyahu and a wave of ambassador summonings and travel-ban requests from more than a dozen governments. Israel began deporting the approximately 428 detained activists as Adalah documented allegations of widespread physical abuse, the ICC prosecutor sought arrest warrants for senior Israeli ministers, and flotilla organizers called European condemnations insufficient without concrete policy consequences.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-19-002.html" class="follow-up-link">&ldquo;Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacuation Orders in Southern Lebanon, Drawing Divergent International Responses&rdquo;</a> <span class="follow-up-date">(May 19, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">22</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">50</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,047 words &middot; May 21, 2026</span><a href="reports/tp-2026-05-21-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-21-002</span>
-  <h2><a href="reports/tp-2026-05-21-002.html">Iran Reviews Latest US Peace Proposal While Trump Sets Days-Long Deadline and Tehran Claims Control Over Waters Near Fujairah</a></h2>
-  <p class="subheadline">Tehran says it is examining Washington&#x27;s response to its 14-point framework as the newly created Persian Gulf Strait Authority asserts jurisdiction extending to UAE territorial waters, drawing a sharp Emirati rebuke.</p>
-  <p class="summary">Iran confirmed it is reviewing the latest US peace proposal delivered through Pakistani mediation, while President Trump said negotiations were in their final stages and warned of rapid military escalation if Tehran does not provide satisfactory answers within days. Tehran&#x27;s newly created Persian Gulf Strait Authority simultaneously claimed regulatory control over Hormuz waters extending to the UAE&#x27;s Fujairah port, a move the UAE dismissed as a chimera born of military defeat. Energy markets remain volatile, with Brent crude swinging on shifting diplomatic signals even as the strait itself remains effectively under Iranian control.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-20-002.html" class="follow-up-link">&ldquo;Iran Warns of War &#x27;Beyond the Region&#x27; as First Commercial Tankers Transit Strait of Hormuz Under Tehran&#x27;s Coordination&rdquo;</a> <span class="follow-up-date">(May 20, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">20</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">27</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,073 words &middot; May 21, 2026</span><a href="reports/tp-2026-05-21-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-21-003</span>
-  <h2><a href="reports/tp-2026-05-21-003.html">WHO Deploys 100 Tonnes of Material to Eastern DRC as Ebola Crosses Into Uganda and Case Estimates Surpass 1,000</a></h2>
-  <p class="subheadline">The Bundibugyo-strain outbreak, now declared a public health emergency of international concern, faces no approved vaccine, active armed conflict, and a bitter dispute over whether US aid cuts delayed detection.</p>
-  <p class="summary">The WHO and partner agencies have deployed nearly 100 tonnes of supplies to eastern DRC as the Bundibugyo Ebola outbreak — now a declared public health emergency of international concern — has crossed into Uganda, with modelling suggesting over 1,000 active cases and no approved vaccine available for months. A bitter dispute has emerged over whether US aid cuts delayed detection, with experts citing a 73 percent drop in DRC health spending while US officials pledge new funding and criticize the WHO&#x27;s response timeline. Travel bans imposed by the US, South Korea, and Rwanda contradict WHO guidance against restrictions, as conflict, displacement, and overwhelmed health facilities complicate containment in one of the world&#x27;s most volatile regions.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-20-003.html" class="follow-up-link">&ldquo;Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Estimate Ebola Cases Two to Five Times Higher Than Official Figures&rdquo;</a> <span class="follow-up-date">(May 20, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">33</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">48</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,025 words &middot; May 21, 2026</span><a href="reports/tp-2026-05-21-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<div class="date-bar"><span>MAY 20, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-20-001</span>
-  <h2><a href="reports/tp-2026-05-20-001.html">Xi Jinping and Vladimir Putin Sign 20 Cooperation Documents and Multipolar World Declaration in Beijing</a></h2>
-  <p class="subheadline">Days after hosting Donald Trump, China stages a summit with Russia that exposes competing interpretations of the partnership&#x27;s depth, symmetry, and strategic intent.</p>
-  <p class="summary">Xi Jinping and Vladimir Putin signed 20 cooperation documents and a joint declaration on a multipolar world order in Beijing, days after China hosted Donald Trump, with both leaders describing their partnership as a global stabilizing force. Analysts across regions highlighted the structural asymmetry of the relationship, noting Russia&#x27;s far greater dependence on China and the absence of a breakthrough deal on the Power of Siberia 2 gas pipeline. A Reuters report on covert Chinese military training of Russian personnel and Xi&#x27;s selective silence on the Ukraine war added contested dimensions to the summit&#x27;s significance.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">25</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">10</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">14</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>976 words &middot; May 20, 2026</span><a href="reports/tp-2026-05-20-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-20-002</span>
-  <h2><a href="reports/tp-2026-05-20-002.html">Iran Warns of War &#x27;Beyond the Region&#x27; as First Commercial Tankers Transit Strait of Hormuz Under Tehran&#x27;s Coordination</a></h2>
-  <p class="subheadline">The IRGC threatens to open new fronts with undisclosed weapons if the US resumes strikes, while Trump oscillates between deal optimism and a days-long deadline for &#x27;another big hit.&#x27;</p>
-  <p class="summary">Iran&#x27;s Revolutionary Guards warned that any renewed US attack would extend the war beyond the Middle East, as 26 commercial vessels transited the Strait of Hormuz under Iranian coordination for the first time since hostilities began. Trump set a deadline of days for a deal while claiming he had postponed a fresh strike at Gulf allies&#x27; request, but analysts said both sides remain stuck and the president&#x27;s threats are losing market credibility. The FAO warned of a global food crisis from continued strait disruption, while polling showed nearly half of Americans feel less safe and bipartisan congressional action to limit war powers advanced.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-19-001.html" class="follow-up-link">&ldquo;Trump Suspends Planned Strike on Iran After Gulf States Request Pause, Citing New Tehran Proposal&rdquo;</a> <span class="follow-up-date">(May 19, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">24</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">9</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">59</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,033 words &middot; May 20, 2026</span><a href="reports/tp-2026-05-20-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-20-003</span>
-  <h2><a href="reports/tp-2026-05-20-003.html">Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Estimate Ebola Cases Two to Five Times Higher Than Official Figures</a></h2>
-  <p class="subheadline">MSF reports patients turned away from overwhelmed facilities in Ituri province while modeling suggests the outbreak, driven by a rare strain with no approved vaccine, may already exceed 1,000 active cases.</p>
-  <p class="summary">Hospitals in the epicenter of the DRC Ebola outbreak are overwhelmed and turning patients away, according to MSF, while modeling by Imperial College London and the WHO estimates actual cases at two to five times official figures. The WHO assessed global risk as low but declared a public health emergency of international concern, drawing criticism from US Secretary of State Marco Rubio that the organization was slow to respond — a charge WHO Director-General Tedros and public health experts rejected. No approved vaccine exists for the rare Bundibugyo strain driving the outbreak, though two experimental candidates may reach human trials within months.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-19-003.html" class="follow-up-link">&ldquo;Ebola Death Toll Surges Past 130 as Africa CDC Declares Continental Emergency and Countries Diverge on Travel Response&rdquo;</a> <span class="follow-up-date">(May 19, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">38</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">58</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,099 words &middot; May 20, 2026</span><a href="reports/tp-2026-05-20-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<div class="date-bar"><span>MAY 19, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-19-001</span>
-  <h2><a href="reports/tp-2026-05-19-001.html">Trump Suspends Planned Strike on Iran After Gulf States Request Pause, Citing New Tehran Proposal</a></h2>
-  <p class="subheadline">Saudi Arabia, the UAE, and Qatar asked Washington for more time to negotiate; Iran warns it will &#x27;open new fronts&#x27; if attacks resume.</p>
-  <p class="summary">President Trump suspended a planned military strike on Iran at the request of Saudi Arabia, the UAE, and Qatar, citing a new 14-point Iranian proposal delivered through Pakistani mediators that U.S. officials called &#x27;serious but incomplete.&#x27; Iranian military commanders warned they would &#x27;open new fronts&#x27; if attacks resume, while Israeli officials expressed concern that any deal could neglect nuclear enrichment, missiles, and proxy forces. The Strait of Hormuz closure continues to drive a global food and energy crisis, with the UK warning of famine risks and G7 finance ministers calling for IMF and World Bank intervention.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-18-001.html" class="follow-up-link">&ldquo;Trump Threatens Iran With Total Destruction as Tehran Vows to Break Strait of Hormuz Blockade&rdquo;</a> <span class="follow-up-date">(May 18, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">30</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">33</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,047 words &middot; May 19, 2026</span><a href="reports/tp-2026-05-19-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-19-002</span>
-  <h2><a href="reports/tp-2026-05-19-002.html">Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacuation Orders in Southern Lebanon, Drawing Divergent International Responses</a></h2>
-  <p class="subheadline">A coalition of governments condemns the seizure of over 40 boats as piracy, while Israeli officials call the operation a success against a Hamas-serving provocation; separately, new displacement orders affect a dozen Lebanese towns despite an extended ceasefire.</p>
-  <p class="summary">Israeli naval forces seized at least 41 of 51 boats of the Global Sumud Flotilla in international waters near Cyprus — though some reports cited lower figures — detaining hundreds of activists and prompting a joint condemnation from ten countries&#x27; foreign ministers, while Israel called the operation a success against a Hamas-serving provocation and the United States labeled the mission &#x27;pro-Hamas.&#x27; Separately, Israel issued evacuation orders for 12 towns in southern Lebanon amid ongoing hostilities that have killed over 3,000 people despite a ceasefire extension. The events exposed deep international fault lines over the legality of the Gaza blockade, the adequacy of European policy responses, and the durability of the Lebanon truce.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">27</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">38</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,188 words &middot; May 19, 2026</span><a href="reports/tp-2026-05-19-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-19-003</span>
-  <h2><a href="reports/tp-2026-05-19-003.html">Ebola Death Toll Surges Past 130 as Africa CDC Declares Continental Emergency and Countries Diverge on Travel Response</a></h2>
-  <p class="subheadline">The Bundibugyo-strain outbreak in DR Congo and Uganda now counts over 500 suspected cases, with no approved vaccine available and governments split between targeted health monitoring and blanket entry bans.</p>
-  <p class="summary">The Ebola outbreak caused by the Bundibugyo strain in DR Congo and Uganda has killed at least 131 people from over 500 suspected cases, prompting the Africa CDC to declare a continental emergency and the WHO to issue a PHEIC before convening its emergency committee. Governments worldwide have diverged in their responses, with the US imposing entry bans criticized as discriminatory while Italy, Singapore, Japan, India, and Turkey have opted for targeted health monitoring aligned with WHO guidance. No approved vaccine or treatment exists for the Bundibugyo strain, and WHO officials warn the outbreak could last well beyond two months given delayed detection, conflict-driven displacement, and degraded health infrastructure in eastern DRC.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-05-18-003.html" class="follow-up-link">&ldquo;WHO Declares Ebola Outbreak in DR Congo and Uganda a Public Health Emergency of International Concern&rdquo;</a> <span class="follow-up-date">(May 18, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">33</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">41</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,105 words &middot; May 19, 2026</span><a href="reports/tp-2026-05-19-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<div class="date-bar"><span>MAY 18, 2026</span><span>3 DOSSIERS</span></div>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-05-18-001</span>
-  <h2><a href="reports/tp-2026-05-18-001.html">Trump Threatens Iran With Total Destruction as Tehran Vows to Break Strait of Hormuz Blockade</a></h2>
-  <p class="subheadline">Gulf states reportedly persuaded Washington to postpone a planned military strike, while Iranian commanders warn the Sea of Oman will become America&#x27;s &#x27;cemetery.&#x27;</p>
-  <p class="summary">President Trump threatened Iran with total destruction if it does not quickly accept US peace terms, while Iranian military commanders vowed to break the Strait of Hormuz blockade and warned the Sea of Oman would become America&#x27;s &#x27;cemetery.&#x27; Gulf states reportedly persuaded Trump to postpone a planned military strike, and Pakistan continued mediating between Washington and Tehran, even as a drone strike near the UAE&#x27;s Barakah nuclear plant and surging global shipping costs underscored the conflict&#x27;s widening regional consequences.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <span class="follow-up-link">&ldquo;Trump Rejects Iran&#x27;s Peace Proposal as &#x27;Totally Unacceptable&#x27; While Oil Prices Surge Past $105 per Barrel&rdquo;</span> <span class="follow-up-date">(May 11, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">30</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">35</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,124 words &middot; May 18, 2026</span><a href="reports/tp-2026-05-18-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-05-18-002</span>
-  <h2><a href="reports/tp-2026-05-18-002.html">Ukraine Launches One of Its Largest Drone Strikes on Moscow Region, Killing at Least Four</a></h2>
-  <p class="subheadline">Kyiv calls the operation a justified response to sustained Russian bombardment; Moscow labels it a mass terrorist attack on civilians.</p>
-  <p class="summary">Ukraine launched one of its largest drone operations against the Moscow region on May 17, killing at least four people and wounding dozens, in what Kyiv described as a justified response to sustained Russian bombardment and Moscow labeled a mass terrorist attack on civilians. The strikes hit oil facilities and a semiconductor plant, prompted Russian retaliatory attacks that injured dozens across Ukrainian cities, and sent stray drones into NATO member Latvia&#x27;s airspace. Diplomatic mediation efforts remain at a standstill as civilian casualties on both sides reach a three-year peak.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <span class="follow-up-link">&ldquo;Victory Day Ceasefire Collapses Amid Mutual Violation Accusations and EU Rejection of Putin&#x27;s Schröder Mediation Proposal&rdquo;</span> <span class="follow-up-date">(May 11, 2026)</span></div>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">36</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">45</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>1,137 words &middot; May 18, 2026</span><a href="reports/tp-2026-05-18-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-05-18-003</span>
-  <h2><a href="reports/tp-2026-05-18-003.html">WHO Declares Ebola Outbreak in DR Congo and Uganda a Public Health Emergency of International Concern</a></h2>
-  <p class="subheadline">The rare Bundibugyo strain, for which no approved vaccine or treatment exists, has crossed borders amid armed conflict and weeks of undetected community transmission.</p>
-  <p class="summary">The WHO declared the Bundibugyo Ebola outbreak in the DRC and Uganda a Public Health Emergency of International Concern on May 17, 2026, citing cross-border spread, significant uncertainty about the true scale of infections, and the absence of any approved vaccine or treatment for this rare strain. Armed conflict in eastern DRC, weeks of undetected community transmission — with the first public alert coming only after approximately 50 deaths — and diagnostic failures have compounded the response challenge, while governments from Germany to South Korea reassured their publics that importation risk remains low. The WHO advised against border closures, though Rwanda has already shut crossings with the DRC, and an Emergency Committee is expected to issue further recommendations.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">27</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">18</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>933 words &middot; May 18, 2026</span><a href="reports/tp-2026-05-18-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
+  <div class="compact-src"><span class="compact-src-num">35</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="bucket-bar"><span>ARCHIVE</span><span>21 DOSSIERS</span></div>
+<details class="archive-month" open>
+<summary class="archive-month-summary"><span class="archive-month-title">MAY 2026</span><span class="archive-month-count">21 DOSSIERS</span></summary>
+<div class="archive-month-body">
+<div class="archive-row">
+  <span class="archive-id">05-24-001</span>
+  <a class="archive-headline" href="reports/tp-2026-05-24-001.html">France Bans Israeli Security Minister Ben-Gvir From Its Territory and Pushes for EU-Wide Sanctions</a>
+  <span class="archive-src">19<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-24-002</span>
+  <a class="archive-headline" href="reports/tp-2026-05-24-002.html">Tens of Thousands Rally in Belgrade and Madrid Demanding Government Change as Police Clash with Protesters</a>
+  <span class="archive-src">25<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-24-003</span>
+  <a class="archive-headline" href="reports/tp-2026-05-24-003.html">Cristian Mungiu Wins Second Palme d&#x27;Or for &#x27;Fjord,&#x27; a Drama About Political Polarization in Norway</a>
+  <span class="archive-src">24<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-23-001</span>
+  <a class="archive-headline" href="reports/tp-2026-05-23-001.html">Gas Explosion at Shanxi Coal Mine Kills at Least 90, Making It China&#x27;s Deadliest Mining Disaster in Over a Decade</a>
+  <span class="archive-src">26<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-23-002</span>
+  <a class="archive-headline" href="reports/tp-2026-05-23-002.html">US Indicts Raúl Castro for 1996 Shootdown as Thousands Rally in Havana and Latin American Governments Denounce the Move</a>
+  <span class="archive-src">21<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-23-003</span>
+  <a class="archive-headline" href="reports/tp-2026-05-23-003.html">WHO Raises Ebola Risk to &#x27;Very High&#x27; as Suspected Cases Near 750 and the Outbreak Crosses Into Uganda</a>
+  <span class="archive-src">35<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-22-001</span>
+  <a class="archive-headline" href="reports/tp-2026-05-22-001.html">Trump Announces 5,000 Additional US Troops for Poland, Reversing Pentagon Cancellation and Deepening Transatlantic Confusion</a>
+  <span class="archive-src">27<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-22-002</span>
+  <a class="archive-headline" href="reports/tp-2026-05-22-002.html">Turkish Court Annuls Opposition CHP&#x27;s 2023 Congress, Removing Leader Özgür Özel and Reinstating Kılıçdaroğlu</a>
+  <span class="archive-src">23<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-22-003</span>
+  <a class="archive-headline" href="reports/tp-2026-05-22-003.html">Ebola Death Toll in Eastern DRC Rises to 160 as Attacks on Treatment Centers and Tightened Border Controls Reshape the Response</a>
+  <span class="archive-src">37<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-21-001</span>
+  <a class="archive-headline" href="reports/tp-2026-05-21-001.html">Ben-Gvir&#x27;s Video of Bound Gaza Flotilla Activists Draws Rebuke From Netanyahu and Cascade of European Ambassador Summonings</a>
+  <span class="archive-src">22<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-21-002</span>
+  <a class="archive-headline" href="reports/tp-2026-05-21-002.html">Iran Reviews Latest US Peace Proposal While Trump Sets Days-Long Deadline and Tehran Claims Control Over Waters Near Fujairah</a>
+  <span class="archive-src">20<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-21-003</span>
+  <a class="archive-headline" href="reports/tp-2026-05-21-003.html">WHO Deploys 100 Tonnes of Material to Eastern DRC as Ebola Crosses Into Uganda and Case Estimates Surpass 1,000</a>
+  <span class="archive-src">33<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-20-001</span>
+  <a class="archive-headline" href="reports/tp-2026-05-20-001.html">Xi Jinping and Vladimir Putin Sign 20 Cooperation Documents and Multipolar World Declaration in Beijing</a>
+  <span class="archive-src">25<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-20-002</span>
+  <a class="archive-headline" href="reports/tp-2026-05-20-002.html">Iran Warns of War &#x27;Beyond the Region&#x27; as First Commercial Tankers Transit Strait of Hormuz Under Tehran&#x27;s Coordination</a>
+  <span class="archive-src">24<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-20-003</span>
+  <a class="archive-headline" href="reports/tp-2026-05-20-003.html">Hospitals in Eastern Congo &#x27;Full&#x27; as Experts Estimate Ebola Cases Two to Five Times Higher Than Official Figures</a>
+  <span class="archive-src">38<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-19-001</span>
+  <a class="archive-headline" href="reports/tp-2026-05-19-001.html">Trump Suspends Planned Strike on Iran After Gulf States Request Pause, Citing New Tehran Proposal</a>
+  <span class="archive-src">30<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-19-002</span>
+  <a class="archive-headline" href="reports/tp-2026-05-19-002.html">Israel Intercepts Gaza-Bound Aid Flotilla and Issues Evacuation Orders in Southern Lebanon, Drawing Divergent International Responses</a>
+  <span class="archive-src">27<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-19-003</span>
+  <a class="archive-headline" href="reports/tp-2026-05-19-003.html">Ebola Death Toll Surges Past 130 as Africa CDC Declares Continental Emergency and Countries Diverge on Travel Response</a>
+  <span class="archive-src">33<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-18-001</span>
+  <a class="archive-headline" href="reports/tp-2026-05-18-001.html">Trump Threatens Iran With Total Destruction as Tehran Vows to Break Strait of Hormuz Blockade</a>
+  <span class="archive-src">30<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-18-002</span>
+  <a class="archive-headline" href="reports/tp-2026-05-18-002.html">Ukraine Launches One of Its Largest Drone Strikes on Moscow Region, Killing at Least Four</a>
+  <span class="archive-src">36<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">05-18-003</span>
+  <a class="archive-headline" href="reports/tp-2026-05-18-003.html">WHO Declares Ebola Outbreak in DR Congo and Uganda a Public Health Emergency of International Concern</a>
+  <span class="archive-src">27<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+</div>
+</details>
 
 </main>
 

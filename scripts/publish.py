@@ -261,6 +261,144 @@ def build_card(meta: dict, index: int, reports_dir: Path | None = None) -> str:
 </article>"""
 
 
+def _short_id(tp_id: str) -> str:
+    """Return the ``MM-DD-NNN`` tail of a ``tp-YYYY-MM-DD-NNN`` id."""
+    parts = tp_id.split("-")
+    return "-".join(parts[2:]) if len(parts) >= 5 else tp_id
+
+
+def _sort_tier(entries: list[dict]) -> list[dict]:
+    """Newest-first ordering within a tier: date descending, id ascending
+    within the same date."""
+    ordered = sorted(entries, key=lambda m: m["id"])        # id asc
+    ordered.sort(key=lambda m: m["date"], reverse=True)      # date desc (stable)
+    return ordered
+
+
+def _bucket_bar(label: str, count: int) -> str:
+    """Black tier header bar: left = label, right = dossier count. Generalises
+    the original per-date ``.date-bar`` into a reusable bucket header."""
+    plural = "S" if count != 1 else ""
+    return (
+        f'<div class="bucket-bar"><span>{_esc(label)}</span>'
+        f'<span>{count} DOSSIER{plural}</span></div>\n'
+    )
+
+
+def build_card_mid(meta: dict, reports_dir: Path | None = None) -> str:
+    """TIER 1 (YESTERDAY) — mid card: id line, headline (h3), one-line
+    subheadline, inline footer. No summary, no stat meta-bar, no follow-up hint.
+
+    ``reports_dir`` is accepted for signature symmetry with ``build_card``; mid
+    cards carry no follow-up hint, so there is nothing to degrade and it is
+    currently unused.
+    """
+    return f"""<article class="tp-card-mid">
+  <span class="topic-id">{_esc(meta['id'])}</span>
+  <h3><a href="{_esc(meta['html_filename'])}">{_esc(meta['headline'])}</a></h3>
+  <p class="subheadline-mid">{_esc(meta['subheadline'])}</p>
+  <div class="card-footer"><span>{meta['sources_count']} sources &middot; {meta['word_count']:,} words &middot; {_format_date(meta['date'])}</span><a href="{_esc(meta['html_filename'])}" class="read-link">&rarr; READ</a></div>
+</article>"""
+
+
+def build_card_compact(meta: dict) -> str:
+    """TIER 2 (EARLIER) — compact grid row: short id, headline (h4) + one-line
+    truncated subheadline, prominent source count."""
+    return f"""<div class="compact-row">
+  <span class="compact-id">{_esc(_short_id(meta['id']))}</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="{_esc(meta['html_filename'])}">{_esc(meta['headline'])}</a></h4>
+    <span class="compact-sub">{_esc(meta['subheadline'])}</span>
+  </div>
+  <div class="compact-src"><span class="compact-src-num">{meta['sources_count']}</span><span class="compact-src-label">SRC</span></div>
+</div>"""
+
+
+def build_archive_row(meta: dict) -> str:
+    """TIER 3 (ARCHIVE) — index row inside a monthly accordion: short id,
+    headline link, source count. Smaller and greyer than the compact row."""
+    return f"""<div class="archive-row">
+  <span class="archive-id">{_esc(_short_id(meta['id']))}</span>
+  <a class="archive-headline" href="{_esc(meta['html_filename'])}">{_esc(meta['headline'])}</a>
+  <span class="archive-src">{meta['sources_count']}<span class="archive-src-label">&nbsp;src</span></span>
+</div>"""
+
+
+def _build_tiers(all_meta: list[dict], reports_dir: Path | None) -> str:
+    """Render the four age-decay tiers (TODAY / YESTERDAY / EARLIER / ARCHIVE).
+
+    Tiers are anchored to ``today_ref`` — the newest dossier date in the set,
+    NOT wall-clock — so the layout is a pure function of the published content.
+    Empty tiers are omitted entirely (no bare bucket bars).
+    """
+    if not all_meta:
+        return ""
+    today_ref = max(m["date"] for m in all_meta)
+    ref_dt = datetime.strptime(today_ref, "%Y-%m-%d")
+
+    def age(m: dict) -> int:
+        return (ref_dt - datetime.strptime(m["date"], "%Y-%m-%d")).days
+
+    tier0 = _sort_tier([m for m in all_meta if age(m) == 0])
+    tier1 = _sort_tier([m for m in all_meta if age(m) == 1])
+    tier2 = _sort_tier([m for m in all_meta if 2 <= age(m) <= 6])
+    tier3 = _sort_tier([m for m in all_meta if age(m) >= 7])
+
+    html = ""
+
+    # TIER 0 — TODAY: full hero cards (reuse build_card unchanged). Per-tier
+    # index resets to 1 so the first hero reads TOPIC 01.
+    if tier0:
+        html += _bucket_bar("TODAY", len(tier0))
+        for i, meta in enumerate(tier0, start=1):
+            html += build_card(meta, i, reports_dir) + "\n"
+
+    # TIER 1 — YESTERDAY: mid cards.
+    if tier1:
+        html += _bucket_bar("YESTERDAY", len(tier1))
+        for meta in tier1:
+            html += build_card_mid(meta, reports_dir) + "\n"
+
+    # TIER 2 — EARLIER: compact rows, grouped by day with a light sub-marker.
+    if tier2:
+        html += _bucket_bar("EARLIER", len(tier2))
+        current_day: str | None = None
+        for meta in tier2:
+            if meta["date"] != current_day:
+                current_day = meta["date"]
+                html += (
+                    f'<div class="day-submarker">{_format_date(current_day)}</div>\n'
+                )
+            html += build_card_compact(meta) + "\n"
+
+    # TIER 3 — ARCHIVE: one <details> accordion per calendar month, newest open.
+    if tier3:
+        html += _bucket_bar("ARCHIVE", len(tier3))
+        by_month: dict[str, list[dict]] = {}
+        for meta in tier3:  # already date-desc / id-asc from _sort_tier
+            by_month.setdefault(meta["date"][:7], []).append(meta)
+        for month_idx, month_key in enumerate(sorted(by_month.keys(), reverse=True)):
+            rows = by_month[month_key]
+            month_label = (
+                datetime.strptime(month_key, "%Y-%m").strftime("%B %Y").upper()
+            )
+            count = len(rows)
+            plural = "S" if count != 1 else ""
+            open_attr = " open" if month_idx == 0 else ""
+            rows_html = "".join(build_archive_row(m) + "\n" for m in rows)
+            html += (
+                f'<details class="archive-month"{open_attr}>\n'
+                f'<summary class="archive-month-summary">'
+                f'<span class="archive-month-title">{month_label}</span>'
+                f'<span class="archive-month-count">{count} DOSSIER{plural}</span>'
+                f'</summary>\n'
+                f'<div class="archive-month-body">\n{rows_html}</div>\n'
+                f'</details>\n'
+            )
+
+    return html
+
+
 def build_index(all_meta: list[dict], reports_dir: Path | None = None) -> str:
     """Build the full index.html content.
 
@@ -268,22 +406,9 @@ def build_index(all_meta: list[dict], reports_dir: Path | None = None) -> str:
     whose target HTML has been removed by the cutoff cleanup degrade
     to plain text rather than rendering as dead anchors on the index.
     """
-    # Group by date descending
-    by_date: dict[str, list[dict]] = {}
-    for m in sorted(all_meta, key=lambda x: (x["date"], x["id"]), reverse=True):
-        by_date.setdefault(m["date"], []).append(m)
-
-    cards_html = ""
-    for date_str in sorted(by_date.keys(), reverse=True):
-        date_entries = sorted(by_date[date_str], key=lambda x: x["id"])
-        count = len(date_entries)
-        cards_html += f'<div class="date-bar"><span>{_format_date(date_str).upper()}</span><span>{count} DOSSIER{"S" if count != 1 else ""}</span></div>\n'
-        # Reset per date — each day's first card reads TOPIC 01 regardless
-        # of how many cards earlier dates contributed.
-        card_index = 0
-        for meta in date_entries:
-            card_index += 1
-            cards_html += build_card(meta, card_index, reports_dir) + "\n"
+    # Age-tiered "decay" layout (TODAY / YESTERDAY / EARLIER / ARCHIVE),
+    # anchored to the newest dossier date in the set. See ``_build_tiers``.
+    cards_html = _build_tiers(all_meta, reports_dir)
 
     og_image = f"{SITE_BASE}/assets/og-card.svg"
     return f"""<!DOCTYPE html>
@@ -518,6 +643,175 @@ header .tagline {{
   text-decoration: underline;
 }}
 
+/* ---- Age-decay tiers: bucket bars + mid / compact / archive ---- */
+.bucket-bar {{
+  background: #000;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1.2rem;
+}}
+
+/* TIER 1 — YESTERDAY (mid card) */
+.tp-card-mid {{
+  border-top: 3px solid #000;
+  padding: 1rem 0;
+  margin-bottom: 0.4rem;
+}}
+.tp-card-mid h3 {{
+  font-family: var(--font-sans);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin: 0.15rem 0 0.4rem;
+}}
+.tp-card-mid h3 a {{ color: #000; text-decoration: none; }}
+.tp-card-mid h3 a:hover {{
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}}
+.subheadline-mid {{
+  color: #333;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}}
+
+/* TIER 2 — EARLIER (compact row, day-grouped) */
+.day-submarker {{
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #999;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 1rem 0 0.4rem;
+}}
+.compact-row {{
+  display: grid;
+  grid-template-columns: 110px 1fr 70px;
+  align-items: center;
+  gap: 0.75rem;
+  border-top: 1px solid var(--color-border-light);
+  padding: 0.6rem 0;
+}}
+.compact-id {{
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #999;
+  letter-spacing: 0.1em;
+}}
+.compact-body {{ min-width: 0; }}
+.compact-headline {{
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0;
+}}
+.compact-headline a {{ color: #000; text-decoration: none; }}
+.compact-headline a:hover {{ text-decoration: underline; text-underline-offset: 2px; }}
+.compact-sub {{
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.1rem;
+}}
+.compact-src {{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}}
+.compact-src-num {{
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #000;
+  line-height: 1;
+}}
+.compact-src-label {{
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: #666;
+  letter-spacing: 0.1em;
+}}
+
+/* TIER 3 — ARCHIVE (monthly accordions, native <details>) */
+.archive-month {{ margin-bottom: 0.25rem; }}
+.archive-month-summary {{
+  list-style: none;
+  cursor: pointer;
+  background: #000;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}}
+.archive-month-summary::-webkit-details-marker {{ display: none; }}
+.archive-month-title {{ display: inline-flex; align-items: center; gap: 0.5rem; }}
+.archive-month-title::before {{
+  content: "\\203a";
+  display: inline-block;
+  font-weight: 700;
+  transition: transform 150ms ease;
+}}
+details[open] > .archive-month-summary .archive-month-title::before {{
+  transform: rotate(90deg);
+}}
+.archive-month-body {{ padding: 0.1rem 0 0.5rem; }}
+.archive-row {{
+  display: grid;
+  grid-template-columns: 110px 1fr 40px;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--color-border-light);
+}}
+.archive-id {{
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #999;
+  letter-spacing: 0.08em;
+}}
+.archive-headline {{
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #444;
+  text-decoration: none;
+  line-height: 1.35;
+  min-width: 0;
+}}
+.archive-headline:hover {{ text-decoration: underline; text-underline-offset: 2px; color: #000; }}
+.archive-src {{
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #999;
+  text-align: right;
+  white-space: nowrap;
+}}
+.archive-src-label {{ font-size: 0.6rem; }}
+
 /* Footer */
 footer {{
   margin-top: 3rem;
@@ -566,6 +860,11 @@ footer a {{
   }}
   footer {{ flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }}
   footer .footer-mark {{ width: 64px; height: 64px; }}
+  .tp-card-mid h3 {{ font-size: 1.1rem; }}
+  .compact-row {{ grid-template-columns: 80px 1fr 52px; gap: 0.5rem; }}
+  .compact-headline {{ font-size: 0.95rem; }}
+  .compact-src-num {{ font-size: 1.1rem; }}
+  .archive-row {{ grid-template-columns: 80px 1fr 40px; gap: 0.5rem; }}
 }}
 </style>
 </head>
