@@ -101,18 +101,44 @@ def test_decay_tiers_structure_and_counts():
     assert '<div class="bucket-bar"><span>TODAY</span><span>2 DOSSIERS</span></div>' in html
     assert '<div class="bucket-bar"><span>YESTERDAY</span><span>1 DOSSIER</span></div>' in html
     assert '<div class="bucket-bar"><span>EARLIER</span><span>2 DOSSIERS</span></div>' in html
-    assert '<div class="bucket-bar"><span>ARCHIVE</span><span>1 DOSSIER</span></div>' in html
+    # ARCHIVE uses the WHITE (light) bucket variant so it does not abut the
+    # black month-accordion summaries beneath it.
+    assert '<div class="bucket-bar bucket-bar-light"><span>ARCHIVE</span><span>1 DOSSIER</span></div>' in html
 
     assert html.count('class="tp-card"') == 2       # hero (TODAY)
     assert html.count('class="tp-card-mid"') == 1   # mid (YESTERDAY)
     assert html.count('class="compact-row"') == 2   # compact (EARLIER)
     assert html.count('class="archive-row"') == 1   # archive row
 
-    # EARLIER is day-grouped: one light sub-marker per distinct day.
-    assert html.count('class="day-submarker"') == 2
+    # Day sub-markers: 1 for YESTERDAY (single day) + 1 per distinct EARLIER day.
+    assert html.count('class="day-submarker"') == 3
 
     # The legacy per-date black bar is fully replaced.
     assert 'class="date-bar"' not in html
+
+
+def test_yesterday_submarker_and_four_metric_footer():
+    """YESTERDAY shows a single date sub-marker (same class as EARLIER) and the
+    mid card carries the four-metric transparency footer (Sources / Languages /
+    Stakeholders / Divergences) — not the old sources/words/date line."""
+    publish = _load_publish_module()
+    metas = [
+        _make_meta("tp-2026-05-31-001", "2026-05-31"),  # TODAY anchor
+        _make_meta("tp-2026-05-30-001", "2026-05-30"),  # YESTERDAY
+    ]
+    html = publish.build_index(metas)
+
+    # One sub-marker for the single yesterday date, right after the bucket bar.
+    assert '<div class="day-submarker">May 30, 2026</div>' in html
+    assert html.count('class="day-submarker"') == 1
+
+    # Four-metric footer present (uppercasing is done in CSS, so the HTML carries
+    # the mixed-case labels). _make_meta sets 5 / 3 / 4 / 2.
+    assert 'class="mid-stats"' in html
+    for label in ("Sources", "Languages", "Stakeholders", "Divergences"):
+        assert label in html
+    # The old mid footer text is gone.
+    assert "words &middot;" not in html.split('class="tp-card-mid"')[1]
 
 
 def test_tier_omits_empty_buckets():

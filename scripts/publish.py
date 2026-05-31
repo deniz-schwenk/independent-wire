@@ -275,19 +275,27 @@ def _sort_tier(entries: list[dict]) -> list[dict]:
     return ordered
 
 
-def _bucket_bar(label: str, count: int) -> str:
-    """Black tier header bar: left = label, right = dossier count. Generalises
-    the original per-date ``.date-bar`` into a reusable bucket header."""
+def _bucket_bar(label: str, count: int, *, light: bool = False) -> str:
+    """Tier header bar: left = label, right = dossier count. Generalises the
+    original per-date ``.date-bar`` into a reusable bucket header.
+
+    ``light=True`` renders the white ARCHIVE variant (white background, black
+    label, 3px black top-rule) so the ARCHIVE header does not abut the black
+    month-accordion summaries beneath it. Black is the default for the
+    TODAY / YESTERDAY / EARLIER bars.
+    """
     plural = "S" if count != 1 else ""
+    cls = "bucket-bar bucket-bar-light" if light else "bucket-bar"
     return (
-        f'<div class="bucket-bar"><span>{_esc(label)}</span>'
+        f'<div class="{cls}"><span>{_esc(label)}</span>'
         f'<span>{count} DOSSIER{plural}</span></div>\n'
     )
 
 
 def build_card_mid(meta: dict, reports_dir: Path | None = None) -> str:
-    """TIER 1 (YESTERDAY) — mid card: id line, headline (h3), one-line
-    subheadline, inline footer. No summary, no stat meta-bar, no follow-up hint.
+    """TIER 1 (YESTERDAY) — mid card: id line, headline (h3), two-line
+    subheadline, and a four-metric transparency footer (Sources / Languages /
+    Stakeholders / Divergences). No summary, no stat meta-bar, no follow-up hint.
 
     ``reports_dir`` is accepted for signature symmetry with ``build_card``; mid
     cards carry no follow-up hint, so there is nothing to degrade and it is
@@ -297,7 +305,7 @@ def build_card_mid(meta: dict, reports_dir: Path | None = None) -> str:
   <span class="topic-id">{_esc(meta['id'])}</span>
   <h3><a href="{_esc(meta['html_filename'])}">{_esc(meta['headline'])}</a></h3>
   <p class="subheadline-mid">{_esc(meta['subheadline'])}</p>
-  <div class="card-footer"><span>{meta['sources_count']} sources &middot; {meta['word_count']:,} words &middot; {_format_date(meta['date'])}</span><a href="{_esc(meta['html_filename'])}" class="read-link">&rarr; READ</a></div>
+  <div class="card-footer"><span class="mid-stats"><b>{meta['sources_count']}</b> Sources &middot; <b>{meta['languages_count']}</b> Languages &middot; <b>{meta['stakeholders_count']}</b> Stakeholders &middot; <b>{meta['divergences_count']}</b> Divergences</span><a href="{_esc(meta['html_filename'])}" class="read-link">&rarr; READ</a></div>
 </article>"""
 
 
@@ -353,9 +361,11 @@ def _build_tiers(all_meta: list[dict], reports_dir: Path | None) -> str:
         for i, meta in enumerate(tier0, start=1):
             html += build_card(meta, i, reports_dir) + "\n"
 
-    # TIER 1 — YESTERDAY: mid cards.
+    # TIER 1 — YESTERDAY: one date sub-marker (age==1 is always a single
+    # calendar day), then mid cards.
     if tier1:
         html += _bucket_bar("YESTERDAY", len(tier1))
+        html += f'<div class="day-submarker">{_format_date(tier1[0]["date"])}</div>\n'
         for meta in tier1:
             html += build_card_mid(meta, reports_dir) + "\n"
 
@@ -373,7 +383,7 @@ def _build_tiers(all_meta: list[dict], reports_dir: Path | None) -> str:
 
     # TIER 3 — ARCHIVE: one <details> accordion per calendar month, newest open.
     if tier3:
-        html += _bucket_bar("ARCHIVE", len(tier3))
+        html += _bucket_bar("ARCHIVE", len(tier3), light=True)
         by_month: dict[str, list[dict]] = {}
         for meta in tier3:  # already date-desc / id-asc from _sort_tier
             by_month.setdefault(meta["date"][:7], []).append(meta)
@@ -657,6 +667,14 @@ header .tagline {{
   margin-top: 2rem;
   margin-bottom: 1.2rem;
 }}
+.bucket-bar-light {{
+  background: #fff;
+  color: #000;
+  border-top: 3px solid #000;
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 0.5rem;
+}}
 
 /* TIER 1 — YESTERDAY (mid card) */
 .tp-card-mid {{
@@ -683,9 +701,19 @@ header .tagline {{
   font-family: var(--font-sans);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
-  white-space: nowrap;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+}}
+.mid-stats {{
+  text-transform: uppercase;
+  line-height: 1.6;
+}}
+.mid-stats b {{
+  color: #000;
+  font-weight: 700;
 }}
 
 /* TIER 2 — EARLIER (compact row, day-grouped) */
@@ -696,6 +724,14 @@ header .tagline {{
   letter-spacing: 0.12em;
   text-transform: uppercase;
   margin: 1rem 0 0.4rem;
+  display: flex;
+  align-items: center;
+}}
+.day-submarker::after {{
+  content: '';
+  flex: 1;
+  margin-left: 0.75rem;
+  border-top: 1px dashed #ccc;
 }}
 .compact-row {{
   display: grid;
@@ -865,6 +901,8 @@ footer a {{
   .compact-headline {{ font-size: 0.95rem; }}
   .compact-src-num {{ font-size: 1.1rem; }}
   .archive-row {{ grid-template-columns: 80px 1fr 40px; gap: 0.5rem; }}
+  .tp-card-mid .card-footer {{ flex-wrap: wrap; gap: 0.3rem 0.6rem; }}
+  .mid-stats {{ font-size: 0.65rem; }}
 }}
 </style>
 </head>

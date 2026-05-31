@@ -244,6 +244,14 @@ header .tagline {
   margin-top: 2rem;
   margin-bottom: 1.2rem;
 }
+.bucket-bar-light {
+  background: #fff;
+  color: #000;
+  border-top: 3px solid #000;
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 0.5rem;
+}
 
 /* TIER 1 — YESTERDAY (mid card) */
 .tp-card-mid {
@@ -270,9 +278,19 @@ header .tagline {
   font-family: var(--font-sans);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
-  white-space: nowrap;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+}
+.mid-stats {
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+.mid-stats b {
+  color: #000;
+  font-weight: 700;
 }
 
 /* TIER 2 — EARLIER (compact row, day-grouped) */
@@ -283,6 +301,14 @@ header .tagline {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   margin: 1rem 0 0.4rem;
+  display: flex;
+  align-items: center;
+}
+.day-submarker::after {
+  content: '';
+  flex: 1;
+  margin-left: 0.75rem;
+  border-top: 1px dashed #ccc;
 }
 .compact-row {
   display: grid;
@@ -452,6 +478,8 @@ footer a {
   .compact-headline { font-size: 0.95rem; }
   .compact-src-num { font-size: 1.1rem; }
   .archive-row { grid-template-columns: 80px 1fr 40px; gap: 0.5rem; }
+  .tp-card-mid .card-footer { flex-wrap: wrap; gap: 0.3rem 0.6rem; }
+  .mid-stats { font-size: 0.65rem; }
 }
 </style>
 </head>
@@ -509,23 +537,24 @@ footer a {
   <div class="card-footer"><span>1,067 words &middot; May 31, 2026</span><a href="reports/tp-2026-05-31-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
 </article>
 <div class="bucket-bar"><span>YESTERDAY</span><span>3 DOSSIERS</span></div>
+<div class="day-submarker">May 30, 2026</div>
 <article class="tp-card-mid">
   <span class="topic-id">tp-2026-05-30-001</span>
   <h3><a href="reports/tp-2026-05-30-001.html">Federal Judge Orders Trump&#x27;s Name Removed from Kennedy Center, Ruling Only Congress Can Rename the Institution</a></h3>
   <p class="subheadline-mid">President Trump responded by announcing he would transfer the performing-arts center to Congressional control, calling the Obama-appointed judge &#x27;reckless&#x27;; the Kennedy Center&#x27;s leadership said it would appeal.</p>
-  <div class="card-footer"><span>21 sources &middot; 909 words &middot; May 30, 2026</span><a href="reports/tp-2026-05-30-001.html" class="read-link">&rarr; READ</a></div>
+  <div class="card-footer"><span class="mid-stats"><b>21</b> Sources &middot; <b>9</b> Languages &middot; <b>21</b> Stakeholders &middot; <b>5</b> Divergences</span><a href="reports/tp-2026-05-30-001.html" class="read-link">&rarr; READ</a></div>
 </article>
 <article class="tp-card-mid">
   <span class="topic-id">tp-2026-05-30-002</span>
   <h3><a href="reports/tp-2026-05-30-002.html">Pentagon Chief Hegseth Demands Allies Spend 3.5% of GDP on Defense, Warns Against Chinese Dominance at Shangri-La Dialogue</a></h3>
   <p class="subheadline-mid">The US defense secretary&#x27;s speech drew a formal Chinese diplomatic protest over Taiwan remarks while raising questions about the reliability of American security commitments across the Indo-Pacific.</p>
-  <div class="card-footer"><span>22 sources &middot; 788 words &middot; May 30, 2026</span><a href="reports/tp-2026-05-30-002.html" class="read-link">&rarr; READ</a></div>
+  <div class="card-footer"><span class="mid-stats"><b>22</b> Sources &middot; <b>9</b> Languages &middot; <b>8</b> Stakeholders &middot; <b>6</b> Divergences</span><a href="reports/tp-2026-05-30-002.html" class="read-link">&rarr; READ</a></div>
 </article>
 <article class="tp-card-mid">
   <span class="topic-id">tp-2026-05-30-003</span>
   <h3><a href="reports/tp-2026-05-30-003.html">UN Adds Israeli and Russian Forces to Sexual Violence Blacklist for First Time</a></h3>
   <p class="subheadline-mid">The listing, covering 77 parties across 12 countries, drew immediate denunciations from Jerusalem and Moscow and praise from Kyiv, while Washington called it disproportionate.</p>
-  <div class="card-footer"><span>15 sources &middot; 983 words &middot; May 30, 2026</span><a href="reports/tp-2026-05-30-003.html" class="read-link">&rarr; READ</a></div>
+  <div class="card-footer"><span class="mid-stats"><b>15</b> Sources &middot; <b>4</b> Languages &middot; <b>13</b> Stakeholders &middot; <b>5</b> Divergences</span><a href="reports/tp-2026-05-30-003.html" class="read-link">&rarr; READ</a></div>
 </article>
 <div class="bucket-bar"><span>EARLIER</span><span>15 DOSSIERS</span></div>
 <div class="day-submarker">May 29, 2026</div>
@@ -653,7 +682,7 @@ footer a {
   </div>
   <div class="compact-src"><span class="compact-src-num">35</span><span class="compact-src-label">SRC</span></div>
 </div>
-<div class="bucket-bar"><span>ARCHIVE</span><span>21 DOSSIERS</span></div>
+<div class="bucket-bar bucket-bar-light"><span>ARCHIVE</span><span>21 DOSSIERS</span></div>
 <details class="archive-month" open>
 <summary class="archive-month-summary"><span class="archive-month-title">MAY 2026</span><span class="archive-month-count">21 DOSSIERS</span></summary>
 <div class="archive-month-body">
