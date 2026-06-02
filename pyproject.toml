@@ -37,6 +37,7 @@ dependencies = [
     # a floor pin lets routine point releases through without an upper
     # bound that would block CI on every minor sklearn upgrade.
     "scikit-learn>=1.3",
+    "trafilatura>=2.0.0",
 ]
 
 [project.optional-dependencies]
