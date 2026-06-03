@@ -38,6 +38,9 @@ dependencies = [
     # bound that would block CI on every minor sklearn upgrade.
     "scikit-learn>=1.3",
     "trafilatura>=2.0.0",
+    "aiohttp>=3.14.0",
+    "ddgs>=9.14.4",
+    "hdbscan>=0.8.44",
 ]
 
 [project.optional-dependencies]
