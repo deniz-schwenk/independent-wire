@@ -3,7 +3,13 @@
 # Invoked by launchd. Deterministic: pull -> sync -> fetch -> run -> publish -> push site/.
 set -euo pipefail
 
-REPO="$HOME/Documents/independent-wire/repo-clone"
+# Derive the repo root from this script's own location, so the runner is
+# portable regardless of where the repo lives or how it is invoked. launchd
+# passes an absolute script path; a manual run may pass a relative one. In zsh,
+# ${0:A} absolutises + resolves symlinks; :h:h climbs from <repo>/scripts/
+# daily_run.sh up to <repo>.
+SCRIPT_PATH="${0:A}"
+REPO="${SCRIPT_PATH:h:h}"
 UV="$HOME/.local/bin/uv"
 LOGDIR="$HOME/iw-logs"
 mkdir -p "$LOGDIR"
@@ -35,6 +41,17 @@ trap 'echo "===== FAILED — $TODAY — $(date) — see log above =====" >> "$LO
 
   echo "[4/6] run pipeline (hydrated)"
   "$UV" run python scripts/run.py --hydrated
+
+  # Guard: run.py exits 0 even when every topic fails. A run that produced zero
+  # Topic Packages is a failure, not a success — never publish a no-op. (N) is
+  # NULL_GLOB so an empty match yields an empty array instead of a zsh error.
+  # `false` routes through the existing ERR trap (writes the FAILED marker) and,
+  # under `set -e`, exits non-zero before publish/commit/push run.
+  tps=( "output/$TODAY"/tp-*.json(N) )
+  if (( ${#tps} == 0 )); then
+    echo "ERROR: zero Topic Packages produced for $TODAY — treating run as FAILED; skipping publish/push"
+    false
+  fi
 
   echo "[5/6] publish"
   "$UV" run python scripts/publish.py
