@@ -361,6 +361,10 @@ def test_editor_input_shape_compatibility():
         if field == "relevance_score":
             continue  # New pipeline drops this; Editor's priority is the
             # editorial relevance judgement, not a Curator-side score.
+        if field == "missing_perspectives":
+            continue  # Curator-prose only — left unset when the Curator gives
+            # no prose (no deterministic geo suffix is folded in). This topic
+            # has none, so the field is legitimately absent.
         assert field in topic, f"missing Editor-input field: {field}"
 
 

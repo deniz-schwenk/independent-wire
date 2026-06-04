@@ -325,19 +325,12 @@ def _enrich_curator_output(
         missing_langs = sorted(all_languages - topic_languages)
         topic["missing_languages"] = missing_langs
         topic["source_diversity"] = topic_sources
-        parts: list[str] = []
-        if missing_regions:
-            parts.append(f"No sources from: {', '.join(missing_regions)}")
-        if missing_langs:
-            parts.append(f"No coverage in: {', '.join(missing_langs)}")
-        existing = topic.get("missing_perspectives", "")
-        deterministic = ". ".join(parts) if parts else ""
-        if existing and deterministic:
-            topic["missing_perspectives"] = (
-                f"{existing} [Deterministic: {deterministic}]"
-            )
-        elif deterministic:
-            topic["missing_perspectives"] = deterministic
+        # `missing_perspectives` is the Curator's prose only. We deliberately do
+        # NOT fold a deterministic geography string (missing_regions /
+        # missing_languages) into it: the Editor runs before hydration/research/
+        # source-merge, so that geography is provisional and was the vector for a
+        # shipped "East Asian sources" hallucination. The field passes through
+        # unchanged when the Curator provided prose, and is left unset otherwise.
     return topics
 
 
@@ -368,13 +361,19 @@ _CURATOR_RAW_DATA_FIELDS: tuple[str, ...] = (
 # curator_topics dicts are untouched — the deterministic pre-sort and
 # _attach_raw_data_from_curated still see source_count / source_diversity /
 # source_ids.
+#
+# missing_regions / missing_languages are withheld for the same "provisional"
+# reason as source_count: the Editor runs BEFORE hydration/research/source-
+# merge, so this geography is the Curator's provisional set, not the final TP
+# source set. Feeding it to the agent caused a shipped hallucination ("East
+# Asian sources" on a topic with none in the final set). geographic_coverage
+# and languages stay — they are a legitimate breadth signal for the selection
+# decision.
 _EDITOR_AGENT_TOPIC_FIELDS: tuple[str, ...] = (
     "title",
     "summary",
     "geographic_coverage",
     "languages",
-    "missing_regions",
-    "missing_languages",
     "missing_perspectives",
 )
 

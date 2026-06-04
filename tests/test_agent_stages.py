@@ -260,7 +260,16 @@ def test_editor_agent_view_excludes_source_stats_and_does_not_mutate():
     # Agent view == exactly the allow-list, no more. Asserting against the
     # constant makes adding a field deliberate; accidental passthrough fails.
     assert agent_keys == set(_EDITOR_AGENT_TOPIC_FIELDS)
-    for withheld in ("source_count", "source_diversity", "source_ids"):
+    # source_count/source_diversity/source_ids are withheld outright; so are
+    # the provisional source-geography fields missing_regions/missing_languages
+    # (the Editor runs pre-hydration — that geography is not the final set).
+    for withheld in (
+        "source_count",
+        "source_diversity",
+        "source_ids",
+        "missing_regions",
+        "missing_languages",
+    ):
         assert withheld not in agent_keys
 
     # previous_coverage still rides alongside as its own context key.
@@ -401,7 +410,57 @@ def test_enrich_curator_output_computes_missing_regions(tmp_path: Path):
     assert t["source_count"] == 1
     assert t["missing_regions"] == ["Europe", "Middle East"]
     assert t["missing_languages"] == ["fa", "fr"]
-    assert "No sources from: Europe, Middle East" in t["missing_perspectives"]
+    # missing_perspectives is Curator-prose only now — the deterministic geo
+    # suffix is no longer folded in. This topic carried no Curator prose, so
+    # the field is left unset.
+    assert "missing_perspectives" not in t
+
+
+def test_enrich_curator_output_missing_perspectives_is_curator_prose_only():
+    """missing_perspectives carries the Curator's prose only — no deterministic
+    geography suffix. It passes through unchanged when the Curator supplied
+    prose and is left unset when it did not, even if the topic has missing
+    regions/languages. The Editor runs pre-hydration, so provisional source
+    geography must not reach it via this field (shipped-hallucination fix)."""
+    findings = [
+        {"region": "North America", "language": "en", "source_name": "NYT"},
+        {"region": "Europe", "language": "fr", "source_name": "Le Monde"},
+    ]
+    topics = [
+        # Curator supplied prose -> verbatim passthrough.
+        {
+            "title": "A",
+            "source_ids": ["finding-0"],
+            "missing_perspectives": "No labor-union voices represented.",
+        },
+        # Curator gave none -> field stays unset despite missing Europe / fr.
+        {"title": "B", "source_ids": ["finding-0"]},
+    ]
+    a, b = _enrich_curator_output(topics, findings)
+    assert a["missing_perspectives"] == "No labor-union voices represented."
+    assert "Deterministic" not in a["missing_perspectives"]
+    assert "No sources from" not in a["missing_perspectives"]
+    assert "No coverage in" not in a["missing_perspectives"]
+    assert "missing_perspectives" not in b
+    # The geography itself is still computed (kept for raw_data passthrough).
+    assert b["missing_regions"] == ["Europe"]
+    assert b["missing_languages"] == ["fr"]
+
+
+def test_editor_allow_list_withholds_provisional_geography():
+    """The Editor agent allow-list omits the provisional source-geography fields
+    missing_regions / missing_languages while keeping the legitimate breadth
+    signals geographic_coverage / languages plus missing_perspectives."""
+    assert "missing_regions" not in _EDITOR_AGENT_TOPIC_FIELDS
+    assert "missing_languages" not in _EDITOR_AGENT_TOPIC_FIELDS
+    for kept in (
+        "title",
+        "summary",
+        "geographic_coverage",
+        "languages",
+        "missing_perspectives",
+    ):
+        assert kept in _EDITOR_AGENT_TOPIC_FIELDS
 
 
 def test_enrich_curator_output_source_diversity_from_outlet_registry(monkeypatch):
