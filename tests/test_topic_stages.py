@@ -30,6 +30,7 @@ from src.stages._helpers import (
 )
 from src.stages.run_stages import make_topic_bus, select_topics
 from src.stages.topic_stages import (
+    _normalize_source_url,
     assemble_hydration_dossier,
     attach_hydration_urls,
     cleanup_stale_references,
@@ -239,6 +240,108 @@ def test_renumber_sources_invariant_property_no_gaps():
         tb_after = _run(renumber_sources, tb, _ro())
         ids = [s["id"] for s in tb_after.final_sources]
         assert ids == [f"src-{i + 1:03d}" for i in range(n)]
+
+
+# ---------------------------------------------------------------------------
+# renumber_sources — URL deduplication
+# ---------------------------------------------------------------------------
+
+
+def test_renumber_sources_dedupes_identical_url_under_different_outlets():
+    """tp-2026-06-04-004 regression: the same article URL shipped twice under
+    two outlet-name variants. final_sources must carry it ONCE and both old
+    ids must map to the surviving src id."""
+    url = "https://www.tagesschau.de/un-sicherheitsrat-bewerbung-100.html"
+    tb = TopicBus()
+    tb.merged_sources_pre_renumber = [
+        {"id": "hydrate-rsrc-001", "url": url, "outlet": "Tagesschau"},
+        {"id": "research-rsrc-007", "url": url, "outlet": "Tagesschau (ARD)"},
+    ]
+    tb_after = _run(renumber_sources, tb, _ro())
+
+    assert [s["id"] for s in tb_after.final_sources] == ["src-001"]
+    # First occurrence (hydration) wins, including its outlet name.
+    assert tb_after.final_sources[0]["outlet"] == "Tagesschau"
+    assert tb_after.id_rename_map == {
+        "hydrate-rsrc-001": "src-001",
+        "research-rsrc-007": "src-001",
+    }
+
+
+def test_renumber_sources_dedup_keeps_gapless_ids_around_duplicate():
+    """A duplicate in the middle must not leave a numbering gap — survivors
+    stay src-001..src-NNN contiguous."""
+    u_a = "https://a.example/x"
+    u_b = "https://b.example/y"
+    tb = TopicBus()
+    tb.merged_sources_pre_renumber = [
+        {"id": "r-1", "url": u_a},
+        {"id": "r-2", "url": u_a},  # dup of r-1 -> dropped
+        {"id": "r-3", "url": u_b},
+    ]
+    tb_after = _run(renumber_sources, tb, _ro())
+    assert [s["id"] for s in tb_after.final_sources] == ["src-001", "src-002"]
+    assert tb_after.id_rename_map == {
+        "r-1": "src-001",
+        "r-2": "src-001",
+        "r-3": "src-002",
+    }
+
+
+def test_renumber_sources_no_url_sources_never_deduped():
+    """Sources with no/empty/unparseable url each keep their own id, even when
+    several share the same (absent) url."""
+    tb = TopicBus()
+    tb.merged_sources_pre_renumber = [
+        {"id": "r-1", "outlet": "A"},  # no url key
+        {"id": "r-2", "url": "", "outlet": "B"},  # empty url
+        {"id": "r-3", "url": "not a url", "outlet": "C"},  # no netloc
+        {"id": "r-4", "url": "not a url", "outlet": "D"},  # same unparseable string
+    ]
+    tb_after = _run(renumber_sources, tb, _ro())
+    assert [s["id"] for s in tb_after.final_sources] == [
+        "src-001",
+        "src-002",
+        "src-003",
+        "src-004",
+    ]
+    assert tb_after.id_rename_map == {
+        "r-1": "src-001",
+        "r-2": "src-002",
+        "r-3": "src-003",
+        "r-4": "src-004",
+    }
+
+
+def test_normalize_source_url_dedup_equivalences():
+    """Scheme-case, host-case, fragment, and a single trailing slash are
+    neutralized (these forms dedupe)."""
+    base = _normalize_source_url("https://h.example/a/b")
+    assert base is not None
+    assert _normalize_source_url("HTTPS://h.example/a/b") == base  # scheme case
+    assert _normalize_source_url("https://H.Example/a/b") == base  # host case
+    assert _normalize_source_url("https://h.example/a/b#frag") == base  # fragment
+    assert _normalize_source_url("https://h.example/a/b/") == base  # trailing slash
+
+
+def test_normalize_source_url_distinctions_preserved():
+    """`www.` and the query string are NOT altered (these forms stay distinct)."""
+    base = _normalize_source_url("https://h.example/a")
+    assert _normalize_source_url("https://www.h.example/a") != base  # www. kept
+    assert _normalize_source_url("https://h.example/a?x=1") != base  # query kept
+    # Two different queries do not collapse.
+    assert _normalize_source_url("https://h.example/a?x=1") != _normalize_source_url(
+        "https://h.example/a?x=2"
+    )
+
+
+def test_normalize_source_url_unusable_returns_none():
+    """Non-strings, blanks, and netloc-less strings are unusable (never dedup)."""
+    assert _normalize_source_url(None) is None
+    assert _normalize_source_url("") is None
+    assert _normalize_source_url("   ") is None
+    assert _normalize_source_url("/relative/path") is None
+    assert _normalize_source_url("just-text") is None
 
 
 # ---------------------------------------------------------------------------

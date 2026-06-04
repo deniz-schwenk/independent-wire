@@ -46,6 +46,7 @@ import copy
 import logging
 import re
 from typing import Any, Callable, Optional
+from urllib.parse import urlsplit
 
 from src.bus import (
     RunBusReadOnly,
@@ -113,6 +114,42 @@ async def merge_sources(topic_bus: TopicBus, run_bus: RunBusReadOnly) -> TopicBu
 # ---------------------------------------------------------------------------
 
 
+def _normalize_source_url(url: Any) -> Optional[str]:
+    """Conservatively normalize a source URL for duplicate detection.
+
+    Returns a canonical form used only as a dedup key, or ``None`` when the
+    value is not a usable absolute URL (in which case the source must never
+    be deduped — each such source keeps its own id).
+
+    Conservative normalization (agreed scope):
+    - lowercase the scheme and host (netloc),
+    - strip the URL fragment,
+    - strip a single trailing slash on the path.
+
+    Deliberately NOT done: stripping ``www.``, or altering / dropping the
+    query string. ``http://h/a?x=1`` and ``HTTP://H/a/#frag?`` already differ
+    in query, so they stay distinct; only scheme-case, host-case, fragment,
+    and one trailing slash are neutralized.
+    """
+    if not isinstance(url, str):
+        return None
+    raw = url.strip()
+    if not raw:
+        return None
+    parts = urlsplit(raw)
+    if not parts.netloc:
+        return None  # relative / unparseable -> never dedup
+    scheme = parts.scheme.lower()
+    host = parts.netloc.lower()
+    path = parts.path
+    if path.endswith("/"):
+        path = path[:-1]  # strip a single trailing slash
+    rebuilt = f"{scheme}://{host}{path}"
+    if parts.query:
+        rebuilt += f"?{parts.query}"
+    return rebuilt
+
+
 @topic_stage_def(
     reads=("merged_sources_pre_renumber",),
     writes=("final_sources", "id_rename_map"),
@@ -120,11 +157,12 @@ async def merge_sources(topic_bus: TopicBus, run_bus: RunBusReadOnly) -> TopicBu
 async def renumber_sources(
     topic_bus: TopicBus, run_bus: RunBusReadOnly
 ) -> TopicBus:
-    """Assign canonical `src-NNN` IDs to merged sources in array order.
+    """Assign canonical `src-NNN` IDs to merged sources in array order,
+    deduplicating by normalized URL along the way.
 
     Builds id_rename_map (old_id -> new_id) for the downstream
-    normalize_pre_research stage to use. Each source's `id` field is
-    overwritten with the new value; original prefixed IDs survive only
+    normalize_pre_research stage to use. Each surviving source's `id` field
+    is overwritten with the new value; original prefixed IDs survive only
     inside the rename map.
 
     Sources without an `id` field are renumbered too, mapped from
@@ -132,9 +170,20 @@ async def renumber_sources(
     map's purpose is rewriting references; an unreferenced placeholder
     is harmless).
 
+    URL deduplication (added 2026-06-04 after tp-2026-06-04-004 shipped the
+    same article twice under two outlet-name variants): the first source in
+    array order with a given normalized URL wins (hydration precedes
+    researcher in the merge). A later source whose normalized URL already
+    maps to an assigned id is dropped from final_sources; its old_id is
+    pointed at the surviving `src-NNN` in id_rename_map, so
+    normalize_pre_research rewrites any pre-research reference to it onto the
+    survivor (many-to-one is safe — the rewrite is a forward lookup). Sources
+    with no usable URL are never deduped (each keeps its own id). `src-NNN`
+    stays gapless across survivors via a running counter, not the array index.
+
     V2 deviation from V1 _renumber_and_prune_sources (src/pipeline.py:571):
-    no pruning. V2 renumbers before writer runs, so there is no body to
-    prune against. Every merged source becomes a final source.
+    no body-citation pruning (V2 renumbers before the writer runs). The only
+    pruning here is exact URL-duplicate collapse.
     """
     pre = topic_bus.merged_sources_pre_renumber
     if not isinstance(pre, list):
@@ -142,15 +191,25 @@ async def renumber_sources(
 
     rename_map: dict[str, str] = {}
     new_sources: list[dict] = []
+    url_to_id: dict[str, str] = {}
+    next_idx = 1
     for i, src in enumerate(pre, start=1):
         if not isinstance(src, dict):
             continue
-        new_id = f"src-{i:03d}"
         old_id = src.get("id")
-        if isinstance(old_id, str) and old_id:
-            rename_map[old_id] = new_id
-        else:
-            rename_map[f"__no_id_{i}__"] = new_id
+        map_key = old_id if (isinstance(old_id, str) and old_id) else f"__no_id_{i}__"
+
+        norm_url = _normalize_source_url(src.get("url"))
+        if norm_url is not None and norm_url in url_to_id:
+            # Duplicate URL: drop this source, point its id at the survivor.
+            rename_map[map_key] = url_to_id[norm_url]
+            continue
+
+        new_id = f"src-{next_idx:03d}"
+        next_idx += 1
+        rename_map[map_key] = new_id
+        if norm_url is not None:
+            url_to_id[norm_url] = new_id
         new_src = copy.deepcopy(src)
         new_src["id"] = new_id
         new_sources.append(new_src)
