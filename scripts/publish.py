@@ -439,6 +439,7 @@ def build_index(all_meta: list[dict], reports_dir: Path | None = None) -> str:
 <meta name="twitter:description" content="{SITE_TAGLINE}">
 <meta name="twitter:image" content="{og_image}">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="alternate" type="application/rss+xml" title="Independent Wire" href="feed.xml">
 <style>
