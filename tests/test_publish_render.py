@@ -913,6 +913,45 @@ def test_what_is_missing_section_renders_before_sources_in_full_page():
     )
 
 
+def test_report_head_emits_favicon_and_apple_touch_icon_links():
+    """Report-page head mirrors the homepage's two icon links (favicon.svg +
+    apple-touch-icon.png) using root-relative /assets/ hrefs, so a shared
+    report page shows the brand favicon + share-sheet icon rather than a
+    grey placeholder. See TASK-RENDER-ICON-LINKS.md."""
+    tp = {
+        "id": "tp-2026-06-08-001",
+        "metadata": {
+            "title": "Test Topic", "date": "2026-06-08", "topic_slug": "t",
+            "priority": 5, "selection_reason": "r",
+        },
+        "article": {"headline": "H", "body": "B", "summary": "S"},
+        "sources": [
+            {"id": "src-001", "outlet": "Reuters", "url": "https://r/", "title": "t"},
+        ],
+        "actors": [],
+        "final_actors": [],
+        "perspectives": {"position_clusters": [], "missing_positions": []},
+        "what_is_missing": {"voices_missing": [], "topics_missing": []},
+        "divergences": [],
+        "transparency": {"selection_reason": "r"},
+        "bias_analysis": {
+            "language": [], "source": {"by_country": {}, "by_language": {}, "represented": [], "total": 1},
+            "geographical": {"represented": [], "by_country": {}, "missing_from_dossier": []},
+            "selection": {"missing_positions": [], "qa_problems_found": []},
+            "framing": {"position_clusters_summary": [], "cross_source_divergences": [], "cluster_count": 0, "distinct_actor_count": 0},
+            "reader_note": "",
+        },
+    }
+    page = render(tp)
+    head = page[: page.find("</head>")]
+    assert '</head>' in page
+    # rel=icon favicon, root-relative /assets path (NOT ../assets)
+    assert '<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">' in head
+    # rel=apple-touch-icon 180x180, root-relative /assets path
+    assert '<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">' in head
+    assert "../assets/" not in head, "icon hrefs must be root-relative, not /reports-relative"
+
+
 def test_meta_bar_languages_count_correct():
     """Bug 5: V2 path is `bias_analysis.source.by_language`, not
     `source_balance.by_language`."""

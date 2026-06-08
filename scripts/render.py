@@ -2411,6 +2411,8 @@ def render(tp: dict) -> str:
         f'<head>\n'
         f'<meta charset="utf-8">\n'
         f'<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+        f'<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">\n'
+        f'<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">\n'
         f'<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">\n'
         f'<title>{_esc(headline)}</title>\n'
         f'{build_meta_tags(tp)}'
