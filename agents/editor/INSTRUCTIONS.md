@@ -55,3 +55,8 @@ Output only the JSON array. No commentary, no markdown fences, no preamble.
 2. Every rejection names what the topic lacks as a judgment about the topic itself: narrow scope, single-region story, no contested framings, no broader implications, repetition of prior coverage without new substance. "Not important" is not a reason.
 3. Spread accepted priorities across the full 1–10 range. Clustering accepts in the upper end means editorial discrimination is failing.
 4. No more than two accepted topics may share the same priority.
+5. Sport topics qualify only through their stakes beyond the sport
+itself — political, economic, or societal implications such as
+governance, labor conditions, public spending, health policy, or
+geopolitics. Match results, standings, tournament progression, and
+athletic performance are by themselves rejects under Rule 2.
