@@ -1,0 +1,1798 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "description": "Frozen German exonym lookup for institution/government/agency proper nouns, seeding the translation stage's Turn-1 glossary to enforce ONE consistent German rendering per entity (fixes the bake-off terminology/exonym drift, e.g. 'Hormus' vs 'Hormuz'). Person names are NOT here (they pass through). keep_original=true marks proper-noun orgs/brands that stay identical in German (e.g. Hamas, OpenAI, Amnesty International).",
+    "key_format": "Case-insensitively normalised English name: lowercased, leading 'the' dropped, periods removed, parenthetical acronyms and possessive 's stripped, whitespace collapsed. Trivial variants ('US State Department','US state department','U.S. State Department') collapse to one key ('us state department').",
+    "structure": "key -> {canonical_en, de, source, keep_original}. source in {official (org's own German name), wikipedia (German Wikipedia article title), opus (no established German exonym; anthropic/claude-opus-4.6 translation — review these)}.",
+    "provenance": "Harvested from actors[].name/final_actors[].name across output/*/tp-*.json (63 TPs). Resolved via cascade A(official)>B(wikipedia)>C(opus). FROZEN: the translation loop consumes this, never edits it; unseen entities fall back to the run-time glossary and are logged for manual addition.",
+    "build_date": "2026-06-16"
+  },
+  "abd merkez kuvvetler komutanlığı": {
+    "canonical_en": "ABD Merkez Kuvvetler Komutanlığı (CENTCOM)",
+    "de": "US-Zentralkommando",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "africa cdc": {
+    "canonical_en": "Africa CDC",
+    "de": "Afrikanische Zentren für Krankheitskontrolle und -prävention",
+    "source": "opus",
+    "keep_original": false
+  },
+  "africa centres for disease control and prevention": {
+    "canonical_en": "Africa Centres for Disease Control and Prevention (Africa CDC)",
+    "de": "Afrikanische Zentren für Krankheitskontrolle und -prävention",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "almanya dışişleri bakanlığı": {
+    "canonical_en": "Almanya Dışişleri Bakanlığı",
+    "de": "Auswärtiges Amt",
+    "source": "official",
+    "keep_original": false
+  },
+  "amal movement": {
+    "canonical_en": "Amal movement",
+    "de": "Amal-Bewegung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "amnesty international": {
+    "canonical_en": "Amnesty International",
+    "de": "Amnesty International",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "armée israélienne": {
+    "canonical_en": "armée israélienne",
+    "de": "Israelische Verteidigungsstreitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "association of tour operators of russia": {
+    "canonical_en": "Association of Tour Operators of Russia",
+    "de": "Verband der Reiseveranstalter Russlands",
+    "source": "opus",
+    "keep_original": false
+  },
+  "azerbaijan foreign ministry": {
+    "canonical_en": "Azerbaijan's foreign ministry",
+    "de": "aserbaidschanisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "bahrain government": {
+    "canonical_en": "Bahrain's government",
+    "de": "bahrainische Regierung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "bahrain interior ministry": {
+    "canonical_en": "Bahrain's interior ministry",
+    "de": "bahrainisches Innenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "bahrain military": {
+    "canonical_en": "Bahrain's military",
+    "de": "bahrainisches Militär",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "bahrain ministry of interior": {
+    "canonical_en": "Bahrain Ministry of Interior",
+    "de": "Bahrainisches Innenministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "bahraini government": {
+    "canonical_en": "Bahraini government",
+    "de": "bahrainische Regierung",
+    "source": "opus",
+    "keep_original": false
+  },
+  "bahraini interior ministry": {
+    "canonical_en": "Bahraini Interior Ministry",
+    "de": "bahrainisches Innenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "bahraini military": {
+    "canonical_en": "Bahraini military",
+    "de": "bahrainisches Militär",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "bahraini ministry of foreign affairs": {
+    "canonical_en": "Bahraini Ministry of Foreign Affairs",
+    "de": "bahrainisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "bahreyn dışişleri bakanlığı": {
+    "canonical_en": "Bahreyn Dışişleri Bakanlığı",
+    "de": "Bahrainisches Außenministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "bahreyn i̇çişleri bakanlığı": {
+    "canonical_en": "Bahreyn İçişleri Bakanlığı",
+    "de": "Bahrainisches Innenministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "brazil ministry of health": {
+    "canonical_en": "Brazil's ministry of health",
+    "de": "brasilianisches Gesundheitsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "british consulate in jerusalem": {
+    "canonical_en": "British consulate in Jerusalem",
+    "de": "britisches Konsulat in Jerusalem",
+    "source": "opus",
+    "keep_original": false
+  },
+  "bộ y tế việt nam": {
+    "canonical_en": "Bộ Y tế Việt Nam",
+    "de": "Vietnamesisches Gesundheitsministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "care": {
+    "canonical_en": "CARE",
+    "de": "CARE",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "centcom": {
+    "canonical_en": "CENTCOM",
+    "de": "US-Zentralkommando",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "center for strategic and international studies": {
+    "canonical_en": "Center for Strategic and International Studies (CSIS)",
+    "de": "Center for Strategic and International Studies (CSIS)",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "centre africain de contrôle des maladies": {
+    "canonical_en": "Centre africain de contrôle des maladies (Africa CDC)",
+    "de": "Afrikanische Zentren für Seuchenkontrolle und -prävention",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "cepi": {
+    "canonical_en": "CEPI",
+    "de": "CEPI",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "chinese ministry of foreign affairs": {
+    "canonical_en": "Chinese Ministry of Foreign Affairs",
+    "de": "chinesisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "citi": {
+    "canonical_en": "Citi",
+    "de": "Citi",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "civil defence": {
+    "canonical_en": "Civil Defence",
+    "de": "Zivilschutz",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "coalition for epidemic preparedness innovations": {
+    "canonical_en": "Coalition for Epidemic Preparedness Innovations (CEPI)",
+    "de": "Koalition für Innovationen in der Epidemievorsorge",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "comando central de estados unidos": {
+    "canonical_en": "Comando Central de Estados Unidos (Centcom)",
+    "de": "US-Zentralkommando",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "cyprus presidency of the council of the eu": {
+    "canonical_en": "Cyprus Presidency of the Council of the EU",
+    "de": "Zyprische Ratspräsidentschaft der Europäischen Union",
+    "source": "opus",
+    "keep_original": false
+  },
+  "cyprus presidency of the council of the eu 2026": {
+    "canonical_en": "Cyprus Presidency of the Council of the EU 2026",
+    "de": "zyprische Ratspräsidentschaft der EU 2026",
+    "source": "opus",
+    "keep_original": false
+  },
+  "danish football association": {
+    "canonical_en": "Danish Football Association",
+    "de": "Dänischer Fußballverband",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "danish football union": {
+    "canonical_en": "Danish Football Union",
+    "de": "Dänischer Fußballverband",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "darfur bar association": {
+    "canonical_en": "Darfur Bar Association",
+    "de": "Anwaltskammer von Darfur",
+    "source": "opus",
+    "keep_original": false
+  },
+  "dassault": {
+    "canonical_en": "Dassault",
+    "de": "Dassault",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "department of homeland security": {
+    "canonical_en": "Department of Homeland Security",
+    "de": "US-Heimatschutzministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "department of justice": {
+    "canonical_en": "Department of Justice",
+    "de": "US-Justizministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "department of state": {
+    "canonical_en": "Department of State",
+    "de": "US-Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "dirección general de aviación civil": {
+    "canonical_en": "Dirección General de Aviación Civil",
+    "de": "Generaldirektion für Zivilluftfahrt",
+    "source": "opus",
+    "keep_original": false
+  },
+  "dirección general de salud pública y ordenación farmacéutica de la junta de andalucía": {
+    "canonical_en": "Dirección General de Salud Pública y Ordenación Farmacéutica de la Junta de Andalucía",
+    "de": "Generaldirektion für öffentliche Gesundheit und pharmazeutische Ordnung der Junta de Andalucía",
+    "source": "opus",
+    "keep_original": false
+  },
+  "doctors without borders": {
+    "canonical_en": "Doctors Without Borders (MSF)",
+    "de": "Ärzte ohne Grenzen",
+    "source": "official",
+    "keep_original": false
+  },
+  "dtek": {
+    "canonical_en": "DTEK",
+    "de": "DTEK",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "ecr group": {
+    "canonical_en": "ECR group",
+    "de": "Europäische Konservative und Reformer",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "egyptian government": {
+    "canonical_en": "Egyptian government",
+    "de": "ägyptische Regierung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "emmanuel macron office": {
+    "canonical_en": "Emmanuel Macron's office",
+    "de": "Büro von Emmanuel Macron",
+    "source": "opus",
+    "keep_original": false
+  },
+  "estado mayor del ejército kuwaití": {
+    "canonical_en": "Estado Mayor del ejército kuwaití",
+    "de": "Generalstab der kuwaitischen Armee",
+    "source": "opus",
+    "keep_original": false
+  },
+  "european commission": {
+    "canonical_en": "European Commission",
+    "de": "Europäische Kommission",
+    "source": "official",
+    "keep_original": false
+  },
+  "european union": {
+    "canonical_en": "European Union",
+    "de": "Europäische Union",
+    "source": "official",
+    "keep_original": false
+  },
+  "fiocruz": {
+    "canonical_en": "Fiocruz",
+    "de": "Fiocruz",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "french armed forces": {
+    "canonical_en": "French Armed Forces",
+    "de": "französische Streitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "french ministry for europe and foreign affairs": {
+    "canonical_en": "French Ministry for Europe and Foreign Affairs",
+    "de": "französisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "fuerzas de defensa de israel": {
+    "canonical_en": "Fuerzas de Defensa de Israel (FDI)",
+    "de": "Israelische Verteidigungsstreitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "gavi": {
+    "canonical_en": "Gavi",
+    "de": "Gavi",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "gaza civil defence": {
+    "canonical_en": "Gaza Civil Defence",
+    "de": "Zivilschutz in Gaza",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "general staff of the armed forces of ukraine": {
+    "canonical_en": "General Staff of the Armed Forces of Ukraine",
+    "de": "Generalstab der ukrainischen Streitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "german foreign office": {
+    "canonical_en": "German Foreign Office",
+    "de": "Auswärtiges Amt",
+    "source": "official",
+    "keep_original": false
+  },
+  "german government": {
+    "canonical_en": "German government",
+    "de": "Bundesregierung",
+    "source": "official",
+    "keep_original": false
+  },
+  "germany foreign ministry": {
+    "canonical_en": "Germany's Foreign Ministry",
+    "de": "Auswärtiges Amt",
+    "source": "official",
+    "keep_original": false
+  },
+  "government of india": {
+    "canonical_en": "Government of India",
+    "de": "Regierung Indiens",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "government of iran": {
+    "canonical_en": "Government of Iran",
+    "de": "iranische Regierung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "government of st petersburg": {
+    "canonical_en": "Government of St. Petersburg",
+    "de": "Regierung von Sankt Petersburg",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "government of the democratic republic of the congo": {
+    "canonical_en": "Government of the Democratic Republic of the Congo",
+    "de": "Regierung der Demokratischen Republik Kongo",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "guardia revolucionaria de irán": {
+    "canonical_en": "Guardia Revolucionaria de Irán (IRGC)",
+    "de": "Iranische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "guardia revolucionaria iraní": {
+    "canonical_en": "Guardia Revolucionaria iraní",
+    "de": "Iranische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "guardia revolucionaria islámica de irán": {
+    "canonical_en": "Guardia Revolucionaria Islámica de Irán",
+    "de": "Iranische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "hamas": {
+    "canonical_en": "Hamas",
+    "de": "Hamas",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "hasuder infectious diseases working group": {
+    "canonical_en": "HASUDER Infectious Diseases Working Group",
+    "de": "HASUDER Infectious Diseases Working Group",
+    "source": "opus",
+    "keep_original": true
+  },
+  "haute cour de justice kényane": {
+    "canonical_en": "Haute Cour de justice kényane",
+    "de": "Oberster Gerichtshof Kenias",
+    "source": "opus",
+    "keep_original": false
+  },
+  "hezbollah": {
+    "canonical_en": "Hezbollah",
+    "de": "Hisbollah",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "hizbullah": {
+    "canonical_en": "Hizbullah",
+    "de": "Hisbollah",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "human rights watch": {
+    "canonical_en": "Human Rights Watch",
+    "de": "Human Rights Watch",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "idf": {
+    "canonical_en": "IDF",
+    "de": "Israelische Verteidigungsstreitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ig metall": {
+    "canonical_en": "IG Metall",
+    "de": "IG Metall",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "ilustre colegio de la abogacía de madrid": {
+    "canonical_en": "Ilustre Colegio de la Abogacía de Madrid (ICAM)",
+    "de": "Ilustre Colegio de la Abogacía de Madrid",
+    "source": "opus",
+    "keep_original": false
+  },
+  "india foreign ministry": {
+    "canonical_en": "India's Foreign Ministry",
+    "de": "indisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "india ministry of external affairs": {
+    "canonical_en": "India's Ministry of External Affairs (MEA)",
+    "de": "indisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "indian ministry of foreign affairs": {
+    "canonical_en": "Indian Ministry of Foreign Affairs",
+    "de": "indisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "indian ministry of health": {
+    "canonical_en": "Indian Ministry of Health",
+    "de": "indisches Gesundheitsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "inss": {
+    "canonical_en": "INSS",
+    "de": "Institut für nationale Sicherheitsstudien",
+    "source": "opus",
+    "keep_original": false
+  },
+  "international alliance of theatrical stage employees": {
+    "canonical_en": "International Alliance of Theatrical Stage Employees (IATSE)",
+    "de": "International Alliance of Theatrical Stage Employees (IATSE)",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "international committee of the red cross": {
+    "canonical_en": "International Committee of the Red Cross (ICRC)",
+    "de": "Internationales Komitee vom Roten Kreuz",
+    "source": "official",
+    "keep_original": false
+  },
+  "international maritime organization": {
+    "canonical_en": "International Maritime Organization",
+    "de": "Internationale Seeschifffahrts-Organisation",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "international monetary fund": {
+    "canonical_en": "International Monetary Fund (IMF)",
+    "de": "Internationaler Währungsfonds",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "international organization for migration": {
+    "canonical_en": "International Organization for Migration",
+    "de": "Internationale Organisation für Migration",
+    "source": "official",
+    "keep_original": false
+  },
+  "international rescue committee": {
+    "canonical_en": "International Rescue Committee",
+    "de": "International Rescue Committee",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iran embassy in turkey": {
+    "canonical_en": "Iran's embassy in Turkey",
+    "de": "iranische Botschaft in der Türkei",
+    "source": "opus",
+    "keep_original": false
+  },
+  "iran football federation": {
+    "canonical_en": "Iran's Football Federation",
+    "de": "Iranischer Fußballverband",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iran foreign ministry": {
+    "canonical_en": "Iran's Foreign Ministry",
+    "de": "iranisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iran islamic revolution guard corps": {
+    "canonical_en": "Iran's Islamic Revolution Guard Corps (IRGC)",
+    "de": "Islamische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iran islamic revolutionary guard corps": {
+    "canonical_en": "Iran's Islamic Revolutionary Guard Corps (IRGC)",
+    "de": "Islamische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iran joint military command": {
+    "canonical_en": "Iran's joint military command",
+    "de": "iranisches gemeinsames Militärkommando",
+    "source": "opus",
+    "keep_original": false
+  },
+  "iran military": {
+    "canonical_en": "Iran's military",
+    "de": "iranisches Militär",
+    "source": "opus",
+    "keep_original": false
+  },
+  "iran ministry of foreign affairs": {
+    "canonical_en": "Iran's Ministry of Foreign Affairs",
+    "de": "iranisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iran revolutionary guard": {
+    "canonical_en": "Iran's Revolutionary Guard",
+    "de": "Islamische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iran revolutionary guard corps": {
+    "canonical_en": "Iran's Revolutionary Guard Corps",
+    "de": "Islamische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iranian consulate in mumbai": {
+    "canonical_en": "Iranian consulate in Mumbai",
+    "de": "iranisches Konsulat in Mumbai",
+    "source": "opus",
+    "keep_original": false
+  },
+  "iranian foreign ministry": {
+    "canonical_en": "Iranian Foreign Ministry",
+    "de": "iranisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iranian military": {
+    "canonical_en": "Iranian military",
+    "de": "iranisches Militär",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iranian ministry of foreign affairs": {
+    "canonical_en": "Iranian Ministry of Foreign Affairs",
+    "de": "iranisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iranian navy": {
+    "canonical_en": "Iranian navy",
+    "de": "iranische Marine",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iranian parliament": {
+    "canonical_en": "Iranian parliament",
+    "de": "iranisches Parlament",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iranian revolutionary guard": {
+    "canonical_en": "Iranian Revolutionary Guard",
+    "de": "Islamische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iranian revolutionary guard corps": {
+    "canonical_en": "Iranian Revolutionary Guard Corps",
+    "de": "Islamische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "iranischen revolutionswächter": {
+    "canonical_en": "Iranischen Revolutionswächter",
+    "de": "Iranische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "irc": {
+    "canonical_en": "IRC",
+    "de": "International Rescue Committee",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "irgc": {
+    "canonical_en": "IRGC",
+    "de": "Iranische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "irish government": {
+    "canonical_en": "Irish government",
+    "de": "irische Regierung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "islamic revolutionary guard corps": {
+    "canonical_en": "Islamic Revolutionary Guard Corps (IRGC)",
+    "de": "Islamische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "islamic revolutionary guards corps": {
+    "canonical_en": "Islamic Revolutionary Guards Corps (IRGC)",
+    "de": "Iranische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "israel defense forces": {
+    "canonical_en": "Israel Defense Forces (IDF)",
+    "de": "Israelische Verteidigungsstreitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "israel defense forces and shin bet": {
+    "canonical_en": "Israel Defense Forces (IDF) and Shin Bet",
+    "de": "Israelische Verteidigungsstreitkräfte und Schin Bet",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "israel government": {
+    "canonical_en": "Israel's government",
+    "de": "israelische Regierung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "israel home front command": {
+    "canonical_en": "Israel's Home Front Command",
+    "de": "israelisches Heimatfrontkommando",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "israel military": {
+    "canonical_en": "Israel's military",
+    "de": "israelisches Militär",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "israeli air force": {
+    "canonical_en": "Israeli Air Force",
+    "de": "israelische Luftwaffe",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "israeli army": {
+    "canonical_en": "Israeli Army",
+    "de": "israelische Armee",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "israeli army and shin bet": {
+    "canonical_en": "Israeli army and Shin Bet",
+    "de": "israelische Armee und Schin Bet",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "israeli foreign ministry": {
+    "canonical_en": "Israeli Foreign Ministry",
+    "de": "israelisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "israeli military": {
+    "canonical_en": "Israeli military",
+    "de": "israelisches Militär",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "italian ministry of health": {
+    "canonical_en": "Italian Ministry of Health",
+    "de": "italienisches Gesundheitsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "i̇ran devrim muhafızları ordusu": {
+    "canonical_en": "İran Devrim Muhafızları Ordusu (IRGC)",
+    "de": "Iranische Revolutionsgarde",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "i̇ran dışişleri bakanlığı": {
+    "canonical_en": "İran Dışişleri Bakanlığı",
+    "de": "Iranisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "i̇srail ordusu": {
+    "canonical_en": "İsrail ordusu",
+    "de": "Israelische Verteidigungsstreitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "japanese government": {
+    "canonical_en": "Japanese government",
+    "de": "japanische Regierung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "jordanian foreign ministry": {
+    "canonical_en": "Jordanian foreign ministry",
+    "de": "jordanisches Außenministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "katiba institute": {
+    "canonical_en": "Katiba Institute",
+    "de": "Katiba Institute",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "keir starmer office": {
+    "canonical_en": "Keir Starmer's office",
+    "de": "Büro von Keir Starmer",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kenya high court": {
+    "canonical_en": "Kenya High Court",
+    "de": "Oberster Gerichtshof Kenias",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kenya medical practitioners, pharmacists and dentists union": {
+    "canonical_en": "Kenya Medical Practitioners, Pharmacists and Dentists Union",
+    "de": "Kenya Medical Practitioners, Pharmacists and Dentists Union",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "kenyan high court": {
+    "canonical_en": "Kenyan High Court",
+    "de": "Oberster Gerichtshof Kenias",
+    "source": "opus",
+    "keep_original": false
+  },
+  "khatam al-anbiya central headquarters": {
+    "canonical_en": "Khatam al-Anbiya Central Headquarters",
+    "de": "Khatam al-Anbiya-Hauptquartier",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kherson oblast administration": {
+    "canonical_en": "Kherson Oblast Administration",
+    "de": "Gebietsverwaltung Cherson",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "kuveyt dışişleri bakanlığı": {
+    "canonical_en": "Kuveyt Dışişleri Bakanlığı",
+    "de": "Kuwaitisches Außenministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kuveyt ordusu": {
+    "canonical_en": "Kuveyt ordusu (Kuwaiti Army)",
+    "de": "kuwaitische Armee",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "kuwait armed forces": {
+    "canonical_en": "Kuwait Armed Forces",
+    "de": "Kuwaitische Streitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "kuwait armed forces general staff": {
+    "canonical_en": "Kuwait Armed Forces General Staff",
+    "de": "Generalstab der kuwaitischen Streitkräfte",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kuwait army": {
+    "canonical_en": "Kuwait Army",
+    "de": "Kuwaitische Armee",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kuwait army general staff": {
+    "canonical_en": "Kuwait Army General Staff",
+    "de": "Generalstab der kuwaitischen Armee",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kuwait civil aviation authority": {
+    "canonical_en": "Kuwait Civil Aviation Authority",
+    "de": "kuwaitische Zivilluftfahrtbehörde",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kuwait military": {
+    "canonical_en": "Kuwait's Military",
+    "de": "kuwaitisches Militär",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kuwaiti air defences": {
+    "canonical_en": "Kuwaiti air defences",
+    "de": "Kuwaitische Luftabwehr",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kuwaiti armed forces": {
+    "canonical_en": "Kuwaiti Armed Forces",
+    "de": "kuwaitische Streitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "kuwaiti army": {
+    "canonical_en": "Kuwaiti Army",
+    "de": "kuwaitische Armee",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kuwaiti army general staff": {
+    "canonical_en": "Kuwaiti Army General Staff",
+    "de": "Generalstab der kuwaitischen Armee",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kuwaiti foreign ministry": {
+    "canonical_en": "Kuwaiti foreign ministry",
+    "de": "kuwaitisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "kuwaiti government": {
+    "canonical_en": "Kuwaiti government",
+    "de": "kuwaitische Regierung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "kuwaiti military": {
+    "canonical_en": "Kuwaiti military",
+    "de": "kuwaitisches Militär",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kuwaiti ministry of defense": {
+    "canonical_en": "Kuwaiti Ministry of Defense",
+    "de": "kuwaitisches Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "kuwaiti ministry of foreign affairs": {
+    "canonical_en": "Kuwaiti Ministry of Foreign Affairs",
+    "de": "kuwaitisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "kuwaiti ministry of health": {
+    "canonical_en": "Kuwaiti Ministry of Health",
+    "de": "kuwaitisches Gesundheitsministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kuwaits militär": {
+    "canonical_en": "Kuwaits Militär",
+    "de": "Kuwaitische Streitkräfte",
+    "source": "opus",
+    "keep_original": false
+  },
+  "kyiv city authorities": {
+    "canonical_en": "Kyiv city authorities",
+    "de": "Kiewer Stadtverwaltung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "latvian armed forces": {
+    "canonical_en": "Latvian Armed Forces",
+    "de": "lettische Streitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "lebanese armed forces": {
+    "canonical_en": "Lebanese armed forces",
+    "de": "libanesische Streitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "lebanese army": {
+    "canonical_en": "Lebanese Army",
+    "de": "libanesische Armee",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "lebanese army command": {
+    "canonical_en": "Lebanese army command",
+    "de": "Kommando der libanesischen Armee",
+    "source": "opus",
+    "keep_original": false
+  },
+  "lebanese government": {
+    "canonical_en": "Lebanese government",
+    "de": "libanesische Regierung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "lebanese health ministry": {
+    "canonical_en": "Lebanese Health Ministry",
+    "de": "libanesisches Gesundheitsministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "lebanese ministry of foreign affairs": {
+    "canonical_en": "Lebanese Ministry of Foreign Affairs",
+    "de": "libanesisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "lebanese ministry of health": {
+    "canonical_en": "Lebanese Ministry of Health",
+    "de": "libanesisches Gesundheitsministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "lebanese ministry of public health": {
+    "canonical_en": "Lebanese Ministry of Public Health",
+    "de": "libanesisches Gesundheitsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "lebanon army": {
+    "canonical_en": "Lebanon's army",
+    "de": "libanesische Armee",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "lebanon government": {
+    "canonical_en": "Lebanon's government",
+    "de": "libanesische Regierung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "lebanon health ministry": {
+    "canonical_en": "Lebanon's Health Ministry",
+    "de": "libanesisches Gesundheitsministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "litani river authority": {
+    "canonical_en": "Litani River Authority",
+    "de": "Litani-Flussbehörde",
+    "source": "opus",
+    "keep_original": false
+  },
+  "lübnan ordusu": {
+    "canonical_en": "Lübnan ordusu",
+    "de": "libanesische Streitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "mahakama kuu ya kenya": {
+    "canonical_en": "Mahakama Kuu ya Kenya (Kenya High Court)",
+    "de": "Oberster Gerichtshof Kenias",
+    "source": "opus",
+    "keep_original": false
+  },
+  "mando central de estados unidos": {
+    "canonical_en": "Mando Central de Estados Unidos (Centcom)",
+    "de": "US-Zentralkommando",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ministerio de exterior kuwaití": {
+    "canonical_en": "Ministerio de Exterior kuwaití",
+    "de": "Kuwaitisches Außenministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "ministerio de exteriores kuwaití": {
+    "canonical_en": "Ministerio de Exteriores kuwaití",
+    "de": "Kuwaitisches Außenministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "ministerio del interior de baréin": {
+    "canonical_en": "Ministerio del Interior de Baréin",
+    "de": "Bahrainisches Innenministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "ministro de defensa israelí": {
+    "canonical_en": "Ministro de Defensa israelí",
+    "de": "Israelisches Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ministry of defense of russia": {
+    "canonical_en": "Ministry of Defense of Russia",
+    "de": "russisches Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ministry of foreign affairs of iran": {
+    "canonical_en": "Ministry of Foreign Affairs of Iran",
+    "de": "iranisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ministry of foreign affairs of russia": {
+    "canonical_en": "Ministry of Foreign Affairs of Russia",
+    "de": "russisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ministry of foreign affairs of saudi arabia": {
+    "canonical_en": "Ministry of Foreign Affairs of Saudi Arabia",
+    "de": "saudi-arabisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ministry of health": {
+    "canonical_en": "Ministry of Health (Brazil)",
+    "de": "brasilianisches Gesundheitsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ministry of health of gaza": {
+    "canonical_en": "Ministry of Health of Gaza",
+    "de": "Gesundheitsministerium in Gaza",
+    "source": "opus",
+    "keep_original": false
+  },
+  "ministry of health of the democratic republic of the congo": {
+    "canonical_en": "Ministry of Health of the Democratic Republic of the Congo",
+    "de": "Gesundheitsministerium der Demokratischen Republik Kongo",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ministère congolais de la communication": {
+    "canonical_en": "Ministère congolais de la Communication",
+    "de": "Kongolesisches Kommunikationsministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "moderna": {
+    "canonical_en": "Moderna",
+    "de": "Moderna",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "msc": {
+    "canonical_en": "MSC",
+    "de": "Münchner Sicherheitskonferenz",
+    "source": "official",
+    "keep_original": false
+  },
+  "médecins sans frontières": {
+    "canonical_en": "Médecins Sans Frontières (MSF)",
+    "de": "Ärzte ohne Grenzen",
+    "source": "official",
+    "keep_original": false
+  },
+  "médicos sin fronteras": {
+    "canonical_en": "Médicos Sin Fronteras (MSF)",
+    "de": "Ärzte ohne Grenzen",
+    "source": "official",
+    "keep_original": false
+  },
+  "nasscom": {
+    "canonical_en": "NASSCOM",
+    "de": "NASSCOM",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "netblocks": {
+    "canonical_en": "NetBlocks",
+    "de": "NetBlocks",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "no-g7 coalition": {
+    "canonical_en": "No-G7 coalition",
+    "de": "No-G7-Koalition",
+    "source": "opus",
+    "keep_original": false
+  },
+  "nobitex": {
+    "canonical_en": "Nobitex",
+    "de": "Nobitex",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "nog7 coalition": {
+    "canonical_en": "NOG7 coalition",
+    "de": "NOG7 coalition",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "north korean foreign ministry": {
+    "canonical_en": "North Korean Foreign Ministry",
+    "de": "nordkoreanisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ocha": {
+    "canonical_en": "OCHA",
+    "de": "Amt der Vereinten Nationen für die Koordinierung humanitärer Angelegenheiten",
+    "source": "official",
+    "keep_original": false
+  },
+  "oecd": {
+    "canonical_en": "OECD",
+    "de": "Organisation für wirtschaftliche Zusammenarbeit und Entwicklung",
+    "source": "official",
+    "keep_original": false
+  },
+  "office of the high commissioner for human rights": {
+    "canonical_en": "Office of the High Commissioner for Human Rights",
+    "de": "Büro des Hohen Kommissars der Vereinten Nationen für Menschenrechte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "openai": {
+    "canonical_en": "OpenAI",
+    "de": "OpenAI",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "operational headquarters of krasnodar krai": {
+    "canonical_en": "Operational headquarters of Krasnodar Krai",
+    "de": "Operativer Stab der Region Krasnodar",
+    "source": "opus",
+    "keep_original": false
+  },
+  "organisation mondiale de la santé": {
+    "canonical_en": "Organisation mondiale de la Santé (OMS)",
+    "de": "Weltgesundheitsorganisation",
+    "source": "official",
+    "keep_original": false
+  },
+  "palestinian health ministry": {
+    "canonical_en": "Palestinian Health Ministry",
+    "de": "palästinensisches Gesundheitsministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "palestinian ministry of foreign affairs and expatriates": {
+    "canonical_en": "Palestinian Ministry of Foreign Affairs and Expatriates",
+    "de": "palästinensisches Außenministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "paramount": {
+    "canonical_en": "Paramount",
+    "de": "Paramount",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "persian gulf strait authority": {
+    "canonical_en": "Persian Gulf Strait Authority",
+    "de": "Behörde der Straße von Hormus",
+    "source": "opus",
+    "keep_original": false
+  },
+  "qatari ministry of foreign affairs": {
+    "canonical_en": "Qatari Ministry of Foreign Affairs",
+    "de": "katarisches Außenministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "quad": {
+    "canonical_en": "Quad",
+    "de": "Quad",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "republic of türkiye ministry of foreign affairs": {
+    "canonical_en": "Republic of Türkiye Ministry of Foreign Affairs",
+    "de": "türkisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "rio de janeiro state health department": {
+    "canonical_en": "Rio de Janeiro state health department",
+    "de": "Gesundheitsbehörde des Bundesstaates Rio de Janeiro",
+    "source": "opus",
+    "keep_original": false
+  },
+  "romania defense ministry": {
+    "canonical_en": "Romania's defense ministry",
+    "de": "rumänisches Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "romania ministry of defence": {
+    "canonical_en": "Romania's Ministry of Defence",
+    "de": "rumänisches Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "romania ministry of foreign affairs": {
+    "canonical_en": "Romania's Ministry of Foreign Affairs",
+    "de": "rumänisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "romanian defense ministry": {
+    "canonical_en": "Romanian Defense Ministry",
+    "de": "rumänisches Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "romanian foreign ministry": {
+    "canonical_en": "Romanian Foreign Ministry",
+    "de": "rumänisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "romanian ministry of defence": {
+    "canonical_en": "Romanian Ministry of Defence",
+    "de": "rumänisches Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "romanian ministry of foreign affairs": {
+    "canonical_en": "Romanian Ministry of Foreign Affairs",
+    "de": "rumänisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "romanian ministry of national defense": {
+    "canonical_en": "Romanian Ministry of National Defense",
+    "de": "rumänisches Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "rospotrebnadzor": {
+    "canonical_en": "Rospotrebnadzor",
+    "de": "Rospotrebnadsor",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "russia defense ministry": {
+    "canonical_en": "Russia's Defense Ministry",
+    "de": "Russisches Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "russian defence ministry": {
+    "canonical_en": "Russian Defence Ministry",
+    "de": "Russisches Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "russian foreign ministry": {
+    "canonical_en": "Russian Foreign Ministry",
+    "de": "russisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "russian government": {
+    "canonical_en": "Russian government",
+    "de": "russische Regierung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "russian ministry of defence": {
+    "canonical_en": "Russian Ministry of Defence",
+    "de": "russisches Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "russian ministry of defense": {
+    "canonical_en": "Russian Ministry of Defense",
+    "de": "Russisches Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "russian ministry of foreign affairs": {
+    "canonical_en": "Russian Ministry of Foreign Affairs",
+    "de": "russisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "saint petersburg governor press service": {
+    "canonical_en": "Saint Petersburg Governor's Press Service",
+    "de": "Pressedienst des Gouverneurs von Sankt Petersburg",
+    "source": "opus",
+    "keep_original": false
+  },
+  "sao paulo state government": {
+    "canonical_en": "Sao Paulo state government",
+    "de": "Regierung des Bundesstaates São Paulo",
+    "source": "opus",
+    "keep_original": false
+  },
+  "saudi foreign ministry": {
+    "canonical_en": "Saudi Foreign Ministry",
+    "de": "saudi-arabisches Außenministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "save the children": {
+    "canonical_en": "Save the Children",
+    "de": "Save the Children",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "sbu": {
+    "canonical_en": "SBU",
+    "de": "Sicherheitsdienst der Ukraine",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "security council of the russian federation": {
+    "canonical_en": "Security Council of the Russian Federation",
+    "de": "Sicherheitsrat der Russischen Föderation",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "senate": {
+    "canonical_en": "Senate",
+    "de": "Senat der Vereinigten Staaten",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "seoul foreign ministry": {
+    "canonical_en": "Seoul's foreign ministry",
+    "de": "südkoreanisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "seoul unification ministry": {
+    "canonical_en": "Seoul's unification ministry",
+    "de": "südkoreanisches Vereinigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "serum institute of india": {
+    "canonical_en": "Serum Institute of India (SII)",
+    "de": "Serum Institute of India (SII)",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "south korea foreign ministry": {
+    "canonical_en": "South Korea's foreign ministry",
+    "de": "südkoreanisches Außenministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "south korean government": {
+    "canonical_en": "South Korean government (Blue House)",
+    "de": "Regierung der Republik Korea",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "state council of the republic of tatarstan": {
+    "canonical_en": "State Council of the Republic of Tatarstan",
+    "de": "Staatsrat der Republik Tatarstan",
+    "source": "opus",
+    "keep_original": false
+  },
+  "state emergency service of ukraine": {
+    "canonical_en": "State Emergency Service of Ukraine",
+    "de": "Staatlicher Rettungsdienst der Ukraine",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "steimson center": {
+    "canonical_en": "Steimson Center (US think tank)",
+    "de": "Stimson Center",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "sudanese group for the defence of rights and freedoms": {
+    "canonical_en": "Sudanese Group for the Defence of Rights and Freedoms",
+    "de": "Sudanesische Gruppe zur Verteidigung der Rechte und Freiheiten",
+    "source": "opus",
+    "keep_original": false
+  },
+  "suudi arabistan dışişleri bakanlığı": {
+    "canonical_en": "Suudi Arabistan Dışişleri Bakanlığı",
+    "de": "saudi-arabisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "swiss police": {
+    "canonical_en": "Swiss police",
+    "de": "Schweizer Polizei",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "são paulo state government": {
+    "canonical_en": "São Paulo state government",
+    "de": "Regierung des Bundesstaates São Paulo",
+    "source": "opus",
+    "keep_original": false
+  },
+  "são paulo state health secretariat": {
+    "canonical_en": "São Paulo State Health Secretariat (SES)",
+    "de": "Gesundheitssekretariat des Bundesstaates São Paulo",
+    "source": "opus",
+    "keep_original": false
+  },
+  "tanzania ministry of health": {
+    "canonical_en": "Tanzania Ministry of Health",
+    "de": "tansanisches Gesundheitsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "tc sağlık bakanlığı": {
+    "canonical_en": "T.C. Sağlık Bakanlığı",
+    "de": "türkisches Gesundheitsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "trump administration": {
+    "canonical_en": "Trump administration",
+    "de": "Trump-Regierung",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "uefa": {
+    "canonical_en": "UEFA",
+    "de": "UEFA",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "ufc": {
+    "canonical_en": "UFC",
+    "de": "UFC",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "uganda ministry of health": {
+    "canonical_en": "Uganda Ministry of Health",
+    "de": "ugandisches Gesundheitsministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "uk competition and markets authority": {
+    "canonical_en": "UK Competition and Markets Authority",
+    "de": "Competition and Markets Authority",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "uk foreign office": {
+    "canonical_en": "UK Foreign Office",
+    "de": "britisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "uk foreign, commonwealth and development office": {
+    "canonical_en": "UK Foreign, Commonwealth and Development Office",
+    "de": "Foreign, Commonwealth and Development Office",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ukraine air force command": {
+    "canonical_en": "Ukraine's Air Force Command",
+    "de": "Kommando der ukrainischen Luftstreitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ukrainian air force": {
+    "canonical_en": "Ukrainian Air Force",
+    "de": "ukrainische Luftstreitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ukrainian ministry of foreign affairs": {
+    "canonical_en": "Ukrainian Ministry of Foreign Affairs",
+    "de": "ukrainisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "ukrainian navy": {
+    "canonical_en": "Ukrainian Navy",
+    "de": "ukrainische Marine",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "un": {
+    "canonical_en": "UN",
+    "de": "Vereinte Nationen",
+    "source": "official",
+    "keep_original": false
+  },
+  "un children agency": {
+    "canonical_en": "UN children's agency",
+    "de": "UNICEF",
+    "source": "official",
+    "keep_original": false
+  },
+  "un security council": {
+    "canonical_en": "UN Security Council",
+    "de": "UN-Sicherheitsrat",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "unhcr": {
+    "canonical_en": "UNHCR",
+    "de": "UNHCR",
+    "source": "official",
+    "keep_original": false
+  },
+  "unicef": {
+    "canonical_en": "UNICEF",
+    "de": "UNICEF",
+    "source": "official",
+    "keep_original": false
+  },
+  "unifil": {
+    "canonical_en": "UNIFIL",
+    "de": "UNIFIL",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "united nations": {
+    "canonical_en": "United Nations",
+    "de": "Vereinte Nationen",
+    "source": "official",
+    "keep_original": false
+  },
+  "united nations office for the coordination of humanitarian affairs": {
+    "canonical_en": "United Nations Office for the Coordination of Humanitarian Affairs",
+    "de": "Amt der Vereinten Nationen für die Koordinierung humanitärer Angelegenheiten",
+    "source": "official",
+    "keep_original": false
+  },
+  "united nations protection cluster": {
+    "canonical_en": "United Nations Protection Cluster",
+    "de": "UN-Schutzcluster",
+    "source": "opus",
+    "keep_original": false
+  },
+  "united states central command": {
+    "canonical_en": "United States Central Command (Centcom)",
+    "de": "US-Zentralkommando",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "united states military": {
+    "canonical_en": "United States military",
+    "de": "US-Streitkräfte",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "united states senate": {
+    "canonical_en": "United States Senate",
+    "de": "Senat der Vereinigten Staaten",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "united states travel association": {
+    "canonical_en": "United States Travel Association",
+    "de": "United States Travel Association",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "us army": {
+    "canonical_en": "US Army",
+    "de": "United States Army",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "us central command": {
+    "canonical_en": "U.S. Central Command (CENTCOM)",
+    "de": "US-Zentralkommando",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "us department of defense": {
+    "canonical_en": "US Department of Defense",
+    "de": "US-Verteidigungsministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "us department of justice": {
+    "canonical_en": "U.S. Department of Justice",
+    "de": "US-Justizministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "us department of state": {
+    "canonical_en": "U.S. Department of State",
+    "de": "US-Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "us embassy in nairobi": {
+    "canonical_en": "US Embassy in Nairobi",
+    "de": "US-Botschaft in Nairobi",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "us embassy kenya": {
+    "canonical_en": "U.S. Embassy Kenya",
+    "de": "US-Botschaft in Kenia",
+    "source": "opus",
+    "keep_original": false
+  },
+  "us justice department": {
+    "canonical_en": "US Justice Department",
+    "de": "US-Justizministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "us military": {
+    "canonical_en": "U.S. military",
+    "de": "US-Militär",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "us military central command": {
+    "canonical_en": "US military's Central Command",
+    "de": "US-Zentralkommando",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "us state department": {
+    "canonical_en": "U.S. State Department",
+    "de": "US-Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "us treasury": {
+    "canonical_en": "US Treasury",
+    "de": "US-Finanzministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "us treasury department": {
+    "canonical_en": "US Treasury Department",
+    "de": "US-Finanzministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "us-regionalkommando centcom": {
+    "canonical_en": "US-Regionalkommando CENTCOM",
+    "de": "US-Zentralkommando",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "venezuela ministry of communications": {
+    "canonical_en": "Venezuela's Ministry of Communications",
+    "de": "Venezolanisches Kommunikationsministerium",
+    "source": "opus",
+    "keep_original": false
+  },
+  "viva aerobús": {
+    "canonical_en": "Viva Aerobús",
+    "de": "Viva Aerobús",
+    "source": "wikipedia",
+    "keep_original": true
+  },
+  "white house": {
+    "canonical_en": "The White House",
+    "de": "das Weiße Haus",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "who": {
+    "canonical_en": "WHO",
+    "de": "Weltgesundheitsorganisation",
+    "source": "official",
+    "keep_original": false
+  },
+  "world bank": {
+    "canonical_en": "World Bank",
+    "de": "Weltbank",
+    "source": "official",
+    "keep_original": false
+  },
+  "world bank pandemic fund": {
+    "canonical_en": "World Bank pandemic fund",
+    "de": "Pandemiefonds der Weltbank",
+    "source": "opus",
+    "keep_original": false
+  },
+  "world food programme": {
+    "canonical_en": "World Food Programme (WFP)",
+    "de": "Welternährungsprogramm",
+    "source": "official",
+    "keep_original": false
+  },
+  "world health organization": {
+    "canonical_en": "World Health Organization (WHO)",
+    "de": "Weltgesundheitsorganisation",
+    "source": "official",
+    "keep_original": false
+  },
+  "writers guild of america": {
+    "canonical_en": "Writers Guild of America (WGA East and West)",
+    "de": "Writers Guild of America",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "élysée palace": {
+    "canonical_en": "Élysée Palace",
+    "de": "Élysée-Palast",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "мид россии": {
+    "canonical_en": "МИД России",
+    "de": "Russisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "мид рф": {
+    "canonical_en": "МИД РФ",
+    "de": "Russisches Außenministerium",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "роспотребнадзор": {
+    "canonical_en": "Роспотребнадзор (Rospotrebnadzor)",
+    "de": "Rospotrebnadsor",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "сбу": {
+    "canonical_en": "СБУ",
+    "de": "Sicherheitsdienst der Ukraine",
+    "source": "wikipedia",
+    "keep_original": false
+  },
+  "служба внешней разведки рф": {
+    "canonical_en": "Служба внешней разведки РФ",
+    "de": "Dienst für Auslandsaufklärung der Russischen Föderation",
+    "source": "wikipedia",
+    "keep_original": false
+  }
+}

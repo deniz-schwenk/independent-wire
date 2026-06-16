@@ -1,0 +1,786 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "description": "Frozen German country/region exonym lookup (Q8). Keyset = canonical English country names from config/region_buckets.json (reused, not re-invented). Shares the translation-glossary infrastructure with config/de_exonyms.json. Cities/geographic features are OUT of scope (see build report).",
+    "key_format": "Canonical English country name exactly as in region_buckets.json buckets[].countries.",
+    "structure": "key -> {de, source}. source in {official, wikipedia, opus}.",
+    "provenance": "Resolved via cascade B(wikipedia)>C(opus) by anthropic/claude-opus-4.6; country names are near-unambiguous. FROZEN artifact.",
+    "build_date": "2026-06-16"
+  },
+  "Afghanistan": {
+    "de": "Afghanistan",
+    "source": "official"
+  },
+  "Albania": {
+    "de": "Albanien",
+    "source": "wikipedia"
+  },
+  "Algeria": {
+    "de": "Algerien",
+    "source": "wikipedia"
+  },
+  "Andorra": {
+    "de": "Andorra",
+    "source": "official"
+  },
+  "Angola": {
+    "de": "Angola",
+    "source": "official"
+  },
+  "Antigua and Barbuda": {
+    "de": "Antigua und Barbuda",
+    "source": "wikipedia"
+  },
+  "Argentina": {
+    "de": "Argentinien",
+    "source": "wikipedia"
+  },
+  "Armenia": {
+    "de": "Armenien",
+    "source": "wikipedia"
+  },
+  "Australia": {
+    "de": "Australien",
+    "source": "wikipedia"
+  },
+  "Austria": {
+    "de": "Österreich",
+    "source": "official"
+  },
+  "Azerbaijan": {
+    "de": "Aserbaidschan",
+    "source": "wikipedia"
+  },
+  "Bahamas": {
+    "de": "Bahamas",
+    "source": "wikipedia"
+  },
+  "Bahrain": {
+    "de": "Bahrain",
+    "source": "wikipedia"
+  },
+  "Bangladesh": {
+    "de": "Bangladesch",
+    "source": "wikipedia"
+  },
+  "Barbados": {
+    "de": "Barbados",
+    "source": "wikipedia"
+  },
+  "Belarus": {
+    "de": "Belarus",
+    "source": "official"
+  },
+  "Belgium": {
+    "de": "Belgien",
+    "source": "wikipedia"
+  },
+  "Belize": {
+    "de": "Belize",
+    "source": "wikipedia"
+  },
+  "Benin": {
+    "de": "Benin",
+    "source": "wikipedia"
+  },
+  "Bhutan": {
+    "de": "Bhutan",
+    "source": "wikipedia"
+  },
+  "Bolivia": {
+    "de": "Bolivien",
+    "source": "wikipedia"
+  },
+  "Bosnia and Herzegovina": {
+    "de": "Bosnien und Herzegowina",
+    "source": "wikipedia"
+  },
+  "Botswana": {
+    "de": "Botswana",
+    "source": "wikipedia"
+  },
+  "Brazil": {
+    "de": "Brasilien",
+    "source": "wikipedia"
+  },
+  "Brunei": {
+    "de": "Brunei",
+    "source": "wikipedia"
+  },
+  "Bulgaria": {
+    "de": "Bulgarien",
+    "source": "wikipedia"
+  },
+  "Burkina Faso": {
+    "de": "Burkina Faso",
+    "source": "wikipedia"
+  },
+  "Burundi": {
+    "de": "Burundi",
+    "source": "wikipedia"
+  },
+  "Cambodia": {
+    "de": "Kambodscha",
+    "source": "wikipedia"
+  },
+  "Cameroon": {
+    "de": "Kamerun",
+    "source": "wikipedia"
+  },
+  "Canada": {
+    "de": "Kanada",
+    "source": "wikipedia"
+  },
+  "Cape Verde": {
+    "de": "Kap Verde",
+    "source": "wikipedia"
+  },
+  "Central African Republic": {
+    "de": "Zentralafrikanische Republik",
+    "source": "wikipedia"
+  },
+  "Chad": {
+    "de": "Tschad",
+    "source": "wikipedia"
+  },
+  "Chile": {
+    "de": "Chile",
+    "source": "wikipedia"
+  },
+  "China": {
+    "de": "China",
+    "source": "wikipedia"
+  },
+  "Colombia": {
+    "de": "Kolumbien",
+    "source": "wikipedia"
+  },
+  "Comoros": {
+    "de": "Komoren",
+    "source": "wikipedia"
+  },
+  "Congo": {
+    "de": "Kongo",
+    "source": "wikipedia"
+  },
+  "Costa Rica": {
+    "de": "Costa Rica",
+    "source": "wikipedia"
+  },
+  "Cote d'Ivoire": {
+    "de": "Elfenbeinküste",
+    "source": "wikipedia"
+  },
+  "Croatia": {
+    "de": "Kroatien",
+    "source": "wikipedia"
+  },
+  "Cuba": {
+    "de": "Kuba",
+    "source": "wikipedia"
+  },
+  "Cyprus": {
+    "de": "Zypern",
+    "source": "wikipedia"
+  },
+  "Czech Republic": {
+    "de": "Tschechien",
+    "source": "wikipedia"
+  },
+  "Democratic Republic of the Congo": {
+    "de": "Demokratische Republik Kongo",
+    "source": "wikipedia"
+  },
+  "Denmark": {
+    "de": "Dänemark",
+    "source": "wikipedia"
+  },
+  "Djibouti": {
+    "de": "Dschibuti",
+    "source": "wikipedia"
+  },
+  "Dominica": {
+    "de": "Dominica",
+    "source": "wikipedia"
+  },
+  "Dominican Republic": {
+    "de": "Dominikanische Republik",
+    "source": "wikipedia"
+  },
+  "East Timor": {
+    "de": "Osttimor",
+    "source": "wikipedia"
+  },
+  "Ecuador": {
+    "de": "Ecuador",
+    "source": "wikipedia"
+  },
+  "Egypt": {
+    "de": "Ägypten",
+    "source": "wikipedia"
+  },
+  "El Salvador": {
+    "de": "El Salvador",
+    "source": "wikipedia"
+  },
+  "Equatorial Guinea": {
+    "de": "Äquatorialguinea",
+    "source": "wikipedia"
+  },
+  "Eritrea": {
+    "de": "Eritrea",
+    "source": "wikipedia"
+  },
+  "Estonia": {
+    "de": "Estland",
+    "source": "wikipedia"
+  },
+  "Eswatini": {
+    "de": "Eswatini",
+    "source": "wikipedia"
+  },
+  "Ethiopia": {
+    "de": "Äthiopien",
+    "source": "wikipedia"
+  },
+  "Fiji": {
+    "de": "Fidschi",
+    "source": "wikipedia"
+  },
+  "Finland": {
+    "de": "Finnland",
+    "source": "wikipedia"
+  },
+  "France": {
+    "de": "Frankreich",
+    "source": "wikipedia"
+  },
+  "Gabon": {
+    "de": "Gabun",
+    "source": "wikipedia"
+  },
+  "Gambia": {
+    "de": "Gambia",
+    "source": "wikipedia"
+  },
+  "Georgia": {
+    "de": "Georgien",
+    "source": "wikipedia"
+  },
+  "Germany": {
+    "de": "Deutschland",
+    "source": "official"
+  },
+  "Ghana": {
+    "de": "Ghana",
+    "source": "wikipedia"
+  },
+  "Greece": {
+    "de": "Griechenland",
+    "source": "wikipedia"
+  },
+  "Grenada": {
+    "de": "Grenada",
+    "source": "wikipedia"
+  },
+  "Guatemala": {
+    "de": "Guatemala",
+    "source": "wikipedia"
+  },
+  "Guinea": {
+    "de": "Guinea",
+    "source": "wikipedia"
+  },
+  "Guinea-Bissau": {
+    "de": "Guinea-Bissau",
+    "source": "wikipedia"
+  },
+  "Guyana": {
+    "de": "Guyana",
+    "source": "wikipedia"
+  },
+  "Haiti": {
+    "de": "Haiti",
+    "source": "wikipedia"
+  },
+  "Honduras": {
+    "de": "Honduras",
+    "source": "wikipedia"
+  },
+  "Hong Kong": {
+    "de": "Hongkong",
+    "source": "wikipedia"
+  },
+  "Hungary": {
+    "de": "Ungarn",
+    "source": "wikipedia"
+  },
+  "Iceland": {
+    "de": "Island",
+    "source": "wikipedia"
+  },
+  "India": {
+    "de": "Indien",
+    "source": "wikipedia"
+  },
+  "Indonesia": {
+    "de": "Indonesien",
+    "source": "wikipedia"
+  },
+  "Iran": {
+    "de": "Iran",
+    "source": "wikipedia"
+  },
+  "Iraq": {
+    "de": "Irak",
+    "source": "wikipedia"
+  },
+  "Ireland": {
+    "de": "Irland",
+    "source": "wikipedia"
+  },
+  "Israel": {
+    "de": "Israel",
+    "source": "wikipedia"
+  },
+  "Italy": {
+    "de": "Italien",
+    "source": "wikipedia"
+  },
+  "Jamaica": {
+    "de": "Jamaika",
+    "source": "wikipedia"
+  },
+  "Japan": {
+    "de": "Japan",
+    "source": "wikipedia"
+  },
+  "Jordan": {
+    "de": "Jordanien",
+    "source": "wikipedia"
+  },
+  "Kazakhstan": {
+    "de": "Kasachstan",
+    "source": "wikipedia"
+  },
+  "Kenya": {
+    "de": "Kenia",
+    "source": "wikipedia"
+  },
+  "Kiribati": {
+    "de": "Kiribati",
+    "source": "wikipedia"
+  },
+  "Kosovo": {
+    "de": "Kosovo",
+    "source": "wikipedia"
+  },
+  "Kuwait": {
+    "de": "Kuwait",
+    "source": "wikipedia"
+  },
+  "Kyrgyzstan": {
+    "de": "Kirgisistan",
+    "source": "wikipedia"
+  },
+  "Laos": {
+    "de": "Laos",
+    "source": "wikipedia"
+  },
+  "Latvia": {
+    "de": "Lettland",
+    "source": "wikipedia"
+  },
+  "Lebanon": {
+    "de": "Libanon",
+    "source": "wikipedia"
+  },
+  "Lesotho": {
+    "de": "Lesotho",
+    "source": "wikipedia"
+  },
+  "Liberia": {
+    "de": "Liberia",
+    "source": "wikipedia"
+  },
+  "Libya": {
+    "de": "Libyen",
+    "source": "wikipedia"
+  },
+  "Liechtenstein": {
+    "de": "Liechtenstein",
+    "source": "official"
+  },
+  "Lithuania": {
+    "de": "Litauen",
+    "source": "wikipedia"
+  },
+  "Luxembourg": {
+    "de": "Luxemburg",
+    "source": "wikipedia"
+  },
+  "Madagascar": {
+    "de": "Madagaskar",
+    "source": "wikipedia"
+  },
+  "Malawi": {
+    "de": "Malawi",
+    "source": "wikipedia"
+  },
+  "Malaysia": {
+    "de": "Malaysia",
+    "source": "wikipedia"
+  },
+  "Maldives": {
+    "de": "Malediven",
+    "source": "wikipedia"
+  },
+  "Mali": {
+    "de": "Mali",
+    "source": "wikipedia"
+  },
+  "Malta": {
+    "de": "Malta",
+    "source": "wikipedia"
+  },
+  "Marshall Islands": {
+    "de": "Marshallinseln",
+    "source": "wikipedia"
+  },
+  "Mauritania": {
+    "de": "Mauretanien",
+    "source": "wikipedia"
+  },
+  "Mauritius": {
+    "de": "Mauritius",
+    "source": "wikipedia"
+  },
+  "Mexico": {
+    "de": "Mexiko",
+    "source": "wikipedia"
+  },
+  "Micronesia": {
+    "de": "Mikronesien",
+    "source": "wikipedia"
+  },
+  "Moldova": {
+    "de": "Moldau",
+    "source": "wikipedia"
+  },
+  "Monaco": {
+    "de": "Monaco",
+    "source": "wikipedia"
+  },
+  "Mongolia": {
+    "de": "Mongolei",
+    "source": "wikipedia"
+  },
+  "Montenegro": {
+    "de": "Montenegro",
+    "source": "wikipedia"
+  },
+  "Morocco": {
+    "de": "Marokko",
+    "source": "wikipedia"
+  },
+  "Mozambique": {
+    "de": "Mosambik",
+    "source": "wikipedia"
+  },
+  "Myanmar": {
+    "de": "Myanmar",
+    "source": "wikipedia"
+  },
+  "Namibia": {
+    "de": "Namibia",
+    "source": "wikipedia"
+  },
+  "Nauru": {
+    "de": "Nauru",
+    "source": "wikipedia"
+  },
+  "Nepal": {
+    "de": "Nepal",
+    "source": "wikipedia"
+  },
+  "Netherlands": {
+    "de": "Niederlande",
+    "source": "wikipedia"
+  },
+  "New Zealand": {
+    "de": "Neuseeland",
+    "source": "wikipedia"
+  },
+  "Nicaragua": {
+    "de": "Nicaragua",
+    "source": "wikipedia"
+  },
+  "Niger": {
+    "de": "Niger",
+    "source": "wikipedia"
+  },
+  "Nigeria": {
+    "de": "Nigeria",
+    "source": "wikipedia"
+  },
+  "North Korea": {
+    "de": "Nordkorea",
+    "source": "wikipedia"
+  },
+  "North Macedonia": {
+    "de": "Nordmazedonien",
+    "source": "wikipedia"
+  },
+  "Norway": {
+    "de": "Norwegen",
+    "source": "wikipedia"
+  },
+  "Oman": {
+    "de": "Oman",
+    "source": "wikipedia"
+  },
+  "Pakistan": {
+    "de": "Pakistan",
+    "source": "wikipedia"
+  },
+  "Palau": {
+    "de": "Palau",
+    "source": "wikipedia"
+  },
+  "Palestine": {
+    "de": "Palästina",
+    "source": "wikipedia"
+  },
+  "Panama": {
+    "de": "Panama",
+    "source": "wikipedia"
+  },
+  "Papua New Guinea": {
+    "de": "Papua-Neuguinea",
+    "source": "wikipedia"
+  },
+  "Paraguay": {
+    "de": "Paraguay",
+    "source": "wikipedia"
+  },
+  "Peru": {
+    "de": "Peru",
+    "source": "wikipedia"
+  },
+  "Philippines": {
+    "de": "Philippinen",
+    "source": "wikipedia"
+  },
+  "Poland": {
+    "de": "Polen",
+    "source": "wikipedia"
+  },
+  "Portugal": {
+    "de": "Portugal",
+    "source": "wikipedia"
+  },
+  "Qatar": {
+    "de": "Katar",
+    "source": "wikipedia"
+  },
+  "Romania": {
+    "de": "Rumänien",
+    "source": "wikipedia"
+  },
+  "Russia": {
+    "de": "Russland",
+    "source": "wikipedia"
+  },
+  "Rwanda": {
+    "de": "Ruanda",
+    "source": "wikipedia"
+  },
+  "Samoa": {
+    "de": "Samoa",
+    "source": "wikipedia"
+  },
+  "San Marino": {
+    "de": "San Marino",
+    "source": "wikipedia"
+  },
+  "Sao Tome and Principe": {
+    "de": "São Tomé und Príncipe",
+    "source": "wikipedia"
+  },
+  "Saudi Arabia": {
+    "de": "Saudi-Arabien",
+    "source": "wikipedia"
+  },
+  "Senegal": {
+    "de": "Senegal",
+    "source": "wikipedia"
+  },
+  "Serbia": {
+    "de": "Serbien",
+    "source": "wikipedia"
+  },
+  "Seychelles": {
+    "de": "Seychellen",
+    "source": "wikipedia"
+  },
+  "Sierra Leone": {
+    "de": "Sierra Leone",
+    "source": "wikipedia"
+  },
+  "Singapore": {
+    "de": "Singapur",
+    "source": "wikipedia"
+  },
+  "Slovakia": {
+    "de": "Slowakei",
+    "source": "wikipedia"
+  },
+  "Slovenia": {
+    "de": "Slowenien",
+    "source": "wikipedia"
+  },
+  "Solomon Islands": {
+    "de": "Salomonen",
+    "source": "wikipedia"
+  },
+  "Somalia": {
+    "de": "Somalia",
+    "source": "wikipedia"
+  },
+  "South Africa": {
+    "de": "Südafrika",
+    "source": "wikipedia"
+  },
+  "South Korea": {
+    "de": "Südkorea",
+    "source": "wikipedia"
+  },
+  "South Sudan": {
+    "de": "Südsudan",
+    "source": "wikipedia"
+  },
+  "Spain": {
+    "de": "Spanien",
+    "source": "wikipedia"
+  },
+  "Sri Lanka": {
+    "de": "Sri Lanka",
+    "source": "wikipedia"
+  },
+  "Sudan": {
+    "de": "Sudan",
+    "source": "wikipedia"
+  },
+  "Suriname": {
+    "de": "Suriname",
+    "source": "wikipedia"
+  },
+  "Sweden": {
+    "de": "Schweden",
+    "source": "wikipedia"
+  },
+  "Switzerland": {
+    "de": "Schweiz",
+    "source": "wikipedia"
+  },
+  "Syria": {
+    "de": "Syrien",
+    "source": "wikipedia"
+  },
+  "Taiwan": {
+    "de": "Taiwan",
+    "source": "wikipedia"
+  },
+  "Tajikistan": {
+    "de": "Tadschikistan",
+    "source": "wikipedia"
+  },
+  "Tanzania": {
+    "de": "Tansania",
+    "source": "wikipedia"
+  },
+  "Thailand": {
+    "de": "Thailand",
+    "source": "wikipedia"
+  },
+  "Togo": {
+    "de": "Togo",
+    "source": "wikipedia"
+  },
+  "Tonga": {
+    "de": "Tonga",
+    "source": "wikipedia"
+  },
+  "Trinidad and Tobago": {
+    "de": "Trinidad und Tobago",
+    "source": "wikipedia"
+  },
+  "Tunisia": {
+    "de": "Tunesien",
+    "source": "wikipedia"
+  },
+  "Turkey": {
+    "de": "Türkei",
+    "source": "wikipedia"
+  },
+  "Turkmenistan": {
+    "de": "Turkmenistan",
+    "source": "wikipedia"
+  },
+  "Tuvalu": {
+    "de": "Tuvalu",
+    "source": "wikipedia"
+  },
+  "Uganda": {
+    "de": "Uganda",
+    "source": "wikipedia"
+  },
+  "Ukraine": {
+    "de": "Ukraine",
+    "source": "wikipedia"
+  },
+  "United Arab Emirates": {
+    "de": "Vereinigte Arabische Emirate",
+    "source": "wikipedia"
+  },
+  "United Kingdom": {
+    "de": "Vereinigtes Königreich",
+    "source": "wikipedia"
+  },
+  "United States": {
+    "de": "Vereinigte Staaten",
+    "source": "wikipedia"
+  },
+  "Uruguay": {
+    "de": "Uruguay",
+    "source": "wikipedia"
+  },
+  "Uzbekistan": {
+    "de": "Usbekistan",
+    "source": "wikipedia"
+  },
+  "Vanuatu": {
+    "de": "Vanuatu",
+    "source": "wikipedia"
+  },
+  "Venezuela": {
+    "de": "Venezuela",
+    "source": "wikipedia"
+  },
+  "Vietnam": {
+    "de": "Vietnam",
+    "source": "wikipedia"
+  },
+  "Yemen": {
+    "de": "Jemen",
+    "source": "wikipedia"
+  },
+  "Zambia": {
+    "de": "Sambia",
+    "source": "wikipedia"
+  },
+  "Zimbabwe": {
+    "de": "Simbabwe",
+    "source": "wikipedia"
+  }
+}
