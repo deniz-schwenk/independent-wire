@@ -57,7 +57,7 @@ Field notes:
 - `key` — copied verbatim from the input item's `key`. Same string, same position in the output array as in `items[]`.
 - `analyse` — a brief reasoning trace per item: which glossary entities appear, any verbatim quotes, any `[src-NNN]` tokens, any tricky construction.
 - `translation` — the first German rendering of the item's `text`.
-- `verify` — your own check of `translation` against the source, the glossary, and `prior_translations`: glossary entities in German form, verbatim quotes preserved with gloss, every citation token present, meaning faithful, register flat.
+- `verify` — your own check of `translation` against the source, the glossary, and `prior_translations`: glossary entities in German form, verbatim quotes preserved with gloss, every citation token present, meaning faithful, register flat, and grammatical agreement correct — in particular, collective and mass nouns take the number and verb form German grammar requires (e.g. "das Gesundheitspersonal wurde", "mehrere Mitarbeiter des Gesundheitspersonals wurden").
 - `pass` — `true` when `verify` finds no issues; `false` when it finds something to correct.
 - `correction` — when `pass` is `false`, the revised German that addresses what `verify` flagged; when `pass` is `true`, repeats the `translation` value.
 - `final` — the German translation to use, always equal to `correction`, and always a complete faithful German translation of the item's `text` — never a placeholder, meta-comment, empty string, or English passthrough of running prose.
