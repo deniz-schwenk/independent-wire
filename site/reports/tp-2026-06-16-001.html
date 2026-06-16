@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>DRC Ebola Outbreak Surpasses 800 Cases as Response Efforts Shift Between Rapid Diagnostics and Persistent Community Resistance</title>
+<link rel="canonical" href="https://independent-wire.org/reports/tp-2026-06-16-001.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Independent Wire">
+<meta property="og:title" content="DRC Ebola Outbreak Surpasses 800 Cases as Response Efforts Shift Between Rapid Diagnostics and Persistent Community Resistance">
+<meta property="og:description" content="The Bundibugyo Ebola outbreak in the DRC has reached 808 confirmed cases and 192 deaths, with MSF and the DRC&#x27;s National Institute of Public Health warning the epidemic remains in an active upward ph…">
+<meta property="og:url" content="https://independent-wire.org/reports/tp-2026-06-16-001.html">
+<meta property="og:image" content="https://independent-wire.org/assets/og-card.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DRC Ebola Outbreak Surpasses 800 Cases as Response Efforts Shift Between Rapid Diagnostics and Persistent Community Resistance">
+<meta name="twitter:description" content="The Bundibugyo Ebola outbreak in the DRC has reached 808 confirmed cases and 192 deaths, with MSF and the DRC&#x27;s National Institute of Public Health warning the epidemic remains in an active upward ph…">
+<meta name="twitter:image" content="https://independent-wire.org/assets/og-card.svg">
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --color-strong: #0f766e;
+  --color-moderate: #ca8a04;
+  --color-weak: #9f1239;
+  --color-factual: #9f1239;
+  --color-framing: #7c3aed;
+  --color-omission: #ca8a04;
+  --color-emphasis: #0369a1;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+.container { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem; }
+h1 { font-family: var(--font-sans); font-size: 1.8rem; line-height: 1.25; margin: 0 0 0.5rem; font-weight: 800; letter-spacing: -0.02em; }
+h2 {
+  font-family: var(--font-sans); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem; border-bottom: 3px solid var(--color-border);
+}
+.subtitle {
+  color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 1.05rem;
+  margin: 0 0 0.25rem; border-left: 3px solid #000; padding-left: 0.75rem;
+}
+.date { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.9rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+
+/* Metadata bar */
+.meta-bar {
+  display: flex; flex-wrap: wrap; padding: 0;
+  border: 1px solid #000; margin-bottom: 2rem;
+}
+.meta-item {
+  text-align: center; flex: 1; min-width: 100px; padding: 0.75rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child { border-right: none; }
+.meta-number { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: #000; display: block; }
+.meta-label { font-family: var(--font-mono); font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Back navigation */
+.back-nav {
+  margin-bottom: 1.5rem;
+}
+.back-nav a {
+  font-family: var(--font-mono); font-size: 0.7rem; color: #999;
+  text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.back-nav a:hover { color: #000; text-decoration: underline; }
+.back-nav-bottom { margin-top: 2rem; margin-bottom: 0; }
+
+/* Source network SVG (legacy class — keeps any historical templates working) */
+.source-network { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+/* Evidence terrain SVG */
+.evidence-terrain { width: 100%; max-width: 700px; margin: 0.5rem auto 1rem; display: block; }
+.source-node { cursor: pointer; }
+.source-node .name-label {
+  opacity: 0; transition: opacity 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; fill: #000; font-weight: 700;
+}
+.source-node .conn-line { transition: opacity 0.15s ease; }
+.source-node:hover .name-label { opacity: 1; }
+.source-node:hover .conn-line { opacity: 0.4; stroke-width: 2; }
+.source-node:hover circle { stroke-width: 2.5; }
+
+/* Country badges */
+.country-grid {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; justify-content: center;
+}
+.country-badge {
+  padding: 3px 10px; border-radius: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+}
+
+/* Reader note */
+.reader-note {
+  border: 1px solid #000; border-left: 3px solid #000;
+  background: var(--color-bg-subtle); padding: 1rem 1.25rem; margin-bottom: 2rem;
+  border-radius: 0; font-family: var(--font-sans); font-size: 0.95rem; line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+/* Article body */
+.article-body { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.7; }
+.article-body p { margin: 0 0 1.25rem; }
+.source-ref { color: var(--color-primary); text-decoration: none; }
+.source-ref:hover { text-decoration: underline; }
+.source-ref sup { font-size: 0.7em; }
+.word-count { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.85rem; text-align: right; margin-top: 0.5rem; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+
+/* Cluster cards — one card per row, full container width. Two-
+   column variant retired so the Cluster-ID pill, position label,
+   summary, tier-grouped actors, and counts row all read across the
+   full width (the cluster card is information-dense and benefits
+   from the horizontal space). */
+.card-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+/* Cluster-ID pill at top-left of each cluster card. Shares
+   ``.actor-card-cluster-box`` styling with the actor-card pills so
+   the cross-reference renders identically on both sides. The pill
+   needs a margin below to separate it from the position-label
+   header that follows. */
+.card > .actor-card-cluster-box {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+.card {
+  border: 1px solid #000; border-radius: 0; padding: 1rem 1.25rem;
+  background: var(--color-bg);
+}
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.card-actor { font-family: var(--font-sans); font-weight: 700; font-size: 1rem; }
+.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); margin-bottom: 0.5rem; }
+.card-position { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-secondary); }
+.card-quote { font-style: italic; font-size: 0.88rem; color: var(--color-text-subtle); margin-top: 0.5rem; border-left: 2px solid #000; padding-left: 0.75rem; }
+.cluster-counts {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); margin: 0.75rem 0 0;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.cluster-counts a { color: inherit; text-decoration: underline; }
+.cluster-counts a:hover { color: var(--color-text); }
+.card:target { background: var(--color-bg-subtle, #f5f5f4); }
+
+/* Single-voices bracket — visually distinguished from real shared-
+   position clusters. Dashed left accent + neutral tinted background
+   read as "this is a different kind of grouping" without breaking the
+   page's existing card rhythm. */
+.single-voices-bracket {
+  border-left: 4px dashed #000;
+  background: var(--color-bg-subtle, #f5f5f4);
+  margin-top: 1rem;
+}
+.single-voices-bracket-tag {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-left: 0.5rem;
+}
+
+/* Cluster three-level actor sub-blocks (stated / reported / mentioned) */
+.cluster-tier { margin-top: 0.85rem; }
+.cluster-tier-label {
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+  color: var(--color-text-subtle); margin: 0 0 0.35rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.cluster-tier-actors {
+  list-style: none; padding: 0; margin: 0;
+  font-family: var(--font-sans);
+}
+.cluster-tier-actor {
+  font-size: 0.85rem; line-height: 1.5;
+  margin: 0.15rem 0; color: var(--color-text-secondary);
+}
+.cluster-tier-actor strong { color: var(--color-text); font-weight: 600; }
+.cluster-tier-actor a { color: inherit; text-decoration: underline; }
+.cluster-actor-role { color: var(--color-text-secondary); }
+.cluster-actor-type {
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--color-text-subtle); margin-left: 0.25rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+/* Editorial-outlet attribution — rendered on position cards with zero
+   actors in place of the missing tier sub-lists. Lighter visual weight
+   than tier blocks (smaller font, italic, muted color) since this is
+   the secondary path; the card itself carries the visual frame. */
+.cluster-editorial-attribution {
+  margin-top: 0.85rem;
+}
+.cluster-editorial-attribution p {
+  font-family: var(--font-sans); font-size: 0.85rem; font-style: italic;
+  line-height: 1.5; color: var(--color-text-secondary); margin: 0;
+}
+.cluster-editorial-attribution strong {
+  font-style: normal; font-weight: 600; color: var(--color-text);
+}
+
+/* Actors section — flat card grid with type-tab filter */
+.actors h2 { margin-top: 2.5rem; }
+.actors-meta {
+  font-family: var(--font-sans); font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin: 1rem 0 1.5rem;
+  border-left: 3px solid #000; padding-left: 0.75rem;
+}
+
+.actors-tabs {
+  display: flex; flex-wrap: wrap; gap: 0;
+  margin-bottom: 1.5rem;
+}
+.actor-tab {
+  font-family: var(--font-mono); font-size: 0.8rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.5rem 1rem; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; margin: 0 -1px -1px 0;
+}
+.actor-tab-count { margin-left: 0.4rem; color: var(--color-text-subtle); }
+.actor-tab--active { background: #000; color: var(--color-bg); }
+.actor-tab--active .actor-tab-count { color: var(--color-bg); }
+.actor-tab:not(.actor-tab--active):hover {
+  background: var(--color-bg-subtle, #f5f5f4);
+}
+
+/* Two-column grid with a vertical centre rule. The ::before pseudo
+   spans the full grid height and sits in the middle of the column
+   gap, matching the horizontal `border-top` rhythm on each card.
+   Disabled on mobile via the @media block when the grid collapses
+   to a single column. */
+.actor-card-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem;
+  position: relative;
+}
+.actor-card-grid::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%; width: 1px;
+  background: var(--color-border-light);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.actor-card {
+  border-top: 1px solid var(--color-border-light);
+  padding: 1rem 0;
+}
+.actor-card[hidden] { display: none; }
+.actor-card:target { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 0.25rem; gap: 0.5rem;
+}
+.actor-card-name {
+  font-family: var(--font-sans); font-weight: 700; font-size: 1rem;
+}
+.actor-card-name a { color: inherit; text-decoration: none; }
+.actor-card-src-count {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle);
+  text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.actor-card-role {
+  font-family: var(--font-sans); font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem;
+}
+.actor-card-cluster-refs, .actor-card-source-refs {
+  display: flex; flex-wrap: wrap; gap: 0.2rem;
+  margin-top: 0.4rem;
+}
+.actor-card-cluster-box {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  background: transparent; border: 1px solid #000;
+  padding: 0.2rem 0.5rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: #000; text-decoration: none;
+}
+.actor-card-cluster-box:hover { background: var(--color-bg-subtle, #f5f5f4); }
+.actor-card-cluster-box--bracket { border-style: dashed; }
+/* Source-ref boxes — tightened (Correction 3, 2026-05-20) so ≥ 5
+   `src-NNN` boxes fit per row at the desktop card width
+   (container 740px → ~334px per card column). Lowercase label,
+   minimal horizontal padding, no letter-spacing. */
+.actor-card-source-box {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  background: var(--color-bg-subtle, #f5f5f4);
+  padding: 0.2rem 0.35rem;
+  color: #000; text-decoration: none;
+  letter-spacing: 0;
+}
+.actor-card-source-box:hover { background: var(--color-border-light); }
+
+/* Missing voices */
+.missing-voice {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.missing-voice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+.missing-voice-type { font-family: var(--font-sans); font-weight: 600; font-size: 0.95rem; }
+.missing-voice-desc { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+
+/* Divergences */
+.divergence {
+  border: 1px solid #000; border-radius: 0; padding: 0.85rem 1.1rem;
+  margin-bottom: 0.6rem;
+}
+.divergence-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; }
+.divergence-desc { font-family: var(--font-sans); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem; }
+.divergence-resolution { font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-subtle); line-height: 1.5; }
+
+/* Bias details collapse */
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: "+  ";
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+}
+details[open] summary::before {
+  content: "−  ";
+}
+
+/* Bias findings */
+.bias-finding {
+  border-left: 3px solid #000; padding: 0.5rem 0 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.bias-excerpt { background: var(--color-bg-subtle); padding: 0.15rem 0.35rem; border-radius: 0; font-style: italic; }
+.bias-explanation { font-family: var(--font-sans); font-size: 0.88rem; color: var(--color-text-secondary); margin-top: 0.25rem; }
+
+/* Bar chart */
+.bar-chart { margin: 1rem 0; }
+.bar-row { display: flex; align-items: center; margin-bottom: 0.35rem; }
+.bar-label { width: 30px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; }
+.bar-track { flex: 1; height: 20px; background: var(--color-bg-subtle); border-radius: 0; margin: 0 0.5rem; overflow: hidden; }
+.bar-fill { height: 100%; background: #000; border-radius: 0; transition: width 0.3s; }
+.bar-count { width: 24px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); text-align: right; }
+
+/* Bias-card stat line */
+.bias-stats {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+  display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline;
+}
+.bias-stats strong { color: var(--color-text); font-weight: 700; }
+.bias-stats .sep { color: var(--color-text-subtle); }
+
+
+/* QA correction details */
+.qa-tag {
+  display: inline-block; padding: 0.05rem 0.4rem; margin-right: 0.35rem;
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  border: 1px solid currentColor;
+}
+.qa-tag.tag-applied { color: #0f766e; }
+.qa-tag.tag-retracted { color: #9f1239; }
+.qa-detail {
+  margin: 0.35rem 0 0.5rem 1rem; padding: 0.5rem 0.75rem;
+  background: var(--color-bg-subtle); border-left: 3px solid var(--color-border-light);
+  font-family: var(--font-sans); font-size: 0.82rem;
+}
+.qa-problem-type {
+  display: inline-block; padding: 0.05rem 0.4rem; margin-bottom: 0.35rem;
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  background: #ca8a0415; color: #ca8a04; border: 1px solid #ca8a0440;
+}
+.qa-excerpt {
+  font-style: italic; margin: 0.25rem 0;
+  border-left: 2px solid var(--color-border-light); padding-left: 0.6rem;
+  color: var(--color-text-secondary);
+}
+.qa-explanation { margin-top: 0.35rem; line-height: 1.55; }
+.qa-corrections-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.qa-corrections-wrapper .qa-corrections { margin-top: 0.5rem; }
+/* Mentioned Actors — same collapsible-footnote treatment as
+   QA Corrections. Wraps the inner bracket card
+   (`.single-voices-bracket`) and renders after the Position cards
+   (2026-05-21: relocation from prominent section to collapsible). */
+.mentioned-actors-wrapper > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.mentioned-actors-wrapper .mentioned-actors-body { margin-top: 0.75rem; }
+
+/* Sources section — two-level outlet blocks */
+.sources-meta {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--color-text-secondary); margin: 0 0 1rem;
+}
+.sources-by-outlet { display: flex; flex-direction: column; gap: 0.5rem; }
+.outlet-block { border: 1px solid var(--color-border-light); padding: 0.5rem 0.75rem; }
+.outlet-block > summary {
+  font-family: var(--font-sans); cursor: pointer; padding: 0.35rem 0;
+  display: flex; gap: 0.75rem; align-items: baseline; flex-wrap: wrap;
+}
+.outlet-block > summary strong { font-size: 1rem; }
+.outlet-meta {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.outlet-source-count {
+  margin-left: auto; font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.source-list { list-style: none; padding: 0; margin: 0.5rem 0 0; }
+.source {
+  padding: 0.75rem 0; border-top: 1px solid var(--color-border-light);
+}
+.source:first-child { border-top: 0; }
+.source:target { background: var(--color-bg-subtle, #f5f5f4); }
+.source-header { font-family: var(--font-sans); font-size: 0.95rem; }
+.source-id {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  color: var(--color-text-subtle); margin-right: 0.4rem;
+}
+.source-headline { color: var(--color-primary); text-decoration: none; }
+.source-headline:hover { text-decoration: underline; }
+.source-meta {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--color-text-subtle); margin: 0.25rem 0;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.source-summary {
+  font-family: var(--font-sans); font-size: 0.85rem; line-height: 1.55;
+  color: var(--color-text-secondary); margin: 0.25rem 0;
+}
+.source-bias-note {
+  font-family: var(--font-sans); font-size: 0.82rem;
+  color: var(--color-text-subtle); margin: 0.25rem 0;
+}
+.source-actors-refs {
+  font-family: var(--font-sans); font-size: 0.8rem;
+  color: var(--color-text-subtle); margin-top: 0.35rem;
+}
+.source-actors-refs a { color: inherit; text-decoration: underline; }
+
+/* Transparency trail */
+.transparency { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 0.82rem; line-height: 1.6; }
+.transparency h2 { font-family: var(--font-mono); color: var(--color-text-subtle); font-size: 1rem; }
+.transparency dt { font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; }
+.transparency dd { margin: 0 0 0.5rem; padding-left: 0; }
+.transparency ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+.transparency dt.pipeline-run { border-top: 1px solid var(--color-border-light); padding-top: 0.75rem; margin-top: 0.75rem; }
+.transparency dd.pipeline-run { border-bottom: 1px solid var(--color-border-light); padding-bottom: 0.75rem; margin-bottom: 0.75rem; }
+
+/* Strict-drop pruning collapsible */
+.dropped-details > summary {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-secondary);
+  cursor: pointer; padding: 0.25rem 0; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.dropped-detail { margin-top: 0.5rem; }
+.dropped-section-label {
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-text-subtle);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin: 0.5rem 0 0.25rem;
+}
+.dropped-list { list-style: none; padding-left: 0; margin: 0; }
+.dropped-list > li {
+  padding: 0.25rem 0; border-bottom: 1px solid var(--color-border-light);
+  font-family: var(--font-sans); font-size: 0.82rem; color: var(--color-text-secondary);
+}
+.dropped-list > li:last-child { border-bottom: none; }
+.dropped-id {
+  display: inline-block; font-family: var(--font-mono); font-weight: 700;
+  color: var(--color-text); margin-right: 0.4rem;
+}
+.dropped-outlet { color: var(--color-text); }
+.dropped-label { font-family: var(--font-sans); }
+
+/* Top bar — back-nav left, share button right */
+.top-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 1.5rem;
+}
+.top-bar .back-nav { margin-bottom: 0; }
+
+/* Share button */
+.share-btn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: transparent; color: #000;
+  border: 1.5px solid #000;
+  padding: 0.6rem 1rem;
+  min-height: 44px; min-width: 44px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+.share-btn:hover { background: #000; color: #fff; }
+.share-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer .footer-text { flex: 1 1 auto; }
+footer .footer-text p { margin: 0; }
+footer .footer-mark {
+  flex: 0 0 auto;
+  width: 80px; height: 80px;
+  display: block;
+}
+footer .footer-mark svg { width: 100%; height: 100%; display: block; }
+footer a { color: #000; text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  h1 { font-size: 1.4rem; }
+  .actor-card-grid { grid-template-columns: 1fr; }
+  .actor-card-grid::before { display: none; }
+  .actors-tabs { font-size: 0.7rem; }
+  .actor-tab { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
+  .meta-bar { flex-wrap: wrap; }
+  .meta-item { min-width: 70px; border-right: none; border-bottom: 1px solid #000; }
+  .meta-item:last-child { border-bottom: none; }
+  .meta-number { font-size: 1.2rem; }
+  .sources-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .article-body { font-size: 1rem; }
+  footer { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
+  footer .footer-mark { width: 64px; height: 64px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="top-bar">
+<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+<button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-06-16-001.html" data-title="DRC Ebola Outbreak Surpasses 800 Cases as Response Efforts Shift Between Rapid Diagnostics and Persistent Community Resistance">Share</button>
+</div>
+
+<h1>DRC Ebola Outbreak Surpasses 800 Cases as Response Efforts Shift Between Rapid Diagnostics and Persistent Community Resistance</h1>
+<p class="subtitle">One month into the Bundibugyo Ebola epidemic, MSF warns the outbreak is outpacing containment while new molecular testing tools and survivor recoveries offer competing signals of progress.</p>
+<p class="date">June 16, 2026</p>
+
+<div class="follow-up-ref" style="font-family: 'Space Mono', monospace; font-size: 0.85rem; color: #444; padding: 12px 16px; border-left: 3px solid #000; margin: 16px 0; background: #f5f5f5;">
+Follow-up to: &ldquo;Ebola Cases in Eastern DRC Surpass 700 as Community Resistance Blocks Containment in Displacement Camps&rdquo; (June 15, 2026)
+<a href="tp-2026-06-15-002.html" style="font-family: 'Space Mono', monospace; color: #000;">&rarr; Read previous</a>
+</div>
+
+<div class="meta-bar">
+<div class="meta-item"><span class="meta-number">20</span><span class="meta-label">Sources</span></div>
+<div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Languages</span></div>
+<div class="meta-item"><span class="meta-number">20</span><span class="meta-label">Stakeholders</span></div>
+<div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Divergences</span></div>
+</div>
+
+<h2>Source Distribution</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 700" class="evidence-terrain" role="img" aria-label="Evidence terrain: 20 sources across 3 regions">
+<desc>20 TOTAL SOURCES across 3 regions</desc>
+<defs><clipPath id="et-terrain-clip"><rect x="270" y="0" width="810" height="700"/></clipPath></defs>
+<rect x="0" y="0" width="1080" height="700" fill="#f5f5f5"/>
+<g clip-path="url(#et-terrain-clip)">
+<path d="M690.9,323.8 L694.0,324.4 L699.8,325.2 L705.7,325.8 L711.6,326.0 L717.4,326.0 L723.3,325.8 L729.2,325.2 L735.0,324.4 L738.1,323.8 L740.9,323.3 L746.8,321.8 L750.8,320.6 L752.6,320.0 L758.5,317.7 L759.3,317.4 L764.4,314.9 L765.7,314.1 L770.2,311.4 L770.9,310.9 L775.0,307.7 L776.1,306.7 L778.3,304.5 L781.0,301.2 L781.9,299.7 L783.0,298.0 L784.5,294.8 L785.5,291.6 L786.0,288.3 L786.0,285.1 L785.5,281.9 L784.5,278.7 L783.0,275.4 L781.9,273.8 L781.0,272.2 L778.3,269.0 L776.1,266.8 L775.0,265.8 L770.9,262.5 L770.2,262.1 L765.7,259.3 L764.4,258.5 L759.3,256.1 L758.5,255.7 L752.6,253.5 L750.8,252.9 L746.8,251.6 L740.9,250.2 L738.1,249.6 L735.0,249.0 L729.2,248.2 L723.3,247.7 L717.4,247.4 L711.6,247.4 L705.7,247.7 L699.8,248.2 L694.0,249.0 L690.9,249.6 L688.1,250.2 L682.2,251.6 L678.2,252.9 L676.4,253.5 L670.5,255.7 L669.7,256.1 L664.6,258.5 L663.3,259.3 L658.8,262.1 L658.1,262.5 L654.0,265.8 L652.9,266.8 L650.7,269.0 L648.0,272.2 L647.1,273.8 L646.0,275.4 L644.5,278.7 L643.5,281.9 L643.0,285.1 L643.0,288.3 L643.5,291.6 L644.5,294.8 L646.0,298.0 L647.1,299.7 L648.0,301.2 L650.7,304.5 L652.9,306.7 L654.0,307.7 L658.1,310.9 L658.8,311.4 L663.3,314.1 L664.6,314.9 L669.7,317.4 L670.5,317.7 L676.4,320.0 L678.2,320.6 L682.2,321.8 L688.1,323.3 L690.9,323.8 Z" fill="#c9a063" fill-opacity="0.22" stroke="none"/>
+<path d="M693.2,438.3 L694.0,438.4 L699.8,438.8 L705.7,439.0 L711.6,439.2 L717.4,439.2 L723.3,439.0 L729.2,438.8 L735.0,438.4 L735.8,438.3 L740.9,437.9 L746.8,437.3 L752.6,436.5 L758.5,435.5 L761.1,435.1 L764.4,434.5 L770.2,433.3 L776.1,431.9 L776.4,431.8 L781.9,430.4 L787.8,428.7 L788.0,428.6 L793.7,426.8 L797.7,425.4 L799.5,424.7 L805.4,422.4 L806.0,422.2 L811.3,419.9 L813.3,418.9 L817.1,417.0 L819.7,415.7 L823.0,413.9 L825.4,412.5 L828.9,410.3 L830.6,409.3 L834.7,406.3 L835.2,406.0 L839.4,402.8 L840.6,401.8 L843.3,399.6 L846.5,396.5 L846.6,396.3 L849.8,393.1 L852.3,390.0 L852.5,389.9 L855.0,386.7 L857.2,383.4 L858.2,381.7 L859.1,380.2 L860.8,377.0 L862.2,373.8 L863.3,370.5 L864.1,367.7 L864.2,367.3 L864.9,364.1 L865.4,360.9 L865.6,357.6 L865.6,354.4 L865.4,351.2 L864.9,348.0 L864.2,344.7 L864.1,344.3 L863.3,341.5 L862.2,338.3 L860.8,335.1 L859.1,331.8 L858.2,330.4 L857.2,328.6 L855.0,325.4 L852.5,322.2 L852.3,322.0 L849.8,318.9 L846.6,315.7 L846.5,315.6 L843.3,312.5 L840.6,310.3 L839.4,309.3 L835.2,306.0 L834.7,305.7 L830.6,302.8 L828.9,301.7 L825.4,299.6 L823.0,298.2 L819.7,296.3 L817.1,295.0 L813.3,293.1 L811.3,292.2 L806.0,289.9 L805.4,289.6 L799.5,287.3 L797.7,286.7 L793.7,285.2 L788.0,283.4 L787.8,283.4 L781.9,281.6 L776.4,280.2 L776.1,280.1 L770.2,278.7 L764.4,277.6 L761.1,277.0 L758.5,276.5 L752.6,275.6 L746.8,274.8 L740.9,274.2 L735.8,273.8 L735.0,273.7 L729.2,273.3 L723.3,273.0 L717.4,272.9 L711.6,272.9 L705.7,273.0 L699.8,273.3 L694.0,273.7 L693.2,273.8 L688.1,274.2 L682.2,274.8 L676.4,275.6 L670.5,276.5 L667.9,277.0 L664.6,277.6 L658.8,278.7 L652.9,280.1 L652.6,280.2 L647.1,281.6 L641.2,283.4 L641.0,283.4 L635.3,285.2 L631.3,286.7 L629.5,287.3 L623.6,289.6 L623.0,289.9 L617.7,292.2 L615.7,293.1 L611.9,295.0 L609.3,296.3 L606.0,298.2 L603.6,299.6 L600.1,301.7 L598.4,302.8 L594.3,305.7 L593.8,306.0 L589.6,309.3 L588.4,310.3 L585.7,312.5 L582.5,315.6 L582.4,315.7 L579.2,318.9 L576.7,322.0 L576.5,322.2 L574.0,325.4 L571.8,328.6 L570.8,330.4 L569.9,331.8 L568.2,335.1 L566.8,338.3 L565.7,341.5 L564.9,344.3 L564.8,344.7 L564.1,348.0 L563.6,351.2 L563.4,354.4 L563.4,357.6 L563.6,360.9 L564.1,364.1 L564.8,367.3 L564.9,367.7 L565.7,370.5 L566.8,373.8 L568.2,377.0 L569.9,380.2 L570.8,381.7 L571.8,383.4 L574.0,386.7 L576.5,389.9 L576.7,390.0 L579.2,393.1 L582.4,396.3 L582.5,396.5 L585.7,399.6 L588.4,401.8 L589.6,402.8 L593.8,406.0 L594.3,406.3 L598.4,409.3 L600.1,410.3 L603.6,412.5 L606.0,413.9 L609.3,415.7 L611.9,417.0 L615.7,418.9 L617.7,419.9 L623.0,422.2 L623.6,422.4 L629.5,424.7 L631.3,425.4 L635.3,426.8 L641.0,428.6 L641.2,428.7 L647.1,430.4 L652.6,431.8 L652.9,431.9 L658.8,433.3 L664.6,434.5 L667.9,435.1 L670.5,435.5 L676.4,436.5 L682.2,437.3 L688.1,437.9 L693.2,438.3" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.20" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M699.0,426.6 L699.8,426.7 L705.7,427.0 L711.6,427.1 L717.4,427.1 L723.3,427.0 L729.2,426.7 L730.0,426.6 L735.0,426.3 L740.9,425.8 L746.8,425.1 L752.6,424.2 L757.2,423.4 L758.5,423.2 L764.4,422.1 L770.2,420.7 L772.3,420.2 L776.1,419.2 L781.9,417.5 L783.7,417.0 L787.8,415.6 L793.0,413.7 L793.7,413.5 L799.5,411.1 L800.9,410.5 L805.4,408.5 L807.9,407.3 L811.3,405.5 L813.9,404.1 L817.1,402.2 L819.3,400.8 L823.0,398.4 L824.1,397.6 L828.4,394.4 L828.9,394.0 L832.3,391.1 L834.7,388.9 L835.8,387.9 L838.9,384.7 L840.6,382.6 L841.6,381.5 L844.0,378.2 L846.1,375.0 L846.5,374.3 L847.9,371.8 L849.5,368.6 L850.8,365.3 L851.7,362.1 L852.3,359.4 L852.4,358.9 L853.0,355.7 L853.2,352.4 L853.2,349.2 L853.0,346.0 L852.4,342.8 L852.3,342.3 L851.7,339.5 L850.8,336.3 L849.5,333.1 L847.9,329.9 L846.5,327.3 L846.1,326.6 L844.0,323.4 L841.6,320.2 L840.6,319.0 L838.9,317.0 L835.8,313.7 L834.7,312.8 L832.3,310.5 L828.9,307.6 L828.4,307.3 L824.1,304.0 L823.0,303.3 L819.3,300.8 L817.1,299.5 L813.9,297.6 L811.3,296.1 L807.9,294.4 L805.4,293.2 L800.9,291.1 L799.5,290.5 L793.7,288.2 L793.0,287.9 L787.8,286.0 L783.7,284.7 L781.9,284.1 L776.1,282.4 L772.3,281.5 L770.2,280.9 L764.4,279.6 L758.5,278.5 L757.2,278.2 L752.6,277.4 L746.8,276.6 L740.9,275.9 L735.0,275.3 L730.0,275.0 L729.2,275.0 L723.3,274.7 L717.4,274.5 L711.6,274.5 L705.7,274.7 L699.8,275.0 L699.0,275.0 L694.0,275.3 L688.1,275.9 L682.2,276.6 L676.4,277.4 L671.8,278.2 L670.5,278.5 L664.6,279.6 L658.8,280.9 L656.7,281.5 L652.9,282.4 L647.1,284.1 L645.3,284.7 L641.2,286.0 L636.0,287.9 L635.3,288.2 L629.5,290.5 L628.1,291.1 L623.6,293.2 L621.1,294.4 L617.7,296.1 L615.1,297.6 L611.9,299.5 L609.7,300.8 L606.0,303.3 L604.9,304.0 L600.6,307.3 L600.1,307.6 L596.7,310.5 L594.3,312.8 L593.2,313.7 L590.1,317.0 L588.4,319.0 L587.4,320.2 L585.0,323.4 L582.9,326.6 L582.5,327.3 L581.1,329.9 L579.5,333.1 L578.2,336.3 L577.3,339.5 L576.7,342.3 L576.6,342.8 L576.0,346.0 L575.8,349.2 L575.8,352.4 L576.0,355.7 L576.6,358.9 L576.7,359.4 L577.3,362.1 L578.2,365.3 L579.5,368.6 L581.1,371.8 L582.5,374.3 L582.9,375.0 L585.0,378.2 L587.4,381.5 L588.4,382.6 L590.1,384.7 L593.2,387.9 L594.3,388.9 L596.7,391.1 L600.1,394.0 L600.6,394.4 L604.9,397.6 L606.0,398.4 L609.7,400.8 L611.9,402.2 L615.1,404.1 L617.7,405.5 L621.1,407.3 L623.6,408.5 L628.1,410.5 L629.5,411.1 L635.3,413.5 L636.0,413.7 L641.2,415.6 L645.3,417.0 L647.1,417.5 L652.9,419.2 L656.7,420.2 L658.8,420.7 L664.6,422.1 L670.5,423.2 L671.8,423.4 L676.4,424.2 L682.2,425.1 L688.1,425.8 L694.0,426.3 L699.0,426.6" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.23" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M698.5,413.6 L699.8,413.7 L705.7,414.0 L711.6,414.2 L717.4,414.2 L723.3,414.0 L729.2,413.7 L730.5,413.6 L735.0,413.3 L740.9,412.7 L746.8,411.9 L752.6,411.0 L755.8,410.4 L758.5,409.9 L764.4,408.6 L770.0,407.1 L770.2,407.1 L776.1,405.5 L780.8,403.9 L781.9,403.5 L787.8,401.4 L789.5,400.7 L793.7,399.0 L797.0,397.5 L799.5,396.2 L803.4,394.2 L805.4,393.1 L809.1,391.0 L811.3,389.6 L814.0,387.8 L817.1,385.5 L818.4,384.6 L822.3,381.3 L823.0,380.7 L825.8,378.1 L828.8,374.9 L828.9,374.8 L831.5,371.7 L833.8,368.4 L834.7,366.9 L835.8,365.2 L837.6,362.0 L838.9,358.8 L840.0,355.5 L840.6,353.1 L840.8,352.3 L841.4,349.1 L841.7,345.9 L841.7,342.6 L841.4,339.4 L840.8,336.2 L840.6,335.4 L840.0,333.0 L838.9,329.7 L837.6,326.5 L835.8,323.3 L834.7,321.5 L833.8,320.0 L831.5,316.8 L828.9,313.7 L828.8,313.6 L825.8,310.4 L823.0,307.8 L822.3,307.1 L818.4,303.9 L817.1,303.0 L814.0,300.7 L811.3,298.9 L809.1,297.5 L805.4,295.3 L803.4,294.2 L799.5,292.2 L797.0,291.0 L793.7,289.5 L789.5,287.8 L787.8,287.1 L781.9,285.0 L780.8,284.6 L776.1,283.0 L770.2,281.4 L770.0,281.3 L764.4,279.9 L758.5,278.6 L755.8,278.1 L752.6,277.5 L746.8,276.6 L740.9,275.8 L735.0,275.2 L730.5,274.9 L729.2,274.8 L723.3,274.5 L717.4,274.3 L711.6,274.3 L705.7,274.5 L699.8,274.8 L698.5,274.9 L694.0,275.2 L688.1,275.8 L682.2,276.6 L676.4,277.5 L673.2,278.1 L670.5,278.6 L664.6,279.9 L659.0,281.3 L658.8,281.4 L652.9,283.0 L648.2,284.6 L647.1,285.0 L641.2,287.1 L639.5,287.8 L635.3,289.5 L632.0,291.0 L629.5,292.2 L625.6,294.2 L623.6,295.3 L619.9,297.5 L617.7,298.9 L615.0,300.7 L611.9,303.0 L610.6,303.9 L606.7,307.1 L606.0,307.8 L603.2,310.4 L600.2,313.6 L600.1,313.7 L597.5,316.8 L595.2,320.0 L594.3,321.5 L593.2,323.3 L591.4,326.5 L590.1,329.7 L589.0,333.0 L588.4,335.4 L588.2,336.2 L587.6,339.4 L587.3,342.6 L587.3,345.9 L587.6,349.1 L588.2,352.3 L588.4,353.1 L589.0,355.5 L590.1,358.8 L591.4,362.0 L593.2,365.2 L594.3,366.9 L595.2,368.4 L597.5,371.7 L600.1,374.8 L600.2,374.9 L603.2,378.1 L606.0,380.7 L606.7,381.3 L610.6,384.6 L611.9,385.5 L615.0,387.8 L617.7,389.6 L619.9,391.0 L623.6,393.1 L625.6,394.2 L629.5,396.2 L632.0,397.5 L635.3,399.0 L639.5,400.7 L641.2,401.4 L647.1,403.5 L648.2,403.9 L652.9,405.5 L658.8,407.1 L659.0,407.1 L664.6,408.6 L670.5,409.9 L673.2,410.4 L676.4,411.0 L682.2,411.9 L688.1,412.7 L694.0,413.3 L698.5,413.6" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.27" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M689.5,399.9 L694.0,400.4 L699.8,400.9 L705.7,401.3 L711.6,401.4 L717.4,401.4 L723.3,401.3 L729.2,400.9 L735.0,400.4 L739.5,399.9 L740.9,399.8 L746.8,399.0 L752.6,397.9 L758.5,396.7 L758.5,396.7 L764.4,395.3 L770.2,393.7 L770.9,393.5 L776.1,391.8 L780.4,390.2 L781.9,389.7 L787.8,387.2 L788.3,387.0 L793.7,384.5 L795.0,383.8 L799.5,381.3 L800.8,380.6 L805.4,377.6 L805.8,377.3 L810.3,374.1 L811.3,373.3 L814.2,370.9 L817.1,368.0 L817.5,367.7 L820.5,364.4 L823.0,361.2 L823.0,361.2 L825.3,358.0 L827.1,354.8 L828.6,351.5 L828.9,350.8 L829.8,348.3 L830.8,345.1 L831.4,341.8 L831.6,338.6 L831.6,335.4 L831.4,332.2 L830.8,328.9 L829.8,325.7 L828.9,323.2 L828.6,322.5 L827.1,319.3 L825.3,316.0 L823.0,312.8 L823.0,312.8 L820.5,309.6 L817.5,306.4 L817.1,306.0 L814.2,303.1 L811.3,300.7 L810.3,299.9 L805.8,296.7 L805.4,296.4 L800.8,293.5 L799.5,292.7 L795.0,290.2 L793.7,289.5 L788.3,287.0 L787.8,286.8 L781.9,284.3 L780.4,283.8 L776.1,282.2 L770.9,280.6 L770.2,280.4 L764.4,278.7 L758.5,277.3 L758.5,277.3 L752.6,276.1 L746.8,275.1 L740.9,274.3 L739.5,274.1 L735.0,273.6 L729.2,273.1 L723.3,272.7 L717.4,272.6 L711.6,272.6 L705.7,272.7 L699.8,273.1 L694.0,273.6 L689.5,274.1 L688.1,274.3 L682.2,275.1 L676.4,276.1 L670.5,277.3 L670.5,277.3 L664.6,278.7 L658.8,280.4 L658.1,280.6 L652.9,282.2 L648.6,283.8 L647.1,284.3 L641.2,286.8 L640.7,287.0 L635.3,289.5 L634.0,290.2 L629.5,292.7 L628.2,293.5 L623.6,296.4 L623.2,296.7 L618.7,299.9 L617.7,300.7 L614.8,303.1 L611.9,306.0 L611.5,306.4 L608.5,309.6 L606.0,312.8 L606.0,312.8 L603.7,316.0 L601.9,319.3 L600.4,322.5 L600.1,323.2 L599.2,325.7 L598.2,328.9 L597.6,332.2 L597.4,335.4 L597.4,338.6 L597.6,341.8 L598.2,345.1 L599.2,348.3 L600.1,350.8 L600.4,351.5 L601.9,354.8 L603.7,358.0 L606.0,361.2 L606.0,361.2 L608.5,364.4 L611.5,367.7 L611.9,368.0 L614.8,370.9 L617.7,373.3 L618.7,374.1 L623.2,377.3 L623.6,377.6 L628.2,380.6 L629.5,381.3 L634.0,383.8 L635.3,384.5 L640.7,387.0 L641.2,387.2 L647.1,389.7 L648.6,390.2 L652.9,391.8 L658.1,393.5 L658.8,393.7 L664.6,395.3 L670.5,396.7 L670.5,396.7 L676.4,397.9 L682.2,399.0 L688.1,399.8 L689.5,399.9" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.30" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M680.4,385.8 L682.2,386.1 L688.1,387.1 L694.0,387.8 L699.8,388.3 L705.7,388.6 L711.6,388.8 L717.4,388.8 L723.3,388.6 L729.2,388.3 L735.0,387.8 L740.9,387.1 L746.8,386.1 L748.6,385.8 L752.6,385.0 L758.5,383.7 L762.8,382.6 L764.4,382.1 L770.2,380.3 L773.1,379.3 L776.1,378.3 L781.4,376.1 L781.9,375.9 L787.8,373.1 L788.2,372.9 L793.7,369.9 L794.1,369.6 L799.1,366.4 L799.5,366.1 L803.5,363.2 L805.4,361.6 L807.3,360.0 L810.5,356.7 L811.3,355.9 L813.4,353.5 L815.8,350.3 L817.1,348.1 L817.8,347.1 L819.5,343.8 L820.8,340.6 L821.7,337.4 L822.4,334.2 L822.7,330.9 L822.7,327.7 L822.4,324.5 L821.7,321.3 L820.8,318.0 L819.5,314.8 L817.8,311.6 L817.1,310.6 L815.8,308.4 L813.4,305.1 L811.3,302.8 L810.5,301.9 L807.3,298.7 L805.4,297.1 L803.5,295.5 L799.5,292.6 L799.1,292.2 L794.1,289.0 L793.7,288.8 L788.2,285.8 L787.8,285.6 L781.9,282.8 L781.4,282.6 L776.1,280.4 L773.1,279.3 L770.2,278.3 L764.4,276.5 L762.8,276.1 L758.5,274.9 L752.6,273.6 L748.6,272.9 L746.8,272.5 L740.9,271.6 L735.0,270.9 L729.2,270.3 L723.3,270.0 L717.4,269.8 L711.6,269.8 L705.7,270.0 L699.8,270.3 L694.0,270.9 L688.1,271.6 L682.2,272.5 L680.4,272.9 L676.4,273.6 L670.5,274.9 L666.2,276.1 L664.6,276.5 L658.8,278.3 L655.9,279.3 L652.9,280.4 L647.6,282.6 L647.1,282.8 L641.2,285.6 L640.8,285.8 L635.3,288.8 L634.9,289.0 L629.9,292.2 L629.5,292.6 L625.5,295.5 L623.6,297.1 L621.7,298.7 L618.5,301.9 L617.7,302.8 L615.6,305.1 L613.2,308.4 L611.9,310.6 L611.2,311.6 L609.5,314.8 L608.2,318.0 L607.3,321.3 L606.6,324.5 L606.3,327.7 L606.3,330.9 L606.6,334.2 L607.3,337.4 L608.2,340.6 L609.5,343.8 L611.2,347.1 L611.9,348.1 L613.2,350.3 L615.6,353.5 L617.7,355.9 L618.5,356.7 L621.7,360.0 L623.6,361.6 L625.5,363.2 L629.5,366.1 L629.9,366.4 L634.9,369.6 L635.3,369.9 L640.8,372.9 L641.2,373.1 L647.1,375.9 L647.6,376.1 L652.9,378.3 L655.9,379.3 L658.8,380.3 L664.6,382.1 L666.2,382.6 L670.5,383.7 L676.4,385.0 L680.4,385.8" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.34" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M689.2,374.5 L694.0,375.2 L699.8,375.7 L705.7,376.1 L711.6,376.3 L717.4,376.3 L723.3,376.1 L729.2,375.7 L735.0,375.2 L739.8,374.5 L740.9,374.4 L746.8,373.4 L752.6,372.2 L756.2,371.3 L758.5,370.7 L764.4,369.0 L767.2,368.1 L770.2,367.0 L775.6,364.8 L776.1,364.6 L781.9,361.9 L782.6,361.6 L787.8,358.7 L788.4,358.4 L793.3,355.2 L793.7,354.9 L797.6,351.9 L799.5,350.2 L801.3,348.7 L804.4,345.5 L805.4,344.2 L807.0,342.3 L809.2,339.0 L811.0,335.8 L811.3,335.2 L812.4,332.6 L813.5,329.3 L814.2,326.1 L814.6,322.9 L814.6,319.7 L814.2,316.4 L813.5,313.2 L812.4,310.0 L811.3,307.4 L811.0,306.8 L809.2,303.5 L807.0,300.3 L805.4,298.3 L804.4,297.1 L801.3,293.9 L799.5,292.3 L797.6,290.6 L793.7,287.7 L793.3,287.4 L788.4,284.2 L787.8,283.8 L782.6,281.0 L781.9,280.6 L776.1,277.9 L775.6,277.7 L770.2,275.6 L767.2,274.5 L764.4,273.6 L758.5,271.9 L756.2,271.3 L752.6,270.4 L746.8,269.2 L740.9,268.2 L739.8,268.1 L735.0,267.4 L729.2,266.8 L723.3,266.4 L717.4,266.3 L711.6,266.3 L705.7,266.4 L699.8,266.8 L694.0,267.4 L689.2,268.1 L688.1,268.2 L682.2,269.2 L676.4,270.4 L672.8,271.3 L670.5,271.9 L664.6,273.6 L661.8,274.5 L658.8,275.6 L653.4,277.7 L652.9,277.9 L647.1,280.6 L646.4,281.0 L641.2,283.8 L640.6,284.2 L635.7,287.4 L635.3,287.7 L631.4,290.6 L629.5,292.3 L627.7,293.9 L624.6,297.1 L623.6,298.3 L622.0,300.3 L619.8,303.5 L618.0,306.8 L617.7,307.4 L616.6,310.0 L615.5,313.2 L614.8,316.4 L614.4,319.7 L614.4,322.9 L614.8,326.1 L615.5,329.3 L616.6,332.6 L617.7,335.2 L618.0,335.8 L619.8,339.0 L622.0,342.3 L623.6,344.2 L624.6,345.5 L627.7,348.7 L629.5,350.2 L631.4,351.9 L635.3,354.9 L635.7,355.2 L640.6,358.4 L641.2,358.7 L646.4,361.6 L647.1,361.9 L652.9,364.6 L653.4,364.8 L658.8,367.0 L661.8,368.1 L664.6,369.0 L670.5,370.7 L672.8,371.3 L676.4,372.2 L682.2,373.4 L688.1,374.4 L689.2,374.5" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.37" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M697.9,362.9 L699.8,363.2 L705.7,363.6 L711.6,363.8 L717.4,363.8 L723.3,363.6 L729.2,363.2 L731.1,362.9 L735.0,362.5 L740.9,361.7 L746.8,360.6 L750.7,359.7 L752.6,359.3 L758.5,357.7 L762.2,356.5 L764.4,355.8 L770.2,353.5 L770.8,353.3 L776.1,350.9 L777.7,350.0 L781.9,347.7 L783.5,346.8 L787.8,343.9 L788.3,343.6 L792.4,340.4 L793.7,339.2 L795.8,337.1 L798.7,333.9 L799.5,332.8 L801.2,330.7 L803.1,327.5 L804.7,324.2 L805.4,322.1 L805.8,321.0 L806.6,317.8 L806.9,314.6 L806.9,311.3 L806.6,308.1 L805.8,304.9 L805.4,303.8 L804.7,301.7 L803.1,298.4 L801.2,295.2 L799.5,293.0 L798.7,292.0 L795.8,288.8 L793.7,286.7 L792.4,285.5 L788.3,282.3 L787.8,282.0 L783.5,279.1 L781.9,278.2 L777.7,275.8 L776.1,275.0 L770.8,272.6 L770.2,272.4 L764.4,270.1 L762.2,269.4 L758.5,268.2 L752.6,266.6 L750.7,266.2 L746.8,265.3 L740.9,264.2 L735.0,263.4 L731.1,262.9 L729.2,262.7 L723.3,262.3 L717.4,262.1 L711.6,262.1 L705.7,262.3 L699.8,262.7 L697.9,262.9 L694.0,263.4 L688.1,264.2 L682.2,265.3 L678.3,266.2 L676.4,266.6 L670.5,268.2 L666.8,269.4 L664.6,270.1 L658.8,272.4 L658.2,272.6 L652.9,275.0 L651.3,275.8 L647.1,278.2 L645.5,279.1 L641.2,282.0 L640.7,282.3 L636.6,285.5 L635.3,286.7 L633.2,288.8 L630.3,292.0 L629.5,293.0 L627.8,295.2 L625.9,298.4 L624.3,301.7 L623.6,303.8 L623.2,304.9 L622.4,308.1 L622.1,311.3 L622.1,314.6 L622.4,317.8 L623.2,321.0 L623.6,322.1 L624.3,324.2 L625.9,327.5 L627.8,330.7 L629.5,332.8 L630.3,333.9 L633.2,337.1 L635.3,339.2 L636.6,340.4 L640.7,343.6 L641.2,343.9 L645.5,346.8 L647.1,347.7 L651.3,350.0 L652.9,350.9 L658.2,353.3 L658.8,353.5 L664.6,355.8 L666.8,356.5 L670.5,357.7 L676.4,359.3 L678.3,359.7 L682.2,360.6 L688.1,361.7 L694.0,362.5 L697.9,362.9" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.41" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M709.7,351.1 L711.6,351.2 L717.4,351.2 L719.3,351.1 L723.3,351.0 L729.2,350.5 L735.0,349.9 L740.9,348.9 L746.0,347.9 L746.8,347.7 L752.6,346.3 L757.9,344.7 L758.5,344.5 L764.4,342.4 L766.6,341.4 L770.2,339.8 L773.4,338.2 L776.1,336.7 L779.0,335.0 L781.9,333.0 L783.6,331.8 L787.5,328.5 L787.8,328.2 L790.7,325.3 L793.4,322.1 L793.7,321.7 L795.6,318.9 L797.2,315.6 L798.5,312.4 L799.3,309.2 L799.5,307.0 L799.7,306.0 L799.7,302.7 L799.5,301.7 L799.3,299.5 L798.5,296.3 L797.2,293.1 L795.6,289.8 L793.7,287.0 L793.4,286.6 L790.7,283.4 L787.8,280.5 L787.5,280.2 L783.6,276.9 L781.9,275.7 L779.0,273.7 L776.1,272.0 L773.4,270.5 L770.2,268.9 L766.6,267.3 L764.4,266.3 L758.5,264.2 L757.9,264.0 L752.6,262.4 L746.8,261.0 L746.0,260.8 L740.9,259.8 L735.0,258.8 L729.2,258.2 L723.3,257.7 L719.3,257.6 L717.4,257.5 L711.6,257.5 L709.7,257.6 L705.7,257.7 L699.8,258.2 L694.0,258.8 L688.1,259.8 L683.0,260.8 L682.2,261.0 L676.4,262.4 L671.1,264.0 L670.5,264.2 L664.6,266.3 L662.4,267.3 L658.8,268.9 L655.6,270.5 L652.9,272.0 L650.0,273.7 L647.1,275.7 L645.4,276.9 L641.5,280.2 L641.2,280.5 L638.3,283.4 L635.6,286.6 L635.3,287.0 L633.4,289.8 L631.8,293.1 L630.5,296.3 L629.7,299.5 L629.5,301.7 L629.3,302.7 L629.3,306.0 L629.5,307.0 L629.7,309.2 L630.5,312.4 L631.8,315.6 L633.4,318.9 L635.3,321.7 L635.6,322.1 L638.3,325.3 L641.2,328.2 L641.5,328.5 L645.4,331.8 L647.1,333.0 L650.0,335.0 L652.9,336.7 L655.6,338.2 L658.8,339.8 L662.4,341.4 L664.6,342.4 L670.5,344.5 L671.1,344.7 L676.4,346.3 L682.2,347.7 L683.0,347.9 L688.1,348.9 L694.0,349.9 L699.8,350.5 L705.7,351.0 L709.7,351.1" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.44" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M687.3,335.9 L688.1,336.0 L694.0,337.1 L699.8,337.8 L705.7,338.3 L711.6,338.5 L717.4,338.5 L723.3,338.3 L729.2,337.8 L735.0,337.1 L740.9,336.0 L741.7,335.9 L746.8,334.7 L752.6,333.1 L754.1,332.6 L758.5,331.1 L762.7,329.4 L764.4,328.7 L769.4,326.2 L770.2,325.7 L774.8,323.0 L776.1,322.0 L779.2,319.7 L781.9,317.3 L782.8,316.5 L785.8,313.3 L787.8,310.5 L788.1,310.0 L790.0,306.8 L791.4,303.6 L792.3,300.4 L792.7,297.1 L792.7,293.9 L792.3,290.7 L791.4,287.5 L790.0,284.2 L788.1,281.0 L787.8,280.6 L785.8,277.8 L782.8,274.6 L781.9,273.8 L779.2,271.3 L776.1,269.0 L774.8,268.1 L770.2,265.3 L769.4,264.9 L764.4,262.4 L762.7,261.7 L758.5,260.0 L754.1,258.4 L752.6,258.0 L746.8,256.3 L741.7,255.2 L740.9,255.0 L735.0,254.0 L729.2,253.3 L723.3,252.8 L717.4,252.5 L711.6,252.5 L705.7,252.8 L699.8,253.3 L694.0,254.0 L688.1,255.0 L687.3,255.2 L682.2,256.3 L676.4,258.0 L674.9,258.4 L670.5,260.0 L666.3,261.7 L664.6,262.4 L659.6,264.9 L658.8,265.3 L654.2,268.1 L652.9,269.0 L649.8,271.3 L647.1,273.8 L646.2,274.6 L643.2,277.8 L641.2,280.6 L640.9,281.0 L639.0,284.2 L637.6,287.5 L636.7,290.7 L636.3,293.9 L636.3,297.1 L636.7,300.4 L637.6,303.6 L639.0,306.8 L640.9,310.0 L641.2,310.5 L643.2,313.3 L646.2,316.5 L647.1,317.3 L649.8,319.7 L652.9,322.0 L654.2,323.0 L658.8,325.7 L659.6,326.2 L664.6,328.7 L666.3,329.4 L670.5,331.1 L674.9,332.6 L676.4,333.1 L682.2,334.7 L687.3,335.9" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.48" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M691.4,323.6 L694.0,324.1 L699.8,324.9 L705.7,325.5 L711.6,325.7 L717.4,325.7 L723.3,325.5 L729.2,324.9 L735.0,324.1 L737.6,323.6 L740.9,323.0 L746.8,321.5 L750.4,320.4 L752.6,319.7 L758.5,317.4 L759.0,317.2 L764.4,314.6 L765.5,313.9 L770.2,311.0 L770.7,310.7 L774.8,307.5 L776.1,306.3 L778.1,304.3 L780.8,301.0 L781.9,299.2 L782.8,297.8 L784.3,294.6 L785.3,291.3 L785.8,288.1 L785.8,284.9 L785.3,281.7 L784.3,278.4 L782.8,275.2 L781.9,273.8 L780.8,272.0 L778.1,268.8 L776.1,266.7 L774.8,265.5 L770.7,262.3 L770.2,262.0 L765.5,259.1 L764.4,258.5 L759.0,255.9 L758.5,255.6 L752.6,253.3 L750.4,252.6 L746.8,251.5 L740.9,250.1 L737.6,249.4 L735.0,248.9 L729.2,248.1 L723.3,247.6 L717.4,247.3 L711.6,247.3 L705.7,247.6 L699.8,248.1 L694.0,248.9 L691.4,249.4 L688.1,250.1 L682.2,251.5 L678.6,252.6 L676.4,253.3 L670.5,255.6 L670.0,255.9 L664.6,258.5 L663.5,259.1 L658.8,262.0 L658.3,262.3 L654.2,265.5 L652.9,266.7 L650.9,268.8 L648.2,272.0 L647.1,273.8 L646.2,275.2 L644.7,278.4 L643.7,281.7 L643.2,284.9 L643.2,288.1 L643.7,291.3 L644.7,294.6 L646.2,297.8 L647.1,299.2 L648.2,301.0 L650.9,304.3 L652.9,306.3 L654.2,307.5 L658.3,310.7 L658.8,311.0 L663.5,313.9 L664.6,314.6 L670.0,317.2 L670.5,317.4 L676.4,319.7 L678.6,320.4 L682.2,321.5 L688.1,323.0 L691.4,323.6" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.51" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M695.7,311.2 L699.8,311.8 L705.7,312.4 L711.6,312.7 L717.4,312.7 L723.3,312.4 L729.2,311.8 L733.3,311.2 L735.0,310.9 L740.9,309.6 L746.8,308.0 L746.9,308.0 L752.6,305.9 L755.3,304.7 L758.5,303.2 L761.6,301.5 L764.4,299.7 L766.4,298.3 L770.2,295.1 L770.3,295.1 L773.3,291.8 L775.6,288.6 L776.1,287.7 L777.3,285.4 L778.3,282.1 L778.9,278.9 L778.9,275.7 L778.3,272.5 L777.3,269.2 L776.1,267.0 L775.6,266.0 L773.3,262.8 L770.3,259.6 L770.2,259.5 L766.4,256.3 L764.4,254.9 L761.6,253.1 L758.5,251.4 L755.3,249.9 L752.6,248.7 L746.9,246.7 L746.8,246.6 L740.9,245.0 L735.0,243.7 L733.3,243.4 L729.2,242.8 L723.3,242.2 L717.4,241.9 L711.6,241.9 L705.7,242.2 L699.8,242.8 L695.7,243.4 L694.0,243.7 L688.1,245.0 L682.2,246.6 L682.1,246.7 L676.4,248.7 L673.7,249.9 L670.5,251.4 L667.4,253.1 L664.6,254.9 L662.6,256.3 L658.8,259.5 L658.7,259.6 L655.7,262.8 L653.4,266.0 L652.9,267.0 L651.7,269.2 L650.7,272.5 L650.1,275.7 L650.1,278.9 L650.7,282.1 L651.7,285.4 L652.9,287.7 L653.4,288.6 L655.7,291.8 L658.7,295.1 L658.8,295.1 L662.6,298.3 L664.6,299.7 L667.4,301.5 L670.5,303.2 L673.7,304.7 L676.4,305.9 L682.1,308.0 L682.2,308.0 L688.1,309.6 L694.0,310.9 L695.7,311.2" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.54" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M700.9,298.6 L705.7,299.1 L711.6,299.5 L717.4,299.5 L723.3,299.1 L728.1,298.6 L729.2,298.5 L735.0,297.4 L740.9,296.0 L742.8,295.4 L746.8,294.0 L751.3,292.1 L752.6,291.5 L757.4,288.9 L758.5,288.2 L761.9,285.7 L764.4,283.5 L765.5,282.5 L768.1,279.2 L770.0,276.0 L770.2,275.4 L771.2,272.8 L771.8,269.6 L771.8,266.3 L771.2,263.1 L770.2,260.5 L770.0,259.9 L768.1,256.6 L765.5,253.4 L764.4,252.3 L761.9,250.2 L758.5,247.7 L757.4,247.0 L752.6,244.4 L751.3,243.7 L746.8,241.8 L742.8,240.5 L740.9,239.9 L735.0,238.5 L729.2,237.4 L728.1,237.3 L723.3,236.7 L717.4,236.4 L711.6,236.4 L705.7,236.7 L700.9,237.3 L699.8,237.4 L694.0,238.5 L688.1,239.9 L686.2,240.5 L682.2,241.8 L677.7,243.7 L676.4,244.4 L671.6,247.0 L670.5,247.7 L667.1,250.2 L664.6,252.3 L663.5,253.4 L660.9,256.6 L659.0,259.9 L658.8,260.5 L657.8,263.1 L657.2,266.3 L657.2,269.6 L657.8,272.8 L658.8,275.4 L659.0,276.0 L660.9,279.2 L663.5,282.5 L664.6,283.5 L667.1,285.7 L670.5,288.2 L671.6,288.9 L676.4,291.5 L677.7,292.1 L682.2,294.0 L686.2,295.4 L688.1,296.0 L694.0,297.4 L699.8,298.5 L700.9,298.6" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.58" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M710.9,285.8 L711.6,285.9 L717.4,285.9 L718.1,285.8 L723.3,285.5 L729.2,284.7 L735.0,283.5 L738.2,282.6 L740.9,281.8 L746.8,279.4 L746.9,279.4 L752.6,276.2 L752.7,276.2 L756.9,272.9 L758.5,271.4 L760.1,269.7 L762.3,266.5 L763.7,263.3 L764.4,260.4 L764.4,260.0 L764.4,256.8 L764.4,256.4 L763.7,253.6 L762.3,250.3 L760.1,247.1 L758.5,245.4 L756.9,243.9 L752.7,240.7 L752.6,240.6 L746.9,237.4 L746.8,237.4 L740.9,235.1 L738.2,234.2 L735.0,233.3 L729.2,232.1 L723.3,231.3 L718.1,231.0 L717.4,230.9 L711.6,230.9 L710.9,231.0 L705.7,231.3 L699.8,232.1 L694.0,233.3 L690.8,234.2 L688.1,235.1 L682.2,237.4 L682.1,237.4 L676.4,240.6 L676.3,240.7 L672.1,243.9 L670.5,245.4 L668.9,247.1 L666.7,250.3 L665.3,253.6 L664.6,256.4 L664.6,256.8 L664.6,260.0 L664.6,260.4 L665.3,263.3 L666.7,266.5 L668.9,269.7 L670.5,271.4 L672.1,272.9 L676.3,276.2 L676.4,276.2 L682.1,279.4 L682.2,279.4 L688.1,281.8 L690.8,282.6 L694.0,283.5 L699.8,284.7 L705.7,285.5 L710.9,285.8" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.61" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M697.0,269.7 L699.8,270.4 L705.7,271.3 L711.6,271.8 L717.4,271.8 L723.3,271.3 L729.2,270.4 L732.0,269.7 L735.0,268.9 L740.9,266.7 L741.4,266.5 L746.8,263.5 L747.2,263.3 L751.1,260.0 L752.6,258.3 L753.8,256.8 L755.5,253.6 L756.4,250.4 L756.4,247.1 L755.5,243.9 L753.8,240.7 L752.6,239.1 L751.1,237.5 L747.2,234.2 L746.8,234.0 L741.4,231.0 L740.9,230.8 L735.0,228.6 L732.0,227.8 L729.2,227.1 L723.3,226.2 L717.4,225.7 L711.6,225.7 L705.7,226.2 L699.8,227.1 L697.0,227.8 L694.0,228.6 L688.1,230.8 L687.6,231.0 L682.2,234.0 L681.8,234.2 L677.9,237.5 L676.4,239.1 L675.2,240.7 L673.5,243.9 L672.6,247.1 L672.6,250.4 L673.5,253.6 L675.2,256.8 L676.4,258.3 L677.9,260.0 L681.8,263.3 L682.2,263.5 L687.6,266.5 L688.1,266.7 L694.0,268.9 L697.0,269.7" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.65" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M709.0,256.7 L711.6,256.9 L717.4,256.9 L720.0,256.7 L723.3,256.3 L729.2,255.0 L733.9,253.5 L735.0,253.0 L740.1,250.2 L740.9,249.6 L743.8,247.0 L746.1,243.8 L746.8,242.0 L747.2,240.6 L747.2,237.3 L746.8,235.9 L746.1,234.1 L743.8,230.9 L740.9,228.2 L740.1,227.7 L735.0,224.9 L733.9,224.4 L729.2,222.8 L723.3,221.6 L720.0,221.2 L717.4,221.0 L711.6,221.0 L709.0,221.2 L705.7,221.6 L699.8,222.8 L695.1,224.4 L694.0,224.9 L688.9,227.7 L688.1,228.2 L685.2,230.9 L682.9,234.1 L682.2,235.9 L681.8,237.3 L681.8,240.6 L682.2,242.0 L682.9,243.8 L685.2,247.0 L688.1,249.6 L688.9,250.2 L694.0,253.0 L695.1,253.5 L699.8,255.0 L705.7,256.3 L709.0,256.7" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.68" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M711.0,240.3 L711.6,240.4 L717.4,240.4 L718.0,240.3 L723.3,239.3 L729.2,237.2 L729.3,237.1 L733.3,233.8 L735.0,230.9 L735.2,230.6 L735.2,227.4 L735.0,227.1 L733.3,224.2 L729.3,220.9 L729.2,220.8 L723.3,218.7 L718.0,217.7 L717.4,217.6 L711.6,217.6 L711.0,217.7 L705.7,218.7 L699.8,220.8 L699.7,220.9 L695.7,224.2 L694.0,227.1 L693.8,227.4 L693.8,230.6 L694.0,230.9 L695.7,233.8 L699.7,237.1 L699.8,237.2 L705.7,239.3 L711.0,240.3" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.72" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M686.1,453.0 L688.1,453.2 L694.0,453.7 L699.8,454.0 L705.7,454.2 L711.6,454.3 L717.4,454.3 L723.3,454.2 L729.2,454.0 L735.0,453.7 L740.9,453.2 L742.9,453.0 L746.8,452.6 L752.6,452.0 L758.5,451.2 L764.4,450.2 L766.8,449.7 L770.2,449.2 L776.1,448.0 L781.9,446.6 L782.3,446.5 L787.8,445.2 L793.7,443.5 L794.4,443.3 L799.5,441.8 L804.5,440.1 L805.4,439.8 L811.3,437.6 L813.3,436.8 L817.1,435.3 L821.0,433.6 L823.0,432.7 L827.9,430.4 L828.9,429.9 L834.1,427.2 L834.7,426.8 L839.7,423.9 L840.6,423.4 L844.9,420.7 L846.5,419.6 L849.6,417.5 L852.3,415.4 L853.8,414.3 L857.7,411.0 L858.2,410.5 L861.3,407.8 L864.1,405.0 L864.5,404.6 L867.5,401.3 L869.9,398.3 L870.1,398.1 L872.6,394.9 L874.7,391.7 L875.8,389.8 L876.6,388.4 L878.4,385.2 L879.8,382.0 L881.0,378.8 L881.7,376.6 L882.0,375.5 L882.9,372.3 L883.6,369.1 L884.0,365.9 L884.2,362.6 L884.2,359.4 L884.0,356.2 L883.6,353.0 L882.9,349.7 L882.0,346.5 L881.7,345.4 L881.0,343.3 L879.8,340.1 L878.4,336.8 L876.6,333.6 L875.8,332.3 L874.7,330.4 L872.6,327.2 L870.1,323.9 L869.9,323.7 L867.5,320.7 L864.5,317.5 L864.1,317.1 L861.3,314.3 L858.2,311.5 L857.7,311.0 L853.8,307.8 L852.3,306.7 L849.6,304.6 L846.5,302.4 L844.9,301.3 L840.6,298.7 L839.7,298.1 L834.7,295.2 L834.1,294.9 L828.9,292.1 L827.9,291.7 L823.0,289.3 L821.0,288.4 L817.1,286.7 L813.3,285.2 L811.3,284.4 L805.4,282.3 L804.5,282.0 L799.5,280.3 L794.4,278.8 L793.7,278.5 L787.8,276.9 L782.3,275.5 L781.9,275.5 L776.1,274.1 L770.2,272.9 L766.8,272.3 L764.4,271.9 L758.5,270.9 L752.6,270.1 L746.8,269.4 L742.9,269.1 L740.9,268.9 L735.0,268.4 L729.2,268.0 L723.3,267.8 L717.4,267.7 L711.6,267.7 L705.7,267.8 L699.8,268.0 L694.0,268.4 L688.1,268.9 L686.1,269.1 L682.2,269.4 L676.4,270.1 L670.5,270.9 L664.6,271.9 L662.2,272.3 L658.8,272.9 L652.9,274.1 L647.1,275.5 L646.7,275.5 L641.2,276.9 L635.3,278.5 L634.6,278.8 L629.5,280.3 L624.5,282.0 L623.6,282.3 L617.7,284.4 L615.7,285.2 L611.9,286.7 L608.0,288.4 L606.0,289.3 L601.1,291.7 L600.1,292.1 L594.9,294.9 L594.3,295.2 L589.3,298.1 L588.4,298.7 L584.1,301.3 L582.5,302.4 L579.4,304.6 L576.7,306.7 L575.2,307.8 L571.3,311.0 L570.8,311.5 L567.7,314.3 L564.9,317.1 L564.5,317.5 L561.5,320.7 L559.1,323.7 L558.9,323.9 L556.4,327.2 L554.3,330.4 L553.2,332.3 L552.4,333.6 L550.6,336.8 L549.2,340.1 L548.0,343.3 L547.3,345.4 L547.0,346.5 L546.1,349.7 L545.4,353.0 L545.0,356.2 L544.8,359.4 L544.8,362.6 L545.0,365.9 L545.4,369.1 L546.1,372.3 L547.0,375.5 L547.3,376.6 L548.0,378.8 L549.2,382.0 L550.6,385.2 L552.4,388.4 L553.2,389.8 L554.3,391.7 L556.4,394.9 L558.9,398.1 L559.1,398.3 L561.5,401.3 L564.5,404.6 L564.9,405.0 L567.7,407.8 L570.8,410.5 L571.3,411.0 L575.2,414.3 L576.7,415.4 L579.4,417.5 L582.5,419.6 L584.1,420.7 L588.4,423.4 L589.3,423.9 L594.3,426.8 L594.9,427.2 L600.1,429.9 L601.1,430.4 L606.0,432.7 L608.0,433.6 L611.9,435.3 L615.7,436.8 L617.7,437.6 L623.6,439.8 L624.5,440.1 L629.5,441.8 L634.6,443.3 L635.3,443.5 L641.2,445.2 L646.7,446.5 L647.1,446.6 L652.9,448.0 L658.8,449.2 L662.2,449.7 L664.6,450.2 L670.5,451.2 L676.4,452.0 L682.2,452.6 L686.1,453.0" fill="none" stroke="#000" stroke-width="0.45" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+<path d="M929.9,425.8 L931.8,426.1 L937.7,426.8 L943.6,427.1 L949.4,427.1 L955.3,426.8 L961.2,426.1 L963.1,425.8 L967.0,425.1 L972.9,423.7 L976.4,422.6 L978.8,421.8 L984.6,419.4 L984.6,419.4 L990.5,416.1 L990.5,416.1 L994.9,412.9 L996.4,411.6 L998.4,409.7 L1000.9,406.5 L1002.2,404.3 L1002.8,403.2 L1004.0,400.0 L1004.6,396.8 L1004.6,393.6 L1004.0,390.3 L1002.8,387.1 L1002.2,386.1 L1000.9,383.9 L998.4,380.7 L996.4,378.7 L994.9,377.4 L990.5,374.2 L990.5,374.2 L984.6,371.0 L984.6,371.0 L978.8,368.5 L976.4,367.8 L972.9,366.7 L967.0,365.2 L963.1,364.5 L961.2,364.2 L955.3,363.5 L949.4,363.2 L943.6,363.2 L937.7,363.5 L931.8,364.2 L929.9,364.5 L926.0,365.2 L920.1,366.7 L916.6,367.8 L914.2,368.5 L908.4,371.0 L908.4,371.0 L902.5,374.2 L902.5,374.2 L898.1,377.4 L896.6,378.7 L894.6,380.7 L892.1,383.9 L890.8,386.1 L890.2,387.1 L889.0,390.3 L888.4,393.6 L888.4,396.8 L889.0,400.0 L890.2,403.2 L890.8,404.3 L892.1,406.5 L894.6,409.7 L896.6,411.6 L898.1,412.9 L902.5,416.1 L902.5,416.1 L908.4,419.4 L908.4,419.4 L914.2,421.8 L916.6,422.6 L920.1,423.7 L926.0,425.1 L929.9,425.8 Z" fill="#7a6a99" fill-opacity="0.22" stroke="none"/>
+<path d="M920.5,426.5 L926.0,427.8 L931.8,428.8 L937.7,429.4 L943.6,429.7 L949.4,429.7 L955.3,429.4 L961.2,428.8 L967.0,427.8 L972.5,426.5 L972.9,426.5 L978.8,424.7 L982.5,423.3 L984.6,422.4 L989.5,420.1 L990.5,419.5 L994.7,416.9 L996.4,415.7 L998.9,413.6 L1002.0,410.4 L1002.2,410.2 L1004.5,407.2 L1006.2,404.0 L1007.4,400.7 L1007.9,397.5 L1007.9,394.3 L1007.4,391.1 L1006.2,387.8 L1004.5,384.6 L1002.2,381.6 L1002.0,381.4 L998.9,378.2 L996.4,376.1 L994.7,374.9 L990.5,372.3 L989.5,371.7 L984.6,369.4 L982.5,368.5 L978.8,367.1 L972.9,365.3 L972.5,365.3 L967.0,364.0 L961.2,363.0 L955.3,362.4 L949.4,362.1 L943.6,362.1 L937.7,362.4 L931.8,363.0 L926.0,364.0 L920.5,365.3 L920.1,365.3 L914.2,367.1 L910.5,368.5 L908.4,369.4 L903.5,371.7 L902.5,372.3 L898.3,374.9 L896.6,376.1 L894.1,378.2 L891.0,381.4 L890.8,381.6 L888.5,384.6 L886.8,387.8 L885.6,391.1 L885.1,394.3 L885.1,397.5 L885.6,400.7 L886.8,404.0 L888.5,407.2 L890.8,410.2 L891.0,410.4 L894.1,413.6 L896.6,415.7 L898.3,416.9 L902.5,419.5 L903.5,420.1 L908.4,422.4 L910.5,423.3 L914.2,424.7 L920.1,426.5 L920.5,426.5" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.20" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M930.2,425.8 L931.8,426.1 L937.7,426.8 L943.6,427.1 L949.4,427.1 L955.3,426.8 L961.2,426.1 L962.8,425.8 L967.0,425.1 L972.9,423.6 L976.3,422.6 L978.8,421.7 L984.5,419.4 L984.6,419.3 L990.4,416.1 L990.5,416.1 L994.8,412.9 L996.4,411.5 L998.3,409.7 L1000.9,406.5 L1002.2,404.2 L1002.7,403.2 L1004.0,400.0 L1004.6,396.8 L1004.6,393.5 L1004.0,390.3 L1002.7,387.1 L1002.2,386.2 L1000.9,383.9 L998.3,380.6 L996.4,378.8 L994.8,377.4 L990.5,374.3 L990.4,374.2 L984.6,371.0 L984.5,371.0 L978.8,368.6 L976.3,367.7 L972.9,366.7 L967.0,365.3 L962.8,364.5 L961.2,364.2 L955.3,363.6 L949.4,363.2 L943.6,363.2 L937.7,363.6 L931.8,364.2 L930.2,364.5 L926.0,365.3 L920.1,366.7 L916.7,367.7 L914.2,368.6 L908.5,371.0 L908.4,371.0 L902.6,374.2 L902.5,374.3 L898.2,377.4 L896.6,378.8 L894.7,380.6 L892.1,383.9 L890.8,386.2 L890.3,387.1 L889.0,390.3 L888.4,393.5 L888.4,396.8 L889.0,400.0 L890.3,403.2 L890.8,404.2 L892.1,406.5 L894.7,409.7 L896.6,411.5 L898.2,412.9 L902.5,416.1 L902.6,416.1 L908.4,419.3 L908.5,419.4 L914.2,421.7 L916.7,422.6 L920.1,423.6 L926.0,425.1 L930.2,425.8" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.26" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M926.0,421.6 L931.8,422.7 L937.7,423.5 L943.6,423.8 L949.4,423.8 L955.3,423.5 L961.2,422.7 L967.0,421.6 L967.0,421.6 L972.9,420.1 L977.6,418.4 L978.8,418.0 L984.6,415.2 L984.6,415.2 L989.7,412.0 L990.5,411.3 L993.5,408.7 L996.3,405.5 L996.4,405.5 L998.4,402.3 L999.7,399.1 L1000.3,395.8 L1000.3,392.6 L999.7,389.4 L998.4,386.2 L996.4,383.0 L996.3,382.9 L993.5,379.7 L990.5,377.1 L989.7,376.5 L984.6,373.3 L984.6,373.3 L978.8,370.5 L977.6,370.0 L972.9,368.4 L967.0,366.8 L967.0,366.8 L961.2,365.7 L955.3,365.0 L949.4,364.6 L943.6,364.6 L937.7,365.0 L931.8,365.7 L926.0,366.8 L926.0,366.8 L920.1,368.4 L915.4,370.0 L914.2,370.5 L908.4,373.3 L908.4,373.3 L903.3,376.5 L902.5,377.1 L899.5,379.7 L896.7,382.9 L896.6,383.0 L894.6,386.2 L893.3,389.4 L892.7,392.6 L892.7,395.8 L893.3,399.1 L894.6,402.3 L896.6,405.5 L896.7,405.5 L899.5,408.7 L902.5,411.3 L903.3,412.0 L908.4,415.2 L908.4,415.2 L914.2,418.0 L915.4,418.4 L920.1,420.1 L926.0,421.6 L926.0,421.6" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.32" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M924.5,417.4 L926.0,417.8 L931.8,419.0 L937.7,419.8 L943.6,420.2 L949.4,420.2 L955.3,419.8 L961.2,419.0 L967.0,417.8 L968.5,417.4 L972.9,416.0 L977.6,414.2 L978.8,413.7 L983.7,410.9 L984.6,410.3 L988.0,407.7 L990.5,405.3 L991.3,404.5 L993.5,401.3 L995.0,398.0 L995.7,394.8 L995.7,391.6 L995.0,388.4 L993.5,385.1 L991.3,381.9 L990.5,381.1 L988.0,378.7 L984.6,376.1 L983.7,375.5 L978.8,372.7 L977.6,372.2 L972.9,370.3 L968.5,369.0 L967.0,368.6 L961.2,367.3 L955.3,366.5 L949.4,366.2 L943.6,366.2 L937.7,366.5 L931.8,367.3 L926.0,368.6 L924.5,369.0 L920.1,370.3 L915.4,372.2 L914.2,372.7 L909.3,375.5 L908.4,376.1 L905.0,378.7 L902.5,381.1 L901.7,381.9 L899.5,385.1 L898.0,388.4 L897.3,391.6 L897.3,394.8 L898.0,398.0 L899.5,401.3 L901.7,404.5 L902.5,405.3 L905.0,407.7 L908.4,410.3 L909.3,410.9 L914.2,413.7 L915.4,414.2 L920.1,416.0 L924.5,417.4" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.38" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M942.3,416.3 L943.6,416.4 L949.4,416.4 L950.7,416.3 L955.3,415.9 L961.2,415.0 L967.0,413.7 L968.8,413.1 L972.9,411.6 L976.7,409.8 L978.8,408.7 L982.0,406.6 L984.6,404.4 L985.7,403.4 L988.2,400.2 L989.9,396.9 L990.5,394.4 L990.7,393.7 L990.7,390.5 L990.5,389.8 L989.9,387.3 L988.2,384.0 L985.7,380.8 L984.6,379.8 L982.0,377.6 L978.8,375.5 L976.7,374.4 L972.9,372.6 L968.8,371.1 L967.0,370.6 L961.2,369.2 L955.3,368.3 L950.7,367.9 L949.4,367.8 L943.6,367.8 L942.3,367.9 L937.7,368.3 L931.8,369.2 L926.0,370.6 L924.2,371.1 L920.1,372.6 L916.3,374.4 L914.2,375.5 L911.0,377.6 L908.4,379.8 L907.3,380.8 L904.8,384.0 L903.1,387.3 L902.5,389.8 L902.3,390.5 L902.3,393.7 L902.5,394.4 L903.1,396.9 L904.8,400.2 L907.3,403.4 L908.4,404.4 L911.0,406.6 L914.2,408.7 L916.3,409.8 L920.1,411.6 L924.2,413.1 L926.0,413.7 L931.8,415.0 L937.7,415.9 L942.3,416.3" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.44" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M939.7,411.9 L943.6,412.2 L949.4,412.2 L953.3,411.9 L955.3,411.7 L961.2,410.7 L967.0,409.1 L968.0,408.7 L972.9,406.6 L974.9,405.5 L978.8,402.8 L979.4,402.2 L982.4,399.0 L984.3,395.8 L984.6,394.7 L985.2,392.6 L985.2,389.3 L984.6,387.2 L984.3,386.1 L982.4,382.9 L979.4,379.7 L978.8,379.1 L974.9,376.4 L972.9,375.3 L968.0,373.2 L967.0,372.8 L961.2,371.2 L955.3,370.2 L953.3,370.0 L949.4,369.7 L943.6,369.7 L939.7,370.0 L937.7,370.2 L931.8,371.2 L926.0,372.8 L925.0,373.2 L920.1,375.3 L918.1,376.4 L914.2,379.1 L913.6,379.7 L910.6,382.9 L908.7,386.1 L908.4,387.2 L907.8,389.3 L907.8,392.6 L908.4,394.7 L908.7,395.8 L910.6,399.0 L913.6,402.2 L914.2,402.8 L918.1,405.5 L920.1,406.6 L925.0,408.7 L926.0,409.1 L931.8,410.7 L937.7,411.7 L939.7,411.9" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.51" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M941.4,407.5 L943.6,407.7 L949.4,407.7 L951.6,407.5 L955.3,407.1 L961.2,405.8 L965.8,404.3 L967.0,403.8 L972.0,401.1 L972.9,400.4 L975.7,397.8 L978.0,394.6 L978.8,392.6 L979.1,391.4 L979.1,388.2 L978.8,387.0 L978.0,384.9 L975.7,381.7 L972.9,379.1 L972.0,378.5 L967.0,375.8 L965.8,375.3 L961.2,373.7 L955.3,372.4 L951.6,372.0 L949.4,371.8 L943.6,371.8 L941.4,372.0 L937.7,372.4 L931.8,373.7 L927.2,375.3 L926.0,375.8 L921.0,378.5 L920.1,379.1 L917.3,381.7 L915.0,384.9 L914.2,387.0 L913.9,388.2 L913.9,391.4 L914.2,392.6 L915.0,394.6 L917.3,397.8 L920.1,400.4 L921.0,401.1 L926.0,403.8 L927.2,404.3 L931.8,405.8 L937.7,407.1 L941.4,407.5" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.57" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M931.1,399.8 L931.8,400.1 L937.7,401.8 L943.6,402.6 L949.4,402.6 L955.3,401.8 L961.2,400.1 L961.9,399.8 L967.0,397.0 L967.6,396.6 L970.5,393.4 L972.0,390.2 L972.0,386.9 L970.5,383.7 L967.6,380.5 L967.0,380.1 L961.9,377.3 L961.2,377.0 L955.3,375.3 L949.4,374.5 L943.6,374.5 L937.7,375.3 L931.8,377.0 L931.1,377.3 L926.0,380.1 L925.4,380.5 L922.5,383.7 L921.0,386.9 L921.0,390.2 L922.5,393.4 L925.4,396.6 L926.0,397.0 L931.1,399.8" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.63" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M940.0,395.4 L943.6,396.0 L949.4,396.0 L953.0,395.4 L955.3,394.7 L960.0,392.1 L961.2,390.9 L962.4,388.9 L962.4,385.7 L961.2,383.7 L960.0,382.5 L955.3,379.9 L953.0,379.2 L949.4,378.6 L943.6,378.6 L940.0,379.2 L937.7,379.9 L933.0,382.5 L931.8,383.7 L930.6,385.7 L930.6,388.9 L931.8,390.9 L933.0,392.1 L937.7,394.7 L940.0,395.4" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.69" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M924.8,447.7 L926.0,447.9 L931.8,448.5 L937.7,449.0 L943.6,449.2 L949.4,449.2 L955.3,449.0 L961.2,448.5 L967.0,447.9 L968.2,447.7 L972.9,447.0 L978.8,445.8 L984.4,444.4 L984.6,444.4 L990.5,442.7 L994.8,441.2 L996.4,440.7 L1002.2,438.2 L1002.7,438.0 L1008.1,435.3 L1009.1,434.8 L1013.9,431.8 L1014.4,431.5 L1018.8,428.3 L1019.8,427.5 L1022.5,425.1 L1025.6,421.9 L1025.7,421.8 L1028.2,418.6 L1030.3,415.4 L1031.5,412.8 L1031.9,412.2 L1033.1,409.0 L1033.9,405.7 L1034.3,402.5 L1034.3,399.3 L1033.9,396.1 L1033.1,392.8 L1031.9,389.6 L1031.5,389.0 L1030.3,386.4 L1028.2,383.2 L1025.7,380.0 L1025.6,379.9 L1022.5,376.7 L1019.8,374.3 L1018.8,373.5 L1014.4,370.3 L1013.9,370.0 L1009.1,367.0 L1008.1,366.5 L1002.7,363.8 L1002.2,363.6 L996.4,361.1 L994.8,360.6 L990.5,359.1 L984.6,357.4 L984.4,357.4 L978.8,356.0 L972.9,354.8 L968.2,354.1 L967.0,353.9 L961.2,353.3 L955.3,352.8 L949.4,352.6 L943.6,352.6 L937.7,352.8 L931.8,353.3 L926.0,353.9 L924.8,354.1 L920.1,354.8 L914.2,356.0 L908.6,357.4 L908.4,357.4 L902.5,359.1 L898.2,360.6 L896.6,361.1 L890.8,363.6 L890.3,363.8 L884.9,366.5 L883.9,367.0 L879.1,370.0 L878.6,370.3 L874.2,373.5 L873.2,374.3 L870.5,376.7 L867.4,379.9 L867.3,380.0 L864.8,383.2 L862.7,386.4 L861.5,389.0 L861.1,389.6 L859.9,392.8 L859.1,396.1 L858.7,399.3 L858.7,402.5 L859.1,405.7 L859.9,409.0 L861.1,412.2 L861.5,412.8 L862.7,415.4 L864.8,418.6 L867.3,421.8 L867.4,421.9 L870.5,425.1 L873.2,427.5 L874.2,428.3 L878.6,431.5 L879.1,431.8 L883.9,434.8 L884.9,435.3 L890.3,438.0 L890.8,438.2 L896.6,440.7 L898.2,441.2 L902.5,442.7 L908.4,444.4 L908.6,444.4 L914.2,445.8 L920.1,447.0 L924.8,447.7" fill="none" stroke="#000" stroke-width="0.45" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+<path d="M437.3,436.3 L438.8,436.5 L444.7,437.1 L450.6,437.4 L456.4,437.4 L462.3,437.1 L468.2,436.5 L469.7,436.3 L474.0,435.6 L479.9,434.3 L484.4,433.0 L485.8,432.6 L491.6,430.5 L493.2,429.8 L497.5,427.7 L499.6,426.6 L503.4,424.2 L504.6,423.4 L508.5,420.1 L509.2,419.4 L511.5,416.9 L513.8,413.7 L515.1,411.3 L515.5,410.5 L516.6,407.2 L517.2,404.0 L517.2,400.8 L516.6,397.5 L515.5,394.3 L515.1,393.5 L513.8,391.1 L511.5,387.9 L509.2,385.4 L508.5,384.6 L504.6,381.4 L503.4,380.6 L499.6,378.2 L497.5,377.0 L493.2,375.0 L491.6,374.3 L485.8,372.2 L484.4,371.7 L479.9,370.5 L474.0,369.2 L469.7,368.5 L468.2,368.3 L462.3,367.7 L456.4,367.4 L450.6,367.4 L444.7,367.7 L438.8,368.3 L437.3,368.5 L433.0,369.2 L427.1,370.5 L422.6,371.7 L421.2,372.2 L415.4,374.3 L413.8,375.0 L409.5,377.0 L407.4,378.2 L403.6,380.6 L402.4,381.4 L398.5,384.6 L397.8,385.4 L395.5,387.9 L393.2,391.1 L391.9,393.5 L391.5,394.3 L390.4,397.5 L389.8,400.8 L389.8,404.0 L390.4,407.2 L391.5,410.5 L391.9,411.3 L393.2,413.7 L395.5,416.9 L397.8,419.4 L398.5,420.1 L402.4,423.4 L403.6,424.2 L407.4,426.6 L409.5,427.7 L413.8,429.8 L415.4,430.5 L421.2,432.6 L422.6,433.0 L427.1,434.3 L433.0,435.6 L437.3,436.3 Z" fill="#5a6b7a" fill-opacity="0.22" stroke="none"/>
+<path d="M422.7,498.7 L427.1,499.3 L433.0,500.0 L438.8,500.5 L444.7,500.8 L450.6,501.0 L456.4,501.0 L462.3,500.8 L468.2,500.5 L474.0,500.0 L479.9,499.3 L484.3,498.7 L485.8,498.5 L491.6,497.5 L497.5,496.3 L501.0,495.5 L503.4,494.9 L509.2,493.3 L512.7,492.2 L515.1,491.5 L520.9,489.4 L521.9,489.0 L526.8,487.0 L529.5,485.8 L532.7,484.3 L536.0,482.5 L538.5,481.2 L541.7,479.3 L544.4,477.6 L546.6,476.1 L550.3,473.4 L550.9,472.9 L554.8,469.6 L556.1,468.3 L558.1,466.4 L561.0,463.2 L562.0,461.9 L563.6,460.0 L565.8,456.7 L567.5,453.5 L567.9,452.7 L569.1,450.3 L570.3,447.1 L571.2,443.8 L571.7,440.6 L572.0,437.4 L572.0,434.2 L571.7,430.9 L571.2,427.7 L570.3,424.5 L569.1,421.3 L567.9,418.8 L567.5,418.0 L565.8,414.8 L563.6,411.6 L562.0,409.6 L561.0,408.4 L558.1,405.1 L556.1,403.2 L554.8,401.9 L550.9,398.7 L550.3,398.2 L546.6,395.5 L544.4,394.0 L541.7,392.2 L538.5,390.4 L536.0,389.0 L532.7,387.3 L529.5,385.8 L526.8,384.6 L521.9,382.5 L520.9,382.2 L515.1,380.1 L512.7,379.3 L509.2,378.2 L503.4,376.6 L501.0,376.1 L497.5,375.2 L491.6,374.0 L485.8,373.1 L484.3,372.9 L479.9,372.2 L474.0,371.5 L468.2,371.1 L462.3,370.7 L456.4,370.6 L450.6,370.6 L444.7,370.7 L438.8,371.1 L433.0,371.5 L427.1,372.2 L422.7,372.9 L421.2,373.1 L415.4,374.0 L409.5,375.2 L406.0,376.1 L403.6,376.6 L397.8,378.2 L394.3,379.3 L391.9,380.1 L386.1,382.2 L385.1,382.5 L380.2,384.6 L377.5,385.8 L374.3,387.3 L371.0,389.0 L368.5,390.4 L365.3,392.2 L362.6,394.0 L360.4,395.5 L356.7,398.2 L356.1,398.7 L352.2,401.9 L350.9,403.2 L348.9,405.1 L346.0,408.4 L345.0,409.6 L343.4,411.6 L341.2,414.8 L339.5,418.0 L339.1,418.8 L337.9,421.3 L336.7,424.5 L335.8,427.7 L335.3,430.9 L335.0,434.2 L335.0,437.4 L335.3,440.6 L335.8,443.8 L336.7,447.1 L337.9,450.3 L339.1,452.7 L339.5,453.5 L341.2,456.7 L343.4,460.0 L345.0,461.9 L346.0,463.2 L348.9,466.4 L350.9,468.3 L352.2,469.6 L356.1,472.9 L356.7,473.4 L360.4,476.1 L362.6,477.6 L365.3,479.3 L368.5,481.2 L371.0,482.5 L374.3,484.3 L377.5,485.8 L380.2,487.0 L385.1,489.0 L386.1,489.4 L391.9,491.5 L394.3,492.2 L397.8,493.3 L403.6,494.9 L406.0,495.5 L409.5,496.3 L415.4,497.5 L421.2,498.5 L422.7,498.7" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.20" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M437.4,492.0 L438.8,492.2 L444.7,492.5 L450.6,492.7 L456.4,492.7 L462.3,492.5 L468.2,492.2 L469.6,492.0 L474.0,491.7 L479.9,491.0 L485.8,490.1 L491.6,489.0 L492.3,488.8 L497.5,487.7 L503.4,486.1 L505.2,485.6 L509.2,484.4 L514.9,482.4 L515.1,482.3 L520.9,480.0 L522.8,479.1 L526.8,477.3 L529.5,475.9 L532.7,474.2 L535.2,472.7 L538.5,470.5 L540.1,469.5 L544.3,466.2 L544.4,466.1 L548.1,463.0 L550.3,460.8 L551.3,459.8 L554.1,456.6 L556.1,453.7 L556.4,453.3 L558.5,450.1 L560.1,446.9 L561.3,443.6 L562.0,441.2 L562.3,440.4 L562.9,437.2 L563.2,434.0 L563.2,430.7 L562.9,427.5 L562.3,424.3 L562.0,423.5 L561.3,421.1 L560.1,417.8 L558.5,414.6 L556.4,411.4 L556.1,411.0 L554.1,408.2 L551.3,404.9 L550.3,403.9 L548.1,401.7 L544.4,398.6 L544.3,398.5 L540.1,395.3 L538.5,394.2 L535.2,392.0 L532.7,390.6 L529.5,388.8 L526.8,387.4 L522.8,385.6 L520.9,384.7 L515.1,382.4 L514.9,382.4 L509.2,380.3 L505.2,379.1 L503.4,378.6 L497.5,377.0 L492.3,375.9 L491.6,375.8 L485.8,374.6 L479.9,373.7 L474.0,373.1 L469.6,372.7 L468.2,372.5 L462.3,372.2 L456.4,372.0 L450.6,372.0 L444.7,372.2 L438.8,372.5 L437.4,372.7 L433.0,373.1 L427.1,373.7 L421.2,374.6 L415.4,375.8 L414.7,375.9 L409.5,377.0 L403.6,378.6 L401.8,379.1 L397.8,380.3 L392.1,382.4 L391.9,382.4 L386.1,384.7 L384.2,385.6 L380.2,387.4 L377.5,388.8 L374.3,390.6 L371.8,392.0 L368.5,394.2 L366.9,395.3 L362.7,398.5 L362.6,398.6 L358.9,401.7 L356.7,403.9 L355.7,404.9 L352.9,408.2 L350.9,411.0 L350.6,411.4 L348.5,414.6 L346.9,417.8 L345.7,421.1 L345.0,423.5 L344.7,424.3 L344.1,427.5 L343.8,430.7 L343.8,434.0 L344.1,437.2 L344.7,440.4 L345.0,441.2 L345.7,443.6 L346.9,446.9 L348.5,450.1 L350.6,453.3 L350.9,453.7 L352.9,456.6 L355.7,459.8 L356.7,460.8 L358.9,463.0 L362.6,466.1 L362.7,466.2 L366.9,469.5 L368.5,470.5 L371.8,472.7 L374.3,474.2 L377.5,475.9 L380.2,477.3 L384.2,479.1 L386.1,480.0 L391.9,482.3 L392.1,482.4 L397.8,484.4 L401.8,485.6 L403.6,486.1 L409.5,487.7 L414.7,488.8 L415.4,489.0 L421.2,490.1 L427.1,491.0 L433.0,491.7 L437.4,492.0" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.24" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M425.8,481.3 L427.1,481.5 L433.0,482.3 L438.8,482.9 L444.7,483.3 L450.6,483.4 L456.4,483.4 L462.3,483.3 L468.2,482.9 L474.0,482.3 L479.9,481.5 L481.2,481.3 L485.8,480.5 L491.6,479.3 L496.8,478.0 L497.5,477.9 L503.4,476.2 L507.4,474.8 L509.2,474.2 L515.1,471.9 L515.7,471.6 L520.9,469.2 L522.6,468.4 L526.8,466.0 L528.3,465.1 L532.7,462.3 L533.2,461.9 L537.4,458.7 L538.5,457.7 L541.1,455.5 L544.1,452.2 L544.4,451.8 L546.8,449.0 L548.9,445.8 L550.3,443.3 L550.7,442.6 L552.2,439.3 L553.2,436.1 L553.9,432.9 L554.2,429.6 L554.2,426.4 L553.9,423.2 L553.2,420.0 L552.2,416.7 L550.7,413.5 L550.3,412.8 L548.9,410.3 L546.8,407.1 L544.4,404.2 L544.1,403.8 L541.1,400.6 L538.5,398.4 L537.4,397.4 L533.2,394.2 L532.7,393.8 L528.3,390.9 L526.8,390.1 L522.6,387.7 L520.9,386.9 L515.7,384.5 L515.1,384.2 L509.2,381.9 L507.4,381.3 L503.4,379.9 L497.5,378.2 L496.8,378.0 L491.6,376.7 L485.8,375.5 L481.2,374.8 L479.9,374.6 L474.0,373.8 L468.2,373.2 L462.3,372.8 L456.4,372.6 L450.6,372.6 L444.7,372.8 L438.8,373.2 L433.0,373.8 L427.1,374.6 L425.8,374.8 L421.2,375.5 L415.4,376.7 L410.2,378.0 L409.5,378.2 L403.6,379.9 L399.6,381.3 L397.8,381.9 L391.9,384.2 L391.3,384.5 L386.1,386.9 L384.4,387.7 L380.2,390.1 L378.7,390.9 L374.3,393.8 L373.8,394.2 L369.6,397.4 L368.5,398.4 L365.9,400.6 L362.9,403.8 L362.6,404.2 L360.2,407.1 L358.1,410.3 L356.7,412.8 L356.3,413.5 L354.8,416.7 L353.8,420.0 L353.1,423.2 L352.8,426.4 L352.8,429.6 L353.1,432.9 L353.8,436.1 L354.8,439.3 L356.3,442.6 L356.7,443.3 L358.1,445.8 L360.2,449.0 L362.6,451.8 L362.9,452.2 L365.9,455.5 L368.5,457.7 L369.6,458.7 L373.8,461.9 L374.3,462.3 L378.7,465.1 L380.2,466.0 L384.4,468.4 L386.1,469.2 L391.3,471.6 L391.9,471.9 L397.8,474.2 L399.6,474.8 L403.6,476.2 L409.5,477.9 L410.2,478.0 L415.4,479.3 L421.2,480.5 L425.8,481.3" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.28" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M437.4,473.3 L438.8,473.4 L444.7,473.9 L450.6,474.1 L456.4,474.1 L462.3,473.9 L468.2,473.4 L469.6,473.3 L474.0,472.8 L479.9,472.0 L485.8,470.9 L489.4,470.1 L491.6,469.6 L497.5,468.0 L501.0,466.8 L503.4,466.1 L509.2,463.8 L509.7,463.6 L515.1,461.1 L516.6,460.4 L520.9,458.0 L522.3,457.2 L526.8,454.2 L527.2,453.9 L531.3,450.7 L532.7,449.4 L534.7,447.5 L537.6,444.3 L538.5,443.0 L540.1,441.0 L542.1,437.8 L543.6,434.6 L544.4,432.1 L544.7,431.4 L545.5,428.1 L545.9,424.9 L545.9,421.7 L545.5,418.4 L544.7,415.2 L544.4,414.5 L543.6,412.0 L542.1,408.8 L540.1,405.5 L538.5,403.5 L537.6,402.3 L534.7,399.1 L532.7,397.2 L531.3,395.9 L527.2,392.6 L526.8,392.4 L522.3,389.4 L520.9,388.6 L516.6,386.2 L515.1,385.4 L509.7,383.0 L509.2,382.8 L503.4,380.5 L501.0,379.7 L497.5,378.6 L491.6,377.0 L489.4,376.5 L485.8,375.7 L479.9,374.6 L474.0,373.7 L469.6,373.3 L468.2,373.1 L462.3,372.7 L456.4,372.5 L450.6,372.5 L444.7,372.7 L438.8,373.1 L437.4,373.3 L433.0,373.7 L427.1,374.6 L421.2,375.7 L417.6,376.5 L415.4,377.0 L409.5,378.6 L406.0,379.7 L403.6,380.5 L397.8,382.8 L397.3,383.0 L391.9,385.4 L390.4,386.2 L386.1,388.6 L384.7,389.4 L380.2,392.4 L379.8,392.6 L375.7,395.9 L374.3,397.2 L372.3,399.1 L369.4,402.3 L368.5,403.5 L366.9,405.5 L364.9,408.8 L363.4,412.0 L362.6,414.5 L362.3,415.2 L361.5,418.4 L361.1,421.7 L361.1,424.9 L361.5,428.1 L362.3,431.4 L362.6,432.1 L363.4,434.6 L364.9,437.8 L366.9,441.0 L368.5,443.0 L369.4,444.3 L372.3,447.5 L374.3,449.4 L375.7,450.7 L379.8,453.9 L380.2,454.2 L384.7,457.2 L386.1,458.0 L390.4,460.4 L391.9,461.1 L397.3,463.6 L397.8,463.8 L403.6,466.1 L406.0,466.8 L409.5,468.0 L415.4,469.6 L417.6,470.1 L421.2,470.9 L427.1,472.0 L433.0,472.8 L437.4,473.3" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.33" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M423.9,461.8 L427.1,462.4 L433.0,463.4 L438.8,464.1 L444.7,464.5 L450.6,464.7 L456.4,464.7 L462.3,464.5 L468.2,464.1 L474.0,463.4 L479.9,462.4 L483.1,461.8 L485.8,461.2 L491.6,459.8 L495.6,458.6 L497.5,458.0 L503.4,455.8 L504.5,455.3 L509.2,453.2 L511.5,452.1 L515.1,450.1 L517.1,448.9 L520.9,446.3 L521.8,445.7 L525.7,442.4 L526.8,441.4 L529.0,439.2 L531.7,436.0 L532.7,434.5 L533.9,432.8 L535.6,429.5 L536.8,426.3 L537.6,423.1 L538.0,419.9 L538.0,416.6 L537.6,413.4 L536.8,410.2 L535.6,406.9 L533.9,403.7 L532.7,402.0 L531.7,400.5 L529.0,397.3 L526.8,395.1 L525.7,394.0 L521.8,390.8 L520.9,390.2 L517.1,387.6 L515.1,386.4 L511.5,384.4 L509.2,383.2 L504.5,381.1 L503.4,380.7 L497.5,378.5 L495.6,377.9 L491.6,376.7 L485.8,375.2 L483.1,374.7 L479.9,374.0 L474.0,373.1 L468.2,372.4 L462.3,372.0 L456.4,371.7 L450.6,371.7 L444.7,372.0 L438.8,372.4 L433.0,373.1 L427.1,374.0 L423.9,374.7 L421.2,375.2 L415.4,376.7 L411.4,377.9 L409.5,378.5 L403.6,380.7 L402.5,381.1 L397.8,383.2 L395.5,384.4 L391.9,386.4 L389.9,387.6 L386.1,390.2 L385.2,390.8 L381.3,394.0 L380.2,395.1 L378.0,397.3 L375.3,400.5 L374.3,402.0 L373.1,403.7 L371.4,406.9 L370.2,410.2 L369.4,413.4 L369.0,416.6 L369.0,419.9 L369.4,423.1 L370.2,426.3 L371.4,429.5 L373.1,432.8 L374.3,434.5 L375.3,436.0 L378.0,439.2 L380.2,441.4 L381.3,442.4 L385.2,445.7 L386.1,446.3 L389.9,448.9 L391.9,450.1 L395.5,452.1 L397.8,453.2 L402.5,455.3 L403.6,455.8 L409.5,458.0 L411.4,458.6 L415.4,459.8 L421.2,461.2 L423.9,461.8" fill="none" stroke="#000" stroke-width="0.7" stroke-opacity="0.37" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M429.5,453.3 L433.0,453.9 L438.8,454.7 L444.7,455.2 L450.6,455.4 L456.4,455.4 L462.3,455.2 L468.2,454.7 L474.0,453.9 L477.5,453.3 L479.9,452.9 L485.8,451.5 L491.0,450.1 L491.6,449.9 L497.5,447.9 L500.0,446.8 L503.4,445.4 L506.9,443.6 L509.2,442.3 L512.4,440.4 L515.1,438.5 L517.0,437.2 L520.6,433.9 L520.9,433.6 L523.7,430.7 L526.1,427.5 L526.8,426.2 L527.9,424.2 L529.3,421.0 L530.2,417.8 L530.7,414.6 L530.7,411.3 L530.2,408.1 L529.3,404.9 L527.9,401.7 L526.8,399.7 L526.1,398.4 L523.7,395.2 L520.9,392.3 L520.6,392.0 L517.0,388.8 L515.1,387.4 L512.4,385.5 L509.2,383.6 L506.9,382.3 L503.4,380.5 L500.0,379.1 L497.5,378.1 L491.6,376.0 L491.0,375.9 L485.8,374.4 L479.9,373.0 L477.5,372.6 L474.0,372.0 L468.2,371.2 L462.3,370.8 L456.4,370.5 L450.6,370.5 L444.7,370.8 L438.8,371.2 L433.0,372.0 L429.5,372.6 L427.1,373.0 L421.2,374.4 L416.0,375.9 L415.4,376.0 L409.5,378.1 L407.0,379.1 L403.6,380.5 L400.1,382.3 L397.8,383.6 L394.6,385.5 L391.9,387.4 L390.0,388.8 L386.4,392.0 L386.1,392.3 L383.3,395.2 L380.9,398.4 L380.2,399.7 L379.1,401.7 L377.7,404.9 L376.8,408.1 L376.3,411.3 L376.3,414.6 L376.8,417.8 L377.7,421.0 L379.1,424.2 L380.2,426.2 L380.9,427.5 L383.3,430.7 L386.1,433.6 L386.4,433.9 L390.0,437.2 L391.9,438.5 L394.6,440.4 L397.8,442.3 L400.1,443.6 L403.6,445.4 L407.0,446.8 L409.5,447.9 L415.4,449.9 L416.0,450.1 L421.2,451.5 L427.1,452.9 L429.5,453.3" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.41" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M434.7,444.6 L438.8,445.2 L444.7,445.7 L450.6,446.0 L456.4,446.0 L462.3,445.7 L468.2,445.2 L472.3,444.6 L474.0,444.3 L479.9,443.2 L485.8,441.7 L486.9,441.4 L491.6,439.8 L496.0,438.1 L497.5,437.5 L502.7,434.9 L503.4,434.6 L508.0,431.7 L509.2,430.8 L512.3,428.4 L515.1,425.8 L515.7,425.2 L518.4,422.0 L520.5,418.8 L520.9,417.8 L522.0,415.5 L523.0,412.3 L523.5,409.1 L523.5,405.9 L523.0,402.6 L522.0,399.4 L520.9,397.1 L520.5,396.2 L518.4,393.0 L515.7,389.7 L515.1,389.1 L512.3,386.5 L509.2,384.1 L508.0,383.3 L503.4,380.4 L502.7,380.1 L497.5,377.5 L496.0,376.8 L491.6,375.1 L486.9,373.6 L485.8,373.3 L479.9,371.8 L474.0,370.6 L472.3,370.4 L468.2,369.8 L462.3,369.2 L456.4,369.0 L450.6,369.0 L444.7,369.2 L438.8,369.8 L434.7,370.4 L433.0,370.6 L427.1,371.8 L421.2,373.3 L420.1,373.6 L415.4,375.1 L411.0,376.8 L409.5,377.5 L404.3,380.1 L403.6,380.4 L399.0,383.3 L397.8,384.1 L394.7,386.5 L391.9,389.1 L391.3,389.7 L388.6,393.0 L386.5,396.2 L386.1,397.1 L385.0,399.4 L384.0,402.6 L383.5,405.9 L383.5,409.1 L384.0,412.3 L385.0,415.5 L386.1,417.8 L386.5,418.8 L388.6,422.0 L391.3,425.2 L391.9,425.8 L394.7,428.4 L397.8,430.8 L399.0,431.7 L403.6,434.6 L404.3,434.9 L409.5,437.5 L411.0,438.1 L415.4,439.8 L420.1,441.4 L421.2,441.7 L427.1,443.2 L433.0,444.3 L434.7,444.6" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.45" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M440.2,435.7 L444.7,436.2 L450.6,436.5 L456.4,436.5 L462.3,436.2 L466.8,435.7 L468.2,435.6 L474.0,434.6 L479.9,433.3 L482.9,432.5 L485.8,431.6 L491.6,429.5 L492.1,429.3 L497.5,426.7 L498.7,426.0 L503.4,423.1 L503.7,422.8 L507.7,419.6 L509.2,418.0 L510.8,416.4 L513.1,413.1 L514.8,409.9 L515.1,409.2 L515.9,406.7 L516.5,403.4 L516.5,400.2 L515.9,397.0 L515.1,394.5 L514.8,393.8 L513.1,390.5 L510.8,387.3 L509.2,385.7 L507.7,384.1 L503.7,380.9 L503.4,380.6 L498.7,377.6 L497.5,377.0 L492.1,374.4 L491.6,374.2 L485.8,372.0 L482.9,371.2 L479.9,370.3 L474.0,369.0 L468.2,368.1 L466.8,368.0 L462.3,367.5 L456.4,367.2 L450.6,367.2 L444.7,367.5 L440.2,368.0 L438.8,368.1 L433.0,369.0 L427.1,370.3 L424.1,371.2 L421.2,372.0 L415.4,374.2 L414.9,374.4 L409.5,377.0 L408.3,377.6 L403.6,380.6 L403.3,380.9 L399.3,384.1 L397.8,385.7 L396.2,387.3 L393.9,390.5 L392.2,393.8 L391.9,394.5 L391.1,397.0 L390.5,400.2 L390.5,403.4 L391.1,406.7 L391.9,409.2 L392.2,409.9 L393.9,413.1 L396.2,416.4 L397.8,418.0 L399.3,419.6 L403.3,422.8 L403.6,423.1 L408.3,426.0 L409.5,426.7 L414.9,429.3 L415.4,429.5 L421.2,431.6 L424.1,432.5 L427.1,433.3 L433.0,434.6 L438.8,435.6 L440.2,435.7" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.50" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M448.7,426.7 L450.6,426.8 L456.4,426.8 L458.3,426.7 L462.3,426.5 L468.2,425.8 L474.0,424.7 L478.9,423.5 L479.9,423.2 L485.8,421.2 L488.1,420.2 L491.6,418.6 L494.5,417.0 L497.5,415.1 L499.2,413.8 L502.9,410.6 L503.4,410.0 L505.6,407.3 L507.5,404.1 L508.8,400.9 L509.2,398.7 L509.4,397.7 L509.4,394.4 L509.2,393.4 L508.8,391.2 L507.5,388.0 L505.6,384.8 L503.4,382.1 L502.9,381.5 L499.2,378.3 L497.5,377.0 L494.5,375.1 L491.6,373.5 L488.1,371.8 L485.8,370.9 L479.9,368.9 L478.9,368.6 L474.0,367.4 L468.2,366.3 L462.3,365.6 L458.3,365.4 L456.4,365.3 L450.6,365.3 L448.7,365.4 L444.7,365.6 L438.8,366.3 L433.0,367.4 L428.1,368.6 L427.1,368.9 L421.2,370.9 L418.9,371.8 L415.4,373.5 L412.5,375.1 L409.5,377.0 L407.8,378.3 L404.1,381.5 L403.6,382.1 L401.4,384.8 L399.5,388.0 L398.2,391.2 L397.8,393.4 L397.6,394.4 L397.6,397.7 L397.8,398.7 L398.2,400.9 L399.5,404.1 L401.4,407.3 L403.6,410.0 L404.1,410.6 L407.8,413.8 L409.5,415.1 L412.5,417.0 L415.4,418.6 L418.9,420.2 L421.2,421.2 L427.1,423.2 L428.1,423.5 L433.0,424.7 L438.8,425.8 L444.7,426.5 L448.7,426.7" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.54" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M432.7,414.3 L433.0,414.4 L438.8,415.6 L444.7,416.4 L450.6,416.8 L456.4,416.8 L462.3,416.4 L468.2,415.6 L474.0,414.4 L474.3,414.3 L479.9,412.6 L483.7,411.1 L485.8,410.1 L489.9,407.9 L491.6,406.7 L494.4,404.6 L497.5,401.6 L497.6,401.4 L499.9,398.2 L501.4,395.0 L502.1,391.7 L502.1,388.5 L501.4,385.3 L499.9,382.1 L497.6,378.8 L497.5,378.7 L494.4,375.6 L491.6,373.5 L489.9,372.4 L485.8,370.1 L483.7,369.1 L479.9,367.6 L474.3,365.9 L474.0,365.8 L468.2,364.6 L462.3,363.8 L456.4,363.4 L450.6,363.4 L444.7,363.8 L438.8,364.6 L433.0,365.8 L432.7,365.9 L427.1,367.6 L423.3,369.1 L421.2,370.1 L417.1,372.4 L415.4,373.5 L412.6,375.6 L409.5,378.7 L409.4,378.8 L407.1,382.1 L405.6,385.3 L404.9,388.5 L404.9,391.7 L405.6,395.0 L407.1,398.2 L409.4,401.4 L409.5,401.6 L412.6,404.6 L415.4,406.7 L417.1,407.9 L421.2,410.1 L423.3,411.1 L427.1,412.6 L432.7,414.3" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.58" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M438.8,405.0 L438.8,405.0 L444.7,406.0 L450.6,406.5 L456.4,406.5 L462.3,406.0 L468.2,405.0 L468.2,405.0 L474.0,403.5 L478.5,401.8 L479.9,401.2 L484.6,398.6 L485.8,397.8 L488.8,395.4 L491.6,392.2 L491.6,392.1 L493.4,388.9 L494.2,385.7 L494.2,382.5 L493.4,379.2 L491.6,376.0 L491.6,376.0 L488.8,372.8 L485.8,370.3 L484.6,369.6 L479.9,367.0 L478.5,366.3 L474.0,364.7 L468.2,363.1 L468.2,363.1 L462.3,362.2 L456.4,361.7 L450.6,361.7 L444.7,362.2 L438.8,363.1 L438.8,363.1 L433.0,364.7 L428.5,366.3 L427.1,367.0 L422.4,369.6 L421.2,370.3 L418.2,372.8 L415.4,376.0 L415.4,376.0 L413.6,379.2 L412.8,382.5 L412.8,385.7 L413.6,388.9 L415.4,392.1 L415.4,392.2 L418.2,395.4 L421.2,397.8 L422.4,398.6 L427.1,401.2 L428.5,401.8 L433.0,403.5 L438.8,405.0" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.62" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M435.6,392.4 L438.8,393.5 L444.7,394.8 L450.6,395.4 L456.4,395.4 L462.3,394.8 L468.2,393.5 L471.4,392.4 L474.0,391.3 L477.9,389.2 L479.9,387.7 L481.8,386.0 L484.2,382.8 L485.3,379.5 L485.3,376.3 L484.2,373.1 L481.8,369.9 L479.9,368.1 L477.9,366.6 L474.0,364.5 L471.4,363.4 L468.2,362.3 L462.3,361.0 L456.4,360.4 L450.6,360.4 L444.7,361.0 L438.8,362.3 L435.6,363.4 L433.0,364.5 L429.1,366.6 L427.1,368.1 L425.2,369.9 L422.8,373.1 L421.7,376.3 L421.7,379.5 L422.8,382.8 L425.2,386.0 L427.1,387.7 L429.1,389.2 L433.0,391.3 L435.6,392.4" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.67" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M439.1,379.7 L444.7,381.8 L450.6,382.9 L456.4,382.9 L462.3,381.8 L467.9,379.7 L468.2,379.6 L471.9,376.5 L473.9,373.3 L473.9,370.1 L471.9,366.8 L468.2,363.7 L467.9,363.6 L462.3,361.5 L456.4,360.5 L450.6,360.5 L444.7,361.5 L439.1,363.6 L438.8,363.7 L435.1,366.8 L433.1,370.1 L433.1,373.3 L435.1,376.5 L438.8,379.6 L439.1,379.7" fill="none" stroke="#000" stroke-width="1.0" stroke-opacity="0.71" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M417.1,513.4 L421.2,514.0 L427.1,514.7 L433.0,515.3 L438.8,515.7 L444.7,516.0 L450.6,516.1 L456.4,516.1 L462.3,516.0 L468.2,515.7 L474.0,515.3 L479.9,514.7 L485.8,514.0 L489.9,513.4 L491.6,513.1 L497.5,512.2 L503.4,511.0 L506.8,510.1 L509.2,509.6 L515.1,508.1 L519.0,506.9 L520.9,506.3 L526.8,504.4 L528.8,503.7 L532.7,502.3 L537.0,500.5 L538.5,499.8 L544.1,497.2 L544.4,497.1 L550.3,494.0 L550.4,494.0 L555.9,490.8 L556.1,490.6 L560.9,487.5 L562.0,486.7 L565.3,484.3 L567.9,482.2 L569.2,481.1 L572.7,477.9 L573.7,476.8 L575.9,474.6 L578.6,471.4 L579.6,470.1 L581.1,468.2 L583.3,465.0 L585.0,461.7 L585.5,460.8 L586.6,458.5 L588.0,455.3 L589.0,452.1 L589.7,448.8 L590.2,445.6 L590.5,442.4 L590.5,439.2 L590.2,435.9 L589.7,432.7 L589.0,429.5 L588.0,426.3 L586.6,423.0 L585.5,420.7 L585.0,419.8 L583.3,416.6 L581.1,413.4 L579.6,411.5 L578.6,410.1 L575.9,406.9 L573.7,404.7 L572.7,403.7 L569.2,400.5 L567.9,399.4 L565.3,397.2 L562.0,394.8 L560.9,394.0 L556.1,390.9 L555.9,390.8 L550.4,387.5 L550.3,387.5 L544.4,384.5 L544.1,384.3 L538.5,381.7 L537.0,381.1 L532.7,379.3 L528.8,377.9 L526.8,377.1 L520.9,375.2 L519.0,374.6 L515.1,373.5 L509.2,372.0 L506.8,371.4 L503.4,370.6 L497.5,369.4 L491.6,368.4 L489.9,368.2 L485.8,367.5 L479.9,366.8 L474.0,366.2 L468.2,365.8 L462.3,365.6 L456.4,365.4 L450.6,365.4 L444.7,365.6 L438.8,365.8 L433.0,366.2 L427.1,366.8 L421.2,367.5 L417.1,368.2 L415.4,368.4 L409.5,369.4 L403.6,370.6 L400.2,371.4 L397.8,372.0 L391.9,373.5 L388.0,374.6 L386.1,375.2 L380.2,377.1 L378.2,377.9 L374.3,379.3 L370.0,381.1 L368.5,381.7 L362.9,384.3 L362.6,384.5 L356.7,387.5 L356.6,387.5 L351.1,390.8 L350.9,390.9 L346.1,394.0 L345.0,394.8 L341.7,397.2 L339.1,399.4 L337.8,400.5 L334.3,403.7 L333.3,404.7 L331.1,406.9 L328.4,410.1 L327.4,411.5 L325.9,413.4 L323.7,416.6 L322.0,419.8 L321.5,420.7 L320.4,423.0 L319.0,426.3 L318.0,429.5 L317.3,432.7 L316.8,435.9 L316.5,439.2 L316.5,442.4 L316.8,445.6 L317.3,448.8 L318.0,452.1 L319.0,455.3 L320.4,458.5 L321.5,460.8 L322.0,461.7 L323.7,465.0 L325.9,468.2 L327.4,470.1 L328.4,471.4 L331.1,474.6 L333.3,476.8 L334.3,477.9 L337.8,481.1 L339.1,482.2 L341.7,484.3 L345.0,486.7 L346.1,487.5 L350.9,490.6 L351.1,490.8 L356.6,494.0 L356.7,494.0 L362.6,497.1 L362.9,497.2 L368.5,499.8 L370.0,500.5 L374.3,502.3 L378.2,503.7 L380.2,504.4 L386.1,506.3 L388.0,506.9 L391.9,508.1 L397.8,509.6 L400.2,510.1 L403.6,511.0 L409.5,512.2 L415.4,513.1 L417.1,513.4" fill="none" stroke="#000" stroke-width="0.45" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+</g>
+<line x1="244" y1="366.0" x2="714.5" y2="366.0" stroke="#0a0a0a" stroke-width="0.7" stroke-opacity="0.6"/>
+<text x="106" y="362.0" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">EUROPE &</text>
+<text x="106" y="378.0" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">CENTRAL ASIA</text>
+<text x="76" y="376.2" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="1.00">13</text>
+<line x1="92" x2="92" y1="354.0" y2="378.0" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<circle cx="714.5" cy="221.8" r="2.4" fill="#0a0a0a"/>
+<line x1="244" y1="405.9" x2="946.5" y2="405.9" stroke="#0a0a0a" stroke-width="0.7" stroke-opacity="0.6"/>
+<text x="106" y="401.9" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">EAST ASIA &</text>
+<text x="106" y="417.9" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">PACIFIC</text>
+<text x="76" y="416.1" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="1.00">1</text>
+<line x1="92" x2="92" y1="393.9" y2="417.9" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<circle cx="946.5" cy="386.4" r="2.4" fill="#0a0a0a"/>
+<line x1="244" y1="445.8" x2="453.5" y2="445.8" stroke="#0a0a0a" stroke-width="0.7" stroke-opacity="0.6"/>
+<text x="106" y="441.8" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">NORTH</text>
+<text x="106" y="457.8" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="1.00">AMERICA</text>
+<text x="76" y="456.0" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="1.00">6</text>
+<line x1="92" x2="92" y1="433.8" y2="457.8" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<circle cx="453.5" cy="366.9" r="2.4" fill="#0a0a0a"/>
+<text x="106" y="481.7" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">MIDDLE EAST &</text>
+<text x="106" y="497.7" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">NORTH AFRICA</text>
+<text x="76" y="495.9" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="700" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="0.35">0</text>
+<line x1="92" x2="92" y1="473.7" y2="497.7" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.35"/>
+<text x="106" y="529.5" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">SOUTH ASIA</text>
+<text x="76" y="535.7" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="700" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="0.35">0</text>
+<line x1="92" x2="92" y1="513.5" y2="537.5" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.35"/>
+<text x="106" y="561.4" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">SUB-SAHARAN</text>
+<text x="106" y="577.4" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">AFRICA</text>
+<text x="76" y="575.6" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="700" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="0.35">0</text>
+<line x1="92" x2="92" y1="553.4" y2="577.4" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.35"/>
+<text x="106" y="601.3" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">LATIN AMERICA &</text>
+<text x="106" y="617.3" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a" opacity="0.35">CARIBBEAN</text>
+<text x="76" y="615.5" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="700" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a" opacity="0.35">0</text>
+<line x1="92" x2="92" y1="593.3" y2="617.3" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.35"/>
+<line x1="16" x2="92" y1="625.3" y2="625.3" stroke="#0a0a0a" stroke-width="0.6" stroke-opacity="0.5"/>
+<text x="76" y="655.5" font-family="'Space Grotesk', sans-serif" font-size="30" font-weight="800" letter-spacing="-0.02em" text-anchor="end" fill="#0a0a0a">20</text>
+<line x1="92" x2="92" y1="633.3" y2="657.3" stroke="#0a0a0a" stroke-width="0.8" stroke-opacity="0.55"/>
+<text x="106" y="650.9" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a">TOTAL SOURCES</text>
+</svg>
+<div class="country-grid" style="margin-top:0.75rem">
+<span class="country-badge" style="background:#5a6b7a12;color:#5a6b7a;border:1px solid #5a6b7a30" title="United States: 6 sources">United States (6)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="France: 4 sources">France (4)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Switzerland: 3 sources">Switzerland (3)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="United Kingdom: 2 sources">United Kingdom (2)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Germany: 2 sources">Germany (2)</span>
+<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="China: 1 source">China</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Spain: 1 source">Spain</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Portugal: 1 source">Portugal</span>
+</div>
+
+<div class="reader-note">The article is structured around an editorial tension between alarm and progress, using metaphors like &quot;turn the tide&quot; and &quot;fault line&quot; in its own voice that lend a dramatic narrative arc to what is otherwise carefully sourced reporting. Sourcing draws heavily on international organizations — WHO, MSF, UNICEF, Africa CDC — and institutional officials, foregrounding their framing of the crisis while community voices appear mainly through a single survivor and one BBC-mediated account. Sources disagree on the identity of a third vaccine candidate being fast-tracked by CEPI, a discrepancy the article flags but leaves unresolved, and a reported link between gold-mining dynamics and transmission is absent from the text.</div>
+
+<div class="article-body">
+<p>The Bundibugyo Ebola outbreak in the Democratic Republic of the Congo reached 808 confirmed cases and 192 deaths as of mid-June, with the head of the DRC&#x27;s National Institute of Public Health, Dieudonne Mwamba Kazadi, stating that the epidemic remains &quot;in the upward phase of the outbreak, the active phase&quot; <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. The case count has risen from roughly 700 a week earlier, and the virus has now been detected in 19 of 36 health zones across Ituri province, including the food-insecure zone of Tchomia <a href="#src-008" class="source-ref"><sup>[8]</sup></a>. Uganda has recorded 19 confirmed cases and two deaths <a href="#src-007" class="source-ref"><sup>[7]</sup></a>.</p>
+<p>The response is defined by a tension between organizations warning that the window for containment is closing and those pointing to new tools and community shifts that could turn the tide. Kate White, MSF&#x27;s emergency medical coordinator in the DRC, said: &quot;One month on, the Ebola disease outbreak is outpacing the response effort,&quot; adding that most treatment centers in Ituri are overwhelmed and many patients arrive at a late stage without ever having been identified as contacts <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. Frederic Lai Manantsoa, MSF&#x27;s emergency coordinator, stated: &quot;This outbreak can still be brought under control, but the window for action is narrowing&quot; <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. Africa CDC separately warned that the 17th Ebola epidemic in the DRC is &quot;loin d&#x27;être maîtrisée&quot; (far from under control), citing insecurity and community tensions in the east <a href="#src-013" class="source-ref"><sup>[13]</sup></a>.</p>
+<p>Against that assessment, WHO laboratory experts and DRC health officials highlighted the deployment of the RadiOne molecular diagnostic platform in Mongbwalu and Bunia, which has cut test turnaround from over a week to under one hour and raised daily testing capacity from 30 to 80 samples <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. Neema Sindani, a public health laboratory technician in Bunia, said: &quot;Grâce à cette solution innovante et facile à utiliser, les résultats sont désormais disponibles en une heure seulement&quot; (Thanks to this innovative and easy-to-use solution, results are now available in just one hour) <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. Dr Olga Ntumba Tshitenge, a WHO diagnostics expert in Kinshasa, described the equipment as lightweight, transportable, and usable without heavy infrastructure <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. Pr Placide Mbala of the National Institute of Biomedical Research said the expanding network of decentralized laboratories is &quot;considérablement&quot; improving epidemiological surveillance <a href="#src-004" class="source-ref"><sup>[4]</sup></a>. DRC Health Minister Dr Roger Kamba stated: &quot;La prise en charge précoce sauve des vies. Ebola se soigne, Ebola se vainc&quot; (Early care saves lives. Ebola can be treated, Ebola can be defeated) <a href="#src-004" class="source-ref"><sup>[4]</sup></a>.</p>
+<p>Community dynamics remain a central fault line. A BBC report from Mongbwalu described the discharge of survivor Daniel Kitambala as a turning point: Dr Richard Lukodu, the hospital&#x27;s medical director, said that &quot;more people are coming here now seeking treatment&quot; since the first patient recovered and returned home <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. Kitambala himself said: &quot;That disease is terrible. I was feeling very ill. But God is great, I am well now&quot; <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. The same report noted that a treatment center was set on fire on 21 May and that five health workers have died <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. The BBC&#x27;s account of Mongbwalu also described how a broken-coffin incident in early February triggered a &quot;coffin curse&quot; myth that led residents to attribute deaths to the burning of the coffin rather than to Ebola <a href="#src-002" class="source-ref"><sup>[2]</sup></a>. Human Rights Watch called for community engagement to replace security-force-led public health operations, arguing that coercive tactics have fueled the resistance <a href="#src-014" class="source-ref"><sup>[14]</sup></a>. Le Monde reported coordination problems, lack of resources, and community resistance in Bunia health zones <a href="#src-011" class="source-ref"><sup>[11]</sup></a>.</p>
+<p>The outbreak extends beyond a health emergency. Save the Children&#x27;s DRC country director, Greg Ramm, said &quot;the outbreak was more than a health emergency,&quot; noting that 52 children have contracted the virus and are dying at more than twice the rate of adults aged 15 to 44 <a href="#src-003" class="source-ref"><sup>[3]</sup></a>. A food security cluster assessment estimated that 12,222 people need food support, including confirmed cases, their family members, and identified contacts, and that 32 recovered patients require agricultural or income-generating assistance for socioeconomic reintegration <a href="#src-008" class="source-ref"><sup>[8]</sup></a>. UNICEF reported a funding gap of $20.4 million against a $70.7 million appeal and said it has trained 1,000 community health workers who have reached 160,000 households <a href="#src-007" class="source-ref"><sup>[7]</sup></a>.</p>
+<p>Regional coordination has become a parallel track. A high-level ministerial meeting involving the DRC, Uganda, and South Sudan produced commitments to harmonized surveillance, joint contact tracing, and information sharing <a href="#src-015" class="source-ref"><sup>[15]</sup></a>. East African Community health ministers agreed on urgent regional measures including border controls and a regional technical group <a href="#src-021" class="source-ref"><sup>[21]</sup></a>. The African Union urged member states to reinforce border controls at air, sea, and land entry points while avoiding disruption to trade and humanitarian aid <a href="#src-022" class="source-ref"><sup>[22]</sup></a>. WHO Director-General Dr Tedros Adhanom Ghebreyesus stated: &quot;Travel bans are not helpful in controlling Ebola outbreaks and can negatively affect the movement of essential supplies, response teams and commodities&quot; <a href="#src-005" class="source-ref"><sup>[5]</sup></a>. South Sudan, whose readiness was estimated at only 29 percent, announced a three-month preparedness plan <a href="#src-018" class="source-ref"><sup>[18]</sup></a>, and the Central African Republic said it had instructed all relevant health and security structures to reinforce epidemiological surveillance <a href="#src-019" class="source-ref"><sup>[19]</sup></a>.</p>
+<p>Uganda&#x27;s response drew praise from WHO leadership. Dr Kasonde Mwinga, WHO&#x27;s representative in Uganda, said: &quot;The unit and the staff that we see here are because of preparedness. Preparedness saves lives&quot; <a href="#src-005" class="source-ref"><sup>[5]</sup></a>. Tedros commended Uganda for deploying its Emergency Medical Team within two hours of the outbreak declaration <a href="#src-005" class="source-ref"><sup>[5]</sup></a>.</p>
+<p>No licensed vaccine or therapeutic exists for the Bundibugyo strain. CEPI is supporting preclinical and Phase 1 clinical testing of three vaccine candidates, including candidates from Oxford and Moderna, with sources differing on whether the third is an IAVI candidate or a version of Ervebo <a href="#src-012" class="source-ref"><sup>[12]</sup></a><a href="#src-016" class="source-ref"><sup>[16]</sup></a>. Africa CDC Director Jean Kaseya has said a vaccine and treatment could be available before the end of 2026 <a href="#src-009" class="source-ref"><sup>[9]</sup></a>. MSF noted that in the interim, the response relies entirely on isolation, infection control, contact tracing, and supportive care <a href="#src-023" class="source-ref"><sup>[23]</sup></a>.</p>
+<p>Brazil&#x27;s President Luiz Inácio Lula da Silva and Tedros co-signed an open letter urging G7, G20, and BRICS leaders to finalize the Pathogen Access and Benefit-Sharing annex of the WHO Pandemic Agreement at the July negotiating session, citing the ongoing Bundibugyo outbreak as evidence of the cost of inaction on global health governance <a href="#src-001" class="source-ref"><sup>[1]</sup></a>. Tedros wrote: &quot;Let us be the generation that keeps that promise. Finalizing this Agreement, through a shared commitment to one another, is our collective promise to protect humanity&quot; <a href="#src-001" class="source-ref"><sup>[1]</sup></a>.</p>
+<p>The next material benchmarks are the July pandemic-agreement session and the expected availability of Phase 1 vaccine trial data later in 2026 <a href="#src-001" class="source-ref"><sup>[1]</sup></a><a href="#src-012" class="source-ref"><sup>[12]</sup></a>.</p>
+</div>
+<p class="word-count">1,055 words</p>
+
+<h2>Perspectives &mdash; Positions</h2>
+<div class="card-grid">
+<div class="card" id="pc-001">
+  <a class="actor-card-cluster-box" href="#pc-001">Position 1</a>
+  <div class="card-header"><span class="card-actor">The Ebola outbreak is outpacing the response and the window to control it is narrowing</span></div>
+  <div class="card-position">MSF coordinators, the DRC&#x27;s National Institute of Public Health, and several reporting outlets warn that one month into the outbreak, treatment centers are overwhelmed, most patients arrive late and were never identified as contacts, and the epidemic remains in an active upward phase. They argue that diagnostics, surveillance, and community engagement must be urgently scaled up before the opportunity for containment is lost.</div>
+  <div class="cluster-tier cluster-tier-stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-008">Dieudonne Mwamba Kazadi</a></strong> <span class="cluster-actor-role">Head of the DRC National Institute of Public Health</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-009">Kate White</a></strong> <span class="cluster-actor-role">MSF emergency medical coordinator in the DRC</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-011">Frederic Lai Manantsoa</a></strong> <span class="cluster-actor-role">Emergency coordinator for MSF in the DRC</span> <span class="cluster-actor-type">civil_society</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-001">3 actors</a></span> &middot; <span>4 sources</span> &middot; <span>3 regions</span> &middot; <span>3 languages</span></p>
+</div>
+<div class="card" id="pc-002">
+  <a class="actor-card-cluster-box" href="#pc-002">Position 2</a>
+  <div class="card-header"><span class="card-actor">Rapid diagnostic innovation and decentralized laboratory networks are transforming the Ebola response in remote areas</span></div>
+  <div class="card-position">WHO laboratory experts, DRC health officials, and biomedical researchers highlight the deployment of the RadiOne molecular platform, which cuts test turnaround from over a week to under one hour and increases daily testing capacity. They argue this technology reduces stigmatization of suspected cases, enables earlier treatment, and significantly improves epidemiological surveillance in hard-to-reach zones.</div>
+  <div class="cluster-tier cluster-tier-stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-012">Neema Sindani</a></strong> <span class="cluster-actor-role">Public health laboratory technician in Bunia</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-013">Dr Olga Ntumba Tshitenge</a></strong> <span class="cluster-actor-role">Laboratory diagnostics and outbreak response expert at the WHO office in Kinshasa</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-014">Pr Placide Mbala</a></strong> <span class="cluster-actor-role">Researcher at the National Institute of Biomedical Research (INRB) in Kinshasa</span> <span class="cluster-actor-type">academia</span></li><li class="cluster-tier-actor"><strong><a href="#actor-015">Dr Anne Ancia</a></strong> <span class="cluster-actor-role">Acting WHO Representative in the DRC</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-016">Dr Roger Kamba</a></strong> <span class="cluster-actor-role">Minister of Health of the DRC</span> <span class="cluster-actor-type">government</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-002">5 actors</a></span> &middot; <span>2 sources</span> &middot; <span>2 regions</span> &middot; <span>2 languages</span></p>
+</div>
+<div class="card" id="pc-003">
+  <a class="actor-card-cluster-box" href="#pc-003">Position 3</a>
+  <div class="card-header"><span class="card-actor">Survivor recoveries are building community trust and encouraging treatment-seeking behavior</span></div>
+  <div class="card-position">Frontline health workers and Ebola survivors report that the discharge of recovered patients is shifting community attitudes away from fear and myths, leading more people to voluntarily seek care at treatment centers. This trust-building is framed as a turning point after earlier violence against health facilities and widespread belief in a &#x27;coffin curse.&#x27;</div>
+  <div class="cluster-tier cluster-tier-stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-003">Daniel Kitambala</a></strong> <span class="cluster-actor-role">Ebola survivor and subsistence farmer</span> <span class="cluster-actor-type">affected_community</span></li><li class="cluster-tier-actor"><strong><a href="#actor-004">Dr Richard Lukodu</a></strong> <span class="cluster-actor-role">Medical director of Mongbwalu hospital</span> <span class="cluster-actor-type">civil_society</span></li><li class="cluster-tier-actor"><strong><a href="#actor-005">Sesereki Mandro Israel</a></strong> <span class="cluster-actor-role">Mayor of Mongbwalu</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-006">Mireille Gahindo</a></strong> <span class="cluster-actor-role">Ebola patient</span> <span class="cluster-actor-type">affected_community</span></li><li class="cluster-tier-actor"><strong><a href="#actor-007">Eli Asimwe Bawere</a></strong> <span class="cluster-actor-role">Family member of Ebola patients</span> <span class="cluster-actor-type">affected_community</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-003">5 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
+</div>
+<div class="card" id="pc-004">
+  <a class="actor-card-cluster-box" href="#pc-004">Position 4</a>
+  <div class="card-header"><span class="card-actor">The outbreak is a broader social crisis disproportionately affecting children and food-insecure communities</span></div>
+  <div class="card-position">Save the Children and UN food security assessments emphasize that the outbreak extends beyond a health emergency: children are dying at more than twice the adult rate, over 12,000 people need food support, and recovered patients require socioeconomic reintegration assistance. The outbreak has reached areas already classified at emergency-level food insecurity.</div>
+  <div class="cluster-tier cluster-tier-stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-010">Greg Ramm</a></strong> <span class="cluster-actor-role">Save the Children country director in the DRC</span> <span class="cluster-actor-type">civil_society</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-004">1 actor</a></span> &middot; <span>3 sources</span> &middot; <span>2 regions</span> &middot; <span>1 language</span></p>
+</div>
+<div class="card" id="pc-005">
+  <a class="actor-card-cluster-box" href="#pc-005">Position 5</a>
+  <div class="card-header"><span class="card-actor">Uganda&#x27;s preparedness and rapid response demonstrate that early investment in health systems saves lives</span></div>
+  <div class="card-position">WHO leadership and UN officials praise Uganda for deploying its Emergency Medical Team within two hours of the outbreak declaration, commissioning treatment units, and establishing strong surveillance and testing systems. They present Uganda&#x27;s response as a model of how prior preparedness investment translates into effective outbreak containment.</div>
+  <div class="cluster-tier cluster-tier-stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-002">Dr Tedros Adhanom Ghebreyesus</a></strong> <span class="cluster-actor-role">Director-General of the World Health Organization</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-019">Dr Kasonde Mwinga</a></strong> <span class="cluster-actor-role">WHO Representative in Uganda</span> <span class="cluster-actor-type">international_org</span></li><li class="cluster-tier-actor"><strong><a href="#actor-020">Leonard Zulu</a></strong> <span class="cluster-actor-role">UN Resident Coordinator for Uganda</span> <span class="cluster-actor-type">international_org</span></li></ul>
+  </div>
+  <div class="cluster-tier cluster-tier-reported">
+    <h4 class="cluster-tier-label">Reported</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-017">Dr Chikwe Ihekweazu</a></strong> <span class="cluster-actor-role">Executive Director for the WHO Health Emergencies Programme</span> <span class="cluster-actor-type">international_org</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-005">4 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
+</div>
+<div class="card" id="pc-006">
+  <a class="actor-card-cluster-box" href="#pc-006">Position 6</a>
+  <div class="card-header"><span class="card-actor">Cross-border cooperation and regional coordination are essential to containing the outbreak</span></div>
+  <div class="card-position">High-level ministerial meetings involving DRC, Uganda, South Sudan, and East African Community health ministers have produced commitments to harmonized surveillance, joint contact tracing, and information sharing. The WHO Director-General explicitly opposes travel bans, arguing they hinder the movement of essential supplies and response teams. Neighboring countries including South Sudan and the Central African Republic are developing preparedness plans despite low readiness levels.</div>
+  <div class="cluster-tier cluster-tier-stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-002">Dr Tedros Adhanom Ghebreyesus</a></strong> <span class="cluster-actor-role">Director-General of the World Health Organization</span> <span class="cluster-actor-type">international_org</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-006">1 actor</a></span> &middot; <span>6 sources</span> &middot; <span>5 regions</span> &middot; <span>4 languages</span></p>
+</div>
+<div class="card" id="pc-007">
+  <a class="actor-card-cluster-box" href="#pc-007">Position 7</a>
+  <div class="card-header"><span class="card-actor">The Pandemic Agreement&#x27;s pathogen-sharing annex must be finalized as a lesson from COVID-19 and the current Ebola outbreak</span></div>
+  <div class="card-position">Brazil&#x27;s president and the WHO Director-General co-sign an open letter urging G7, G20, and BRICS leaders to instruct negotiators to complete the PABS annex at the July session, arguing that the last pandemic cost millions of lives and trillions of dollars and that the ongoing Bundibugyo outbreak underscores the cost of inaction on global health governance.</div>
+  <div class="cluster-tier cluster-tier-stated">
+    <h4 class="cluster-tier-label">Stated</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-001">Luiz Inácio Lula da Silva</a></strong> <span class="cluster-actor-role">President of the Federative Republic of Brazil</span> <span class="cluster-actor-type">government</span></li><li class="cluster-tier-actor"><strong><a href="#actor-002">Dr Tedros Adhanom Ghebreyesus</a></strong> <span class="cluster-actor-role">Director-General of the World Health Organization</span> <span class="cluster-actor-type">international_org</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-007">2 actors</a></span> &middot; <span>1 source</span> &middot; <span>1 region</span> &middot; <span>1 language</span></p>
+</div>
+<div class="card" id="pc-008">
+  <a class="actor-card-cluster-box" href="#pc-008">Position 8</a>
+  <div class="card-header"><span class="card-actor">Community engagement must replace security-force-led public health operations to overcome resistance</span></div>
+  <div class="card-position">Human Rights Watch and several reporting outlets criticize the use of security forces in the Ebola response and call for a participatory approach centered on local leaders and community members. They argue that community resistance — including attacks on treatment centers — stems partly from coercive response tactics and that meaningful engagement is the key to overcoming mistrust.</div>
+  <div class="cluster-editorial-attribution">
+    <p>Editorial position attributed to: <strong>BBC</strong>, <strong>Le Monde</strong>, <strong>Human Rights Watch</strong></p>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-008">0 actors</a></span> &middot; <span>3 sources</span> &middot; <span>3 regions</span> &middot; <span>2 languages</span></p>
+</div>
+<div class="card" id="pc-009">
+  <a class="actor-card-cluster-box" href="#pc-009">Position 9</a>
+  <div class="card-header"><span class="card-actor">Vaccine and therapeutic development for the Bundibugyo strain is being fast-tracked but remains unavailable</span></div>
+  <div class="card-position">CEPI is supporting preclinical and Phase 1 clinical testing of three Bundibugyo-specific vaccine candidates from Oxford, Moderna, and IAVI, while Africa CDC projects a vaccine and treatment could be available before the end of 2026. In the interim, the response relies entirely on isolation, infection control, contact tracing, and supportive care.</div>
+  <div class="cluster-tier cluster-tier-reported">
+    <h4 class="cluster-tier-label">Reported</h4>
+    <ul class="cluster-tier-actors"><li class="cluster-tier-actor"><strong><a href="#actor-022">Jean Kaseya</a></strong> <span class="cluster-actor-role">Director of Africa CDC</span> <span class="cluster-actor-type">international_org</span></li></ul>
+  </div>
+  <p class="cluster-counts"><span class="cluster-counts-actors"><a href="#cluster-pc-009">1 actor</a></span> &middot; <span>4 sources</span> &middot; <span>2 regions</span> &middot; <span>3 languages</span></p>
+</div>
+</div>
+
+<section id="actors-section" class="actors">
+<h2>Actors</h2>
+<p class="actors-meta">20 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
+<div class="actors-tabs" role="tablist">
+<button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALL</span> <span class="actor-tab-count">20</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">GOVERNMENT</span> <span class="actor-tab-count">4</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">CIVIL SOCIETY</span> <span class="actor-tab-count">5</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">ACADEMIA</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONAL ORG</span> <span class="actor-tab-count">7</span></button><button class="actor-tab" type="button" data-type-target="affected_community"><span class="actor-tab-name">AFFECTED COMMUNITY</span> <span class="actor-tab-count">3</span></button>
+</div>
+<div class="actor-card-grid">
+<article id="actor-008" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Dieudonne Mwamba Kazadi</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Head of the DRC National Institute of Public Health</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-016" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Dr Roger Kamba</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Minister of Health of the DRC</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-001" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Luiz Inácio Lula da Silva</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">President of the Federative Republic of Brazil</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a></div>
+</article>
+<article id="actor-005" class="actor-card" data-actor-type="government">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Sesereki Mandro Israel</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Mayor of Mongbwalu</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+</article>
+<article id="actor-004" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Dr Richard Lukodu</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Medical director of Mongbwalu hospital</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+</article>
+<article id="actor-011" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Frederic Lai Manantsoa</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Emergency coordinator for MSF in the DRC</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-010" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Greg Ramm</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Save the Children country director in the DRC</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-004">Position 4</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-009" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Kate White</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">MSF emergency medical coordinator in the DRC</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-001">Position 1</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-003">src-003</a></div>
+</article>
+<article id="actor-012" class="actor-card" data-actor-type="civil_society">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Neema Sindani</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Public health laboratory technician in Bunia</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-014" class="actor-card" data-actor-type="academia">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Pr Placide Mbala</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Researcher at the National Institute of Biomedical Research (INRB) in Kinshasa</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-002" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Dr Tedros Adhanom Ghebreyesus</strong>
+    <span class="actor-card-src-count">2 SRC</span>
+  </div>
+  <p class="actor-card-role">Director-General of the World Health Organization</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a><a class="actor-card-cluster-box" href="#pc-006">Position 6</a><a class="actor-card-cluster-box" href="#pc-007">Position 7</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-001">src-001</a><a class="actor-card-source-box" href="#src-005">src-005</a></div>
+</article>
+<article id="actor-015" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Dr Anne Ancia</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Acting WHO Representative in the DRC</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-017" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Dr Chikwe Ihekweazu</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Executive Director for the WHO Health Emergencies Programme</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a></div>
+</article>
+<article id="actor-019" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Dr Kasonde Mwinga</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">WHO Representative in Uganda</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a></div>
+</article>
+<article id="actor-013" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Dr Olga Ntumba Tshitenge</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Laboratory diagnostics and outbreak response expert at the WHO office in Kinshasa</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-002">Position 2</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-004">src-004</a></div>
+</article>
+<article id="actor-022" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Jean Kaseya</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Director of Africa CDC</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-009">Position 9</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-009">src-009</a></div>
+</article>
+<article id="actor-020" class="actor-card" data-actor-type="international_org">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Leonard Zulu</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">UN Resident Coordinator for Uganda</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-005">Position 5</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-005">src-005</a></div>
+</article>
+<article id="actor-003" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Daniel Kitambala</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Ebola survivor and subsistence farmer</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+</article>
+<article id="actor-007" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Eli Asimwe Bawere</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Family member of Ebola patients</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+</article>
+<article id="actor-006" class="actor-card" data-actor-type="affected_community">
+  <div class="actor-card-header">
+    <strong class="actor-card-name">Mireille Gahindo</strong>
+    <span class="actor-card-src-count">1 SRC</span>
+  </div>
+  <p class="actor-card-role">Ebola patient</p>
+  <div class="actor-card-cluster-refs"><a class="actor-card-cluster-box" href="#pc-003">Position 3</a></div>
+  <div class="actor-card-source-refs"><a class="actor-card-source-box" href="#src-002">src-002</a></div>
+</article>
+</div>
+<script>
+(function() {
+  const section = document.getElementById('actors-section');
+  if (!section) return;
+  const tabs = section.querySelectorAll('.actor-tab');
+  const cards = section.querySelectorAll('.actor-card');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.typeTarget || 'all';
+      cards.forEach(card => {
+        card.hidden = (target !== 'all' && card.dataset.actorType !== target);
+      });
+      tabs.forEach(t => t.classList.toggle('actor-tab--active', t === tab));
+    });
+  });
+})();
+</script>
+</section>
+
+<h2>Divergences</h2>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">Sources src-012 (NPR) and src-016 (CIDRAP) disagree on the identity of the third Bundibugyo vaccine candidate being fast-tracked by CEPI: src-012 names a version of Ervebo, while src-016 names an IAVI candidate.</div>
+  <div class="divergence-resolution"><strong>Partially resolved:</strong> The corrected article now notes that sources differ on the identity of the third candidate, naming Oxford and Moderna as the two points of agreement and flagging the Ervebo/IAVI discrepancy.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></div>
+  <div class="divergence-desc">Case counts differ between sources depending on date: src-007 (UNICEF, dated 12 June) reports 676 confirmed cases and 136 deaths in DRC, while src-003 (CGTN, dated 16 June) reports 808 confirmed cases and 192 deaths. The article uses the later, higher figure.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The discrepancy reflects different reporting dates. The article correctly uses the most recent figure (808/192 from src-003, dated 16 June) and attributes it to mid-June, which is consistent with the source dates.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></div>
+  <div class="divergence-desc">Chinese state broadcaster CGTN (src-003) foregrounds crisis-alarm framing (overwhelmed centers, narrowing window), while UN and WHO sources (src-005) emphasize Uganda&#x27;s model response and institutional optimism, creating a divergence in overall tone across source clusters.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article presents both framings with attribution, structuring the body around the tension between alarm and progress narratives.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></div>
+  <div class="divergence-desc">French-language sources (src-011, src-013) emphasize community resistance and armed conflict as barriers to response, while English-language institutional sources (src-004, src-005) focus on diagnostic innovation and preparedness successes.</div>
+  <div class="divergence-resolution"><strong>Resolved:</strong> The article incorporates both dimensions — community resistance and diagnostic innovation — with appropriate attribution to the respective source clusters.</div>
+</div>
+<div class="divergence">
+  <div class="divergence-header"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></div>
+  <div class="divergence-desc">The NYT report (src-010) on gold-mining dynamics accelerating transmission and disrupting supply chains is not reflected in the article body, leaving the economic and occupational dimension of the outbreak unaddressed.</div>
+  <div class="divergence-resolution"><strong>Unresolved:</strong> The article does not incorporate the mining-sector dimension reported in src-010. This represents a coverage gap rather than a factual error; no correction was applied.</div>
+</div>
+
+<h2>Bias Analysis</h2>
+<p class="bias-stats"><span><strong>9</strong> position clusters</span><span class="sep">&middot;</span><span><strong>20</strong> distinct actors</span><span class="sep">&middot;</span><span><strong>20</strong> sources</span><span class="sep">&middot;</span><span><strong>5</strong> languages</span></p>
+<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--color-text-secondary);">6 language bias findings</p>
+<details style="margin-top:0.75rem">
+<summary style="font-family:var(--font-mono);font-size:0.8rem;color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 0">Show detailed findings</summary>
+<div style="margin-top:0.5rem">
+<div class="bias-finding">
+  <span class="bias-excerpt">the window for containment is closing</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">emotionalizing</span>
+  <div class="bias-explanation">This metaphor in the article&#x27;s own voice dramatizes urgency beyond what the data alone conveys; the attributed MSF quotes that follow use similar language, but this framing sentence is editorial.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">could turn the tide</span> <span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">emotionalizing</span>
+  <div class="bias-explanation">&#x27;Turn the tide&#x27; is an editorial metaphor that frames the situation as a dramatic narrative rather than neutrally describing potential improvements in outbreak response.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">Community dynamics remain a central fault line</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Fault line&#x27; is a metaphor chosen by the article&#x27;s own voice that implies deep, seismic division, embedding a judgment about the severity and nature of community tensions beyond what a neutral descriptor would convey.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">a turning point</span> <span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span>
+  <div class="bias-explanation">&#x27;Turning point&#x27; is an evaluative characterization in the article&#x27;s own voice that assigns historical significance to the survivor&#x27;s discharge without attribution or supporting evidence that the trend has actually shifted.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">drew praise from WHO leadership</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Drew praise&#x27; is an editorial characterization that frames the WHO statements as commendation rather than neutrally reporting what was said; &#x27;was commended by&#x27; or simply letting the quotes speak would be more neutral.</div>
+</div>
+<div class="bias-finding">
+  <span class="bias-excerpt">fueled the resistance</span> <span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span>
+  <div class="bias-explanation">&#x27;Fueled&#x27; implies deliberate causation and intensification in the article&#x27;s own voice; while the Human Rights Watch source makes this argument, the article&#x27;s framing verb adopts HRW&#x27;s judgment rather than neutrally attributing it.</div>
+</div>
+<h3 style="font-family:var(--font-sans);font-size:1rem;margin-top:1.5rem">Source Balance by Language</h3>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">en</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-count">12</span></div>
+<div class="bar-row"><span class="bar-label">fr</span><div class="bar-track"><div class="bar-fill" style="width:42%"></div></div><span class="bar-count">5</span></div>
+<div class="bar-row"><span class="bar-label">es</span><div class="bar-track"><div class="bar-fill" style="width:8%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">pt</span><div class="bar-track"><div class="bar-fill" style="width:8%"></div></div><span class="bar-count">1</span></div>
+<div class="bar-row"><span class="bar-label">de</span><div class="bar-track"><div class="bar-fill" style="width:8%"></div></div><span class="bar-count">1</span></div>
+</div>
+</div>
+</details>
+
+<h2>What is missing</h2>
+<h3>Voices missing</h3>
+<ul class="missing-positions"><li>Pharmaceutical companies developing Bundibugyo-specific vaccines or therapeutics (e.g., Moderna, Merck, Oxford/AstraZeneca) on timelines, pricing, or equitable access commitments</li><li>DRC subnational officials such as provincial governors or Ituri provincial health directors on resource-allocation disputes, coordination with Kinshasa, or the intersection of armed conflict with the Ebola response</li><li>Mining companies or trade associations operating in Ituri&#x27;s gold-mining region on the outbreak&#x27;s economic impact on livelihoods, supply chains, and worker safety</li><li>Independent epidemiologists or public health researchers outside the DRC&#x27;s INRB assessing transmission dynamics, case fatality rates, or the adequacy of the surveillance system</li><li>Armed group or military actors operating in Ituri, given the pre-existing armed conflict as a critical barrier to response access and a driver of displacement</li><li>Francophone African or Congolese domestic media sources, including local-language reporting on community-level grievances, political dynamics, and DRC government accountability</li><li>Neighboring country perspectives beyond Uganda (e.g., South Sudan, Central African Republic, Republic of Congo), given their border proximity and vulnerability to cross-border spread</li></ul>
+<h3>Topics missing</h3>
+<ul class="missing-positions"><li>Status of Bundibugyo-specific vaccine candidates or therapeutic trials, given existing Ebola vaccines target the Zaire species rather than Bundibugyo</li><li>Intersection of the Ebola outbreak with the pre-existing armed conflict and displacement crisis in Ituri, including food security in IPC Phase 4 zones</li></ul>
+
+<section id="sources-section" class="sources">
+<h2>Sources</h2>
+<p class="sources-meta">20 sources from 16 outlets across 5 languages.</p>
+<div class="sources-by-outlet">
+<details class="outlet-block" id="outlet-allafrica">
+<summary><strong>AllAfrica</strong> <span class="outlet-meta">United States &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-001" class="source">
+  <div class="source-header"><span class="source-id">[1]</span> <a class="source-headline" href="https://allafrica.com/stories/202606150542.html" target="_blank" rel="noopener">Africa: Open Letter to Leaders of G7, G20, Brics and All Nations On Finalizing the WHO Pandemic Agreement&#x27;s Pathogen Access and Benefit Sharing Annex</a></div>
+  <div class="source-meta"><span>United States</span> &middot; <span>en</span> &middot; <span>2026-06-15</span></div>
+  <p class="source-summary">An open letter co-signed by Brazil&#x27;s President Lula da Silva and WHO Director-General Tedros urges world leaders to finalize the Pathogen Access and Benefit-Sharing (PABS) annex of the WHO Pandemic Agreement at the upcoming July negotiating session, framing its completion as essential to pandemic preparedness. The letter argues that the last pandemic cost up to 20 million lives and over $13 trillion, and references the ongoing Bundibugyo Ebola outbreak as evidence of the cost of inaction.</p>
+  <p class="source-bias-note"><em>Pan-African aggregator</em></p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-001">Luiz Inácio Lula da Silva</a>, <a href="#actor-002">Dr Tedros Adhanom Ghebreyesus</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-001">Luiz Inácio Lula da Silva</a></strong> <span class="actor-role">President of the Federative Republic of Brazil</span><p class="source-quote-position">Urges G7, G20, BRICS and all nations to instruct their negotiators to finalize the PABS annex at the July session, emphasizing that finishing the agreement is a promise to the millions lost to COVID-19.</p><p class="source-quote-verbatim"><em>&ldquo;Finishing this Agreement is not a departure from that legacy. It is its natural next chapter, and it is within reach.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-002">Dr Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director-General of the World Health Organization</span><p class="source-quote-position">Co-signs the letter urging leaders to complete the PABS annex with political will, equity, and urgency, framing it as a promise to protect humanity.</p><p class="source-quote-verbatim"><em>&ldquo;Let us be the generation that keeps that promise. Finalizing this Agreement, through a shared commitment to one another, is our collective promise to protect humanity.&rdquo;</em></p></li></ul>
+  </details>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-bbc">
+<summary><strong>BBC</strong> <span class="outlet-meta">United Kingdom &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-002" class="source">
+  <div class="source-header"><span class="source-id">[2]</span> <a class="source-headline" href="https://www.bbc.com/news/articles/cp3xyvww1lqo?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener">Witnessing joy amid the death: BBC travels to epicentre of Ebola outbreak</a></div>
+  <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span> &middot; <span>2026-06-15</span></div>
+  <p class="source-summary">A frontline report from the Ebola epicenter in Mongbwalu, Ituri province, describes a rare moment of celebration as patient Daniel Kitambala is discharged after recovery, which health workers and the hospital&#x27;s medical director say is building community trust and increasing hospital visits despite earlier violence and myths like the &#x27;coffin curse&#x27;. The piece also reports that a treatment center was set on fire on 21 May, that five health workers have died, and that many contacts are still being missed by tracing efforts.</p>
+  <p class="source-bias-note"><em>UK public broadcaster, editorial independence charter</em></p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-003">Daniel Kitambala</a>, <a href="#actor-004">Dr Richard Lukodu</a>, <a href="#actor-005">Sesereki Mandro Israel</a>, <a href="#actor-006">Mireille Gahindo</a>, <a href="#actor-007">Eli Asimwe Bawere</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-003">Daniel Kitambala</a></strong> <span class="actor-role">Ebola survivor and subsistence farmer</span><p class="source-quote-position">Credits God for his recovery and urges others to seek treatment when they fall ill.</p><p class="source-quote-verbatim"><em>&ldquo;That disease is terrible. I was feeling very ill [when I came here]. But God is great, I am well now.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-004">Dr Richard Lukodu</a></strong> <span class="actor-role">Medical director of Mongbwalu hospital</span><p class="source-quote-position">Reports that the community&#x27;s trust has improved since the first patient recovered and returned home, leading more people to seek treatment.</p><p class="source-quote-verbatim"><em>&ldquo;We have seen a huge difference in the community since the first patient recovered and returned home. More people are coming here now seeking treatment.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-005">Sesereki Mandro Israel</a></strong> <span class="actor-role">Mayor of Mongbwalu</span><p class="source-quote-position">Explains that an incident in early February involving a broken coffin triggered a &#x27;coffin curse&#x27; myth, which led the community to blame deaths on burning the coffin rather than Ebola.</p><p class="source-quote-verbatim"><em>&ldquo;The situation was bad. Many people died. People were dying daily – seven, eight or even 10 people every day.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-006">Mireille Gahindo</a></strong> <span class="actor-role">Ebola patient</span><p class="source-quote-position">Expresses happiness and a desire to go home after being treated for Ebola alongside her 11-month-old child at the Rwampara treatment center.</p><p class="source-quote-verbatim"><em>&ldquo;I feel very happy. I&#x27;m looking forward to going back home.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-007">Eli Asimwe Bawere</a></strong> <span class="actor-role">Family member of Ebola patients</span><p class="source-quote-position">Describes the grief of losing family members to Ebola and expresses hope that no more mourning will be necessary, after visiting his sister, brother, and stepmother in the treatment center.</p><p class="source-quote-verbatim"><em>&ldquo;We have already lost our mother and sister-in-law who was married to my brother who is here. We have mourned a lot. We don&#x27;t want to mourn any more.&rdquo;</em></p></li></ul>
+  </details>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-cgtn">
+<summary><strong>CGTN</strong> <span class="outlet-meta">China &middot; state_directed</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-003" class="source">
+  <div class="source-header"><span class="source-id">[3]</span> <a class="source-headline" href="https://news.cgtn.com/news/2026-06-16/Roundup-One-month-into-DR-Congo-Ebola-outbreak-1O0YzXZSK8o/p.html?UTM_Source=cgtn&amp;UTM_Medium=rss&amp;UTM_Campaign=World" target="_blank" rel="noopener">Roundup: One month into DR Congo Ebola outbreak</a></div>
+  <div class="source-meta"><span>China</span> &middot; <span>en</span> &middot; <span>2026-06-16</span></div>
+  <p class="source-summary">A roundup one month into the DRC&#x27;s Bundibugyo Ebola outbreak reports 808 confirmed cases and 192 deaths, with the head of the National Institute of Public Health saying the epidemic is still in an upward, active phase. The article also quotes MSF warning that the outbreak is outpacing the response, and Save the Children reporting that 52 children have contracted the virus, dying at more than twice the rate of adults aged 15-44.</p>
+  <p class="source-bias-note"><em>Chinese state broadcaster</em></p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-008">Dieudonne Mwamba Kazadi</a>, <a href="#actor-009">Kate White</a>, <a href="#actor-010">Greg Ramm</a>, <a href="#actor-011">Frederic Lai Manantsoa</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-008">Dieudonne Mwamba Kazadi</a></strong> <span class="actor-role">Head of the DRC National Institute of Public Health</span><p class="source-quote-position">Warns the outbreak is in an active, upward phase and that expanding treatment capacity and community engagement is urgent.</p><p class="source-quote-verbatim"><em>&ldquo;We are still in the midst of the epidemic. I would say we are in the upward phase of the outbreak, the active phase.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-009">Kate White</a></strong> <span class="actor-role">MSF emergency medical coordinator in the DRC</span><p class="source-quote-position">States that most treatment centers in Ituri are overwhelmed, many patients arrive at a late stage, and most were never identified as contacts, calling for faster testing.</p><p class="source-quote-verbatim"><em>&ldquo;One month on, the Ebola disease outbreak is outpacing the response effort.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-010">Greg Ramm</a></strong> <span class="actor-role">Save the Children country director in the DRC</span><p class="source-quote-position">Characterizes the outbreak as more than a health emergency, calling it a wider social crisis for children, caregivers, and communities.</p><p class="source-quote-verbatim"><em>&ldquo;The outbreak was more than a health emergency.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-011">Frederic Lai Manantsoa</a></strong> <span class="actor-role">Emergency coordinator for MSF in the DRC</span><p class="source-quote-position">Warns the window for action is narrowing and that diagnostics, surveillance, access to care, and community engagement must be urgently strengthened.</p><p class="source-quote-verbatim"><em>&ldquo;This outbreak can still be brought under control, but the window for action is narrowing.&rdquo;</em></p></li></ul>
+  </details>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-cidrap-university-of-minnesota">
+<summary><strong>CIDRAP (University of Minnesota)</strong> <span class="outlet-meta">United States &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-016" class="source">
+  <div class="source-header"><span class="source-id">[16]</span> <a class="source-headline" href="https://www.cidrap.umn.edu/ebola/three-ebola-vaccine-candidates-fast-tracked-african-outbreak-continues" target="_blank" rel="noopener">Three Ebola vaccine candidates fast-tracked as African outbreak continues</a></div>
+  <div class="source-meta"><span>United States</span> &middot; <span>en</span></div>
+  <p class="source-summary">Reports on CEPI support for preclinical development and Phase 1 clinical testing of Bundibugyo vaccine candidates from Oxford, Moderna, and IAVI in response to the outbreak.</p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-deutsche-welle">
+<summary><strong>Deutsche Welle</strong> <span class="outlet-meta">Germany &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-009" class="source">
+  <div class="source-header"><span class="source-id">[9]</span> <a class="source-headline" href="https://www.dw.com/fr/inrb-element-central-riposte-ebola-scientifiques-analyse-echantillons-freiner-propagation-maladie/a-77337392" target="_blank" rel="noopener">RDC : l’INRB au cœur de la riposte face à l’épidémie d’Ebola (souche Bundibugyo)</a></div>
+  <div class="source-meta"><span>Germany</span> &middot; <span>fr</span></div>
+  <p class="source-summary">Describes the central role of the INRB in Kinshasa in analyzing samples and confirming the Bundibugyo strain, and quotes Africa CDC Director Jean Kaseya on the timeline for a vaccine and treatment.</p>
+  <p class="source-bias-note"><em>German state-funded, editorially independent</em></p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-022">Jean Kaseya</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-022">Jean Kaseya</a></strong> <span class="actor-role">Director of Africa CDC</span><p class="source-quote-position">States that a vaccine and treatment against Bundibugyo should be available before the end of 2026, with trial protocols being prepared.</p></li></ul>
+  </details>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-efe">
+<summary><strong>EFE</strong> <span class="outlet-meta">Spain &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-021" class="source">
+  <div class="source-header"><span class="source-id">[21]</span> <a class="source-headline" href="https://efe.com/mundo/2026-06-04/ebola-medidas-regionales-africa/" target="_blank" rel="noopener">Países de África oriental acuerdan &quot;medidas regionales urgentes&quot; para responder al ébola</a></div>
+  <div class="source-meta"><span>Spain</span> &middot; <span>es</span> &middot; <span>2026-06-04</span></div>
+  <p class="source-summary">Reports on the emergency meeting of East African Community health ministers who agreed on urgent regional measures including harmonized surveillance, border controls, and a regional technical group to coordinate the Ebola response.</p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-human-rights-watch">
+<summary><strong>Human Rights Watch</strong> <span class="outlet-meta">United States &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-014" class="source">
+  <div class="source-header"><span class="source-id">[14]</span> <a class="source-headline" href="https://www.hrw.org/fr/news/2026/06/11/rd-congo-les-communautes-devraient-participer-a-la-reponse-a-lepidemie-debola" target="_blank" rel="noopener">RD Congo : Les communautés devraient participer à la réponse à l’épidémie d’Ebola</a></div>
+  <div class="source-meta"><span>United States</span> &middot; <span>en</span> &middot; <span>2026-06-11</span></div>
+  <p class="source-summary">Calls for community engagement to be central to the Ebola response in eastern DRC, criticizing the use of security forces in public health operations and recommending a participatory approach with local leaders.</p>
+  <p class="source-bias-note"><em>US-based international human rights NGO; chartered to accept no government funds, financed by private individuals and foundations.</em></p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-le-monde">
+<summary><strong>Le Monde</strong> <span class="outlet-meta">France &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-011" class="source">
+  <div class="source-header"><span class="source-id">[11]</span> <a class="source-headline" href="https://www.lemonde.fr/afrique/article/2026/06/05/epidemie-d-ebola-la-laborieuse-mise-en-place-de-la-riposte-dans-l-est-de-la-rdc_6697912_3212.html" target="_blank" rel="noopener">Épidémie d’Ebola : la laborieuse mise en place de la riposte dans l’est de la RDC</a></div>
+  <div class="source-meta"><span>France</span> &middot; <span>fr</span> &middot; <span>2026-06-05</span></div>
+  <p class="source-summary">Investigates the slow and difficult implementation of the Ebola response in eastern DRC, particularly in Ituri, citing coordination problems, lack of resources, and community resistance in Bunia health zones.</p>
+  <p class="source-bias-note"><em>French newspaper of record, EN edition</em></p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-npr">
+<summary><strong>NPR</strong> <span class="outlet-meta">United States &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-012" class="source">
+  <div class="source-header"><span class="source-id">[12]</span> <a class="source-headline" href="https://www.npr.org/2026/06/01/g-s1-125182/three-ebola-vaccine-candidates-are-being-fast-tracked-for-development" target="_blank" rel="noopener">Three Ebola vaccine candidates are being fast-tracked for development</a></div>
+  <div class="source-meta"><span>United States</span> &middot; <span>en</span> &middot; <span>2026-06-01</span></div>
+  <p class="source-summary">Reports on CEPI fast-tracking three Bundibugyo vaccine candidates: a version of Ervebo, an Oxford platform vaccine, and a Moderna mRNA vaccine.</p>
+  <p class="source-bias-note"><em>US public radio, member-funded</em></p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-observador">
+<summary><strong>Observador</strong> <span class="outlet-meta">Portugal &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-022" class="source">
+  <div class="source-header"><span class="source-id">[22]</span> <a class="source-headline" href="https://observador.pt/2026/06/10/ebola-uniao-africana-insta-estados-membros-a-reforcarem-controlos-fronteiricos/" target="_blank" rel="noopener">Ébola. União Africana insta Estados-membros a reforçarem controlos fronteiriços</a></div>
+  <div class="source-meta"><span>Portugal</span> &middot; <span>pt</span> &middot; <span>2026-06-10</span></div>
+  <p class="source-summary">Reports that the African Union urged member states to reinforce border controls at air, sea, and land points to contain the Ebola outbreak in eastern DRC, while trying not to disrupt mobility, trade, or humanitarian aid.</p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-reliefweb">
+<summary><strong>ReliefWeb</strong> <span class="outlet-meta">Switzerland &middot; independent</span> <span class="outlet-source-count">3 sources</span></summary>
+<ol class="source-list">
+<li id="src-004" class="source">
+  <div class="source-header"><span class="source-id">[4]</span> <a class="source-headline" href="https://reliefweb.int/report/democratic-republic-congo/dans-lombre-de-lepidemie-un-outil-innovant-accelere-la-riposte-ebola-en-ituri" target="_blank" rel="noopener">DR Congo: Dans l’ombre de l’épidémie, un outil innovant accélère la riposte à Ebola en Ituri</a></div>
+  <div class="source-meta"><span>Switzerland</span> &middot; <span>en</span> &middot; <span>2026-06-15</span></div>
+  <p class="source-summary">A report on the deployment of the RadiOne molecular diagnostic platform in Mongbwalu and Bunia, which can diagnose the Bundibugyo Ebola virus in under one hour, reducing test turnaround from over a week to same-day results and increasing local testing capacity from 30 to 80 tests per day. WHO officials say the equipment&#x27;s portability and ease of use make it a major advance for remote areas, while the DRC Health Minister emphasizes that early treatment saves lives.</p>
+  <p class="source-bias-note"><em>UN OCHA humanitarian crisis reports. Primary source for underreported crises.</em></p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-012">Neema Sindani</a>, <a href="#actor-013">Dr Olga Ntumba Tshitenge</a>, <a href="#actor-014">Pr Placide Mbala</a>, <a href="#actor-015">Dr Anne Ancia</a>, <a href="#actor-016">Dr Roger Kamba</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-012">Neema Sindani</a></strong> <span class="actor-role">Public health laboratory technician in Bunia</span><p class="source-quote-position">Explains that the new diagnostic platform delivers results in one hour, allowing medical teams to intervene earlier and increasing patients&#x27; chances of survival.</p><p class="source-quote-verbatim"><em>&ldquo;Grâce à cette solution innovante et facile à utiliser, les résultats sont désormais disponibles en une heure seulement. Cette rapidité réduit considérablement les délais, permettant aux équipes médicales d’intervenir plus tôt auprès des cas confirmés et d’augmenter ainsi les chances de survie des patients.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-013">Dr Olga Ntumba Tshitenge</a></strong> <span class="actor-role">Laboratory diagnostics and outbreak response expert at the WHO office in Kinshasa</span><p class="source-quote-position">States that the RadiOne platform is lightweight, transportable, usable without heavy infrastructure, and accessible after short training, representing a major advance for the Bundibugyo Ebola response.</p><p class="source-quote-verbatim"><em>&ldquo;L’équipement est léger, facilement transportable, utilisable sans infrastructure lourde et accessible après une formation courte, autant d’atouts essentiels pour intervenir dans les zones reculées.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-014">Pr Placide Mbala</a></strong> <span class="actor-role">Researcher at the National Institute of Biomedical Research (INRB) in Kinshasa</span><p class="source-quote-position">Explains that the expanding network of decentralized diagnostic laboratories is significantly improving epidemiological surveillance.</p><p class="source-quote-verbatim"><em>&ldquo;Ce maillage renforcé améliore considérablement la surveillance épidémiologique.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-015">Dr Anne Ancia</a></strong> <span class="actor-role">Acting WHO Representative in the DRC</span><p class="source-quote-position">Notes that rapidly ruling out suspected cases avoids stigmatization and allows resources to be concentrated on confirmed cases, making the response more effective.</p><p class="source-quote-verbatim"><em>&ldquo;Aujourd’hui, écarter rapidement les cas suspects permet d’éviter leur stigmatisation et de concentrer les efforts et ressources sur les cas confirmés, rendant nos efforts plus efficaces.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-016">Dr Roger Kamba</a></strong> <span class="actor-role">Minister of Health of the DRC</span><p class="source-quote-position">Declares that Ebola can be treated and defeated, and that early care saves lives, while urging continued vigilance.</p><p class="source-quote-verbatim"><em>&ldquo;La prise en charge précoce sauve des vies. Ebola se soigne, Ebola se vainc. Mais la vigilance reste essentielle.&rdquo;</em></p></li></ul>
+  </details>
+</li>
+<li id="src-007" class="source">
+  <div class="source-header"><span class="source-id">[7]</span> <a class="source-headline" href="https://reliefweb.int/report/democratic-republic-congo/unicef-ebola-virus-disease-outbreak-flash-update-no-3-democratic-republic-congo-uganda-12-june-2026" target="_blank" rel="noopener">UNICEF Ebola Virus Disease Outbreak Flash Update No. 3 (Democratic Republic of the Congo &amp; Uganda), 12 June 2026</a></div>
+  <div class="source-meta"><span>Switzerland</span> &middot; <span>en</span> &middot; <span>2026-06-16</span></div>
+  <p class="source-summary">UNICEF&#x27;s flash update reports 676 confirmed cases and 136 deaths in DRC and 19 cases with 2 deaths in Uganda as of 11 June, and notes the IASC activated a System-Wide Scale-Up for infectious disease events in DRC. The update details UNICEF&#x27;s operational expansion into North Kivu, training of 1,000 community health workers reaching 160,000 households, and a funding gap of $20.4 million against a $70.7 million appeal.</p>
+  <p class="source-bias-note"><em>UN OCHA humanitarian crisis reports. Primary source for underreported crises.</em></p>
+</li>
+<li id="src-008" class="source">
+  <div class="source-header"><span class="source-id">[8]</span> <a class="source-headline" href="https://reliefweb.int/report/democratic-republic-congo/republique-democratique-du-congo-cluster-securite-alimentaire-crise-ebola-sitrep-4-06-juin-12-juin-2026" target="_blank" rel="noopener">DR Congo: République démocratique du Congo : Cluster Sécurité alimentaire - Crise Ebola – sitrep #4 (06 juin – 12 juin 2026)</a></div>
+  <div class="source-meta"><span>Switzerland</span> &middot; <span>en</span> &middot; <span>2026-06-16</span></div>
+  <p class="source-summary">A food security cluster situation report estimates that 12,222 people are directly affected by the Ebola outbreak and may need food support as of 10 June, including 582 confirmed cases, 2,910 direct family members, and 8,730 identified contacts. It notes the outbreak has spread to 19 of 36 health zones in Ituri, including the IPC Phase 4 zone of Tchomia, and reports 32 recovered patients who will need agricultural or income-generating support for socioeconomic reintegration.</p>
+  <p class="source-bias-note"><em>UN OCHA humanitarian crisis reports. Primary source for underreported crises.</em></p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-reuters-via-reliefweb">
+<summary><strong>Reuters (via ReliefWeb)</strong> <span class="outlet-meta">United Kingdom &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-015" class="source">
+  <div class="source-header"><span class="source-id">[15]</span> <a class="source-headline" href="https://www.afro.who.int/news/high-level-ministerial-meeting-cross-border-coordination-ebola-disease-outbreak-caused" target="_blank" rel="noopener">High-level ministerial meeting on cross-border coordination on the Ebola disease outbreak caused by Bundibugyo virus</a></div>
+  <div class="source-meta"><span>United Kingdom</span> &middot; <span>en</span></div>
+  <p class="source-summary">Reports on a high-level ministerial meeting focused on cross-border coordination for the Bundibugyo Ebola outbreak, with commitments from DRC, Uganda, and South Sudan to strengthen surveillance, joint contact tracing, and information sharing.</p>
+  <p class="source-bias-note"><em>World Health Organization, primary source</em></p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-rfi">
+<summary><strong>RFI</strong> <span class="outlet-meta">France &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">3 sources</span></summary>
+<ol class="source-list">
+<li id="src-013" class="source">
+  <div class="source-header"><span class="source-id">[13]</span> <a class="source-headline" href="https://www.rfi.fr/fr/afrique/20260612-rdc-la-17e-%C3%A9pid%C3%A9mie-d-ebola-loin-d-%C3%AAtre-ma%C3%AEtris%C3%A9e-avertit-le-centre-africain-de-contr%C3%B4le-des-maladies" target="_blank" rel="noopener">RDC : la 17e épidémie d’Ebola loin d’être maîtrisée, avertit le Centre africain de contrôle des maladies</a></div>
+  <div class="source-meta"><span>France</span> &middot; <span>fr</span> &middot; <span>2026-06-12</span></div>
+  <p class="source-summary">Reports that the 17th Ebola epidemic in DRC is far from under control, according to Africa CDC, and highlights operational difficulties in the east marked by insecurity and tensions with communities.</p>
+  <p class="source-bias-note"><em>Radio France Internationale, francophone global. Replaces Jeune Afrique.</em></p>
+</li>
+<li id="src-018" class="source">
+  <div class="source-header"><span class="source-id">[18]</span> <a class="source-headline" href="https://www.rfi.fr/fr/afrique/20260527-soudan-du-sud-les-autorit%C3%A9s-se-pr%C3%A9parent-face-au-risque-d-une-propagation-de-l-%C3%A9pid%C3%A9mie-d-ebola" target="_blank" rel="noopener">Soudan du Sud: les autorités se préparent face au risque d&#x27;une propagation de l&#x27;épidémie d&#x27;Ebola</a></div>
+  <div class="source-meta"><span>France</span> &middot; <span>fr</span> &middot; <span>2026-05-27</span></div>
+  <p class="source-summary">Reports on South Sudan&#x27;s preparations against the risk of Ebola importation from DRC, including a three-month government preparedness plan, concerns about porous borders, and a readiness level estimated at only 29%.</p>
+  <p class="source-bias-note"><em>Radio France Internationale, francophone global. Replaces Jeune Afrique.</em></p>
+</li>
+<li id="src-019" class="source">
+  <div class="source-header"><span class="source-id">[19]</span> <a class="source-headline" href="https://www.rfi.fr/fr/afrique/20260525-ebola-en-rdc-la-centrafrique-a-instruit-l-ensemble-des-structures-sanitaires-et-s%C3%A9curitaires-concern%C3%A9es" target="_blank" rel="noopener">Ebola en RDC: la Centrafrique «a instruit l&#x27;ensemble des structures sanitaires et sécuritaires concernées»</a></div>
+  <div class="source-meta"><span>France</span> &middot; <span>fr</span> &middot; <span>2026-05-25</span></div>
+  <p class="source-summary">Reports that the Central African Republic has reinforced its epidemiological surveillance and secured points of entry against the risk of spread from eastern DRC, presenting a three-part strategy: surveillance, securing entry points, and community mobilization.</p>
+  <p class="source-bias-note"><em>Radio France Internationale, francophone global. Replaces Jeune Afrique.</em></p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-the-new-york-times">
+<summary><strong>The New York Times</strong> <span class="outlet-meta">United States &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-010" class="source">
+  <div class="source-header"><span class="source-id">[10]</span> <a class="source-headline" href="https://www.nytimes.com/2026/06/05/world/africa/congo-ebola-gold-mine.html" target="_blank" rel="noopener">The Gold Mines at the Heart of This Ebola Outbreak</a></div>
+  <div class="source-meta"><span>United States</span> &middot; <span>en</span> &middot; <span>2026-06-05</span></div>
+  <p class="source-summary">Provides an in-depth report on the gold-mining hub of Mongbwalu in Ituri, explaining how dense, mobile mining populations have accelerated Ebola transmission and the disruption to local livelihoods and international gold supply chains.</p>
+  <p class="source-bias-note"><em>US daily newspaper, published by The New York Times Company (NYSE-listed; Ochs-Sulzberger family voting trust)</em></p>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-united-nations">
+<summary><strong>United Nations</strong> <span class="outlet-meta">United States &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-005" class="source">
+  <div class="source-header"><span class="source-id">[5]</span> <a class="source-headline" href="https://news.un.org/feed/view/en/story/2026/06/1167722" target="_blank" rel="noopener">WHO commends Uganda’s Ebola response, urges vigilance and regional cooperation</a></div>
+  <div class="source-meta"><span>United States</span> &middot; <span>en</span> &middot; <span>2026-06-15</span></div>
+  <p class="source-summary">WHO Director-General Tedros commends Uganda&#x27;s Ebola response, highlighting its surveillance, testing, and case management systems, and notes that its Emergency Medical Team deployed within two hours of the outbreak declaration. Tedros also calls for sustained cross-border cooperation with the DRC and reiterates that travel bans are not effective in controlling Ebola outbreaks.</p>
+  <p class="source-bias-note"><em>United Nations official news</em></p>
+  <div class="source-actors-refs">Actors quoted: <a href="#actor-017">Dr Chikwe Ihekweazu</a>, <a href="#actor-002">Dr Tedros Adhanom Ghebreyesus</a>, <a href="#actor-019">Dr Kasonde Mwinga</a>, <a href="#actor-020">Leonard Zulu</a></div>
+  <details class="source-quotes">
+    <summary>Quote details</summary>
+    <ul class="source-quote-list"><li class="source-quote-entry"><strong><a href="#actor-002">Dr Tedros Adhanom Ghebreyesus</a></strong> <span class="actor-role">Director-General of the World Health Organization</span><p class="source-quote-position">Praises Uganda&#x27;s robust response, underscores the need for sustained cooperation with DRC, and reiterates that travel bans are not an effective control tool and can hinder the movement of essential supplies.</p><p class="source-quote-verbatim"><em>&ldquo;Travel bans are not helpful in controlling Ebola outbreaks and can negatively affect the movement of essential supplies, response teams and commodities needed to support control efforts.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-017">Dr Chikwe Ihekweazu</a></strong> <span class="actor-role">Executive Director for the WHO Health Emergencies Programme</span><p class="source-quote-position">Expresses confidence the outbreak can be contained, citing strong community cooperation, newly opened laboratories, and patient recoveries.</p></li><li class="source-quote-entry"><strong><a href="#actor-019">Dr Kasonde Mwinga</a></strong> <span class="actor-role">WHO Representative in Uganda</span><p class="source-quote-position">Affirms that preparedness saves lives, citing the rapid commissioning and staffing of the Mulago Hospital Ebola Treatment Unit.</p><p class="source-quote-verbatim"><em>&ldquo;The unit and the staff that we see here are because of preparedness. Preparedness saves lives.&rdquo;</em></p></li><li class="source-quote-entry"><strong><a href="#actor-020">Leonard Zulu</a></strong> <span class="actor-role">UN Resident Coordinator for Uganda</span><p class="source-quote-position">States that the UN system is advancing a unified and coordinated response under WHO&#x27;s technical leadership to contain the outbreak.</p><p class="source-quote-verbatim"><em>&ldquo;We are advancing a unified and coordinated response to strengthen preparedness, protect vulnerable communities and support national efforts to contain the Ebola outbreak.&rdquo;</em></p></li></ul>
+  </details>
+</li>
+</ol>
+</details>
+<details class="outlet-block" id="outlet-rzte-ohne-grenzen-m-decins-sans-fronti-res">
+<summary><strong>Ärzte ohne Grenzen (Médecins Sans Frontières)</strong> <span class="outlet-meta">Germany &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
+<ol class="source-list">
+<li id="src-023" class="source">
+  <div class="source-header"><span class="source-id">[23]</span> <a class="source-headline" href="https://www.aerzte-ohne-grenzen.at/artikel/ebola-ausbruch-kongo-2026" target="_blank" rel="noopener">Ebola-Ausbruch im Kongo 2026 – Ärzte ohne Grenzen</a></div>
+  <div class="source-meta"><span>Germany</span> &middot; <span>de</span></div>
+  <p class="source-summary">Describes the 2026 Ebola outbreak in DRC caused by the Bundibugyo virus, noting the WHO&#x27;s PHEIC declaration and the Africa CDC&#x27;s continental health emergency, and explains that without a licensed vaccine, response focuses on isolation, infection control, contact tracing, and supportive care.</p>
+</li>
+</ol>
+</details>
+</div>
+</section>
+
+<div class="transparency">
+<h2>Transparency Trail</h2>
+<dl>
+<dt>Selection Reason</dt><dd>The ongoing Ebola outbreak remains a significant global health story, but the current topic summary describes incremental updates — UNICEF and WHO providing updates, innovative tools being used, Uganda&#x27;s response commended — without identifying a material new development beyond what was covered in the June 15 package (cases surpassing 700, community resistance, cross-border spread). The story warrants continued monitoring but does not present sufficient new substance to justify a fresh dossier today.</dd>
+<dt>QA Corrections</dt><dd><details class="qa-corrections-wrapper"><summary>QA Corrections &mdash; <strong>3 applied &middot; 1 retracted</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-applied">applied</span> The two cited sources (src-012 and src-016) disagree on the identity of the third vaccine candidate: src-012 names a version of Ervebo while src-016 names IAVI. The article uses the src-016 formulation (Oxford, Moderna, and IAVI). To reflect both sources accurately, revise the sentence to: &#x27;CEPI is supporting preclinical and Phase 1 clinical testing of three vaccine candidates, including candidates from Oxford and Moderna, with sources differing on whether the third is an IAVI candidate or a version of Ervebo [src-012][src-016].&#x27; Alternatively, since src-016 is the more specialized source (CIDRAP), the article may retain the current formulation but add a note that src-012 identifies the third candidate differently.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">CEPI is supporting preclinical and Phase 1 clinical testing of three vaccine candidates from Oxford, Moderna, and IAVI [src-012][src-016].</blockquote><p class="qa-explanation">Source src-012 (NPR) describes the three candidates as a version of Ervebo, an Oxford platform vaccine, and a Moderna mRNA vaccine. Source src-016 (CIDRAP) lists candidates from Oxford, Moderna, and IAVI. The article attributes all three to Oxford, Moderna, and IAVI, which matches src-016 but not src-012, which names Ervebo (not IAVI) as one candidate. Since the two sources disagree on the third candidate, the article should note the discrepancy or use the more specific CIDRAP formulation while acknowledging the NPR variant.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">retracted</span> The claim about 19 of 36 health zones is consistent with src-008. No correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">the virus has now been detected in 19 of 36 health zones across Ituri province</blockquote><p class="qa-explanation">Source src-008 states the outbreak has spread to 19 of 36 health zones in Ituri, which matches the article. However, Ituri is a province with 36 health zones according to src-008, so this is consistent. No correction needed here — flagging for review only. Actually this is consistent with src-008; retracting.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> The source (src-002) does not provide a verbatim quote from the mayor about the coffin curse; the coffin-curse detail appears in the source summary. The article&#x27;s attribution is plausible given the summary, and the mayor is the logical source for this local account. However, to avoid overstating the directness of the attribution, revise to: &#x27;The same report noted that a broken-coffin incident in early February triggered a &quot;coffin curse&quot; myth that led residents to attribute deaths to the burning of the coffin rather than to Ebola, a dynamic described in the BBC&#x27;s account of Mongbwalu [src-002].&#x27; This removes the direct attribution to the mayor while preserving the factual content.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Mongbwalu&#x27;s mayor, Sesereki Mandro Israel, described how a broken-coffin incident in early February triggered a &quot;coffin curse&quot; myth</blockquote><p class="qa-explanation">Source src-002 attributes the coffin-curse explanation to the mayor of Mongbwalu, Sesereki Mandro Israel, but the verbatim quote given in src-002 for this actor is &#x27;The situation was bad. Many people died. People were dying daily – seven, eight or even 10 people every day.&#x27; — not a statement about the coffin curse. The article attributes the coffin-curse explanation to the mayor, but the source&#x27;s verbatim quote for the mayor does not contain this; the coffin-curse detail appears in the source summary, not in a direct quote from the mayor. This is a misleading framing in that the article presents the coffin-curse account as a direct description by the mayor when the source does not confirm this attribution via a verbatim quote.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">applied</span> Replace &#x27;said the crisis is &quot;more than a health emergency&quot;&#x27; with &#x27;said &quot;the outbreak was more than a health emergency&quot;&#x27; to match the verbatim quote in src-003.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Save the Children&#x27;s DRC country director, Greg Ramm, said the crisis is &quot;more than a health emergency,&quot; noting that 52 children have contracted the virus and are dying at more than twice the rate of adults aged 15 to 44 [src-003].</blockquote><p class="qa-explanation">Source src-003 gives Greg Ramm&#x27;s verbatim quote as &#x27;The outbreak was more than a health emergency&#x27; (past tense), not &#x27;is &quot;more than a health emergency&quot;&#x27; (present tense) as the article states. The article changes the tense of the direct quote.</p></div></details></li></ul></details></dd>
+<dt>Strict-drop Pruning</dt><dd><details class="dropped-details"><summary>3 sources dropped</summary><div class="dropped-detail"><p class="dropped-section-label">Sources</p><ul class="dropped-list"><li><span class="dropped-id">src-006</span> <span class="dropped-outlet">AllAfrica</span> &mdash; A commentary article on the growing global burden of dengue argues that fragmented responses, misdiagnosis, and lack of treatment are widening health equity gaps, drawing parallels to Ebola funding patterns and calling for cross-border collaboration and R&amp;D investment. It includes a personal account from a Malaria Consortium advisor who contracted dengue in Cambodia and describes Uganda&#x27;s SUPAAT project introducing rapid diagnostic tests to improve early detection.</li><li><span class="dropped-id">src-017</span> <span class="dropped-outlet">Radio Okapi</span> &mdash; Describes the reinforcement of the provincial Ebola response in Ituri with the delivery of materials, vehicles, and logistical support from WHO, UNICEF, WFP, and international NGOs.</li><li><span class="dropped-id">src-020</span> <span class="dropped-outlet">UN News</span> &mdash; Provides a Swahili-language update on the Ebola outbreak in eastern DRC caused by the rare and dangerous Bundibugyo virus, noting its cross-border spread to Uganda and detailing response efforts including early investigation, contact tracing, and a new laboratory near the Uganda border.</li></ul></div></details></dd>
+<dt class="pipeline-run">Pipeline Run</dt><dd class="pipeline-run">run-2026-06-16-18c01207 &middot; 2026-06-16</dd>
+</dl>
+</div>
+
+<details class="glossary" style="margin-top: 2rem; border-top: 3px solid #000; padding-top: 1rem">
+<summary style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-subtle); cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.5rem 0">About these labels</summary>
+<div style="margin-top: 0.75rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6">
+<p style="margin-bottom: 1rem; font-style: italic">Not every tag needs a definition &mdash; those listed below cover the full vocabulary used across the dossier.</p>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Divergence types</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">factual</span></dt><dd style="margin-left: 0">Sources disagree on a verifiable fact: a date, number, name, or whether something happened.</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed40">framing</span></dt><dd style="margin-left: 0">Sources describe the same event using different language or implied meaning. Example: one outlet calls a payment &ldquo;compensation,&rdquo; another calls it &ldquo;sanctions relief.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">omission</span></dt><dd style="margin-left: 0">One or more sources report something that other sources leave out entirely.</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">emphasis</span></dt><dd style="margin-left: 0">Sources cover the same event but give different aspects different weight or prominence. Example: one outlet leads with casualty figures; another treats them as a footnote to the political negotiations.</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Bias issues</h3>
+<dl style="margin-bottom: 1rem">
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#ca8a0415;color:#ca8a04;border:1px solid #ca8a0440">evaluative_adjective</span></dt><dd style="margin-left: 0">A descriptive word that signals the writer&rsquo;s judgment rather than a neutral fact. Examples: &ldquo;staggering,&rdquo; &ldquo;sharp,&rdquo; &ldquo;dramatic.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#0369a115;color:#0369a1;border:1px solid #0369a140">intensifier</span></dt><dd style="margin-left: 0">A word that amplifies a statement without adding information. Examples: &ldquo;very,&rdquo; &ldquo;extremely,&rdquo; &ldquo;deeply.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#9f123915;color:#9f1239;border:1px solid #9f123940">loaded_term</span></dt><dd style="margin-left: 0">Vocabulary carrying strong political or emotional connotations that a more neutral word would avoid. Examples: &ldquo;regime&rdquo; vs. &ldquo;government,&rdquo; &ldquo;crackdown&rdquo; vs. &ldquo;enforcement.&rdquo;</dd>
+<dt style="margin-top: 0.5rem"><span class="badge" style="background:#64748b15;color:#64748b;border:1px solid #64748b40">hedging</span></dt><dd style="margin-left: 0">Phrases that soften or obscure a claim, making attribution less clear. Examples: &ldquo;some say,&rdquo; &ldquo;allegedly,&rdquo; &ldquo;reportedly.&rdquo;</dd>
+</dl>
+<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em">Stakeholder types</h3>
+<dl style="margin-bottom: 0">
+<dt style="font-weight: 700; margin-top: 0.5rem">academia</dt><dd style="margin-left: 0">Researchers, professors, think tanks, and university-based experts.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">affected_community</dt><dd style="margin-left: 0">People directly impacted by the events themselves &mdash; civilians, displaced persons, local populations. Voices from within the group, not their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">civil_society</dt><dd style="margin-left: 0">Non-state organizations representing collective interests (NGOs, human rights groups, trade unions, religious bodies).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">government</dt><dd style="margin-left: 0">Executive branch officials, ministries, heads of state, and their spokespersons.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">industry</dt><dd style="margin-left: 0">Private companies, trade associations, and commercial actors.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">international_org</dt><dd style="margin-left: 0">Multilateral bodies and their representatives (UN agencies, IMF, IAEA, Red Cross, regional alliances).</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">judiciary</dt><dd style="margin-left: 0">Judges, courts, prosecutors, and legal bodies acting in their official capacity.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">legislature</dt><dd style="margin-left: 0">Parliament, Congress, or equivalent body. Kept separate from &ldquo;government&rdquo; because legislatures often hold positions that differ from their own executive branch.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">media</dt><dd style="margin-left: 0">Journalists, editorial boards, and outlets quoted for their position or analysis, not as sources of factual reporting.</dd>
+<dt style="font-weight: 700; margin-top: 0.5rem">military</dt><dd style="margin-left: 0">Armed forces personnel, commanders, and defense ministries.</dd>
+</dl>
+</div>
+</details>
+
+<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<footer>
+<div class="footer-text">
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
+</div>
+<div class="footer-mark" aria-label="Independent Wire"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1024" height="1024" fill="#fff"/>
+    <rect x="64" y="160" width="896" height="14" fill="#000"/>
+    <text x="512" y="700" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="800" font-size="640" letter-spacing="-40" fill="#000">IW</text>
+    <rect x="64" y="800" width="896" height="14" fill="#000"/>
+  </svg></div>
+</footer>
+</div>
+<script>
+document.querySelectorAll('.share-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const url = btn.dataset.url;
+    const title = btn.dataset.title;
+    if (navigator.share) {
+      try { await navigator.share({ title, url }); } catch (e) {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        const original = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.textContent = original; }, 1500);
+      } catch (e) {}
+    }
+  });
+});
+</script>
+</body>
+</html>
