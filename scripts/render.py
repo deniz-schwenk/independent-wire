@@ -10,6 +10,7 @@ from datetime import datetime
 from pathlib import Path
 
 from scripts.evidence_terrain import render_evidence_terrain
+from scripts import render_labels as RL
 from src.region_buckets import get_buckets, lookup_region
 
 # Canonical site base — drives og:url / og:image absolute links. Matches
@@ -146,12 +147,15 @@ def _resolve_source_refs(body_html: str) -> str:
 
 
 def _format_date(date_str: str) -> str:
-    """Format YYYY-MM-DD to 'April 13, 2026'."""
+    """Format YYYY-MM-DD to 'April 13, 2026' (en) / '13. April 2026' (de).
+    German months come from the label map, not the locale (strftime emits English)."""
     try:
         dt = datetime.strptime(date_str, "%Y-%m-%d")
-        return dt.strftime("%B %d, %Y").replace(" 0", " ")
     except (ValueError, TypeError):
         return date_str or ""
+    if RL.get_lang() == "de":
+        return f"{dt.day}. {RL.month_name(dt.month, dt.strftime('%B'))} {dt.year}"
+    return dt.strftime("%B %d, %Y").replace(" 0", " ")
 
 
 def _badge(text: str, color: str) -> str:
@@ -718,7 +722,7 @@ footer a { color: #000; text-decoration: underline; }
   footer { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
   footer .footer-mark { width: 64px; height: 64px; }
 }
-"""
+""" + RL.lang_switch_css()
 
 
 def build_header(tp: dict) -> str:
@@ -798,7 +802,7 @@ def build_follow_up_ref(tp: dict) -> str:
         '<div class="follow-up-ref" style="font-family: \'Space Mono\', monospace; font-size: 0.85rem; '
         'color: #444; padding: 12px 16px; border-left: 3px solid #000; margin: 16px 0; '
         f'background: #f5f5f5;">\n'
-        f'Follow-up to: &ldquo;{prev_headline}&rdquo; ({formatted_date})\n'
+        f'{RL.L("ui", "follow_up_to", "Follow-up to:")} &ldquo;{prev_headline}&rdquo; ({formatted_date})\n'
         f'<!-- FOLLOW_UP_LINK:{prev_tp_id} -->\n'
         '</div>\n'
     )
@@ -814,10 +818,10 @@ def build_meta_bar(tp: dict) -> str:
     div_count = len(tp.get("divergences", []))
 
     items = [
-        (sources_count, "Sources"),
-        (lang_count, "Languages"),
-        (persp_count, "Stakeholders"),
-        (div_count, "Divergences"),
+        (sources_count, RL.L("meta_bar", "Sources", "Sources")),
+        (lang_count, RL.L("meta_bar", "Languages", "Languages")),
+        (persp_count, RL.L("meta_bar", "Stakeholders", "Stakeholders")),
+        (div_count, RL.L("meta_bar", "Divergences", "Divergences")),
     ]
     inner = "\n".join(
         f'<div class="meta-item"><span class="meta-number">{n}</span>'
@@ -859,13 +863,13 @@ def build_source_map(tp: dict) -> str:
         active_badges.append(
             f'<span class="country-badge" style="background:{color}12;color:{color};'
             f'border:1px solid {color}30" '
-            f'title="{_esc(country)}: {count} source{"s" if count != 1 else ""}">'
+            f'title="{_esc(country)}: {RL.count_noun(count, "sources", str(count) + " source" + ("s" if count != 1 else ""))}">'
             f'{_esc(label)}</span>'
         )
 
     badges_html = "\n".join(active_badges)
     return (
-        f'<h2>Source Distribution</h2>\n'
+        f'<h2>{RL.L("section_heading", "Source Distribution", "Source Distribution")}</h2>\n'
         f'{svg_html}\n'
         f'<div class="country-grid" style="margin-top:0.75rem">\n{badges_html}\n</div>\n'
     )
@@ -984,7 +988,7 @@ def _cluster_actor_entry(
     aid = actor.get("id", "")
     name = _esc(actor.get("name", ""))
     role = _esc(actor.get("role", ""))
-    atype = _esc(actor.get("type", ""))
+    atype = _esc(RL.L("actor_type", actor.get("type", ""), actor.get("type", "")))
     name_html = (
         f'<a href="#{_esc(aid)}">{name}</a>' if aid else name
     )
@@ -1067,7 +1071,7 @@ def build_perspectives(tp: dict) -> str:
                 continue
             tier_blocks.append(
                 f'  <div class="cluster-tier cluster-tier-{tier_key}">\n'
-                f'    <h4 class="cluster-tier-label">{tier_label}</h4>\n'
+                f'    <h4 class="cluster-tier-label">{RL.L("position_classifier", tier_key, tier_label)}</h4>\n'
                 f'    <ul class="cluster-tier-actors">{"".join(entries)}</ul>\n'
                 f'  </div>\n'
             )
@@ -1098,12 +1102,12 @@ def build_perspectives(tp: dict) -> str:
                 )
                 attribution_block = (
                     f'  <div class="cluster-editorial-attribution">\n'
-                    f'    <p>Editorial position attributed to: '
+                    f'    <p>{RL.L("ui", "editorial_position_attributed_to", "Editorial position attributed to:")} '
                     f'{outlets_html}</p>\n'
                     f'  </div>\n'
                 )
 
-        actors_label = _plural(n_actors, "actor")
+        actors_label = RL.count_noun(n_actors, "actors", _plural(n_actors, "actor"))
         if cluster_id:
             actors_html = (
                 f'<a href="#cluster-{_esc(cluster_id)}">{actors_label}</a>'
@@ -1115,11 +1119,11 @@ def build_perspectives(tp: dict) -> str:
             f'<p class="cluster-counts">'
             f'<span class="cluster-counts-actors">{actors_html}</span>'
             f' &middot; '
-            f'<span>{_plural(n_sources, "source")}</span>'
+            f'<span>{RL.count_noun(n_sources, "sources", _plural(n_sources, "source"))}</span>'
             f' &middot; '
-            f'<span>{_plural(n_regions, "region")}</span>'
+            f'<span>{RL.count_noun(n_regions, "regions", _plural(n_regions, "region"))}</span>'
             f' &middot; '
-            f'<span>{_plural(n_languages, "language")}</span>'
+            f'<span>{RL.count_noun(n_languages, "languages", _plural(n_languages, "language"))}</span>'
             f'</p>\n'
         )
 
@@ -1142,7 +1146,8 @@ def build_perspectives(tp: dict) -> str:
             f'  {counts_line}'
             f'</div>\n'
         )
-    return f'<h2>Perspectives &mdash; Positions</h2>\n<div class="card-grid">\n{"".join(cards)}</div>\n'
+    return (f'<h2>{RL.L("section_heading", "Perspectives — Positions", "Perspectives &mdash; Positions")}</h2>\n'
+            f'<div class="card-grid">\n{"".join(cards)}</div>\n')
 
 
 # Tier sub-list field names on the mentioned_actors bracket. Mirrors
@@ -1219,7 +1224,7 @@ def build_mentioned_actors_section(tp: dict) -> str:
             continue
         tier_blocks.append(
             f'  <div class="cluster-tier cluster-tier-{tier_key}">\n'
-            f'    <h4 class="cluster-tier-label">{tier_label}</h4>\n'
+            f'    <h4 class="cluster-tier-label">{RL.L("position_classifier", tier_key.replace("actors_", ""), tier_label)}</h4>\n'
             f'    <ul class="cluster-tier-actors">{"".join(entries)}</ul>\n'
             f'  </div>\n'
         )
@@ -1247,7 +1252,7 @@ def build_mentioned_actors_section(tp: dict) -> str:
         '<div class="card single-voices-bracket" id="mentioned-actors">\n'
         '  <div class="card-header">'
         f'<span class="card-actor">{_esc(label)}</span>'
-        '<span class="single-voices-bracket-tag">Bracket</span>'
+        f'<span class="single-voices-bracket-tag">{RL.L("ui", "single_voices_bracket_tag", "Bracket")}</span>'
         '</div>\n'
         f'  <div class="card-position">{_esc(summary)}</div>\n'
         f'{"".join(tier_blocks)}'
@@ -1259,8 +1264,8 @@ def build_mentioned_actors_section(tp: dict) -> str:
     # "X note(s)" pattern of QA Corrections / Coverage Limits but uses
     # the verb-form "noted" to read as "N actors noted in the corpus."
     summary_line = (
-        f'Mentioned Actors &mdash; <strong>{n_actors} '
-        f'note{"d" if n_actors != 1 else ""}</strong>'
+        f'{RL.L("ui", "mentioned_actors", "Mentioned Actors")} &mdash; <strong>{n_actors} '
+        f'{RL.L("ui", "noted_verb", "note" + ("d" if n_actors != 1 else ""))}</strong>'
     )
     return (
         f'<details class="mentioned-actors-wrapper">\n'
@@ -1293,8 +1298,10 @@ _ACTOR_TYPE_ENUM: tuple[str, ...] = (
 
 def _tab_label(t: str) -> str:
     """Tab labels render in uppercase with underscores converted to
-    spaces (`civil_society` → `CIVIL SOCIETY`)."""
-    return t.replace("_", " ").upper() if t else "OTHER"
+    spaces (`civil_society` → `CIVIL SOCIETY`); German via the label map."""
+    if not t:
+        return RL.L("actor_type", "_other", "OTHER").upper()
+    return RL.L("actor_type", t, t.replace("_", " ")).upper()
 
 
 def build_actors_section(tp: dict) -> str:
@@ -1394,17 +1401,26 @@ def build_actors_section(tp: dict) -> str:
     render_types: list[str] = list(_ACTOR_TYPE_ENUM) + extra_types
 
     # Sub-line.
-    actors_meta_html = (
-        f'<p class="actors-meta">{n_total} '
-        f'actor{"" if n_total == 1 else "s"} quoted across this topic. '
-        f'Jump from any name above to find every position and source '
-        f'the actor figures in.</p>\n'
-    )
+    if RL.get_lang() == "de":
+        _actor_word = "Akteur" if n_total == 1 else "Akteure"
+        actors_meta_html = (
+            f'<p class="actors-meta">{n_total} {_actor_word}, '
+            f'die in diesem Thema zitiert werden. Springen Sie von einem '
+            f'Namen oben zu jeder Position und Quelle, in der der Akteur '
+            f'vorkommt.</p>\n'
+        )
+    else:
+        actors_meta_html = (
+            f'<p class="actors-meta">{n_total} '
+            f'actor{"" if n_total == 1 else "s"} quoted across this topic. '
+            f'Jump from any name above to find every position and source '
+            f'the actor figures in.</p>\n'
+        )
 
     if n_total == 0:
         return (
             '<section id="actors-section" class="actors">\n'
-            '<h2>Actors</h2>\n'
+            f'<h2>{RL.L("section_heading", "Actors", "Actors")}</h2>\n'
             f'{actors_meta_html}'
             '</section>\n'
         )
@@ -1414,7 +1430,7 @@ def build_actors_section(tp: dict) -> str:
     tab_buttons.append(
         '<button class="actor-tab actor-tab--active" '
         'type="button" data-type-target="all">'
-        f'<span class="actor-tab-name">ALL</span> '
+        f'<span class="actor-tab-name">{RL.L("ui", "actor_tab_all", "ALL")}</span> '
         f'<span class="actor-tab-count">{n_total}</span>'
         '</button>'
     )
@@ -1453,7 +1469,7 @@ def build_actors_section(tp: dict) -> str:
         name = _esc(actor.get("name", ""))
         role = _esc(actor.get("role", ""))
         anon_html = (
-            ' <em class="actor-anonymous">(anonymous)</em>'
+            f' <em class="actor-anonymous">{RL.L("ui", "anonymous", "(anonymous)")}</em>'
             if actor.get("is_anonymous") else ""
         )
         sids = _actor_source_ids(actor)
@@ -1468,7 +1484,7 @@ def build_actors_section(tp: dict) -> str:
         if aid in bracket_actor_ids:
             cluster_boxes.append(
                 '<a class="actor-card-cluster-box actor-card-cluster-box--bracket"'
-                ' href="#mentioned-actors">Mentioned actors</a>'
+                f' href="#mentioned-actors">{RL.L("ui", "mentioned_actors", "Mentioned actors")}</a>'
             )
         cluster_refs_html = (
             f'<div class="actor-card-cluster-refs">{"".join(cluster_boxes)}</div>\n'
@@ -1548,7 +1564,7 @@ def build_actors_section(tp: dict) -> str:
 
     return (
         '<section id="actors-section" class="actors">\n'
-        '<h2>Actors</h2>\n'
+        f'<h2>{RL.L("section_heading", "Actors", "Actors")}</h2>\n'
         f'{actors_meta_html}'
         f'{tabs_html}'
         f'{grid_html}'
@@ -1593,14 +1609,14 @@ def build_what_is_missing_section(tp: dict) -> str:
     if not voices and not topics:
         return ""
 
-    parts: list[str] = ["<h2>What is missing</h2>\n"]
+    parts: list[str] = [f'<h2>{RL.L("section_heading", "What is missing", "What is missing")}</h2>\n']
     if voices:
         items = "".join(f"<li>{_esc(v)}</li>" for v in voices)
-        parts.append('<h3>Voices missing</h3>\n')
+        parts.append(f'<h3>{RL.L("section_heading", "Voices missing", "Voices missing")}</h3>\n')
         parts.append(f'<ul class="missing-positions">{items}</ul>\n')
     if topics:
         items = "".join(f"<li>{_esc(t)}</li>" for t in topics)
-        parts.append('<h3>Topics missing</h3>\n')
+        parts.append(f'<h3>{RL.L("section_heading", "Topics missing", "Topics missing")}</h3>\n')
         parts.append(f'<ul class="missing-positions">{items}</ul>\n')
     return "".join(parts)
 
@@ -1615,7 +1631,7 @@ def build_divergences(tp: dict) -> str:
         dtype = d.get("type", "emphasis")
         dcolor = DIVERGENCE_COLORS.get(dtype, "#64748b")
         resolution = d.get("resolution", "unresolved")
-        res_label = RESOLUTION_LABELS.get(resolution, resolution)
+        res_label = RL.L("resolution", resolution, RESOLUTION_LABELS.get(resolution, resolution))
 
         desc = _esc(d.get("description", ""))
         desc = _resolve_source_refs(desc)
@@ -1625,12 +1641,12 @@ def build_divergences(tp: dict) -> str:
 
         items.append(
             f'<div class="divergence">\n'
-            f'  <div class="divergence-header">{_badge(dtype, dcolor)}</div>\n'
+            f'  <div class="divergence-header">{_badge(RL.L("divergence_type", dtype, dtype), dcolor)}</div>\n'
             f'  <div class="divergence-desc">{desc}</div>\n'
             f'  {note_html}\n'
             f'</div>\n'
         )
-    return f'<h2>Divergences</h2>\n{"".join(items)}'
+    return f'<h2>{RL.L("section_heading", "Divergences", "Divergences")}</h2>\n{"".join(items)}'
 
 
 def build_bias_card(tp: dict) -> str:
@@ -1649,7 +1665,7 @@ def build_bias_card(tp: dict) -> str:
     source = bias.get("source", {})
 
     parts = []
-    parts.append('<h2>Bias Analysis</h2>\n')
+    parts.append(f'<h2>{RL.L("section_heading", "Bias Analysis", "Bias Analysis")}</h2>\n')
 
     # Stat line — deterministic aggregates for the dossier.
     cluster_count = framing.get("cluster_count", 0)
@@ -1658,13 +1674,13 @@ def build_bias_card(tp: dict) -> str:
     lang_count = len(by_language)
     parts.append(
         '<p class="bias-stats">'
-        f'<span><strong>{cluster_count}</strong> position clusters</span>'
+        f'<span><strong>{cluster_count}</strong> {RL.noun(cluster_count, "position_clusters", "position clusters")}</span>'
         '<span class="sep">&middot;</span>'
-        f'<span><strong>{distinct_actors}</strong> distinct actors</span>'
+        f'<span><strong>{distinct_actors}</strong> {RL.noun(distinct_actors, "distinct_actors", "distinct actors")}</span>'
         '<span class="sep">&middot;</span>'
-        f'<span><strong>{source_total}</strong> sources</span>'
+        f'<span><strong>{source_total}</strong> {RL.noun(source_total, "sources", "sources")}</span>'
         '<span class="sep">&middot;</span>'
-        f'<span><strong>{lang_count}</strong> languages</span>'
+        f'<span><strong>{lang_count}</strong> {RL.noun(lang_count, "languages", "languages")}</span>'
         '</p>\n'
     )
 
@@ -1673,14 +1689,14 @@ def build_bias_card(tp: dict) -> str:
         parts.append(
             f'<p style="font-family:var(--font-mono);font-size:0.85rem;'
             f'color:var(--color-text-secondary);">'
-            f'{len(findings)} language bias finding{"s" if len(findings) != 1 else ""}'
+            f'{RL.count_noun(len(findings), "language_bias_findings", str(len(findings)) + " language bias finding" + ("s" if len(findings) != 1 else ""))}'
             f'</p>\n'
         )
     else:
         parts.append(
             f'<p style="font-family:var(--font-mono);font-size:0.85rem;'
             f'color:var(--color-text-secondary);">'
-            f'No language bias findings</p>\n'
+            f'{RL.L("ui", "no_language_bias_findings", "No language bias findings")}</p>\n'
         )
 
     # Build findings HTML
@@ -1696,7 +1712,7 @@ def build_bias_card(tp: dict) -> str:
         findings_parts.append(
             f'<div class="bias-finding">\n'
             f'  <span class="bias-excerpt">{_esc(f.get("excerpt", ""))}</span> '
-            f'{_badge(issue, issue_color)}\n'
+            f'{_badge(RL.L("bias_issue", issue, issue), issue_color)}\n'
             f'  <div class="bias-explanation">{_esc(f.get("explanation", ""))}</div>\n'
             f'</div>\n'
         )
@@ -1708,7 +1724,7 @@ def build_bias_card(tp: dict) -> str:
         max_count = max(by_language.values()) if by_language else 1
         bar_parts.append(
             '<h3 style="font-family:var(--font-sans);font-size:1rem;'
-            'margin-top:1.5rem">Source Balance by Language</h3>\n'
+            f'margin-top:1.5rem">{RL.L("section_heading", "Source Balance by Language", "Source Balance by Language")}</h3>\n'
         )
         bar_parts.append('<div class="bar-chart">\n')
         for lang_code, count in sorted(by_language.items(), key=lambda x: -x[1]):
@@ -1730,7 +1746,7 @@ def build_bias_card(tp: dict) -> str:
             f'<summary style="font-family:var(--font-mono);font-size:0.8rem;'
             f'color:var(--color-text-subtle);cursor:pointer;letter-spacing:0.05em;'
             f'text-transform:uppercase;padding:0.5rem 0">'
-            f'Show detailed findings</summary>\n'
+            f'{RL.L("ui", "show_detailed_findings", "Show detailed findings")}</summary>\n'
             f'<div style="margin-top:0.5rem">\n'
             f'{findings_html}'
             f'{bar_html}'
@@ -1897,11 +1913,19 @@ def build_sources_section(tp: dict) -> str:
         s.get("language") for s in sources
         if isinstance(s, dict) and s.get("language")
     })
-    meta_line = (
-        f'{len(sources)} source{"" if len(sources) == 1 else "s"} '
-        f'from {n_outlets} outlet{"" if n_outlets == 1 else "s"} '
-        f'across {n_languages} language{"" if n_languages == 1 else "s"}.'
-    )
+    if RL.get_lang() == "de":
+        _q = "Quelle" if len(sources) == 1 else "Quellen"
+        _m = "Medium" if n_outlets == 1 else "Medien"
+        _s = "Sprache" if n_languages == 1 else "Sprachen"
+        meta_line = (
+            f'{len(sources)} {_q} aus {n_outlets} {_m} in {n_languages} {_s}.'
+        )
+    else:
+        meta_line = (
+            f'{len(sources)} source{"" if len(sources) == 1 else "s"} '
+            f'from {n_outlets} outlet{"" if n_outlets == 1 else "s"} '
+            f'across {n_languages} language{"" if n_languages == 1 else "s"}.'
+        )
 
     blocks: list[str] = []
     for outlet in sorted(by_outlet.keys(), key=str.lower):
@@ -1978,7 +2002,7 @@ def build_sources_section(tp: dict) -> str:
             if actor_links:
                 actor_refs_html = (
                     f'<div class="source-actors-refs">'
-                    f'Actors quoted: {", ".join(actor_links)}'
+                    f'{RL.L("ui", "actors_quoted", "Actors quoted:")} {", ".join(actor_links)}'
                     f'</div>'
                 )
 
@@ -2036,7 +2060,7 @@ def build_sources_section(tp: dict) -> str:
                     )
                 quote_block_html = (
                     '  <details class="source-quotes">\n'
-                    '    <summary>Quote details</summary>\n'
+                    f'    <summary>{RL.L("ui", "quote_details", "Quote details")}</summary>\n'
                     '    <ul class="source-quote-list">'
                     f'{"".join(entry_items)}</ul>\n'
                     '  </details>\n'
@@ -2061,7 +2085,7 @@ def build_sources_section(tp: dict) -> str:
             f'<strong>{_esc(outlet)}</strong> '
             f'<span class="outlet-meta">{outlet_meta}</span> '
             f'<span class="outlet-source-count">'
-            f'{n} source{"" if n == 1 else "s"}'
+            f'{RL.count_noun(n, "sources", str(n) + " source" + ("" if n == 1 else "s"))}'
             f'</span>'
             f'</summary>\n'
             f'<ol class="source-list">\n{"".join(items)}</ol>\n'
@@ -2070,7 +2094,7 @@ def build_sources_section(tp: dict) -> str:
 
     return (
         f'<section id="sources-section" class="sources">\n'
-        f'<h2>Sources</h2>\n'
+        f'<h2>{RL.L("section_heading", "Sources", "Sources")}</h2>\n'
         f'<p class="sources-meta">{meta_line}</p>\n'
         f'<div class="sources-by-outlet">\n{"".join(blocks)}</div>\n'
         f'</section>\n'
@@ -2087,10 +2111,18 @@ def build_transparency(tp: dict) -> str:
     if not t:
         return ""
 
-    parts = ['<div class="transparency">\n<h2>Transparency Trail</h2>\n<dl>\n']
+    parts = [f'<div class="transparency">\n<h2>{RL.L("section_heading", "Transparency Trail", "Transparency Trail")}</h2>\n<dl>\n']
 
-    if t.get("selection_reason"):
-        parts.append(f'<dt>Selection Reason</dt><dd>{_esc(t["selection_reason"])}</dd>\n')
+    # selection_reason is the one reader-facing editorial field in the transparency trail
+    # that is translated (the rest — QA corrections, removed sources — stay English by
+    # design). The German is spliced into metadata.selection_reason (its de-JSON path);
+    # transparency.selection_reason is the untranslated denormalized copy the English page
+    # reads. On the German page prefer the German, falling back to the transparency copy.
+    sel = t.get("selection_reason")
+    if RL.get_lang() == "de":
+        sel = tp.get("metadata", {}).get("selection_reason") or sel
+    if sel:
+        parts.append(f'<dt>{RL.L("ui", "selection_reason", "Selection Reason")}</dt><dd>{_esc(sel)}</dd>\n')
 
     corrections = t.get("qa_corrections", [])
     problems = t.get("qa_problems_found", [])
@@ -2114,7 +2146,7 @@ def build_transparency(tp: dict) -> str:
             ptype = problem.get("problem", "")
             excerpt = problem.get("article_excerpt", "")
             explanation = problem.get("explanation", "")
-            tag_html = f'<span class="qa-tag tag-{tag}">{tag}</span>'
+            tag_html = f'<span class="qa-tag tag-{tag}">{RL.L("ui", f"qa_{tag}", tag)}</span>'
             if ptype or excerpt or explanation:
                 detail_bits = []
                 if ptype:
@@ -2143,11 +2175,12 @@ def build_transparency(tp: dict) -> str:
         # closed so the Transparency-Trail stays scannable; readers
         # expand to see excerpt and explanation per correction.
         outer_summary = (
-            f'QA Corrections &mdash; <strong>{applied_count} applied '
-            f'&middot; {retracted_count} retracted</strong>'
+            f'{RL.L("ui", "qa_corrections", "QA Corrections")} &mdash; '
+            f'<strong>{applied_count} {RL.L("ui", "qa_applied", "applied")} '
+            f'&middot; {retracted_count} {RL.L("ui", "qa_retracted", "retracted")}</strong>'
         )
         parts.append(
-            f'<dt>QA Corrections</dt><dd>'
+            f'<dt>{RL.L("ui", "qa_corrections", "QA Corrections")}</dt><dd>'
             f'<details class="qa-corrections-wrapper">'
             f'<summary>{outer_summary}</summary>'
             f'<ul class="qa-corrections">{"".join(items)}</ul>'
@@ -2166,7 +2199,7 @@ def build_transparency(tp: dict) -> str:
     run = t.get("pipeline_run", {})
     if run:
         parts.append(
-            f'<dt class="pipeline-run">Pipeline Run</dt>'
+            f'<dt class="pipeline-run">{RL.L("ui", "pipeline_run", "Pipeline Run")}</dt>'
             f'<dd class="pipeline-run">{_esc(run.get("run_id", ""))} &middot; {_esc(run.get("date", ""))}</dd>\n'
         )
 
@@ -2189,11 +2222,13 @@ def _dropped_block(
     summary_bits: list[str] = []
     if n_src:
         summary_bits.append(
-            f'{n_src} source{"s" if n_src != 1 else ""} dropped'
+            f'{RL.count_noun(n_src, "sources", str(n_src) + " source" + ("s" if n_src != 1 else ""))}'
+            f' {RL.L("ui", "dropped_word", "dropped")}'
         )
     if n_cls:
         summary_bits.append(
-            f'{n_cls} cluster{"s" if n_cls != 1 else ""} dropped'
+            f'{RL.count_noun(n_cls, "clusters", str(n_cls) + " cluster" + ("s" if n_cls != 1 else ""))}'
+            f' {RL.L("ui", "dropped_word", "dropped")}'
         )
     summary = " &middot; ".join(summary_bits)
 
@@ -2211,7 +2246,7 @@ def _dropped_block(
                 f'</li>'
             )
         body_parts.append(
-            '<p class="dropped-section-label">Sources</p>'
+            f'<p class="dropped-section-label">{RL.L("ui", "dropped_sources_label", "Sources")}</p>'
             f'<ul class="dropped-list">{"".join(items)}</ul>'
         )
     if dropped_clusters:
@@ -2224,12 +2259,12 @@ def _dropped_block(
                 f'<span class="dropped-label">{label}</span></li>'
             )
         body_parts.append(
-            '<p class="dropped-section-label">Clusters</p>'
+            f'<p class="dropped-section-label">{RL.L("ui", "dropped_clusters_label", "Clusters")}</p>'
             f'<ul class="dropped-list">{"".join(items)}</ul>'
         )
 
     return (
-        '<dt>Strict-drop Pruning</dt>'
+        f'<dt>{RL.L("ui", "strict_drop_pruning", "Strict-drop Pruning")}</dt>'
         '<dd><details class="dropped-details">'
         f'<summary>{summary}</summary>'
         '<div class="dropped-detail">'
@@ -2247,108 +2282,81 @@ def build_glossary() -> str:
             f'border:1px solid {color}40">{tag}</span>'
         )
 
-    return (
+    h3 = ('font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; '
+          'margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; '
+          'letter-spacing: 0.05em')
+
+    # (enum_key, badge_color, English definition). English is the source of truth; the
+    # German term + definition are looked up in config/de_render_labels.json.
+    divergence = [
+        ("factual", "#9f1239", "Sources disagree on a verifiable fact: a date, number, name, or whether something happened."),
+        ("framing", "#7c3aed", "Sources describe the same event using different language or implied meaning. Example: one outlet calls a payment &ldquo;compensation,&rdquo; another calls it &ldquo;sanctions relief.&rdquo;"),
+        ("omission", "#ca8a04", "One or more sources report something that other sources leave out entirely."),
+        ("emphasis", "#0369a1", "Sources cover the same event but give different aspects different weight or prominence. Example: one outlet leads with casualty figures; another treats them as a footnote to the political negotiations."),
+    ]
+    bias = [
+        ("evaluative_adjective", "#ca8a04", "A descriptive word that signals the writer&rsquo;s judgment rather than a neutral fact. Examples: &ldquo;staggering,&rdquo; &ldquo;sharp,&rdquo; &ldquo;dramatic.&rdquo;"),
+        ("intensifier", "#0369a1", "A word that amplifies a statement without adding information. Examples: &ldquo;very,&rdquo; &ldquo;extremely,&rdquo; &ldquo;deeply.&rdquo;"),
+        ("loaded_term", "#9f1239", "Vocabulary carrying strong political or emotional connotations that a more neutral word would avoid. Examples: &ldquo;regime&rdquo; vs. &ldquo;government,&rdquo; &ldquo;crackdown&rdquo; vs. &ldquo;enforcement.&rdquo;"),
+        ("hedging", "#64748b", "Phrases that soften or obscure a claim, making attribution less clear. Examples: &ldquo;some say,&rdquo; &ldquo;allegedly,&rdquo; &ldquo;reportedly.&rdquo;"),
+    ]
+    stakeholder = [
+        ("academia", "Researchers, professors, think tanks, and university-based experts."),
+        ("affected_community", "People directly impacted by the events themselves &mdash; civilians, displaced persons, local populations. Voices from within the group, not their spokespersons."),
+        ("civil_society", "Non-state organizations representing collective interests (NGOs, human rights groups, trade unions, religious bodies)."),
+        ("government", "Executive branch officials, ministries, heads of state, and their spokespersons."),
+        ("industry", "Private companies, trade associations, and commercial actors."),
+        ("international_org", "Multilateral bodies and their representatives (UN agencies, IMF, IAEA, Red Cross, regional alliances)."),
+        ("judiciary", "Judges, courts, prosecutors, and legal bodies acting in their official capacity."),
+        ("legislature", "Parliament, Congress, or equivalent body. Kept separate from &ldquo;government&rdquo; because legislatures often hold positions that differ from their own executive branch."),
+        ("media", "Journalists, editorial boards, and outlets quoted for their position or analysis, not as sources of factual reporting."),
+        ("military", "Armed forces personnel, commanders, and defense ministries."),
+    ]
+
+    parts = [
         '<details class="glossary" style="margin-top: 2rem; border-top: 3px solid #000; '
         'padding-top: 1rem">\n'
         '<summary style="font-family: var(--font-mono); font-size: 0.8rem; '
         'color: var(--color-text-subtle); cursor: pointer; letter-spacing: 0.05em; '
         'text-transform: uppercase; padding: 0.5rem 0">'
-        'About these labels</summary>\n'
+        f'{RL.L("ui", "about_labels_summary", "About these labels")}</summary>\n'
         '<div style="margin-top: 0.75rem; font-family: var(--font-mono); '
         'font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6">\n'
         '<p style="margin-bottom: 1rem; font-style: italic">'
-        'Not every tag needs a definition &mdash; those listed below cover the full '
-        'vocabulary used across the dossier.</p>\n'
+        f'{RL.L("ui", "about_labels_intro", "Not every tag needs a definition &mdash; those listed below cover the full vocabulary used across the dossier.")}</p>\n'
+    ]
 
-        '<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; '
-        'margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; '
-        'letter-spacing: 0.05em">Divergence types</h3>\n'
-        '<dl style="margin-bottom: 1rem">\n'
-        f'<dt style="margin-top: 0.5rem">{_gb("factual", "#9f1239")}</dt>'
-        '<dd style="margin-left: 0">Sources disagree on a verifiable fact: a date, number, '
-        'name, or whether something happened.</dd>\n'
-        f'<dt style="margin-top: 0.5rem">{_gb("framing", "#7c3aed")}</dt>'
-        '<dd style="margin-left: 0">Sources describe the same event using different language '
-        'or implied meaning. Example: one outlet calls a payment &ldquo;compensation,&rdquo; '
-        'another calls it &ldquo;sanctions relief.&rdquo;</dd>\n'
-        f'<dt style="margin-top: 0.5rem">{_gb("omission", "#ca8a04")}</dt>'
-        '<dd style="margin-left: 0">One or more sources report something that other sources '
-        'leave out entirely.</dd>\n'
-        f'<dt style="margin-top: 0.5rem">{_gb("emphasis", "#0369a1")}</dt>'
-        '<dd style="margin-left: 0">Sources cover the same event but give different aspects '
-        'different weight or prominence. Example: one outlet leads with casualty figures; '
-        'another treats them as a footnote to the political negotiations.</dd>\n'
-        '</dl>\n'
+    def _section(heading_en, dl_style, rows, term_cat, build_term):
+        out = [f'<h3 style="{h3}">{RL.L("section_heading", heading_en, heading_en)}</h3>\n',
+               f'<dl style="{dl_style}">\n']
+        for row in rows:
+            out.append(build_term(row))
+            key, en_def = row[0], row[-1]
+            out.append(f'<dd style="margin-left: 0">{RL.Ldef(term_cat, key, en_def)}</dd>\n')
+        out.append('</dl>\n')
+        return "".join(out)
 
-        '<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; '
-        'margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; '
-        'letter-spacing: 0.05em">Bias issues</h3>\n'
-        '<dl style="margin-bottom: 1rem">\n'
-        f'<dt style="margin-top: 0.5rem">{_gb("evaluative_adjective", "#ca8a04")}</dt>'
-        '<dd style="margin-left: 0">A descriptive word that signals the writer&rsquo;s '
-        'judgment rather than a neutral fact. Examples: &ldquo;staggering,&rdquo; '
-        '&ldquo;sharp,&rdquo; &ldquo;dramatic.&rdquo;</dd>\n'
-        f'<dt style="margin-top: 0.5rem">{_gb("intensifier", "#0369a1")}</dt>'
-        '<dd style="margin-left: 0">A word that amplifies a statement without adding '
-        'information. Examples: &ldquo;very,&rdquo; &ldquo;extremely,&rdquo; '
-        '&ldquo;deeply.&rdquo;</dd>\n'
-        f'<dt style="margin-top: 0.5rem">{_gb("loaded_term", "#9f1239")}</dt>'
-        '<dd style="margin-left: 0">Vocabulary carrying strong political or emotional '
-        'connotations that a more neutral word would avoid. Examples: &ldquo;regime&rdquo; '
-        'vs. &ldquo;government,&rdquo; &ldquo;crackdown&rdquo; vs. '
-        '&ldquo;enforcement.&rdquo;</dd>\n'
-        f'<dt style="margin-top: 0.5rem">{_gb("hedging", "#64748b")}</dt>'
-        '<dd style="margin-left: 0">Phrases that soften or obscure a claim, making '
-        'attribution less clear. Examples: &ldquo;some say,&rdquo; &ldquo;allegedly,&rdquo; '
-        '&ldquo;reportedly.&rdquo;</dd>\n'
-        '</dl>\n'
+    parts.append(_section(
+        "Divergence types", "margin-bottom: 1rem", divergence, "divergence_type",
+        lambda r: f'<dt style="margin-top: 0.5rem">{_gb(RL.L("divergence_type", r[0], r[0]), r[1])}</dt>'))
+    parts.append(_section(
+        "Bias issues", "margin-bottom: 1rem", bias, "bias_issue",
+        lambda r: f'<dt style="margin-top: 0.5rem">{_gb(RL.L("bias_issue", r[0], r[0]), r[1])}</dt>'))
+    parts.append(_section(
+        "Stakeholder types", "margin-bottom: 0", stakeholder, "actor_type",
+        lambda r: f'<dt style="font-weight: 700; margin-top: 0.5rem">{RL.L("actor_type", r[0], r[0])}</dt>'))
 
-        '<h3 style="font-family: var(--font-sans); font-size: 0.9rem; font-weight: 700; '
-        'margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; '
-        'letter-spacing: 0.05em">Stakeholder types</h3>\n'
-        '<dl style="margin-bottom: 0">\n'
-        '<dt style="font-weight: 700; margin-top: 0.5rem">academia</dt>'
-        '<dd style="margin-left: 0">Researchers, professors, think tanks, and '
-        'university-based experts.</dd>\n'
-        '<dt style="font-weight: 700; margin-top: 0.5rem">affected_community</dt>'
-        '<dd style="margin-left: 0">People directly impacted by the events themselves '
-        '&mdash; civilians, displaced persons, local populations. Voices from within the '
-        'group, not their spokespersons.</dd>\n'
-        '<dt style="font-weight: 700; margin-top: 0.5rem">civil_society</dt>'
-        '<dd style="margin-left: 0">Non-state organizations representing collective '
-        'interests (NGOs, human rights groups, trade unions, religious bodies).</dd>\n'
-        '<dt style="font-weight: 700; margin-top: 0.5rem">government</dt>'
-        '<dd style="margin-left: 0">Executive branch officials, ministries, heads of state, '
-        'and their spokespersons.</dd>\n'
-        '<dt style="font-weight: 700; margin-top: 0.5rem">industry</dt>'
-        '<dd style="margin-left: 0">Private companies, trade associations, and commercial '
-        'actors.</dd>\n'
-        '<dt style="font-weight: 700; margin-top: 0.5rem">international_org</dt>'
-        '<dd style="margin-left: 0">Multilateral bodies and their representatives '
-        '(UN agencies, IMF, IAEA, Red Cross, regional alliances).</dd>\n'
-        '<dt style="font-weight: 700; margin-top: 0.5rem">judiciary</dt>'
-        '<dd style="margin-left: 0">Judges, courts, prosecutors, and legal bodies acting in '
-        'their official capacity.</dd>\n'
-        '<dt style="font-weight: 700; margin-top: 0.5rem">legislature</dt>'
-        '<dd style="margin-left: 0">Parliament, Congress, or equivalent body. Kept separate '
-        'from &ldquo;government&rdquo; because legislatures often hold positions that differ '
-        'from their own executive branch.</dd>\n'
-        '<dt style="font-weight: 700; margin-top: 0.5rem">media</dt>'
-        '<dd style="margin-left: 0">Journalists, editorial boards, and outlets quoted for '
-        'their position or analysis, not as sources of factual reporting.</dd>\n'
-        '<dt style="font-weight: 700; margin-top: 0.5rem">military</dt>'
-        '<dd style="margin-left: 0">Armed forces personnel, commanders, and defense '
-        'ministries.</dd>\n'
-        '</dl>\n'
-        '</div>\n'
-        '</details>\n'
-    )
+    parts.append('</div>\n')
+    parts.append('</details>\n')
+    return "".join(parts)
 
 
 def build_footer() -> str:
     return (
         '<footer>\n'
         '<div class="footer-text">\n'
+        # Brand furniture — stays ENGLISH on both EN and DE pages (operator decision;
+        # not routed through the DE label lookup).
         '<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>\n'
         '<p>This content was produced by AI agents</p>\n'
         '<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>\n'
@@ -2363,21 +2371,40 @@ def build_footer() -> str:
 # Main
 # ---------------------------------------------------------------------------
 
-def render(tp: dict) -> str:
-    """Render a Topic Package dict to a self-contained HTML string."""
+def render(tp: dict, lang: str = "en", lang_hrefs: dict | None = None) -> str:
+    """Render a Topic Package dict to a self-contained HTML string.
+
+    lang='de' renders the German page: German prose is already spliced into ``tp`` (by the
+    German publisher) and every controlled-vocabulary label is looked up in
+    config/de_render_labels.json. English (the default) is unchanged. ``lang_hrefs`` sets
+    the DE/EN switch targets; the default assumes the file is served from site/reports/
+    (en) or site/de/reports/ (de)."""
+    RL.set_lang(lang)
     css = build_css()
     headline = tp.get("article", {}).get("headline", "Independent Wire")
     tp_id = tp.get("id", "")
     canonical = f"{SITE_BASE}/reports/{tp_id}.html"
 
+    if lang_hrefs is None:
+        if lang == "de":
+            lang_hrefs = {"en": f"../../reports/{tp_id}.html", "de": f"{tp_id}.html"}
+        else:
+            lang_hrefs = {"en": f"{tp_id}.html", "de": f"../de/reports/{tp_id}.html"}
+    switch = RL.build_lang_switch(lang, lang_hrefs["en"], lang_hrefs["de"])
+    all_dossiers = RL.L("ui", "back_nav_all_dossiers", "ALL DOSSIERS")
+
     top_bar = (
         '<div class="top-bar">\n'
-        '<nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>\n'
+        f'<nav class="back-nav"><a href="../index.html">&larr; {all_dossiers}</a></nav>\n'
+        '<div class="top-bar-right">\n'
+        f'{switch}'
         f'<button class="share-btn" data-url="{_esc(canonical)}" '
         f'data-title="{_esc(headline)}">Share</button>\n'
         '</div>\n'
+        '</div>\n'
     )
-    back_nav_bottom = '<nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>\n'
+    back_nav_bottom = (f'<nav class="back-nav back-nav-bottom">'
+                       f'<a href="../index.html">&larr; {all_dossiers}</a></nav>\n')
 
     sections = [
         top_bar,
@@ -2405,9 +2432,9 @@ def render(tp: dict) -> str:
 
     body = "\n".join(s for s in sections if s)
 
-    return (
+    html_out = (
         f'<!DOCTYPE html>\n'
-        f'<html lang="en">\n'
+        f'<html lang="{RL.html_lang()}">\n'
         f'<head>\n'
         f'<meta charset="utf-8">\n'
         f'<meta name="viewport" content="width=device-width, initial-scale=1">\n'
@@ -2426,6 +2453,8 @@ def render(tp: dict) -> str:
         f'</body>\n'
         f'</html>\n'
     )
+    RL.set_lang("en")   # reset module label-context so the next render starts clean
+    return html_out
 
 
 def main():

@@ -1,0 +1,207 @@
+{
+  "_schema": {
+    "version": "0.1",
+    "status": "beta-draft",
+    "description": "German render-label map for the standalone German page. Controlled vocabularies (fixed enum keys) and fixed structural UI strings that the German translator never touches are looked up here by the (future) German renderer: labels[category][english_enum_key] -> German label. Keys are the English enum/identifier exactly as used in scripts/render.py / scripts/publish.py; values are a FIRST German rendering for operator refinement (the 'beta' tag on the German page makes this provisional). Mirrors the _schema-header convention of config/outlet_registry.json. Source enumeration + file:line locations: LABEL-MAP-REPORT.md. This file is data only — nothing consumes it yet (the German renderer is the next task).",
+    "source_files": ["scripts/render.py", "scripts/publish.py"],
+    "generated": "2026-06-19",
+    "structure": "Each top-level key is a category. Enum categories key on the English enum value; UI categories key on a stable identifier whose English source string + location is documented in LABEL-MAP-REPORT.md. Dynamically composed strings (count+noun f-strings, dates) are NOT here — see the report's coverage-check.",
+    "notes": [
+      "actor_type doubles as the Actors-section tab labels (renderer uppercases, '_'->' ') and the badge text; '_other' is the OTHER-tab / fallback group.",
+      "bias_issue lists all six schema enum values; only four (evaluative_adjective, intensifier, loaded_term, hedging) carry an English legend in render.py — emotionalizing and passive_obscuring render as a bare badge.",
+      "significance is currently colour-only in render.py (no text label is printed); German provided defensively in case the renderer adds labels.",
+      "definitions[*] are first-draft German of the 'About these labels' expandable copy — long prose, refine carefully."
+    ]
+  },
+
+  "actor_type": {
+    "government": "Regierung",
+    "legislature": "Legislative",
+    "judiciary": "Judikative",
+    "military": "Militär",
+    "industry": "Wirtschaft",
+    "civil_society": "Zivilgesellschaft",
+    "academia": "Wissenschaft",
+    "media": "Medien",
+    "international_org": "Internationale Organisation",
+    "affected_community": "Betroffene Gemeinschaft",
+    "_other": "Sonstige"
+  },
+
+  "divergence_type": {
+    "factual": "Fakten",
+    "framing": "Rahmung",
+    "omission": "Auslassung",
+    "emphasis": "Gewichtung"
+  },
+
+  "resolution": {
+    "resolved": "Geklärt",
+    "partially_resolved": "Teilweise geklärt",
+    "unresolved": "Ungeklärt"
+  },
+
+  "position_classifier": {
+    "stated": "Geäußert",
+    "reported": "Berichtet",
+    "mentioned": "Erwähnt"
+  },
+
+  "bias_issue": {
+    "evaluative_adjective": "Wertendes Adjektiv",
+    "intensifier": "Verstärker",
+    "loaded_term": "Wertbesetzter Begriff",
+    "hedging": "Abschwächung",
+    "emotionalizing": "Emotionalisierung",
+    "passive_obscuring": "Verschleierndes Passiv"
+  },
+
+  "bias_dimension": {
+    "language": "Sprache",
+    "source": "Quellen",
+    "framing": "Rahmung",
+    "selection": "Auswahl",
+    "geographical": "Geografie"
+  },
+
+  "significance": {
+    "critical": "Kritisch",
+    "notable": "Bemerkenswert",
+    "minor": "Gering"
+  },
+
+  "section_heading": {
+    "Source Distribution": "Quellenverteilung",
+    "Perspectives — Positions": "Perspektiven – Positionen",
+    "Actors": "Akteure",
+    "What is missing": "Was fehlt",
+    "Voices missing": "Fehlende Stimmen",
+    "Topics missing": "Fehlende Themen",
+    "Divergences": "Abweichungen",
+    "Bias Analysis": "Verzerrungsanalyse",
+    "Source Balance by Language": "Quellenbalance nach Sprache",
+    "Sources": "Quellen",
+    "Transparency Trail": "Transparenz-Protokoll",
+    "Divergence types": "Arten von Abweichungen",
+    "Bias issues": "Verzerrungsarten",
+    "Stakeholder types": "Akteurstypen"
+  },
+
+  "meta_bar": {
+    "Sources": "Quellen",
+    "Languages": "Sprachen",
+    "Stakeholders": "Akteure",
+    "Divergences": "Abweichungen"
+  },
+
+  "ui": {
+    "share_button": "Teilen",
+    "share_copied": "Kopiert",
+    "back_nav_all_dossiers": "ALLE DOSSIERS",
+    "about_labels_summary": "Über diese Kennzeichnungen",
+    "about_labels_intro": "Nicht jede Kennzeichnung braucht eine Definition – die unten aufgeführten decken das gesamte im Dossier verwendete Vokabular ab.",
+    "show_detailed_findings": "Detaillierte Befunde anzeigen",
+    "no_language_bias_findings": "Keine sprachlichen Verzerrungen gefunden",
+    "quote_details": "Zitatdetails",
+    "selection_reason": "Auswahlgrund",
+    "qa_corrections": "QA-Korrekturen",
+    "qa_applied": "angewendet",
+    "qa_retracted": "zurückgezogen",
+    "pipeline_run": "Pipeline-Lauf",
+    "strict_drop_pruning": "Strikte Quellenbereinigung",
+    "dropped_sources_label": "Quellen",
+    "dropped_clusters_label": "Cluster",
+    "mentioned_actors": "Erwähnte Akteure",
+    "single_voices_bracket_tag": "Klammer",
+    "editorial_position_attributed_to": "Redaktionell vertreten durch:",
+    "follow_up_to": "Folgebericht zu:",
+    "country_unknown": "Unbekannt",
+    "not_yet_categorized": "noch nicht eingestuft",
+    "read_dossier": "DOSSIER LESEN",
+    "read": "LESEN",
+    "tier_today": "HEUTE",
+    "tier_yesterday": "GESTERN",
+    "tier_earlier": "FRÜHER",
+    "tier_archive": "ARCHIV",
+    "index_src_label": "QLN",
+    "index_src_abbrev": "Qln",
+    "dossier_singular": "DOSSIER",
+    "dossier_plural": "DOSSIERS",
+    "words": "Wörter",
+    "nav_home": "Startseite",
+    "nav_about": "Über uns",
+    "nav_rss": "RSS-Feed",
+    "nav_vision_pdf": "Vision (PDF)",
+    "nav_legal_notice": "Impressum",
+    "nav_privacy": "Datenschutz",
+    "footer_generated_prefix": "Erstellt von",
+    "actors_quoted": "Zitierte Akteure:",
+    "dropped_word": "entfernt",
+    "anonymous": "(anonym)",
+    "actor_tab_all": "ALLE",
+    "noted_verb": "vermerkt",
+    "footer_generated_by": "Erstellt von Independent Wire",
+    "footer_ai_produced": "Diese Inhalte wurden von KI-Agenten erstellt",
+    "footer_license": "AGPL-3.0 – Weil Transparenz kein Feature ist, sondern ein Versprechen",
+    "footer_rss": "RSS-Feed",
+    "tagline": "Eine unabhängige Nachrichtenredaktion – Offen · Transparent · Für alle",
+    "site_title": "Independent Wire"
+  },
+
+  "month_name": {
+    "1": "Januar", "2": "Februar", "3": "März", "4": "April",
+    "5": "Mai", "6": "Juni", "7": "Juli", "8": "August",
+    "9": "September", "10": "Oktober", "11": "November", "12": "Dezember"
+  },
+
+  "count_noun": {
+    "_note": "German '{n} {one|other}' forms for the composed count strings the renderer builds (render.py:_plural does English '+s' only). Used via render_labels.count_noun(n, key, en_default).",
+    "sources": {"one": "Quelle", "other": "Quellen"},
+    "languages": {"one": "Sprache", "other": "Sprachen"},
+    "regions": {"one": "Region", "other": "Regionen"},
+    "actors": {"one": "Akteur", "other": "Akteure"},
+    "position_clusters": {"one": "Positionscluster", "other": "Positionscluster"},
+    "clusters": {"one": "Cluster", "other": "Cluster"},
+    "distinct_actors": {"one": "unterschiedlicher Akteur", "other": "unterschiedliche Akteure"},
+    "words": {"one": "Wort", "other": "Wörter"},
+    "language_bias_findings": {"one": "sprachlicher Verzerrungsbefund", "other": "sprachliche Verzerrungsbefunde"},
+    "dossiers": {"one": "DOSSIER", "other": "DOSSIERS"}
+  },
+
+  "definitions": {
+    "divergence_type": {
+      "factual": "Quellen widersprechen sich bei einer überprüfbaren Tatsache: einem Datum, einer Zahl, einem Namen oder der Frage, ob etwas geschehen ist.",
+      "framing": "Quellen beschreiben dasselbe Ereignis mit unterschiedlicher Sprache oder unterschiedlicher impliziter Bedeutung. Beispiel: Ein Medium nennt eine Zahlung „Entschädigung“, ein anderes „Lockerung von Sanktionen“.",
+      "omission": "Eine oder mehrere Quellen berichten etwas, das andere Quellen vollständig weglassen.",
+      "emphasis": "Quellen behandeln dasselbe Ereignis, gewichten einzelne Aspekte aber unterschiedlich stark. Beispiel: Ein Medium führt mit Opferzahlen auf, ein anderes behandelt sie als Fußnote zu den politischen Verhandlungen."
+    },
+    "bias_issue": {
+      "evaluative_adjective": "Ein beschreibendes Wort, das eher das Urteil der Verfasserin signalisiert als eine neutrale Tatsache. Beispiele: „erschütternd“, „scharf“, „dramatisch“.",
+      "intensifier": "Ein Wort, das eine Aussage verstärkt, ohne Information hinzuzufügen. Beispiele: „sehr“, „äußerst“, „zutiefst“.",
+      "loaded_term": "Vokabular mit starken politischen oder emotionalen Konnotationen, die ein neutraleres Wort vermeiden würde. Beispiele: „Regime“ statt „Regierung“, „hartes Durchgreifen“ statt „Durchsetzung“.",
+      "hedging": "Formulierungen, die eine Aussage abschwächen oder verschleiern und die Zuschreibung weniger klar machen. Beispiele: „manche sagen“, „angeblich“, „Berichten zufolge“."
+    },
+    "actor_type": {
+      "academia": "Forschende, Professorinnen und Professoren, Denkfabriken und universitäre Expertinnen und Experten.",
+      "affected_community": "Menschen, die unmittelbar von den Ereignissen betroffen sind – Zivilbevölkerung, Vertriebene, lokale Bevölkerungsgruppen. Stimmen aus der Gruppe selbst, nicht ihrer Sprecherinnen und Sprecher.",
+      "civil_society": "Nichtstaatliche Organisationen, die kollektive Interessen vertreten (NGOs, Menschenrechtsgruppen, Gewerkschaften, religiöse Einrichtungen).",
+      "government": "Vertreterinnen und Vertreter der Exekutive, Ministerien, Staatsoberhäupter und deren Sprecherinnen und Sprecher.",
+      "industry": "Private Unternehmen, Branchenverbände und kommerzielle Akteure.",
+      "international_org": "Multilaterale Gremien und ihre Vertretungen (UN-Organisationen, IWF, IAEA, Rotes Kreuz, regionale Bündnisse).",
+      "judiciary": "Richterinnen und Richter, Gerichte, Staatsanwaltschaften und Justizorgane in amtlicher Funktion.",
+      "legislature": "Parlament, Kongress oder ein vergleichbares Gremium. Bewusst von „Regierung“ getrennt, da Legislativen oft Positionen vertreten, die von ihrer eigenen Exekutive abweichen.",
+      "media": "Journalistinnen und Journalisten, Redaktionen und Medien, die für ihre Position oder Analyse zitiert werden, nicht als Quelle faktischer Berichterstattung.",
+      "military": "Angehörige der Streitkräfte, Befehlshaber und Verteidigungsministerien."
+    }
+  },
+
+  "de_page_specific": {
+    "_note": "NOT from the English render path — German-page additions the renderer will need (the 'beta' translation tag, the DE/EN switch). Seeded first-draft for the next task.",
+    "machine_translation_beta": "Maschinelle Übersetzung (Beta)",
+    "machine_translation_notice": "Diese Seite wurde maschinell ins Deutsche übersetzt und kann Fehler enthalten.",
+    "lang_switch_to_english": "English",
+    "lang_switch_to_german": "Deutsch",
+    "lang_code_en": "EN",
+    "lang_code_de": "DE"
+  }
+}

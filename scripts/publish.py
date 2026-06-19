@@ -11,6 +11,8 @@ from email.utils import format_datetime
 from pathlib import Path
 from xml.sax.saxutils import escape as xml_escape
 
+from scripts import render_labels as RL
+
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -94,8 +96,11 @@ def remove_pre_cutoff_reports(reports_dir: Path, cutoff: str | None) -> int:
 
 
 def _format_date(date_str: str) -> str:
-    """Format '2026-04-13' as 'April 13, 2026'."""
+    """Format '2026-04-13' as 'April 13, 2026' (en) / '13. April 2026' (de).
+    German months come from the label map, not the locale."""
     dt = datetime.strptime(date_str, "%Y-%m-%d")
+    if RL.get_lang() == "de":
+        return f"{dt.day}. {RL.month_name(dt.month, dt.strftime('%B'))} {dt.year}"
     return dt.strftime("%B %d, %Y").replace(" 0", " ")
 
 
@@ -241,7 +246,7 @@ def build_card(meta: dict, index: int, reports_dir: Path | None = None) -> str:
             )
         follow_up_hint = (
             f'  <div class="follow-up-hint">'
-            f'<span class="follow-up-label">Follow-up to:</span> '
+            f'<span class="follow-up-label">{RL.L("ui", "follow_up_to", "Follow-up to:")}</span> '
             f'{headline_html} '
             f'<span class="follow-up-date">({formatted_date})</span>'
             f'</div>\n'
@@ -252,12 +257,12 @@ def build_card(meta: dict, index: int, reports_dir: Path | None = None) -> str:
   <p class="subheadline">{_esc(meta['subheadline'])}</p>
   <p class="summary">{_esc(meta['summary'])}</p>
 {follow_up_hint}  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">{meta['sources_count']}</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">{meta['languages_count']}</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">{meta['stakeholders_count']}</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">{meta['divergences_count']}</span><span class="meta-label">Divergences</span></div>
+    <div class="meta-item"><span class="meta-number">{meta['sources_count']}</span><span class="meta-label">{RL.L("meta_bar", "Sources", "Sources")}</span></div>
+    <div class="meta-item"><span class="meta-number">{meta['languages_count']}</span><span class="meta-label">{RL.L("meta_bar", "Languages", "Languages")}</span></div>
+    <div class="meta-item"><span class="meta-number">{meta['stakeholders_count']}</span><span class="meta-label">{RL.L("meta_bar", "Stakeholders", "Stakeholders")}</span></div>
+    <div class="meta-item"><span class="meta-number">{meta['divergences_count']}</span><span class="meta-label">{RL.L("meta_bar", "Divergences", "Divergences")}</span></div>
   </div>
-  <div class="card-footer"><span>{meta['word_count']:,} words &middot; {_format_date(meta['date'])}</span><a href="{_esc(meta['html_filename'])}" class="read-link">&rarr; READ DOSSIER</a></div>
+  <div class="card-footer"><span>{meta['word_count']:,} {RL.L("ui", "words", "words")} &middot; {_format_date(meta['date'])}</span><a href="{_esc(meta['html_filename'])}" class="read-link">&rarr; {RL.L("ui", "read_dossier", "READ DOSSIER")}</a></div>
 </article>"""
 
 
@@ -288,7 +293,7 @@ def _bucket_bar(label: str, count: int, *, light: bool = False) -> str:
     cls = "bucket-bar bucket-bar-light" if light else "bucket-bar"
     return (
         f'<div class="{cls}"><span>{_esc(label)}</span>'
-        f'<span>{count} DOSSIER{plural}</span></div>\n'
+        f'<span>{RL.count_noun(count, "dossiers", str(count) + " DOSSIER" + plural)}</span></div>\n'
     )
 
 
@@ -305,7 +310,7 @@ def build_card_mid(meta: dict, reports_dir: Path | None = None) -> str:
   <span class="topic-id">{_esc(meta['id'])}</span>
   <h3><a href="{_esc(meta['html_filename'])}">{_esc(meta['headline'])}</a></h3>
   <p class="subheadline-mid">{_esc(meta['subheadline'])}</p>
-  <div class="card-footer"><span class="mid-stats"><b>{meta['sources_count']}</b> Sources &middot; <b>{meta['languages_count']}</b> Languages &middot; <b>{meta['stakeholders_count']}</b> Stakeholders &middot; <b>{meta['divergences_count']}</b> Divergences</span><a href="{_esc(meta['html_filename'])}" class="read-link">&rarr; READ</a></div>
+  <div class="card-footer"><span class="mid-stats"><b>{meta['sources_count']}</b> {RL.L("meta_bar", "Sources", "Sources")} &middot; <b>{meta['languages_count']}</b> {RL.L("meta_bar", "Languages", "Languages")} &middot; <b>{meta['stakeholders_count']}</b> {RL.L("meta_bar", "Stakeholders", "Stakeholders")} &middot; <b>{meta['divergences_count']}</b> {RL.L("meta_bar", "Divergences", "Divergences")}</span><a href="{_esc(meta['html_filename'])}" class="read-link">&rarr; {RL.L("ui", "read", "READ")}</a></div>
 </article>"""
 
 
@@ -318,7 +323,7 @@ def build_card_compact(meta: dict) -> str:
     <h4 class="compact-headline"><a href="{_esc(meta['html_filename'])}">{_esc(meta['headline'])}</a></h4>
     <span class="compact-sub">{_esc(meta['subheadline'])}</span>
   </div>
-  <div class="compact-src"><span class="compact-src-num">{meta['sources_count']}</span><span class="compact-src-label">SRC</span></div>
+  <div class="compact-src"><span class="compact-src-num">{meta['sources_count']}</span><span class="compact-src-label">{RL.L("ui", "index_src_label", "SRC")}</span></div>
 </div>"""
 
 
@@ -328,7 +333,7 @@ def build_archive_row(meta: dict) -> str:
     return f"""<div class="archive-row">
   <span class="archive-id">{_esc(_short_id(meta['id']))}</span>
   <a class="archive-headline" href="{_esc(meta['html_filename'])}">{_esc(meta['headline'])}</a>
-  <span class="archive-src">{meta['sources_count']}<span class="archive-src-label">&nbsp;src</span></span>
+  <span class="archive-src">{meta['sources_count']}<span class="archive-src-label">&nbsp;{RL.L("ui", "index_src_abbrev", "src")}</span></span>
 </div>"""
 
 
@@ -357,21 +362,21 @@ def _build_tiers(all_meta: list[dict], reports_dir: Path | None) -> str:
     # TIER 0 — TODAY: full hero cards (reuse build_card unchanged). Per-tier
     # index resets to 1 so the first hero reads TOPIC 01.
     if tier0:
-        html += _bucket_bar("TODAY", len(tier0))
+        html += _bucket_bar(RL.L("ui", "tier_today", "TODAY"), len(tier0))
         for i, meta in enumerate(tier0, start=1):
             html += build_card(meta, i, reports_dir) + "\n"
 
     # TIER 1 — YESTERDAY: one date sub-marker (age==1 is always a single
     # calendar day), then mid cards.
     if tier1:
-        html += _bucket_bar("YESTERDAY", len(tier1))
+        html += _bucket_bar(RL.L("ui", "tier_yesterday", "YESTERDAY"), len(tier1))
         html += f'<div class="day-submarker">{_format_date(tier1[0]["date"])}</div>\n'
         for meta in tier1:
             html += build_card_mid(meta, reports_dir) + "\n"
 
     # TIER 2 — EARLIER: compact rows, grouped by day with a light sub-marker.
     if tier2:
-        html += _bucket_bar("EARLIER", len(tier2))
+        html += _bucket_bar(RL.L("ui", "tier_earlier", "EARLIER"), len(tier2))
         current_day: str | None = None
         for meta in tier2:
             if meta["date"] != current_day:
@@ -383,14 +388,17 @@ def _build_tiers(all_meta: list[dict], reports_dir: Path | None) -> str:
 
     # TIER 3 — ARCHIVE: one <details> accordion per calendar month, newest open.
     if tier3:
-        html += _bucket_bar("ARCHIVE", len(tier3), light=True)
+        html += _bucket_bar(RL.L("ui", "tier_archive", "ARCHIVE"), len(tier3), light=True)
         by_month: dict[str, list[dict]] = {}
         for meta in tier3:  # already date-desc / id-asc from _sort_tier
             by_month.setdefault(meta["date"][:7], []).append(meta)
         for month_idx, month_key in enumerate(sorted(by_month.keys(), reverse=True)):
             rows = by_month[month_key]
+            _mdt = datetime.strptime(month_key, "%Y-%m")
             month_label = (
-                datetime.strptime(month_key, "%Y-%m").strftime("%B %Y").upper()
+                f"{RL.month_name(_mdt.month, _mdt.strftime('%B'))} {_mdt.year}".upper()
+                if RL.get_lang() == "de"
+                else _mdt.strftime("%B %Y").upper()
             )
             count = len(rows)
             plural = "S" if count != 1 else ""
@@ -400,7 +408,7 @@ def _build_tiers(all_meta: list[dict], reports_dir: Path | None) -> str:
                 f'<details class="archive-month"{open_attr}>\n'
                 f'<summary class="archive-month-summary">'
                 f'<span class="archive-month-title">{month_label}</span>'
-                f'<span class="archive-month-count">{count} DOSSIER{plural}</span>'
+                f'<span class="archive-month-count">{RL.count_noun(count, "dossiers", str(count) + " DOSSIER" + plural)}</span>'
                 f'</summary>\n'
                 f'<div class="archive-month-body">\n{rows_html}</div>\n'
                 f'</details>\n'
@@ -409,7 +417,8 @@ def _build_tiers(all_meta: list[dict], reports_dir: Path | None) -> str:
     return html
 
 
-def build_index(all_meta: list[dict], reports_dir: Path | None = None) -> str:
+def build_index(all_meta: list[dict], reports_dir: Path | None = None,
+                lang: str = "en", lang_hrefs: dict | None = None) -> str:
     """Build the full index.html content.
 
     ``reports_dir`` is forwarded to ``build_card`` so follow-up links
@@ -418,11 +427,16 @@ def build_index(all_meta: list[dict], reports_dir: Path | None = None) -> str:
     """
     # Age-tiered "decay" layout (TODAY / YESTERDAY / EARLIER / ARCHIVE),
     # anchored to the newest dossier date in the set. See ``_build_tiers``.
+    RL.set_lang(lang)
+    if lang_hrefs is None:
+        lang_hrefs = ({"en": "../index.html", "de": "index.html"} if lang == "de"
+                      else {"en": "index.html", "de": "de/index.html"})
+    lang_switch = RL.build_lang_switch(lang, lang_hrefs["en"], lang_hrefs["de"])
     cards_html = _build_tiers(all_meta, reports_dir)
 
     og_image = f"{SITE_BASE}/assets/og-card.svg"
-    return f"""<!DOCTYPE html>
-<html lang="en">
+    _index_html = f"""<!DOCTYPE html>
+<html lang="{RL.html_lang()}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -905,6 +919,7 @@ footer a {{
   .tp-card-mid .card-footer {{ flex-wrap: wrap; gap: 0.3rem 0.6rem; }}
   .mid-stats {{ font-size: 0.65rem; }}
 }}
+{RL.lang_switch_css()}
 </style>
 </head>
 <body>
@@ -914,7 +929,7 @@ footer a {{
     <h1>Independent Wire</h1>
     <p class="tagline">An independent newsroom &mdash; Open &middot; Transparent &middot; For everyone</p>
   </div>
-  <button class="share-btn" data-url="{SITE_BASE}/" data-title="{SITE_TITLE}">Share</button>
+  <div class="top-bar-right">{lang_switch}<button class="share-btn" data-url="{SITE_BASE}/" data-title="{SITE_TITLE}">Share</button></div>
 </header>
 
 <main>
@@ -951,6 +966,8 @@ document.querySelectorAll('.share-btn').forEach(btn => {{
 </script>
 </body>
 </html>"""
+    RL.set_lang("en")
+    return _index_html
 
 
 # ---------------------------------------------------------------------------
