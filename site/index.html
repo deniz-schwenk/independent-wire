@@ -482,6 +482,33 @@ footer a {
   .tp-card-mid .card-footer { flex-wrap: wrap; gap: 0.3rem 0.6rem; }
   .mid-stats { font-size: 0.65rem; }
 }
+
+/* Language switch (DE/EN) — fixed next to the share button on both page types */
+.top-bar-right { display: inline-flex; align-items: center; gap: 0.6rem; }
+.lang-switch {
+  display: inline-flex; align-items: stretch;
+  border: 1.5px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.lang-switch .lang-opt {
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 0.7rem; min-height: 44px; min-width: 3.2rem;
+  color: #000; text-decoration: none; background: transparent;
+  text-align: center;
+}
+.lang-switch .lang-opt + .lang-opt { border-left: 1.5px solid #000; }
+.lang-switch .lang-opt--active { background: #000; color: #fff; }
+.lang-switch .lang-opt:hover:not(.lang-opt--active) { background: #f0f0f0; }
+.lang-switch .lang-code { display: block; line-height: 1; }
+.lang-switch .lang-beta {
+  display: block; font-size: 0.5rem; margin: 1px 0 0 0; line-height: 1;
+  text-transform: lowercase; opacity: 0.85;
+}
+.lang-switch .lang-opt--active .lang-beta { color: #fff; }
+
 </style>
 </head>
 <body>
@@ -491,71 +518,97 @@ footer a {
     <h1>Independent Wire</h1>
     <p class="tagline">An independent newsroom &mdash; Open &middot; Transparent &middot; For everyone</p>
   </div>
-  <button class="share-btn" data-url="https://independent-wire.org/" data-title="Independent Wire">Share</button>
+  <div class="top-bar-right"><div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt lang-opt--active" href="index.html" aria-current="page"><span class="lang-code">en</span></a><a class="lang-opt" href="de/index.html"><span class="lang-code">de</span><sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/" data-title="Independent Wire">Share</button></div>
 </header>
 
 <main>
 <div class="bucket-bar"><span>TODAY</span><span>3 DOSSIERS</span></div>
 <article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-06-19-001</span>
-  <h2><a href="reports/tp-2026-06-19-001.html">Andy Burnham Wins Makerfield By-Election With 55% of the Vote, Setting Stage for Labour Leadership Contest</a></h2>
-  <p class="subheadline">The Greater Manchester mayor returned to Parliament with a 9,000-vote margin over Reform UK, declaring Labour faces its &#x27;final chance to change&#x27; as Prime Minister Starmer vows to fight any challenge.</p>
-  <p class="summary">Andy Burnham won the Makerfield by-election with nearly 55% of the vote, defeating Reform UK by more than 9,000 votes and returning to Parliament after a decade. Prime Minister Keir Starmer rejected calls to resign and offered Burnham a Cabinet role, while former Health Secretary Wes Streeting signalled readiness to force a leadership contest. Electoral analysts disagreed on whether Burnham&#x27;s coalition of anti-Reform tactical voters and disaffected Labour supporters can be replicated nationally.</p>
+  <span class="topic-id">TOPIC 01 / tp-2026-06-20-001</span>
+  <h2><a href="reports/tp-2026-06-20-001.html">US-Iran Talks Postponed and New Hezbollah Ceasefire Announced as Israeli Strikes Continue in Lebanon</a></h2>
+  <p class="subheadline">Iran conditioned its return to negotiations on a halt to Israeli military operations in Lebanon; a US- and Qatar-brokered truce took effect Friday but was violated within hours.</p>
+  <p class="summary">US-Iran implementation talks in Switzerland were postponed after Iran conditioned its participation on a halt to Israeli strikes in Lebanon, and a new US- and Qatar-brokered ceasefire between Israel and Hezbollah was announced but violated within hours by further Israeli airstrikes. Iran framed the Lebanon front as a test of US credibility, while Israel insisted on full operational freedom until Hezbollah is dismantled, and the Trump administration publicly pressured Israel to respect the peace process. New Israel-Lebanon talks are scheduled in Washington for June 23–25.</p>
+  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-06-14-002.html" class="follow-up-link">&ldquo;Trump Sets Sunday Signing Date for Iran Deal; Tehran Says It Will Not Happen Tomorrow&rdquo;</a> <span class="follow-up-date">(June 14, 2026)</span></div>
   <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">22</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">4</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">16</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+    <div class="meta-item"><span class="meta-number">41</span><span class="meta-label">Sources</span></div>
+    <div class="meta-item"><span class="meta-number">9</span><span class="meta-label">Languages</span></div>
+    <div class="meta-item"><span class="meta-number">64</span><span class="meta-label">Stakeholders</span></div>
+    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Divergences</span></div>
   </div>
-  <div class="card-footer"><span>1,034 words &middot; June 19, 2026</span><a href="reports/tp-2026-06-19-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
+  <div class="card-footer"><span>1,171 words &middot; June 20, 2026</span><a href="reports/tp-2026-06-20-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
 </article>
 <article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-06-19-002</span>
-  <h2><a href="reports/tp-2026-06-19-002.html">Al-Qaeda-Linked Gunmen Attack Niamey Airport for Second Time in Six Months, Killing 11 Soldiers and 2 Civilians</a></h2>
-  <p class="subheadline">Niger&#x27;s junta says it repelled the assault and killed 22 attackers; JNIM claims a suicide operation as competing narratives over foreign sponsorship, Russian military support, and persistent security gaps frame the aftermath.</p>
-  <p class="summary">JNIM, an al-Qaeda-affiliated group, carried out what it described as a suicide attack on Niamey&#x27;s international airport on June 18, killing 11 Nigerien soldiers and 2 civilians; security forces killed 22 assailants and arrested 20 suspects. The assault was the second major breach of the airport in six months, following a January attack attributed to the Islamic State, and has generated competing narratives — Niger&#x27;s junta accuses France and regional neighbors of sponsoring destabilization, France dismisses the charge as information warfare, and Russian state media highlights the Africa Corps&#x27; role in the earlier defense. The airport was reported operational by the evening of June 18, with a large-scale security operation continuing in the area.</p>
+  <span class="topic-id">TOPIC 02 / tp-2026-06-20-002</span>
+  <h2><a href="reports/tp-2026-06-20-002.html">Ukraine Strikes Moscow Oil Refinery in Record Drone Assault as Russia Claims High Interception Rates</a></h2>
+  <p class="subheadline">The two-day barrage forced an indefinite refinery shutdown and flight cancellations across the Russian capital, while independent analysts and Kremlin officials offered starkly different accounts of air-defense performance.</p>
+  <p class="summary">Ukraine carried out its largest-ever drone attack on Moscow over two days in June 2026, hitting the Moscow Oil Refinery and forcing an indefinite shutdown that triggered fuel-shortage fears and flight cancellations. The Kremlin praised its air-defense performance and dismissed the strikes as ineffective for negotiations, while independent military analysts cited video evidence and technical deficiencies in the Pantsir-S1 system to argue that Moscow&#x27;s defenses were overwhelmed. Economic analysts reported falling Urals crude prices and spreading fuel rationing across Russian regions, and Western allies pledged billions in military aid as the U.S. confirmed intelligence support for Ukrainian deep strikes.</p>
   <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">16</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">13</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>727 words &middot; June 19, 2026</span><a href="reports/tp-2026-06-19-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-06-19-003</span>
-  <h2><a href="reports/tp-2026-06-19-003.html">Cuba&#x27;s Communist Party Approves Package of Nearly 200 Free-Market Economic Reforms</a></h2>
-  <p class="subheadline">The measures — the largest overhaul of Cuba&#x27;s socialist model since 1959 — draw endorsement from Raúl Castro and conditional interest from Washington, while skeptics question whether implementation will follow.</p>
-  <p class="summary">Cuba&#x27;s Communist Party approved roughly 175 to 176 free-market economic reforms at an extraordinary plenary session, including authorization of large private enterprises, private banks, and municipal import-export autonomy — the broadest overhaul of the socialist model since 1959. The package received endorsement from former President Raúl Castro and conditional interest from U.S. Vice President JD Vance, while skeptics inside Cuba and in the diaspora questioned whether the measures would translate into concrete change. The reforms now await formal codification by the National Assembly, with no public implementation timeline announced.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">21</span><span class="meta-label">Sources</span></div>
+    <div class="meta-item"><span class="meta-number">26</span><span class="meta-label">Sources</span></div>
     <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">14</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Divergences</span></div>
+    <div class="meta-item"><span class="meta-number">22</span><span class="meta-label">Stakeholders</span></div>
+    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
   </div>
-  <div class="card-footer"><span>965 words &middot; June 19, 2026</span><a href="reports/tp-2026-06-19-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
+  <div class="card-footer"><span>1,089 words &middot; June 20, 2026</span><a href="reports/tp-2026-06-20-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
+</article>
+<article class="tp-card">
+  <span class="topic-id">TOPIC 03 / tp-2026-06-20-003</span>
+  <h2><a href="reports/tp-2026-06-20-003.html">Poland Revokes Zelensky&#x27;s Order of the White Eagle Over Military Unit Named After WWII-Era Ukrainian Insurgent Army</a></h2>
+  <p class="subheadline">Warsaw calls the honor a moral obligation to massacre victims; Kyiv calls it a strategic gift to Moscow — and multiple Ukrainian officials return their own Polish awards in protest.</p>
+  <p class="summary">Polish President Karol Nawrocki revoked Volodymyr Zelensky&#x27;s Order of the White Eagle after Ukraine named a military unit after the WWII-era Ukrainian Insurgent Army, which Poland holds responsible for the massacre of up to 100,000 ethnic Poles. Multiple senior Ukrainian officials returned their own Polish state awards in protest, calling the move a strategic gift to Moscow, while Polish Prime Minister Donald Tusk urged both sides to de-escalate, warning the rift pleases Russia and alarms Western allies. The revocation&#x27;s legal effect depends on Tusk&#x27;s countersignature, which remained pending ahead of the Ukraine Recovery Conference in Gdańsk.</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span class="meta-number">26</span><span class="meta-label">Sources</span></div>
+    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Languages</span></div>
+    <div class="meta-item"><span class="meta-number">19</span><span class="meta-label">Stakeholders</span></div>
+    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
+  </div>
+  <div class="card-footer"><span>957 words &middot; June 20, 2026</span><a href="reports/tp-2026-06-20-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
 </article>
 <div class="bucket-bar"><span>YESTERDAY</span><span>3 DOSSIERS</span></div>
-<div class="day-submarker">June 18, 2026</div>
+<div class="day-submarker">June 19, 2026</div>
 <article class="tp-card-mid">
-  <span class="topic-id">tp-2026-06-18-001</span>
-  <h3><a href="reports/tp-2026-06-18-001.html">China Releases White Paper on Global Governance and Backs Iran&#x27;s Sovereignty Amid US-Iran Rapprochement</a></h3>
-  <p class="subheadline-mid">Beijing presents itself as a champion of multilateralism and the Global South while Western and regional analysts offer competing readings of its intentions.</p>
-  <div class="card-footer"><span class="mid-stats"><b>18</b> Sources &middot; <b>6</b> Languages &middot; <b>4</b> Stakeholders &middot; <b>5</b> Divergences</span><a href="reports/tp-2026-06-18-001.html" class="read-link">&rarr; READ</a></div>
+  <span class="topic-id">tp-2026-06-19-001</span>
+  <h3><a href="reports/tp-2026-06-19-001.html">Andy Burnham Wins Makerfield By-Election With 55% of the Vote, Setting Stage for Labour Leadership Contest</a></h3>
+  <p class="subheadline-mid">The Greater Manchester mayor returned to Parliament with a 9,000-vote margin over Reform UK, declaring Labour faces its &#x27;final chance to change&#x27; as Prime Minister Starmer vows to fight any challenge.</p>
+  <div class="card-footer"><span class="mid-stats"><b>22</b> Sources &middot; <b>4</b> Languages &middot; <b>16</b> Stakeholders &middot; <b>6</b> Divergences</span><a href="reports/tp-2026-06-19-001.html" class="read-link">&rarr; READ</a></div>
 </article>
 <article class="tp-card-mid">
-  <span class="topic-id">tp-2026-06-18-002</span>
-  <h3><a href="reports/tp-2026-06-18-002.html">Russia&#x27;s FSB Arrests Businessman Ilya Traber, Alleged Organized-Crime Figure With Ties to Putin, in Murder-for-Hire Case</a></h3>
-  <p class="subheadline-mid">The detention of a port tycoon linked to the Tambov-Malyshev criminal group and to Putin&#x27;s early career in St. Petersburg draws competing interpretations across Russian, European, and Ukrainian media.</p>
-  <div class="card-footer"><span class="mid-stats"><b>17</b> Sources &middot; <b>7</b> Languages &middot; <b>12</b> Stakeholders &middot; <b>5</b> Divergences</span><a href="reports/tp-2026-06-18-002.html" class="read-link">&rarr; READ</a></div>
+  <span class="topic-id">tp-2026-06-19-002</span>
+  <h3><a href="reports/tp-2026-06-19-002.html">Al-Qaeda-Linked Gunmen Attack Niamey Airport for Second Time in Six Months, Killing 11 Soldiers and 2 Civilians</a></h3>
+  <p class="subheadline-mid">Niger&#x27;s junta says it repelled the assault and killed 22 attackers; JNIM claims a suicide operation as competing narratives over foreign sponsorship, Russian military support, and persistent security gaps frame the aftermath.</p>
+  <div class="card-footer"><span class="mid-stats"><b>16</b> Sources &middot; <b>6</b> Languages &middot; <b>13</b> Stakeholders &middot; <b>6</b> Divergences</span><a href="reports/tp-2026-06-19-002.html" class="read-link">&rarr; READ</a></div>
 </article>
 <article class="tp-card-mid">
-  <span class="topic-id">tp-2026-06-18-003</span>
-  <h3><a href="reports/tp-2026-06-18-003.html">Lula Warns Trump Against Interference in Brazil&#x27;s 2026 Elections, Citing National Sovereignty</a></h3>
-  <p class="subheadline-mid">The public rebuke, delivered on the sidelines of the G7 summit, follows the conviction of Eduardo Bolsonaro and a series of bilateral disputes over tariffs and judicial proceedings.</p>
-  <div class="card-footer"><span class="mid-stats"><b>15</b> Sources &middot; <b>5</b> Languages &middot; <b>2</b> Stakeholders &middot; <b>4</b> Divergences</span><a href="reports/tp-2026-06-18-003.html" class="read-link">&rarr; READ</a></div>
+  <span class="topic-id">tp-2026-06-19-003</span>
+  <h3><a href="reports/tp-2026-06-19-003.html">Cuba&#x27;s Communist Party Approves Package of Nearly 200 Free-Market Economic Reforms</a></h3>
+  <p class="subheadline-mid">The measures — the largest overhaul of Cuba&#x27;s socialist model since 1959 — draw endorsement from Raúl Castro and conditional interest from Washington, while skeptics question whether implementation will follow.</p>
+  <div class="card-footer"><span class="mid-stats"><b>21</b> Sources &middot; <b>8</b> Languages &middot; <b>14</b> Stakeholders &middot; <b>5</b> Divergences</span><a href="reports/tp-2026-06-19-003.html" class="read-link">&rarr; READ</a></div>
 </article>
 <div class="bucket-bar"><span>EARLIER</span><span>15 DOSSIERS</span></div>
+<div class="day-submarker">June 18, 2026</div>
+<div class="compact-row">
+  <span class="compact-id">06-18-001</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-06-18-001.html">China Releases White Paper on Global Governance and Backs Iran&#x27;s Sovereignty Amid US-Iran Rapprochement</a></h4>
+    <span class="compact-sub">Beijing presents itself as a champion of multilateralism and the Global South while Western and regional analysts offer competing readings of its intentions.</span>
+  </div>
+  <div class="compact-src"><span class="compact-src-num">18</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">06-18-002</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-06-18-002.html">Russia&#x27;s FSB Arrests Businessman Ilya Traber, Alleged Organized-Crime Figure With Ties to Putin, in Murder-for-Hire Case</a></h4>
+    <span class="compact-sub">The detention of a port tycoon linked to the Tambov-Malyshev criminal group and to Putin&#x27;s early career in St. Petersburg draws competing interpretations across Russian, European, and Ukrainian media.</span>
+  </div>
+  <div class="compact-src"><span class="compact-src-num">17</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">06-18-003</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-06-18-003.html">Lula Warns Trump Against Interference in Brazil&#x27;s 2026 Elections, Citing National Sovereignty</a></h4>
+    <span class="compact-sub">The public rebuke, delivered on the sidelines of the G7 summit, follows the conviction of Eduardo Bolsonaro and a series of bilateral disputes over tariffs and judicial proceedings.</span>
+  </div>
+  <div class="compact-src"><span class="compact-src-num">15</span><span class="compact-src-label">SRC</span></div>
+</div>
 <div class="day-submarker">June 17, 2026</div>
 <div class="compact-row">
   <span class="compact-id">06-17-001</span>
@@ -656,35 +709,25 @@ footer a {
   </div>
   <div class="compact-src"><span class="compact-src-num">25</span><span class="compact-src-label">SRC</span></div>
 </div>
-<div class="day-submarker">June 13, 2026</div>
-<div class="compact-row">
-  <span class="compact-id">06-13-001</span>
-  <div class="compact-body">
-    <h4 class="compact-headline"><a href="reports/tp-2026-06-13-001.html">Pope Leo XIV Concludes Spain Visit With Condemnation of People Smugglers and Call for Legal Migration Routes</a></h4>
-    <span class="compact-sub">The pontiff&#x27;s final day in the Canary Islands coincided with the EU Migration and Asylum Pact taking effect, drawing competing claims from Spanish political parties over alignment with his message.</span>
-  </div>
-  <div class="compact-src"><span class="compact-src-num">19</span><span class="compact-src-label">SRC</span></div>
-</div>
-<div class="compact-row">
-  <span class="compact-id">06-13-002</span>
-  <div class="compact-body">
-    <h4 class="compact-headline"><a href="reports/tp-2026-06-13-002.html">US Justice Department Clears Paramount&#x27;s $111 Billion Acquisition of Warner Bros. Discovery Without Conditions</a></h4>
-    <span class="compact-sub">State attorneys general, labor unions, and media-reform groups contest the approval on antitrust, labor, and political-influence grounds, while European and British regulators continue independent reviews.</span>
-  </div>
-  <div class="compact-src"><span class="compact-src-num">16</span><span class="compact-src-label">SRC</span></div>
-</div>
-<div class="compact-row">
-  <span class="compact-id">06-13-003</span>
-  <div class="compact-body">
-    <h4 class="compact-headline"><a href="reports/tp-2026-06-13-003.html">Federal Judge Orders Trump&#x27;s Name Removed From Kennedy Center, Ruling Board Exceeded Statutory Authority</a></h4>
-    <span class="compact-sub">A three-judge appeals panel, including a Trump appointee, unanimously denied an emergency stay, while the administration called the decision politically motivated and warned it would halt fundraising.</span>
-  </div>
-  <div class="compact-src"><span class="compact-src-num">21</span><span class="compact-src-label">SRC</span></div>
-</div>
-<div class="bucket-bar bucket-bar-light"><span>ARCHIVE</span><span>51 DOSSIERS</span></div>
+<div class="bucket-bar bucket-bar-light"><span>ARCHIVE</span><span>54 DOSSIERS</span></div>
 <details class="archive-month" open>
-<summary class="archive-month-summary"><span class="archive-month-title">JUNE 2026</span><span class="archive-month-count">36 DOSSIERS</span></summary>
+<summary class="archive-month-summary"><span class="archive-month-title">JUNE 2026</span><span class="archive-month-count">39 DOSSIERS</span></summary>
 <div class="archive-month-body">
+<div class="archive-row">
+  <span class="archive-id">06-13-001</span>
+  <a class="archive-headline" href="reports/tp-2026-06-13-001.html">Pope Leo XIV Concludes Spain Visit With Condemnation of People Smugglers and Call for Legal Migration Routes</a>
+  <span class="archive-src">19<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">06-13-002</span>
+  <a class="archive-headline" href="reports/tp-2026-06-13-002.html">US Justice Department Clears Paramount&#x27;s $111 Billion Acquisition of Warner Bros. Discovery Without Conditions</a>
+  <span class="archive-src">16<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">06-13-003</span>
+  <a class="archive-headline" href="reports/tp-2026-06-13-003.html">Federal Judge Orders Trump&#x27;s Name Removed From Kennedy Center, Ruling Board Exceeded Statutory Authority</a>
+  <span class="archive-src">21<span class="archive-src-label">&nbsp;src</span></span>
+</div>
 <div class="archive-row">
   <span class="archive-id">06-12-001</span>
   <a class="archive-headline" href="reports/tp-2026-06-12-001.html">Trump Declares Iran War Over and Cancels Strikes; Tehran Says No Final Decision Has Been Made</a>

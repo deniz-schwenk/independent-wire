@@ -563,13 +563,38 @@ footer a { color: #000; text-decoration: underline; }
   footer { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
   footer .footer-mark { width: 64px; height: 64px; }
 }
+
+/* Language switch (DE/EN) — fixed next to the share button on both page types */
+.top-bar-right { display: inline-flex; align-items: center; gap: 0.6rem; }
+.lang-switch {
+  display: inline-flex; align-items: stretch;
+  border: 1.5px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.lang-switch .lang-opt {
+  display: inline-flex; align-items: center;
+  padding: 0 0.6rem; min-height: 44px;
+  color: #000; text-decoration: none; background: transparent;
+}
+.lang-switch .lang-opt + .lang-opt { border-left: 1.5px solid #000; }
+.lang-switch .lang-opt--active { background: #000; color: #fff; }
+.lang-switch .lang-opt:hover:not(.lang-opt--active) { background: #f0f0f0; }
+.lang-switch .lang-beta {
+  font-size: 0.5rem; margin-left: 2px; line-height: 1;
+  text-transform: lowercase; opacity: 0.85;
+}
+.lang-switch .lang-opt--active .lang-beta { color: #fff; }
 </style>
 </head>
 <body>
 <div class="container">
 <div class="top-bar">
 <nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
-<button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-06-19-002.html" data-title="Al-Qaeda-Linked Gunmen Attack Niamey Airport for Second Time in Six Months, Killing 11 Soldiers and 2 Civilians">Share</button>
+<div class="top-bar-right">
+<div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt lang-opt--active" href="tp-2026-06-19-002.html" aria-current="page">en</a><a class="lang-opt" href="../de/reports/tp-2026-06-19-002.html">de<sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-06-19-002.html" data-title="Al-Qaeda-Linked Gunmen Attack Niamey Airport for Second Time in Six Months, Killing 11 Soldiers and 2 Civilians">Share</button>
+</div>
 </div>
 
 <h1>Al-Qaeda-Linked Gunmen Attack Niamey Airport for Second Time in Six Months, Killing 11 Soldiers and 2 Civilians</h1>
