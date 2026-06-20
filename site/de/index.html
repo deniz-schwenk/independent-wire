@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Independent Wire</title>
+<link rel="canonical" href="https://independent-wire.org/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Independent Wire">
+<meta property="og:title" content="Independent Wire">
+<meta property="og:description" content="An independent newsroom — Open · Transparent · For everyone">
+<meta property="og:url" content="https://independent-wire.org/">
+<meta property="og:image" content="https://independent-wire.org/assets/og-card.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Independent Wire">
+<meta name="twitter:description" content="An independent newsroom — Open · Transparent · For everyone">
+<meta name="twitter:image" content="https://independent-wire.org/assets/og-card.svg">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="alternate" type="application/rss+xml" title="Independent Wire" href="feed.xml">
+<style>
+:root {
+  --color-text: #000000;
+  --color-text-secondary: #444444;
+  --color-text-subtle: #999999;
+  --color-primary: #3b82f6;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-border: #000000;
+  --color-border-light: #e0e0e0;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+.container {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Header */
+header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 3px solid #000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+header .brand { flex: 1 1 auto; min-width: 0; }
+header h1 {
+  font-family: var(--font-sans);
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: #000;
+  margin-bottom: 0.35rem;
+}
+header .tagline {
+  font-family: var(--font-mono);
+  color: #666;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Share button */
+.share-btn {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: transparent; color: #000;
+  border: 1.5px solid #000;
+  padding: 0.6rem 1rem;
+  min-height: 44px; min-width: 44px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+.share-btn:hover { background: #000; color: #fff; }
+.share-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+
+/* Date bar */
+.date-bar {
+  background: #000;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1.2rem;
+}
+
+/* Follow-up hint */
+.follow-up-hint {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #444;
+  margin: 0 0 12px 0;
+}
+.follow-up-label {
+  color: #999;
+}
+.follow-up-link {
+  color: #000;
+  text-decoration: none;
+}
+.follow-up-link:hover {
+  text-decoration: underline;
+  text-decoration-color: #999;
+  text-underline-offset: 2px;
+}
+.follow-up-date {
+  color: #999;
+}
+
+/* Cards */
+.tp-card {
+  border: none;
+  border-top: 3px solid #000;
+  border-radius: 0;
+  padding: 1.25rem 0;
+  margin-bottom: 0.5rem;
+}
+.topic-id {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #999;
+  letter-spacing: 0.15em;
+  display: block;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+.tp-card h2 {
+  font-family: var(--font-sans);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+  line-height: 1.3;
+}
+.tp-card h2 a {
+  color: #000;
+  text-decoration: none;
+}
+.tp-card h2 a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.tp-card .subheadline {
+  color: #444;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  border-left: 3px solid #000;
+  padding-left: 0.75rem;
+}
+.tp-card .summary {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.55;
+}
+
+/* Metadata bar */
+.meta-bar {
+  display: flex;
+  border: 1px solid #000;
+  border-radius: 0;
+  margin-bottom: 0.5rem;
+}
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding: 0.5rem 0.5rem;
+  border-right: 1px solid #000;
+}
+.meta-item:last-child {
+  border-right: none;
+}
+.meta-number {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #000;
+}
+.meta-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.card-footer {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+.read-link {
+  color: #000;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.read-link:hover {
+  text-decoration: underline;
+}
+
+/* ---- Age-decay tiers: bucket bars + mid / compact / archive ---- */
+.bucket-bar {
+  background: #000;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1.2rem;
+}
+.bucket-bar-light {
+  background: #fff;
+  color: #000;
+  border-top: 3px solid #000;
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 0.5rem;
+}
+
+/* TIER 1 — YESTERDAY (mid card) */
+.tp-card-mid {
+  border-top: 3px solid #000;
+  padding: 1rem 0;
+  margin-bottom: 0.4rem;
+}
+.tp-card-mid h3 {
+  font-family: var(--font-sans);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin: 0.15rem 0 0.4rem;
+}
+.tp-card-mid h3 a { color: #000; text-decoration: none; }
+.tp-card-mid h3 a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.subheadline-mid {
+  color: #333;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mid-stats {
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+.mid-stats b {
+  color: #000;
+  font-weight: 700;
+}
+
+/* TIER 2 — EARLIER (compact row, day-grouped) */
+.day-submarker {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #999;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 1rem 0 0.4rem;
+  display: flex;
+  align-items: center;
+}
+.day-submarker::after {
+  content: '';
+  flex: 1;
+  margin-left: 0.75rem;
+  border-top: 1px dashed #ccc;
+}
+.compact-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 70px;
+  align-items: center;
+  gap: 0.75rem;
+  border-top: 1px solid var(--color-border-light);
+  padding: 0.6rem 0;
+}
+.compact-id {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #999;
+  letter-spacing: 0.1em;
+}
+.compact-body { min-width: 0; }
+.compact-headline {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0;
+}
+.compact-headline a { color: #000; text-decoration: none; }
+.compact-headline a:hover { text-decoration: underline; text-underline-offset: 2px; }
+.compact-sub {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.1rem;
+}
+.compact-src {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+.compact-src-num {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #000;
+  line-height: 1;
+}
+.compact-src-label {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: #666;
+  letter-spacing: 0.1em;
+}
+
+/* TIER 3 — ARCHIVE (monthly accordions, native <details>) */
+.archive-month { margin-bottom: 0.25rem; }
+.archive-month-summary {
+  list-style: none;
+  cursor: pointer;
+  background: #000;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+.archive-month-summary::-webkit-details-marker { display: none; }
+.archive-month-title { display: inline-flex; align-items: center; gap: 0.5rem; }
+.archive-month-title::before {
+  content: "\203a";
+  display: inline-block;
+  font-weight: 700;
+  transition: transform 150ms ease;
+}
+details[open] > .archive-month-summary .archive-month-title::before {
+  transform: rotate(90deg);
+}
+.archive-month-body { padding: 0.1rem 0 0.5rem; }
+.archive-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 40px;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--color-border-light);
+}
+.archive-id {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #999;
+  letter-spacing: 0.08em;
+}
+.archive-headline {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #444;
+  text-decoration: none;
+  line-height: 1.35;
+  min-width: 0;
+}
+.archive-headline:hover { text-decoration: underline; text-underline-offset: 2px; color: #000; }
+.archive-src {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #999;
+  text-align: right;
+  white-space: nowrap;
+}
+.archive-src-label { font-size: 0.6rem; }
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+}
+footer .footer-text { flex: 1 1 auto; }
+footer .footer-text p { margin: 0; }
+footer .footer-mark {
+  flex: 0 0 auto;
+  width: 80px; height: 80px;
+  display: block;
+}
+footer .footer-mark svg { width: 100%; height: 100%; display: block; }
+footer a {
+  color: #000;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .meta-bar {
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    min-width: 4rem;
+    border-right: none;
+    border-bottom: 1px solid #000;
+  }
+  .meta-item:last-child {
+    border-bottom: none;
+  }
+  .tp-card h2 {
+    font-size: 1.2rem;
+  }
+  footer { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
+  footer .footer-mark { width: 64px; height: 64px; }
+  .tp-card-mid h3 { font-size: 1.1rem; }
+  .compact-row { grid-template-columns: 80px 1fr 52px; gap: 0.5rem; }
+  .compact-headline { font-size: 0.95rem; }
+  .compact-src-num { font-size: 1.1rem; }
+  .archive-row { grid-template-columns: 80px 1fr 40px; gap: 0.5rem; }
+  .tp-card-mid .card-footer { flex-wrap: wrap; gap: 0.3rem 0.6rem; }
+  .mid-stats { font-size: 0.65rem; }
+}
+
+/* Language switch (DE/EN) — fixed next to the share button on both page types */
+.top-bar-right { display: inline-flex; align-items: center; gap: 0.6rem; }
+.lang-switch {
+  display: inline-flex; align-items: stretch;
+  border: 1.5px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.lang-switch .lang-opt {
+  display: inline-flex; align-items: center;
+  padding: 0 0.6rem; min-height: 44px;
+  color: #000; text-decoration: none; background: transparent;
+}
+.lang-switch .lang-opt + .lang-opt { border-left: 1.5px solid #000; }
+.lang-switch .lang-opt--active { background: #000; color: #fff; }
+.lang-switch .lang-opt:hover:not(.lang-opt--active) { background: #f0f0f0; }
+.lang-switch .lang-beta {
+  font-size: 0.5rem; margin-left: 2px; line-height: 1;
+  text-transform: lowercase; opacity: 0.85;
+}
+.lang-switch .lang-opt--active .lang-beta { color: #fff; }
+
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="brand">
+    <h1>Independent Wire</h1>
+    <p class="tagline">Eine unabhängige Nachrichtenredaktion – Offen · Transparent · Für alle</p>
+  </div>
+  <div class="top-bar-right"><div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt" href="../index.html">en</a><a class="lang-opt lang-opt--active" href="index.html" aria-current="page">de<sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/" data-title="Independent Wire">Teilen</button></div>
+</header>
+
+<main>
+<div class="bucket-bar"><span>HEUTE</span><span>3 DOSSIERS</span></div>
+<article class="tp-card">
+  <span class="topic-id">TOPIC 01 / tp-2026-06-19-001</span>
+  <h2><a href="reports/tp-2026-06-19-001.html">Andy Burnham gewinnt Nachwahl in Makerfield mit 55 % der Stimmen und bereitet Bühne für Labour-Führungswettbewerb</a></h2>
+  <p class="subheadline">Der Bürgermeister von Greater Manchester kehrte mit einem Vorsprung von 9.000 Stimmen vor Reform UK ins Parlament zurück und erklärte, Labour stehe vor seiner „final chance to change“ [letzten Chance zur Veränderung], während Premierminister Starmer gelobt, jede Herausforderung anzunehmen.</p>
+  <p class="summary">Andy Burnham gewann die Nachwahl in Makerfield mit fast 55 % der Stimmen, besiegte Reform UK mit mehr als 9.000 Stimmen Vorsprung und kehrte nach einem Jahrzehnt ins Parlament zurück. Premierminister Keir Starmer wies Rücktrittsforderungen zurück und bot Burnham eine Kabinettsrolle an, während der frühere Gesundheitsminister Wes Streeting Bereitschaft signalisierte, einen Führungswettbewerb zu erzwingen. Wahlanalysten waren uneins, ob Burnhams Koalition aus taktischen Anti-Reform-Wählern und enttäuschten Labour-Anhängern landesweit wiederholbar ist.</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span class="meta-number">22</span><span class="meta-label">Quellen</span></div>
+    <div class="meta-item"><span class="meta-number">4</span><span class="meta-label">Sprachen</span></div>
+    <div class="meta-item"><span class="meta-number">16</span><span class="meta-label">Akteure</span></div>
+    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Abweichungen</span></div>
+  </div>
+  <div class="card-footer"><span>1,261 Wörter &middot; 19. Juni 2026</span><a href="reports/tp-2026-06-19-001.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
+</article>
+<article class="tp-card">
+  <span class="topic-id">TOPIC 02 / tp-2026-06-19-002</span>
+  <h2><a href="reports/tp-2026-06-19-002.html">Mit Al-Qaida verbündete Bewaffnete greifen zum zweiten Mal in sechs Monaten den Flughafen von Niamey an und töten 11 Soldaten und 2 Zivilisten</a></h2>
+  <p class="subheadline">Nigers Junta erklärt, den Angriff abgewehrt und 22 Angreifer getötet zu haben; JNIM bekennt sich zu einer Selbstmordoperation, während konkurrierende Darstellungen über ausländische Unterstützung, russische Militärhilfe und anhaltende Sicherheitslücken die Nachwirkungen prägen.</p>
+  <p class="summary">JNIM, eine mit Al-Qaida verbündete Gruppe, führte am 18. Juni einen von ihr als Selbstmordanschlag bezeichneten Angriff auf den internationalen Flughafen von Niamey aus und tötete 11 nigrische Soldaten und 2 Zivilisten; Sicherheitskräfte töteten 22 Angreifer und nahmen 20 Verdächtige fest. Der Angriff war der zweite größere Einbruch in den Flughafen innerhalb von sechs Monaten, nach einem dem Islamischen Staat zugeschriebenen Angriff im Januar, und hat konkurrierende Darstellungen hervorgebracht – Nigers Junta beschuldigt Frankreich und regionale Nachbarn, die Destabilisierung zu unterstützen, Frankreich weist die Anschuldigung als Informationskrieg zurück, und russische Staatsmedien heben die Rolle des Africa Corps bei der früheren Verteidigung hervor. Der Flughafen war am Abend des 18. Juni Berichten zufolge wieder in Betrieb, während in der Umgebung ein großangelegter Sicherheitseinsatz fortgesetzt wurde.</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span class="meta-number">16</span><span class="meta-label">Quellen</span></div>
+    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Sprachen</span></div>
+    <div class="meta-item"><span class="meta-number">13</span><span class="meta-label">Akteure</span></div>
+    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Abweichungen</span></div>
+  </div>
+  <div class="card-footer"><span>790 Wörter &middot; 19. Juni 2026</span><a href="reports/tp-2026-06-19-002.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
+</article>
+<article class="tp-card">
+  <span class="topic-id">TOPIC 03 / tp-2026-06-19-003</span>
+  <h2><a href="reports/tp-2026-06-19-003.html">Kommunistische Partei Kubas billigt Paket von fast 200 marktwirtschaftlichen Reformen</a></h2>
+  <p class="subheadline">Die Maßnahmen – die größte Überholung des sozialistischen Modells Kubas seit 1959 – erhalten Unterstützung von Raúl Castro und bedingtes Interesse aus Washington, während Skeptiker fragen, ob die Umsetzung folgen wird.</p>
+  <p class="summary">Kubas Kommunistische Partei billigte auf einer außerordentlichen Plenarsitzung rund 175 bis 176 marktwirtschaftliche Reformen, darunter die Zulassung großer Privatunternehmen, privater Banken und kommunaler Import-Export-Autonomie — die umfassendste Überholung des sozialistischen Modells seit 1959. Das Paket erhielt die Unterstützung des früheren Präsidenten Raúl Castro und bedingtes Interesse von US-Vizepräsident JD Vance, während Skeptiker innerhalb Kubas und in der Diaspora fragten, ob die Maßnahmen in konkrete Veränderungen umgesetzt würden. Die Reformen warten nun auf die formelle Kodifizierung durch die Nationalversammlung, ohne dass ein öffentlicher Zeitplan für die Umsetzung bekannt gegeben wurde.</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span class="meta-number">21</span><span class="meta-label">Quellen</span></div>
+    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Sprachen</span></div>
+    <div class="meta-item"><span class="meta-number">14</span><span class="meta-label">Akteure</span></div>
+    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Abweichungen</span></div>
+  </div>
+  <div class="card-footer"><span>1,041 Wörter &middot; 19. Juni 2026</span><a href="reports/tp-2026-06-19-003.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
+</article>
+
+</main>
+
+<footer>
+<div class="footer-text">
+<p>Erstellt von <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>Diese Inhalte wurden von KI-Agenten erstellt</p>
+<p>AGPL-3.0 – Weil Transparenz kein Feature ist, sondern ein Versprechen</p>
+<p><a href="index.html">Startseite</a> &middot; <a href="/about.html">Über uns</a> &middot; <a href="feed.xml">RSS-Feed</a> &middot; <a href="/vision.pdf" download>Vision (PDF)</a> &middot; <a href="impressum.html">Impressum</a> &middot; <a href="privacy.html">Datenschutz</a></p>
+</div>
+<div class="footer-mark" aria-label="Independent Wire"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1024" height="1024" fill="#fff"/>
+    <rect x="64" y="160" width="896" height="14" fill="#000"/>
+    <text x="512" y="700" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="800" font-size="640" letter-spacing="-40" fill="#000">IW</text>
+    <rect x="64" y="800" width="896" height="14" fill="#000"/>
+  </svg></div>
+</footer>
+</div>
+<script>
+document.querySelectorAll('.share-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const url = btn.dataset.url;
+    const title = btn.dataset.title;
+    if (navigator.share) {
+      try { await navigator.share({ title, url }); } catch (e) {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        const original = btn.textContent;
+        btn.textContent = 'Kopiert';
+        setTimeout(() => { btn.textContent = original; }, 1500);
+      } catch (e) {}
+    }
+  });
+});
+</script>
+</body>
+</html>
