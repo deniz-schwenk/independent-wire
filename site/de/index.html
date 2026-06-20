@@ -493,15 +493,18 @@ footer a {
   letter-spacing: 0.1em; text-transform: uppercase;
 }
 .lang-switch .lang-opt {
-  display: inline-flex; align-items: center;
-  padding: 0 0.6rem; min-height: 44px;
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 0.7rem; min-height: 44px; min-width: 3.2rem;
   color: #000; text-decoration: none; background: transparent;
+  text-align: center;
 }
 .lang-switch .lang-opt + .lang-opt { border-left: 1.5px solid #000; }
 .lang-switch .lang-opt--active { background: #000; color: #fff; }
 .lang-switch .lang-opt:hover:not(.lang-opt--active) { background: #f0f0f0; }
+.lang-switch .lang-code { display: block; line-height: 1; }
 .lang-switch .lang-beta {
-  font-size: 0.5rem; margin-left: 2px; line-height: 1;
+  display: block; font-size: 0.5rem; margin: 1px 0 0 0; line-height: 1;
   text-transform: lowercase; opacity: 0.85;
 }
 .lang-switch .lang-opt--active .lang-beta { color: #fff; }
@@ -513,61 +516,62 @@ footer a {
 <header>
   <div class="brand">
     <h1>Independent Wire</h1>
-    <p class="tagline">Eine unabhängige Nachrichtenredaktion – Offen · Transparent · Für alle</p>
+    <p class="tagline">An independent newsroom &mdash; Open &middot; Transparent &middot; For everyone</p>
   </div>
-  <div class="top-bar-right"><div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt" href="../index.html">en</a><a class="lang-opt lang-opt--active" href="index.html" aria-current="page">de<sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/" data-title="Independent Wire">Teilen</button></div>
+  <div class="top-bar-right"><div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt" href="../index.html"><span class="lang-code">en</span></a><a class="lang-opt lang-opt--active" href="index.html" aria-current="page"><span class="lang-code">de</span><sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/" data-title="Independent Wire">Share</button></div>
 </header>
 
 <main>
 <div class="bucket-bar"><span>HEUTE</span><span>3 DOSSIERS</span></div>
 <article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-06-19-001</span>
-  <h2><a href="reports/tp-2026-06-19-001.html">Andy Burnham gewinnt Nachwahl in Makerfield mit 55 % der Stimmen und bereitet Bühne für Labour-Führungswettbewerb</a></h2>
-  <p class="subheadline">Der Bürgermeister von Greater Manchester kehrte mit einem Vorsprung von 9.000 Stimmen vor Reform UK ins Parlament zurück und erklärte, Labour stehe vor seiner „final chance to change“ [letzten Chance zur Veränderung], während Premierminister Starmer gelobt, jede Herausforderung anzunehmen.</p>
-  <p class="summary">Andy Burnham gewann die Nachwahl in Makerfield mit fast 55 % der Stimmen, besiegte Reform UK mit mehr als 9.000 Stimmen Vorsprung und kehrte nach einem Jahrzehnt ins Parlament zurück. Premierminister Keir Starmer wies Rücktrittsforderungen zurück und bot Burnham eine Kabinettsrolle an, während der frühere Gesundheitsminister Wes Streeting Bereitschaft signalisierte, einen Führungswettbewerb zu erzwingen. Wahlanalysten waren uneins, ob Burnhams Koalition aus taktischen Anti-Reform-Wählern und enttäuschten Labour-Anhängern landesweit wiederholbar ist.</p>
+  <span class="topic-id">TOPIC 01 / tp-2026-06-20-001</span>
+  <h2><a href="reports/tp-2026-06-20-001.html">US-iranische Gespräche verschoben und neue Hisbollah-Waffenruhe verkündet, während israelische Angriffe im Libanon andauern</a></h2>
+  <p class="subheadline">Iran machte seine Rückkehr zu den Verhandlungen von einem Stopp der israelischen Militäroperationen im Libanon abhängig; eine von den Vereinigten Staaten und Katar vermittelte Waffenruhe trat am Freitag in Kraft, wurde jedoch innerhalb weniger Stunden verletzt.</p>
+  <p class="summary">Die US-iranischen Umsetzungsgespräche in der Schweiz wurden verschoben, nachdem der Iran seine Teilnahme von einem Stopp der israelischen Angriffe im Libanon abhängig gemacht hatte, und eine neue, von den Vereinigten Staaten und Katar vermittelte Waffenruhe zwischen Israel und der Hisbollah wurde verkündet, jedoch innerhalb weniger Stunden durch weitere israelische Luftangriffe verletzt. Der Iran stellte die Libanon-Front als Test der Glaubwürdigkeit der Vereinigten Staaten dar, während Israel auf voller Operationsfreiheit bis zur Zerschlagung der Hisbollah bestand und die Trump-Administration Israel öffentlich unter Druck setzte, den Friedensprozess zu respektieren. Neue Gespräche zwischen Israel und dem Libanon sind für den 23. bis 25. Juni in Washington angesetzt.</p>
+  <div class="follow-up-hint"><span class="follow-up-label">Folgebericht zu:</span> <span class="follow-up-link">&ldquo;Trump Sets Sunday Signing Date for Iran Deal; Tehran Says It Will Not Happen Tomorrow&rdquo;</span> <span class="follow-up-date">(14. Juni 2026)</span></div>
   <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">22</span><span class="meta-label">Quellen</span></div>
-    <div class="meta-item"><span class="meta-number">4</span><span class="meta-label">Sprachen</span></div>
-    <div class="meta-item"><span class="meta-number">16</span><span class="meta-label">Akteure</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Abweichungen</span></div>
+    <div class="meta-item"><span class="meta-number">41</span><span class="meta-label">Quellen</span></div>
+    <div class="meta-item"><span class="meta-number">9</span><span class="meta-label">Sprachen</span></div>
+    <div class="meta-item"><span class="meta-number">64</span><span class="meta-label">Akteure</span></div>
+    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Abweichungen</span></div>
   </div>
-  <div class="card-footer"><span>1,261 Wörter &middot; 19. Juni 2026</span><a href="reports/tp-2026-06-19-001.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
+  <div class="card-footer"><span>1,363 Wörter &middot; 20. Juni 2026</span><a href="reports/tp-2026-06-20-001.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
 </article>
 <article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-06-19-002</span>
-  <h2><a href="reports/tp-2026-06-19-002.html">Mit Al-Qaida verbündete Bewaffnete greifen zum zweiten Mal in sechs Monaten den Flughafen von Niamey an und töten 11 Soldaten und 2 Zivilisten</a></h2>
-  <p class="subheadline">Nigers Junta erklärt, den Angriff abgewehrt und 22 Angreifer getötet zu haben; JNIM bekennt sich zu einer Selbstmordoperation, während konkurrierende Darstellungen über ausländische Unterstützung, russische Militärhilfe und anhaltende Sicherheitslücken die Nachwirkungen prägen.</p>
-  <p class="summary">JNIM, eine mit Al-Qaida verbündete Gruppe, führte am 18. Juni einen von ihr als Selbstmordanschlag bezeichneten Angriff auf den internationalen Flughafen von Niamey aus und tötete 11 nigrische Soldaten und 2 Zivilisten; Sicherheitskräfte töteten 22 Angreifer und nahmen 20 Verdächtige fest. Der Angriff war der zweite größere Einbruch in den Flughafen innerhalb von sechs Monaten, nach einem dem Islamischen Staat zugeschriebenen Angriff im Januar, und hat konkurrierende Darstellungen hervorgebracht – Nigers Junta beschuldigt Frankreich und regionale Nachbarn, die Destabilisierung zu unterstützen, Frankreich weist die Anschuldigung als Informationskrieg zurück, und russische Staatsmedien heben die Rolle des Africa Corps bei der früheren Verteidigung hervor. Der Flughafen war am Abend des 18. Juni Berichten zufolge wieder in Betrieb, während in der Umgebung ein großangelegter Sicherheitseinsatz fortgesetzt wurde.</p>
+  <span class="topic-id">TOPIC 02 / tp-2026-06-20-002</span>
+  <h2><a href="reports/tp-2026-06-20-002.html">Ukraine greift Moskauer Ölraffinerie in rekordverdächtigem Drohnenangriff an, während Russland hohe Abfangquoten meldet</a></h2>
+  <p class="subheadline">Der zweitägige Angriff erzwang eine unbefristete Raffinerieabschaltung und Flugausfälle in der gesamten russischen Hauptstadt, während unabhängige Analysten und Kremlbeamte stark voneinander abweichende Darstellungen der Luftabwehrleistung lieferten.</p>
+  <p class="summary">Die Ukraine führte im Juni 2026 über zwei Tage ihren bislang größten Drohnenangriff auf Moskau durch, traf die Moskauer Ölraffinerie und erzwang eine unbefristete Abschaltung, die Befürchtungen von Treibstoffengpässen und Flugausfälle auslöste. Der Kreml lobte die Leistung seiner Luftabwehr und tat die Angriffe als wirkungslos für Verhandlungen ab, während unabhängige Militäranalysten Videobeweise und technische Mängel des Pantsir-S1-Systems anführten, um zu argumentieren, dass Moskaus Verteidigung überwältigt worden sei. Wirtschaftsanalysten berichteten von fallenden Ural-Rohölpreisen und sich ausbreitender Treibstoffrationierung in russischen Regionen, und westliche Verbündete sagten Milliarden an Militärhilfe zu, während die Vereinigten Staaten die nachrichtendienstliche Unterstützung für ukrainische Tiefenangriffe bestätigten.</p>
   <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">16</span><span class="meta-label">Quellen</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Sprachen</span></div>
-    <div class="meta-item"><span class="meta-number">13</span><span class="meta-label">Akteure</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Abweichungen</span></div>
-  </div>
-  <div class="card-footer"><span>790 Wörter &middot; 19. Juni 2026</span><a href="reports/tp-2026-06-19-002.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-06-19-003</span>
-  <h2><a href="reports/tp-2026-06-19-003.html">Kommunistische Partei Kubas billigt Paket von fast 200 marktwirtschaftlichen Reformen</a></h2>
-  <p class="subheadline">Die Maßnahmen – die größte Überholung des sozialistischen Modells Kubas seit 1959 – erhalten Unterstützung von Raúl Castro und bedingtes Interesse aus Washington, während Skeptiker fragen, ob die Umsetzung folgen wird.</p>
-  <p class="summary">Kubas Kommunistische Partei billigte auf einer außerordentlichen Plenarsitzung rund 175 bis 176 marktwirtschaftliche Reformen, darunter die Zulassung großer Privatunternehmen, privater Banken und kommunaler Import-Export-Autonomie — die umfassendste Überholung des sozialistischen Modells seit 1959. Das Paket erhielt die Unterstützung des früheren Präsidenten Raúl Castro und bedingtes Interesse von US-Vizepräsident JD Vance, während Skeptiker innerhalb Kubas und in der Diaspora fragten, ob die Maßnahmen in konkrete Veränderungen umgesetzt würden. Die Reformen warten nun auf die formelle Kodifizierung durch die Nationalversammlung, ohne dass ein öffentlicher Zeitplan für die Umsetzung bekannt gegeben wurde.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">21</span><span class="meta-label">Quellen</span></div>
+    <div class="meta-item"><span class="meta-number">26</span><span class="meta-label">Quellen</span></div>
     <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Sprachen</span></div>
-    <div class="meta-item"><span class="meta-number">14</span><span class="meta-label">Akteure</span></div>
-    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Abweichungen</span></div>
+    <div class="meta-item"><span class="meta-number">22</span><span class="meta-label">Akteure</span></div>
+    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Abweichungen</span></div>
   </div>
-  <div class="card-footer"><span>1,041 Wörter &middot; 19. Juni 2026</span><a href="reports/tp-2026-06-19-003.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
+  <div class="card-footer"><span>1,194 Wörter &middot; 20. Juni 2026</span><a href="reports/tp-2026-06-20-002.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
+</article>
+<article class="tp-card">
+  <span class="topic-id">TOPIC 03 / tp-2026-06-20-003</span>
+  <h2><a href="reports/tp-2026-06-20-003.html">Polen entzieht Selenskyj den Orden des Weißen Adlers wegen nach UPA benannter Militäreinheit</a></h2>
+  <p class="subheadline">Warschau nennt die Ehrung eine moralische Verpflichtung gegenüber den Opfern des Massakers; Kyjiw nennt sie ein strategisches Geschenk an Moskau — und mehrere ukrainische Amtsträger geben aus Protest ihre eigenen polnischen Auszeichnungen zurück.</p>
+  <p class="summary">Der polnische Präsident Karol Nawrocki entzog Wolodymyr Selenskyj den Orden des Weißen Adlers, nachdem die Ukraine eine Militäreinheit nach der Ukrainischen Aufständischen Armee (UPA) aus dem Zweiten Weltkrieg benannt hatte, die Polen für das Massaker an bis zu 100.000 ethnischen Polen verantwortlich macht. Mehrere hochrangige ukrainische Amtsträger gaben aus Protest ihre eigenen polnischen Staatsauszeichnungen zurück und nannten den Schritt ein strategisches Geschenk an Moskau, während der polnische Ministerpräsident Donald Tusk beide Seiten zur Deeskalation aufrief und warnte, der Riss erfreue Russland und alarmiere die westlichen Verbündeten. Die rechtliche Wirksamkeit des Entzugs hängt von Tusks Gegenzeichnung ab, die vor der Ukraine-Wiederaufbaukonferenz in Gdańsk noch ausstand.</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span class="meta-number">26</span><span class="meta-label">Quellen</span></div>
+    <div class="meta-item"><span class="meta-number">11</span><span class="meta-label">Sprachen</span></div>
+    <div class="meta-item"><span class="meta-number">19</span><span class="meta-label">Akteure</span></div>
+    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Abweichungen</span></div>
+  </div>
+  <div class="card-footer"><span>1,081 Wörter &middot; 20. Juni 2026</span><a href="reports/tp-2026-06-20-003.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
 </article>
 
 </main>
 
 <footer>
 <div class="footer-text">
-<p>Erstellt von <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
-<p>Diese Inhalte wurden von KI-Agenten erstellt</p>
-<p>AGPL-3.0 – Weil Transparenz kein Feature ist, sondern ein Versprechen</p>
-<p><a href="index.html">Startseite</a> &middot; <a href="/about.html">Über uns</a> &middot; <a href="feed.xml">RSS-Feed</a> &middot; <a href="/vision.pdf" download>Vision (PDF)</a> &middot; <a href="impressum.html">Impressum</a> &middot; <a href="privacy.html">Datenschutz</a></p>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="index.html">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="feed.xml">RSS Feed</a> &middot; <a href="/vision.pdf" download>Vision (PDF)</a> &middot; <a href="impressum.html">Legal Notice</a> &middot; <a href="privacy.html">Privacy</a></p>
 </div>
 <div class="footer-mark" aria-label="Independent Wire"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
     <rect width="1024" height="1024" fill="#fff"/>
@@ -588,7 +592,7 @@ document.querySelectorAll('.share-btn').forEach(btn => {
       try {
         await navigator.clipboard.writeText(url);
         const original = btn.textContent;
-        btn.textContent = 'Kopiert';
+        btn.textContent = 'Copied';
         setTimeout(() => { btn.textContent = original; }, 1500);
       } catch (e) {}
     }
