@@ -22,7 +22,7 @@ Independent Wire does not produce articles. It produces **Topic Packages / Dossi
 - **The reader note** — an honest self-assessment, placed *before* the article, not after.
 - **The transparency trail** — why this topic was selected, what QA corrected, which sources were dropped and why.
 
-The article is only one rendering of the Topic Package. The same structured data could drive a podcast briefing, a newsletter, or an API response — different formats, one transparent foundation.
+The article is only one rendering of the Topic Package. The same structured data could drive a podcast briefing, a newsletter, or an API response — different formats, one transparent foundation. Today the system publishes two editions from that same data — English and German — the German rendered by a separate translation pipeline that works from the structured Topic Package, not the finished HTML.
 
 ## How It Works
 
@@ -103,6 +103,7 @@ Operational and publishing daily at [independent-wire.org](https://independent-w
 | Source base (66 feeds, 11 language streams) | ✅ Live |
 | Topic Package rendering (self-contained HTML) | ✅ Live |
 | Publication website | ✅ [independent-wire.org](https://independent-wire.org) |
+| Bilingual edition (English + German) | ✅ Live — [independent-wire.org/de](https://independent-wire.org/de/) |
 | RSS feed | ✅ [independent-wire.org/feed.xml](https://independent-wire.org/feed.xml) |
 | Editor memory (coverage continuity) | ✅ Implemented |
 | Data-driven visualizations (source-distribution terrain) | ✅ Live — more types planned |
