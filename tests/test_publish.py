@@ -156,9 +156,10 @@ def test_tier_omits_empty_buckets():
     assert "<span>EARLIER</span>" not in html
 
 
-def test_archive_monthly_accordions_newest_open():
-    """Archive entries group into one <details> per calendar month — newest
-    month ``open``, older months closed, ordered newest-first."""
+def test_archive_monthly_accordions_all_collapsed():
+    """Archive entries group into one <details> per calendar month, ordered
+    newest-first — ALL months render collapsed on load (even the newest); the
+    reader expands a month deliberately."""
     import re
     publish = _load_publish_module()
     metas = [
@@ -173,8 +174,8 @@ def test_archive_monthly_accordions_newest_open():
     titles = re.findall(r'<span class="archive-month-title">([^<]*)</span>', html)
 
     assert titles == ["MAY 2026", "APRIL 2026"]          # newest month first
-    assert details[0].strip() == "open"                  # newest open
-    assert all(d.strip() == "" for d in details[1:])     # older months closed
+    assert len(details) == 2                              # one <details> per month
+    assert all(d.strip() == "" for d in details)         # every month collapsed on load
     assert '<span class="archive-month-count">2 DOSSIERS</span>' in html  # May
     assert '<span class="archive-month-count">1 DOSSIER</span>' in html   # April
 

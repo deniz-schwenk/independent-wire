@@ -145,7 +145,7 @@ footer a {
   <p>Deniz Philipp Schwenk &middot; Schreinerstr. 32 &middot; 10247 Berlin &middot; Germany</p>
 
   <h2>Contact</h2>
-  <p>Email: <span id="email-impressum"><noscript>deniz.schwenk [at] gmail [dot] com</noscript></span></p>
+  <p>Email: <span id="email-impressum"><noscript>deniz [at] independent-wire [dot] org</noscript></span></p>
 
   <h2>Responsible for journalistic-editorial content pursuant to &sect; 18 (2) MStV</h2>
   <p>Deniz Philipp Schwenk, address as above</p>
@@ -173,8 +173,8 @@ footer a {
 // Email is assembled at runtime from separate parts so the contiguous
 // address never appears in the served HTML source (anti-scraping).
 (function () {
-  var user = "deniz.schwenk";
-  var domain = "gmail" + "." + "com";
+  var user = "deniz";
+  var domain = "independent-wire" + "." + "org";
   var addr = user + "@" + domain;
   document.querySelectorAll("#email-impressum, #email-privacy").forEach(function (el) {
     var a = document.createElement("a");

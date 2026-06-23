@@ -722,7 +722,7 @@ footer a { color: #000; text-decoration: underline; }
   footer { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
   footer .footer-mark { width: 64px; height: 64px; }
 }
-""" + RL.lang_switch_css()
+""" + RL.lang_switch_css() + RL.support_block_css()
 
 
 def build_header(tp: dict) -> str:
@@ -2427,6 +2427,7 @@ def render(tp: dict, lang: str = "en", lang_hrefs: dict | None = None) -> str:
         build_transparency(tp),
         build_glossary(),
         back_nav_bottom,
+        RL.support_block(),
         build_footer(),
     ]
 

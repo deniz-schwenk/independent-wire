@@ -144,3 +144,78 @@ def lang_switch_css() -> str:
 }
 .lang-switch .lang-opt--active .lang-beta { color: #fff; }
 """
+
+
+# ------------------------------------------------------- support / donate block
+
+def support_block() -> str:
+    """Compact support/donate block placed directly above the footer on BOTH page types
+    (index + dossier) and BOTH languages. Mono, black-on-white, with its own top and
+    bottom rule so it reads as distinct furniture, not part of the footer. One short
+    heading, one honest line, one button to Liberapay (opens in a new tab). Localised via
+    the label map (English is identity); built here once so index + dossier stay byte
+    identical, the same way the DE/EN switch is shared."""
+    heading = L("ui", "support_heading", "Keep it independent")
+    line = L(
+        "ui", "support_line",
+        "No ads, no investors, no paywall. Donations cover the daily running costs "
+        "and keep Independent Wire independent.",
+    )
+    button = L("ui", "support_button", "Donate via Liberapay")
+    return (
+        '<section class="support-block" aria-label="Support Independent Wire">\n'
+        f'  <p class="support-heading">{heading}</p>\n'
+        f'  <p class="support-line">{line}</p>\n'
+        '  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" '
+        f'target="_blank" rel="noopener">{button}</a>\n'
+        '</section>\n'
+    )
+
+
+def support_block_css() -> str:
+    """CSS for support_block(); injected into both render.py's page CSS and publish.py's
+    index CSS — same shared-furniture pattern as lang_switch_css()."""
+    return """
+/* Support / donate block — directly above the footer on both page types.
+   Own top + bottom rule so it reads as distinct furniture, not part of the footer. */
+.support-block {
+  margin-top: 3rem;
+  padding: 1.5rem 0;
+  border-top: 3px solid #000;
+  border-bottom: 3px solid #000;
+}
+.support-block .support-heading {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #000;
+  margin: 0 0 0.5rem;
+}
+.support-block .support-line {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #444;
+  margin: 0 0 1rem;
+  max-width: 62ch;
+}
+.support-block .support-btn {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.85rem 1.5rem;
+  min-height: 44px;
+  border: 1.5px solid #000;
+  transition: background 120ms ease, color 120ms ease;
+}
+.support-block .support-btn:hover { background: #fff; color: #000; }
+.support-block .support-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+"""

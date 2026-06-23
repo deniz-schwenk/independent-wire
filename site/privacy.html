@@ -142,7 +142,7 @@ footer a {
 
 <main>
   <h2>Controller</h2>
-  <p>Deniz Philipp Schwenk &middot; Schreinerstr. 32 &middot; 10247 Berlin &middot; Germany &middot; <span id="email-privacy"><noscript>deniz.schwenk [at] gmail [dot] com</noscript></span></p>
+  <p>Deniz Philipp Schwenk &middot; Schreinerstr. 32 &middot; 10247 Berlin &middot; Germany &middot; <span id="email-privacy"><noscript>deniz [at] independent-wire [dot] org</noscript></span></p>
 
   <h2>Hosting</h2>
   <p>Served via GitHub Pages (GitHub, Inc., USA). On access, GitHub processes technically necessary server log data, including your IP address, to deliver and secure the site. Legal basis: Art. 6(1)(f) GDPR (legitimate interest). GitHub, Inc. is certified under the EU-U.S. Data Privacy Framework; the transfer to the USA is based on the European Commission&rsquo;s adequacy decision (Art. 45 GDPR).</p>
@@ -151,7 +151,7 @@ footer a {
   <p>No own cookies, no analytics, tracking, advertising, or social-media services.</p>
 
   <h2>Your rights</h2>
-  <p>Access, rectification, erasure, restriction, data portability, objection, and the right to lodge a complaint with a supervisory authority. Contact: <span id="email-privacy-rights"><noscript>deniz.schwenk [at] gmail [dot] com</noscript></span>.</p>
+  <p>Access, rectification, erasure, restriction, data portability, objection, and the right to lodge a complaint with a supervisory authority. Contact: <span id="email-privacy-rights"><noscript>deniz [at] independent-wire [dot] org</noscript></span>.</p>
 </main>
 
 <footer>
@@ -173,8 +173,8 @@ footer a {
 // Email is assembled at runtime from separate parts so the contiguous
 // address never appears in the served HTML source (anti-scraping).
 (function () {
-  var user = "deniz.schwenk";
-  var domain = "gmail" + "." + "com";
+  var user = "deniz";
+  var domain = "independent-wire" + "." + "org";
   var addr = user + "@" + domain;
   document.querySelectorAll("#email-privacy, #email-privacy-rights").forEach(function (el) {
     var a = document.createElement("a");

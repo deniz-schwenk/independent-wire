@@ -160,13 +160,15 @@ footer a {
 
 <main>
   <h2>What it is</h2>
-  <p>The news you read was chosen for you &mdash; someone picked the topic, the angle, the sources. Independent Wire is an open-source AI pipeline that produces multi-perspective news dossiers with full source transparency. It scans sources across many language streams, shows where coverage diverges, documents which voices are missing, and publishes everything &mdash; including its own biases and limitations. No publisher, no engagement algorithm, no hidden editorial line.</p>
+  <p>The news you read was chosen for you &mdash; someone picked the topic, the angle, the sources, and decided what to leave out. Those choices are usually invisible. Independent Wire makes them visible. It is an open-source AI pipeline that reads dozens of news sources across more than 20 languages every day and turns them into Topic Packages: structured dossiers showing not just what happened, but how it is being reported &mdash; where coverage diverges, which voices are missing, and where the text colors its own account. No publisher, no engagement algorithm, no hidden editorial line. Dossiers are now published in English and German.</p>
 
   <h2>How it works</h2>
-  <p>A pipeline of specialized AI agents, orchestrated by deterministic Python &mdash; no LLM decides what happens next. Each stage does one job: discover the day&rsquo;s topics, research the spectrum of positions, write a source-attributed article, fact-check every claim, and mark linguistic bias. The output is not an article but a Topic Package: the article plus the perspectives, the divergences, what is missing, and a bias card. Every prompt the system runs lives openly in the repository &mdash; readable, forkable, under the same licence as the code.</p>
+  <p>A pipeline of specialized AI agents, orchestrated by deterministic Python &mdash; no LLM decides what happens next. Each stage does one job: discover the day&rsquo;s topics, research the spectrum of positions, write a source-attributed article, fact-check every claim against the original sources, and mark linguistic bias. The output is never just an article &mdash; it is the article plus the perspectives, the contradictions, what is missing, and a bias card, with a transparency trail recording why the topic was chosen and what was discarded. Every prompt the system runs lives openly in the repository: readable, forkable, under the same AGPL-3.0 licence as the code. Whoever can read the prompts can check the agenda.</p>
 
   <h2>What it is not</h2>
-  <p>Not a chatbot, not an aggregator, not a replacement for investigative journalism. It cannot meet whistleblowers or visit a factory. And it is not neutral &mdash; nothing is. The models carry their training bias; the system offers not the absence of bias but transparency about where it lies. Source balance is uneven too: Western and English-language sources are over-represented. This is documented, not hidden &mdash; and improving it is an open workstream.</p>
+  <p>Not a chatbot, not an aggregator, not a replacement for investigative journalism &mdash; it cannot knock on a door or meet a source in person. And it is not neutral; nothing is. The models carry the bias of their training data. Independent Wire offers not the absence of bias but transparency about where it lies. Source balance is uneven too: Western and English-language sources are over-represented. This is documented, not hidden &mdash; and improving it is an open workstream anyone can contribute to.</p>
+
+  <p>Get in touch: <span id="email-about"><noscript>hello [at] independent-wire [dot] org</noscript></span></p>
 
   <div class="vision-download">
     <a href="/vision.pdf" download>Read the Vision Paper (PDF)</a>
@@ -188,5 +190,20 @@ footer a {
   </svg></div>
 </footer>
 </div>
+<script>
+// Email is assembled at runtime from separate parts so the contiguous
+// address never appears in the served HTML source (anti-scraping).
+(function () {
+  var user = "hello";
+  var domain = "independent-wire" + "." + "org";
+  var addr = user + "@" + domain;
+  document.querySelectorAll("#email-about").forEach(function (el) {
+    var a = document.createElement("a");
+    a.href = "mailto:" + addr;
+    a.textContent = addr;
+    el.appendChild(a);
+  });
+})();
+</script>
 </body>
 </html>
