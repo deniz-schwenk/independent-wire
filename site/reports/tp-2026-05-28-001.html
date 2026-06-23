@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
 <title>US and Iran Exchange Strikes Near Bandar Abbas as IRGC Retaliates Against American Base</title>
 <link rel="canonical" href="https://independent-wire.org/reports/tp-2026-05-28-001.html">
@@ -561,13 +563,84 @@ footer a { color: #000; text-decoration: underline; }
   footer { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
   footer .footer-mark { width: 64px; height: 64px; }
 }
+
+/* Language switch (DE/EN) — fixed next to the share button on both page types */
+.top-bar-right { display: inline-flex; align-items: center; gap: 0.6rem; }
+.lang-switch {
+  display: inline-flex; align-items: stretch;
+  border: 1.5px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.lang-switch .lang-opt {
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 0.7rem; min-height: 44px; min-width: 3.2rem;
+  color: #000; text-decoration: none; background: transparent;
+  text-align: center;
+}
+.lang-switch .lang-opt + .lang-opt { border-left: 1.5px solid #000; }
+.lang-switch .lang-opt--active { background: #000; color: #fff; }
+.lang-switch .lang-opt:hover:not(.lang-opt--active) { background: #f0f0f0; }
+.lang-switch .lang-code { display: block; line-height: 1; }
+.lang-switch .lang-beta {
+  display: block; font-size: 0.5rem; margin: 1px 0 0 0; line-height: 1;
+  text-transform: lowercase; opacity: 0.85;
+}
+.lang-switch .lang-opt--active .lang-beta { color: #fff; }
+
+/* Support / donate block — directly above the footer on both page types.
+   Own top + bottom rule so it reads as distinct furniture, not part of the footer. */
+.support-block {
+  margin-top: 3rem;
+  padding: 1.5rem 0;
+  border-top: 3px solid #000;
+  border-bottom: 3px solid #000;
+}
+.support-block .support-heading {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #000;
+  margin: 0 0 0.5rem;
+}
+.support-block .support-line {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #444;
+  margin: 0 0 1rem;
+  max-width: 62ch;
+}
+.support-block .support-btn {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.85rem 1.5rem;
+  min-height: 44px;
+  border: 1.5px solid #000;
+  transition: background 120ms ease, color 120ms ease;
+}
+.support-block .support-btn:hover { background: #fff; color: #000; }
+.support-block .support-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
 </style>
 </head>
 <body>
 <div class="container">
 <div class="top-bar">
 <nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
-<button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-05-28-001.html" data-title="US and Iran Exchange Strikes Near Bandar Abbas as IRGC Retaliates Against American Base">Share</button>
+<div class="top-bar-right">
+<div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt lang-opt--active" href="tp-2026-05-28-001.html" aria-current="page"><span class="lang-code">en</span></a><a class="lang-opt" href="../de/reports/tp-2026-05-28-001.html"><span class="lang-code">de</span><sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-05-28-001.html" data-title="US and Iran Exchange Strikes Near Bandar Abbas as IRGC Retaliates Against American Base">Share</button>
+</div>
 </div>
 
 <h1>US and Iran Exchange Strikes Near Bandar Abbas as IRGC Retaliates Against American Base</h1>
@@ -1417,7 +1490,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 <h2>Sources</h2>
 <p class="sources-meta">31 sources from 22 outlets across 11 languages.</p>
 <div class="sources-by-outlet">
-<details class="outlet-block" id="outlet-al-jazeera" open>
+<details class="outlet-block" id="outlet-al-jazeera">
 <summary><strong>Al Jazeera</strong> <span class="outlet-meta">Qatar &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">4 sources</span></summary>
 <ol class="source-list">
 <li id="src-001" class="source">
@@ -1461,7 +1534,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-anadolu-agency" open>
+<details class="outlet-block" id="outlet-anadolu-agency">
 <summary><strong>Anadolu Agency</strong> <span class="outlet-meta">Turkey &middot; state_influenced</span> <span class="outlet-source-count">2 sources</span></summary>
 <ol class="source-list">
 <li id="src-002" class="source">
@@ -1488,7 +1561,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-bbc" open>
+<details class="outlet-block" id="outlet-bbc">
 <summary><strong>BBC</strong> <span class="outlet-meta">United Kingdom &middot; not yet categorized</span> <span class="outlet-source-count">2 sources</span></summary>
 <ol class="source-list">
 <li id="src-003" class="source">
@@ -1513,7 +1586,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-cbs-news" open>
+<details class="outlet-block" id="outlet-cbs-news">
 <summary><strong>CBS News</strong> <span class="outlet-meta">United States &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-026" class="source">
@@ -1528,7 +1601,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-der-spiegel" open>
+<details class="outlet-block" id="outlet-der-spiegel">
 <summary><strong>Der Spiegel</strong> <span class="outlet-meta">Germany &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-005" class="source">
@@ -1539,7 +1612,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-dw-news" open>
+<details class="outlet-block" id="outlet-dw-news">
 <summary><strong>DW News</strong> <span class="outlet-meta">Germany &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-004" class="source">
@@ -1555,7 +1628,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-el-financiero" open>
+<details class="outlet-block" id="outlet-el-financiero">
 <summary><strong>El Financiero</strong> <span class="outlet-meta">Mexico &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-006" class="source">
@@ -1571,7 +1644,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-france-24" open>
+<details class="outlet-block" id="outlet-france-24">
 <summary><strong>France 24</strong> <span class="outlet-meta">France &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-007" class="source">
@@ -1587,7 +1660,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-hrana-news-agency" open>
+<details class="outlet-block" id="outlet-hrana-news-agency">
 <summary><strong>HRANA News Agency</strong> <span class="outlet-meta">Iran &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-022" class="source">
@@ -1597,7 +1670,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-hurriyet" open>
+<details class="outlet-block" id="outlet-hurriyet">
 <summary><strong>Hurriyet</strong> <span class="outlet-meta">Turkey &middot; state_influenced</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-008" class="source">
@@ -1613,7 +1686,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-iran-international" open>
+<details class="outlet-block" id="outlet-iran-international">
 <summary><strong>Iran International</strong> <span class="outlet-meta">United Kingdom &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-021" class="source">
@@ -1628,7 +1701,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-japan-today" open>
+<details class="outlet-block" id="outlet-japan-today">
 <summary><strong>Japan Today</strong> <span class="outlet-meta">Japan &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-009" class="source">
@@ -1644,7 +1717,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-live-hindustan" open>
+<details class="outlet-block" id="outlet-live-hindustan">
 <summary><strong>Live Hindustan</strong> <span class="outlet-meta">India &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-029" class="source">
@@ -1659,7 +1732,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-middle-east-eye" open>
+<details class="outlet-block" id="outlet-middle-east-eye">
 <summary><strong>Middle East Eye</strong> <span class="outlet-meta">United Kingdom &middot; independent</span> <span class="outlet-source-count">3 sources</span></summary>
 <ol class="source-list">
 <li id="src-010" class="source">
@@ -1697,7 +1770,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-military-times" open>
+<details class="outlet-block" id="outlet-military-times">
 <summary><strong>Military Times</strong> <span class="outlet-meta">United States &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-034" class="source">
@@ -1712,7 +1785,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-renewable-matter" open>
+<details class="outlet-block" id="outlet-renewable-matter">
 <summary><strong>Renewable Matter</strong> <span class="outlet-meta">Italy &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-032" class="source">
@@ -1722,7 +1795,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-reuters" open>
+<details class="outlet-block" id="outlet-reuters">
 <summary><strong>Reuters</strong> <span class="outlet-meta">United Kingdom &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-025" class="source">
@@ -1737,7 +1810,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-rfi" open>
+<details class="outlet-block" id="outlet-rfi">
 <summary><strong>RFI</strong> <span class="outlet-meta">France &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">3 sources</span></summary>
 <ol class="source-list">
 <li id="src-011" class="source">
@@ -1775,7 +1848,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-rt-arabic" open>
+<details class="outlet-block" id="outlet-rt-arabic">
 <summary><strong>RT Arabic</strong> <span class="outlet-meta">Russia &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-024" class="source">
@@ -1790,7 +1863,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-tagesschau" open>
+<details class="outlet-block" id="outlet-tagesschau">
 <summary><strong>Tagesschau</strong> <span class="outlet-meta">Germany &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-012" class="source">
@@ -1806,7 +1879,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-urdu-news" open>
+<details class="outlet-block" id="outlet-urdu-news">
 <summary><strong>Urdu News</strong> <span class="outlet-meta">Pakistan &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-030" class="source">
@@ -1816,7 +1889,7 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-vneconomy" open>
+<details class="outlet-block" id="outlet-vneconomy">
 <summary><strong>VnEconomy</strong> <span class="outlet-meta">Vietnam &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-033" class="source">
@@ -1874,6 +1947,12 @@ Follow-up to: &ldquo;Iran Threatens to Strike UAE if Israel Hits Lebanon, as New
 </details>
 
 <nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<section class="support-block" aria-label="Support Independent Wire">
+  <p class="support-heading">Keep it independent</p>
+  <p class="support-line">No ads, no investors, no paywall. Donations cover the daily running costs and keep Independent Wire independent.</p>
+  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" target="_blank" rel="noopener">Donate via Liberapay</a>
+</section>
 
 <footer>
 <div class="footer-text">

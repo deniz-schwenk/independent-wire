@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
 <title>Iran Threatens to Strike UAE if Israel Hits Lebanon, as New US Strikes Near Hormuz Draw Accusations of Ceasefire Violation</title>
 <link rel="canonical" href="https://independent-wire.org/reports/tp-2026-05-27-002.html">
@@ -561,13 +563,84 @@ footer a { color: #000; text-decoration: underline; }
   footer { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
   footer .footer-mark { width: 64px; height: 64px; }
 }
+
+/* Language switch (DE/EN) — fixed next to the share button on both page types */
+.top-bar-right { display: inline-flex; align-items: center; gap: 0.6rem; }
+.lang-switch {
+  display: inline-flex; align-items: stretch;
+  border: 1.5px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.lang-switch .lang-opt {
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 0.7rem; min-height: 44px; min-width: 3.2rem;
+  color: #000; text-decoration: none; background: transparent;
+  text-align: center;
+}
+.lang-switch .lang-opt + .lang-opt { border-left: 1.5px solid #000; }
+.lang-switch .lang-opt--active { background: #000; color: #fff; }
+.lang-switch .lang-opt:hover:not(.lang-opt--active) { background: #f0f0f0; }
+.lang-switch .lang-code { display: block; line-height: 1; }
+.lang-switch .lang-beta {
+  display: block; font-size: 0.5rem; margin: 1px 0 0 0; line-height: 1;
+  text-transform: lowercase; opacity: 0.85;
+}
+.lang-switch .lang-opt--active .lang-beta { color: #fff; }
+
+/* Support / donate block — directly above the footer on both page types.
+   Own top + bottom rule so it reads as distinct furniture, not part of the footer. */
+.support-block {
+  margin-top: 3rem;
+  padding: 1.5rem 0;
+  border-top: 3px solid #000;
+  border-bottom: 3px solid #000;
+}
+.support-block .support-heading {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #000;
+  margin: 0 0 0.5rem;
+}
+.support-block .support-line {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #444;
+  margin: 0 0 1rem;
+  max-width: 62ch;
+}
+.support-block .support-btn {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.85rem 1.5rem;
+  min-height: 44px;
+  border: 1.5px solid #000;
+  transition: background 120ms ease, color 120ms ease;
+}
+.support-block .support-btn:hover { background: #fff; color: #000; }
+.support-block .support-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
 </style>
 </head>
 <body>
 <div class="container">
 <div class="top-bar">
 <nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
-<button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-05-27-002.html" data-title="Iran Threatens to Strike UAE if Israel Hits Lebanon, as New US Strikes Near Hormuz Draw Accusations of Ceasefire Violation">Share</button>
+<div class="top-bar-right">
+<div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt lang-opt--active" href="tp-2026-05-27-002.html" aria-current="page"><span class="lang-code">en</span></a><a class="lang-opt" href="../de/reports/tp-2026-05-27-002.html"><span class="lang-code">de</span><sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-05-27-002.html" data-title="Iran Threatens to Strike UAE if Israel Hits Lebanon, as New US Strikes Near Hormuz Draw Accusations of Ceasefire Violation">Share</button>
+</div>
 </div>
 
 <h1>Iran Threatens to Strike UAE if Israel Hits Lebanon, as New US Strikes Near Hormuz Draw Accusations of Ceasefire Violation</h1>
@@ -1428,7 +1501,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 <h2>Sources</h2>
 <p class="sources-meta">31 sources from 19 outlets across 7 languages.</p>
 <div class="sources-by-outlet">
-<details class="outlet-block" id="outlet-al-jazeera" open>
+<details class="outlet-block" id="outlet-al-jazeera">
 <summary><strong>Al Jazeera</strong> <span class="outlet-meta">Qatar &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">5 sources</span></summary>
 <ol class="source-list">
 <li id="src-001" class="source">
@@ -1483,7 +1556,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-anadolu-agency" open>
+<details class="outlet-block" id="outlet-anadolu-agency">
 <summary><strong>Anadolu Agency</strong> <span class="outlet-meta">Turkey &middot; state_influenced</span> <span class="outlet-source-count">2 sources</span></summary>
 <ol class="source-list">
 <li id="src-002" class="source">
@@ -1510,7 +1583,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-bbc" open>
+<details class="outlet-block" id="outlet-bbc">
 <summary><strong>BBC</strong> <span class="outlet-meta">United Kingdom &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-003" class="source">
@@ -1525,7 +1598,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-bbc-persian" open>
+<details class="outlet-block" id="outlet-bbc-persian">
 <summary><strong>BBC Persian</strong> <span class="outlet-meta">United Kingdom &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-031" class="source">
@@ -1540,7 +1613,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-bianet" open>
+<details class="outlet-block" id="outlet-bianet">
 <summary><strong>Bianet</strong> <span class="outlet-meta">Turkey &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-026" class="source">
@@ -1555,7 +1628,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-cbc-news" open>
+<details class="outlet-block" id="outlet-cbc-news">
 <summary><strong>CBC News</strong> <span class="outlet-meta">Canada &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-032" class="source">
@@ -1570,7 +1643,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-cbs-news" open>
+<details class="outlet-block" id="outlet-cbs-news">
 <summary><strong>CBS News</strong> <span class="outlet-meta">United States &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-035" class="source">
@@ -1580,7 +1653,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-cnbc" open>
+<details class="outlet-block" id="outlet-cnbc">
 <summary><strong>CNBC</strong> <span class="outlet-meta">United States &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-036" class="source">
@@ -1590,7 +1663,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-el-financiero" open>
+<details class="outlet-block" id="outlet-el-financiero">
 <summary><strong>El Financiero</strong> <span class="outlet-meta">Mexico &middot; independent</span> <span class="outlet-source-count">2 sources</span></summary>
 <ol class="source-list">
 <li id="src-004" class="source">
@@ -1617,7 +1690,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-fararu" open>
+<details class="outlet-block" id="outlet-fararu">
 <summary><strong>Fararu</strong> <span class="outlet-meta">Iran &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-023" class="source">
@@ -1632,7 +1705,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-france-24" open>
+<details class="outlet-block" id="outlet-france-24">
 <summary><strong>France 24</strong> <span class="outlet-meta">France &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">2 sources</span></summary>
 <ol class="source-list">
 <li id="src-005" class="source">
@@ -1659,7 +1732,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-international-committee-of-the-red-cross" open>
+<details class="outlet-block" id="outlet-international-committee-of-the-red-cross">
 <summary><strong>International Committee of the Red Cross</strong> <span class="outlet-meta">Switzerland &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-033" class="source">
@@ -1669,7 +1742,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-japan-today" open>
+<details class="outlet-block" id="outlet-japan-today">
 <summary><strong>Japan Today</strong> <span class="outlet-meta">Japan &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-007" class="source">
@@ -1685,7 +1758,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-middle-east-eye" open>
+<details class="outlet-block" id="outlet-middle-east-eye">
 <summary><strong>Middle East Eye</strong> <span class="outlet-meta">United Kingdom &middot; independent</span> <span class="outlet-source-count">2 sources</span></summary>
 <ol class="source-list">
 <li id="src-008" class="source">
@@ -1712,7 +1785,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-responsible-statecraft" open>
+<details class="outlet-block" id="outlet-responsible-statecraft">
 <summary><strong>Responsible Statecraft</strong> <span class="outlet-meta">United States &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-009" class="source">
@@ -1723,7 +1796,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-tabnak" open>
+<details class="outlet-block" id="outlet-tabnak">
 <summary><strong>Tabnak</strong> <span class="outlet-meta">Iran &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-022" class="source">
@@ -1738,7 +1811,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-tagesschau" open>
+<details class="outlet-block" id="outlet-tagesschau">
 <summary><strong>Tagesschau</strong> <span class="outlet-meta">Germany &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-010" class="source">
@@ -1754,7 +1827,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-the-guardian" open>
+<details class="outlet-block" id="outlet-the-guardian">
 <summary><strong>The Guardian</strong> <span class="outlet-meta">United Kingdom &middot; not yet categorized</span> <span class="outlet-source-count">3 sources</span></summary>
 <ol class="source-list">
 <li id="src-006" class="source">
@@ -1789,7 +1862,7 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-yonhap" open>
+<details class="outlet-block" id="outlet-yonhap">
 <summary><strong>Yonhap</strong> <span class="outlet-meta">South Korea &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">3 sources</span></summary>
 <ol class="source-list">
 <li id="src-011" class="source">
@@ -1875,6 +1948,12 @@ Follow-up to: &ldquo;US Strikes Iranian Missile Sites and Mine-Laying Vessels as
 </details>
 
 <nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<section class="support-block" aria-label="Support Independent Wire">
+  <p class="support-heading">Keep it independent</p>
+  <p class="support-line">No ads, no investors, no paywall. Donations cover the daily running costs and keep Independent Wire independent.</p>
+  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" target="_blank" rel="noopener">Donate via Liberapay</a>
+</section>
 
 <footer>
 <div class="footer-text">

@@ -563,13 +563,84 @@ footer a { color: #000; text-decoration: underline; }
   footer { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
   footer .footer-mark { width: 64px; height: 64px; }
 }
+
+/* Language switch (DE/EN) — fixed next to the share button on both page types */
+.top-bar-right { display: inline-flex; align-items: center; gap: 0.6rem; }
+.lang-switch {
+  display: inline-flex; align-items: stretch;
+  border: 1.5px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.lang-switch .lang-opt {
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 0.7rem; min-height: 44px; min-width: 3.2rem;
+  color: #000; text-decoration: none; background: transparent;
+  text-align: center;
+}
+.lang-switch .lang-opt + .lang-opt { border-left: 1.5px solid #000; }
+.lang-switch .lang-opt--active { background: #000; color: #fff; }
+.lang-switch .lang-opt:hover:not(.lang-opt--active) { background: #f0f0f0; }
+.lang-switch .lang-code { display: block; line-height: 1; }
+.lang-switch .lang-beta {
+  display: block; font-size: 0.5rem; margin: 1px 0 0 0; line-height: 1;
+  text-transform: lowercase; opacity: 0.85;
+}
+.lang-switch .lang-opt--active .lang-beta { color: #fff; }
+
+/* Support / donate block — directly above the footer on both page types.
+   Own top + bottom rule so it reads as distinct furniture, not part of the footer. */
+.support-block {
+  margin-top: 3rem;
+  padding: 1.5rem 0;
+  border-top: 3px solid #000;
+  border-bottom: 3px solid #000;
+}
+.support-block .support-heading {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #000;
+  margin: 0 0 0.5rem;
+}
+.support-block .support-line {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #444;
+  margin: 0 0 1rem;
+  max-width: 62ch;
+}
+.support-block .support-btn {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.85rem 1.5rem;
+  min-height: 44px;
+  border: 1.5px solid #000;
+  transition: background 120ms ease, color 120ms ease;
+}
+.support-block .support-btn:hover { background: #fff; color: #000; }
+.support-block .support-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
 </style>
 </head>
 <body>
 <div class="container">
 <div class="top-bar">
 <nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
-<button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-06-14-003.html" data-title="Israel Strikes Across Southern and Eastern Lebanon as US-Iran Deal Nears Signing">Share</button>
+<div class="top-bar-right">
+<div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt lang-opt--active" href="tp-2026-06-14-003.html" aria-current="page"><span class="lang-code">en</span></a><a class="lang-opt" href="../de/reports/tp-2026-06-14-003.html"><span class="lang-code">de</span><sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-06-14-003.html" data-title="Israel Strikes Across Southern and Eastern Lebanon as US-Iran Deal Nears Signing">Share</button>
+</div>
 </div>
 
 <h1>Israel Strikes Across Southern and Eastern Lebanon as US-Iran Deal Nears Signing</h1>
@@ -1570,6 +1641,12 @@ Follow-up to: &ldquo;Iran Fires Ballistic Missiles at Kuwait and Bahrain After U
 </details>
 
 <nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<section class="support-block" aria-label="Support Independent Wire">
+  <p class="support-heading">Keep it independent</p>
+  <p class="support-line">No ads, no investors, no paywall. Donations cover the daily running costs and keep Independent Wire independent.</p>
+  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" target="_blank" rel="noopener">Donate via Liberapay</a>
+</section>
 
 <footer>
 <div class="footer-text">

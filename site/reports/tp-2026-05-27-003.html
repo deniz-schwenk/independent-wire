@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
 <title>Germany Summons Russian Ambassador as Ukraine Strikes Russian Port and Refinery Targets</title>
 <link rel="canonical" href="https://independent-wire.org/reports/tp-2026-05-27-003.html">
@@ -561,13 +563,84 @@ footer a { color: #000; text-decoration: underline; }
   footer { flex-direction: column-reverse; align-items: flex-start; gap: 1rem; }
   footer .footer-mark { width: 64px; height: 64px; }
 }
+
+/* Language switch (DE/EN) — fixed next to the share button on both page types */
+.top-bar-right { display: inline-flex; align-items: center; gap: 0.6rem; }
+.lang-switch {
+  display: inline-flex; align-items: stretch;
+  border: 1.5px solid #000;
+  font-family: var(--font-mono);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.lang-switch .lang-opt {
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 0.7rem; min-height: 44px; min-width: 3.2rem;
+  color: #000; text-decoration: none; background: transparent;
+  text-align: center;
+}
+.lang-switch .lang-opt + .lang-opt { border-left: 1.5px solid #000; }
+.lang-switch .lang-opt--active { background: #000; color: #fff; }
+.lang-switch .lang-opt:hover:not(.lang-opt--active) { background: #f0f0f0; }
+.lang-switch .lang-code { display: block; line-height: 1; }
+.lang-switch .lang-beta {
+  display: block; font-size: 0.5rem; margin: 1px 0 0 0; line-height: 1;
+  text-transform: lowercase; opacity: 0.85;
+}
+.lang-switch .lang-opt--active .lang-beta { color: #fff; }
+
+/* Support / donate block — directly above the footer on both page types.
+   Own top + bottom rule so it reads as distinct furniture, not part of the footer. */
+.support-block {
+  margin-top: 3rem;
+  padding: 1.5rem 0;
+  border-top: 3px solid #000;
+  border-bottom: 3px solid #000;
+}
+.support-block .support-heading {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #000;
+  margin: 0 0 0.5rem;
+}
+.support-block .support-line {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #444;
+  margin: 0 0 1rem;
+  max-width: 62ch;
+}
+.support-block .support-btn {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.85rem 1.5rem;
+  min-height: 44px;
+  border: 1.5px solid #000;
+  transition: background 120ms ease, color 120ms ease;
+}
+.support-block .support-btn:hover { background: #fff; color: #000; }
+.support-block .support-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
 </style>
 </head>
 <body>
 <div class="container">
 <div class="top-bar">
 <nav class="back-nav"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
-<button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-05-27-003.html" data-title="Germany Summons Russian Ambassador as Ukraine Strikes Russian Port and Refinery Targets">Share</button>
+<div class="top-bar-right">
+<div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt lang-opt--active" href="tp-2026-05-27-003.html" aria-current="page"><span class="lang-code">en</span></a><a class="lang-opt" href="../de/reports/tp-2026-05-27-003.html"><span class="lang-code">de</span><sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-05-27-003.html" data-title="Germany Summons Russian Ambassador as Ukraine Strikes Russian Port and Refinery Targets">Share</button>
+</div>
 </div>
 
 <h1>Germany Summons Russian Ambassador as Ukraine Strikes Russian Port and Refinery Targets</h1>
@@ -1333,7 +1406,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 <h2>Sources</h2>
 <p class="sources-meta">28 sources from 24 outlets across 8 languages.</p>
 <div class="sources-by-outlet">
-<details class="outlet-block" id="outlet-24-kanal" open>
+<details class="outlet-block" id="outlet-24-kanal">
 <summary><strong>24 Kanal</strong> <span class="outlet-meta">Ukraine &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-028" class="source">
@@ -1348,7 +1421,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-anadolu-ajans" open>
+<details class="outlet-block" id="outlet-anadolu-ajans">
 <summary><strong>Anadolu Ajansı</strong> <span class="outlet-meta">Turkey &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-031" class="source">
@@ -1363,7 +1436,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-associated-press" open>
+<details class="outlet-block" id="outlet-associated-press">
 <summary><strong>Associated Press</strong> <span class="outlet-meta">United States &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-019" class="source">
@@ -1373,7 +1446,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-baker-institute" open>
+<details class="outlet-block" id="outlet-baker-institute">
 <summary><strong>Baker Institute</strong> <span class="outlet-meta">United States &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-021" class="source">
@@ -1383,7 +1456,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-bbc" open>
+<details class="outlet-block" id="outlet-bbc">
 <summary><strong>BBC</strong> <span class="outlet-meta">United Kingdom &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-001" class="source">
@@ -1398,7 +1471,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-brookings-institution" open>
+<details class="outlet-block" id="outlet-brookings-institution">
 <summary><strong>Brookings Institution</strong> <span class="outlet-meta">United States &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-023" class="source">
@@ -1413,7 +1486,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-dw-news" open>
+<details class="outlet-block" id="outlet-dw-news">
 <summary><strong>DW News</strong> <span class="outlet-meta">Germany &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-002" class="source">
@@ -1429,7 +1502,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-infobae" open>
+<details class="outlet-block" id="outlet-infobae">
 <summary><strong>Infobae</strong> <span class="outlet-meta">Argentina &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-003" class="source">
@@ -1445,7 +1518,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-interfax" open>
+<details class="outlet-block" id="outlet-interfax">
 <summary><strong>Interfax</strong> <span class="outlet-meta">Russia &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-024" class="source">
@@ -1460,7 +1533,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-japan-today" open>
+<details class="outlet-block" id="outlet-japan-today">
 <summary><strong>Japan Today</strong> <span class="outlet-meta">Japan &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-004" class="source">
@@ -1476,7 +1549,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-kyiv-independent" open>
+<details class="outlet-block" id="outlet-kyiv-independent">
 <summary><strong>Kyiv Independent</strong> <span class="outlet-meta">Ukraine &middot; independent</span> <span class="outlet-source-count">3 sources</span></summary>
 <ol class="source-list">
 <li id="src-005" class="source">
@@ -1514,7 +1587,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-meduza" open>
+<details class="outlet-block" id="outlet-meduza">
 <summary><strong>Meduza</strong> <span class="outlet-meta">Latvia &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-025" class="source">
@@ -1530,7 +1603,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-moscow-times" open>
+<details class="outlet-block" id="outlet-moscow-times">
 <summary><strong>Moscow Times</strong> <span class="outlet-meta">Netherlands &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-006" class="source">
@@ -1546,7 +1619,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-netease" open>
+<details class="outlet-block" id="outlet-netease">
 <summary><strong>NetEase</strong> <span class="outlet-meta">China &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-029" class="source">
@@ -1556,7 +1629,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-novaya-gazeta-europe" open>
+<details class="outlet-block" id="outlet-novaya-gazeta-europe">
 <summary><strong>Novaya Gazeta Europe</strong> <span class="outlet-meta">Latvia &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-007" class="source">
@@ -1572,7 +1645,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-radio-svoboda" open>
+<details class="outlet-block" id="outlet-radio-svoboda">
 <summary><strong>Radio Svoboda</strong> <span class="outlet-meta">Ukraine &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-027" class="source">
@@ -1587,7 +1660,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-responsible-statecraft" open>
+<details class="outlet-block" id="outlet-responsible-statecraft">
 <summary><strong>Responsible Statecraft</strong> <span class="outlet-meta">United States &middot; independent</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-009" class="source">
@@ -1603,7 +1676,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-reuters" open>
+<details class="outlet-block" id="outlet-reuters">
 <summary><strong>Reuters</strong> <span class="outlet-meta">United Kingdom &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-018" class="source">
@@ -1613,7 +1686,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-rfi" open>
+<details class="outlet-block" id="outlet-rfi">
 <summary><strong>RFI</strong> <span class="outlet-meta">France &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-008" class="source">
@@ -1629,7 +1702,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-tagesschau" open>
+<details class="outlet-block" id="outlet-tagesschau">
 <summary><strong>Tagesschau</strong> <span class="outlet-meta">Germany &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">3 sources</span></summary>
 <ol class="source-list">
 <li id="src-010" class="source">
@@ -1667,7 +1740,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-tencent-news-qq" open>
+<details class="outlet-block" id="outlet-tencent-news-qq">
 <summary><strong>Tencent News / QQ</strong> <span class="outlet-meta">China &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-030" class="source">
@@ -1682,7 +1755,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-the-new-york-times" open>
+<details class="outlet-block" id="outlet-the-new-york-times">
 <summary><strong>The New York Times</strong> <span class="outlet-meta">United States &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-020" class="source">
@@ -1697,7 +1770,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-ukrainska-pravda" open>
+<details class="outlet-block" id="outlet-ukrainska-pravda">
 <summary><strong>Ukrainska Pravda</strong> <span class="outlet-meta">Ukraine &middot; not yet categorized</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-026" class="source">
@@ -1712,7 +1785,7 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </li>
 </ol>
 </details>
-<details class="outlet-block" id="outlet-ukrinform" open>
+<details class="outlet-block" id="outlet-ukrinform">
 <summary><strong>Ukrinform</strong> <span class="outlet-meta">Ukraine &middot; state_influenced</span> <span class="outlet-source-count">1 source</span></summary>
 <ol class="source-list">
 <li id="src-011" class="source">
@@ -1771,6 +1844,12 @@ Follow-up to: &ldquo;Russia Announces Systematic Strikes on Kyiv &#x27;Decision-
 </details>
 
 <nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALL DOSSIERS</a></nav>
+
+<section class="support-block" aria-label="Support Independent Wire">
+  <p class="support-heading">Keep it independent</p>
+  <p class="support-line">No ads, no investors, no paywall. Donations cover the daily running costs and keep Independent Wire independent.</p>
+  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" target="_blank" rel="noopener">Donate via Liberapay</a>
+</section>
 
 <footer>
 <div class="footer-text">
