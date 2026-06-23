@@ -45,7 +45,7 @@ rc=0
   # ONLY site/de/, so the English site/ (pushed independently by daily_run.sh) is untouched.
   if [[ $rc -eq 0 ]]; then
     echo "[render + publish German pages -> site/de/]"
-    if "$PYBIN" scripts/publish_de.py --date "$TODAY"; then
+    if "$PYBIN" scripts/publish_de.py; then
       git add site/de
       if git diff --cached --quiet; then
         echo "no site/de/ changes — nothing to commit"

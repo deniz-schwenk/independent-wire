@@ -574,15 +574,18 @@ footer a { color: #000; text-decoration: underline; }
   letter-spacing: 0.1em; text-transform: uppercase;
 }
 .lang-switch .lang-opt {
-  display: inline-flex; align-items: center;
-  padding: 0 0.6rem; min-height: 44px;
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 0.7rem; min-height: 44px; min-width: 3.2rem;
   color: #000; text-decoration: none; background: transparent;
+  text-align: center;
 }
 .lang-switch .lang-opt + .lang-opt { border-left: 1.5px solid #000; }
 .lang-switch .lang-opt--active { background: #000; color: #fff; }
 .lang-switch .lang-opt:hover:not(.lang-opt--active) { background: #f0f0f0; }
+.lang-switch .lang-code { display: block; line-height: 1; }
 .lang-switch .lang-beta {
-  font-size: 0.5rem; margin-left: 2px; line-height: 1;
+  display: block; font-size: 0.5rem; margin: 1px 0 0 0; line-height: 1;
   text-transform: lowercase; opacity: 0.85;
 }
 .lang-switch .lang-opt--active .lang-beta { color: #fff; }
@@ -593,7 +596,7 @@ footer a { color: #000; text-decoration: underline; }
 <div class="top-bar">
 <nav class="back-nav"><a href="../index.html">&larr; ALLE DOSSIERS</a></nav>
 <div class="top-bar-right">
-<div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt" href="../../reports/tp-2026-06-19-002.html">en</a><a class="lang-opt lang-opt--active" href="tp-2026-06-19-002.html" aria-current="page">de<sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-06-19-002.html" data-title="Mit Al-Qaida verbündete Bewaffnete greifen zum zweiten Mal in sechs Monaten den Flughafen von Niamey an und töten 11 Soldaten und 2 Zivilisten">Teilen</button>
+<div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt" href="../../reports/tp-2026-06-19-002.html"><span class="lang-code">en</span></a><a class="lang-opt lang-opt--active" href="tp-2026-06-19-002.html" aria-current="page"><span class="lang-code">de</span><sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-06-19-002.html" data-title="Mit Al-Qaida verbündete Bewaffnete greifen zum zweiten Mal in sechs Monaten den Flughafen von Niamey an und töten 11 Soldaten und 2 Zivilisten">Share</button>
 </div>
 </div>
 
@@ -735,17 +738,17 @@ footer a { color: #000; text-decoration: underline; }
 <text x="106" y="650.9" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a">TOTAL SOURCES</text>
 </svg>
 <div class="country-grid" style="margin-top:0.75rem">
-<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="France: 3 sources">France (3)</span>
-<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="United Kingdom: 2 sources">United Kingdom (2)</span>
-<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Germany: 2 sources">Germany (2)</span>
-<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Russia: 2 sources">Russia (2)</span>
-<span class="country-badge" style="background:#5a6b7a12;color:#5a6b7a;border:1px solid #5a6b7a30" title="United States: 1 source">United States</span>
-<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="China: 1 source">China</span>
-<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="Japan: 1 source">Japan</span>
-<span class="country-badge" style="background:#b56b5a12;color:#b56b5a;border:1px solid #b56b5a30" title="Qatar: 1 source">Qatar</span>
-<span class="country-badge" style="background:#9a7b5412;color:#9a7b54;border:1px solid #9a7b5430" title="Guinea: 1 source">Guinea</span>
-<span class="country-badge" style="background:#9a7b5412;color:#9a7b54;border:1px solid #9a7b5430" title="Niger: 1 source">Niger</span>
-<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Argentina: 1 source">Argentina</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="France: 3 Quellen">France (3)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="United Kingdom: 2 Quellen">United Kingdom (2)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Germany: 2 Quellen">Germany (2)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Russia: 2 Quellen">Russia (2)</span>
+<span class="country-badge" style="background:#5a6b7a12;color:#5a6b7a;border:1px solid #5a6b7a30" title="United States: 1 Quelle">United States</span>
+<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="China: 1 Quelle">China</span>
+<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="Japan: 1 Quelle">Japan</span>
+<span class="country-badge" style="background:#b56b5a12;color:#b56b5a;border:1px solid #b56b5a30" title="Qatar: 1 Quelle">Qatar</span>
+<span class="country-badge" style="background:#9a7b5412;color:#9a7b54;border:1px solid #9a7b5430" title="Guinea: 1 Quelle">Guinea</span>
+<span class="country-badge" style="background:#9a7b5412;color:#9a7b54;border:1px solid #9a7b5430" title="Niger: 1 Quelle">Niger</span>
+<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Argentina: 1 Quelle">Argentina</span>
 </div>
 
 <div class="reader-note">Der Artikel ist weitgehend zurückhaltend, schreibt die meisten wertenden Formulierungen namentlich genannten Quellen zu und stellt konkurrierende Behauptungen mit klarer Herkunft nebeneinander. Seine auffälligsten redaktionellen Entscheidungen sind eine Metapher, die den Streit zwischen Niger und Frankreich als &quot;diplomatic fault line&quot; [diplomatische Bruchlinie] darstellt, und eine Passage, die die Aussagen der nigrischen Behörden über eine erfolgreiche Verteidigung als zu hinterfragendes Narrativ darstellt, was den Leser eher zu Skepsis lenkt, als die Fakten für sich selbst sprechen zu lassen. Die Berichterstattung stützt sich auf eine breite, mehrsprachige Quellenbasis, lässt aber den Bericht der russischen Staatsmedien über die Beteiligung des Africa Corps an der Verteidigung im Januar als außerhalb russischer Quellen unbestätigt gekennzeichnet — ein wichtiger Transparenzhinweis angesichts der konkurrierenden geopolitischen Deutungen, die im Spiel sind.</div>
@@ -871,7 +874,7 @@ footer a { color: #000; text-decoration: underline; }
 
 <section id="actors-section" class="actors">
 <h2>Akteure</h2>
-<p class="actors-meta">13 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
+<p class="actors-meta">13 Akteure, die in diesem Thema zitiert werden. Springen Sie von einem Namen oben zu jeder Position und Quelle, in der der Akteur vorkommt.</p>
 <div class="actors-tabs" role="tablist">
 <button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALLE</span> <span class="actor-tab-count">13</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">REGIERUNG</span> <span class="actor-tab-count">6</span></button><button class="actor-tab" type="button" data-type-target="military"><span class="actor-tab-name">MILITÄR</span> <span class="actor-tab-count">2</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">ZIVILGESELLSCHAFT</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">WISSENSCHAFT</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONALE ORGANISATION</span> <span class="actor-tab-count">2</span></button><button class="actor-tab" type="button" data-type-target="affected_community"><span class="actor-tab-name">BETROFFENE GEMEINSCHAFT</span> <span class="actor-tab-count">1</span></button>
 </div>
@@ -1083,7 +1086,7 @@ footer a { color: #000; text-decoration: underline; }
 
 <section id="sources-section" class="sources">
 <h2>Quellen</h2>
-<p class="sources-meta">16 sources from 16 outlets across 6 languages.</p>
+<p class="sources-meta">16 Quellen aus 16 Medien in 6 Sprachen.</p>
 <div class="sources-by-outlet">
 <details class="outlet-block" id="outlet-al-jazeera">
 <summary><strong>Al Jazeera</strong> <span class="outlet-meta">Qatar &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">1 Quelle</span></summary>
@@ -1335,7 +1338,7 @@ footer a { color: #000; text-decoration: underline; }
 <div class="transparency">
 <h2>Transparenz-Protokoll</h2>
 <dl>
-<dt>Auswahlgrund</dt><dd>An al-Qaeda-linked attack on the airport in Niger&#x27;s capital Niamey — killing 11 soldiers and 2 civilians — is a significant security event in the Sahel, raising questions about the junta&#x27;s capacity to maintain order after expelling French and US forces. The story invites contested framings on whether the attack demonstrates the failure of the military government&#x27;s sovereignty-first security approach, the resilience of jihadist networks in the region, and the implications for Western counterterrorism strategy in the Sahel. It qualifies for multi-perspective treatment given the divergent regional and international stakes.</dd>
+<dt>Auswahlgrund</dt><dd>Ein mit Al-Qaida verbündeter Angriff auf den Flughafen in Nigers Hauptstadt Niamey – bei dem 11 Soldaten und 2 Zivilisten getötet wurden – ist ein bedeutendes Sicherheitsereignis im Sahel, das Fragen zur Fähigkeit der Junta aufwirft, die Ordnung nach der Ausweisung französischer und US-amerikanischer Streitkräfte aufrechtzuerhalten. Die Geschichte lädt zu umstrittenen Deutungen ein, ob der Angriff das Scheitern des auf Souveränität setzenden Sicherheitsansatzes der Militärregierung, die Widerstandsfähigkeit dschihadistischer Netzwerke in der Region und die Implikationen für die westliche Strategie zur Terrorismusbekämpfung im Sahel demonstriert. Sie qualifiziert sich angesichts der divergierenden regionalen und internationalen Interessen für eine multiperspektivische Behandlung.</dd>
 <dt>QA-Korrekturen</dt><dd><details class="qa-corrections-wrapper"><summary>QA-Korrekturen &mdash; <strong>2 angewendet &middot; 3 zurückgezogen</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-applied">angewendet</span> Remove src-001 and src-008 from the citation for the IS attribution of the January attack, retaining only src-003 and src-004 which actually support that claim. Change &#x27;[src-001][src-003][src-004][src-008]&#x27; to &#x27;[src-003][src-004]&#x27; for the clause &#x27;when an Islamic State-claimed attack targeted air command infrastructure and drone assets.&#x27;</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">the second major assault on the same installation since January 2026, when an Islamic State-claimed attack targeted air command infrastructure and drone assets [src-001][src-003][src-004][src-008]</blockquote><p class="qa-explanation">The article describes the January attack as &#x27;Islamic State-claimed,&#x27; but src-001 does not attribute the January attack to the Islamic State — it only notes Tiani acknowledged a security breach. Src-003 and src-004 do attribute it to the Islamic State. Src-008 (Al Jazeera, June 18) covers the June attack and does not specifically attribute the January attack to IS. The citation of src-001 and src-008 for the IS attribution is partially unsupported, though the claim itself is supported by src-003 and src-004.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">zurückgezogen</span> The sentence &#x27;Tiani thanked Russia for its help in foiling that earlier attack [src-002]&#x27; clearly says &#x27;that earlier attack,&#x27; making the temporal reference unambiguous. Src-002 supports this attribution. No correction is needed.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Tiani thanked Russia for its help in foiling that earlier attack [src-002].</blockquote><p class="qa-explanation">Src-002 (BBC) attributes Tiani&#x27;s thanks to Russia to the January attack context, but the article places this sentence in a paragraph about the June attack&#x27;s aftermath and the framing of a &#x27;successful defense,&#x27; which could mislead readers into thinking Tiani thanked Russia after the June attack. The thanks were specifically about the January attack, which the article does note with &#x27;that earlier attack,&#x27; so this is a minor framing issue but the citation is accurate.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">angewendet</span> Replace &#x27;neutralizing approximately 20 militants&#x27; with &#x27;neutralizing approximately 40 militants&#x27; to match the figure reported in src-011 (Vedomosti). The figure of 20 comes from src-004 (DW), not from Vedomosti. Add a citation to src-004 if the 20-figure is to be retained separately, or correct to 40 as Vedomosti reports.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Vedomosti reported that fighters from the Africa Corps, a unit of the Russian Ministry of Defense, directly participated in repelling the January assault alongside Nigerien forces, neutralizing approximately 20 militants [src-011].</blockquote><p class="qa-explanation">Src-011 (Vedomosti) states that about 40 militants attacked and were neutralized by joint Russian-Nigerien forces, not &#x27;approximately 20 militants.&#x27; The figure of 20 appears in src-004 (DW News), which says the January attack was &#x27;repelled with Russian help, killing 20 gunmen,&#x27; but Vedomosti&#x27;s own figure is approximately 40.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">zurückgezogen</span> The article accurately notes the BBC&#x27;s initial report had no claim and that JNIM&#x27;s claim came later via La Croix and France 24 Arabic. This is a correct and appropriately caveated representation of the timeline. No correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">The BBC noted that at the time of its initial reporting on June 18, no group had yet claimed responsibility [src-013]; JNIM&#x27;s claim was subsequently reported by La Croix and France 24 Arabic [src-007][src-012].</blockquote><p class="qa-explanation">Src-002 (BBC, same URL as src-013 but with RSS parameters) actually does mention JNIM claiming responsibility in its summary, while src-013 (BBC, same article) notes no group had claimed responsibility at time of reporting. These appear to be the same BBC article at different points in time or different versions. The article correctly notes the BBC&#x27;s initial report had no claim, and JNIM&#x27;s claim came later — this is accurate and appropriately caveated.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">zurückgezogen</span> This is a duplicate of the first finding regarding src-008&#x27;s citation for the January IS attack characterization. The fix applied in correction 1 (removing src-008 from that citation) resolves this issue as well. No additional correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">the second major assault on the same installation since January 2026, when an Islamic State-claimed attack targeted air command infrastructure and drone assets [src-001][src-003][src-004][src-008]</blockquote><p class="qa-explanation">Src-008 (Al Jazeera) covers the June 18 attack and does not specifically describe the January attack as Islamic State-claimed or mention drone assets. Citing src-008 for the characterization of the January attack is unsupported by that source&#x27;s content as described.</p></div></details></li></ul></details></dd>
 <dt>Strikte Quellenbereinigung</dt><dd><details class="dropped-details"><summary>1 Quelle entfernt</summary><div class="dropped-detail"><p class="dropped-section-label">Quellen</p><ul class="dropped-list"><li><span class="dropped-id">src-005</span> <span class="dropped-outlet">El Tiempo</span> &mdash; Reports a shooting at Guayaquil airport in Ecuador, leaving one dead and two injured, with two suspects detained in the parking lot. This article covers an unrelated event in Ecuador and contains no information about the attack in Niger.</li></ul></div></details></dd>
 <dt class="pipeline-run">Pipeline-Lauf</dt><dd class="pipeline-run">run-2026-06-19-14ecbc16 &middot; 2026-06-19</dd>
@@ -1380,10 +1383,10 @@ footer a { color: #000; text-decoration: underline; }
 
 <footer>
 <div class="footer-text">
-<p>Erstellt von <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
-<p>Diese Inhalte wurden von KI-Agenten erstellt</p>
-<p>AGPL-3.0 – Weil Transparenz kein Feature ist, sondern ein Versprechen</p>
-<p><a href="../feed.xml">RSS-Feed</a></p>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
 </div>
 <div class="footer-mark" aria-label="Independent Wire"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
     <rect width="1024" height="1024" fill="#fff"/>
@@ -1404,7 +1407,7 @@ document.querySelectorAll('.share-btn').forEach(btn => {
       try {
         await navigator.clipboard.writeText(url);
         const original = btn.textContent;
-        btn.textContent = 'Kopiert';
+        btn.textContent = 'Copied';
         setTimeout(() => { btn.textContent = original; }, 1500);
       } catch (e) {}
     }

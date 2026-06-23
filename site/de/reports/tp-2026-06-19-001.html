@@ -574,15 +574,18 @@ footer a { color: #000; text-decoration: underline; }
   letter-spacing: 0.1em; text-transform: uppercase;
 }
 .lang-switch .lang-opt {
-  display: inline-flex; align-items: center;
-  padding: 0 0.6rem; min-height: 44px;
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 0.7rem; min-height: 44px; min-width: 3.2rem;
   color: #000; text-decoration: none; background: transparent;
+  text-align: center;
 }
 .lang-switch .lang-opt + .lang-opt { border-left: 1.5px solid #000; }
 .lang-switch .lang-opt--active { background: #000; color: #fff; }
 .lang-switch .lang-opt:hover:not(.lang-opt--active) { background: #f0f0f0; }
+.lang-switch .lang-code { display: block; line-height: 1; }
 .lang-switch .lang-beta {
-  font-size: 0.5rem; margin-left: 2px; line-height: 1;
+  display: block; font-size: 0.5rem; margin: 1px 0 0 0; line-height: 1;
   text-transform: lowercase; opacity: 0.85;
 }
 .lang-switch .lang-opt--active .lang-beta { color: #fff; }
@@ -593,7 +596,7 @@ footer a { color: #000; text-decoration: underline; }
 <div class="top-bar">
 <nav class="back-nav"><a href="../index.html">&larr; ALLE DOSSIERS</a></nav>
 <div class="top-bar-right">
-<div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt" href="../../reports/tp-2026-06-19-001.html">en</a><a class="lang-opt lang-opt--active" href="tp-2026-06-19-001.html" aria-current="page">de<sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-06-19-001.html" data-title="Andy Burnham gewinnt Nachwahl in Makerfield mit 55 % der Stimmen und bereitet Bühne für Labour-Führungswettbewerb">Teilen</button>
+<div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt" href="../../reports/tp-2026-06-19-001.html"><span class="lang-code">en</span></a><a class="lang-opt lang-opt--active" href="tp-2026-06-19-001.html" aria-current="page"><span class="lang-code">de</span><sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-06-19-001.html" data-title="Andy Burnham gewinnt Nachwahl in Makerfield mit 55 % der Stimmen und bereitet Bühne für Labour-Führungswettbewerb">Share</button>
 </div>
 </div>
 
@@ -710,15 +713,15 @@ footer a { color: #000; text-decoration: underline; }
 <text x="106" y="650.9" font-family="'Space Mono', monospace" font-size="14" font-weight="700" letter-spacing="0.06em" text-anchor="start" fill="#0a0a0a">TOTAL SOURCES</text>
 </svg>
 <div class="country-grid" style="margin-top:0.75rem">
-<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="United Kingdom: 10 sources">United Kingdom (10)</span>
-<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Germany: 4 sources">Germany (4)</span>
-<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="France: 2 sources">France (2)</span>
-<span class="country-badge" style="background:#b56b5a12;color:#b56b5a;border:1px solid #b56b5a30" title="Qatar: 1 source">Qatar</span>
-<span class="country-badge" style="background:#b56b5a12;color:#b56b5a;border:1px solid #b56b5a30" title="Turkey: 1 source">Turkey</span>
-<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="Singapore: 1 source">Singapore</span>
-<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Argentina: 1 source">Argentina</span>
-<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="Japan: 1 source">Japan</span>
-<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Belgium: 1 source">Belgium</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="United Kingdom: 10 Quellen">United Kingdom (10)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Germany: 4 Quellen">Germany (4)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="France: 2 Quellen">France (2)</span>
+<span class="country-badge" style="background:#b56b5a12;color:#b56b5a;border:1px solid #b56b5a30" title="Qatar: 1 Quelle">Qatar</span>
+<span class="country-badge" style="background:#b56b5a12;color:#b56b5a;border:1px solid #b56b5a30" title="Turkey: 1 Quelle">Turkey</span>
+<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="Singapore: 1 Quelle">Singapore</span>
+<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Argentina: 1 Quelle">Argentina</span>
+<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="Japan: 1 Quelle">Japan</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Belgium: 1 Quelle">Belgium</span>
 </div>
 
 <div class="reader-note">Der Artikel ist in erster Linie als ein Labour-Führungs-Pferderennen gerahmt, das Burnhams und Streetings Herausforderungen an Starmer in den Vordergrund stellt, während den politischen und ideologischen Dimensionen, die einige internationale Quellen betonen, weniger Gewicht beigemessen wird. Einige redaktionelle Wortwahlen – &#x27;parallel threat&#x27; [parallele Bedrohung], &#x27;backroom arrangement&#x27; [Hinterzimmerabsprache], &#x27;heavy investment&#x27; [erhebliche Investition] – betten Urteile in die eigene Stimme des Artikels ein, anstatt sie Quellen zuzuschreiben. Reform UK, die Hauptoppositionspartei bei der Nachwahl, wird nur durch die Linse der Reaktionen anderer Akteure diskutiert, ohne eine direkte Stimme der Partei selbst, trotz ihrer zentralen Rolle im Wettbewerb.</div>
@@ -848,7 +851,7 @@ footer a { color: #000; text-decoration: underline; }
 
 <section id="actors-section" class="actors">
 <h2>Akteure</h2>
-<p class="actors-meta">16 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
+<p class="actors-meta">16 Akteure, die in diesem Thema zitiert werden. Springen Sie von einem Namen oben zu jeder Position und Quelle, in der der Akteur vorkommt.</p>
 <div class="actors-tabs" role="tablist">
 <button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALLE</span> <span class="actor-tab-count">16</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">REGIERUNG</span> <span class="actor-tab-count">7</span></button><button class="actor-tab" type="button" data-type-target="legislature"><span class="actor-tab-name">LEGISLATIVE</span> <span class="actor-tab-count">2</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">ZIVILGESELLSCHAFT</span> <span class="actor-tab-count">2</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">WISSENSCHAFT</span> <span class="actor-tab-count">2</span></button><button class="actor-tab" type="button" data-type-target="affected_community"><span class="actor-tab-name">BETROFFENE GEMEINSCHAFT</span> <span class="actor-tab-count">3</span></button>
 </div>
@@ -1089,7 +1092,7 @@ footer a { color: #000; text-decoration: underline; }
 
 <section id="sources-section" class="sources">
 <h2>Quellen</h2>
-<p class="sources-meta">22 sources from 15 outlets across 4 languages.</p>
+<p class="sources-meta">22 Quellen aus 15 Medien in 4 Sprachen.</p>
 <div class="sources-by-outlet">
 <details class="outlet-block" id="outlet-al-jazeera">
 <summary><strong>Al Jazeera</strong> <span class="outlet-meta">Qatar &middot; publicly_funded_autonomous</span> <span class="outlet-source-count">1 Quelle</span></summary>
@@ -1391,7 +1394,7 @@ footer a { color: #000; text-decoration: underline; }
 <div class="transparency">
 <h2>Transparenz-Protokoll</h2>
 <dl>
-<dt>Auswahlgrund</dt><dd>Burnham&#x27;s by-election victory with a large majority and the resulting speculation about a Labour leadership challenge to sitting Prime Minister Starmer is a significant UK domestic political development with implications for the governing party&#x27;s direction. The story invites competing framings on whether Burnham represents a return to Labour&#x27;s left or a pragmatic alternative, and whether Starmer&#x27;s leadership is genuinely threatened. However, the story is primarily a single-country political contest with limited transnational stakes, which constrains its priority.</dd>
+<dt>Auswahlgrund</dt><dd>Burnhams Nachwahlsieg mit großer Mehrheit und die daraus resultierenden Spekulationen über eine Herausforderung der Labour-Führung gegen den amtierenden Premierminister Starmer sind eine bedeutende innenpolitische Entwicklung im Vereinigten Königreich mit Auswirkungen auf die Richtung der Regierungspartei. Die Geschichte lädt zu konkurrierenden Rahmungen ein, ob Burnham eine Rückkehr zur Linken von Labour oder eine pragmatische Alternative darstellt und ob Starmers Führung wirklich bedroht ist. Allerdings handelt es sich in erster Linie um einen politischen Wettbewerb in einem einzelnen Land mit begrenzten transnationalen Einsätzen, was ihre Priorität einschränkt.</dd>
 <dt>QA-Korrekturen</dt><dd><details class="qa-corrections-wrapper"><summary>QA-Korrekturen &mdash; <strong>2 angewendet &middot; 4 zurückgezogen</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-applied">angewendet</span> Revise the sentence to clarify that Nandy&#x27;s &#x27;top team&#x27; comment referred to Burnham joining Starmer&#x27;s government rather than endorsing a leadership challenge. Change to: &#x27;Cabinet minister Lisa Nandy described the win as &quot;history in the making&quot; and said Burnham&#x27;s return to the government&#x27;s &quot;top team&quot; would put Labour in a strong position [src-008].&#x27; This preserves the quote while removing the misleading implication that Nandy was backing a leadership bid.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Cabinet minister Lisa Nandy described the win as &quot;history in the making&quot; and said Burnham&#x27;s return to the &quot;top team&quot; would strengthen Labour [src-008].</blockquote><p class="qa-explanation">Src-008 shows Nandy&#x27;s full quote makes clear she is speaking about Burnham joining the government&#x27;s &#x27;top team&#x27; as a Cabinet minister under Starmer, not endorsing a leadership challenge. The article&#x27;s framing — placed immediately after a paragraph about Burnham challenging Starmer — implies Nandy is backing a leadership bid, when she is actually arguing for Burnham to join Starmer&#x27;s team.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">zurückgezogen</span> The article states Streeting &#x27;resigned from Cabinet&#x27; without a citation. Src-002 describes him as &#x27;Former Health Secretary&#x27; who &#x27;Resigned from Starmer&#x27;s government.&#x27; The article&#x27;s body already uses &#x27;former Health Secretary who resigned from Cabinet&#x27; — this is consistent with src-002 and src-006 which both describe him as former Health Secretary. The lack of a citation on the resignation is a minor omission but the characterization is supported by multiple sources describing him as &#x27;Former Health Secretary.&#x27; No structural fix is warranted; the description is accurate per the sources.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Wes Streeting, the former Health Secretary who resigned from Cabinet, positioned himself as a parallel threat to Starmer&#x27;s leadership.</blockquote><p class="qa-explanation">No source in the dossier confirms that Streeting resigned from Cabinet; src-002 says he &#x27;resigned from Starmer&#x27;s government&#x27; but does not specify the circumstances. The article presents this as established fact without a citation on the resignation itself, and no source provides the specific reason or date of resignation.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">angewendet</span> Remove src-009 from the citation for the &#x27;space over the weekend&#x27; claim, as src-009 does not contain this phrase. The sentence should read: &#x27;Streeting said Starmer should be given &quot;space over the weekend&quot; to consider his future but indicated he was prepared to force a contest if the prime minister did not step aside [src-004].&#x27; The separate Infobae quote about being prepared for a contest can remain attributed to src-009 in the preceding sentence structure.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Streeting said Starmer should be given &quot;space over the weekend&quot; to consider his future but indicated he was prepared to force a contest if the prime minister did not step aside [src-004][src-009].</blockquote><p class="qa-explanation">Src-004 attributes the &#x27;space over the weekend&#x27; quote to Streeting, but src-009 does not contain this phrase; src-009 quotes Streeting saying &#x27;Tendrá que haber una contienda, y yo estaría preparado para ello.&#x27; The citation of src-009 for the &#x27;space over the weekend&#x27; claim is not supported by that source.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">zurückgezogen</span> This finding on Rob Ford&#x27;s quote was confirmed accurate — the article correctly attributes the quote to Ford per src-007. No correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">Professor Rob Ford of the University of Manchester said &quot;the pressure on Starmer will be very hard to resist&quot; now that Burnham is back in Parliament [src-007].</blockquote><p class="qa-explanation">Src-007 attributes this quote to Rob Ford and identifies him as &#x27;Professor of Political Science at the University of Manchester,&#x27; which is consistent. However, the article later refers to Ford&#x27;s extended quote from src-009 in Spanish, which is a translation — the article presents it as if Ford spoke in Spanish, but src-009 is an Argentine outlet translating Ford&#x27;s English remarks. This is not an error in this sentence itself, so this finding is limited to confirming accuracy here.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">zurückgezogen</span> The article states Matt Wrack is the NASUWT&#x27;s general secretary, which is what src-024 reports. Since the instruction is to rely only on the sources array and not outside knowledge, and src-024 explicitly identifies Matt Wrack as &#x27;General Secretary of NASUWT teaching union,&#x27; the article accurately reflects its source. No correction is warranted based solely on the sources provided.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">The Guardian reported that the NASUWT teaching union&#x27;s general secretary, Matt Wrack, had publicly backed Burnham ahead of the vote as Labour&#x27;s best chance of beating Reform [src-024]</blockquote><p class="qa-explanation">Src-024 identifies Matt Wrack as the General Secretary of the NASUWT teaching union. However, Matt Wrack is actually the General Secretary of the Fire Brigades Union (FBU); the NASUWT&#x27;s general secretary is a different person. The source itself may contain this error, but the article repeats it as fact.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">zurückgezogen</span> The framing &#x27;prepared to force a contest&#x27; is a reasonable paraphrase of src-004 (&#x27;vows to join any leadership race&#x27;) and src-009. No correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Streeting said Starmer should be given &quot;space over the weekend&quot; to consider his future but indicated he was prepared to force a contest if the prime minister did not step aside [src-004][src-009].</blockquote><p class="qa-explanation">The claim that Streeting &#x27;indicated he was prepared to force a contest if the prime minister did not step aside&#x27; is supported by src-004 and src-009, but the specific framing &#x27;force a contest&#x27; goes slightly beyond what src-004 says (&#x27;vows to join any leadership race&#x27;) and src-009 (&#x27;Tendrá que haber una contienda&#x27;). This is a minor overstatement but within reasonable paraphrase range; flagging for review.</p></div></details></li></ul></details></dd>
 <dt>Strikte Quellenbereinigung</dt><dd><details class="dropped-details"><summary>6 Quellen entfernt</summary><div class="dropped-detail"><p class="dropped-section-label">Quellen</p><ul class="dropped-list"><li><span class="dropped-id">src-001</span> <span class="dropped-outlet">ANSA</span> &mdash; Briefly reports Andy Burnham&#x27;s by-election victory in Markerfield, noting his return to Parliament and his aim to challenge Keir Starmer&#x27;s moderate leadership. It identifies Burnham as a 56-year-old former minister from Labour&#x27;s &#x27;soft left&#x27;.</li><li><span class="dropped-id">src-016</span> <span class="dropped-outlet">BBC News</span> &mdash; Quotes Burnham describing his win as a turning point and notes the vacancy was created by Josh Simons stepping down to allow Burnham to stand.</li><li><span class="dropped-id">src-018</span> <span class="dropped-outlet">Le Monde</span> &mdash; Describes the by-election as politically pivotal, saying Burnham could use a win to contest Starmer&#x27;s authority and possibly force an ultimatum quickly after the result.</li><li><span class="dropped-id">src-019</span> <span class="dropped-outlet">Interfax</span> &mdash; Russian-language report stating Burnham won 54% of the vote, opening the way to officially challenge Starmer for the Labour leadership, increasing internal pressure on the prime minister.</li><li><span class="dropped-id">src-020</span> <span class="dropped-outlet">CNN</span> &mdash; US-based international report framing Burnham&#x27;s win as the start of a new power struggle for the Labour leadership and the UK prime ministership.</li><li><span class="dropped-id">src-026</span> <span class="dropped-outlet">Manchester Evening News</span> &mdash; News analysis on who would temporarily lead Greater Manchester if Burnham vacates the mayoralty; explains the statutory succession framework and identifies Paul Dennett as best placed to become interim mayor.</li></ul></div></details></dd>
 <dt class="pipeline-run">Pipeline-Lauf</dt><dd class="pipeline-run">run-2026-06-19-14ecbc16 &middot; 2026-06-19</dd>
@@ -1436,10 +1439,10 @@ footer a { color: #000; text-decoration: underline; }
 
 <footer>
 <div class="footer-text">
-<p>Erstellt von <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
-<p>Diese Inhalte wurden von KI-Agenten erstellt</p>
-<p>AGPL-3.0 – Weil Transparenz kein Feature ist, sondern ein Versprechen</p>
-<p><a href="../feed.xml">RSS-Feed</a></p>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
 </div>
 <div class="footer-mark" aria-label="Independent Wire"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
     <rect width="1024" height="1024" fill="#fff"/>
@@ -1460,7 +1463,7 @@ document.querySelectorAll('.share-btn').forEach(btn => {
       try {
         await navigator.clipboard.writeText(url);
         const original = btn.textContent;
-        btn.textContent = 'Kopiert';
+        btn.textContent = 'Copied';
         setTimeout(() => { btn.textContent = original; }, 1500);
       } catch (e) {}
     }

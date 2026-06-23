@@ -574,15 +574,18 @@ footer a { color: #000; text-decoration: underline; }
   letter-spacing: 0.1em; text-transform: uppercase;
 }
 .lang-switch .lang-opt {
-  display: inline-flex; align-items: center;
-  padding: 0 0.6rem; min-height: 44px;
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 0.7rem; min-height: 44px; min-width: 3.2rem;
   color: #000; text-decoration: none; background: transparent;
+  text-align: center;
 }
 .lang-switch .lang-opt + .lang-opt { border-left: 1.5px solid #000; }
 .lang-switch .lang-opt--active { background: #000; color: #fff; }
 .lang-switch .lang-opt:hover:not(.lang-opt--active) { background: #f0f0f0; }
+.lang-switch .lang-code { display: block; line-height: 1; }
 .lang-switch .lang-beta {
-  font-size: 0.5rem; margin-left: 2px; line-height: 1;
+  display: block; font-size: 0.5rem; margin: 1px 0 0 0; line-height: 1;
   text-transform: lowercase; opacity: 0.85;
 }
 .lang-switch .lang-opt--active .lang-beta { color: #fff; }
@@ -593,7 +596,7 @@ footer a { color: #000; text-decoration: underline; }
 <div class="top-bar">
 <nav class="back-nav"><a href="../index.html">&larr; ALLE DOSSIERS</a></nav>
 <div class="top-bar-right">
-<div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt" href="../../reports/tp-2026-06-19-003.html">en</a><a class="lang-opt lang-opt--active" href="tp-2026-06-19-003.html" aria-current="page">de<sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-06-19-003.html" data-title="Kommunistische Partei Kubas billigt Paket von fast 200 marktwirtschaftlichen Reformen">Teilen</button>
+<div class="lang-switch" role="navigation" aria-label="Language / Sprache"><a class="lang-opt" href="../../reports/tp-2026-06-19-003.html"><span class="lang-code">en</span></a><a class="lang-opt lang-opt--active" href="tp-2026-06-19-003.html" aria-current="page"><span class="lang-code">de</span><sup class="lang-beta">beta</sup></a></div><button class="share-btn" data-url="https://independent-wire.org/reports/tp-2026-06-19-003.html" data-title="Kommunistische Partei Kubas billigt Paket von fast 200 marktwirtschaftlichen Reformen">Share</button>
 </div>
 </div>
 
@@ -724,22 +727,22 @@ footer a { color: #000; text-decoration: underline; }
 <text x="106" y="675.3" text-anchor="start" font-family="'Space Mono', monospace" font-size="12" letter-spacing="0.04em" fill="#0a0a0a" opacity="0.7">4 sources from countries not regionally classified.</text>
 </svg>
 <div class="country-grid" style="margin-top:0.75rem">
-<span class="country-badge" style="background:#b56b5a12;color:#b56b5a;border:1px solid #b56b5a30" title="Qatar: 2 sources">Qatar (2)</span>
-<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Germany: 2 sources">Germany (2)</span>
-<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Mexico: 2 sources">Mexico (2)</span>
-<span class="country-badge" style="background:#5a6b7a12;color:#5a6b7a;border:1px solid #5a6b7a30" title="United States: 2 sources">United States (2)</span>
-<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Brazil: 2 sources">Brazil (2)</span>
-<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Colombia: 1 source">Colombia</span>
-<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="Japan: 1 source">Japan</span>
-<span class="country-badge" style="background:#6b728012;color:#6b7280;border:1px solid #6b728030" title="United Nations: 1 source">United Nations</span>
-<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="France: 1 source">France</span>
-<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Russia: 1 source">Russia</span>
-<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="China: 1 source">China</span>
-<span class="country-badge" style="background:#6b728012;color:#6b7280;border:1px solid #6b728030" title="United Kingdom / Vietnam: 1 source">United Kingdom / Vietnam</span>
-<span class="country-badge" style="background:#6b728012;color:#6b7280;border:1px solid #6b728030" title="Cuba / Spain: 1 source">Cuba / Spain</span>
-<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Spain: 1 source">Spain</span>
-<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Argentina: 1 source">Argentina</span>
-<span class="country-badge" style="background:#6b728012;color:#6b7280;border:1px solid #6b728030" title="United States (Cuban diaspora): 1 source">United States (Cuban diaspora)</span>
+<span class="country-badge" style="background:#b56b5a12;color:#b56b5a;border:1px solid #b56b5a30" title="Qatar: 2 Quellen">Qatar (2)</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Germany: 2 Quellen">Germany (2)</span>
+<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Mexico: 2 Quellen">Mexico (2)</span>
+<span class="country-badge" style="background:#5a6b7a12;color:#5a6b7a;border:1px solid #5a6b7a30" title="United States: 2 Quellen">United States (2)</span>
+<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Brazil: 2 Quellen">Brazil (2)</span>
+<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Colombia: 1 Quelle">Colombia</span>
+<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="Japan: 1 Quelle">Japan</span>
+<span class="country-badge" style="background:#6b728012;color:#6b7280;border:1px solid #6b728030" title="United Nations: 1 Quelle">United Nations</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="France: 1 Quelle">France</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Russia: 1 Quelle">Russia</span>
+<span class="country-badge" style="background:#7a6a9912;color:#7a6a99;border:1px solid #7a6a9930" title="China: 1 Quelle">China</span>
+<span class="country-badge" style="background:#6b728012;color:#6b7280;border:1px solid #6b728030" title="United Kingdom / Vietnam: 1 Quelle">United Kingdom / Vietnam</span>
+<span class="country-badge" style="background:#6b728012;color:#6b7280;border:1px solid #6b728030" title="Cuba / Spain: 1 Quelle">Cuba / Spain</span>
+<span class="country-badge" style="background:#c9a06312;color:#c9a063;border:1px solid #c9a06330" title="Spain: 1 Quelle">Spain</span>
+<span class="country-badge" style="background:#6b8da612;color:#6b8da6;border:1px solid #6b8da630" title="Argentina: 1 Quelle">Argentina</span>
+<span class="country-badge" style="background:#6b728012;color:#6b7280;border:1px solid #6b728030" title="United States (Cuban diaspora): 1 Quelle">United States (Cuban diaspora)</span>
 </div>
 
 <div class="reader-note">Der Artikel stützt sich auf 21 Quellen in acht Sprachen und präsentiert ein breites Spektrum an Perspektiven — von kubanischen Regierungsvertretern und Raúl Castros Unterstützung bis hin zu Diaspora-Skeptikern und akademischer Vorsicht —, doch sein Leitsatz übernimmt in eigener Stimme eine superlativische Rahmung („die größte einzelne Veränderung“) und verleiht den Reformen damit ein historisches Gewicht, das einige Quellen nicht teilen. Die US-Reaktion wird redaktionell als „bedingtes Interesse“ charakterisiert, und Skepsis wird mit vager Formulierung („in mehreren Kreisen“) eingeführt, was die Spezifität der Zuschreibung stellenweise abschwächt. Die Quellen gehen auseinander, ob die Reformen 175, 176 oder „fast 200“ Maßnahmen umfassen und ob sie eine strategische Anpassung innerhalb des Sozialismus oder ein Zugeständnis an externen Druck darstellen — Divergenzen, die der Artikel benennt, aber nicht vollständig auflöst.</div>
@@ -856,7 +859,7 @@ footer a { color: #000; text-decoration: underline; }
 
 <section id="actors-section" class="actors">
 <h2>Akteure</h2>
-<p class="actors-meta">14 actors quoted across this topic. Jump from any name above to find every position and source the actor figures in.</p>
+<p class="actors-meta">14 Akteure, die in diesem Thema zitiert werden. Springen Sie von einem Namen oben zu jeder Position und Quelle, in der der Akteur vorkommt.</p>
 <div class="actors-tabs" role="tablist">
 <button class="actor-tab actor-tab--active" type="button" data-type-target="all"><span class="actor-tab-name">ALLE</span> <span class="actor-tab-count">14</span></button><button class="actor-tab" type="button" data-type-target="government"><span class="actor-tab-name">REGIERUNG</span> <span class="actor-tab-count">9</span></button><button class="actor-tab" type="button" data-type-target="civil_society"><span class="actor-tab-name">ZIVILGESELLSCHAFT</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="academia"><span class="actor-tab-name">WISSENSCHAFT</span> <span class="actor-tab-count">1</span></button><button class="actor-tab" type="button" data-type-target="international_org"><span class="actor-tab-name">INTERNATIONALE ORGANISATION</span> <span class="actor-tab-count">2</span></button><button class="actor-tab" type="button" data-type-target="affected_community"><span class="actor-tab-name">BETROFFENE GEMEINSCHAFT</span> <span class="actor-tab-count">1</span></button>
 </div>
@@ -1078,7 +1081,7 @@ footer a { color: #000; text-decoration: underline; }
 
 <section id="sources-section" class="sources">
 <h2>Quellen</h2>
-<p class="sources-meta">21 sources from 19 outlets across 8 languages.</p>
+<p class="sources-meta">21 Quellen aus 19 Medien in 8 Sprachen.</p>
 <div class="sources-by-outlet">
 <details class="outlet-block" id="outlet-163-com-netease">
 <summary><strong>163.com (NetEase)</strong> <span class="outlet-meta">China &middot; state_influenced</span> <span class="outlet-source-count">1 Quelle</span></summary>
@@ -1383,7 +1386,7 @@ footer a { color: #000; text-decoration: underline; }
 <div class="transparency">
 <h2>Transparenz-Protokoll</h2>
 <dl>
-<dt>Auswahlgrund</dt><dd>Cuba&#x27;s Communist Party approving sweeping free-market economic reforms represents a historic policy shift with implications for US-Cuba relations, Latin American political economy, and the broader trajectory of socialist governance models. The story invites competing framings: whether this is a pragmatic survival strategy under US pressure or a genuine ideological transformation, whether it represents a Cuban Doi Moi or a temporary concession, and how it interacts with the broader US posture toward Latin America. The reforms carry significance well beyond Cuba&#x27;s borders as a test case for economic liberalization under authoritarian governance.</dd>
+<dt>Auswahlgrund</dt><dd>Die Billigung umfassender marktwirtschaftlicher Reformen durch Kubas Kommunistische Partei stellt einen historischen Politikwechsel dar, mit Auswirkungen auf die Beziehungen zwischen den USA und Kuba, die politische Ökonomie Lateinamerikas und die breitere Entwicklung sozialistischer Regierungsmodelle. Die Geschichte lädt zu konkurrierenden Rahmungen ein: ob dies eine pragmatische Überlebensstrategie unter US-Druck oder eine echte ideologische Transformation ist, ob es ein kubanisches Doi Moi oder ein vorübergehendes Zugeständnis darstellt und wie es mit der breiteren US-Haltung gegenüber Lateinamerika interagiert. Die Reformen haben eine Bedeutung, die weit über Kubas Grenzen hinausreicht, als Testfall für wirtschaftliche Liberalisierung unter autoritärer Regierungsführung.</dd>
 <dt>QA-Korrekturen</dt><dd><details class="qa-corrections-wrapper"><summary>QA-Korrekturen &mdash; <strong>4 angewendet &middot; 4 zurückgezogen</strong></summary><ul class="qa-corrections"><li><details><summary><span class="qa-tag tag-applied">angewendet</span> Remove src-008 from the citation chain for the sentence about Marrero presenting measures to lawmakers, since src-008 does not support that specific claim. The corrected citation should read [src-003][src-007][src-011][src-017] for the presentation claim, or add src-005 which also supports it. Change to [src-003][src-005][src-007][src-011][src-017].</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Prime Minister Manuel Marrero presented the measures to lawmakers, which include transforming state enterprises into shareholding companies, authorizing large private firms with more than 100 employees, permitting private banks, opening the real estate sector to private transactions, eliminating the restriction limiting individuals to one business, and granting municipalities autonomous import-export authority [src-003][src-007][src-008][src-011][src-017].</blockquote><p class="qa-explanation">The claim that Marrero &#x27;presented the measures to lawmakers&#x27; is attributed in part to src-008, but src-008 (Al Jazeera) does not mention Marrero presenting to lawmakers; it focuses on market-oriented initiatives and U.S. officials&#x27; conditions. The presentation by Marrero is supported by src-005, src-007, src-011, and src-017, but src-008 does not support this specific claim.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">zurückgezogen</span> The rendering of the quote as indirect speech is acceptable paraphrase and the citation is correct. No correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">He added that Cuba needs to &quot;unleash production, to have more output and less restriction&quot; [src-005].</blockquote><p class="qa-explanation">Src-005 (Japan Today) attributes the quote &#x27;We need to unleash production, to have more output and less restriction&#x27; to Díaz-Canel, not as a paraphrase but as a direct verbatim quote. The article renders it as indirect speech (&#x27;He added that Cuba needs to...&#x27;), which is acceptable paraphrase, but the citation is correct and the substance matches.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">zurückgezogen</span> The fact that Ricardo Guerra read Castro&#x27;s letter is supported by src-002 and src-006, and the sentence is part of a paragraph that carries those citations in the following sentence. As a back-referential synthesis within the same paragraph, no standalone citation is strictly required. No correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">Former President Raúl Castro endorsed the reforms in a written letter read to the plenary by Politburo member José Amado Ricardo Guerra.</blockquote><p class="qa-explanation">The article states the letter was read by José Amado Ricardo Guerra, citing src-006 implicitly through context. Src-006 confirms Ricardo Guerra read Castro&#x27;s declaration, and src-002 also attributes this to him. However, the sentence carries no inline citation; the nearest citations are in the following sentence. This is a minor omission but the fact is supported by src-002 and src-006.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">angewendet</span> The phrase &#x27;as a signal of continuity within the revolutionary leadership&#x27; is an editorial inference not stated in the cited sources. Revise to remove the characterization or attribute it more carefully. Change &#x27;as a signal of continuity within the revolutionary leadership&#x27; to &#x27;as a significant development within the revolutionary leadership&#x27; or simply remove the characterizing phrase: &#x27;His endorsement was reported across outlets in Qatar, Japan, Germany, Mexico, and Colombia [src-001][src-002][src-004][src-005][src-006].&#x27;</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">His endorsement was reported across outlets in Qatar, Japan, Germany, Mexico, and Colombia as a signal of continuity within the revolutionary leadership [src-001][src-002][src-004][src-005][src-006].</blockquote><p class="qa-explanation">The article characterizes the endorsement as being framed as &#x27;a signal of continuity within the revolutionary leadership&#x27; across all five cited outlets, but none of src-001, src-002, src-004, src-005, or src-006 explicitly use that phrase or framing; the characterization is an editorial inference by the writer rather than something the sources state.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">angewendet</span> Revise the sentence to reflect that the China-Vietnam framing comes from DPA wire reporting cited by BBC News Tiếng Việt, not from a direct Díaz-Canel statement in that source. Change to: &#x27;BBC News Tiếng Việt, citing DPA, reported that Cuba&#x27;s reforms were being compared to both countries&#x27; models [src-015].&#x27;</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">BBC News Tiếng Việt reported that Díaz-Canel himself cited both countries as examples [src-015].</blockquote><p class="qa-explanation">Src-015 (BBC News Tiếng Việt) is described in the source summary as &#x27;quoting DPA&#x27; that Cuba is adopting a socialist market economy model similar to China and Vietnam; it does not specifically state that Díaz-Canel himself cited both countries. The source attributes the China-Vietnam framing to DPA wire reporting, not directly to a Díaz-Canel statement.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">zurückgezogen</span> The claim about the 2025 HRW survey and blackouts is supported by src-010. No correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">unsupported_claim</span><blockquote class="qa-excerpt">A 2025 survey cited by Human Rights Watch found that seven in ten Cubans skip daily meals, while blackouts last up to 20 hours [src-010].</blockquote><p class="qa-explanation">Src-010 (HRW World Report 2026) is described as citing a 2025 survey finding 7 in 10 Cubans skip daily meals and blackouts up to 20 hours daily. The article&#x27;s claim matches the source summary, so this is supported. No problem here — retracting this finding.</p></div></details></li><li><details><summary><span class="qa-tag tag-retracted">zurückgezogen</span> The framing of Lula&#x27;s statement is a close call but the source summary does support both elements (criticism of blockade as cause of energy crisis; Cubans should resolve their own problems). The article&#x27;s rendering is a compressed but not materially misleading paraphrase. No correction needed.</summary><div class="qa-detail"><span class="qa-problem-type">misleading_framing</span><blockquote class="qa-excerpt">Brazilian President Luiz Inácio Lula da Silva criticized the U.S. blockade as the root cause of Cuba&#x27;s energy crisis, stating that Cubans should resolve their own problems [src-019].</blockquote><p class="qa-explanation">Src-019 (O Globo) reports Lula criticized the U.S. blockade and stated Cuba&#x27;s problems should be resolved by Cubans themselves, but the article&#x27;s phrasing &#x27;stating that Cubans should resolve their own problems&#x27; could be read as Lula dismissing Cuba&#x27;s plight, whereas the source frames it as Lula defending Cuban sovereignty against U.S. interference. The juxtaposition in the article is slightly misleading about Lula&#x27;s intent.</p></div></details></li><li><details><summary><span class="qa-tag tag-applied">angewendet</span> Clarify that El País reported this before the formal approval, as the article is dated June 14, four days before the June 18 plenary. Change to: &#x27;El País had reported ahead of the plenary that the Cuban government hoped the reform announcement would buy time with Washington and alleviate internal pressure [src-018].&#x27;</summary><div class="qa-detail"><span class="qa-problem-type">factually_incorrect</span><blockquote class="qa-excerpt">El País reported that the Cuban government hopes the reform announcement will buy time with Washington and alleviate internal pressure [src-018].</blockquote><p class="qa-explanation">Src-018 (El País) is dated 2026-06-14, four days before the June 18 plenary session at which the reforms were formally approved. The article presents this as El País reporting on the approved reforms, but the El País article predates the approval and analyzes the anticipated announcement rather than the approved package.</p></div></details></li></ul></details></dd>
 <dt class="pipeline-run">Pipeline-Lauf</dt><dd class="pipeline-run">run-2026-06-19-14ecbc16 &middot; 2026-06-19</dd>
 </dl>
@@ -1427,10 +1430,10 @@ footer a { color: #000; text-decoration: underline; }
 
 <footer>
 <div class="footer-text">
-<p>Erstellt von <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
-<p>Diese Inhalte wurden von KI-Agenten erstellt</p>
-<p>AGPL-3.0 – Weil Transparenz kein Feature ist, sondern ein Versprechen</p>
-<p><a href="../feed.xml">RSS-Feed</a></p>
+<p>Generated by <a href="https://github.com/deniz-schwenk/independent-wire">Independent Wire</a></p>
+<p>This content was produced by AI agents</p>
+<p>AGPL-3.0 &mdash; Because transparency is not a feature, it is a promise</p>
+<p><a href="../feed.xml">RSS Feed</a></p>
 </div>
 <div class="footer-mark" aria-label="Independent Wire"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
     <rect width="1024" height="1024" fill="#fff"/>
@@ -1451,7 +1454,7 @@ document.querySelectorAll('.share-btn').forEach(btn => {
       try {
         await navigator.clipboard.writeText(url);
         const original = btn.textContent;
-        btn.textContent = 'Kopiert';
+        btn.textContent = 'Copied';
         setTimeout(() => { btn.textContent = original; }, 1500);
       } catch (e) {}
     }
