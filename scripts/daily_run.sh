@@ -67,4 +67,16 @@ trap 'echo "===== FAILED — $TODAY — $(date) — see log above =====" >> "$LO
   fi
 
   echo "===== SUCCESS — $TODAY — $(date) ====="
+
+  # Chained, NON-FATAL German translation. Runs only after the English run has
+  # already published, pushed, and logged SUCCESS above — so a translation
+  # failure can never flip the English run to FAILED. The `|| echo ...` swallows
+  # any non-zero exit (keeping `set -e`/the ERR trap from aborting). The wrapper
+  # is invoked whole: it has its own .env sourcing, zero-TP guard, publish_de,
+  # logging, and git pull/commit/push of site/de/. Translation stays a separate
+  # process — it is NEVER imported into run.py/the pipeline. This replaces the
+  # standalone org.independent-wire.translate-de LaunchAgent, whose fixed-clock
+  # trigger raced the variable English end time.
+  echo "[chained] German translation"
+  zsh "$REPO/scripts/translate_de_run.sh" || echo "WARN: German translation step failed — see iw-logs/translate_de-$TODAY.log"
 } >> "$LOG" 2>&1
