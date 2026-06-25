@@ -1,12 +1,15 @@
 #!/bin/zsh
-# LaunchAgent wrapper for org.independent-wire.translate-de.
+# German translation wrapper (standalone org.independent-wire.translate-de retired).
 #
-# Standalone, post-pipeline German feature. Scheduled at 07:30 — after the 06:00 production
-# run reliably completes (the run finishes ~06:32; the daily LaunchAgent fires 06:00). It
-# reads the finished production run state READ-ONLY, writes German JSON to output/<date>/de/,
-# then renders the German pages and pushes the German site (site/de/). It NEVER touches the
-# pipeline (scripts/run.py) or the English site/; the English site is pushed independently
-# by daily_run.sh. PERSISTENT/recurring — it does NOT self-terminate.
+# Post-pipeline German feature, invoked by CHAINING: daily_run.sh calls it as its
+# final, non-fatal step, right after the English run publishes, pushes, and logs
+# SUCCESS — so it always runs off the English run's actual completion. (The old
+# fixed 07:00/07:30 LaunchAgent trigger raced the variable English end time and
+# was retired.) It reads the finished production run state READ-ONLY, writes
+# German JSON to output/<date>/de/, then renders the German pages and pushes the
+# German site (site/de/). It NEVER touches the pipeline (scripts/run.py) or the
+# English site/; the English site is pushed independently by daily_run.sh. Can
+# also be run by hand to backfill a missed day.
 #
 # Flow: translate (translate_de.py) -> render+publish German pages (publish_de.py -> site/de/)
 # -> commit + push site/de/ only. The day's-run guard lives in scripts/translate_de.py: if no
