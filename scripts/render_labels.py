@@ -149,19 +149,22 @@ def lang_switch_css() -> str:
 # ------------------------------------------------------- support / donate block
 
 def support_block() -> str:
-    """Compact support/donate block placed directly above the footer on BOTH page types
-    (index + dossier) and BOTH languages. Mono, black-on-white, with its own top and
-    bottom rule so it reads as distinct furniture, not part of the footer. One short
-    heading, one honest line, one button to Liberapay (opens in a new tab). Localised via
+    """Support/donate block placed directly above the footer on BOTH page types
+    (index + dossier) and BOTH languages. An inverted black call-out card, white text
+    throughout, framed by thin white top + bottom rules so it reads as distinct furniture,
+    not part of the footer. A display heading, one honest mono line, a full-width primary
+    Liberapay button (♥, opens in a new tab), a quiet inline Ko-fi one-time link beneath
+    it, and a left-bar blockquote explaining the recurring/one-time split. Localised via
     the label map (English is identity); built here once so index + dossier stay byte
     identical, the same way the DE/EN switch is shared."""
-    heading = L("ui", "support_heading", "Keep it independent")
+    heading = L("ui", "support_heading", "Keep it independent.")
     line = L(
         "ui", "support_line",
         "No ads, no investors, no paywall. Donations cover the daily running costs "
         "and keep Independent Wire independent.",
     )
     button = L("ui", "support_button", "Donate via Liberapay")
+    kofi_intro = L("ui", "support_kofi_intro", "Prefer to give once?")
     button_kofi = L("ui", "support_button_kofi", "One-time via Ko-fi")
     choice = L(
         "ui", "support_choice",
@@ -172,13 +175,15 @@ def support_block() -> str:
         '<section class="support-block" aria-label="Support Independent Wire">\n'
         f'  <p class="support-heading">{heading}</p>\n'
         f'  <p class="support-line">{line}</p>\n'
-        '  <div class="support-actions">\n'
-        '    <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" '
-        f'target="_blank" rel="noopener">{button}</a>\n'
-        '    <a class="support-btn-secondary" href="https://ko-fi.com/independentwire" '
-        f'target="_blank" rel="noopener">{button_kofi}</a>\n'
-        '  </div>\n'
-        f'  <p class="support-choice">{choice}</p>\n'
+        '  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" '
+        'target="_blank" rel="noopener">'
+        f'<span class="support-btn-heart" aria-hidden="true">♥</span> {button}</a>\n'
+        '  <p class="support-kofi">'
+        f'{kofi_intro} '
+        '<a class="support-kofi-link" href="https://ko-fi.com/independentwire" '
+        f'target="_blank" rel="noopener">{button_kofi} <span aria-hidden="true">→</span></a>'
+        '</p>\n'
+        f'  <blockquote class="support-choice">{choice}</blockquote>\n'
         '</section>\n'
     )
 
@@ -187,79 +192,87 @@ def support_block_css() -> str:
     """CSS for support_block(); injected into both render.py's page CSS and publish.py's
     index CSS — same shared-furniture pattern as lang_switch_css()."""
     return """
-/* Support / donate block — directly above the footer on both page types.
-   Own top + bottom rule so it reads as distinct furniture, not part of the footer. */
+/* Support / donate block — inverted black call-out card directly above the footer on
+   both page types. Thin white top + bottom rules (inset by the block's horizontal
+   padding) frame the card so it reads as distinct furniture, not part of the footer. */
 .support-block {
   margin-top: 3rem;
-  padding: 1.5rem 0;
-  border-top: 3px solid #000;
-  border-bottom: 3px solid #000;
+  background: #000;
+  color: #fff;
+  padding: 2.25rem 2rem;
 }
+.support-block::before,
+.support-block::after {
+  content: "";
+  display: block;
+  border-top: 1.5px solid #fff;
+}
+.support-block::before { margin-bottom: 1.75rem; }
+.support-block::after { margin-top: 1.75rem; }
 .support-block .support-heading {
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #000;
-  margin: 0 0 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #fff;
+  margin: 0 0 0.75rem;
 }
 .support-block .support-line {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   line-height: 1.6;
-  color: #444;
-  margin: 0 0 1rem;
+  color: #fff;
+  margin: 0 0 1.5rem;
   max-width: 62ch;
 }
+/* Primary (Liberapay) button — full-width white fill, black text, mono uppercase.
+   Hover inverts to a white-outlined black button, matching the approved hover feel. */
 .support-block .support-btn {
-  display: inline-block;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  background: #000;
-  color: #fff;
-  text-decoration: none;
-  padding: 0.85rem 1.5rem;
-  min-height: 44px;
-  border: 1.5px solid #000;
-  transition: background 120ms ease, color 120ms ease;
-}
-.support-block .support-btn:hover { background: #fff; color: #000; }
-.support-block .support-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
-.support-block .support-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-}
-/* Secondary (Ko-fi) button — ghost/outline treatment, clearly less prominent than
-   the filled primary while keeping the block's mono / black-on-white furniture. */
-.support-block .support-btn-secondary {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   background: #fff;
   color: #000;
   text-decoration: none;
-  padding: 0.85rem 1.5rem;
+  padding: 1.1rem 1.5rem;
   min-height: 44px;
-  border: 1.5px solid #000;
+  border: 1.5px solid #fff;
   transition: background 120ms ease, color 120ms ease;
 }
-.support-block .support-btn-secondary:hover { background: #000; color: #fff; }
-.support-block .support-btn-secondary:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+.support-block .support-btn .support-btn-heart { margin-right: 0.5em; }
+.support-block .support-btn:hover { background: #000; color: #fff; }
+.support-block .support-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* Ko-fi — demoted to a quiet inline one-time link beneath the primary button. */
+.support-block .support-kofi {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #fff;
+  margin: 0.85rem 0 0;
+}
+.support-block .support-kofi-link {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.support-block .support-kofi-link:hover { text-decoration: none; }
+.support-block .support-kofi-link:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* Choice line as a left-bar blockquote — muted grey, quiet, mono. */
 .support-block .support-choice {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   line-height: 1.5;
-  color: #666;
-  margin: 0.85rem 0 0;
-  max-width: 62ch;
+  color: #999;
+  border-left: 3px solid #fff;
+  padding-left: 1rem;
+  margin: 1.5rem 0 0;
+  max-width: 72ch;
 }
 """

@@ -146,11 +146,12 @@
     "footer_rss": "RSS-Feed",
     "tagline": "Eine unabhängige Nachrichtenredaktion – Offen · Transparent · Für alle",
     "site_title": "Independent Wire",
-    "support_heading": "Unabhängig bleiben",
+    "support_heading": "Unabhängig bleiben.",
     "support_line": "Keine Werbung, keine Investoren, keine Paywall. Spenden decken die laufenden Kosten und halten Independent Wire unabhängig.",
     "support_button": "Über Liberapay spenden",
     "support_button_kofi": "Einmalig über Ko-fi",
-    "support_choice": "Liberapay für regelmäßige Unterstützung — unser bevorzugter Weg. Ko-fi für einmalige Gaben (und regelmäßige, falls dir das lieber ist)."
+    "support_kofi_intro": "Lieber einmalig geben?",
+    "support_choice": "Liberapay für regelmäßige Unterstützung — unser bevorzugter Weg. Ko\u2011fi\u00a0für einmalige Gaben (und regelmäßige, falls dir das lieber ist)."
   },
 
   "month_name": {
