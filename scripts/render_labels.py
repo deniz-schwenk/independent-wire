@@ -162,12 +162,23 @@ def support_block() -> str:
         "and keep Independent Wire independent.",
     )
     button = L("ui", "support_button", "Donate via Liberapay")
+    button_kofi = L("ui", "support_button_kofi", "One-time via Ko-fi")
+    choice = L(
+        "ui", "support_choice",
+        "Liberapay is for recurring support — our preferred home. Ko-fi covers "
+        "one-time gifts (and recurring too, if you'd rather).",
+    )
     return (
         '<section class="support-block" aria-label="Support Independent Wire">\n'
         f'  <p class="support-heading">{heading}</p>\n'
         f'  <p class="support-line">{line}</p>\n'
-        '  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" '
+        '  <div class="support-actions">\n'
+        '    <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" '
         f'target="_blank" rel="noopener">{button}</a>\n'
+        '    <a class="support-btn-secondary" href="https://ko-fi.com/independentwire" '
+        f'target="_blank" rel="noopener">{button_kofi}</a>\n'
+        '  </div>\n'
+        f'  <p class="support-choice">{choice}</p>\n'
         '</section>\n'
     )
 
@@ -218,4 +229,37 @@ def support_block_css() -> str:
 }
 .support-block .support-btn:hover { background: #fff; color: #000; }
 .support-block .support-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+.support-block .support-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+/* Secondary (Ko-fi) button — ghost/outline treatment, clearly less prominent than
+   the filled primary while keeping the block's mono / black-on-white furniture. */
+.support-block .support-btn-secondary {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: #fff;
+  color: #000;
+  text-decoration: none;
+  padding: 0.85rem 1.5rem;
+  min-height: 44px;
+  border: 1.5px solid #000;
+  transition: background 120ms ease, color 120ms ease;
+}
+.support-block .support-btn-secondary:hover { background: #000; color: #fff; }
+.support-block .support-btn-secondary:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+.support-block .support-choice {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: #666;
+  margin: 0.85rem 0 0;
+  max-width: 62ch;
+}
 """
