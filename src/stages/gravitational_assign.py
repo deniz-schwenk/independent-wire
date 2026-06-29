@@ -227,10 +227,16 @@ def make_gravitational_assign(
     closure_cap = cap
 
     @run_stage_def(
-        reads=("curator_findings", "curator_discovered_topics"),
+        reads=(
+            "curator_findings",
+            "curator_findings_clustering",
+            "curator_discovered_topics",
+        ),
         writes=("curator_topic_assignments",),
     )
     async def gravitational_assign(run_bus: RunBus) -> RunBus:
+        from src.stages.translate_sidecar import clustering_findings
+
         findings = list(run_bus.curator_findings or [])
         # Brief 5 cutover: topic-centres come from Brief 4's
         # curator_discovered_topics now, not from the legacy
@@ -330,8 +336,17 @@ def make_gravitational_assign(
         rss_before = _rss_mb_now()
         t0 = time.monotonic()
 
+        # Translate-to-English sidecar (TASK-CLUSTER-TRANSLATE-SIDECAR): embed
+        # the English-normalised finding text when the sidecar populated
+        # curator_findings_clustering; else native (default). The topic side is
+        # already English when the Curator discovered topics from English titles,
+        # so both sides of the cosine match are English under the sidecar.
+        text_source = clustering_findings(run_bus)
+        if text_source is None:
+            text_source = findings
+
         # Embed findings + topic-centres in one go (singleton holds ONNX session)
-        finding_texts = [_finding_text(f) for f in findings]
+        finding_texts = [_finding_text(f) for f in text_source]
         topic_texts = [_topic_text(t) for t in topics]
         finding_matrix = _cosine_normalized(emb.embed_batch(finding_texts))
         topic_matrix = _cosine_normalized(emb.embed_batch(topic_texts))

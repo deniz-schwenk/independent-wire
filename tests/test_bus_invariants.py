@@ -51,6 +51,7 @@ def test_runbus_constructs_with_all_typed_empty_defaults():
         "run_stage_log": [],
         "run_topic_manifest": [],
         "curator_findings": [],
+        "curator_findings_clustering": [],
         "curator_topics_unsliced": [],
         "curator_topics": [],
         "curator_coherence_scores": {},
@@ -318,18 +319,21 @@ def test_runbus_slot_count_regression_guard():
     """Hard-coded expectation. Any change in slot count without architect approval
     fails this test and forces review. Source of truth: ARCH-V2-BUS-SCHEMA §4A.
 
-    Expected: 17 slots across 8 phases plus selection (4A.1 metadata=6,
-    4A.2 curator=3, 4A.2b coherence=1, 4A.2c pre-cluster=1,
-    4A.2d gravitational-assign=1, 4A.2e topic-discovery=1,
+    Expected: 18 slots across 8 phases plus selection (4A.1 metadata=6,
+    4A.2 curator=3, 4A.2a0 translate-sidecar=1, 4A.2b coherence=1,
+    4A.2c pre-cluster=1, 4A.2d gravitational-assign=1, 4A.2e topic-discovery=1,
     4A.2f llm-cluster-assignment=1, 4A.3 editor=2, selection=1). The
-    llm-cluster-assignment slot was added in TASK-CLUSTER-LLM-ASSIGNMENT
-    (Hypothesis 2 of the cluster-level pivot). It coexists with the
-    finding-level gravitational-assign slot — the default production
-    stage list still writes only the deterministic slot; the LLM slot
-    is written by the opt-in evaluation path
+    translate-sidecar slot (curator_findings_clustering) was added in
+    TASK-CLUSTER-TRANSLATE-SIDECAR — a clustering-internal, flag-gated
+    (IW_CLUSTER_TRANSLATE), optional_write slot that is empty on the default
+    production path. The llm-cluster-assignment slot was added in
+    TASK-CLUSTER-LLM-ASSIGNMENT (Hypothesis 2 of the cluster-level pivot). It
+    coexists with the finding-level gravitational-assign slot — the default
+    production stage list still writes only the deterministic slot; the LLM
+    slot is written by the opt-in evaluation path
     build_production_stages_llm_assignment().
     """
-    assert len(RunBus.model_fields) == 17
+    assert len(RunBus.model_fields) == 18
 
 
 def test_topicbus_slot_count_regression_guard():

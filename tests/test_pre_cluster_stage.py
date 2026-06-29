@@ -299,7 +299,10 @@ def test_stage_metadata():
     so the runner can introspect it."""
     meta = get_stage_meta(pre_cluster_findings)
     assert meta.kind == "run"
-    assert set(meta.reads) == {"curator_findings"}
+    # curator_findings_clustering added by TASK-CLUSTER-TRANSLATE-SIDECAR — the
+    # stage embeds the English-normalised text when the flag-gated sidecar
+    # populated that slot, else falls through to native curator_findings.
+    assert set(meta.reads) == {"curator_findings", "curator_findings_clustering"}
     assert meta.writes == ("curator_pre_clusters",)
 
 

@@ -33,6 +33,9 @@ from src.stages.run_stages import (
     mirror_stage,
     select_topics,
 )
+from src.stages.translate_sidecar import (
+    translate_findings_sidecar,
+)
 from src.stages.topic_stages import (
     assemble_hydration_dossier,
     attach_hydration_urls,
@@ -96,4 +99,5 @@ __all__ = [
     "prune_unused_sources_and_clusters",
     "renumber_sources",
     "select_topics",
+    "translate_findings_sidecar",
 ]

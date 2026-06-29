@@ -809,3 +809,55 @@ def test_hydrated_stage_names_matches_builder_output():
     runs, topics, _ = build_hydrated_stages(agents)
     expected = [_stage_label(s) for s in runs + topics]
     assert hydrated_stage_names() == expected
+
+
+# ---------------------------------------------------------------------------
+# Translate-to-English clustering sidecar wiring (TASK-CLUSTER-TRANSLATE-SIDECAR)
+# ---------------------------------------------------------------------------
+
+
+def test_translate_sidecar_absent_by_default():
+    """Default-off: the sidecar is NOT in the stage list and the run-name
+    sequence is byte-identical to the pre-sidecar pipeline."""
+    agents = _fake_agent_dict(_PRODUCTION_AGENTS)
+    runs, _, _ = build_production_stages(agents)  # translate_sidecar defaults to env (off in CI)
+    names = [_stage_label(s) for s in runs]
+    assert "translate_findings_sidecar" not in names
+    assert names[:3] == ["init_run", "fetch_findings", "pre_cluster_findings"]
+
+
+def test_translate_sidecar_inserted_after_fetch_when_enabled():
+    agents = _fake_agent_dict(_PRODUCTION_AGENTS)
+    runs, _, _ = build_production_stages(agents, translate_sidecar=True)
+    names = [_stage_label(s) for s in runs]
+    assert names[:4] == [
+        "init_run", "fetch_findings",
+        "translate_findings_sidecar", "pre_cluster_findings",
+    ]
+    # static name list mirrors the builder when the flag is on
+    assert production_stage_names(translate_sidecar=True) == [
+        _stage_label(s) for s in runs
+    ] + [
+        _stage_label(s) for s in build_production_stages(agents, translate_sidecar=True)[1]
+    ]
+
+
+def test_translate_sidecar_hydrated_inserted_after_fetch_when_enabled():
+    agents = _fake_agent_dict(_HYDRATED_AGENTS)
+    runs, _, _ = build_hydrated_stages(agents, translate_sidecar=True)
+    names = [_stage_label(s) for s in runs]
+    assert names[:4] == [
+        "init_run", "fetch_findings",
+        "translate_findings_sidecar", "pre_cluster_findings",
+    ]
+    assert "translate_findings_sidecar" in hydrated_stage_names(translate_sidecar=True)
+
+
+def test_translate_sidecar_env_toggle(monkeypatch):
+    from src.stages.translate_sidecar import ENABLE_ENV
+
+    agents = _fake_agent_dict(_PRODUCTION_AGENTS)
+    monkeypatch.setenv(ENABLE_ENV, "1")
+    runs, _, _ = build_production_stages(agents)  # picks up env
+    assert "translate_findings_sidecar" in [_stage_label(s) for s in runs]
+    assert "translate_findings_sidecar" in production_stage_names()

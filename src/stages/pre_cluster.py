@@ -169,9 +169,21 @@ def make_pre_cluster_findings(
     closure_linkage = linkage
     closure_metric = metric
 
-    @run_stage_def(reads=("curator_findings",), writes=("curator_pre_clusters",))
+    @run_stage_def(
+        reads=("curator_findings", "curator_findings_clustering"),
+        writes=("curator_pre_clusters",),
+    )
     async def pre_cluster_findings(run_bus: RunBus) -> RunBus:
+        from src.stages.translate_sidecar import clustering_findings
+
         findings = list(run_bus.curator_findings or [])
+        # Translate-to-English sidecar (TASK-CLUSTER-TRANSLATE-SIDECAR): when the
+        # flag-gated sidecar populated curator_findings_clustering, embed the
+        # English-normalised text; otherwise fall through to native (default).
+        # Index-aligned, so finding-NNN source-ids stay correct either way.
+        text_source = clustering_findings(run_bus)
+        if text_source is None:
+            text_source = findings
 
         emb = closure_embedder if closure_embedder is not None else _get_default_embedder()
         model_name = getattr(emb, "model_name", MODEL_NAME)
@@ -204,7 +216,7 @@ def make_pre_cluster_findings(
         rss_before = _rss_mb_now()
         t0 = time.monotonic()
 
-        finding_texts = [_finding_text(f) for f in findings]
+        finding_texts = [_finding_text(f) for f in text_source]
         finding_matrix = _cosine_normalized(emb.embed_batch(finding_texts))
 
         # sklearn AgglomerativeClustering requires n_samples >= 2; handle 1.

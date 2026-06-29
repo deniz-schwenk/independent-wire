@@ -656,7 +656,7 @@ class CuratorTopicDiscoveryStage(_AgentStageBase):
     same time."""
 
     stage_kind = "run"
-    reads = ("curator_findings", "curator_pre_clusters")
+    reads = ("curator_findings", "curator_findings_clustering", "curator_pre_clusters")
     writes = ("curator_discovered_topics",)
     agent_role = "curator_topic_discovery"
 
@@ -685,8 +685,17 @@ class CuratorTopicDiscoveryStage(_AgentStageBase):
         import numpy as np
 
         from src.stages.coherence import _cosine_normalized
+        from src.stages.translate_sidecar import clustering_findings
 
         findings = list(run_bus.curator_findings or [])
+        # Translate-to-English sidecar (TASK-CLUSTER-TRANSLATE-SIDECAR): when the
+        # flag-gated sidecar populated curator_findings_clustering, the Curator
+        # discovers topics from English-normalised titles (both the centroid
+        # embedding and the sample_titles handed to the LLM). Index-aligned with
+        # curator_findings, so finding-NNN references stay correct. Default-off:
+        # falls through to native text byte-for-byte.
+        clustering_source = clustering_findings(run_bus)
+        text_source = clustering_source if clustering_source is not None else findings
         pre_clusters_record = run_bus.curator_pre_clusters or {}
         pre_clusters = list(pre_clusters_record.get("clusters") or [])
         run_date = run_bus.run_date or ""
@@ -731,11 +740,11 @@ class CuratorTopicDiscoveryStage(_AgentStageBase):
         # finding-index matrix. Empty-title findings still occupy a
         # row so finding-index → row-index is the identity (the
         # filter happens inside _compress_pre_clusters_to_llm_input).
-        finding_texts = [_topic_discovery_finding_text(f) for f in findings]
+        finding_texts = [_topic_discovery_finding_text(f) for f in text_source]
         finding_matrix = _cosine_normalized(emb.embed_batch(finding_texts))
 
         micro_clusters_input = _compress_pre_clusters_to_llm_input(
-            pre_clusters, findings, finding_matrix, k=self.k
+            pre_clusters, text_source, finding_matrix, k=self.k
         )
 
         message = (

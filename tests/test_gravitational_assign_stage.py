@@ -507,7 +507,12 @@ def test_multilingual_assignment_real_model():
 def test_stage_metadata():
     meta = get_stage_meta(gravitational_assign)
     assert meta.kind == "run"
-    assert set(meta.reads) == {"curator_findings", "curator_discovered_topics"}
+    # curator_findings_clustering added by TASK-CLUSTER-TRANSLATE-SIDECAR.
+    assert set(meta.reads) == {
+        "curator_findings",
+        "curator_findings_clustering",
+        "curator_discovered_topics",
+    }
     assert meta.writes == ("curator_topic_assignments",)
 
 

@@ -250,6 +250,34 @@ class _RunBusFields(BaseModel):
     curator_topics_unsliced: list = Slot(default_factory=list, visibility="internal")
     curator_topics: list = Slot(default_factory=list, visibility="internal")
 
+    # 4A.2a0 Clustering translate-to-English sidecar (1 slot). Written by the
+    # deterministic `translate_findings_sidecar` stage
+    # (src/stages/translate_sidecar.py) — runs AFTER fetch_findings and BEFORE
+    # pre_cluster_findings. TASK-CLUSTER-TRANSLATE-SIDECAR; empirical basis
+    # scratch/feed-batch1/REPORT-TRANSLATE-EVAL.md.
+    #
+    # Index-aligned parallel to `curator_findings`: one entry per finding,
+    # `{title, summary, translated: bool, src_lang, reason}`, holding the
+    # English-normalised title/summary used ONLY for clustering. The three
+    # embedding consumers (pre_cluster_findings, CuratorTopicDiscoveryStage,
+    # gravitational_assign) read this slot via
+    # `translate_sidecar.clustering_findings(run_bus)` and embed the English
+    # text; `curator_findings` itself passes through byte-identical so the
+    # synthesis agents (Editor / Perspektiv / Writer / Bias) only ever see the
+    # original-language text. This is the isolation firewall — the translation
+    # is a clustering-internal field and never reaches a synthesis-consumed slot.
+    #
+    # `optional_write=True` AND empty by default: the sidecar is flag-gated
+    # (`IW_CLUSTER_TRANSLATE`). When disabled (the production default) the stage
+    # writes an empty list and the consumers fall through to native text —
+    # behaviour is byte-identical to the pre-sidecar pipeline. The slot is also
+    # legitimately empty when the stage is not wired into the stage list at all.
+    curator_findings_clustering: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
+
     # 4A.2b Coherence-measure phase (legacy, 1 slot). Originally
     # written by the passive measure_cluster_coherence stage
     # (TASK-COHERENCE-FILTER-PASSIVE; see

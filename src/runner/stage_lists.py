@@ -70,6 +70,7 @@ from src.stages import (
     prune_unused_sources_and_clusters,
     renumber_sources,
     select_topics,
+    translate_findings_sidecar,
 )
 
 
@@ -77,6 +78,30 @@ def _wrap_researcher_search(web_search_tool: Any) -> Callable:
     if web_search_tool is None:
         return make_researcher_search(None)
     return make_researcher_search(web_search_tool)
+
+
+def _translate_sidecar_enabled(explicit: Optional[bool]) -> bool:
+    """Resolve the translate-to-English clustering sidecar toggle
+    (TASK-CLUSTER-TRANSLATE-SIDECAR). Explicit ``translate_sidecar=`` wins;
+    otherwise the ``IW_CLUSTER_TRANSLATE`` env var decides. Default off — the
+    sidecar is absent from the stage list and the pipeline is byte-identical to
+    its pre-sidecar behaviour until Deniz enables it."""
+    if explicit is not None:
+        return explicit
+    from src.stages.translate_sidecar import is_enabled
+
+    return is_enabled()
+
+
+def _insert_translate_sidecar(run_stages: list, enabled: bool) -> list:
+    """Insert ``translate_findings_sidecar`` right after ``fetch_findings``
+    (index 2: init_run, fetch_findings, sidecar, …) when enabled. No-op when
+    disabled so the default stage list is unchanged."""
+    if not enabled:
+        return run_stages
+    out = list(run_stages)
+    out.insert(2, translate_findings_sidecar)
+    return out
 
 
 def _init_run_for(
@@ -107,6 +132,7 @@ def build_production_stages(
     hydration_fetcher: Any = None,
     max_produce: Optional[int] = None,
     output_dir: Optional[Any] = None,
+    translate_sidecar: Optional[bool] = None,
 ) -> tuple[list, list, list]:
     """Build the production variant's three stage lists.
 
@@ -143,6 +169,9 @@ def build_production_stages(
         EditorStage(agents["editor"]),
         select_topics,
     ]
+    run_stages = _insert_translate_sidecar(
+        run_stages, _translate_sidecar_enabled(translate_sidecar)
+    )
 
     topic_stages = [
         ResearcherPlanStage(agents["researcher_plan"]),
@@ -255,6 +284,7 @@ def build_hydrated_stages(
     hydration_fetcher: Any = None,
     max_produce: Optional[int] = None,
     output_dir: Optional[Any] = None,
+    translate_sidecar: Optional[bool] = None,
 ) -> tuple[list, list, list]:
     """Build the hydrated variant's three stage lists.
 
@@ -305,6 +335,9 @@ def build_hydrated_stages(
         attach_hydration_urls_to_assignments,
         select_topics,
     ]
+    run_stages = _insert_translate_sidecar(
+        run_stages, _translate_sidecar_enabled(translate_sidecar)
+    )
 
     topic_stages = [
         attach_hydration_urls,
@@ -431,19 +464,38 @@ _HYDRATED_TOPIC_NAMES = (
 )
 
 
-def production_stage_names() -> list[str]:
+def _with_sidecar_names(run_names: tuple[str, ...], enabled: bool) -> tuple[str, ...]:
+    """Insert ``translate_findings_sidecar`` after ``fetch_findings`` in a
+    run-name tuple when the sidecar is enabled — mirrors
+    :func:`_insert_translate_sidecar` so the static name list stays in lockstep
+    with the builder output (tested by
+    ``test_production_stage_names_matches_builder_output``)."""
+    if not enabled:
+        return run_names
+    idx = run_names.index("fetch_findings") + 1
+    return run_names[:idx] + ("translate_findings_sidecar",) + run_names[idx:]
+
+
+def production_stage_names(*, translate_sidecar: Optional[bool] = None) -> list[str]:
     """Return the canonical stage-name list for the production variant.
 
     Used by ``scripts/run.py`` to validate ``--from``/``--to`` choices
     without instantiating agents. Order matches the dispatch order of
-    :func:`build_production_stages`.
+    :func:`build_production_stages` — including the flag-gated
+    ``translate_findings_sidecar`` when ``IW_CLUSTER_TRANSLATE`` is set.
     """
-    return list(_PRODUCTION_RUN_NAMES + _PRODUCTION_TOPIC_NAMES)
+    run_names = _with_sidecar_names(
+        _PRODUCTION_RUN_NAMES, _translate_sidecar_enabled(translate_sidecar)
+    )
+    return list(run_names + _PRODUCTION_TOPIC_NAMES)
 
 
-def hydrated_stage_names() -> list[str]:
+def hydrated_stage_names(*, translate_sidecar: Optional[bool] = None) -> list[str]:
     """Return the canonical stage-name list for the hydrated variant."""
-    return list(_HYDRATED_RUN_NAMES + _HYDRATED_TOPIC_NAMES)
+    run_names = _with_sidecar_names(
+        _HYDRATED_RUN_NAMES, _translate_sidecar_enabled(translate_sidecar)
+    )
+    return list(run_names + _HYDRATED_TOPIC_NAMES)
 
 
 __all__ = [

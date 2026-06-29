@@ -431,7 +431,12 @@ def test_stage_metadata():
     meta = get_stage_meta(stage)
     assert meta.name == "CuratorTopicDiscoveryStage"
     assert meta.kind == "run"
-    assert meta.reads == ("curator_findings", "curator_pre_clusters")
+    # curator_findings_clustering added by TASK-CLUSTER-TRANSLATE-SIDECAR.
+    assert meta.reads == (
+        "curator_findings",
+        "curator_findings_clustering",
+        "curator_pre_clusters",
+    )
     assert meta.writes == ("curator_discovered_topics",)
 
 
