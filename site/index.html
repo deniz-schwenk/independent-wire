@@ -510,48 +510,89 @@ footer a {
 .lang-switch .lang-opt--active .lang-beta { color: #fff; }
 
 
-/* Support / donate block — directly above the footer on both page types.
-   Own top + bottom rule so it reads as distinct furniture, not part of the footer. */
+/* Support / donate block — inverted black call-out card directly above the footer on
+   both page types. Thin white top + bottom rules (inset by the block's horizontal
+   padding) frame the card so it reads as distinct furniture, not part of the footer. */
 .support-block {
   margin-top: 3rem;
-  padding: 1.5rem 0;
-  border-top: 3px solid #000;
-  border-bottom: 3px solid #000;
+  background: #000;
+  color: #fff;
+  padding: 2.25rem 2rem;
 }
+.support-block::before,
+.support-block::after {
+  content: "";
+  display: block;
+  border-top: 1.5px solid #fff;
+}
+.support-block::before { margin-bottom: 1.75rem; }
+.support-block::after { margin-top: 1.75rem; }
 .support-block .support-heading {
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #000;
-  margin: 0 0 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #fff;
+  margin: 0 0 0.75rem;
 }
 .support-block .support-line {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   line-height: 1.6;
-  color: #444;
-  margin: 0 0 1rem;
+  color: #fff;
+  margin: 0 0 1.5rem;
   max-width: 62ch;
 }
+/* Primary (Liberapay) button — full-width white fill, black text, mono uppercase.
+   Hover inverts to a white-outlined black button, matching the approved hover feel. */
 .support-block .support-btn {
-  display: inline-block;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  background: #000;
-  color: #fff;
+  background: #fff;
+  color: #000;
   text-decoration: none;
-  padding: 0.85rem 1.5rem;
+  padding: 1.1rem 1.5rem;
   min-height: 44px;
-  border: 1.5px solid #000;
+  border: 1.5px solid #fff;
   transition: background 120ms ease, color 120ms ease;
 }
-.support-block .support-btn:hover { background: #fff; color: #000; }
-.support-block .support-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+.support-block .support-btn .support-btn-heart { margin-right: 0.5em; }
+.support-block .support-btn:hover { background: #000; color: #fff; }
+.support-block .support-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* Ko-fi — demoted to a quiet inline one-time link beneath the primary button. */
+.support-block .support-kofi {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #fff;
+  margin: 0.85rem 0 0;
+}
+.support-block .support-kofi-link {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.support-block .support-kofi-link:hover { text-decoration: none; }
+.support-block .support-kofi-link:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* Choice line as a left-bar blockquote — muted grey, quiet, mono. */
+.support-block .support-choice {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: #999;
+  border-left: 3px solid #fff;
+  padding-left: 1rem;
+  margin: 1.5rem 0 0;
+  max-width: 72ch;
+}
 
 </style>
 </head>
@@ -568,66 +609,91 @@ footer a {
 <main>
 <div class="bucket-bar"><span>TODAY</span><span>3 DOSSIERS</span></div>
 <article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-06-28-001</span>
-  <h2><a href="reports/tp-2026-06-28-001.html">Chinese and Russian Military Aircraft Enter South Korea&#x27;s Air Defense Zone as Seoul and Tokyo Conclude Defense Talks</a></h2>
-  <p class="subheadline">South Korea scrambled fighter jets and lodged formal protests over the incursion, while Beijing described the flights as a routine annual patrol under a bilateral cooperation plan.</p>
-  <p class="summary">Nearly ten Chinese and Russian military aircraft entered South Korea&#x27;s air defense identification zone on June 27, prompting Seoul to scramble fighters and lodge formal protests, while China&#x27;s defense ministry described the flights as a routine annual patrol under a bilateral cooperation plan. The incursion coincided with the conclusion of defense talks in Seoul between South Korean Defense Minister Ahn Gyu-back and Japanese Defense Minister Shinjiro Koizumi, who agreed to expand cooperation in AI, space, and aerobatic team exchanges. Beijing warned that Japan-South Korea defense ties risk creating Cold War-style military blocs in the Asia-Pacific.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-06-26-001.html" class="follow-up-link">&ldquo;South Korea and Japan Defense Ministers Meet in Seoul as North Korea Tests Weapons and Logistics Pact Faces Domestic Resistance&rdquo;</a> <span class="follow-up-date">(June 26, 2026)</span></div>
+  <span class="topic-id">TOPIC 01 / tp-2026-06-29-001</span>
+  <h2><a href="reports/tp-2026-06-29-001.html">New Caledonia&#x27;s Provincial Elections Return Anti-Independence Lead in the South but No Majority in Congress</a></h2>
+  <p class="subheadline">A centrist party holds the balance of power as loyalists and pro-independence blocs each fall short, setting the stage for difficult coalition talks and renewed negotiations with Paris on the territory&#x27;s political future.</p>
+  <p class="summary">Anti-independence parties won the South Province in New Caledonia&#x27;s June 28 provincial elections but fell short of a congressional majority, with the centrist Éveil océanien party holding the balance of power. The FLNKS pro-independence coalition, which took 26 of 54 seats across three lists, maintains that only full sovereignty is negotiable with France and rejects the expansion of the electoral body. French Prime Minister Sebastien Lecornu has pledged to resume and conclude status negotiations by the end of 2026.</p>
   <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">17</span><span class="meta-label">Sources</span></div>
+    <div class="meta-item"><span class="meta-number">18</span><span class="meta-label">Sources</span></div>
+    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Languages</span></div>
+    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Stakeholders</span></div>
+    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Divergences</span></div>
+  </div>
+  <div class="card-footer"><span>791 words &middot; June 29, 2026</span><a href="reports/tp-2026-06-29-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
+</article>
+<article class="tp-card">
+  <span class="topic-id">TOPIC 02 / tp-2026-06-29-002</span>
+  <h2><a href="reports/tp-2026-06-29-002.html">Uganda&#x27;s Bundibugyo Ebola Outbreak Prompts Joint Continental Response as DRC Crisis Spreads Through Displacement Camps</a></h2>
+  <p class="subheadline">Africa CDC and WHO launch a unified coordination platform while health facilities in eastern DRC lack basic protective equipment and no approved vaccine exists for the Bundibugyo strain.</p>
+  <p class="summary">Africa CDC and WHO launched a joint coordination platform in Kampala to manage the Bundibugyo Ebola outbreak in Uganda, which was declared a Public Health Emergency of International Concern on 20 May 2026 and for which no approved vaccine or treatment exists. The DRC&#x27;s ongoing Ebola crisis continues to spread through displacement camps in eastern provinces where most health facilities lack basic protective equipment and community resistance hampers the response. Neighboring countries are activating preparedness measures while a concurrent cholera epidemic in DRC and a Crimean-Congo hemorrhagic fever outbreak in Iraq add to the multi-pathogen burden.</p>
+  <div class="follow-up-hint"><span class="follow-up-label">Follow-up to:</span> <a href="reports/tp-2026-06-25-003.html" class="follow-up-link">&ldquo;France Confirms First Ebola Case as DRC Outbreak Surpasses 1,000 Infections&rdquo;</a> <span class="follow-up-date">(June 25, 2026)</span></div>
+  <div class="meta-bar">
+    <div class="meta-item"><span class="meta-number">20</span><span class="meta-label">Sources</span></div>
     <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Stakeholders</span></div>
+    <div class="meta-item"><span class="meta-number">13</span><span class="meta-label">Stakeholders</span></div>
     <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Divergences</span></div>
   </div>
-  <div class="card-footer"><span>805 words &middot; June 28, 2026</span><a href="reports/tp-2026-06-28-001.html" class="read-link">&rarr; READ DOSSIER</a></div>
+  <div class="card-footer"><span>908 words &middot; June 29, 2026</span><a href="reports/tp-2026-06-29-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
 </article>
 <article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-06-28-002</span>
-  <h2><a href="reports/tp-2026-06-28-002.html">Budapest Holds First Pride March After Orbán&#x27;s Departure as Parallel Events Across Four Continents Expose Uneven State of LGBTQ+ Assembly Rights</a></h2>
-  <p class="subheadline">Tens of thousands marched in the Hungarian capital under a new government that lifted the ban but has not repealed the laws that enabled it, while Pride events from San Salvador to Istanbul faced restrictions ranging from judicial injunctions to blanket demonstration bans.</p>
-  <p class="summary">Budapest held its first Pride march since Viktor Orbán&#x27;s electoral defeat, drawing tens of thousands under a new government that lifted the ban but has not repealed the Orbán-era laws that enabled it. Parallel Pride events across Central America, East Asia, Africa, and Europe highlighted divergent conditions for LGBTQ+ assembly, from Istanbul&#x27;s blanket demonstration ban to Seoul&#x27;s push for anti-discrimination legislation. Fidesz politicians framed the Budapest march as a foreign-backed provocation, while human rights organizations pressed the new Hungarian government for concrete legal reform.</p>
+  <span class="topic-id">TOPIC 03 / tp-2026-06-29-003</span>
+  <h2><a href="reports/tp-2026-06-29-003.html">Pakistan Strikes Along Afghan Border, Reporting 29 Militants Killed; Taliban Government Says Dozens of Civilians Dead</a></h2>
+  <p class="subheadline">Islamabad frames the airstrikes and ground operation as precision counterterrorism; Kabul condemns them as aggression against civilian populations, while UN bodies and rights groups raise questions of legality.</p>
+  <p class="summary">Pakistan stated that airstrikes and a ground operation along the Afghan border on June 29 killed 29 militants from Jamaat-ul-Ahrar and the TTP — though some outlets reported the figure as 25, reflecting different stages of official statements — in retaliation for a Karachi attack on a Rangers headquarters. The Taliban government condemned the strikes as aggression against civilians, reporting dozens of deaths including women and children — a figure that remains unverified independently. UN agencies, human rights groups, and several governments have questioned the legality of Pakistan&#x27;s cross-border operations under international law, while diplomatic mediation efforts have failed to halt the cycle of hostilities.</p>
   <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">23</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">16</span><span class="meta-label">Stakeholders</span></div>
-    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Divergences</span></div>
-  </div>
-  <div class="card-footer"><span>852 words &middot; June 28, 2026</span><a href="reports/tp-2026-06-28-002.html" class="read-link">&rarr; READ DOSSIER</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-06-28-003</span>
-  <h2><a href="reports/tp-2026-06-28-003.html">Serbian President Vučić Announces Resignation Within Weeks, Declares Intent to Run for Prime Minister</a></h2>
-  <p class="subheadline">The announcement, made at a rally of tens of thousands of supporters in Belgrade, follows more than a year of student-led protests triggered by the Novi Sad railway station collapse.</p>
-  <p class="summary">Serbian President Aleksandar Vučić announced at a Belgrade rally that he would resign within weeks and seek the prime minister&#x27;s office through early elections, a move opposition figures and analysts described as a tactical maneuver to retain power rather than a genuine democratic concession. The announcement follows over eighteen months of student-led protests demanding accountability for the Novi Sad railway station collapse, while Russian and Chinese media framed the transition as unlikely to shift Serbia&#x27;s geopolitical partnerships and EU officials warned of potential consequences for Serbia&#x27;s accession process.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">21</span><span class="meta-label">Sources</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Languages</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Stakeholders</span></div>
+    <div class="meta-item"><span class="meta-number">25</span><span class="meta-label">Sources</span></div>
+    <div class="meta-item"><span class="meta-number">10</span><span class="meta-label">Languages</span></div>
+    <div class="meta-item"><span class="meta-number">14</span><span class="meta-label">Stakeholders</span></div>
     <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Divergences</span></div>
   </div>
-  <div class="card-footer"><span>867 words &middot; June 28, 2026</span><a href="reports/tp-2026-06-28-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
+  <div class="card-footer"><span>924 words &middot; June 29, 2026</span><a href="reports/tp-2026-06-29-003.html" class="read-link">&rarr; READ DOSSIER</a></div>
 </article>
 <div class="bucket-bar"><span>YESTERDAY</span><span>3 DOSSIERS</span></div>
-<div class="day-submarker">June 27, 2026</div>
+<div class="day-submarker">June 28, 2026</div>
 <article class="tp-card-mid">
-  <span class="topic-id">tp-2026-06-27-001</span>
-  <h3><a href="reports/tp-2026-06-27-001.html">Former US National Security Adviser John Bolton Pleads Guilty to Mishandling Classified Documents</a></h3>
-  <p class="subheadline-mid">Bolton accepted a plea deal carrying a $2.25 million fine and potential prison time, while his lawyer drew a direct contrast with the dropped classified-documents case against President Trump.</p>
-  <div class="card-footer"><span class="mid-stats"><b>18</b> Sources &middot; <b>7</b> Languages &middot; <b>9</b> Stakeholders &middot; <b>5</b> Divergences</span><a href="reports/tp-2026-06-27-001.html" class="read-link">&rarr; READ</a></div>
+  <span class="topic-id">tp-2026-06-28-001</span>
+  <h3><a href="reports/tp-2026-06-28-001.html">Chinese and Russian Military Aircraft Enter South Korea&#x27;s Air Defense Zone as Seoul and Tokyo Conclude Defense Talks</a></h3>
+  <p class="subheadline-mid">South Korea scrambled fighter jets and lodged formal protests over the incursion, while Beijing described the flights as a routine annual patrol under a bilateral cooperation plan.</p>
+  <div class="card-footer"><span class="mid-stats"><b>17</b> Sources &middot; <b>7</b> Languages &middot; <b>7</b> Stakeholders &middot; <b>5</b> Divergences</span><a href="reports/tp-2026-06-28-001.html" class="read-link">&rarr; READ</a></div>
 </article>
 <article class="tp-card-mid">
-  <span class="topic-id">tp-2026-06-27-002</span>
-  <h3><a href="reports/tp-2026-06-27-002.html">US Commerce Department Permits Anthropic to Release Mythos 5 AI Model to Vetted Domestic Organizations</a></h3>
-  <p class="subheadline-mid">Over 100 companies and federal agencies regain access to the cybersecurity-focused model, but broader restrictions remain in place and allied governments are excluded from the approved list.</p>
-  <div class="card-footer"><span class="mid-stats"><b>20</b> Sources &middot; <b>10</b> Languages &middot; <b>13</b> Stakeholders &middot; <b>6</b> Divergences</span><a href="reports/tp-2026-06-27-002.html" class="read-link">&rarr; READ</a></div>
+  <span class="topic-id">tp-2026-06-28-002</span>
+  <h3><a href="reports/tp-2026-06-28-002.html">Budapest Holds First Pride March After Orbán&#x27;s Departure as Parallel Events Across Four Continents Expose Uneven State of LGBTQ+ Assembly Rights</a></h3>
+  <p class="subheadline-mid">Tens of thousands marched in the Hungarian capital under a new government that lifted the ban but has not repealed the laws that enabled it, while Pride events from San Salvador to Istanbul faced restrictions ranging from judicial injunctions to blanket demonstration bans.</p>
+  <div class="card-footer"><span class="mid-stats"><b>23</b> Sources &middot; <b>8</b> Languages &middot; <b>16</b> Stakeholders &middot; <b>5</b> Divergences</span><a href="reports/tp-2026-06-28-002.html" class="read-link">&rarr; READ</a></div>
 </article>
 <article class="tp-card-mid">
-  <span class="topic-id">tp-2026-06-27-003</span>
-  <h3><a href="reports/tp-2026-06-27-003.html">Trump Threatens 100% Tariff on All Goods From Countries Imposing Digital Services Taxes</a></h3>
-  <p class="subheadline-mid">The threat, posted on social media one day after the EU finalized a trade pact with the United States, drew immediate pushback from the European Commission and France while raising questions about its legal basis and its effect on countries that have already retreated from digital levies.</p>
-  <div class="card-footer"><span class="mid-stats"><b>19</b> Sources &middot; <b>10</b> Languages &middot; <b>8</b> Stakeholders &middot; <b>6</b> Divergences</span><a href="reports/tp-2026-06-27-003.html" class="read-link">&rarr; READ</a></div>
+  <span class="topic-id">tp-2026-06-28-003</span>
+  <h3><a href="reports/tp-2026-06-28-003.html">Serbian President Vučić Announces Resignation Within Weeks, Declares Intent to Run for Prime Minister</a></h3>
+  <p class="subheadline-mid">The announcement, made at a rally of tens of thousands of supporters in Belgrade, follows more than a year of student-led protests triggered by the Novi Sad railway station collapse.</p>
+  <div class="card-footer"><span class="mid-stats"><b>21</b> Sources &middot; <b>8</b> Languages &middot; <b>6</b> Stakeholders &middot; <b>6</b> Divergences</span><a href="reports/tp-2026-06-28-003.html" class="read-link">&rarr; READ</a></div>
 </article>
 <div class="bucket-bar"><span>EARLIER</span><span>15 DOSSIERS</span></div>
+<div class="day-submarker">June 27, 2026</div>
+<div class="compact-row">
+  <span class="compact-id">06-27-001</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-06-27-001.html">Former US National Security Adviser John Bolton Pleads Guilty to Mishandling Classified Documents</a></h4>
+    <span class="compact-sub">Bolton accepted a plea deal carrying a $2.25 million fine and potential prison time, while his lawyer drew a direct contrast with the dropped classified-documents case against President Trump.</span>
+  </div>
+  <div class="compact-src"><span class="compact-src-num">18</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">06-27-002</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-06-27-002.html">US Commerce Department Permits Anthropic to Release Mythos 5 AI Model to Vetted Domestic Organizations</a></h4>
+    <span class="compact-sub">Over 100 companies and federal agencies regain access to the cybersecurity-focused model, but broader restrictions remain in place and allied governments are excluded from the approved list.</span>
+  </div>
+  <div class="compact-src"><span class="compact-src-num">20</span><span class="compact-src-label">SRC</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">06-27-003</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-06-27-003.html">Trump Threatens 100% Tariff on All Goods From Countries Imposing Digital Services Taxes</a></h4>
+    <span class="compact-sub">The threat, posted on social media one day after the EU finalized a trade pact with the United States, drew immediate pushback from the European Commission and France while raising questions about its legal basis and its effect on countries that have already retreated from digital levies.</span>
+  </div>
+  <div class="compact-src"><span class="compact-src-num">19</span><span class="compact-src-label">SRC</span></div>
+</div>
 <div class="day-submarker">June 26, 2026</div>
 <div class="compact-row">
   <span class="compact-id">06-26-001</span>
@@ -728,35 +794,25 @@ footer a {
   </div>
   <div class="compact-src"><span class="compact-src-num">24</span><span class="compact-src-label">SRC</span></div>
 </div>
-<div class="day-submarker">June 22, 2026</div>
-<div class="compact-row">
-  <span class="compact-id">06-22-001</span>
-  <div class="compact-body">
-    <h4 class="compact-headline"><a href="reports/tp-2026-06-22-001.html">Half of France Under Red Alert as Heatwave Exceeds 40°C, Disrupting Rail, Energy, and Public Life</a></h4>
-    <span class="compact-sub">Temperatures broke monthly records in parts of southern France while political debate over structural adaptation — from paid climate leave to mass air-conditioning — divided French lawmakers.</span>
-  </div>
-  <div class="compact-src"><span class="compact-src-num">26</span><span class="compact-src-label">SRC</span></div>
-</div>
-<div class="compact-row">
-  <span class="compact-id">06-22-002</span>
-  <div class="compact-body">
-    <h4 class="compact-headline"><a href="reports/tp-2026-06-22-002.html">Israeli Military Operations Continue Across Gaza, West Bank, and Lebanon as Civilian Casualties Mount and Diplomatic Tensions Rise</a></h4>
-    <span class="compact-sub">Health authorities report ongoing deaths in all three theaters while Israel rejects US pressure to withdraw from southern Lebanon, press freedom groups condemn a smear campaign against journalists, and rights organizations raise war-crimes concerns.</span>
-  </div>
-  <div class="compact-src"><span class="compact-src-num">19</span><span class="compact-src-label">SRC</span></div>
-</div>
-<div class="compact-row">
-  <span class="compact-id">06-22-003</span>
-  <div class="compact-body">
-    <h4 class="compact-headline"><a href="reports/tp-2026-06-22-003.html">DRC Ebola Case Count Surpasses 1,000 as Funding Gap Persists and Dengue Surges Across Asia-Pacific</a></h4>
-    <span class="compact-sub">WHO officials rate the international Ebola response at &#x27;three or four out of ten&#x27; while less than a tenth of pledged funds have reached responders; dengue outbreaks in Sri Lanka and the Pacific Islands add to a convergence of global health emergencies.</span>
-  </div>
-  <div class="compact-src"><span class="compact-src-num">21</span><span class="compact-src-label">SRC</span></div>
-</div>
-<div class="bucket-bar bucket-bar-light"><span>ARCHIVE</span><span>78 DOSSIERS</span></div>
+<div class="bucket-bar bucket-bar-light"><span>ARCHIVE</span><span>81 DOSSIERS</span></div>
 <details class="archive-month">
-<summary class="archive-month-summary"><span class="archive-month-title">JUNE 2026</span><span class="archive-month-count">63 DOSSIERS</span></summary>
+<summary class="archive-month-summary"><span class="archive-month-title">JUNE 2026</span><span class="archive-month-count">66 DOSSIERS</span></summary>
 <div class="archive-month-body">
+<div class="archive-row">
+  <span class="archive-id">06-22-001</span>
+  <a class="archive-headline" href="reports/tp-2026-06-22-001.html">Half of France Under Red Alert as Heatwave Exceeds 40°C, Disrupting Rail, Energy, and Public Life</a>
+  <span class="archive-src">26<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">06-22-002</span>
+  <a class="archive-headline" href="reports/tp-2026-06-22-002.html">Israeli Military Operations Continue Across Gaza, West Bank, and Lebanon as Civilian Casualties Mount and Diplomatic Tensions Rise</a>
+  <span class="archive-src">19<span class="archive-src-label">&nbsp;src</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">06-22-003</span>
+  <a class="archive-headline" href="reports/tp-2026-06-22-003.html">DRC Ebola Case Count Surpasses 1,000 as Funding Gap Persists and Dengue Surges Across Asia-Pacific</a>
+  <span class="archive-src">21<span class="archive-src-label">&nbsp;src</span></span>
+</div>
 <div class="archive-row">
   <span class="archive-id">06-21-001</span>
   <a class="archive-headline" href="reports/tp-2026-06-21-001.html">Ukrainian Drones Strike Oil Refinery in Russia&#x27;s Tyumen Region Over 2,000 Kilometers From the Border</a>
@@ -1158,9 +1214,11 @@ footer a {
 </main>
 
 <section class="support-block" aria-label="Support Independent Wire">
-  <p class="support-heading">Keep it independent</p>
+  <p class="support-heading">Keep it independent.</p>
   <p class="support-line">No ads, no investors, no paywall. Donations cover the daily running costs and keep Independent Wire independent.</p>
-  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" target="_blank" rel="noopener">Donate via Liberapay</a>
+  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" target="_blank" rel="noopener"><span class="support-btn-heart" aria-hidden="true">♥</span> Donate via Liberapay</a>
+  <p class="support-kofi">Prefer to give once? <a class="support-kofi-link" href="https://ko-fi.com/independentwire" target="_blank" rel="noopener">One-time via Ko-fi <span aria-hidden="true">→</span></a></p>
+  <blockquote class="support-choice">Liberapay is for recurring support — our preferred home. Ko-fi covers one-time gifts (and recurring too, if you'd rather).</blockquote>
 </section>
 
 <footer>
