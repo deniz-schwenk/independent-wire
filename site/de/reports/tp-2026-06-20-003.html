@@ -590,48 +590,89 @@ footer a { color: #000; text-decoration: underline; }
 }
 .lang-switch .lang-opt--active .lang-beta { color: #fff; }
 
-/* Support / donate block — directly above the footer on both page types.
-   Own top + bottom rule so it reads as distinct furniture, not part of the footer. */
+/* Support / donate block — inverted black call-out card directly above the footer on
+   both page types. Thin white top + bottom rules (inset by the block's horizontal
+   padding) frame the card so it reads as distinct furniture, not part of the footer. */
 .support-block {
   margin-top: 3rem;
-  padding: 1.5rem 0;
-  border-top: 3px solid #000;
-  border-bottom: 3px solid #000;
+  background: #000;
+  color: #fff;
+  padding: 2.25rem 2rem;
 }
+.support-block::before,
+.support-block::after {
+  content: "";
+  display: block;
+  border-top: 1.5px solid #fff;
+}
+.support-block::before { margin-bottom: 1.75rem; }
+.support-block::after { margin-top: 1.75rem; }
 .support-block .support-heading {
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #000;
-  margin: 0 0 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #fff;
+  margin: 0 0 0.75rem;
 }
 .support-block .support-line {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   line-height: 1.6;
-  color: #444;
-  margin: 0 0 1rem;
+  color: #fff;
+  margin: 0 0 1.5rem;
   max-width: 62ch;
 }
+/* Primary (Liberapay) button — full-width white fill, black text, mono uppercase.
+   Hover inverts to a white-outlined black button, matching the approved hover feel. */
 .support-block .support-btn {
-  display: inline-block;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  background: #000;
-  color: #fff;
+  background: #fff;
+  color: #000;
   text-decoration: none;
-  padding: 0.85rem 1.5rem;
+  padding: 1.1rem 1.5rem;
   min-height: 44px;
-  border: 1.5px solid #000;
+  border: 1.5px solid #fff;
   transition: background 120ms ease, color 120ms ease;
 }
-.support-block .support-btn:hover { background: #fff; color: #000; }
-.support-block .support-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+.support-block .support-btn .support-btn-heart { margin-right: 0.5em; }
+.support-block .support-btn:hover { background: #000; color: #fff; }
+.support-block .support-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* Ko-fi — demoted to a quiet inline one-time link beneath the primary button. */
+.support-block .support-kofi {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #fff;
+  margin: 0.85rem 0 0;
+}
+.support-block .support-kofi-link {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.support-block .support-kofi-link:hover { text-decoration: none; }
+.support-block .support-kofi-link:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* Choice line as a left-bar blockquote — muted grey, quiet, mono. */
+.support-block .support-choice {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: #999;
+  border-left: 3px solid #fff;
+  padding-left: 1rem;
+  margin: 1.5rem 0 0;
+  max-width: 72ch;
+}
 </style>
 </head>
 <body>
@@ -1627,9 +1668,11 @@ footer a { color: #000; text-decoration: underline; }
 <nav class="back-nav back-nav-bottom"><a href="../index.html">&larr; ALLE DOSSIERS</a></nav>
 
 <section class="support-block" aria-label="Support Independent Wire">
-  <p class="support-heading">Unabhängig bleiben</p>
+  <p class="support-heading">Unabhängig bleiben.</p>
   <p class="support-line">Keine Werbung, keine Investoren, keine Paywall. Spenden decken die laufenden Kosten und halten Independent Wire unabhängig.</p>
-  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" target="_blank" rel="noopener">Über Liberapay spenden</a>
+  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" target="_blank" rel="noopener"><span class="support-btn-heart" aria-hidden="true">♥</span> Über Liberapay spenden</a>
+  <p class="support-kofi">Lieber einmalig geben? <a class="support-kofi-link" href="https://ko-fi.com/independentwire" target="_blank" rel="noopener">Einmalig über Ko-fi <span aria-hidden="true">→</span></a></p>
+  <blockquote class="support-choice">Liberapay für regelmäßige Unterstützung — unser bevorzugter Weg. Ko‑fi für einmalige Gaben (und regelmäßige, falls dir das lieber ist).</blockquote>
 </section>
 
 <footer>

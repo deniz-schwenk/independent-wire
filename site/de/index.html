@@ -510,48 +510,89 @@ footer a {
 .lang-switch .lang-opt--active .lang-beta { color: #fff; }
 
 
-/* Support / donate block — directly above the footer on both page types.
-   Own top + bottom rule so it reads as distinct furniture, not part of the footer. */
+/* Support / donate block — inverted black call-out card directly above the footer on
+   both page types. Thin white top + bottom rules (inset by the block's horizontal
+   padding) frame the card so it reads as distinct furniture, not part of the footer. */
 .support-block {
   margin-top: 3rem;
-  padding: 1.5rem 0;
-  border-top: 3px solid #000;
-  border-bottom: 3px solid #000;
+  background: #000;
+  color: #fff;
+  padding: 2.25rem 2rem;
 }
+.support-block::before,
+.support-block::after {
+  content: "";
+  display: block;
+  border-top: 1.5px solid #fff;
+}
+.support-block::before { margin-bottom: 1.75rem; }
+.support-block::after { margin-top: 1.75rem; }
 .support-block .support-heading {
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #000;
-  margin: 0 0 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #fff;
+  margin: 0 0 0.75rem;
 }
 .support-block .support-line {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   line-height: 1.6;
-  color: #444;
-  margin: 0 0 1rem;
+  color: #fff;
+  margin: 0 0 1.5rem;
   max-width: 62ch;
 }
+/* Primary (Liberapay) button — full-width white fill, black text, mono uppercase.
+   Hover inverts to a white-outlined black button, matching the approved hover feel. */
 .support-block .support-btn {
-  display: inline-block;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  background: #000;
-  color: #fff;
+  background: #fff;
+  color: #000;
   text-decoration: none;
-  padding: 0.85rem 1.5rem;
+  padding: 1.1rem 1.5rem;
   min-height: 44px;
-  border: 1.5px solid #000;
+  border: 1.5px solid #fff;
   transition: background 120ms ease, color 120ms ease;
 }
-.support-block .support-btn:hover { background: #fff; color: #000; }
-.support-block .support-btn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+.support-block .support-btn .support-btn-heart { margin-right: 0.5em; }
+.support-block .support-btn:hover { background: #000; color: #fff; }
+.support-block .support-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* Ko-fi — demoted to a quiet inline one-time link beneath the primary button. */
+.support-block .support-kofi {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #fff;
+  margin: 0.85rem 0 0;
+}
+.support-block .support-kofi-link {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.support-block .support-kofi-link:hover { text-decoration: none; }
+.support-block .support-kofi-link:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* Choice line as a left-bar blockquote — muted grey, quiet, mono. */
+.support-block .support-choice {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: #999;
+  border-left: 3px solid #fff;
+  padding-left: 1rem;
+  margin: 1.5rem 0 0;
+  max-width: 72ch;
+}
 
 </style>
 </head>
@@ -568,66 +609,91 @@ footer a {
 <main>
 <div class="bucket-bar"><span>HEUTE</span><span>3 DOSSIERS</span></div>
 <article class="tp-card">
-  <span class="topic-id">TOPIC 01 / tp-2026-06-28-001</span>
-  <h2><a href="reports/tp-2026-06-28-001.html">Chinesische und russische Militärflugzeuge dringen in Südkoreas Luftverteidigungszone ein, während Seoul und Tokio Verteidigungsgespräche abschließen</a></h2>
-  <p class="subheadline">Südkorea ließ Kampfflugzeuge aufsteigen und legte formelle Proteste gegen das Eindringen ein, während Peking die Flüge als routinemäßige jährliche Patrouille im Rahmen eines bilateralen Kooperationsplans bezeichnete.</p>
-  <p class="summary">Nahezu zehn chinesische und russische Militärflugzeuge drangen am 27. Juni in Südkoreas Luftverteidigungsidentifikationszone ein, was Seoul veranlasste, Kampfflugzeuge aufsteigen zu lassen und formelle Proteste einzulegen, während Chinas Verteidigungsministerium die Flüge als routinemäßige jährliche Patrouille im Rahmen eines bilateralen Kooperationsplans bezeichnete. Das Eindringen fiel mit dem Abschluss von Verteidigungsgesprächen in Seoul zwischen dem südkoreanischen Verteidigungsminister Ahn Gyu-back und dem japanischen Verteidigungsminister Shinjiro Koizumi zusammen, die vereinbarten, die Zusammenarbeit in den Bereichen KI, Weltraum und Austausch von Kunstflugstaffeln auszubauen. Peking warnte, die japanisch-südkoreanischen Verteidigungsbeziehungen berge das Risiko, Militärblöcke nach Art des Kalten Krieges im asiatisch-pazifischen Raum zu schaffen.</p>
-  <div class="follow-up-hint"><span class="follow-up-label">Folgebericht zu:</span> <a href="reports/tp-2026-06-26-001.html" class="follow-up-link">&ldquo;South Korea and Japan Defense Ministers Meet in Seoul as North Korea Tests Weapons and Logistics Pact Faces Domestic Resistance&rdquo;</a> <span class="follow-up-date">(26. Juni 2026)</span></div>
+  <span class="topic-id">TOPIC 01 / tp-2026-06-29-001</span>
+  <h2><a href="reports/tp-2026-06-29-001.html">Provinzwahlen in Neukaledonien bringen Anti-Unabhängigkeitslager in der Südprovinz in Führung, aber keine Mehrheit im Kongress</a></h2>
+  <p class="subheadline">Eine zentristische Partei hält das Zünglein an der Waage, da sowohl Loyalisten als auch Unabhängigkeitsbefürworter die Mehrheit verfehlen, was schwierige Koalitionsverhandlungen und erneute Gespräche mit Paris über die politische Zukunft des Gebiets einleitet.</p>
+  <p class="summary">Die Anti-Unabhängigkeitsparteien gewannen bei den Provinzwahlen in Neukaledonien am 28. Juni die Südprovinz, verfehlten jedoch eine Kongressmehrheit, wobei die zentristische Partei Éveil océanien das Zünglein an der Waage hält. Die FLNKS-Unabhängigkeitskoalition, die auf drei Listen 26 der 54 Sitze errang, beharrt darauf, dass nur die vollständige Souveränität mit Frankreich verhandelbar ist, und lehnt die Ausweitung der Wählerschaft ab. Der französische Premierminister Sebastien Lecornu hat zugesagt, die Statusverhandlungen bis Ende 2026 wieder aufzunehmen und abzuschließen.</p>
   <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">17</span><span class="meta-label">Quellen</span></div>
+    <div class="meta-item"><span class="meta-number">18</span><span class="meta-label">Quellen</span></div>
+    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Sprachen</span></div>
+    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Akteure</span></div>
+    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Abweichungen</span></div>
+  </div>
+  <div class="card-footer"><span>815 Wörter &middot; 29. Juni 2026</span><a href="reports/tp-2026-06-29-001.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
+</article>
+<article class="tp-card">
+  <span class="topic-id">TOPIC 02 / tp-2026-06-29-002</span>
+  <h2><a href="reports/tp-2026-06-29-002.html">Ugandas Bundibugyo-Ebola-Ausbruch löst gemeinsame kontinentale Reaktion aus, während sich die Krise in der DR Kongo über Vertriebenenlager ausbreitet</a></h2>
+  <p class="subheadline">Die Afrikanischen Zentren für Krankheitskontrolle und -prävention und die WHO starten eine gemeinsame Koordinationsplattform, während Gesundheitseinrichtungen im Osten der Demokratischen Republik Kongo keine grundlegende Schutzausrüstung haben und kein zugelassener Impfstoff gegen den Bundibugyo-Stamm existiert.</p>
+  <p class="summary">Die Afrikanischen Zentren für Krankheitskontrolle und -prävention und die WHO richteten in Kampala eine gemeinsame Koordinationsplattform ein, um den Bundibugyo-Ebola-Ausbruch in Uganda zu bewältigen, der am 20. Mai 2026 zu einer gesundheitlichen Notlage internationaler Tragweite erklärt wurde und für den kein zugelassener Impfstoff und keine zugelassene Behandlung existiert. Die anhaltende Ebola-Krise in der Demokratischen Republik Kongo breitet sich weiter über Vertriebenenlager in den östlichen Provinzen aus, wo den meisten Gesundheitseinrichtungen grundlegende Schutzausrüstung fehlt und Widerstand in der Bevölkerung die Reaktion behindert. Die Nachbarländer aktivieren Vorsorgemaßnahmen, während eine gleichzeitige Cholera-Epidemie in der Demokratischen Republik Kongo und ein Ausbruch von Krim-Kongo-hämorrhagischem Fieber im Irak die Belastung durch mehrere Krankheitserreger erhöhen.</p>
+  <div class="follow-up-hint"><span class="follow-up-label">Folgebericht zu:</span> <a href="reports/tp-2026-06-25-003.html" class="follow-up-link">&ldquo;France Confirms First Ebola Case as DRC Outbreak Surpasses 1,000 Infections&rdquo;</a> <span class="follow-up-date">(25. Juni 2026)</span></div>
+  <div class="meta-bar">
+    <div class="meta-item"><span class="meta-number">20</span><span class="meta-label">Quellen</span></div>
     <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Sprachen</span></div>
-    <div class="meta-item"><span class="meta-number">7</span><span class="meta-label">Akteure</span></div>
+    <div class="meta-item"><span class="meta-number">13</span><span class="meta-label">Akteure</span></div>
     <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Abweichungen</span></div>
   </div>
-  <div class="card-footer"><span>815 Wörter &middot; 28. Juni 2026</span><a href="reports/tp-2026-06-28-001.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
+  <div class="card-footer"><span>970 Wörter &middot; 29. Juni 2026</span><a href="reports/tp-2026-06-29-002.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
 </article>
 <article class="tp-card">
-  <span class="topic-id">TOPIC 02 / tp-2026-06-28-002</span>
-  <h2><a href="reports/tp-2026-06-28-002.html">Budapest veranstaltet erste Pride-Parade nach Orbáns Abwahl, während parallele Veranstaltungen auf vier Kontinenten den ungleichen Stand der LGBTQ+-Versammlungsrechte offenlegen</a></h2>
-  <p class="subheadline">Zehntausende marschierten in der ungarischen Hauptstadt unter einer neuen Regierung, die das Verbot aufhob, aber die Gesetze, die es ermöglichten, nicht aufgehoben hat, während Pride-Veranstaltungen von San Salvador bis Istanbul mit Einschränkungen konfrontiert waren, die von gerichtlichen Verfügungen bis zu pauschalen Demonstrationsverboten reichten.</p>
-  <p class="summary">Budapest hielt seinen ersten Pride-Marsch seit der Wahlniederlage von Viktor Orbán ab, der Zehntausende unter einer neuen Regierung anzog, die das Verbot aufhob, aber die Gesetze aus der Orbán-Ära, die es ermöglichten, nicht aufgehoben hat. Parallele Pride-Veranstaltungen in Mittelamerika, Ostasien, Afrika und Europa verdeutlichten die unterschiedlichen Bedingungen für LGBTQ+-Versammlungen, vom pauschalen Demonstrationsverbot in Istanbul bis zum Vorstoß für Antidiskriminierungsgesetze in Seoul. Fidesz-Politiker stellten den Budapester Marsch als eine von außen gesteuerte Provokation dar, während Menschenrechtsorganisationen die neue ungarische Regierung zu konkreten Gesetzesreformen drängten.</p>
+  <span class="topic-id">TOPIC 03 / tp-2026-06-29-003</span>
+  <h2><a href="reports/tp-2026-06-29-003.html">Pakistan schlägt entlang der afghanischen Grenze zu und meldet 29 getötete Kämpfer; Taliban-Regierung spricht von Dutzenden toten Zivilisten</a></h2>
+  <p class="subheadline">Islamabad stellt die Luftangriffe und die Bodenoperation als gezielte Terrorismusbekämpfung dar; Kabul verurteilt sie als Aggression gegen die Zivilbevölkerung, während UN-Gremien und Menschenrechtsorganisationen Fragen zur Rechtmäßigkeit aufwerfen.</p>
+  <p class="summary">Pakistan erklärte, dass Luftangriffe und eine Bodenoperation entlang der afghanischen Grenze am 29. Juni 29 Kämpfer von Jamaat-ul-Ahrar und der TTP töteten — obwohl einige Medien die Zahl mit 25 angaben, was unterschiedliche Stadien der offiziellen Stellungnahmen widerspiegelt — als Vergeltung für einen Angriff auf ein Hauptquartier der Rangers in Karatschi. Die Taliban-Regierung verurteilte die Angriffe als Aggression gegen die Zivilbevölkerung und meldete Dutzende Tote, darunter Frauen und Kinder — eine Zahl, die unabhängig nicht überprüft bleibt. UN-Organisationen, Menschenrechtsgruppen und mehrere Regierungen haben die Rechtmäßigkeit der grenzüberschreitenden Operationen Pakistans nach internationalem Recht infrage gestellt, während diplomatische Vermittlungsbemühungen den Kreislauf der Feindseligkeiten nicht stoppen konnten.</p>
   <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">23</span><span class="meta-label">Quellen</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Sprachen</span></div>
-    <div class="meta-item"><span class="meta-number">16</span><span class="meta-label">Akteure</span></div>
-    <div class="meta-item"><span class="meta-number">5</span><span class="meta-label">Abweichungen</span></div>
-  </div>
-  <div class="card-footer"><span>907 Wörter &middot; 28. Juni 2026</span><a href="reports/tp-2026-06-28-002.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
-</article>
-<article class="tp-card">
-  <span class="topic-id">TOPIC 03 / tp-2026-06-28-003</span>
-  <h2><a href="reports/tp-2026-06-28-003.html">Serbiens Präsident Vučić kündigt Rücktritt innerhalb von Wochen an und erklärt Absicht, für das Amt des Ministerpräsidenten zu kandidieren</a></h2>
-  <p class="subheadline">Die Ankündigung, die bei einer Kundgebung mit Zehntausenden Anhängern in Belgrad erfolgte, folgt auf mehr als ein Jahr von Studenten angeführte Proteste, die durch den Einsturz des Bahnhofs von Novi Sad ausgelöst wurden.</p>
-  <p class="summary">Serbiens Präsident Aleksandar Vučić kündigte bei einer Kundgebung in Belgrad an, er werde innerhalb von Wochen zurücktreten und durch vorgezogene Wahlen das Amt des Ministerpräsidenten anstreben – ein Schritt, den Oppositionspolitiker und Analysten als taktisches Manöver zum Machterhalt und nicht als echtes demokratisches Zugeständnis bezeichneten. Die Ankündigung folgt auf mehr als achtzehn Monate von Studenten angeführter Proteste, die Rechenschaft für den Einsturz des Bahnhofs von Novi Sad fordern, während russische und chinesische Medien den Übergang als unwahrscheinlich darstellten, Serbiens geopolitische Partnerschaften zu verschieben, und EU-Vertreter vor möglichen Konsequenzen für Serbiens Beitrittsprozess warnten.</p>
-  <div class="meta-bar">
-    <div class="meta-item"><span class="meta-number">21</span><span class="meta-label">Quellen</span></div>
-    <div class="meta-item"><span class="meta-number">8</span><span class="meta-label">Sprachen</span></div>
-    <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Akteure</span></div>
+    <div class="meta-item"><span class="meta-number">25</span><span class="meta-label">Quellen</span></div>
+    <div class="meta-item"><span class="meta-number">10</span><span class="meta-label">Sprachen</span></div>
+    <div class="meta-item"><span class="meta-number">14</span><span class="meta-label">Akteure</span></div>
     <div class="meta-item"><span class="meta-number">6</span><span class="meta-label">Abweichungen</span></div>
   </div>
-  <div class="card-footer"><span>935 Wörter &middot; 28. Juni 2026</span><a href="reports/tp-2026-06-28-003.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
+  <div class="card-footer"><span>1,006 Wörter &middot; 29. Juni 2026</span><a href="reports/tp-2026-06-29-003.html" class="read-link">&rarr; DOSSIER LESEN</a></div>
 </article>
 <div class="bucket-bar"><span>GESTERN</span><span>3 DOSSIERS</span></div>
-<div class="day-submarker">27. Juni 2026</div>
+<div class="day-submarker">28. Juni 2026</div>
 <article class="tp-card-mid">
-  <span class="topic-id">tp-2026-06-27-001</span>
-  <h3><a href="reports/tp-2026-06-27-001.html">Ehemaliger US-Sicherheitsberater John Bolton bekennt sich der Misshandlung von Geheimdokumenten schuldig</a></h3>
-  <p class="subheadline-mid">Bolton akzeptierte eine Strafvereinbarung, die eine Geldstrafe von 2,25 Millionen Dollar und mögliche Haft vorsieht, während sein Anwalt einen direkten Vergleich mit dem eingestellten Verfahren gegen Präsident Trump wegen Geheimdokumenten zog.</p>
-  <div class="card-footer"><span class="mid-stats"><b>18</b> Quellen &middot; <b>7</b> Sprachen &middot; <b>9</b> Akteure &middot; <b>5</b> Abweichungen</span><a href="reports/tp-2026-06-27-001.html" class="read-link">&rarr; LESEN</a></div>
+  <span class="topic-id">tp-2026-06-28-001</span>
+  <h3><a href="reports/tp-2026-06-28-001.html">Chinesische und russische Militärflugzeuge dringen in Südkoreas Luftverteidigungszone ein, während Seoul und Tokio Verteidigungsgespräche abschließen</a></h3>
+  <p class="subheadline-mid">Südkorea ließ Kampfflugzeuge aufsteigen und legte formelle Proteste gegen das Eindringen ein, während Peking die Flüge als routinemäßige jährliche Patrouille im Rahmen eines bilateralen Kooperationsplans bezeichnete.</p>
+  <div class="card-footer"><span class="mid-stats"><b>17</b> Quellen &middot; <b>7</b> Sprachen &middot; <b>7</b> Akteure &middot; <b>5</b> Abweichungen</span><a href="reports/tp-2026-06-28-001.html" class="read-link">&rarr; LESEN</a></div>
 </article>
 <article class="tp-card-mid">
-  <span class="topic-id">tp-2026-06-27-002</span>
-  <h3><a href="reports/tp-2026-06-27-002.html">US-Handelsministerium erlaubt Anthropic die Freigabe des KI-Modells Mythos 5 an überprüfte inländische Organisationen</a></h3>
-  <p class="subheadline-mid">Über 100 Unternehmen und Bundesbehörden erhalten wieder Zugang zu dem auf Cybersicherheit ausgerichteten Modell, doch umfassendere Beschränkungen bleiben bestehen und verbündete Regierungen sind von der genehmigten Liste ausgeschlossen.</p>
-  <div class="card-footer"><span class="mid-stats"><b>20</b> Quellen &middot; <b>10</b> Sprachen &middot; <b>13</b> Akteure &middot; <b>6</b> Abweichungen</span><a href="reports/tp-2026-06-27-002.html" class="read-link">&rarr; LESEN</a></div>
+  <span class="topic-id">tp-2026-06-28-002</span>
+  <h3><a href="reports/tp-2026-06-28-002.html">Budapest veranstaltet erste Pride-Parade nach Orbáns Abwahl, während parallele Veranstaltungen auf vier Kontinenten den ungleichen Stand der LGBTQ+-Versammlungsrechte offenlegen</a></h3>
+  <p class="subheadline-mid">Zehntausende marschierten in der ungarischen Hauptstadt unter einer neuen Regierung, die das Verbot aufhob, aber die Gesetze, die es ermöglichten, nicht aufgehoben hat, während Pride-Veranstaltungen von San Salvador bis Istanbul mit Einschränkungen konfrontiert waren, die von gerichtlichen Verfügungen bis zu pauschalen Demonstrationsverboten reichten.</p>
+  <div class="card-footer"><span class="mid-stats"><b>23</b> Quellen &middot; <b>8</b> Sprachen &middot; <b>16</b> Akteure &middot; <b>5</b> Abweichungen</span><a href="reports/tp-2026-06-28-002.html" class="read-link">&rarr; LESEN</a></div>
 </article>
 <article class="tp-card-mid">
-  <span class="topic-id">tp-2026-06-27-003</span>
-  <h3><a href="reports/tp-2026-06-27-003.html">Trump droht mit 100-Prozent-Zoll auf alle Waren aus Ländern, die Digitalsteuern erheben</a></h3>
-  <p class="subheadline-mid">Die Drohung, die einen Tag nach der endgültigen Verabschiedung eines Handelspakts zwischen der EU und den Vereinigten Staaten in den sozialen Medien veröffentlicht wurde, stieß bei der Europäischen Kommission und Frankreich auf sofortigen Widerspruch und warf Fragen nach ihrer rechtlichen Grundlage sowie ihren Auswirkungen auf Länder auf, die bereits von digitalen Abgaben abgerückt sind.</p>
-  <div class="card-footer"><span class="mid-stats"><b>19</b> Quellen &middot; <b>10</b> Sprachen &middot; <b>8</b> Akteure &middot; <b>6</b> Abweichungen</span><a href="reports/tp-2026-06-27-003.html" class="read-link">&rarr; LESEN</a></div>
+  <span class="topic-id">tp-2026-06-28-003</span>
+  <h3><a href="reports/tp-2026-06-28-003.html">Serbiens Präsident Vučić kündigt Rücktritt innerhalb von Wochen an und erklärt Absicht, für das Amt des Ministerpräsidenten zu kandidieren</a></h3>
+  <p class="subheadline-mid">Die Ankündigung, die bei einer Kundgebung mit Zehntausenden Anhängern in Belgrad erfolgte, folgt auf mehr als ein Jahr von Studenten angeführte Proteste, die durch den Einsturz des Bahnhofs von Novi Sad ausgelöst wurden.</p>
+  <div class="card-footer"><span class="mid-stats"><b>21</b> Quellen &middot; <b>8</b> Sprachen &middot; <b>6</b> Akteure &middot; <b>6</b> Abweichungen</span><a href="reports/tp-2026-06-28-003.html" class="read-link">&rarr; LESEN</a></div>
 </article>
 <div class="bucket-bar"><span>FRÜHER</span><span>15 DOSSIERS</span></div>
+<div class="day-submarker">27. Juni 2026</div>
+<div class="compact-row">
+  <span class="compact-id">06-27-001</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-06-27-001.html">Ehemaliger US-Sicherheitsberater John Bolton bekennt sich der Misshandlung von Geheimdokumenten schuldig</a></h4>
+    <span class="compact-sub">Bolton akzeptierte eine Strafvereinbarung, die eine Geldstrafe von 2,25 Millionen Dollar und mögliche Haft vorsieht, während sein Anwalt einen direkten Vergleich mit dem eingestellten Verfahren gegen Präsident Trump wegen Geheimdokumenten zog.</span>
+  </div>
+  <div class="compact-src"><span class="compact-src-num">18</span><span class="compact-src-label">QLN</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">06-27-002</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-06-27-002.html">US-Handelsministerium erlaubt Anthropic die Freigabe des KI-Modells Mythos 5 an überprüfte inländische Organisationen</a></h4>
+    <span class="compact-sub">Über 100 Unternehmen und Bundesbehörden erhalten wieder Zugang zu dem auf Cybersicherheit ausgerichteten Modell, doch umfassendere Beschränkungen bleiben bestehen und verbündete Regierungen sind von der genehmigten Liste ausgeschlossen.</span>
+  </div>
+  <div class="compact-src"><span class="compact-src-num">20</span><span class="compact-src-label">QLN</span></div>
+</div>
+<div class="compact-row">
+  <span class="compact-id">06-27-003</span>
+  <div class="compact-body">
+    <h4 class="compact-headline"><a href="reports/tp-2026-06-27-003.html">Trump droht mit 100-Prozent-Zoll auf alle Waren aus Ländern, die Digitalsteuern erheben</a></h4>
+    <span class="compact-sub">Die Drohung, die einen Tag nach der endgültigen Verabschiedung eines Handelspakts zwischen der EU und den Vereinigten Staaten in den sozialen Medien veröffentlicht wurde, stieß bei der Europäischen Kommission und Frankreich auf sofortigen Widerspruch und warf Fragen nach ihrer rechtlichen Grundlage sowie ihren Auswirkungen auf Länder auf, die bereits von digitalen Abgaben abgerückt sind.</span>
+  </div>
+  <div class="compact-src"><span class="compact-src-num">19</span><span class="compact-src-label">QLN</span></div>
+</div>
 <div class="day-submarker">26. Juni 2026</div>
 <div class="compact-row">
   <span class="compact-id">06-26-001</span>
@@ -728,35 +794,25 @@ footer a {
   </div>
   <div class="compact-src"><span class="compact-src-num">24</span><span class="compact-src-label">QLN</span></div>
 </div>
-<div class="day-submarker">22. Juni 2026</div>
-<div class="compact-row">
-  <span class="compact-id">06-22-001</span>
-  <div class="compact-body">
-    <h4 class="compact-headline"><a href="reports/tp-2026-06-22-001.html">Hälfte Frankreichs unter roter Alarmstufe, da Hitzewelle 40 °C übersteigt und Bahn, Energie und öffentliches Leben beeinträchtigt</a></h4>
-    <span class="compact-sub">In Teilen Südfrankreichs brachen die Temperaturen Monatsrekorde, während die politische Debatte über strukturelle Anpassung – von bezahltem Klimaurlaub bis zu massenhafter Klimatisierung – die französischen Abgeordneten spaltete.</span>
-  </div>
-  <div class="compact-src"><span class="compact-src-num">26</span><span class="compact-src-label">QLN</span></div>
-</div>
-<div class="compact-row">
-  <span class="compact-id">06-22-002</span>
-  <div class="compact-body">
-    <h4 class="compact-headline"><a href="reports/tp-2026-06-22-002.html">Israelische Militäroperationen in Gaza, im Westjordanland und im Libanon dauern an, während zivile Opferzahlen steigen und diplomatische Spannungen zunehmen</a></h4>
-    <span class="compact-sub">Gesundheitsbehörden melden anhaltende Todesfälle in allen drei Schauplätzen, während Israel den Druck der USA auf einen Rückzug aus dem Südlibanon zurückweist, Organisationen für Pressefreiheit eine Verleumdungskampagne gegen Journalisten verurteilen und Menschenrechtsorganisationen Bedenken wegen Kriegsverbrechen äußern.</span>
-  </div>
-  <div class="compact-src"><span class="compact-src-num">19</span><span class="compact-src-label">QLN</span></div>
-</div>
-<div class="compact-row">
-  <span class="compact-id">06-22-003</span>
-  <div class="compact-body">
-    <h4 class="compact-headline"><a href="reports/tp-2026-06-22-003.html">Ebola-Fälle im Kongo übersteigen 1.000, während die Finanzierungslücke fortbesteht und Dengue im asiatisch-pazifischen Raum zunimmt</a></h4>
-    <span class="compact-sub">WHO-Vertreter bewerten die internationale Ebola-Reaktion mit „three or four out of ten“ [drei oder vier von zehn], während weniger als ein Zehntel der zugesagten Mittel bei den Helfern angekommen ist; Dengue-Ausbrüche in Sri Lanka und den Pazifikinseln verschärfen die Häufung globaler Gesundheitsnotlagen.</span>
-  </div>
-  <div class="compact-src"><span class="compact-src-num">21</span><span class="compact-src-label">QLN</span></div>
-</div>
-<div class="bucket-bar bucket-bar-light"><span>ARCHIV</span><span>9 DOSSIERS</span></div>
+<div class="bucket-bar bucket-bar-light"><span>ARCHIV</span><span>12 DOSSIERS</span></div>
 <details class="archive-month">
-<summary class="archive-month-summary"><span class="archive-month-title">JUNI 2026</span><span class="archive-month-count">9 DOSSIERS</span></summary>
+<summary class="archive-month-summary"><span class="archive-month-title">JUNI 2026</span><span class="archive-month-count">12 DOSSIERS</span></summary>
 <div class="archive-month-body">
+<div class="archive-row">
+  <span class="archive-id">06-22-001</span>
+  <a class="archive-headline" href="reports/tp-2026-06-22-001.html">Hälfte Frankreichs unter roter Alarmstufe, da Hitzewelle 40 °C übersteigt und Bahn, Energie und öffentliches Leben beeinträchtigt</a>
+  <span class="archive-src">26<span class="archive-src-label">&nbsp;Qln</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">06-22-002</span>
+  <a class="archive-headline" href="reports/tp-2026-06-22-002.html">Israelische Militäroperationen in Gaza, im Westjordanland und im Libanon dauern an, während zivile Opferzahlen steigen und diplomatische Spannungen zunehmen</a>
+  <span class="archive-src">19<span class="archive-src-label">&nbsp;Qln</span></span>
+</div>
+<div class="archive-row">
+  <span class="archive-id">06-22-003</span>
+  <a class="archive-headline" href="reports/tp-2026-06-22-003.html">Ebola-Fälle im Kongo übersteigen 1.000, während die Finanzierungslücke fortbesteht und Dengue im asiatisch-pazifischen Raum zunimmt</a>
+  <span class="archive-src">21<span class="archive-src-label">&nbsp;Qln</span></span>
+</div>
 <div class="archive-row">
   <span class="archive-id">06-21-001</span>
   <a class="archive-headline" href="reports/tp-2026-06-21-001.html">Ukrainische Drohnen treffen Ölraffinerie in Russlands Region Tjumen über 2.000 Kilometer von der Grenze entfernt</a>
@@ -808,9 +864,11 @@ footer a {
 </main>
 
 <section class="support-block" aria-label="Support Independent Wire">
-  <p class="support-heading">Unabhängig bleiben</p>
+  <p class="support-heading">Unabhängig bleiben.</p>
   <p class="support-line">Keine Werbung, keine Investoren, keine Paywall. Spenden decken die laufenden Kosten und halten Independent Wire unabhängig.</p>
-  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" target="_blank" rel="noopener">Über Liberapay spenden</a>
+  <a class="support-btn" href="https://liberapay.com/independent-wire.org/donate" target="_blank" rel="noopener"><span class="support-btn-heart" aria-hidden="true">♥</span> Über Liberapay spenden</a>
+  <p class="support-kofi">Lieber einmalig geben? <a class="support-kofi-link" href="https://ko-fi.com/independentwire" target="_blank" rel="noopener">Einmalig über Ko-fi <span aria-hidden="true">→</span></a></p>
+  <blockquote class="support-choice">Liberapay für regelmäßige Unterstützung — unser bevorzugter Weg. Ko‑fi für einmalige Gaben (und regelmäßige, falls dir das lieber ist).</blockquote>
 </section>
 
 <footer>
