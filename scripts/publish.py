@@ -1004,6 +1004,89 @@ def build_feed(all_meta: list[dict]) -> str:
 
 
 # ---------------------------------------------------------------------------
+# sitemap.xml + robots.txt
+# ---------------------------------------------------------------------------
+
+# Public static pages mapped into the sitemap, in footer order. Each is emitted
+# only when the file actually exists under ``site/`` so every <loc> resolves.
+STATIC_PAGES = ("about.html", "impressum.html", "privacy.html")
+
+
+def build_sitemap(all_meta: list[dict], site_dir: Path) -> str:
+    """Build a sitemaps.org-0.9 XML sitemap for the English edition.
+
+    Covers the homepage, every published ``reports/{id}.html`` page, and the
+    public static pages. ``all_meta`` is the same cutoff-filtered set the index
+    and feed consume, so no pre-cutoff URL can leak in. Each report carries a
+    ``<lastmod>`` from its publication date; the homepage's ``<lastmod>`` tracks
+    the newest dossier. DE / hreflang alternates are out of scope (see
+    TASK-SITEMAP-ROBOTS).
+    """
+    urls: list[str] = []
+
+    # Homepage — lastmod follows the newest published dossier, if any.
+    if all_meta:
+        newest = max(m["date"] for m in all_meta)
+        urls.append(
+            f"  <url>\n    <loc>{SITE_BASE}/</loc>\n"
+            f"    <lastmod>{newest}</lastmod>\n  </url>"
+        )
+    else:
+        urls.append(f"  <url>\n    <loc>{SITE_BASE}/</loc>\n  </url>")
+
+    # Reports — newest first, each with its publication date as <lastmod>.
+    for meta in sorted(all_meta, key=lambda x: (x["date"], x["id"]), reverse=True):
+        loc = f"{SITE_BASE}/reports/{xml_escape(meta['id'])}.html"
+        urls.append(
+            f"  <url>\n    <loc>{loc}</loc>\n"
+            f"    <lastmod>{meta['date']}</lastmod>\n  </url>"
+        )
+
+    # Public static pages — only those present on disk, so every <loc> resolves.
+    for page in STATIC_PAGES:
+        if (site_dir / page).is_file():
+            urls.append(f"  <url>\n    <loc>{SITE_BASE}/{page}</loc>\n  </url>")
+
+    body = "\n".join(urls)
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{body}\n"
+        "</urlset>\n"
+    )
+
+
+def build_robots(existing: str | None) -> str:
+    """Return robots.txt content that allows all crawlers and points to the
+    sitemap.
+
+    With ``existing=None`` a minimal allow-all file is generated. When a
+    robots.txt is already on disk, its content is preserved and only the
+    ``Sitemap:`` directive is added or repaired (stale/duplicate ones are
+    collapsed to a single correct line) — operator-authored crawl rules
+    survive rather than being clobbered.
+    """
+    sitemap_line = f"Sitemap: {SITE_BASE}/sitemap.xml"
+    if existing is None:
+        return f"User-agent: *\nAllow: /\n{sitemap_line}\n"
+
+    out: list[str] = []
+    replaced = False
+    for line in existing.splitlines():
+        if line.strip().lower().startswith("sitemap:"):
+            if not replaced:
+                out.append(sitemap_line)  # repair in place; drop later dupes
+                replaced = True
+            continue
+        out.append(line)
+    if not replaced:
+        while out and out[-1].strip() == "":
+            out.pop()
+        out.append(sitemap_line)
+    return "\n".join(out) + "\n"
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -1127,6 +1210,23 @@ def main() -> None:
     feed_path = site_dir / "feed.xml"
     feed_path.write_text(feed_xml, encoding="utf-8")
     print(f"  Generated {feed_path}")
+
+    # Step 5: Generate sitemap.xml — machine-readable map of the published
+    # English pages for search-engine discovery.
+    sitemap_xml = build_sitemap(all_meta, site_dir)
+    sitemap_path = site_dir / "sitemap.xml"
+    sitemap_path.write_text(sitemap_xml, encoding="utf-8")
+    print(f"  Generated {sitemap_path}")
+
+    # Step 6: Generate / repair robots.txt — allow all crawlers, point to the
+    # sitemap. Any existing operator-authored content is preserved.
+    robots_path = site_dir / "robots.txt"
+    existing_robots = (
+        robots_path.read_text(encoding="utf-8") if robots_path.exists() else None
+    )
+    robots_txt = build_robots(existing_robots)
+    robots_path.write_text(robots_txt, encoding="utf-8")
+    print(f"  Generated {robots_path}")
 
     print(f"\nPublished {len(all_meta)} topic packages, index.html updated")
 
