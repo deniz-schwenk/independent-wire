@@ -529,6 +529,62 @@
       "region": "International",
       "language": "en",
       "enabled": true
+    },
+    {
+      "name": "Al-Masry Al-Youm",
+      "url": "https://www.almasryalyoum.com/rss/rssfeed",
+      "type": "rss",
+      "region": "Middle East",
+      "language": "ar",
+      "enabled": true
+    },
+    {
+      "name": "Prothom Alo",
+      "url": "https://www.prothomalo.com/stories.rss",
+      "type": "rss",
+      "region": "South Asia",
+      "language": "bn",
+      "enabled": true
+    },
+    {
+      "name": "Online Khabar",
+      "url": "https://www.onlinekhabar.com/feed",
+      "type": "rss",
+      "region": "South Asia",
+      "language": "ne",
+      "enabled": true
+    },
+    {
+      "name": "Prachatai",
+      "url": "https://prachatai.com/rss.xml",
+      "type": "rss",
+      "region": "Southeast Asia",
+      "language": "th",
+      "enabled": true
+    },
+    {
+      "name": "Isolezwe",
+      "url": "https://isolezwe.co.za/rss/",
+      "type": "rss",
+      "region": "Africa",
+      "language": "zu",
+      "enabled": true
+    },
+    {
+      "name": "Mwananchi",
+      "url": "https://www.mwananchi.co.tz/service/rss/mw/2733734/feed.rss",
+      "type": "rss",
+      "region": "Africa",
+      "language": "sw",
+      "enabled": true
+    },
+    {
+      "name": "Kun.uz",
+      "url": "https://kun.uz/news/rss",
+      "type": "rss",
+      "region": "Central Asia",
+      "language": "uz",
+      "enabled": true
     }
   ]
 }

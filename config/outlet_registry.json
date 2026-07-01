@@ -288,6 +288,15 @@
     "editorial_independence": "independent",
     "bias_note": "Pan-African aggregator"
   },
+  "almasryalyoum.com": {
+    "outlet": "Al-Masry Al-Youm",
+    "country": "Egypt",
+    "language": "ar",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Privately owned Egyptian daily (2004), flagship of independent Egyptian journalism; centrist-establishment line, self-censors on red-line topics within Egypt's constrained press environment."
+  },
   "alquds.co.uk": {
     "outlet": "Al-Quds Al-Arabi",
     "country": "United Kingdom",
@@ -1533,6 +1542,15 @@
     "editorial_independence": "state_directed",
     "bias_note": "Official news agency of the Islamic Republic of Iran; government-funded under the Ministry of Culture and Islamic Guidance."
   },
+  "isolezwe.co.za": {
+    "outlet": "Isolezwe",
+    "country": "South Africa",
+    "language": "zu",
+    "type": "newspaper",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "South Africa's largest isiZulu daily (Durban/KwaZulu-Natal), part of Independent Media (Sekunjalo/Iqbal Surve). Privately owned; parent group criticised for editorial alignment with owner interests. Included for indigenous-language diversity."
+  },
   "israelhayom.co.il": {
     "outlet": "Israel Hayom",
     "country": "Israel",
@@ -1649,6 +1667,15 @@
     "tier": 4,
     "editorial_independence": "state_influenced",
     "bias_note": "Rwandan English-language news site founded 2014; published by Kigali Today Ltd, operating under Rwandan media regulation."
+  },
+  "kun.uz": {
+    "outlet": "Kun.uz",
+    "country": "Uzbekistan",
+    "language": "uz",
+    "type": "digital_native",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Major independent Uzbek-language outlet with high domestic reach; broadly factual, some self-censorship on top-leadership and security topics."
   },
   "kyivcity.gov.ua": {
     "outlet": "Kyiv City Council / Kyiv City State Administration",
@@ -1995,6 +2022,15 @@
     "editorial_independence": "independent",
     "bias_note": "South Korean afternoon daily newspaper (est. 1991); formerly Hyundai Group-owned, now privately held"
   },
+  "mwananchi.co.tz": {
+    "outlet": "Mwananchi",
+    "country": "Tanzania",
+    "language": "sw",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Tanzania's leading Swahili daily (Nation Media Group). Editorially independent but operating under a restrictive Tanzanian press environment; some self-censorship on domestic politics plausible."
+  },
   "nagasaki-np.co.jp": {
     "outlet": "Nagasaki Shimbun",
     "country": "Japan",
@@ -2214,6 +2250,15 @@
     "editorial_independence": "publicly_funded_autonomous",
     "bias_note": "UN secretariat office on human rights, established by UN General Assembly resolution 48/141 (1993)."
   },
+  "onlinekhabar.com": {
+    "outlet": "Online Khabar",
+    "country": "Nepal",
+    "language": "ne",
+    "type": "digital_native",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Nepal's leading independent online-only Nepali-language news portal; independent, commercial."
+  },
   "opeb.org": {
     "outlet": "OPEB (UFABC)",
     "country": "Brazil",
@@ -2277,6 +2322,15 @@
     "editorial_independence": "independent",
     "bias_note": "Brazilian Portuguese-language general news portal aggregating politics, sports and entertainment"
   },
+  "prachatai.com": {
+    "outlet": "Prachatai",
+    "country": "Thailand",
+    "language": "th",
+    "type": "investigative_nonprofit",
+    "tier": 3,
+    "editorial_independence": "independent",
+    "bias_note": "Independent Thai non-profit (2004) with a human-rights, free-speech and reform focus that mainstream Thai outlets avoid; reformist, pro-democracy; operates under real legal pressure."
+  },
   "pravda.com.ua": {
     "outlet": "Ukrainska Pravda",
     "country": "Ukraine",
@@ -2312,6 +2366,15 @@
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "Iranian state-affiliated English broadcaster"
+  },
+  "prothomalo.com": {
+    "outlet": "Prothom Alo",
+    "country": "Bangladesh",
+    "language": "bn",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Largest-circulation Bangladeshi daily (Mediastar). Independent, broadly centrist, periodically critical of the governing party; Bengali edition."
   },
   "protocol.ua": {
     "outlet": "Protocol.ua",
