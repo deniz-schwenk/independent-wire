@@ -92,3 +92,24 @@ Cuts and collapses:
   sidecar cache key, `LANGUAGE_NAMES` missing ne/zu/uz).
 - **Translation track** (M-T1–M-T5): separate, after the MADLAD
   enablement decision.
+
+## Cross-stream unification (added 2026-07-02, evening)
+
+Three parallel streams merged into one queue (sources: this doc,
+WORKSTREAM-MULTILINGUAL-EXPANSION.md, docs/QA-STAGE-MODEL-EVAL-* handoff):
+
+0. **Passive clocks (running, Mini)**: batch-1 feed observation (3–4 days
+   from 07-03, daily Architect check) → Batch-2 decision ~07-05; GLM-5.2
+   qa_analyze shadow run (~5 days, `scratch/qa-shadow/`, read-only) →
+   QA-swap decision ~07-07 (latency + values call, not quality).
+1. **DeepSeek fp8 pin** (TASK-DEEPSEEK-FP8-PIN) — NEW, front of queue:
+   fp4 provably causes DeepSeek fabrications; 5 production stages are
+   unpinned. Requires ≥3 empirically verified fp8+structured-outputs
+   providers per model. Note: Stufe 1 will later delete researcher_assemble
+   (pin list shrinks to 4) — pin now anyway.
+2. Wave B → Wave D → Stufe 0 → Stufe 1 → rest as listed under Pending.
+
+Cross-notes: uncommitted guarded eval change in `src/agent.py` on the Air
+is deliberate (pending QA-swap decision) — do not clean up. Backlog add:
+bias-stage quant follow-up (DeepSeek bias rejection ran at unknown quant,
+possible fp4 confound; GLM's fp8 rejection stands).
