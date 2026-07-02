@@ -1993,3 +1993,158 @@ def test_correction_model_field_order_is_load_bearing():
         f"Correction field order drifted: {fields}. Sonnet streams output in "
         "declared order; the boolean must arrive after the text."
     )
+
+
+# ===========================================================================
+# Valid-empty postcondition regression
+# docs/CODE-REVIEW-2026-07-02.md — a schema-valid EMPTY agent answer must never
+# kill a topic (or run) at the writes-postcondition gate. H1/H2/H3/M-AS4 are
+# fixed by optional_write=True on the respective bus slot; the zero-topics run
+# (case 5) is DEFERRED (last test documents why).
+#
+# Each fix test below drives the REAL stage's valid-empty output through
+# validate_postconditions and asserts it does NOT raise. Because the guard is
+# the slot's optional_write=True flag, reverting that flag makes each of these
+# tests raise StagePostconditionError — the regression property the fix holds.
+# ===========================================================================
+
+
+def test_perspective_missing_positions_empty_passes_postcondition():
+    """H1: a well-covered topic legitimately has position clusters but no
+    missing voices. perspective_missing_positions=[] must pass the writes gate
+    via optional_write=True. Mirror of test_perspective_stage_empty_clusters_
+    safe_via_optional_write (which covers the sibling slot)."""
+    fake = FakeAgent(
+        structured={
+            "position_clusters": [
+                {
+                    "position_label": "Pro",
+                    "position_summary": "supports",
+                    "source_ids": ["src-001"],
+                    "actor_ids": ["actor-001"],
+                }
+            ],
+            "missing_positions": [],
+        }
+    )
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    stage = PerspectiveStage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert tb_after.perspective_clusters != []  # sibling write populated
+    assert tb_after.perspective_missing_positions == []
+    validate_postconditions(
+        stage, tb, tb_after, run_bus_before=_ro(), run_bus_after=_ro()
+    )
+
+
+def test_bias_language_findings_empty_passes_postcondition():
+    """H2: a genuinely neutral article yields zero linguistic findings; the
+    reader-note is still emitted. bias_language_findings=[] must pass the
+    writes gate via optional_write=True."""
+    fake = FakeAgent(
+        structured={
+            "language_bias": {"findings": []},
+            "reader_note": "Largely neutral language throughout.",
+        }
+    )
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.qa_corrected_article = WriterArticle(headline="H", body="B", summary="Sm")
+    tb.final_sources = [
+        {"id": "src-001", "country": "United States", "language": "en"}
+    ]
+    stage = BiasLanguageStage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert tb_after.bias_language_findings == []
+    assert tb_after.bias_reader_note != ""  # sibling write populated
+    validate_postconditions(
+        stage, tb, tb_after, run_bus_before=_ro(), run_bus_after=_ro()
+    )
+
+
+def test_hydration_phase1_empty_analyses_passes_postcondition():
+    """H3: every hydration fetch failed → HydrationPhase1Stage's deliberate
+    graceful zero-fetch early-out writes hydration_phase1_analyses=[]. It must
+    pass the writes gate via optional_write=True, not crash the topic."""
+    fake = FakeAgent(structured={"article_analyses": []})
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.hydration_fetch_results = [
+        {"url": "x", "status": "bot_blocked"},
+        {"url": "y", "status": "error"},
+    ]
+    stage = HydrationPhase1Stage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert tb_after.hydration_phase1_analyses == []
+    assert len(fake.calls) == 0  # LLM not called on zero successful fetches
+    validate_postconditions(
+        stage, tb, tb_after, run_bus_before=_ro(), run_bus_after=_ro()
+    )
+
+
+def test_hydration_phase2_empty_corpus_passes_postcondition():
+    """M-AS4: the Phase-2 reducer legitimately returns both arrays empty (no
+    cross-source divergences, no coverage gaps). is_empty() treats the all-
+    empty HydrationPhase2Corpus as empty, so the slot must pass the writes gate
+    via optional_write=True. Drives the reducer path (not the early-out)."""
+    fake = FakeAgent(
+        structured={"preliminary_divergences": [], "coverage_gaps": []}
+    )
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.hydration_phase1_analyses = [
+        {"article_index": 0, "summary": "s", "actors_quoted": []},
+    ]
+    tb.hydration_fetch_results = [
+        {
+            "url": "x",
+            "status": "success",
+            "language": "en",
+            "country": "US",
+            "outlet": "BBC",
+        },
+    ]
+    stage = HydrationPhase2Stage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert len(fake.calls) == 1  # reducer DID run (not the no-analyses early-out)
+    assert tb_after.hydration_phase2_corpus == HydrationPhase2Corpus()  # all-empty
+    validate_postconditions(
+        stage, tb, tb_after, run_bus_before=_ro(), run_bus_after=_ro()
+    )
+
+
+def test_zero_topics_run_cascade_is_deferred_not_fixed():
+    """Case 5 (zero-topics run) is DEFERRED, not fixed — documented here.
+
+    A zero-topics Topic Discovery answer makes assemble_curator_topics emit
+    empty curator_topics/_unsliced, which trips its writes gate today. Marking
+    those two slots optional_write would only RELOCATE the crash to the
+    immediate downstream consumer EditorStage (empty editor_assignments), then
+    select_topics — a run-scoped cascade. Per the brief's constraint ("STOP and
+    report — do not build graceful-degradation machinery") this is left as-is,
+    and daily_run.sh already treats a zero-Topic-Package day as a hard failure
+    by design. This test pins both facts so a future partial "fix" (marking
+    only assemble's slots) is caught by (a) below."""
+    from src.stages.run_stages import assemble_curator_topics
+
+    rb = RunBus(
+        run_date="2026-07-02",
+        curator_discovered_topics={"topics": []},
+        curator_topic_assignments={"topics": []},
+        curator_findings=[],
+    )
+    rb_before = rb.model_copy(deep=True)
+    rb_after = asyncio.run(assemble_curator_topics(rb))
+    assert rb_after.curator_topics == []
+    assert rb_after.curator_topics_unsliced == []
+    # (a) assemble's own gate still fires today — case 5 intentionally unfixed.
+    with pytest.raises(StagePostconditionError) as exc_assemble:
+        validate_postconditions(assemble_curator_topics, rb_before, rb_after)
+    assert "curator_topics" in str(exc_assemble.value)
+
+    # (b) even if (a) were suppressed, the crash relocates to EditorStage:
+    #     empty curator_topics -> empty editor_assignments -> writes gate fires.
+    editor = EditorStage(FakeAgent(structured={"assignments": []}))
+    rb_ed_before = rb_after.model_copy(deep=True)
+    rb_ed_after = asyncio.run(editor(rb_after))
+    assert rb_ed_after.editor_assignments == []
+    with pytest.raises(StagePostconditionError) as exc_editor:
+        validate_postconditions(editor, rb_ed_before, rb_ed_after)
+    assert "editor_assignments" in str(exc_editor.value)

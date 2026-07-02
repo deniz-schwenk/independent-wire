@@ -512,7 +512,13 @@ class TopicBus(BaseModel):
     # metadata slot)
     hydration_urls: list = Slot(default_factory=list, visibility="internal")
     hydration_fetch_results: list = Slot(default_factory=list, visibility="internal")
-    hydration_phase1_analyses: list = Slot(default_factory=list, visibility="internal")
+    # optional_write=True: HydrationPhase1Stage deliberately returns an empty
+    # list when every fetch failed (all-paywalled/unreachable is a reachable
+    # production input) — a graceful zero-fetch early-out, not a failure (H3,
+    # docs/CODE-REVIEW-2026-07-02.md).
+    hydration_phase1_analyses: list = Slot(
+        default_factory=list, visibility="internal", optional_write=True
+    )
     # One int per chunk dispatched by `HydrationPhase1Stage`, in the same
     # order as `_distribute_chunks` produces them. The empty-output
     # retry sits inside each per-chunk parallel task (so a retry on one
@@ -523,9 +529,15 @@ class TopicBus(BaseModel):
     hydration_phase1_n_attempts_per_chunk: list = Slot(
         default_factory=list, visibility="internal"
     )
+    # optional_write=True: the Phase-2 reducer legitimately produces both
+    # arrays empty (no cross-source divergences, no coverage gaps), and
+    # is_empty() treats an all-empty sub-model as empty — so the default
+    # HydrationPhase2Corpus() would otherwise trip the writes gate (M-AS4,
+    # docs/CODE-REVIEW-2026-07-02.md).
     hydration_phase2_corpus: HydrationPhase2Corpus = Slot(
         default_factory=HydrationPhase2Corpus,
         visibility="internal",
+        optional_write=True,
     )
     hydration_pre_dossier: HydrationPreDossier = Slot(
         default_factory=HydrationPreDossier,
@@ -690,8 +702,11 @@ class TopicBus(BaseModel):
     # 4B.5 Perspective phase (2 slots). perspective_clusters is written
     # twice: PerspectiveStage emits raw clusters, then enrich_perspective_
     # clusters (deterministic) attaches pc-NNN, actors, regions, languages,
-    # representation. optional_write=True covers the case where the agent
-    # produced no clusters (empty list passes both writes through).
+    # representation. BOTH slots in this phase carry optional_write=True: a
+    # low-coverage topic can yield no clusters at all (perspective_clusters
+    # empty), and a well-covered topic legitimately has position clusters but
+    # no missing voices (perspective_missing_positions empty — H1,
+    # docs/CODE-REVIEW-2026-07-02.md). Neither empty is a stage failure.
     #
     # Each cluster element carries: `position_label`, `position_summary`,
     # `source_ids` (`src-NNN` references into `final_sources`), and the
@@ -714,7 +729,11 @@ class TopicBus(BaseModel):
         visibility="internal",
         optional_write=True,
     )
-    perspective_missing_positions: list = Slot(default_factory=list, visibility="internal")
+    perspective_missing_positions: list = Slot(
+        default_factory=list,
+        visibility="internal",
+        optional_write=True,
+    )
 
     # 4B.6 Writer phase (1 slot)
     writer_article: WriterArticle = Slot(
@@ -801,8 +820,15 @@ class TopicBus(BaseModel):
         optional_write=True,
     )
 
-    # 4B.9 Bias Detector phase (2 slots)
-    bias_language_findings: list = Slot(default_factory=list, visibility=["tp", "mcp"])
+    # 4B.9 Bias Detector phase (2 slots). bias_language_findings carries
+    # optional_write=True: a genuinely neutral article legitimately yields
+    # zero findings (H2, docs/CODE-REVIEW-2026-07-02.md). bias_reader_note
+    # stays required — the agent emits a reader-note even on clean runs.
+    bias_language_findings: list = Slot(
+        default_factory=list,
+        visibility=["tp", "mcp"],
+        optional_write=True,
+    )
     bias_reader_note: str = Slot("", visibility=["tp", "mcp"])
 
     # 4B.10 What-is-missing (single slot owned by ConsolidatorStage).
