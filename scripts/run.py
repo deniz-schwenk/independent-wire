@@ -39,6 +39,30 @@ from src.schemas import (
 from src.tools import web_search_tool
 
 
+# --- DeepSeek fp8 quantization pin (TASK-DEEPSEEK-FP8-PIN) --------------------
+# fp4 quantization causes fabrications in DeepSeek V4 (QA-stage eval;
+# docs/DEEPSEEK-FP8-PIN-2026-07.md). Unpinned, OpenRouter routes these 5 stages
+# freely — including to fp4 providers (DeepInfra, AtlasCloud). Each pin below
+# restricts routing to the providers empirically verified on 2026-07-02 to serve
+# fp8 WITH working strict structured outputs (forced single-provider test calls;
+# see the decision record). Routing is guaranteed fp8 by construction (both the
+# `/fp8` endpoint tags and the `quantizations` filter) and fails LOUD
+# (`allow_fallbacks=False` → stage error) rather than silently dropping to an
+# unknown/fp4 quantization. `order` is priority order; `require_parameters=True`
+# is added per-request by Agent for schema calls. Regenerate the verified lists
+# before adding providers — do not hand-edit toward unverified endpoints.
+DEEPSEEK_V4_PRO_FP8_ROUTING = {
+    "order": ["baidu/fp8", "wandb/fp8", "parasail/fp8"],
+    "allow_fallbacks": False,
+    "quantizations": ["fp8"],
+}
+DEEPSEEK_V4_FLASH_FP8_ROUTING = {
+    "order": ["baidu/fp8", "wandb/fp8", "streamlake/fp8", "parasail/fp8", "akashml/fp8"],
+    "allow_fallbacks": False,
+    "quantizations": ["fp8"],
+}
+
+
 def setup_logging():
     logging.basicConfig(
         level=logging.INFO,
@@ -108,6 +132,7 @@ def create_agents() -> dict[str, Agent]:
             provider="openrouter",
             reasoning="medium",
             max_tokens=160000,
+            provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
             output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
         ),
         # Hypothesis 2 LLM-based cluster→topic assignment — TASK-CLUSTER-
@@ -164,6 +189,7 @@ def create_agents() -> dict[str, Agent]:
             max_tokens=160000,
             provider="openrouter",
             reasoning="none",
+            provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
             output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
         ),
         # DeepSeek V4 Flash per Wave-2 Sweep #2 (2026-05-18) — see
@@ -183,6 +209,7 @@ def create_agents() -> dict[str, Agent]:
             max_tokens=160000,
             provider="openrouter",
             reasoning="none",
+            provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
             output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
         ),
         "perspective": Agent(
@@ -249,6 +276,7 @@ def create_agents() -> dict[str, Agent]:
             max_tokens=32000,
             provider="openrouter",
             reasoning="none",
+            provider_routing=DEEPSEEK_V4_PRO_FP8_ROUTING,
             output_schema=CONSOLIDATOR_SCHEMA,
         ),
     }
@@ -301,6 +329,7 @@ def create_agents_hydrated() -> dict[str, Agent]:
             max_tokens=32000,
             provider="openrouter",
             reasoning="none",
+            provider_routing=DEEPSEEK_V4_PRO_FP8_ROUTING,
             output_schema=HYDRATION_PHASE1_SCHEMA,
         ),
         # --- Fallback / comparison only — see TASK-EVIDENCE-TYPE-MIGRATION

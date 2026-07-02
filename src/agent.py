@@ -7,6 +7,7 @@ calls in a loop, and returns structured AgentResult objects.
 
 from __future__ import annotations
 
+import copy
 import json
 import logging
 import os
@@ -152,6 +153,7 @@ class Agent:
         api_key_file: str | None = None,
         reasoning: str | bool | None = None,
         extra_body_override: dict | None = None,
+        provider_routing: dict | None = None,
         output_schema: dict | None = None,
     ) -> None:
         self.name = name
@@ -165,6 +167,12 @@ class Agent:
         self.provider = provider
         self.reasoning = reasoning
         self._extra_body_override = extra_body_override or {}
+        # OpenRouter `provider` routing preference (e.g. a quantization pin +
+        # provider allow-list + fail-loud fallback policy). Merged into
+        # extra_body["provider"] per request; see _call_with_retry. Kept
+        # separate from extra_body_override so the routing intent is explicit
+        # and self-documenting at the call site.
+        self._provider_routing = provider_routing or {}
         self.output_schema = output_schema
 
         for label, path in (
@@ -359,7 +367,22 @@ class Agent:
                     extra_body["think"] = self.reasoning
                 elif isinstance(self.reasoning, str):
                     extra_body["think"] = self.reasoning
-        extra_body.update(self._extra_body_override)
+        # Deep-copy the override so the per-call mutations below (the provider
+        # merge and the require_parameters injection) never touch the shared
+        # instance dict — closes the setdefault aliasing trap flagged in
+        # docs/CODE-REVIEW-2026-07-02.md (Core, low findings: agent.py:362).
+        extra_body.update(copy.deepcopy(self._extra_body_override))
+
+        # Provider-routing preference (e.g. the fp8 quantization pin +
+        # verified-provider allow-list + fail-loud fallback policy). Merged
+        # into the OpenRouter `provider` block; deep-copied for the same
+        # aliasing reason. Only meaningful on the OpenRouter route.
+        if self.provider == "openrouter" and self._provider_routing:
+            provider_block = extra_body.get("provider")
+            if not isinstance(provider_block, dict):
+                provider_block = {}
+            provider_block.update(copy.deepcopy(self._provider_routing))
+            extra_body["provider"] = provider_block
 
         # Structured outputs: pass JSON schema as OpenAI-compatible
         # ``response_format``. OpenRouter translates this to Anthropic's
