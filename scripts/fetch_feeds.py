@@ -6,6 +6,7 @@ Output: raw/YYYY-MM-DD/feeds.json
 """
 
 import asyncio
+import hashlib
 import json
 import logging
 import sys
@@ -92,7 +93,13 @@ async def fetch_rss(client: httpx.AsyncClient, source: dict, cutoff: datetime) -
     try:
         resp = await client.get(url, follow_redirects=True, timeout=15.0)
         resp.raise_for_status()
-        feed = feedparser.parse(resp.text)
+        # Parse the raw bytes, not resp.text: httpx decodes with the HTTP
+        # header charset (or utf-8) and hands feedparser a pre-decoded str,
+        # which bypasses feedparser's own XML-prolog encoding detection. Feeds
+        # that declare their encoding only in the `<?xml ... encoding=?>` prolog
+        # (common for the non-Latin streams) are then silently garbled while
+        # `bozo` stays false (CODE-REVIEW-2026-07-02 M-P4).
+        feed = feedparser.parse(resp.content)
         if feed.bozo and not feed.entries:
             logger.warning("Feed '%s' returned invalid RSS: %s", source["name"], feed.bozo_exception)
             return []
@@ -164,6 +171,90 @@ def deduplicate(findings: list[dict]) -> list[dict]:
     return unique
 
 
+# --- Undated-entry cross-day suppression (CODE-REVIEW-2026-07-02 M-P5) --------
+# Feed entries whose pubDate is missing or unparseable bypass the 24h cutoff in
+# ``parse_rss_entries`` (``published_at`` is None → no time filter applies), so
+# without state they re-enter the pipeline and reach the Curator every single
+# day. We keep a small persistent seen-set of undated entries keyed by a stable
+# fingerprint (article URL, else source+title). Lifecycle:
+#   * An undated entry enters the pipeline ONCE — the first day it is seen —
+#     and is suppressed on every later day while it keeps reappearing.
+#   * Each sighting refreshes the key's last-seen date; keys unseen for
+#     ``UNDATED_SEEN_RETENTION_DAYS`` are pruned so the file cannot grow without
+#     bound (a re-appearance after that window enters once more — negligible).
+# The file lives at ``raw/undated_seen.json`` (gitignored, beside the per-day
+# ``feeds.json``). It is process-local operational state, not part of any Topic
+# Package, and is safe to delete (worst case: each still-live undated entry
+# re-enters once).
+UNDATED_SEEN_PATH = ROOT / "raw" / "undated_seen.json"
+UNDATED_SEEN_RETENTION_DAYS = 30
+
+
+def _undated_fingerprint(finding: dict) -> str:
+    """Stable cross-day identity for an undated entry: the article URL when
+    present (most stable), else source_name + title."""
+    url = (finding.get("source_url") or "").strip()
+    basis = url or f"{finding.get('source_name', '')}\x1f{finding.get('title', '')}"
+    return hashlib.sha256(basis.encode("utf-8")).hexdigest()
+
+
+def _load_undated_seen(path: Path) -> dict[str, str]:
+    """Load ``{fingerprint: last_seen_YYYY-MM-DD}``; empty on any read error."""
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return {}
+    entries = data.get("entries") if isinstance(data, dict) else None
+    return {str(k): str(v) for k, v in entries.items()} if isinstance(entries, dict) else {}
+
+
+def _save_undated_seen(path: Path, entries: dict[str, str]) -> None:
+    """Atomically persist the seen-set (write-temp + rename)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.parent / (path.name + ".tmp")
+    tmp.write_text(
+        json.dumps({"version": 1, "entries": entries}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    tmp.replace(path)
+
+
+def suppress_repeat_undated(
+    findings: list[dict],
+    seen: dict[str, str],
+    today: str,
+    *,
+    retention_days: int = UNDATED_SEEN_RETENTION_DAYS,
+) -> tuple[list[dict], int]:
+    """Drop undated findings already seen on a PRIOR day; keep every dated
+    finding and every first-time undated finding.
+
+    Mutates ``seen`` in place: records/refreshes each undated key with
+    ``today`` and prunes keys older than ``retention_days``. Returns
+    ``(kept_findings, dropped_count)``.
+    """
+    prune_before = (
+        datetime.strptime(today, "%Y-%m-%d") - timedelta(days=retention_days)
+    ).strftime("%Y-%m-%d")
+    for stale in [k for k, last in seen.items() if last < prune_before]:
+        del seen[stale]
+
+    kept: list[dict] = []
+    dropped = 0
+    for f in findings:
+        if f.get("published_at") is not None:
+            kept.append(f)  # dated → already governed by the 24h cutoff
+            continue
+        key = _undated_fingerprint(f)
+        if key in seen:
+            seen[key] = today  # still appearing → keep suppressed, refresh last-seen
+            dropped += 1
+            continue
+        seen[key] = today  # first sighting → enter once, remember it
+        kept.append(f)
+    return kept, dropped
+
+
 async def main():
     setup_logging()
     start = time.time()
@@ -213,6 +304,12 @@ async def main():
     all_findings = deduplicate(all_findings)
     dupes = before - len(all_findings)
 
+    # Suppress undated entries already seen on a prior day (M-P5). Dated entries
+    # are untouched — they are governed by the 24h cutoff in parse_rss_entries.
+    seen = _load_undated_seen(UNDATED_SEEN_PATH)
+    all_findings, undated_dropped = suppress_repeat_undated(all_findings, seen, today)
+    _save_undated_seen(UNDATED_SEEN_PATH, seen)
+
     # Write output
     out_dir = ROOT / "raw" / today
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -224,8 +321,9 @@ async def main():
 
     elapsed = time.time() - start
     logger.info(
-        "Done in %.1fs: %d feeds OK, %d failed, %d entries (%d duplicates removed), written to %s",
-        elapsed, feeds_ok, feeds_failed, len(all_findings), dupes, out_path,
+        "Done in %.1fs: %d feeds OK, %d failed, %d entries "
+        "(%d duplicates removed, %d repeat-undated suppressed), written to %s",
+        elapsed, feeds_ok, feeds_failed, len(all_findings), dupes, undated_dropped, out_path,
     )
 
 

@@ -403,9 +403,35 @@ _HYDRATION_STOPWORDS = frozenset({
 
 
 def _hydration_tokens(text: str) -> set[str]:
+    """Token set for the hydration title-overlap heuristic (`_match_cluster`).
+
+    Latin path is unchanged — alphabetic words >= 3 chars, minus English
+    stopwords. But the ASCII-only ``[a-zA-Z]+`` yields ZERO tokens for a
+    non-Latin title (Arabic/Thai/Bengali/...), so such a cluster matches no
+    findings and silently loses EVERY hydration URL (CODE-REVIEW-2026-07-02,
+    Clustering §, run_stages.py:405-408). For each run of non-Latin letters we
+    additionally emit character bigrams: these give the >= 2-token overlap
+    `_match_cluster` requires for both space-separated scripts (Arabic,
+    Bengali, Cyrillic) and unspaced ones (Thai, CJK), so a title matches its
+    own findings. Minimal stopgap — the token-overlap seam is scheduled for
+    ID-based replacement in a later workstream.
+    """
     import re as _re
-    words = _re.findall(r"[a-zA-Z]+", text.lower())
-    return {w for w in words if len(w) >= 3 and w not in _HYDRATION_STOPWORDS}
+    text_l = text.lower()
+    tokens = {
+        w
+        for w in _re.findall(r"[a-zA-Z]+", text_l)
+        if len(w) >= 3 and w not in _HYDRATION_STOPWORDS
+    }
+    # `[^\W\d_]` is a Unicode letter (str regex defaults to re.UNICODE). Runs
+    # containing an ASCII letter are already covered by the Latin path above, so
+    # skip them — non-Latin titles keep bigram matching without diluting Latin.
+    for run in _re.findall(r"[^\W\d_]{2,}", text_l):
+        if _re.search(r"[a-z]", run):
+            continue
+        for i in range(len(run) - 1):
+            tokens.add(run[i : i + 2])
+    return tokens
 
 
 def _match_cluster(

@@ -180,17 +180,71 @@ class _RobotsCache:
         return parser
 
 
+_META_CHARSET_RE = re.compile(
+    rb"""<meta[^>]+charset\s*=\s*["']?\s*([a-zA-Z0-9_\-:.]+)""", re.IGNORECASE
+)
+
+
+def _sniff_html_charset(raw: bytes) -> str | None:
+    """Best-effort charset from the RAW BYTES: BOM or an HTML ``<meta charset>``
+    / ``<meta http-equiv="Content-Type" content="...charset=...">`` declaration
+    in the first 2 KiB (the cheap prefix of the HTML5 encoding-sniffing
+    algorithm). Returns a codec name Python recognises, or ``None``."""
+    head = raw[:2048]
+    if head.startswith(b"\xef\xbb\xbf"):
+        return "utf-8-sig"
+    if head.startswith((b"\xff\xfe", b"\xfe\xff")):
+        return "utf-16"
+    m = _META_CHARSET_RE.search(head)
+    if not m:
+        return None
+    import codecs
+
+    try:
+        enc = m.group(1).decode("ascii").strip().lower()
+        codecs.lookup(enc)
+    except (UnicodeDecodeError, LookupError):
+        return None
+    return enc
+
+
 def _decode(raw: bytes, declared_charset: str | None) -> str:
-    """Decode response body, preferring declared charset, falling back safely."""
+    """Decode a response body to text, letting encoding detection see the RAW
+    BYTES so pages that declare their charset only in an HTML ``<meta>`` tag are
+    not silently mojibaked.
+
+    Order: HTTP header charset → HTML ``<meta>``/BOM sniff → utf-8 (strict) →
+    charset_normalizer statistical detection → latin-1 replace (never fails).
+    The old header→utf-8→latin-1 chain decoded windows-1256 (Arabic) and
+    TIS-620 (Thai) ``<meta>``-only pages as latin-1 garbage
+    (CODE-REVIEW-2026-07-02 H6)."""
     candidates: list[str] = []
     if declared_charset:
         candidates.append(declared_charset)
-    candidates.extend(("utf-8", "latin-1"))
+    sniffed = _sniff_html_charset(raw)
+    if sniffed:
+        candidates.append(sniffed)
+    candidates.append("utf-8")
+    tried: set[str] = set()
     for enc in candidates:
+        key = enc.lower()
+        if key in tried:
+            continue
+        tried.add(key)
         try:
             return raw.decode(enc)
         except (UnicodeDecodeError, LookupError):
             continue
+    # No usable declaration and not utf-8 → statistical detection (handles the
+    # legacy single-byte code pages the non-Latin feeds sometimes serve).
+    try:
+        from charset_normalizer import from_bytes
+
+        best = from_bytes(raw).best()
+        if best is not None:
+            return str(best)
+    except Exception:
+        pass
     return raw.decode("latin-1", errors="replace")
 
 
@@ -429,7 +483,13 @@ async def _hydrate_one(
         output["error"] = "bot-challenge markers in response body"
     else:
         try:
-            extracted = trafilatura.extract(body) or ""
+            # Pass the RAW BYTES, not the decoded str: trafilatura runs its own
+            # bytes-level charset detection (BOM / <meta> / statistical), so a
+            # <meta>-only windows-1256 / TIS-620 page extracts as legible text
+            # instead of latin-1 mojibake (CODE-REVIEW-2026-07-02 H6). `body`
+            # (decoded via the improved _decode above) is still used for the
+            # ASCII bot-challenge markers and date-meta scan.
+            extracted = trafilatura.extract(raw) or ""
         except Exception as exc:
             logger.warning("trafilatura error for %s: %s", url, exc)
             extracted = ""
