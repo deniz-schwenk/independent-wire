@@ -89,3 +89,18 @@ They are coupled: the new feeds bring exactly the languages the clustering exist
 - 2026-07-01 — MADLAD finalized (convert/latency/control sweep, all pass); requirements spec +
   off-topic re-audit done (no recalibration); 7-day shadow = stable; batch 1 (7 feeds) integrated
   and pushed (`dcf5be6`); this tracker created.
+
+## Pre-enable additions from CODE-REVIEW-2026-07-02 (added 2026-07-02)
+
+Fold into the enablement checklist before flipping `IW_CLUSTER_TRANSLATE`:
+
+- **M-T6** — empty segments are sent to NLLB and its hallucinations are
+  cached permanently (`translate_sidecar.py:449-451,481-485,517-521`);
+  the skip guard is only both-empty. Title-only findings hit this.
+- **Cache key excludes backend** (`translate_sidecar.py:191-196,295-336`)
+  — CT2 (no truncation) and transformers (128-token truncation) produce
+  different English for the same key; backend switches silently serve
+  the other backend's cached outputs.
+- **`LANGUAGE_NAMES` missing ne/zu/uz** (`src/stages/_helpers.py:35-45`)
+  — confirmed consequence-free today; becomes live once the sidecar
+  normalizes name-form language inputs.
