@@ -478,3 +478,146 @@ Artifacts: `probe/probe_*.json` + `probe_summary.json`, `provider_diagnosis.json
 `{date}/topic-{n}/incumbent_high_*.json` + `sonnet5_corrected_*.json`,
 `deterministic_scores.json`, `judge/{slug}/packet.json` + `verdict-{1,2,3}.json`,
 `_judge_key.json` (outside the judge tree), `aggregate_summary.json`.
+
+---
+
+# FINAL — full-21 four-arm decision table (2026-07-03, AUTHORITATIVE)
+
+> **This section is authoritative for the writer-swap decision.** The base eval
+> (4-arm, 21 topics) and the addendum (operating-point controls, 9 topics) stay
+> above as records of how we got here — but the addendum's headline ("Sonnet-5
+> corrected is the strongest non-golden arm") was drawn from **9 topics that are
+> GLM's weakest slice**, and it does not survive the other 12. This section runs
+> **sonnet5-corrected over the remaining 12 topics** (2026-06-27 … 2026-06-30) at
+> the addendum's resolved point — `anthropic/claude-sonnet-5`,
+> `reasoning:{enabled:true, effort:"high"}`, no temperature, `max_tokens 64000`,
+> **Azure** (12/12 served Azure) — so the two real champions finally meet over
+> the full 21, then pools the result under strict panel-size discipline.
+
+## Panel-size discipline (why the table looks the way it does)
+
+The 9 addendum panels are **6-way**; the 12 completion panels are **4-way**
+(incumbent-none · glm · sonnet5-corrected · golden). Mean rank is a
+*within-packet* statistic — rank-among-6 and rank-among-4 are not the same ruler
+— so **mean rank is never pooled across the two windows** (reported per-window
+only, below). Everything pooled into the full-21 table is a **per-output** or
+**per-pair** measure that does not depend on how many other arms shared the
+packet: absolute correctness, rubric pass-rate, head-to-head pairwise records,
+adjudicated fabrications, deterministic metrics, $/topic, s/topic. Correctness
+pooling was verified exact: `(mean_add·27 + mean_comp·36)/63` reproduces every
+table cell.
+
+## Full-21 table (pooled, panel-size-independent; 63 outputs/arm)
+
+| arm | corr (1–5) | rubric | fab (≥2/3) | schema | in-band | invented | phantom | orphan | $/topic | s/topic | words (med) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| **golden** (Opus 4.8, ceiling) | **4.25** | **0.949** | **21** | 21/21 | 21/21 | 0 | 0 | 0 | — | — | 885 |
+| **glm** (GLM-5.2 @ xhigh) | **3.75** | **0.913** | **33** | 21/21 | 21/21 | 0 | **0** | **0** | **0.049** | 110 | 793 |
+| **sonnet5-corrected** | 3.43 | 0.880 | 34 | **19/21** | **19/21** | 0 | **59** | 0 | 0.092 | 46 | 857 |
+| **incumbent-none** (Opus 4.6, prod) | 3.30 | 0.843 | 52 | 21/21 | 21/21 | 0 | —¹ | —¹ | 0.131 | —² | 896 |
+
+¹ the stored production incumbent snapshot carries only the four text fields, no
+`sources[]` array, so phantom/orphan are undefined for it (its inline-citation
+integrity is clean: 0 invented ids). ² production writer-stage latency is not
+logged per topic. golden `$`/`s` blank — cost-neutral subagent ceiling.
+
+**Pooled ordering (correctness, rubric both agree):**
+`golden › glm › sonnet5-corrected › incumbent-none`.
+
+## Head-to-head: GLM vs sonnet5-corrected over all 21
+
+Majority-pairwise, per topic, extracted from both panel types (the relative
+order of two arms is invariant to packet size):
+
+| | GLM | sonnet5-corrected |
+|---|---|---|
+| **over 21** | **10** | **11** |
+| addendum-9 (GLM's weakest slice) | 4 | 5 |
+| completion-12 | 6 | 6 |
+
+The direct pairwise is a near-dead-heat (10–11), **and sonnet5-corrected's entire
+one-topic edge comes from the addendum-9 window** — the slice the addendum itself
+flagged as GLM's worst (base 4-arm GLM went 5–4 there vs 15–6 over 21). On the
+fresh completion-12 it is an exact **6–6 tie**. Meanwhile GLM wins the pooled
+per-output measures in aggregate — correctness **3.75 vs 3.43**, rubric **0.913
+vs 0.880** — and is clean where sonnet5-corrected is not (below). Reading the
+whole 21: **GLM ≥ sonnet5-corrected**; the pairwise tie is carried by Sonnet-5's
+favorable slice, not by parity on the measures that discriminate.
+
+## The addendum's citation-hygiene fix did NOT generalize (key correction)
+
+The addendum reported sonnet5-corrected's phantoms/orphans collapsing 11/11 → 0/0
+and read that as "the base collapse was an under-reasoning operating-point
+artifact." **On the 12 older topics the collapse comes back.** Deterministically,
+sonnet5-corrected over 21 is **19/21 schema-valid, 19/21 in-band, 59 phantom
+citations** — and *all 59 phantoms plus both schema failures fall in
+completion-12* (addendum-9 was 9/9 schema, 0 phantoms). Verified against the raw
+output JSON: on **4 of 12** topics the model emitted an **empty `sources[]`
+array** while citing `[src-NNN]` inline (so every inline cite is a phantom), and
+on **2 of those** it also emitted an **empty `summary`** (the two schema-invalid
+cases). This is not truncation — those calls used ≤30.6k of 64k tokens; it is
+degenerate-but-schema-legal output. GLM and golden populated `sources[]` and
+`summary` on the very same topics. **So the corrected point did not make Sonnet-5
+reliably well-formed; it made it well-formed on the 9-topic window that happened
+to be favorable.** GLM's citation hygiene, by contrast, is clean across all 21.
+
+## Per-window mean rank (NOT poolable — reported separately)
+
+| arm | addendum-9 (rank-among-6) | completion-12 (rank-among-4) |
+|---|---|---|
+| golden | 2.33 | 1.36 |
+| glm | 3.63 | **2.53** |
+| sonnet5-corrected | **3.37** | 2.86 |
+| incumbent-none | 3.48 | 3.25 |
+
+The rank order of glm vs sonnet5-corrected **flips by window** — Sonnet-5 ahead on
+its favorable 9, GLM ahead on the 12 — which is exactly why these are not pooled
+and why the pooled per-output measures (which *can* be combined) are the
+tie-breaker. On the completion-12 alone, absolute correctness is
+golden 4.39 › **glm 3.89** › sonnet5-corrected 3.31 › incumbent 3.14.
+
+## Cost & latency (measured, 21 topics)
+
+GLM is the cheapest deployable arm at **$0.049/topic** (Baidu fp8, ~110 s).
+Sonnet-5-corrected is **faster** at ~46 s but **~1.9× the cost** ($0.092, Azure);
+the incumbent is the most expensive at $0.131. Cost and correctness both favor
+GLM; latency favors Sonnet-5 but not enough to offset the accuracy +
+citation-hygiene gap. Completion paid spend: **$1.00** (12 sonnet5-corrected
+calls) against the projected $1.24 and the $4 cap; judging was 36 subagents in 4
+throttled waves of 9.
+
+## Decision reading (input, not a cutover)
+
+Over the full 21 at each arm's correct operating point, **GLM-5.2 @ xhigh remains
+the challenger of record**: it leads sonnet5-corrected on pooled correctness and
+rubric, ties it head-to-head only because of Sonnet-5's favorable slice, is
+deterministically clean where Sonnet-5 regresses to empty `sources[]`/`summary`
+on 1/3 of the older topics, and is the cheapest arm. The addendum's rehabilitation
+of Sonnet-5 was real *on its window* but did not hold up out-of-sample — a textbook
+favorable-slice result, and the reason the completion run existed. This does **not**
+by itself trigger a writer swap: the standing caveats hold (Claude-family judges,
+fabrication counts judged against dossier *summaries* not full bodies, and a swap
+must still weigh the writer → QA[GLM-5.2] → balance/bias/card transparency chain
+over a longer window). But the authoritative full-21 comparison is now on record,
+and it points at GLM, not Sonnet-5.
+
+## Completion reproduction
+
+All under `scratch/writer-shadow/completion/` (untracked); reuses the base 21
+inputs + incumbent/GLM/golden outputs and the addendum's 9 sonnet5-corrected
+outputs — only the 12 new sonnet5-corrected calls are paid:
+
+```bash
+.venv/bin/python scratch/writer-shadow/completion/shadow.py           # sonnet5-corrected, 12 topics (Azure), $1.00
+.venv/bin/python scratch/writer-shadow/completion/score.py            # deterministic scoring, 12 topics, 4 arms
+.venv/bin/python scratch/writer-shadow/completion/prep_judge.py       # 4-way anonymized packets + key (outside judge tree)
+# spawn 3 judge subagents per case (JUDGE-TASK.md + RUBRIC.md, verbatim from base) -> verdict-{1,2,3}.json
+.venv/bin/python scratch/writer-shadow/completion/aggregate.py        # 12-topic 4-way: means, rubric, pairwise, adjudicated fabrications
+.venv/bin/python scratch/writer-shadow/completion/final_table.py      # pool addendum-9 + completion-12 -> authoritative full-21 table
+```
+
+Artifacts: `{date}/topic-{n}/sonnet5_corrected_{output,meta}.json`,
+`deterministic_scores.json`, `judge/{slug}/packet.json` + `verdict-{1,2,3}.json`,
+`_judge_key.json` (outside the judge tree), `aggregate_summary.json`,
+`final_table_21.json`. The 21 golden/incumbent/GLM outputs and the addendum's 9
+sonnet5-corrected outputs are read in place — nothing is re-run for them.
