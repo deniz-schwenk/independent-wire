@@ -130,3 +130,23 @@ loud, never silent (`model_used`/`provider_used`/`qa_fallback_used` in
 schema-valid, served provider Baidu, fallback NOT triggered, $0.08, ~191s
 (xhigh latency ~3–6 min/topic is the standing caveat). Rollback = the single
 `create_agents` revert to Sonnet-4.6 documented in the swap commit.
+
+## Writer-swap → GLM-5.2 — DECIDED + LANDED (2026-07-04)
+
+The authoritative full-21 writer eval (`WRITER-STAGE-MODEL-EVAL-2026-07.md`,
+FINAL section — GLM leads pooled correctness 3.75 vs incumbent 3.30 and rubric,
+is deterministically clean 21/21 with 0 invented/phantom/orphan ids, and is the
+cheapest arm) made GLM-5.2 @ xhigh binding — swapped immediately, no observation
+gate (TASK-WRITER-SWAP-GLM). Landed on branch `feat/writer-swap-glm` (not
+pushed): `writer` → GLM-5.2 @ xhigh, temp 0.3, `max_tokens=120000`, fp8-pinned
+`[baidu,ambient,venice]`; 4th-line model fallback fires only on GLM's final
+failure (transport across all pinned providers OR schema-invalid/truncated
+output) — loud, never silent (`model_used`/`provider_used`/`writer_fallback_used`
+in `run_stage_log.jsonl`). ONE deliberate difference from the QA swap: the
+fallback is the **pre-swap incumbent Opus 4.6** (reasoning `none`), NOT Sonnet-5
+— Sonnet-5's citation hygiene proved unstable twice in the eval (empty
+`sources[]` with inline cites on 1/3 of the completion window). Stage-isolated
+smoke (topic 1, 2026-07-03 reuse): schema-valid, served provider Baidu, fallback
+NOT triggered, 26 inline citations all resolving against `final_sources`, $0.07,
+~172s (production state backed up + restored byte-identical). Rollback = the
+single `create_agents` revert to Opus-4.6 documented in the swap commit.

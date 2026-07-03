@@ -82,20 +82,32 @@ def _collect_agent_metrics(stage: Any) -> dict:
         "cost_usd": round(float(cost or 0.0), 6),
         "tokens": int(tokens or 0),
     }
-    # Model-fallback marker (TASK-QA-SWAP-GLM). Wrappers that can substitute a
-    # model — currently only the qa_analyze GLM-5.2/Sonnet-5 wrapper — expose
-    # `last_model_used` + `last_qa_fallback_used`, recording which model
-    # actually served this stage and whether the fallback fired. Plain Agents
-    # and deterministic stages don't carry these attributes, so the keys are
-    # omitted for them (guarded by `hasattr`) — no log-shape change elsewhere.
-    if hasattr(agent, "last_qa_fallback_used"):
+    # Model-fallback marker. Wrappers that can substitute a model expose
+    # `last_model_used` + `last_provider_used` and a fallback flag, recording
+    # which model actually served this stage and whether the fallback fired.
+    # Two shapes are supported:
+    #   * qa_analyze (TASK-QA-SWAP-GLM) predates the generic key: it exposes
+    #     `last_qa_fallback_used` and its marker is the fixed "qa_fallback_used".
+    #   * newer wrappers (writer, TASK-WRITER-SWAP-GLM) declare their own log key
+    #     via `fallback_marker_key` + a generic `last_fallback_used`.
+    # Plain Agents and deterministic stages carry none of these, so the keys are
+    # omitted for them — no log-shape change elsewhere.
+    marker_key: str | None = None
+    fallback_used = False
+    if getattr(agent, "fallback_marker_key", None):
+        marker_key = agent.fallback_marker_key
+        fallback_used = bool(getattr(agent, "last_fallback_used", False))
+    elif hasattr(agent, "last_qa_fallback_used"):
+        marker_key = "qa_fallback_used"
+        fallback_used = bool(agent.last_qa_fallback_used)
+    if marker_key is not None:
         model_used = getattr(agent, "last_model_used", "") or ""
         if model_used:
             out["model_used"] = model_used
         provider_used = getattr(agent, "last_provider_used", "") or ""
         if provider_used:
             out["provider_used"] = provider_used
-        out["qa_fallback_used"] = bool(agent.last_qa_fallback_used)
+        out[marker_key] = fallback_used
     return out
 
 

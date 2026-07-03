@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT))
 
 from src.agent import Agent
 from src.qa_fallback import QaAnalyzeWithFallback
+from src.writer_fallback import WriterWithFallback
 from src.runner.runner import PipelineRunner
 from src.runner.stage_lists import (
     build_hydrated_stages,
@@ -77,6 +78,20 @@ DEEPSEEK_V4_FLASH_FP8_ROUTING = {
 # All three pins accept max_tokens=120000 (verified caps: Baidu 131072,
 # Ambient 202752, Venice 131072).
 GLM_5_2_QA_FP8_ROUTING = {
+    "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
+    "allow_fallbacks": False,
+    "quantizations": ["fp8"],
+}
+
+# --- GLM-5.2 fp8 pin for writer (TASK-WRITER-SWAP-GLM) -----------------------
+# The writer eval (docs/WRITER-STAGE-MODEL-EVAL-2026-07.md, FINAL section) ran
+# GLM-5.2 @ xhigh under exactly this pin — the same three fp8 providers verified
+# for GLM strict structured outputs with >= the 120000 completion-budget floor
+# (docs/GLM-PROVIDER-VERIFICATION-2026-07.md). Same value as the qa pin today;
+# kept as a separate named constant so the two stages can diverge independently.
+# ``allow_fallbacks:false`` + ``quantizations:["fp8"]`` fail LOUD rather than
+# dropping to an unverified/fp4 provider.
+GLM_5_2_WRITER_FP8_ROUTING = {
     "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
@@ -243,15 +258,58 @@ def create_agents() -> dict[str, Agent]:
             reasoning="none",
             output_schema=PERSPECTIVE_SCHEMA,
         ),
-        "writer": Agent(
-            name="writer",
-            model="anthropic/claude-opus-4.6",
-            system_prompt_path=str(agents_dir / "writer" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "writer" / "INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.3,
-            provider="openrouter",
-            reasoning="none",
+        # writer — swapped to GLM-5.2 @ xhigh (TASK-WRITER-SWAP-GLM). The
+        # authoritative full-21 eval (docs/WRITER-STAGE-MODEL-EVAL-2026-07.md,
+        # FINAL section) made this operating point binding: GLM leads pooled
+        # correctness (3.75 vs incumbent 3.30) and rubric, is deterministically
+        # clean 21/21 (0 invented/phantom/orphan ids), and is the cheapest arm
+        # (~$0.049/topic). Wrapped in WriterWithFallback: primary GLM-5.2
+        # (fp8-pinned), and exactly ONE fallback attempt if GLM finally fails
+        # (transport across all pinned providers after retries, OR schema-
+        # invalid/truncated output) — loud, never silent.
+        #
+        # Deliberate difference from qa_analyze: the writer fallback is the
+        # PRE-SWAP incumbent (Opus 4.6, reasoning=none), NOT Sonnet-5. Sonnet-5's
+        # citation hygiene proved unstable twice in the eval (empty sources[]
+        # with inline cites on 1/3 of the completion window), so it is not a safe
+        # last resort for the writer.
+        #
+        # ROLLBACK (single revert): replace this whole entry with the incumbent
+        #   "writer": Agent(
+        #       name="writer", model="anthropic/claude-opus-4.6",
+        #       system_prompt_path=str(agents_dir / "writer" / "SYSTEM.md"),
+        #       instructions_path=str(agents_dir / "writer" / "INSTRUCTIONS.md"),
+        #       tools=[], temperature=0.3, provider="openrouter",
+        #       reasoning="none", output_schema=WRITER_SCHEMA),
+        "writer": WriterWithFallback(
+            primary=Agent(
+                name="writer",
+                model="z-ai/glm-5.2",
+                system_prompt_path=str(agents_dir / "writer" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "writer" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.3,
+                max_tokens=120000,
+                provider="openrouter",
+                reasoning="xhigh",
+                provider_routing=GLM_5_2_WRITER_FP8_ROUTING,
+                output_schema=WRITER_SCHEMA,
+            ),
+            # 4th line of defence — the PRE-SWAP production writer VERBATIM:
+            # Opus 4.6, temperature 0.3, reasoning="none", the current default
+            # max_tokens (32000, unset on the pre-swap entry), same prompts +
+            # WRITER_SCHEMA. Only the name differs (for log/metric clarity).
+            fallback=Agent(
+                name="writer_fallback",
+                model="anthropic/claude-opus-4.6",
+                system_prompt_path=str(agents_dir / "writer" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "writer" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.3,
+                provider="openrouter",
+                reasoning="none",
+                output_schema=WRITER_SCHEMA,
+            ),
             output_schema=WRITER_SCHEMA,
         ),
         # qa_analyze — swapped to GLM-5.2 @ xhigh (TASK-QA-SWAP-GLM). The
