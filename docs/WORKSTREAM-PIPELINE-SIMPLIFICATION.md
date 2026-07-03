@@ -113,3 +113,20 @@ Cross-notes: uncommitted guarded eval change in `src/agent.py` on the Air
 is deliberate (pending QA-swap decision) — do not clean up. Backlog add:
 bias-stage quant follow-up (DeepSeek bias rejection ran at unknown quant,
 possible fp4 confound; GLM's fp8 rejection stands).
+
+## QA-swap → GLM-5.2 — DECIDED + LANDED (2026-07-03)
+
+Passive-clock item 0's "QA-swap decision ~07-07" is **closed early, no
+observation gate**: eval v2 (`QA-STAGE-MODEL-EVAL-SHADOW-BACKFILL.md` — GLM
+beats incumbent 19/21, 1 vs 11 confirmed fabrications, at the golden ceiling)
++ provider verification (`GLM-PROVIDER-VERIFICATION-2026-07.md` —
+Baidu/Ambient/Venice fp8-verified) made it binding (TASK-QA-SWAP-GLM). Landed
+on branch `qa-swap-glm` (not pushed): `qa_analyze` → GLM-5.2 @ xhigh, temp 0.1,
+`max_tokens=120000`, fp8-pinned `[baidu,ambient,venice]`; 4th-line Sonnet-5
+model fallback (`reasoning.enabled`, no temperature) fires only on GLM's final
+failure (transport across all providers OR schema-invalid/truncated output) —
+loud, never silent (`model_used`/`provider_used`/`qa_fallback_used` in
+`run_stage_log.jsonl`). Stage-isolated smoke (topic 1, 2026-07-03 reuse):
+schema-valid, served provider Baidu, fallback NOT triggered, $0.08, ~191s
+(xhigh latency ~3–6 min/topic is the standing caveat). Rollback = the single
+`create_agents` revert to Sonnet-4.6 documented in the swap commit.

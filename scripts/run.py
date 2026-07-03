@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from src.agent import Agent
+from src.qa_fallback import QaAnalyzeWithFallback
 from src.runner.runner import PipelineRunner
 from src.runner.stage_lists import (
     build_hydrated_stages,
@@ -58,6 +59,25 @@ DEEPSEEK_V4_PRO_FP8_ROUTING = {
 }
 DEEPSEEK_V4_FLASH_FP8_ROUTING = {
     "order": ["baidu/fp8", "wandb/fp8", "streamlake/fp8", "parasail/fp8", "akashml/fp8"],
+    "allow_fallbacks": False,
+    "quantizations": ["fp8"],
+}
+
+# --- GLM-5.2 fp8 pin for qa_analyze (TASK-QA-SWAP-GLM) ------------------------
+# The QA shadow eval (docs/QA-STAGE-MODEL-EVAL-SHADOW-BACKFILL.md v2) made
+# GLM-5.2 @ xhigh the qa_analyze model; the provider verification
+# (docs/GLM-PROVIDER-VERIFICATION-2026-07.md) established which fp8 providers
+# serve it with working strict structured outputs and enough completion-budget
+# headroom for xhigh reasoning (>= the 120000 floor). Order is priority:
+# Baidu (primary), Ambient (leanest), Venice (lean; transient upstream 429s).
+# StreamLake was capability-verified but excluded operationally (~89k xhigh
+# reasoning tokens on a trivial input → truncates real inputs); GMICloud and
+# Novita failed strict-schema. ``allow_fallbacks:false`` + ``quantizations:
+# ["fp8"]`` fail LOUD rather than dropping to an unverified/fp4 provider.
+# All three pins accept max_tokens=120000 (verified caps: Baidu 131072,
+# Ambient 202752, Venice 131072).
+GLM_5_2_QA_FP8_ROUTING = {
+    "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
 }
@@ -234,16 +254,49 @@ def create_agents() -> dict[str, Agent]:
             reasoning="none",
             output_schema=WRITER_SCHEMA,
         ),
-        "qa_analyze": Agent(
-            name="qa_analyze",
-            model="anthropic/claude-sonnet-4.6",
-            system_prompt_path=str(agents_dir / "qa_analyze" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "qa_analyze" / "INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.1,
-            max_tokens=64000,
-            provider="openrouter",
-            reasoning="none",
+        # qa_analyze — swapped to GLM-5.2 @ xhigh (TASK-QA-SWAP-GLM). The
+        # shadow eval made this operating point binding (GLM beats the
+        # incumbent 19/21, 1 vs 11 confirmed fabrications, plays at the golden
+        # ceiling — docs/QA-STAGE-MODEL-EVAL-SHADOW-BACKFILL.md v2). Wrapped in
+        # QaAnalyzeWithFallback: primary GLM-5.2 (fp8-pinned), and exactly one
+        # Sonnet-5 fallback if GLM finally fails (transport across all pinned
+        # providers, or schema-invalid/truncated output) — loud, never silent.
+        #
+        # ROLLBACK (single revert): replace this whole entry with the incumbent
+        #   "qa_analyze": Agent(
+        #       name="qa_analyze", model="anthropic/claude-sonnet-4.6",
+        #       system_prompt_path=..., instructions_path=..., tools=[],
+        #       temperature=0.1, max_tokens=64000, provider="openrouter",
+        #       reasoning="none", output_schema=QA_ANALYZE_SCHEMA),
+        "qa_analyze": QaAnalyzeWithFallback(
+            primary=Agent(
+                name="qa_analyze",
+                model="z-ai/glm-5.2",
+                system_prompt_path=str(agents_dir / "qa_analyze" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "qa_analyze" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.1,
+                max_tokens=120000,
+                provider="openrouter",
+                reasoning="xhigh",
+                provider_routing=GLM_5_2_QA_FP8_ROUTING,
+                output_schema=QA_ANALYZE_SCHEMA,
+            ),
+            # 4th line of defence. Sonnet-5 (Claude 5 family): adaptive thinking
+            # via reasoning.enabled=true (effort:none would be a no-op), and NO
+            # temperature — the 4.7/5 family 400s on any non-default temperature.
+            fallback=Agent(
+                name="qa_analyze_fallback",
+                model="anthropic/claude-sonnet-5",
+                system_prompt_path=str(agents_dir / "qa_analyze" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "qa_analyze" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=None,
+                max_tokens=64000,
+                provider="openrouter",
+                reasoning={"enabled": True},
+                output_schema=QA_ANALYZE_SCHEMA,
+            ),
             output_schema=QA_ANALYZE_SCHEMA,
         ),
         "bias_language": Agent(

@@ -145,13 +145,13 @@ class Agent:
         instructions_path: str,
         tools: list[Tool] | None = None,
         memory_path: str | None = None,
-        temperature: float = 0.3,
+        temperature: float | None = 0.3,
         max_tokens: int = 32000,
         provider: str = "openrouter",
         base_url: str | None = None,
         api_key: str | None = None,
         api_key_file: str | None = None,
-        reasoning: str | bool | None = None,
+        reasoning: str | bool | dict | None = None,
         extra_body_override: dict | None = None,
         provider_routing: dict | None = None,
         output_schema: dict | None = None,
@@ -344,9 +344,15 @@ class Agent:
         kwargs: dict = {
             "model": self.model,
             "messages": messages,
-            "temperature": self.temperature,
             "max_tokens": self.max_tokens,
         }
+        # ``temperature=None`` means "do not send a temperature at all" — the
+        # Claude 4.7/5 family rejects any non-default temperature/top_p (400),
+        # so the qa_analyze Sonnet-5 fallback is constructed with
+        # ``temperature=None``. Every other agent passes a float and is
+        # unaffected.
+        if self.temperature is not None:
+            kwargs["temperature"] = self.temperature
         if tools:
             kwargs["tools"] = tools
 
@@ -360,6 +366,13 @@ class Agent:
                     extra_body["reasoning"] = {
                         "effort": "high" if self.reasoning else "minimal"
                     }
+                elif isinstance(self.reasoning, dict):
+                    # Pass an explicit OpenRouter reasoning block straight
+                    # through (deep-copied so the shared instance value is
+                    # never mutated). Used by the qa_analyze Sonnet-5 fallback
+                    # to request adaptive thinking via ``{"enabled": True}``,
+                    # which the ``effort`` vocabulary cannot express.
+                    extra_body["reasoning"] = copy.deepcopy(self.reasoning)
                 elif isinstance(self.reasoning, str):
                     extra_body["reasoning"] = {"effort": self.reasoning}
             elif self.provider in ("ollama", "ollama_cloud"):
