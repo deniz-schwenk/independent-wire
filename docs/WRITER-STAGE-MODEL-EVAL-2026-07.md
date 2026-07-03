@@ -272,3 +272,209 @@ Artifacts: per-topic `input.json` / `incumbent_output.json` / `glm_output.json`
 `_judge_key.json` (label→arm, outside the judge tree); `deterministic_scores.json`,
 `aggregate_summary.json` (full per-case detail + every confirmed fabrication with
 its judge citations); `collection_manifest.json`, `provider-probe/`.
+
+---
+
+# Addendum — operating-point controls (2026-07-03)
+
+The base eval left two operating-point variables uncontrolled, each capable of
+confounding a comparison:
+
+1. **The incumbent ran at its production point** (`reasoning=none`) while the GLM
+   challenger ran at effort **xhigh** — so "GLM beats incumbent" conflated *model*
+   with *reasoning budget*. This addendum adds the effort-matched control
+   (**incumbent-high** = Opus 4.6 @ effort high).
+2. **The Sonnet-5 arm ran `reasoning:{enabled:true}` with no explicit effort AND
+   was served entirely by Azure** (`served_model …-20260630`, 21/21). Its
+   citation-hygiene collapse (42 phantoms / 11 orphans over 21 topics) might be an
+   operating-point or a serving artifact rather than a model property. This
+   addendum adds **sonnet5-corrected** = an explicit effort + a pinned provider.
+
+Both controls run on the **9 most-recent** of the 21 topics (2026-07-01 …
+2026-07-03, 3 follow-ups), **reusing** the existing per-topic inputs and the
+existing incumbent-none / GLM / Sonnet-5-original / golden outputs (no new golden
+runs). Prompts, `WRITER_SCHEMA`, and reconstructed inputs are held at the base
+eval's values. Read-only on production; raw under `scratch/writer-shadow/addendum/`.
+
+## Probe — resolving the two operating points (with request bodies)
+
+Six single-config probe calls on the median-size addendum topic
+(2026-07-01/topic-1), full bodies in `addendum/probe/probe_summary.json`:
+
+**Opus 4.6 @ effort high — is temperature accepted under thinking?** Anthropic's
+extended-thinking API normally rejects a non-default `temperature`; the 4.7/5
+family hard-rejects it. Empirically, **Opus 4.6 via OpenRouter accepts temperature
+0.3 alongside `reasoning:{effort:high}`** (HTTP 200, `finish_reason:stop`,
+served Anthropic):
+
+```jsonc
+// A1 — ACCEPTED (200): reasoning_tokens≈244, $0.145, no truncation at 32000
+{ "model": "anthropic/claude-opus-4.6", "temperature": 0.3, "max_tokens": 32000,
+  "reasoning": {"effort": "high"},
+  "response_format": {"type":"json_schema","json_schema":{"strict":true, ...}},
+  "provider": {"require_parameters": true} }
+// A2 — temperature omitted: 200, reasoning_tokens≈337 (statistically indistinct)
+```
+
+So temperature is **held at production's 0.3**, making incumbent-high a clean
+single-variable delta from incumbent-none (only `reasoning none→high` changes).
+Note the low reasoning-token counts (≈244–337): Opus 4.6's `effort:high` via
+OpenRouter engages only light thinking on the writer task even with a large
+budget available — the model chooses to reason little here. `max_tokens=32000`
+(production default) held; no truncation.
+
+**Sonnet-5 — does effort shift reasoning? does provider matter?**
+
+```jsonc
+// B1 {enabled:true}          default routing → Azure, reasoning_tokens≈422
+// B2 {enabled:true,effort:high} default routing → Azure, reasoning_tokens≈1299 (~3×), body 905→760w
+{ "model": "anthropic/claude-sonnet-5", "max_tokens": 64000,
+  "reasoning": {"enabled": true, "effort": "high"},
+  "response_format": {"type":"json_schema", ...}, "provider": {"require_parameters": true} }
+```
+
+Effort **is** honored and measurably shifts reasoning (~3× tokens). Provider,
+however, could **not** be pinned to Amazon Bedrock — every Bedrock form errored:
+
+```
+provider {"order":["amazon-bedrock"], "allow_fallbacks":false}   → "model not available on the requested cloud provider"
+provider {"order":["amazon-bedrock/us-east-1"], ...}             → "Provider returned error"
+provider {"order":["Amazon Bedrock"], ...}                       → "model not available on the requested cloud provider"
+provider {"order":["azure"], "allow_fallbacks":false}            → 200, served Azure
+```
+
+Bedrock is listed in the OpenRouter endpoints API for `claude-sonnet-5` but is
+**not routable** for this model through OpenRouter (structured-output beta /
+region gating). The QA-eval's Bedrock serving path is therefore **untestable
+here** (documented limitation — full record in `addendum/provider_diagnosis.json`).
+The original arm was already 100% Azure, so provider was a *de-facto constant*;
+the corrected arm **pins Azure explicitly, fail-loud** (`order:["azure"],
+allow_fallbacks:false`). Because both the original and corrected Sonnet-5 arms are
+served by the **same Azure**, any difference between them isolates the
+**reasoning-effort** variable — not serving.
+
+**Resolved points:** incumbent-high = Opus 4.6, `effort:high`, temp 0.3,
+max_tokens 32000. sonnet5-corrected = Sonnet-5, `{enabled:true, effort:high}`,
+Azure-pinned, no temperature, max_tokens 64000.
+
+## Cost projection (printed pre-spend) & spend
+
+Measured points: incumbent-high $0.145/topic, sonnet5-corrected $0.111/topic →
+projection **9 × ($0.145 + $0.111) = $2.30 + $0.50 probe = $2.81**, well under the
+**$15** cap, so all 9 topics ran (no reduction). Actual paid spend: probe $0.51 +
+re-run $2.39 = **$2.90**. All 18 re-run calls schema-valid (incumbent-high 9/9
+Anthropic; sonnet5-corrected 9/9 Azure).
+
+## Judging
+
+Fresh 3-judge blind panels on the 9 topics with **all six arms** in one
+anonymized, order-randomized packet (incumbent-none, incumbent-high, GLM,
+Sonnet-5-original, Sonnet-5-corrected, golden), canonicalized to
+`{headline, subheadline, body, summary}` (leak-proof — `sources[]` dropped for
+all), seeded label→arm key outside the judge tree. Same R1–R9 rubric, same
+binding style trap, same ≥2/3 claim-cited fabrication rule. **9 × 3 = 27 verdicts,
+0 missing, 0 malformed.**
+
+## What the controls changed
+
+### Control 1 — effort-matching the incumbent does NOT close the gap
+
+| incumbent-none (effort none) | incumbent-high (effort high) |
+|---|---|
+| correctness **3.52** · rank 3.48 · rubric 0.884 · fab 16 | correctness 3.22 · rank 3.96 · rubric 0.867 · fab 16 |
+
+Pairwise across the 9 topics: **incumbent-none 5 – 4 incumbent-high** — adding
+effort-high produced **no improvement (a slight regression within N=9)**. This is
+consistent with the probe: Opus 4.6's `effort:high` engages only ~300 reasoning
+tokens on the writer task, so "more reasoning" is barely realized and buys
+nothing here (while costing more: $0.162 vs $0.153/topic). **The base eval's
+incumbent was not handicapped by its `reasoning=none` production point** — giving
+it the challenger's reasoning intent does not move it toward GLM. The base
+"GLM > incumbent" result is therefore not a reasoning-budget artifact.
+
+### Control 2 — correcting Sonnet-5's operating point changes its verdict
+
+| sonnet5-original ({enabled:true}, Azure) | sonnet5-corrected ({enabled:true,effort:high}, Azure) |
+|---|---|
+| correctness **3.19** · rank **4.22** (worst arm) · rubric 0.849 | correctness **3.59** · rank **3.37** (top challenger) · rubric 0.902 |
+| deterministic: **11 orphans / 11 phantoms**, in-band 7/9, 4× correctness-1 tail | deterministic: **0 / 0**, in-band 8/9, **zero** correctness-1 |
+
+Pairwise: **sonnet5-corrected 5 – 4 over its own original**; and corrected beats
+GLM (5–4), incumbent-none (5–4), and incumbent-high (6–3). The base eval's
+citation-hygiene collapse and low-correctness tail (including the max_tokens
+truncation) were an **operating-point (under-reasoning) artifact, not intrinsic
+to Sonnet-5 and not a serving artifact** — provider was Azure in *both* the
+original and corrected arms, so raising effort (adaptive → explicit high) is the
+sole cause, and it drives phantoms 11→0 and the correctness-1 tail 4→0. **The base
+eval understated Sonnet-5.**
+
+### Revised ordering (9 topics, 6-arm 3-judge blind panel)
+
+| arm | corr. mean | mean rank (↓) | rubric | confirmed fab | determ. phantom/orphan | $/topic |
+|---|--:|--:|--:|--:|--:|--:|
+| golden (Opus-4.8 ceiling) | **4.07** | **2.33** | **0.949** | **8** | 0 / 0 | (cost-neutral) |
+| **sonnet5-corrected** | 3.59 | **3.37** | 0.902 | 16 | **0 / 0** | $0.103 (Azure) |
+| incumbent-none | 3.52 | 3.48 | 0.884 | 16 | n/a¹ | $0.153 (Anthropic) |
+| GLM-5.2 @ xhigh | 3.56 | 3.63 | 0.911 | 15 | 0 / 0 | **$0.050** (Baidu) |
+| incumbent-high | 3.22 | 3.96 | 0.867 | 16 | n/a¹ | $0.162 (Anthropic) |
+| sonnet5-original | 3.19 | 4.22 | 0.849 | 17 | 11 / 11 | $0.105 (Azure) |
+
+Overall order by mean rank: **golden › sonnet5-corrected › incumbent-none ≈ GLM ›
+incumbent-high › sonnet5-original**. Latency: GLM 94 s (172 s max), incumbent-high
+62 s, sonnet5-corrected 47 s. Rubric-by-criterion echoes the base eval: GLM keeps
+its R7 edge (1.00 vs incumbent 0.65–0.70), and R8 is where sonnet5-corrected
+recovers most (0.74 → 0.91, matching the deterministic in-band/truncation fix).
+
+¹ The production incumbent snapshot stores only the four text fields (`sources[]`
+dropped), so its `sources[]` hygiene cannot be measured; body citations resolved
+cleanly (0 invented ids) for all arms.
+
+## Caveats specific to the addendum
+
+- **The 9-topic window is GLM's *weakest* slice.** In the base 21-topic 4-way
+  eval, GLM beat the incumbent 15–6 overall but only **5–4 on exactly these 9
+  most-recent topics**. So the addendum's GLM ≈ incumbent-none near-tie (GLM 4 – 5)
+  is a property of the window, not a reversal of the base finding; it is the
+  narrowest 9-topic stretch of the 21.
+- **6-way panel, N=9 — not directly comparable to the base 4-way/21-topic
+  numbers.** Adding two more outputs and dropping to 9 topics shifts absolute
+  scores; only the within-addendum arm ordering is load-bearing here.
+- **Fabrication counts barely discriminate on this window** (all non-golden arms
+  15–17; golden 8 = floor) — the dossier-summary judging limitation from the base
+  eval dominates. The signal in this addendum is the **rank / pairwise / rubric /
+  deterministic** movement, not the fabrication tallies.
+- **Bedrock serving hypothesis untested** (not routable via OpenRouter for
+  Sonnet-5). The Sonnet-5 fix is attributed to effort with provider held constant
+  at Azure; whether a different serving stack would change it is open.
+
+## Net reading
+
+Neither control overturns the base eval's direction, and both sharpen it:
+**(1)** the incumbent was *not* under-powered by `reasoning=none` — effort-matching
+it changes nothing (Opus 4.6 barely reasons on this task), so the model comparison
+was fair; **(2)** the Sonnet-5 arm *was* operating-point-handicapped — corrected,
+it is the strongest non-golden arm on this window and its deterministic defects
+vanish, so the base eval understated it. The practical order among deployable
+challengers on this slice is **sonnet5-corrected ≈ incumbent ≈ GLM**, with GLM
+still the cheapest by ~2–3× and Sonnet-5-corrected the best-ranked. Still a
+decision input, not a cutover: N=9, GLM's weakest window, Claude-family judges,
+and the summary-grounding limitation all apply as before.
+
+## Addendum reproduction
+
+All under `scratch/writer-shadow/addendum/` (untracked):
+
+```bash
+.venv/bin/python scratch/writer-shadow/addendum/probe.py       # resolve operating points (request bodies)
+.venv/bin/python scratch/writer-shadow/addendum/report.py      # coverage + cost projection (pre-spend)
+.venv/bin/python scratch/writer-shadow/addendum/shadow.py --arm both   # incumbent-high + sonnet5-corrected, 9 topics
+.venv/bin/python scratch/writer-shadow/addendum/score.py       # deterministic scoring, 6 arms
+.venv/bin/python scratch/writer-shadow/addendum/prep_judge.py  # 6-way anonymized packets + key (outside judge tree)
+# spawn 3 judge subagents per case (JUDGE-TASK-ADDENDUM.md + RUBRIC.md) -> verdict-{1,2,3}.json
+.venv/bin/python scratch/writer-shadow/addendum/aggregate.py   # majority pairwise, means, rubric, adjudicated fabrications
+```
+
+Artifacts: `probe/probe_*.json` + `probe_summary.json`, `provider_diagnosis.json`,
+`{date}/topic-{n}/incumbent_high_*.json` + `sonnet5_corrected_*.json`,
+`deterministic_scores.json`, `judge/{slug}/packet.json` + `verdict-{1,2,3}.json`,
+`_judge_key.json` (outside the judge tree), `aggregate_summary.json`.
