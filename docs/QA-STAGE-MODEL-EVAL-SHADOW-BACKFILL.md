@@ -7,7 +7,16 @@ backfilled from on-disk run state. Collection + shadow generation + judging were
 all run 2026-07-02/03. The harness and raw corpus live untracked under
 `scratch/qa-shadow/`; this document is the committed summary.
 
-## Headline result
+> **⚠️ Superseded — read the v2 section first.** The v1 result below used a
+> **single** judge per topic (its own stated weakness). It has been superseded
+> by a harder **v2 re-judge** (2026-07-03): a rubric derived from the production
+> prompt, **3 independent judges per topic (majority)**, a **golden reference**
+> as an anonymous third output, and claim-cited fabrication adjudication. The v2
+> section (**"v2 — golden re-judge"**, at the end of this document) is
+> authoritative. v1 is retained below as a superseded record; its direction
+> (GLM ≫ incumbent) held and strengthened.
+
+## v1 headline result (SUPERSEDED — see "v2 — golden re-judge" below)
 
 On a blind, per-topic panel (one fresh judge subagent per topic, anchored only
 to the article + its sources, blind to which model produced which output):
@@ -184,3 +193,150 @@ Raw artifacts: per-topic `input.json` / `incumbent_output.json` /
 `shadow_output.json` / `shadow_meta.json`, judge `case-NN/packet.json` +
 `verdict.json`, `_judge_key.json`, `aggregate_summary.json`. The daily
 going-forward command is documented in `scratch/qa-shadow/README.md`.
+
+---
+
+# v2 — golden re-judge (authoritative, 2026-07-03)
+
+The v1 pass used a **single** judge per topic — its own stated weakness,
+especially for the fabrication tallies. v2 re-judges the **same 21 topics and
+the same GLM/incumbent outputs** with a harder, higher-signal protocol. No new
+model API calls — everything ran cost-neutral via spawned judge subagents.
+
+## What changed vs v1
+
+1. **Prompt-derived rubric (fixed before judging).** An explicit R1–R8 checklist
+   transcribed from the production `qa_analyze` prompts (`agents/qa_analyze/`
+   SYSTEM + INSTRUCTIONS) — problem detection, well-formed records, grounding /
+   no-fabrication, corrections correspondence, corrected-article discipline,
+   divergence reporting, precision/no-padding, back-reference & Wikipedia rules.
+   Frozen at `scratch/qa-shadow/judging-v2/RUBRIC.md`.
+2. **Golden reference as an anonymous third output.** One fresh subagent per
+   topic executed the production QA task itself on the full reconstructed input
+   with maximum care, producing a schema-valid **golden** output — a quality
+   *ceiling* reference. Golden similarity is **never** a scoring criterion; it
+   participates only as an anonymous third output.
+3. **3 independent judges per topic (majority).** Each of 21 topics × 3 fresh
+   judges received the topic input + sources + rubric + **three** anonymized,
+   deep-key-normalized outputs (GLM / incumbent / golden; per-topic random label
+   **and** random order; key file outside the judge tree). 21 × 3 = **63
+   verdicts, 0 missing, 0 malformed.**
+4. **Claim-cited fabrication adjudication.** A fabrication counts **only** when
+   **≥2 of 3 judges** independently cite an overlapping claim against the same
+   output (deterministic claim-overlap match in `aggregate_v2.py`). Every counted
+   charge carries its verbatim claim citation.
+
+Parent orchestrated only (prepared, spawned, collected, aggregated
+mechanically); it formed no quality judgment of its own.
+
+## v2 headline result
+
+| Metric (3-judge majority, anchor-free vs rubric+sources) | GLM-5.2 @ xhigh | Incumbent Sonnet 4.6 | Golden (ceiling) |
+|---|--:|--:|--:|
+| Mean absolute correctness (1–5) | **4.16** | 2.59 | 4.02 |
+| Rubric pass-rate (R1–R8; pass=1/partial=½/fail=0) | **0.97** | 0.64 | 0.97 |
+| Confirmed fabrications — total (≥2/3 judges, cited) | **1** | 11 | 0 |
+| Confirmed fabrications — topics with ≥1 | **1 / 21** | 10 / 21 | 0 / 21 |
+
+Per-topic **majority pairwise**: **GLM > incumbent in 19 / 21** (incumbent wins
+only case-02 and case-16); GLM vs golden **11 / 10** (a statistical tie); golden
+> incumbent in 17 / 21.
+
+Correctness distribution — GLM `{5:13, 4:47, 3:3}` (strikingly consistent);
+incumbent `{4:5, 3:27, 2:31}`; golden `{5:24, 4:18, 3:19, 2:2}` (higher ceiling
+but more variable). GLM's edge over golden in the mean is consistency: it almost
+never drops below 4, while golden is more polarized.
+
+**Reading:** under the harder protocol, GLM-5.2 @ xhigh performs **at the
+golden-reference ceiling** (a Claude-Opus max-care QA pass) and **decisively
+beats the production incumbent** — 19-2 pairwise, +1.6 mean correctness, and 11×
+fewer confirmed fabrications. The direction of v1 held and *strengthened*: the
+incumbent's mean fell from v1's 3.57 to 2.59 because the rubric-anchored 3-judge
+panel is harsher on its two recurring failure modes (padding `problems_found`
+with self-retracting non-findings, and asserting unsupported source content).
+
+## Per-topic (un-anonymized; correctness = mean of 3 judges)
+
+| case | date | topic | corr G / I / Gold | GLM vs inc | GLM vs golden |
+|---|---|---|:-:|:-:|:-:|
+| 01 | 2026-06-26 | topic-0 | 4.33 / 3.00 / 4.00 | GLM | GLM |
+| 02 | 2026-06-26 | topic-1 | 4.00 / 3.67 / 3.00 | **inc** | GLM |
+| 03 | 2026-06-26 | topic-2 | 4.33 / 2.00 / 4.33 | GLM | GLM |
+| 04 | 2026-06-27 | topic-0 | 4.67 / 2.00 / 5.00 | GLM | gold |
+| 05 | 2026-06-27 | topic-1 | 4.00 / 3.00 / 4.33 | GLM | gold |
+| 06 | 2026-06-27 | topic-2 | 4.00 / 2.00 / 4.33 | GLM | gold |
+| 07 | 2026-06-28 | topic-0 | 4.00 / 2.33 / 5.00 | GLM | gold |
+| 08 | 2026-06-28 | topic-1 | 4.00 / 2.00 / 4.00 | GLM | GLM |
+| 09 | 2026-06-28 | topic-2 | 5.00 / 2.00 / 5.00 | GLM | GLM |
+| 10 | 2026-06-29 | topic-0 | 4.00 / 2.00 / 5.00 | GLM | gold |
+| 11 | 2026-06-29 | topic-1 | 4.00 / 2.33 / 4.33 | GLM | gold |
+| 12 | 2026-06-29 | topic-2 | 3.67 / 3.00 / 4.67 | GLM | gold |
+| 13 | 2026-06-30 | topic-0 | 4.00 / 2.00 / 3.33 | GLM | GLM |
+| 14 | 2026-06-30 | topic-1 | 3.67 / 2.67 / 4.67 | GLM | gold |
+| 15 | 2026-06-30 | topic-2 | 4.00 / 3.00 / 5.00 | GLM | gold |
+| 16 | 2026-07-01 | topic-0 | 4.00 / 4.00 / 3.00 | **inc** | GLM |
+| 17 | 2026-07-01 | topic-1 | 4.00 / 3.00 / 3.00 | GLM | GLM |
+| 18 | 2026-07-01 | topic-2 | 4.33 / 3.00 / 3.00 | GLM | GLM |
+| 19 | 2026-07-02 | topic-0 | 3.67 / 2.00 / 4.00 | GLM | gold |
+| 20 | 2026-07-02 | topic-1 | 4.67 / 3.00 / 2.33 | GLM | GLM |
+| 21 | 2026-07-02 | topic-2 | 5.00 / 2.33 / 3.00 | GLM | GLM |
+
+## Adjudicated fabrications (each ≥2/3 judges, with claim citation)
+
+**Incumbent: 11 confirmed across 10 topics.** Representative:
+
+- **case-02 (3/3 judges):** the incumbent asserts *"src-006 and src-004 report
+  three reactors shut down at Bugey, Nogent-sur-Seine, and Golfech."* src-004's
+  dossier entry says EDF announced *"the shutdown of three reactors at the
+  Nogent-sur-Seine nuclear power plant"* — three reactors at **one** plant, not
+  three plants.
+- **case-08 (2/3 judges):** the incumbent's retraction claims *"the article does
+  not assign her a title at all."* The article text under QA reads *"President
+  Claudia Sheinbaum …"*, and src-018 assigns her *"Head of Government of Mexico
+  City"* — the retraction misdescribes the article to dismiss a real title error.
+
+**GLM: 1 confirmed (case-19, 3/3 judges):** GLM asserts *"src-004 specifies
+'Cabo San Lucas, Baja California Sur.'"* src-004's summary names only *"Cabo San
+Lucas"* with no state — GLM attributed a state string the source does not
+contain.
+
+**Golden: 0 confirmed.**
+
+## v2 caveats
+
+- **Golden is Claude-family, and so are the judges.** Two of the three outputs
+  (incumbent = Sonnet 4.6, golden = a Claude subagent) share lineage; only GLM
+  is off-family. Anonymization normalizes structure and strips metadata but not
+  writing style — a residual stylistic-familiarity bias toward the two
+  Claude-family outputs cannot be excluded. If anything this biases *against* the
+  GLM result, which still wins.
+- **Sources are dossier summaries, not full article bodies** (as in v1) — a judge
+  cannot catch a fabrication that is plausible against the summary but false
+  against the full source. Same standard applied to all three outputs and to the
+  production QA stage itself.
+- **Still N=21, 7 consecutive days.** No seasonal/topic-mix diversity beyond that
+  window.
+- **Not a cutover decision by itself.** This is a strong, harder-protocol
+  decision input; a swap remains gated on latency (xhigh ~7 min/topic; see
+  above) and the provider work in `docs/GLM-PROVIDER-VERIFICATION-2026-07.md`.
+
+## v2 reproduction
+
+All under `scratch/qa-shadow/` (untracked); raw v2 verdicts under
+`scratch/qa-shadow/judging-v2/`:
+
+```bash
+.venv/bin/python scratch/qa-shadow/jv2_setup.py          # isolated golden inputs + case index
+# spawn one golden subagent per case (GOLDEN-TASK.md) -> golden/case-NN.json
+.venv/bin/python scratch/qa-shadow/jv2_validate.py       # golden schema check
+.venv/bin/python scratch/qa-shadow/prep_judge_v2.py      # 3-way anonymized packets + key (outside judge tree)
+# spawn 3 judge subagents per case (JUDGE-TASK-V2.md + RUBRIC.md) -> verdict-{1,2,3}.json
+.venv/bin/python scratch/qa-shadow/jv2_check_verdicts.py # 63/63 present + valid
+.venv/bin/python scratch/qa-shadow/aggregate_v2.py       # majority pairwise, means, adjudicated fabrications
+```
+
+Artifacts: `judging-v2/RUBRIC.md`, `judging-v2/golden/case-NN.json`,
+`judging-v2/judge/case-NN/packet.json` + `verdict-{1,2,3}.json`,
+`judging-v2/_judge_key_v2.json` (label→model, outside the judge tree),
+`judging-v2/aggregate_v2_summary.json` (full per-case detail + every confirmed
+fabrication with its judge citations).
