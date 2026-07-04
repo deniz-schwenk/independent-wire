@@ -1,0 +1,92 @@
+{
+ "date": "2026-07-02",
+ "topic": 1,
+ "judge": 2,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 2,
+    "specificity": 3,
+    "cross_group_validity": 3,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "UK-based outlets (BBC, Guardian, Middle East Eye) incorporate official RSF denials and Sudanese government calls for action, whereas the single US-based outlet covering the report (AllAfrica) and German outlet (DW) omit such direct rebukes, focusing respectively on straightforward reporting and commander‑level accountability.",
+      "why_unsupported": "The grouping is not supported: only BBC (art 1) reports an RSF acknowledgment/denial and only Middle East Eye (art 4) carries the Sudanese ambassador's call for action; the Guardian (art 3) analysis shows neither RSF denials nor government calls. Meanwhile DW (art 2) is claimed to omit RSF rebuttals but its analysis explicitly records the RSF denying that commander Abu Lulu was released — so DW does include an RSF denial. The claimed clean UK-vs-US/German contrast does not hold."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "German DW and UK outlets (Guardian, Middle East Eye) name specific RSF commanders such as Abu Lulu, Abu Shouk, and Abbas Khater Bakhit, while US outlet AllAfrica and French outlet RFI report the findings and survivor accounts without naming individual perpetrators.",
+      "why_unsupported": "DW (art 2) and Guardian (art 3) do name the commanders, but Middle East Eye (art 4) is included incorrectly — its analysis centers on detainee testimony, UAE arms, and the ICC coalition submission and does not name individual RSF commanders. The commander-naming attribution to MEE is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "C",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language sources, particularly UK-based BBC, The Guardian, and Germany-based DW News, name specific RSF commanders responsible for violations, while French-language coverage does not identify individual commanders.",
+      "why_unsupported": "Guardian (art 3) and DW (art 2) name specific commanders, but BBC (art 1) does not — its analysis says Amnesty 'identified RSF commanders responsible' but names none. Attributing individual commander naming to BBC is unsupported, though the core French-vs-English contrast otherwise holds."
+     }
+    ]
+   },
+   {
+    "label": "D",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "AllAfrica (US) and The Guardian (UK) frame the conflict primarily through the ethnic persecution and ceasefire/arms-embargo policy lens without commander-level detail, while DW News (Germany) foregrounds visual/video evidence and command accountability, indicating a divergence in evidentiary emphasis between outlets covering the same Amnesty report.",
+      "why_unsupported": "The Guardian (art 3) analysis explicitly names three RSF commanders (Abu Shok, Abbas Khater Bakhit, Abu Lulu) as responsible for violations, so it does contain commander-level detail. Claiming the Guardian frames the story 'without commander-level detail' contradicts the analysis (and this candidate's own divergence 3, which credits the Guardian with naming commanders)."
+     },
+     {
+      "quote": "Middle East Eye (UK) uniquely situates the atrocities within the geopolitical context of UAE arms supplies, US legislative efforts to block weapons pipelines, and an ICC referral request targeting foreign officials, a dimension entirely absent from the other English-language outlets (AllAfrica, BBC, DW News, Guardian) and from the French-language RFI coverage.",
+      "why_unsupported": "The UAE arms-supply dimension is not 'entirely absent' from AllAfrica: art 0's analysis records Amnesty calling on governments to stop providing arms to the UAE until it complies with the UN embargo. AllAfrica names the UAE's specific role, so the claim of total absence is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "UK-based English-language outlets (BBC, Guardian, Middle East Eye) name specific RSF commanders (Abu Lulu, Abu Shok, Abbas Khater Bakhit) and discuss individual command responsibility, whereas the US-based English-language outlet (AllAfrica) and the French-language outlet (RFI) do not name any commanders, framing accountability in more institutional rather than individual terms.",
+      "why_unsupported": "Only the Guardian (art 3) among UK outlets names the commanders; BBC (art 1) does not name any and Middle East Eye (art 4) does not name individual commanders. Moreover the other outlet that clearly names commanders is DW News (art 2), a German outlet excluded from the claimed 'UK' pattern. The cross-group boundary (UK vs US/French) is fabricated."
+     },
+     {
+      "quote": "Middle East Eye uniquely contextualizes the Amnesty findings within the geopolitical dimension of UAE arms supplies to the RSF, US legislative efforts to block weapons pipelines, and a coalition request for the ICC to investigate UAE and neighboring countries' officials for aiding and abetting atrocity crimes, while other English-language and French-language sources treat the arms embargo call only as a general Amnesty recommendation without naming the UAE's specific role.",
+      "why_unsupported": "AllAfrica (art 0) explicitly names the UAE's specific role, recording Amnesty's call for governments to stop providing arms to the UAE until it complies with the UN embargo. The claim that other sources do not name the UAE's specific role is contradicted by the AllAfrica analysis."
+     }
+    ]
+   }
+  ]
+ },
+ "cost_usd": 0.3878,
+ "tokens": 29188,
+ "duration_s": 302.2,
+ "provider": "Anthropic"
+}

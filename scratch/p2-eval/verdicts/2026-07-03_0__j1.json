@@ -1,0 +1,69 @@
+{
+ "date": "2026-07-03",
+ "topic": 0,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Turkish-language coverage (Hurriyet) foregrounds Iranian military commanders' explicit threats of retaliation against the US and Israel and quotes multiple Iranian security officials, while English-language Western outlets (DW News, France 24, Japan Today) focus more on succession uncertainty, public dissent, and the regime's legitimacy crisis.",
+      "why_unsupported": "The Turkish military-threats half is supported (article 5: Abdollahi, Ghalibaf, Araqchi), but attributing 'succession uncertainty' to DW/France 24/Japan Today is unsupported and inverted: none of those analyses discuss succession, and the only succession/Mojtaba discussion in the corpus is in the Turkish article (5, uncertainty over Mojtaba's appearance and Araqchi's response to Katz). France 24's analysis (4) centers on warnings/vengeance/turnout, not dissent or succession."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 5,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language Gulf and Western outlets (Al Jazeera, France 24, DW) foreground succession uncertainty around Mojtaba Khamenei and the funeral's leverage over nuclear diplomacy, while Turkish-language coverage (Hurriyet) focuses narrowly on military threats and retaliation rhetoric without addressing succession politics.",
+      "why_unsupported": "This attribution is inverted. Article 5 (Turkish/Hurriyet) explicitly covers succession — the uncertainty over whether Mojtaba will appear and Araqchi's response to Katz's remarks about Mojtaba — so the Turkish outlet DOES address succession politics. Conversely, the analyses for Al Jazeera (1, 8), France 24 (4), and DW (2) contain no discussion of Mojtaba succession, so they cannot be said to foreground it."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.29257,
+ "tokens": 22562,
+ "duration_s": 109.1,
+ "provider": "Anthropic"
+}

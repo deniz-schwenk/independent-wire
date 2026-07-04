@@ -1,0 +1,77 @@
+{
+ "date": "2026-07-03",
+ "topic": 2,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "B",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 2,
+    "specificity": 5,
+    "cross_group_validity": 3,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "Spanish-language sources (El País, El Financiero) foreground institutional decay, corruption, and underinvestment in building codes under the previous Maduro government as amplifiers of the disaster, while Chinese-language outlets (CGTN) and Italian-language outlets (ANSA) present the government response neutrally, emphasizing Rodriguez's calls for unity and international financial assistance without critical framing.",
+      "why_unsupported": "Only El Financiero (article 7) attributes the disaster to institutional decay/corruption. El País (article 8) is a minute-by-minute rescue narrative with no governance-accountability framing, so grouping it here is unsupported. Also CGTN is an English-language outlet (metadata language 'en'), not 'Chinese-language.'"
+     },
+     {
+      "quote": "English-language sources from the UK (BBC, The Guardian) and Singapore (CNA) include explicit criticism of the Venezuelan government's slow response and note the civilian-led nature of rescue efforts with a lack of heavy machinery, whereas French-language (RFI) and Chinese-language (CGTN) coverage largely omits or downplays government accountability questions.",
+      "why_unsupported": "Only CNA (article 4) notes the civilian-led response and lack of heavy machinery. BBC (article 2) and Guardian (article 9) are rescue-focused and do not carry slow-response criticism or the heavy-machinery/civilian-led framing. CGTN is English-language, not 'Chinese-language.'"
+     },
+     {
+      "quote": "English-language sources from multiple regions (Dawn/Pakistan, The Guardian/UK, Japan Today/Japan) report on looting and the detention of police officers for stealing from rubble, while Spanish-, French-, Italian-, and German-language sources do not address post-disaster criminality.",
+      "why_unsupported": "Looting/police detention appears only in Dawn (article 6) and Japan Today (article 10). The Guardian (article 9) summary contains no mention of looting or police detentions, so its inclusion is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "D",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Spanish-language outlets (El Financiero, El País) foreground governance accountability, with El Financiero explicitly attributing the scale of destruction to decades of institutional decay and corruption under the previous Maduro government, while English-language outlets like CNA and CGTN largely relay the interim president's denial of a slow response without independently probing underlying institutional causes.",
+      "why_unsupported": "Only El Financiero (article 7) foregrounds governance accountability/institutional decay. El País (article 8) is a detailed rescue narrative with no accountability framing, so attributing that foregrounding to it as a Spanish-language pattern is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.48121,
+ "tokens": 37634,
+ "duration_s": 167.3,
+ "provider": "Anthropic"
+}

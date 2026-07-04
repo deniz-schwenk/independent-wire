@@ -1,0 +1,64 @@
+{
+ "date": "2026-06-29",
+ "topic": 0,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "German media (DW) concentrates on the French central government's logistical and security response, whereas French media (France 24, RFI) foreground the local political outcome and quote New Caledonian actors directly.",
+      "why_unsupported": "The analysis for France 24 (article 1) lists NO actors quoted and describes its framing as a broad 'crucial test of New Caledonia's political future' with independence as the central issue — not a foregrounding of the 'local political outcome.' Only RFI quotes a New Caledonian actor (Backes), so the claim that 'French media (France 24, RFI)... quote New Caledonian actors directly' is false for France 24."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.124525,
+ "tokens": 9809,
+ "duration_s": 45.1,
+ "provider": "Anthropic"
+}

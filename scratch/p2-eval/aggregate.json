@@ -1,0 +1,263 @@
+{
+ "judged_topics": 21,
+ "summary": {
+  "glm": {
+   "grounding": 4.38,
+   "specificity": 4.89,
+   "cross_group_validity": 4.46,
+   "gap_quality": 4.9,
+   "overall": 4.46,
+   "confirmed_fabrications": 8,
+   "fab_topics": [
+    "2026-07-01#1",
+    "2026-07-01#2",
+    "2026-07-02#0",
+    "2026-07-02#1",
+    "2026-07-03#1",
+    "2026-07-04#0",
+    "2026-07-04#1"
+   ]
+  },
+  "golden": {
+   "grounding": 4.44,
+   "specificity": 4.89,
+   "cross_group_validity": 4.4,
+   "gap_quality": 4.76,
+   "overall": 4.46,
+   "confirmed_fabrications": 7,
+   "fab_topics": [
+    "2026-06-29#2",
+    "2026-07-02#0",
+    "2026-07-02#1",
+    "2026-07-03#1",
+    "2026-07-04#1"
+   ]
+  },
+  "incumbent": {
+   "grounding": 3.94,
+   "specificity": 4.75,
+   "cross_group_validity": 4.22,
+   "gap_quality": 4.94,
+   "overall": 4.19,
+   "confirmed_fabrications": 14,
+   "fab_topics": [
+    "2026-06-28#2",
+    "2026-06-29#2",
+    "2026-06-30#1",
+    "2026-07-01#2",
+    "2026-07-02#0",
+    "2026-07-02#1",
+    "2026-07-03#0",
+    "2026-07-03#1",
+    "2026-07-03#2",
+    "2026-07-04#1"
+   ]
+  },
+  "sonnet5": {
+   "grounding": 3.73,
+   "specificity": 4.73,
+   "cross_group_validity": 4.11,
+   "gap_quality": 4.87,
+   "overall": 3.89,
+   "confirmed_fabrications": 16,
+   "fab_topics": [
+    "2026-06-30#1",
+    "2026-06-30#2",
+    "2026-07-01#2",
+    "2026-07-02#0",
+    "2026-07-02#1",
+    "2026-07-02#2",
+    "2026-07-03#0",
+    "2026-07-03#1",
+    "2026-07-03#2",
+    "2026-07-04#1"
+   ]
+  },
+  "deepseek": {
+   "grounding": 4.06,
+   "specificity": 3.75,
+   "cross_group_validity": 4.11,
+   "gap_quality": 3.95,
+   "overall": 3.54,
+   "confirmed_fabrications": 6,
+   "fab_topics": [
+    "2026-06-28#2",
+    "2026-06-29#0",
+    "2026-06-30#2",
+    "2026-07-01#1",
+    "2026-07-01#2",
+    "2026-07-02#1"
+   ]
+  }
+ },
+ "per_topic_fabrications": [
+  {
+   "topic": "2026-06-28#0",
+   "golden": 0,
+   "deepseek": 0,
+   "glm": 0,
+   "sonnet5": 0,
+   "incumbent": 0
+  },
+  {
+   "topic": "2026-06-28#1",
+   "glm": 0,
+   "sonnet5": 0,
+   "golden": 0,
+   "incumbent": 0,
+   "deepseek": 0
+  },
+  {
+   "topic": "2026-06-28#2",
+   "incumbent": 1,
+   "glm": 0,
+   "golden": 0,
+   "sonnet5": 0,
+   "deepseek": 1
+  },
+  {
+   "topic": "2026-06-29#0",
+   "deepseek": 1,
+   "incumbent": 0,
+   "golden": 0,
+   "sonnet5": 0,
+   "glm": 0
+  },
+  {
+   "topic": "2026-06-29#1",
+   "deepseek": 0,
+   "glm": 0,
+   "golden": 0,
+   "sonnet5": 0,
+   "incumbent": 0
+  },
+  {
+   "topic": "2026-06-29#2",
+   "incumbent": 1,
+   "sonnet5": 0,
+   "glm": 0,
+   "golden": 1,
+   "deepseek": 0
+  },
+  {
+   "topic": "2026-06-30#0",
+   "glm": 0,
+   "sonnet5": 0,
+   "golden": 0,
+   "incumbent": 0,
+   "deepseek": 0
+  },
+  {
+   "topic": "2026-06-30#1",
+   "golden": 0,
+   "sonnet5": 1,
+   "glm": 0,
+   "deepseek": 0,
+   "incumbent": 1
+  },
+  {
+   "topic": "2026-06-30#2",
+   "sonnet5": 1,
+   "deepseek": 1,
+   "golden": 0,
+   "incumbent": 0,
+   "glm": 0
+  },
+  {
+   "topic": "2026-07-01#0",
+   "sonnet5": 0,
+   "incumbent": 0,
+   "golden": 0,
+   "glm": 0,
+   "deepseek": 0
+  },
+  {
+   "topic": "2026-07-01#1",
+   "incumbent": 0,
+   "sonnet5": 0,
+   "deepseek": 1,
+   "glm": 1,
+   "golden": 0
+  },
+  {
+   "topic": "2026-07-01#2",
+   "deepseek": 1,
+   "glm": 2,
+   "sonnet5": 3,
+   "golden": 0,
+   "incumbent": 2
+  },
+  {
+   "topic": "2026-07-02#0",
+   "incumbent": 1,
+   "golden": 2,
+   "deepseek": 0,
+   "glm": 1,
+   "sonnet5": 1
+  },
+  {
+   "topic": "2026-07-02#1",
+   "deepseek": 1,
+   "golden": 1,
+   "glm": 1,
+   "sonnet5": 2,
+   "incumbent": 2
+  },
+  {
+   "topic": "2026-07-02#2",
+   "glm": 0,
+   "sonnet5": 1,
+   "golden": 0,
+   "incumbent": 0,
+   "deepseek": 0
+  },
+  {
+   "topic": "2026-07-03#0",
+   "incumbent": 1,
+   "golden": 0,
+   "deepseek": 0,
+   "sonnet5": 2,
+   "glm": 0
+  },
+  {
+   "topic": "2026-07-03#1",
+   "golden": 1,
+   "deepseek": 0,
+   "glm": 1,
+   "incumbent": 1,
+   "sonnet5": 2
+  },
+  {
+   "topic": "2026-07-03#2",
+   "glm": 0,
+   "golden": 0,
+   "incumbent": 3,
+   "sonnet5": 1,
+   "deepseek": 0
+  },
+  {
+   "topic": "2026-07-04#0",
+   "glm": 1,
+   "sonnet5": 0,
+   "incumbent": 0,
+   "deepseek": 0,
+   "golden": 0
+  },
+  {
+   "topic": "2026-07-04#1",
+   "golden": 2,
+   "deepseek": 0,
+   "glm": 1,
+   "incumbent": 1,
+   "sonnet5": 2
+  },
+  {
+   "topic": "2026-07-04#2",
+   "glm": 0,
+   "incumbent": 0,
+   "deepseek": 0,
+   "golden": 0,
+   "sonnet5": 0
+  }
+ ]
+}

@@ -1,0 +1,87 @@
+{
+ "date": "2026-07-01",
+ "topic": 2,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "East Asian outlets (CGTN, Japan Today) present the talks as a fragile but necessary diplomatic process, emphasizing the value of dialogue over confrontation and potential impacts on energy-importing economies, while some American- and European-sourced English-language reports highlight Iranian 'tactics' and US military readiness.",
+      "why_unsupported": "CGTN (arts 3, 11) is terse and procedural (frozen assets, Qalibaf conditions) and Japan Today (art 9) centers on the US-Iran contradiction and Trump's domestic gasoline politics; neither emphasizes 'dialogue over confrontation' (which is Wang Yi's framing in the Spanish Infobae source, art 8) nor 'impacts on energy-importing economies.' The attributed East Asian framing is not in these analyses."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language sources prominently foreground the rhetorical conflict between Washington and Tehran over whether direct talks are occurring, featuring US VP Vance's characterization of Iran's denial as a 'Persian negotiating tactic,' while Turkish and Spanish sources do not frame the dispute in these cultural or rhetorical terms.",
+      "why_unsupported": "The Turkish-language Hurriyet (art 7) explicitly includes Vance calling Iran's denial 'a Persian negotiating tactic he does not understand,' so the claim that Turkish sources do not frame the dispute in these terms is false."
+     },
+     {
+      "quote": "Turkish-language sources uniquely cover the positions of Oman and France regarding the Strait of Hormuz, including Oman's opposition to passage fees and Iran's rejection of French involvement in de-mining, while English-language sources mention the Strait dispute but omit these specific diplomatic positions.",
+      "why_unsupported": "The Guardian (art 6, English) covers Oman's alternative proposal for navigational service fees and Baghaei's warning to European powers against involvement in de-mining the Strait. These specific positions are therefore not omitted by English-language sources, so 'uniquely' is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "C",
+    "grounding": 2,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "UK (BBC, Guardian), Turkish (Anadolu, Hurriyet), and German (DW) outlets prominently quote US VP JD Vance's characterization of Iran's denial of talks as a 'Persian negotiating tactic,' while Qatari (Al Jazeera) and Chinese (CGTN) coverage omits this framing entirely, producing a markedly more adversarial tone in the Western/Turkish cluster versus a neutral procedural tone in the Qatari and Chinese cluster.",
+      "why_unsupported": "Vance's 'Persian negotiating tactic' line appears only in Anadolu (art 1) and Hurriyet (art 7). BBC (art 2), Guardian (art 6), and DW (art 4) do not quote Vance at all, so the claim that these outlets prominently quote it is fabricated."
+     },
+     {
+      "quote": "Qatari outlet Al Jazeera frames the Doha meetings primarily as evidence of successful mediation and diplomatic momentum, while UK outlets (BBC, Guardian, Middle East Eye) foreground Qatari officials' explicit denials that any direct talks are occurring, producing a more skeptical framing of the same meeting.",
+      "why_unsupported": "Al Jazeera (art 0) is procedural, noting explicitly that 'no face-to-face talks are planned' and listing Tehran's conditions; it does not frame the meeting as successful mediation or momentum, so the claimed contrast is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language sources from the US-allied orbit (BBC, DW, France 24) prominently feature JD Vance's characterization of Iran's denials as a 'Persian negotiating tactic,' while Gulf-based English-language outlets (Al Jazeera, Middle East Eye) and Chinese outlets (CGTN) omit or downplay this framing and instead center Iran's and Qatar's stated positions on MoU implementation.",
+      "why_unsupported": "Vance's 'Persian negotiating tactic' characterization appears only in Anadolu (art 1) and Hurriyet (art 7). BBC (art 2), DW (art 4), and France 24 (arts 5, 12) do not quote Vance, so the claim that these outlets prominently feature this framing is fabricated."
+     }
+    ]
+   }
+  ]
+ },
+ "cost_usd": 0.49797,
+ "tokens": 42170,
+ "duration_s": 154.4,
+ "provider": "Anthropic"
+}

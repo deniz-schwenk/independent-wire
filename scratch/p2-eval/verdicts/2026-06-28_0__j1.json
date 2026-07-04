@@ -1,0 +1,59 @@
+{
+ "date": "2026-06-28",
+ "topic": 0,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "B",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.0609,
+ "tokens": 7052,
+ "duration_s": 18.2,
+ "provider": "Anthropic"
+}

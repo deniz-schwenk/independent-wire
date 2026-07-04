@@ -1,0 +1,78 @@
+{
+ "date": "2026-07-02",
+ "topic": 2,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "B",
+    "grounding": 2,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "The Spanish-language El País article uniquely foregrounds the UAE-linked investment in World Liberty Financial and international licensing deals in Saudi Arabia and Qatar as a foreign-policy conflict-of-interest angle, a dimension absent from the German and French coverage.",
+      "why_unsupported": "The El País analysis (article 3) says nothing about UAE-linked investment or Saudi Arabia/Qatar licensing deals; it covers WLF earnings, meme coin royalties, and Don Fox's post-Watergate comparison. The UAE 49% stake and Gulf licensing are only in the Uzbek article (4), so this framing is misattributed to Spanish coverage."
+     }
+    ]
+   },
+   {
+    "label": "C",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "German-language sources (Der Spiegel, Tagesschau) foreground partisan domestic political attacks — quoting Warren, Newsom, and Walz and the 'rug-pulled' retail-investor framing — whereas English, Spanish, and French sources instead center non-partisan ethics experts such as Richard Painter and Don Fox.",
+      "why_unsupported": "The French source (RFI, article 5) quotes only Trump and Anna Kelly and includes no ethics experts; the analyses do not support the claim that French coverage centers non-partisan ethics experts. The valid contrast is German vs. English (Painter) and Spanish (Fox), not French."
+     }
+    ]
+   },
+   {
+    "label": "D",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "German-language sources (Der Spiegel, Tagesschau) foreground sharp Democratic criticism from Warren, Newsom, and Walz with direct quotes labeling Trump's earnings as 'shameless crypto corruption' and calling him the most corrupt president in US history, while English-language sources (BBC, DW News) and French-language sources (RFI) focus more on ethics experts and financial analysts to frame the conflict-of-interest question.",
+      "why_unsupported": "The French source (RFI, article 5) quotes only Trump and Anna Kelly — no ethics experts or financial analysts. The analyses do not support attributing an ethics-expert/analyst framing to French coverage."
+     },
+     {
+      "quote": "French-language coverage (RFI) emphasizes the scale of Trump's personal wealth growth — nearly tripling from $2.3 billion to $6.5 billion between 2024 and 2026 — as a central framing device, while other language groups focus more on the specific crypto income figures without contextualizing overall wealth accumulation.",
+      "why_unsupported": "The German Tagesschau analysis (article 6) explicitly reports that Trump's wealth nearly doubled since taking office per Bloomberg's Billionaires Index — i.e., it does contextualize overall wealth accumulation — contradicting the claim that other language groups do not."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.27807,
+ "tokens": 21374,
+ "duration_s": 105.6,
+ "provider": "Anthropic"
+}

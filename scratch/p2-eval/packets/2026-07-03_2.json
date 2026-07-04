@@ -1,0 +1,910 @@
+{
+ "assignment": {
+  "title": "Venezuela earthquake death toll nears 2,600 with survivor rescued after eight days",
+  "selection_reason": "A catastrophic natural disaster with a death toll approaching 2,600 and ongoing rescue operations — the eight-day survivor rescue underscores both the scale of destruction and the state of emergency response. The story invites contested framings around the Maduro government's disaster preparedness, its willingness to accept international aid, and whether sanctions have hampered relief capacity. The psychological toll on children and the adequacy of humanitarian corridors add further dimensions. Qualified on humanitarian urgency, governance accountability questions, and the breadth of international attention."
+ },
+ "article_analyses": [
+  {
+   "actors_quoted": [],
+   "article_index": 0,
+   "summary": "Reports on the ongoing rescue of nine-year-old Fabio, trapped for eight days under rubble in Caraballeda, with rescuers from Argentina and El Salvador working six meters from him. Notes the possibility that the child is next to his mother's body and that rescuers do not rule out other survivors. The official death toll remains at least 2,295."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "reported",
+     "name": "United Nations",
+     "position": "Reports that 27 nations have sent assistance to help Venezuela cope with the scale of the disaster.",
+     "role": "International Organization",
+     "type": "international_org",
+     "verbatim_quote": null
+    }
+   ],
+   "article_index": 1,
+   "summary": "Reports that emergency relief is becoming the focus in La Guaira state, with aid stations distributing food, water, and medical supplies. Notes that the UN reports 27 nations have sent assistance to help Venezuela cope with the disaster."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Allan Madrigal",
+     "position": "Describes the rescue of Hernán Gil as an emotional moment and explains he initially doubted his own ears when he heard Gil's cries for help.",
+     "role": "Paramedic with the Costa Rican Red Cross",
+     "type": "civil_society",
+     "verbatim_quote": "\"It was an emotional moment,\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Marco Antonio Franco",
+     "position": "Describes Hernán Gil as a cheerful man who asked for specific flavors of hydration drinks and encouraged rescuers to continue.",
+     "role": "Member of the Mexican Red Cross",
+     "type": "civil_society",
+     "verbatim_quote": "\"a cheerful man\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Allan Madrigal",
+     "position": "States that the work he carried out in Venezuela has changed him and that the person who came a week ago is not the same one who will return.",
+     "role": "Paramedic with the Costa Rican Red Cross",
+     "type": "civil_society",
+     "verbatim_quote": "\"The lad who came here a week ago is not the same one that will return to Costa Rica, believe me,\""
+    }
+   ],
+   "article_index": 2,
+   "summary": "Provides a detailed account of the rescue of security guard Hernán Gil after eight days under 140 tonnes of rubble, including the technical challenges described by a Chilean firefighter as the most complex he has tackled. Reports the death toll at 2,595 with tens of thousands still missing, and includes emotional testimony from Costa Rican and Mexican Red Cross rescuers about the operation."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Delcy Rodriguez",
+     "position": "Announces the death toll has risen to 2,595, with more than 12,000 injured and 189 buildings destroyed, and states that search and rescue operations are still underway.",
+     "role": "Interim President of Venezuela",
+     "type": "government",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "reported",
+     "name": "International Monetary Fund",
+     "position": "Has offered financial assistance and credit to support Venezuela's recovery following the twin earthquakes.",
+     "role": "International Financial Institution",
+     "type": "international_org",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "reported",
+     "name": "World Bank",
+     "position": "Has offered financial assistance and credit to support Venezuela's recovery following the twin earthquakes.",
+     "role": "International Financial Institution",
+     "type": "international_org",
+     "verbatim_quote": null
+    }
+   ],
+   "article_index": 3,
+   "summary": "Reports Interim President Delcy Rodriguez's announcement that the death toll has risen to 2,595, with over 12,000 injured and 189 buildings destroyed. Notes Rodriguez's statement that the IMF and World Bank have offered financial assistance and that Venezuela is establishing a $200 million reconstruction fund in cooperation with the IMF."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Delcy Rodriguez",
+     "position": "Vehemently denies that her government reacted too slowly to the earthquake destruction, stating they acted immediately and issued an emergency decree within hours of the tremors.",
+     "role": "Interim President of Venezuela",
+     "type": "government",
+     "verbatim_quote": "\"It was a natural tragedy on a scale we never imagined, even though we knew that a seismic event could occur in our country,\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Delcy Rodriguez",
+     "position": "States that nearly all the regional officials in La Guaira perished in buildings that were reduced to rubble.",
+     "role": "Interim President of Venezuela",
+     "type": "government",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Delcy Rodriguez",
+     "position": "Puts the rising death toll at 2,595 and says the government is not yet ending its search and rescue efforts because they can still find people alive.",
+     "role": "Interim President of Venezuela",
+     "type": "government",
+     "verbatim_quote": "\"We can still find people alive,\""
+    }
+   ],
+   "article_index": 4,
+   "summary": "Reports on Interim President Delcy Rodriguez's first press conference, where she vehemently denied criticism of a slow government response, claiming immediate action and noting that nearly all regional officials in La Guaira perished. Details that the official death toll stands at 2,595, with an unofficial missing persons list down to 38,500, and describes the civilian-led response effort with volunteers, foreign rescue teams, and a reported lack of heavy machinery."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Minyar Collado",
+     "position": "States that when they found Hernán Gil, he asked them not to tell his wife he was alive in case he did not make it, but adds that they were never going to leave him there.",
+     "role": "Costa Rican rescuer",
+     "type": "civil_society",
+     "verbatim_quote": "\"When we found him, he asked us not to tell his wife that he was alive, just in case he wouldn't make it,\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Gusbimar Gonzalez",
+     "position": "Expresses elation and complete surprise at her husband's rescue, calling it a miracle and noting she has never seen so many countries come together to save one person.",
+     "role": "Wife of rescued survivor Hernán Gil",
+     "type": "affected_community",
+     "verbatim_quote": "\"I am completely surprised. It's the first time I've seen so many countries come together like this for a single cause, to save one person,\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Cristian Vera",
+     "position": "Describes the collapsed structure as complicated to access and states it was not easy to reach the exact spot where the victim was located.",
+     "role": "Leader of the Chilean rescue team",
+     "type": "civil_society",
+     "verbatim_quote": "\"This is a rather complicated structure to access,\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Delcy Rodriguez",
+     "position": "Hails the rescue on social media, celebrating the greatness of humanity when united to save another, and thanks Venezuelan and international rescuers.",
+     "role": "Acting President of Venezuela",
+     "type": "government",
+     "verbatim_quote": "\"We celebrate the greatness of humanity when it is united for a single purpose: to save another, she said. \"Thank you to our rescuers and to the support of the international rescuers.\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Jorge Rodriguez",
+     "position": "States that at least 2,295 people have been confirmed dead and more than 11,000 others were injured.",
+     "role": "President of the National Assembly of Venezuela",
+     "type": "legislature",
+     "verbatim_quote": null
+    }
+   ],
+   "article_index": 5,
+   "summary": "Reports the rescue of Hernán Gil after eight days by a seven-nation team, with detailed quotes from rescuers about his request to withhold news from his wife and the technical difficulty of the operation. Notes Acting President Delcy Rodriguez's praise for the international effort amid criticism of her government's response, and cites National Assembly President Jorge Rodriguez reporting at least 2,295 dead and over 11,000 injured."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Gusbimar Gonzalez",
+     "position": "Calls the rescue a miracle and expresses amazement at seeing so many countries come together to save a single person.",
+     "role": "Wife of rescued survivor Hernán Gil",
+     "type": "affected_community",
+     "verbatim_quote": "\"This is truly a miracle,\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Cristian Vera",
+     "position": "States it was not easy to reach the exact spot where the victim was located.",
+     "role": "Leader of the Chilean rescue team",
+     "type": "civil_society",
+     "verbatim_quote": "\"It wasn't easy to reach the exact spot where the victim was located,\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Javier Rodes",
+     "position": "Explains that time is not wasted in places where there is no expectation of recovering people alive, as his sniffer dog searched in vain through rubble.",
+     "role": "Coordinator of a Spanish rescue team",
+     "type": "civil_society",
+     "verbatim_quote": "\"Time isn't wasted in a place where there is no expectation of recovering people alive,\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Jorge Rodriguez",
+     "position": "Announces the death toll has risen to 2,295, with more than 11,000 injured and almost 13,000 left homeless.",
+     "role": "President of the National Assembly of Venezuela",
+     "type": "legislature",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Delcy Rodriguez",
+     "position": "Declares seven days of mourning, saying the country's soul is torn apart by the human losses.",
+     "role": "Interim President of Venezuela",
+     "type": "government",
+     "verbatim_quote": "\"soul is torn apart by the human losses\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Fatima Berroteran",
+     "position": "States that her family was receiving nothing until water started being brought the previous night, as they sleep in a parking lot after their home collapsed.",
+     "role": "Earthquake survivor",
+     "type": "affected_community",
+     "verbatim_quote": "\"Here, we were receiving nothing until last night when they started bringing water,\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Christian Lindmeier",
+     "position": "Warns that health services in Venezuela are under extreme pressure and there is an increased risk of outbreaks of vaccine-preventable diseases such as measles and diphtheria due to low pre-earthquake vaccination coverage.",
+     "role": "Spokesperson for the World Health Organization",
+     "type": "international_org",
+     "verbatim_quote": "\"extreme pressure\""
+    },
+    {
+     "evidence_type": "reported",
+     "name": "World Food Programme",
+     "position": "Appeals for $50 million to feed some 500,000 people for three months in Venezuela.",
+     "role": "United Nations Agency",
+     "type": "international_org",
+     "verbatim_quote": null
+    }
+   ],
+   "article_index": 6,
+   "summary": "Reports the rescue of Hernán Gil after eight days as a miracle, with his wife expressing amazement at the international cooperation, and notes the death toll at 2,295 with tens of thousands missing. Describes the shift to survival efforts, including a WFP appeal for $50 million, WHO warnings about disease outbreaks, and reports of looting and arrests of police officers stealing from rubble."
+  },
+  {
+   "actors_quoted": [],
+   "article_index": 7,
+   "summary": "Argues that the earthquake's devastation was amplified by decades of institutional decay, corruption, and underinvestment in civil protection and building codes under the previous Maduro government. Highlights the international humanitarian response as a diplomatic opportunity for Venezuela's political transition, with specific praise for Mexico's deployment of 261 military and National Guard personnel and the 'Los Topos' civilian rescue group, while warning that international solidarity cannot substitute for institutional reconstruction."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Allan Madrigal",
+     "position": "First heard Hernán's voice during an inspection of the building and asked if anyone was alive.",
+     "role": "Rescuer, Costa Rican Red Cross",
+     "type": "civil_society",
+     "verbatim_quote": "—¿Hay alguien con vida?"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Hernán Gil",
+     "position": "Responded that he was alive and not pinned down.",
+     "role": "Security guard trapped in rubble",
+     "type": "affected_community",
+     "verbatim_quote": "— Sí. —¿Estás prensado? —No, estoy libre."
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Luis Farias",
+     "position": "Described the early isolation of the rescue effort and the moral commitment to continue after giving the victim hope.",
+     "role": "President, Venezuelan Red Cross",
+     "type": "civil_society",
+     "verbatim_quote": "“Ahora ves 100 personas, pero hubo un momento en el que éramos ocho. Estábamos solos con los costarricenses”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Gusbimar González",
+     "position": "Expressed joy and gratitude to God for her husband being found alive, and noted they had a pending trip to the beach.",
+     "role": "Wife of Hernán Gil",
+     "type": "affected_community",
+     "verbatim_quote": "“Sentí alegría y agradecimiento, gratitud a Dios, porque le pedí mucho que lo encontraran con vida”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Alfredo Jiménez",
+     "position": "Noted that other teams became interested and joined the rescue once a defined strategy was seen to be working.",
+     "role": "Rescuer, Costa Rican Red Cross",
+     "type": "civil_society",
+     "verbatim_quote": "“Les empezó a llamar la atención y se vinieron”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Cristian Vera",
+     "position": "Described the rescue as a slow, dangerous, multi-tasking team effort.",
+     "role": "Mission leader, Chilean firefighters",
+     "type": "civil_society",
+     "verbatim_quote": "“Es un trabajo de equipo, multitarea, y es lento y peligroso”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Luis Farias",
+     "position": "Stated the team repeatedly asked themselves what they were doing but always answered that they must stay with the victim after giving him hope.",
+     "role": "President, Venezuelan Red Cross",
+     "type": "civil_society",
+     "verbatim_quote": "“Aquí ha habido muchísima humanidad, porque hemos tenido varios dilemas según se complicaba”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Allan Madrigal",
+     "position": "Expressed incredible happiness and described the rescue as a miracle that recharged their batteries.",
+     "role": "Rescuer, Costa Rican Red Cross",
+     "type": "civil_society",
+     "verbatim_quote": "“No nos dimos por vencidos y ya viene para afuera. Estamos increíblemente felices; recargamos las baterías con esto. Definitivamente es un milagro”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Luis Farias",
+     "position": "Explained the rescue was artisanal due to the complicated site and declared personal affection for the trapped man.",
+     "role": "President, Venezuelan Red Cross",
+     "type": "civil_society",
+     "verbatim_quote": "“Es un sitio muy complicado, este es un rescate artesanal”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Luis Farias",
+     "position": "Declared personal affection for Hernán despite knowing him only a few hours.",
+     "role": "President, Venezuelan Red Cross",
+     "type": "civil_society",
+     "verbatim_quote": "“Te conozco desde hace algunas horas, pero ya te quiero mucho”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Unnamed rescuer",
+     "position": "Warned that any material movement would trap both the victim and the rescuers without time to evacuate.",
+     "role": "Rescuer",
+     "type": "civil_society",
+     "verbatim_quote": "“Si se produce algún movimiento de los materiales, ni siquiera da tiempo para evacuar. Quedarían atrapados la víctima y los rescatistas”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Unnamed team member",
+     "position": "Assured that the team would not abandon the rescue effort.",
+     "role": "Rescue team member",
+     "type": "civil_society",
+     "verbatim_quote": "“No lo vamos a abandonar”"
+    }
+   ],
+   "article_index": 8,
+   "summary": "El País provides a minute-by-minute narrative of the eight-day international effort to rescue security guard Hernán Gil from a collapsed parking garage in La Guaira. The article details the extreme structural instability that forced rescuers from ten countries to dig multiple tunnels, pause for rain, and work through false alarms, with the building shifting nine times faster than normal during the operation. It frames the rescue as the disaster's greatest example of collaboration, quoting rescuers from Costa Rica, Chile, and Venezuela on the moral dilemmas and emotional toll of the operation."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Minyar Collado",
+     "position": "Revealed that Gil Flores asked rescuers not to tell his wife he was alive in case he did not survive.",
+     "role": "Member, Costa Rican Red Cross team",
+     "type": "civil_society",
+     "verbatim_quote": "“When we found him, he asked us not to tell his wife that he was alive, just in case he wouldn’t make it,”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Gusbimar González",
+     "position": "Said her despair gave way to hope when she heard her husband was still alive.",
+     "role": "Wife of Hernán Alberto Gil Flores",
+     "type": "affected_community",
+     "verbatim_quote": "“I saw a ray of light in the darkness,”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "María Paz Campos",
+     "position": "Talked the security guard through the entire operation and instructed him to wear protective goggles during the final hours.",
+     "role": "Veteran firefighter, Chile",
+     "type": "civil_society",
+     "verbatim_quote": "“I need you to keep the goggles on to stop the small particles that are falling from getting into your eyes,”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Dora Bello",
+     "position": "Insisted there is still life inside the collapsed Residencia Costa Brava tower block and demanded action to rescue her nephew.",
+     "role": "Aunt of missing person Eduardo José Rosal Bello",
+     "type": "affected_community",
+     "verbatim_quote": "“We need action. We need them to come and do something because there is life inside. There is life inside that building,”"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Russ Gauden",
+     "position": "Said the survival window in this part of the world extends beyond the typical 96–130 hours because the population is robust and resilient.",
+     "role": "National coordinator and team leader in Venezuela, UK International Search and Rescue",
+     "type": "civil_society",
+     "verbatim_quote": "“The population in this part of the world are very, very robust: humble, proud people. They’re survivors. And that’s [where] we see the difference. All of the books that have been written over many, many years about the windows of vulnerability – it seems to change in this part of the world,”"
+    },
+    {
+     "evidence_type": "mentioned",
+     "name": "World Food Programme",
+     "position": "Appealed for $50 million to feed approximately 500,000 people in Venezuela for three months.",
+     "role": "United Nations agency",
+     "type": "international_org",
+     "verbatim_quote": null
+    }
+   ],
+   "article_index": 9,
+   "summary": "The Guardian reports the rescue of Hernán Alberto Gil Flores from the collapsed Galerías Playa Grande shopping centre, crediting his survival to a pocket of air in his security cabin. It highlights the multinational coordination led by Chilean firefighters with teams from the US, Portugal, and Mexico, and notes the use of a telescopic camera and liquid nutrients during the final three days. The article also shifts focus to the dwindling hopes for other survivors, quoting a UK rescue coordinator on extended survival windows and a relative demanding action at a collapsed tower block, while citing a World Food Programme appeal for $50 million and satellite data suggesting over 58,000 buildings damaged."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Gusbimar Gonzalez",
+     "position": "Expressed gratitude to God for keeping her husband alive and described him as a warrior who endured everything.",
+     "role": "Wife of Hernan Alberto Gil",
+     "type": "affected_community",
+     "verbatim_quote": "\"I'm grateful to God for keeping him alive for so many days, despite not being able to eat or stay hydrated,\""
+    },
+    {
+     "evidence_type": "mentioned",
+     "name": "Nayib Bukele",
+     "position": "Posted updates on X about the rescue operation and stated rescuers provided hydration via tubing and needed to dig two separate tunnels.",
+     "role": "President of El Salvador",
+     "type": "government",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "mentioned",
+     "name": "United Nations envoy",
+     "position": "Said it was procuring 10,000 body bags for Venezuela.",
+     "role": "United Nations envoy",
+     "type": "international_org",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "mentioned",
+     "name": "USGS",
+     "position": "Estimated more than 10,000 deaths were possible.",
+     "role": "United States Geological Survey",
+     "type": "government",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "mentioned",
+     "name": "Verisk",
+     "position": "Expects economic losses from the quakes to top $10 billion.",
+     "role": "Catastrophe and risk modeling firm",
+     "type": "industry",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Paula Henao",
+     "position": "Said a cargo of diesel was sent from the Paraguana refining complex to La Guaira for rescuers' use.",
+     "role": "Oil minister of Venezuela",
+     "type": "government",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Carolina Leon",
+     "position": "Said patients requiring specialized treatment are being transferred to hospitals in Caracas after receiving emergency care.",
+     "role": "Hospital official, Vargas municipality",
+     "type": "government",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Francia Rodriguez",
+     "position": "Said care remained available and the only supplies she needed to provide were medications.",
+     "role": "Relative of hospitalized patient",
+     "type": "affected_community",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Leonel Mariano",
+     "position": "Said the Brazilian Navy field hospital had treated 180 people by Thursday and was coordinating buses to bring people from shelters.",
+     "role": "Commander, Brazilian Navy field hospital",
+     "type": "military",
+     "verbatim_quote": "\"We are coordinating buses to bring people here from the shelters,\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Ian Clark",
+     "position": "Said the earthquake compounded an already severe humanitarian crisis and strained a health system struggling to meet demand, with healthcare workers among the victims.",
+     "role": "Incident manager, World Health Organization",
+     "type": "international_org",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "mentioned",
+     "name": "Interior Ministry",
+     "position": "Said four crime scene police officials have been detained and removed from their jobs for appropriating financial assets amid the ruins.",
+     "role": "Interior Ministry of Venezuela",
+     "type": "government",
+     "verbatim_quote": null
+    }
+   ],
+   "article_index": 10,
+   "summary": "Japan Today, drawing on Reuters reporting, details the rescue of Hernan Alberto Gil and emphasizes the civilian-led nature of the disaster response despite the government's promotion of civil-military unity. It reports that volunteers, student doctors, and teachers have led digging efforts with shovels and pickaxes, while many rescuers decry a lack of heavy machinery. The article also covers the easing flow of hospital patients, the operation of a Brazilian Navy field hospital, a WHO warning about the strained health system, and the detention of four police officials for looting."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Nayib Bukele",
+     "position": "Announced the successful rescue after more than 72 hours of effort despite extremely unstable structures, aftershocks, and the need to create a new access route.",
+     "role": "President of El Salvador",
+     "type": "government",
+     "verbatim_quote": "« Après plus de 72 heures d'efforts – et malgré une structure extrêmement instable, des répliques sismiques, des effondrements et la nécessité de créer un nouvel accès pour le secourir – nous avons réussi à sauver vivant Hernán Alberto Gil Flores, âgé de 44 ans. Il était resté piégé sous les décombres du centre commercial Galerías Playa Grande pendant plus de sept jours »"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Gusbimar Gonzalez",
+     "position": "Called the rescue a miracle and expressed amazement at seeing so many countries unite to save one person.",
+     "role": "Wife of Hernán Gil",
+     "type": "affected_community",
+     "verbatim_quote": "« C'est vraiment un miracle »"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Delcy Rodriguez",
+     "position": "Celebrated the life of Hernán Gil and thanked national and international rescuers who dedicated themselves to the mission.",
+     "role": "Interim President of Venezuela",
+     "type": "government",
+     "verbatim_quote": "« Aujourd'hui, nous célébrons la vie de Hernán Gil. Merci aux sauveteurs nationaux et internationaux qui ont consacré leur corps, leur temps et leur âme à cette mission »"
+    },
+    {
+     "evidence_type": "mentioned",
+     "name": "Delcy Rodriguez",
+     "position": "Decreed seven days of national mourning in homage to the victims.",
+     "role": "Interim President of Venezuela",
+     "type": "government",
+     "verbatim_quote": null
+    }
+   ],
+   "article_index": 11,
+   "summary": "RFI reports the extraction of Hernán Gil after eight days under the rubble, noting the death toll has risen to at least 2,300 with 50,000 still missing. It describes the viral video of Gil with a bloodshot eye staring at the camera and his method of mental survival by recalling his daughter's birthday. The article contrasts this rescue with the broader grim reality, where a large letter 'D' spray-painted on dozens of destroyed buildings signals that searches are now useless, and notes interim President Delcy Rodriguez's declaration of national mourning."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Johann Pérez",
+     "position": "Explained that bodies were moved from a hospital to the port to avoid contamination and described the difficulty of helping adequately due to understaffing, scarce resources, and personal loss.",
+     "role": "Forensic scientist and police officer",
+     "type": "government",
+     "verbatim_quote": "\"Aber da es sich um eine Gesundheitseinrichtung handelt, haben wir versucht, sie anschließend hierher zu verlegen, damit das Krankenhaus nicht kontaminiert wird\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Mariela Corpas",
+     "position": "Described the search for her grandparents' bodies as a bureaucratic ordeal without a functioning mobile network, leaving her feeling powerless and frustrated.",
+     "role": "Relative of earthquake victims",
+     "type": "affected_community",
+     "verbatim_quote": "\"Das wünsche ich wirklich niemandem\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Johann Pérez",
+     "position": "Said the most difficult part is not being able to help as one would like, due to understaffing, scarce resources, or being personally affected.",
+     "role": "Forensic scientist and police officer",
+     "type": "government",
+     "verbatim_quote": "\"Denn manchmal sind wir personell unterbesetzt, die Ressourcen sind zu knapp, oder wir selbst und unsere Familie sind betroffen\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Unnamed 80-year-old woman",
+     "position": "Said too much time has passed since the quake and nobody knows anything about her missing son.",
+     "role": "Mother of missing person",
+     "type": "affected_community",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Johann Pérez",
+     "position": "Explained the identification and mass grave procedure, and said they are waiting for miracles, having already experienced many.",
+     "role": "Forensic scientist and police officer",
+     "type": "government",
+     "verbatim_quote": "\"Wir warten auf Wunder\""
+    }
+   ],
+   "article_index": 12,
+   "summary": "Tagesschau focuses on the grim logistics of death in La Guaira, describing an improvised open-air morgue at the port where bodies wrapped in plastic are lined up next to shipping containers. It quotes a forensic officer on the identification and mass grave process, and relatives who describe a bureaucratic ordeal of searching without a functioning mobile network, with roadblocks imposed by authorities adding days of uncertainty. The article captures the tension between the need for dignified farewells and the overwhelming scale of the dead, with searches now primarily for bodies a week after the quake."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Delcy Rodriguez",
+     "position": "Announced the death toll had risen to 2,595, stated the search for living people under the rubble continues, and called for unity while welcoming help from all countries, including those without diplomatic relations.",
+     "role": "Interim President of Venezuela",
+     "type": "government",
+     "verbatim_quote": "\"Siamo ancora nella fase - ha aggiunto - della ricerca di persone vive sotto le macerie: dobbiamo continuare a essere uniti e lavorare insieme. Non è il momento dello scontro politico. Anche dall'opposizione mi hanno dato una mano. Chi aiuta è benvenuto: questo si aspetta il popolo venezuelano. Accolgo e ringrazio tutti quelli che possono dare una mano, anche da quei paesi con cui non abbiamo relazioni diplomatiche. Dobbiamo essere uniti per il Venezuela\""
+    }
+   ],
+   "article_index": 13,
+   "summary": "ANSA provides a brief update reporting interim President Delcy Rodriguez's announcement that the death toll has reached 2,595. The article quotes her call for political unity, her acknowledgment of help from the opposition, and her welcome for assistance from all countries, including those with which Venezuela has no diplomatic relations."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Gusbimar Gonzalez",
+     "position": "Expressed gratitude to God for keeping her husband alive and described him as a warrior who endured everything.",
+     "role": "Wife of Hernan Alberto Gil",
+     "type": "affected_community",
+     "verbatim_quote": "\"I'm grateful to God for keeping him alive for so many days,\""
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Delcy Rodriguez",
+     "position": "Stated that search and rescue efforts have not ended after the quakes.",
+     "role": "Acting President of Venezuela",
+     "type": "government",
+     "verbatim_quote": "\"We haven't ended search and rescue efforts after quakes.\""
+    },
+    {
+     "evidence_type": "mentioned",
+     "name": "Nayib Bukele",
+     "position": "Posted updates on X about the rescue operation and stated rescuers provided hydration via tubing and needed to dig two separate tunnels.",
+     "role": "President of El Salvador",
+     "type": "government",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "mentioned",
+     "name": "Verisk",
+     "position": "Expects economic losses from the quakes to top $10 billion.",
+     "role": "Catastrophe and risk modeling firm",
+     "type": "industry",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "mentioned",
+     "name": "Venezuelan foreign ministry",
+     "position": "Stated Venezuela had received 2,000 tonnes of humanitarian aid from other countries by Thursday.",
+     "role": "Foreign ministry of Venezuela",
+     "type": "government",
+     "verbatim_quote": null
+    }
+   ],
+   "article_index": 14,
+   "summary": "CGTN reports the rescue of Hernan Alberto Gil with details on the two-tunnel operation and hydration via tubing, citing El Salvador's President Bukele. It provides updated official figures from Acting President Delcy Rodriguez of 2,595 dead and over 12,000 injured, and notes Verisk's estimate of over $10 billion in economic losses. The article also reports that Venezuela had received 2,000 tonnes of humanitarian aid from other countries by Thursday."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "mentioned",
+     "name": "Conferencia Nacional de los Obispos de Brasil",
+     "position": "Organized a fundraising campaign with the Cáritas Foundation to buy food, drinking water, medicines, and support community reconstruction programs.",
+     "role": "National Conference of Bishops of Brazil",
+     "type": "civil_society",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "mentioned",
+     "name": "Fundación Cáritas",
+     "position": "Partnered with the Brazilian bishops' conference to raise funds for essential items and programs to rebuild life, dignity, and hope.",
+     "role": "Cáritas Foundation, Brazil",
+     "type": "civil_society",
+     "verbatim_quote": null
+    },
+    {
+     "evidence_type": "mentioned",
+     "name": "United Nations",
+     "position": "Calculates the number of missing may be around 50,000.",
+     "role": "United Nations",
+     "type": "international_org",
+     "verbatim_quote": null
+    }
+   ],
+   "article_index": 15,
+   "summary": "El Financiero reports on Brazil's symbolic tribute to Venezuela's earthquake victims, with Rio de Janeiro's Christ the Redeemer statue illuminated with the Venezuelan flag and the message 'SOS Venezuela – Solidarity without borders. Donate now.' The article details a fundraising campaign organized by the Brazilian Catholic Church and Cáritas Foundation to purchase food, water, medicines, and support community reconstruction. It also cites the official death toll of 2,295 and a UN estimate of 50,000 missing."
+  },
+  {
+   "actors_quoted": [
+    {
+     "evidence_type": "stated",
+     "name": "Andreina",
+     "position": "Described her five-year-old daughter breaking down in tears, relieved to still have her mother, and said she has not told her daughter about the death of her nephews because the blow would be too hard.",
+     "role": "Mother of three, displaced person",
+     "type": "affected_community",
+     "verbatim_quote": "« Hier, la petite a fondu en larmes »"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Johana Gando",
+     "position": "Explained that children's trauma is visible in their drawings of families and houses, and that some children collapse while drawing as the traumatic event resurfaces.",
+     "role": "Psychologist, Fundainil NGO",
+     "type": "civil_society",
+     "verbatim_quote": "« Il y a un traumatisme, oui. On le voit dans leurs dessins »"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Roberto Benes",
+     "position": "Stated there is an enormous need for medical care, psychosocial support, and especially access to drinking water, and warned the trauma impact must not be underestimated.",
+     "role": "Regional Director for Latin America, UNICEF",
+     "type": "international_org",
+     "verbatim_quote": "« Il y a un besoin énorme dû à l'impact des deux tremblements de terre, qui ont eu lieu en très peu de temps »"
+    },
+    {
+     "evidence_type": "stated",
+     "name": "Claudia Gonzalez Pacheco",
+     "position": "Said children do not understand what happened but are terrified by any sudden movement or noise, and described her two-year-old grandson trembling during a thunderstorm.",
+     "role": "External relations officer, World Vision Venezuela",
+     "type": "civil_society",
+     "verbatim_quote": "« ces enfants ne comprennent pas ce qui s'est passé mais ils ont très peur. N'importe quel mouvement brusque, n'importe quel bruit soudain les met en alerte et les terrorise »"
+    }
+   ],
+   "article_index": 16,
+   "summary": "RFI's second article focuses on the psychological toll on children displaced by the earthquakes, reporting from a UN-managed camp at a sports complex in La Guaira. It quotes a mother who has not told her daughter about the death of her nephews, a psychologist from Fundainil who describes children collapsing while drawing as trauma resurfaces, and UNICEF's regional director warning that 680,000 children need humanitarian aid and that the trauma impact must not be underestimated. A World Vision officer describes children terrified by any sudden noise and insists professional accompaniment is essential for the long term."
+  }
+ ],
+ "article_metadata": [
+  {
+   "article_index": 0,
+   "language": "it",
+   "country": "Italy",
+   "outlet": "ANSA"
+  },
+  {
+   "article_index": 1,
+   "language": "en",
+   "country": "Qatar",
+   "outlet": "Al Jazeera"
+  },
+  {
+   "article_index": 2,
+   "language": "en",
+   "country": "United Kingdom",
+   "outlet": "BBC"
+  },
+  {
+   "article_index": 3,
+   "language": "en",
+   "country": "China",
+   "outlet": "CGTN"
+  },
+  {
+   "article_index": 4,
+   "language": "en",
+   "country": "Singapore",
+   "outlet": "CNA"
+  },
+  {
+   "article_index": 5,
+   "language": "en",
+   "country": "Germany",
+   "outlet": "DW News"
+  },
+  {
+   "article_index": 6,
+   "language": "en",
+   "country": "Pakistan",
+   "outlet": "Dawn"
+  },
+  {
+   "article_index": 7,
+   "language": "es",
+   "country": "Mexico",
+   "outlet": "El Financiero"
+  },
+  {
+   "article_index": 8,
+   "language": "es",
+   "country": "Spain",
+   "outlet": "El País"
+  },
+  {
+   "article_index": 9,
+   "language": "en",
+   "country": "United Kingdom",
+   "outlet": "The Guardian"
+  },
+  {
+   "article_index": 10,
+   "language": "en",
+   "country": "Japan",
+   "outlet": "Japan Today"
+  },
+  {
+   "article_index": 11,
+   "language": "fr",
+   "country": "France",
+   "outlet": "RFI"
+  },
+  {
+   "article_index": 12,
+   "language": "de",
+   "country": "Germany",
+   "outlet": "Tagesschau"
+  },
+  {
+   "article_index": 13,
+   "language": "it",
+   "country": "Italy",
+   "outlet": "ANSA"
+  },
+  {
+   "article_index": 14,
+   "language": "en",
+   "country": "China",
+   "outlet": "CGTN"
+  },
+  {
+   "article_index": 15,
+   "language": "es",
+   "country": "Mexico",
+   "outlet": "El Financiero"
+  },
+  {
+   "article_index": 16,
+   "language": "fr",
+   "country": "France",
+   "outlet": "RFI"
+  }
+ ],
+ "candidates": [
+  {
+   "label": "A",
+   "preliminary_divergences": [
+    "Spanish-language sources uniquely frame the earthquake's devastation as a consequence of decades of institutional decay and corruption under the Maduro government, presenting the international response as a diplomatic opportunity for political transition — a framing entirely absent from English, French, German, and Italian-language coverage.",
+    "French-language sources are the only ones to foreground the psychological toll on displaced children, quoting psychologists and UNICEF officials on trauma — a dimension no other language group addresses.",
+    "German-language sources uniquely focus on the grim logistics of mass death, describing improvised open-air morgues and the bureaucratic ordeal faced by relatives searching for loved ones' bodies without a functioning mobile network — a perspective absent from all other language groups.",
+    "English-language sources emphasize the civilian-led nature of the disaster response, highlighting volunteers and student doctors digging with shovels and pickaxes while decrying a lack of heavy machinery, whereas Spanish- and Italian-language sources focus more on official rescue operations and government statements.",
+    "English-language sources report on looting and the detention of crime scene police officers for stealing financial assets from rubble, while no other language group covers this breakdown of public order.",
+    "Spanish-language sources uniquely cover symbolic international solidarity gestures such as Brazil's Christ the Redeemer statue illuminated with the Venezuelan flag and Catholic Church fundraising campaigns — a dimension absent from all other language groups.",
+    "Italian-language sources uniquely highlight Delcy Rodriguez's diplomatic overture welcoming assistance from countries with which Venezuela has no diplomatic relations and her acknowledgment of opposition help — a framing not emphasized in any other language group."
+   ],
+   "coverage_gaps": [
+    "No perspectives from Venezuelan domestic media or domestic civil society organizations are present — all sources are international outlets, missing the domestic perspective on the disaster and its political implications.",
+    "No quoted voices from Venezuelan opposition political figures appear anywhere in the corpus, despite the political transition context and Delcy Rodriguez's mention of opposition help — the opposition's assessment of government disaster response is entirely absent.",
+    "No article examines whether international sanctions on Venezuela have hampered relief capacity, despite this being a central governance question for the topic — the potential impact of sanctions on importing heavy machinery, medical supplies, or reconstruction materials goes unaddressed.",
+    "No perspectives from seismologists, earthquake engineers, or building code experts are included — the structural and scientific reasons why 189 buildings collapsed and over 58,000 were damaged remain unexamined.",
+    "No coverage addresses the earthquake's impact on indigenous communities or rural areas outside La Guaira and Caraballeda — the geographic scope is confined to the most visible urban disaster zones.",
+    "No voices from the Venezuelan diaspora are represented, despite their likely personal connections to affected communities and potential insight into the challenges of sending aid or remittances under sanctions.",
+    "No discussion of long-term reconstruction planning appears beyond the mention of a $200 million fund — building code reform, urban planning, and disaster preparedness for future seismic events are absent from the corpus.",
+    "No quoted voices from major international humanitarian NGOs such as Médecins Sans Frontières or Oxfam appear — the perspective of frontline non-governmental humanitarian workers beyond UN agencies and national Red Cross societies is missing."
+   ]
+  },
+  {
+   "label": "B",
+   "preliminary_divergences": [
+    "The Mexican Spanish-language source (El Financiero) attributes the scale of devastation to decades of institutional decay, corruption, and underinvestment in building codes under the Maduro government and frames the international response as a diplomatic opportunity for political transition, whereas the English-language and other European sources largely confine themselves to the rescue narrative without such structural governance critique.",
+    "The Chinese English-language source (CGTN) foregrounds IMF and World Bank financial offers, a $200 million reconstruction fund, and the volume of aid received in a cooperative, positive frame, while UK, German, and Singaporean sources foreground criticism of the government's response, aid shortfalls, and a reported lack of heavy machinery.",
+    "The German Tagesschau uniquely centers the grim logistics of death — an improvised open-air morgue, mass-grave procedures, and roadblocks imposed by authorities obstructing grieving families — whereas most English, Spanish, and French coverage centers the uplifting 'miracle' rescue of Hernán Gil.",
+    "The French source RFI uniquely devotes coverage to the psychological trauma of displaced children, quoting psychologists and UNICEF, a dimension absent from all other language groups.",
+    "The Italian ANSA leads with the rescue effort for nine-year-old Fabio in Caraballeda, while English, Spanish, French, and other European sources concentrate almost entirely on the rescue of security guard Hernán Gil.",
+    "Reports of looting and the detention of police officers for stealing from the rubble appear in the Pakistani (Dawn) and Japanese (Japan Today) English-language sources but are absent from the Chinese CGTN's aid-focused framing.",
+    "The Japanese source (Japan Today) emphasizes that the response was civilian-led by volunteers, student doctors, and teachers despite the government's promotion of 'civil-military unity,' an implicit accountability angle not developed in the Chinese or Italian coverage."
+   ],
+   "coverage_gaps": [
+    "No United States government or official perspective appears anywhere in the corpus beyond a cited USGS death estimate, despite Washington's central role in the sanctions debate raised by the assignment.",
+    "No article directly examines whether international sanctions hampered Venezuela's relief capacity, a contested framing flagged as central to the story yet addressed only obliquely through Rodriguez's welcome of aid from countries without diplomatic relations.",
+    "No Venezuelan opposition figures are directly quoted, leaving domestic political criticism of the Maduro-era government's disaster preparedness represented only through a Mexican outlet's analysis and Rodriguez's own paraphrased acknowledgment.",
+    "No Venezuelan domestic outlets are represented in the corpus — every source is foreign — so the internal national perspective on the disaster and response is absent.",
+    "No independent seismologists or disaster-engineering experts are quoted on the earthquake's causes or the building-collapse patterns, leaving the scientific dimension of why the toll approached 2,600 unexamined."
+   ]
+  },
+  {
+   "label": "C",
+   "preliminary_divergences": [
+    "Spanish-language sources (El País, El Financiero) foreground institutional decay, corruption, and underinvestment in building codes under the previous Maduro government as amplifiers of the disaster, while Chinese-language outlets (CGTN) and Italian-language outlets (ANSA) present the government response neutrally, emphasizing Rodriguez's calls for unity and international financial assistance without critical framing.",
+    "German-language coverage (Tagesschau) uniquely centers the logistics of death — improvised morgues, mass graves, body identification procedures, and the bureaucratic ordeal faced by relatives searching for the dead — while English-language and French-language sources overwhelmingly foreground the survivor rescue narrative as the dominant story.",
+    "English-language sources from the UK (BBC, The Guardian) and Singapore (CNA) include explicit criticism of the Venezuelan government's slow response and note the civilian-led nature of rescue efforts with a lack of heavy machinery, whereas French-language (RFI) and Chinese-language (CGTN) coverage largely omits or downplays government accountability questions.",
+    "French-language coverage (RFI) is the only language group to dedicate a full article to the psychological trauma of children, quoting UNICEF, World Vision, and local psychologists, a dimension almost entirely absent from English-, Spanish-, German-, and Italian-language reporting.",
+    "English-language sources from multiple regions (Dawn/Pakistan, The Guardian/UK, Japan Today/Japan) report on looting and the detention of police officers for stealing from rubble, while Spanish-, French-, Italian-, and German-language sources do not address post-disaster criminality.",
+    "Latin American regional coverage (El Financiero/Mexico) uniquely highlights symbolic solidarity gestures such as the illumination of Christ the Redeemer and the role of the Brazilian Catholic Church's fundraising campaign, framing the disaster through regional solidarity, while European and Anglophone outlets frame international involvement primarily through rescue teams and institutional aid pledges.",
+    "English-language sources (The Guardian, Japan Today/Reuters) cite specific quantitative estimates — USGS projecting over 10,000 possible deaths, Verisk estimating $10 billion in economic losses, and satellite data suggesting 58,000 damaged buildings — while non-English-language sources largely rely only on official Venezuelan government casualty figures without independent verification or modeling.",
+    "The UK rescue coordinator quoted in The Guardian extends the survival-window discussion by attributing longer survival to the resilience of the local population, a framing absent from all non-Anglophone coverage, which treats the eight-day rescue purely as a technical and emotional achievement."
+   ],
+   "coverage_gaps": [
+    "No Venezuelan opposition voices or exiled political figures are quoted anywhere in the corpus, despite the assignment noting contested framings around the Maduro government's disaster preparedness and the political transition context.",
+    "No coverage from any Venezuelan domestic media outlet is included, meaning the perspective of local journalists reporting from the ground is entirely absent.",
+    "No article addresses the role of U.S. sanctions on Venezuela's disaster preparedness or relief capacity, a dimension flagged in the assignment's selection reason as a key contested framing.",
+    "No seismologists, structural engineers, or disaster-preparedness experts are quoted to assess building code compliance, seismic risk management, or the structural reasons for the scale of collapse.",
+    "No perspectives from displaced Venezuelan diaspora communities — estimated at over seven million people before the earthquake — are represented, despite their likely role in remittances, advocacy, and family connections to victims.",
+    "No coverage originates from other Latin American countries directly involved in rescue operations (Costa Rica, Chile, Argentina, Colombia, Brazil) despite their nationals being prominently quoted as rescuers, meaning the story of their deployment is told only through external outlets.",
+    "No article systematically addresses the humanitarian corridor logistics — how aid is entering the country, port and airport capacity, customs procedures, or potential political gatekeeping of relief supplies.",
+    "No insurance industry or economic analysis perspective is included beyond a single mention of Verisk's $10 billion estimate, leaving the reconstruction financing challenge and Venezuela's fiscal capacity largely unexamined.",
+    "No article addresses the situation of Venezuela's pre-existing internally displaced population or the millions who had already emigrated, and how the earthquake interacts with the country's ongoing humanitarian and migration crisis.",
+    "The WHO warning about disease outbreaks due to low pre-earthquake vaccination coverage appears in only one source (Dawn), and no article explores the public health infrastructure dimension in depth, including hospital damage, medical supply chains, or epidemiological surveillance capacity."
+   ]
+  },
+  {
+   "label": "D",
+   "preliminary_divergences": [
+    "Spanish-language outlets (El Financiero, El País) foreground governance accountability, with El Financiero explicitly attributing the scale of destruction to decades of institutional decay and corruption under the previous Maduro government, while English-language outlets like CNA and CGTN largely relay the interim president's denial of a slow response without independently probing underlying institutional causes.",
+    "German-language coverage (Tagesschau) centers on the grim logistics of mass death—open-air morgues, forensic identification, bureaucratic roadblocks to body recovery—a bleak framing largely absent from Spanish, English, and French-language coverage, which foreground rescue 'miracle' narratives around Hernán Gil.",
+    "French-language RFI uniquely reports on the psychological trauma of displaced children and the symbolic spray-painted 'D' markings on buildings signaling that operations have shifted from rescue to recovery, dimensions not covered by any English, Spanish, German, or Italian-language article.",
+    "Chinese state-run English-language outlet CGTN emphasizes international financial institutions (IMF, World Bank, a $200 million reconstruction fund) and economic loss estimates as the frame for recovery, a financial-assistance angle not similarly emphasized by European-language sources like BBC, DW, or El País.",
+    "Italian-language ANSA coverage is comparatively terse, restating death-toll figures and brief rescue updates without the accountability critique or humanitarian depth found in Spanish (El País) and English (The Guardian, Dawn) reporting.",
+    "English-language outlets from Pakistan (Dawn) and Japan (Japan Today) foreground the civilian-led nature of the response, the lack of heavy machinery, and looting arrests as implicit critiques of government response capacity, a framing far less present in Chinese state media (CGTN) or Italian (ANSA) coverage, which relay official government figures largely without such critique."
+   ],
+   "coverage_gaps": [
+    "No article directly addresses whether international sanctions on Venezuela hampered relief and rescue capacity, despite this being a central contested framing named in the assignment's selection reason.",
+    "No opposition political figures are directly quoted anywhere in the corpus; the sole reference to the political opposition is filtered through Delcy Rodriguez's own claim that 'the opposition gave me a hand.'",
+    "No United States government, State Department, or sanctions-policy perspective appears, despite the US's outsized role in Venezuela sanctions debates and the USGS being cited only for a damage estimate rather than policy commentary.",
+    "No structural engineer, architect, or seismologist is quoted to substantiate claims (made only by El Financiero) about building-code failures or institutional causes behind the high death toll.",
+    "Coverage is geographically concentrated on La Guaira, Caraballeda, and Vargas, leaving other earthquake-affected Venezuelan regions and their local officials or residents entirely unrepresented.",
+    "No Venezuelan diaspora or expatriate community voices are included despite the disaster's likely resonance among Venezuelans abroad.",
+    "Despite the assignment's emphasis on 'breadth of international attention,' quoted government and rescue-team voices are limited to Latin American (El Salvador, Chile, Costa Rica, Brazil, Mexico), a few European, and no Middle Eastern, African, or South Asian government sources, even though dozens of nations reportedly sent aid.",
+    "No article provides detailed reporting on the logistics or adequacy of humanitarian corridors and aid-distribution bottlenecks, despite this being flagged as a key dimension of the story in the assignment."
+   ]
+  },
+  {
+   "label": "E",
+   "preliminary_divergences": [
+    "Latin American Spanish-language sources explicitly attribute the earthquake's high toll to decades of institutional decay and corruption under Maduro, framing international aid as a diplomatic opening for political transition, while European sources focus on multinational rescue efforts and human-interest narratives without direct political attribution.",
+    "French-language coverage uniquely dedicates an in-depth article to the psychological trauma of displaced children, a theme largely absent from other language groups that concentrate on rescue operations, death tolls, and government crisis management.",
+    "German-language reporting centers on the logistical challenges of mass fatality management and the bureaucratic obstacles faced by families searching for relatives, contrasting with the rescue miracle narratives that dominate English- and Spanish-language media.",
+    "Asian English-language outlets highlight Verisk's economic loss projections and criticize the government's lack of heavy machinery and civilian-led response, while European English-language media emphasize the technical complexity and international cooperation of the Hernán Gil rescue without equivalent economic or governance critique."
+   ],
+   "coverage_gaps": [
+    "No Venezuelan opposition political figures or independent local analysts are quoted anywhere in the corpus, leaving unexamined the domestic political debate over disaster preparedness and aid acceptance despite the government's contested reputation.",
+    "The United States' position on sanctions and their possible impact on humanitarian access is entirely absent, a critical gap given the geopolitical backdrop and Venezuela's fraught relationship with Washington.",
+    "Local Venezuelan civil-society organizations or community-based relief groups are not given a voice; all domestic perspectives come from individual survivors or government officials, omitting organized grassroots responses.",
+    "No seismic or structural engineering experts are interviewed to explain why specific buildings collapsed and whether corruption or negligence contributed to the disaster's scale, a gap that undermines accountability discussions.",
+    "The impact of the earthquake on Venezuelan migration and neighboring countries' border management is not covered, despite pre-existing humanitarian crises and large displaced populations.",
+    "None of the articles investigate the pre-existing humanitarian emergency inside Venezuela—such as health system collapse or food insecurity—as a factor that compounded the earthquake's lethality, instead treating it as a stand-alone natural disaster."
+   ]
+  }
+ ]
+}

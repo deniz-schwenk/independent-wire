@@ -1,0 +1,478 @@
+{
+ "assignment": {
+  "title": "NATO summit convenes with divisions over Ukraine aid and burden-sharing",
+  "selection_reason": "The Ankara summit surfaces genuine alliance friction — Estonia's push for EU accession leverage, Poland's caution, and Lithuania's warning of fracture over defense spending — that goes beyond routine pledges of support to Ukraine and touches the alliance's long-term cohesion. The attendance of South Korean and Pakistani leaders signals broader geopolitical stakes extending past the transatlantic core. This is a live diplomatic contest over burden-sharing with materially different national positions in tension."
+ },
+ "article_analyses": [
+  {
+   "article_index": 0,
+   "summary": "Reports on the French presidency's briefing ahead of the Ankara summit, detailing France's push for European strategic autonomy, greater burden-sharing, and a commitment to approximately €70 billion in Ukraine aid for 2026 with similar levels for 2027. The article notes France will not replace US capabilities but calls for a new European capability model, and mentions a likely bilateral meeting between Macron and Erdogan.",
+   "actors_quoted": [
+    {
+     "name": "Emmanuel Macron's office",
+     "role": "French Presidency (Elysee Palace)",
+     "type": "government",
+     "position": "States the summit will focus on European security, support for Ukraine, and US-European realignment, emphasizing that Europeans must take greater responsibility for their own security.",
+     "evidence_type": "stated",
+     "verbatim_quote": null
+    },
+    {
+     "name": "Elysee Palace",
+     "role": "French Presidency",
+     "type": "government",
+     "position": "Clarifies that France is not going to replace US capabilities but that European allies need to consider a new capability model for NATO.",
+     "evidence_type": "stated",
+     "verbatim_quote": null
+    }
+   ]
+  },
+  {
+   "article_index": 1,
+   "summary": "Details the draft NATO summit declaration pledging €70 billion in military aid to Ukraine for 2026 and at least equivalent levels in 2027, with European members and Canada providing the majority of funding. The article also covers German Chancellor Merz pushing back on Trump's criticism of Germany's defense spending, insisting the country is doubling its budget within four years.",
+   "actors_quoted": [
+    {
+     "name": "Friedrich Merz",
+     "role": "German Chancellor",
+     "type": "government",
+     "position": "Insists Germany is in the process of doubling its defense budget within four years, calling it the greatest effort ever made to strengthen defense capabilities, and pushes back on Trump's description of European defense budgets as 'ridiculous'.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"This is the greatest effort we have ever made to strengthen our defense capabilities. In that respect, we have nothing to be ashamed of.\""
+    },
+    {
+     "name": "Donald Trump",
+     "role": "US President",
+     "type": "government",
+     "position": "Describes European NATO allies' defense spending budgets as 'ridiculous' and singles out Germany's contribution as 'much lower' than others.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"The United States spends more money on NATO than any other country, by far, to protect them, without getting any benefit from so doing.\""
+    }
+   ]
+  },
+  {
+   "article_index": 2,
+   "summary": "Covers German Chancellor Merz's meeting with Baltic leaders in Berlin, where he emphasized the concrete Russian threat on NATO's eastern flank, citing airspace violations, hybrid attacks, and submarine cable destruction. The article reports Lithuania's push to amend its constitution to allow nuclear weapons as part of NATO deterrence, Estonia's call to maintain pressure on Russia, and Merz's defense of Germany's defense spending increase against Trump's criticism.",
+   "actors_quoted": [
+    {
+     "name": "Friedrich Merz",
+     "role": "German Chancellor",
+     "type": "government",
+     "position": "States the Russian threat on NATO's eastern flank is 'not abstract, but very concrete' and that the security of the Baltic is also the security of Germany.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"Esta amenaza no es abstracta, sino muy concreta, y en el flanco oriental de la OTAN se puede palpar con las manos.\""
+    },
+    {
+     "name": "Gitanas Nauseda",
+     "role": "President of Lithuania",
+     "type": "government",
+     "position": "Announces a constitutional amendment to remove restrictions on the possible use of nuclear weapons in Lithuania to support NATO's collective nuclear deterrence, and calls the German brigade a significant reinforcement of defense.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"Hace unos días puse en marcha una enmienda constitucional cuyo objetivo es eliminar la restricción vigente sobre el posible uso de armas nucleares en Lituania.\""
+    },
+    {
+     "name": "Kristen Michal",
+     "role": "Prime Minister of Estonia",
+     "type": "government",
+     "position": "Calls for maintaining pressure on Russia, stating that Russia is weaker than it has been in years as a result of allied actions, and emphasizes that the security of the Baltic region is the security of NATO.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"Hoy en día, Rusia está más débil de lo que ha estado en años. Y eso no es casualidad. Es el resultado de nuestras acciones. Nuestra estrategia funciona. Mantengamos la presión sobre Rusia, no sobre Ucrania.\""
+    },
+    {
+     "name": "Edgars Rinkevics",
+     "role": "Prime Minister of Latvia",
+     "type": "government",
+     "position": "Warns that NATO member states will be drawn into direct confrontation if attacked, regardless of provocations, and calls for calm over Russia's closure of railway border crossings, attributing it to economic reasons.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"Somos conscientes de que vivimos en un mundo muy inestable, en el que no se puede prever lo que va a suceder y en el que hay que prepararse para toda una serie de provocaciones y agresores.\""
+    }
+   ]
+  },
+  {
+   "article_index": 3,
+   "summary": "Reports Trump's statement calling the US relationship with NATO 'ridiculous' and 'one sided' ahead of the Ankara summit, citing his disappointment that allies refused to become more actively involved in attacking Iran. The article notes Secretary of State Rubio's expectation that the rift will be discussed at the summit, making it one of the more important in NATO's history.",
+   "actors_quoted": [
+    {
+     "name": "Donald Trump",
+     "role": "US President",
+     "type": "government",
+     "position": "Calls the US relationship with NATO 'ridiculous' and 'one sided', insisting Europe must take the lead role for its own defense.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"They were not there for us!!!\""
+    },
+    {
+     "name": "Marco Rubio",
+     "role": "US Secretary of State",
+     "type": "government",
+     "position": "Emphasizes that Trump's disappointment at NATO allies' response to US operations in the Middle East will have to be addressed at the summit, making it one of the more important in NATO's history.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"The president's views – frankly, disappointment – at some of our Nato allies and their response to our operations in the Middle East, they are well documented. That will have to be addressed.\""
+    }
+   ]
+  },
+  {
+   "article_index": 4,
+   "summary": "Reports that NATO's European members and Canada will pledge €70 billion in military aid to Ukraine for both 2026 and 2027, with the largely symbolic move aimed at showing Trump that allies have fully taken over financing and demonstrating steadfast backing to Zelenskyy. The article notes Germany pushed for the written commitment while Italy pushed back, and that the declaration will call for a 'stronger Europe in a stronger NATO' while addressing Iran's nuclear program and freedom of navigation in the Strait of Hormuz.",
+   "actors_quoted": [
+    {
+     "name": "Donald Trump",
+     "role": "US President",
+     "type": "government",
+     "position": "Signals continued upset at the pace of Europe's defense spending, calling it 'ridiculous' for the US to continue its 'one sided' relationship to NATO.",
+     "evidence_type": "stated",
+     "verbatim_quote": null
+    }
+   ]
+  },
+  {
+   "article_index": 5,
+   "summary": "Reports Polish Prime Minister Tusk's call for caution in pledging additional financial assistance to Ukraine at the NATO summit, arguing that Poland bears significant responsibilities for defending the EU's eastern border and needs special consideration. The article contextualizes this within an escalating diplomatic row between Poland and Ukraine, sparked by Kyiv naming a military unit after the Ukrainian Insurgent Army, which led to the revocation of Zelensky's Order of the White Eagle.",
+   "actors_quoted": [
+    {
+     "name": "Donald Tusk",
+     "role": "Prime Minister of Poland",
+     "type": "government",
+     "position": "Urges caution in pledging additional financial assistance to Ukraine at the NATO summit, stating Poland carries the main burden of defending the EU's eastern border and needs special consideration.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"Not because I believe Ukraine does not need financial assistance, but because I believe Poland has very significant responsibilities related to the entire eastern EU border, and everyone must take that into account.\""
+    }
+   ]
+  },
+  {
+   "article_index": 6,
+   "summary": "Lithuanian President Gitanas Nausėda warns that NATO risks splitting into two or three parts if some members fail to meet the 5% GDP defense spending target while others reach it, arguing this would undermine collective defense spirit and solidarity. The remarks were made during a joint press conference in Berlin with Latvian and Estonian counterparts and German Chancellor Friedrich Merz.",
+   "actors_quoted": [
+    {
+     "name": "Gitanas Nausėda",
+     "role": "President of Lithuania",
+     "type": "government",
+     "position": "Warns that NATO will fracture if some member states fail to meet the 5% GDP defense spending target while others do, splitting the alliance into two or three parts and damaging collective defense spirit and solidarity.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"It would be highly controversial or contradictory if some countries will try to do more and will reach this target in coming years and other countries will fluctuate, let’s say at the level of 2 percent or 2.5 percent,\""
+    }
+   ]
+  },
+  {
+   "article_index": 7,
+   "summary": "Reports that European NATO states and Canada will pledge 140 billion euros in military aid to Ukraine at the Ankara summit, covering this year and next, with 60 billion euros coming from EU loans for 2026-2027 and 40 billion euros annually from bilateral contributions. The new commitment effectively replaces US funding after the Trump administration halted its military support for Ukraine.",
+   "actors_quoted": []
+  },
+  {
+   "article_index": 8,
+   "summary": "Reports that South Korean President Lee will attend the NATO summit in Ankara this week and subsequently pay a state visit to Mongolia. The article provides only a brief headline-style announcement with no substantive details about Lee's agenda or positions at the summit.",
+   "actors_quoted": []
+  },
+  {
+   "article_index": 9,
+   "summary": "Details the Trump administration's expectations for the Ankara summit, with US Ambassador to NATO Matthew Whitaker stating that Trump expects all allies to move urgently toward the 5% GDP defense spending target by 2035, and identifying Poland, Nordic countries, Baltics, and Germany as leaders while others lag. The article also highlights Washington's interest in Turkey's defense industrial capacity as a model and signals a broader shift toward European allies taking more responsibility for their own defense.",
+   "actors_quoted": [
+    {
+     "name": "Matthew Whitaker",
+     "role": "US Ambassador to NATO",
+     "type": "government",
+     "position": "States that Trump fully expects all allies to step up immediately and get on the path to 5% defense spending with urgency, and identifies Poland, Nordic countries, Baltics, and Germany as leading while others are behind.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"fully expects that all allies will step up immediately and get on the path to 5% and do it with urgency.\""
+    },
+    {
+     "name": "Donald Trump",
+     "role": "President of the United States",
+     "type": "government",
+     "position": "Describes his attendance at the Ankara summit as being out of respect for President Erdogan and expects to do something that will make Erdogan very happy regarding Turkey's F-35 program and KAAN fighter jet engine requests.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"out of respect to President (Recep Tayyip) Erdogan.\""
+    },
+    {
+     "name": "Rich Outzen",
+     "role": "Senior Fellow at the Atlantic Council",
+     "type": "civil_society",
+     "position": "States that US interest in Turkish-made defense equipment is growing and American firms are increasingly buying Turkish products in areas such as shipbuilding and drones.",
+     "evidence_type": "reported",
+     "verbatim_quote": null
+    },
+    {
+     "name": "Mark Rutte",
+     "role": "NATO Secretary-General",
+     "type": "international_org",
+     "position": "Defends the alliance against Trump's complaint about lack of European participation in the US-Israel war on Iran, noting that 4,000-5,000 US planes flew out of European bases during the conflict and describing European reluctance as isolated cases rather than a collective failure.",
+     "evidence_type": "reported",
+     "verbatim_quote": null
+    },
+    {
+     "name": "Pete Hegseth",
+     "role": "US Secretary of Defense",
+     "type": "government",
+     "position": "Ordered a six-month review of the full US force posture in Europe.",
+     "evidence_type": "mentioned",
+     "verbatim_quote": null
+    },
+    {
+     "name": "Marco Rubio",
+     "role": "US Secretary of State",
+     "type": "government",
+     "position": "Told a NATO foreign ministers' meeting that there is broad recognition that there will eventually be fewer US troops in Europe than historically.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"there are going to be eventually less US troops in Europe than there has historically been.\""
+    }
+   ]
+  },
+  {
+   "article_index": 10,
+   "summary": "Reports that Ukrainian Foreign Minister Andrii Sybiha proposed a package of anti-crisis measures to defuse tensions with Poland during a meeting with Polish Foreign Minister Radoslaw Sikorski in Warsaw, including consultations between foreign ministries, a meeting of WWII historians, and outreach to religious leaders. The diplomatic crisis stems from President Zelensky's decision to rename a Ukrainian military unit after the Ukrainian Insurgent Army, which Poland associates with the Volyn massacres of Polish civilians during WWII.",
+   "actors_quoted": [
+    {
+     "name": "Andrii Sybiha",
+     "role": "Foreign Minister of Ukraine",
+     "type": "government",
+     "position": "Proposes a package of anti-crisis steps including consultations between foreign ministries, a meeting of WWII historians, and outreach to religious leaders, while calling on both nations to set emotions aside and work together toward shared goals.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"Ukraine remains open to an equal and honest dialogue,\""
+    },
+    {
+     "name": "Radoslaw Sikorski",
+     "role": "Foreign Minister of Poland",
+     "type": "government",
+     "position": "Called President Nawrocki's decision to strip Zelensky of the Order of the White Eagle an inappropriate response because it humiliated the president of Ukraine personally.",
+     "evidence_type": "reported",
+     "verbatim_quote": null
+    },
+    {
+     "name": "Donald Tusk",
+     "role": "Prime Minister of Poland",
+     "type": "government",
+     "position": "Called the continued involvement of Polish and Ukrainian politicians in the controversy a strategic mistake that would harm both countries.",
+     "evidence_type": "reported",
+     "verbatim_quote": null
+    },
+    {
+     "name": "Karol Nawrocki",
+     "role": "President of Poland",
+     "type": "government",
+     "position": "Revoked President Zelensky's Order of the White Eagle on June 19 in response to the renaming of a Ukrainian military unit after the Ukrainian Insurgent Army.",
+     "evidence_type": "mentioned",
+     "verbatim_quote": null
+    }
+   ]
+  },
+  {
+   "article_index": 11,
+   "summary": "Polish Prime Minister Donald Tusk states that Ukraine must take the next step in repairing bilateral relations, warning that it will no longer be the case that only Warsaw proposes a good stance and that rebuilding trust requires goodwill from Kyiv. The article frames the diplomatic clash as originating from President Nawrocki stripping Zelensky of the Order of the White Eagle after Kyiv named a military unit after the Ukrainian Insurgent Army.",
+   "actors_quoted": [
+    {
+     "name": "Donald Tusk",
+     "role": "Prime Minister of Poland",
+     "type": "government",
+     "position": "Expects Ukraine to take the next step in repairing relations and warns that it will no longer be the case that only Warsaw proposes a good stance, stating that rebuilding trust requires goodwill from Kyiv.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"It won’t be the case anymore that only Warsaw proposes a good stance,\""
+    },
+    {
+     "name": "Karol Nawrocki",
+     "role": "President of Poland",
+     "type": "government",
+     "position": "Stripped Ukrainian President Volodymyr Zelenskyy of the Order of the White Eagle, Poland's highest state honor, following Kyiv naming a military unit after the Ukrainian Insurgent Army.",
+     "evidence_type": "mentioned",
+     "verbatim_quote": null
+    }
+   ]
+  },
+  {
+   "article_index": 12,
+   "summary": "Swedish Prime Minister Ulf Kristersson describes the Ankara summit as taking place in a turbulent time for European and global security, with European security currently spelled Ukraine, and announces Sweden's ambition to reach the 5% GDP defense spending target by 2030 after more than doubling defense expenditure between 2021 and 2025. Foreign Minister Maria Malmer Stenergard stresses the need for the alliance to send a strong signal of unity in long-term support for Ukraine and as an important signal to Russia.",
+   "actors_quoted": [
+    {
+     "name": "Ulf Kristersson",
+     "role": "Prime Minister of Sweden",
+     "type": "government",
+     "position": "Describes the NATO summit as taking place in a turbulent time, states that European security is currently spelled Ukraine, and announces Sweden's ambition to reach the 5% GDP defense spending target by 2030.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"European security is currently spelled Ukraine,\""
+    },
+    {
+     "name": "Maria Malmer Stenergard",
+     "role": "Foreign Minister of Sweden",
+     "type": "government",
+     "position": "Stresses the need for the alliance to send a strong signal of unity in long-term support for Ukraine and as an important signal to Russia.",
+     "evidence_type": "stated",
+     "verbatim_quote": "\"The alliance needs to send a strong signal of unity in long-term support for Ukraine and as an important signal to Russia,\""
+    }
+   ]
+  }
+ ],
+ "article_metadata": [
+  {
+   "article_index": 0,
+   "language": "en",
+   "country": "Turkey",
+   "outlet": "Anadolu Agency"
+  },
+  {
+   "article_index": 1,
+   "language": "en",
+   "country": "Germany",
+   "outlet": "DW News"
+  },
+  {
+   "article_index": 2,
+   "language": "es",
+   "country": "Spain",
+   "outlet": "El País"
+  },
+  {
+   "article_index": 3,
+   "language": "en",
+   "country": "United Kingdom",
+   "outlet": "The Guardian"
+  },
+  {
+   "article_index": 4,
+   "language": "en",
+   "country": "Japan",
+   "outlet": "Japan Today"
+  },
+  {
+   "article_index": 5,
+   "language": "en",
+   "country": "Ukraine",
+   "outlet": "Kyiv Independent"
+  },
+  {
+   "article_index": 6,
+   "language": "en",
+   "country": "Belgium",
+   "outlet": "Politico Europe"
+  },
+  {
+   "article_index": 7,
+   "language": "de",
+   "country": "Germany",
+   "outlet": "Tagesschau"
+  },
+  {
+   "article_index": 8,
+   "language": "en",
+   "country": "South Korea",
+   "outlet": "Yonhap"
+  },
+  {
+   "article_index": 9,
+   "language": "en",
+   "country": "Turkey",
+   "outlet": "Anadolu Agency"
+  },
+  {
+   "article_index": 10,
+   "language": "en",
+   "country": "Ukraine",
+   "outlet": "Kyiv Independent"
+  },
+  {
+   "article_index": 11,
+   "language": "en",
+   "country": "Belgium",
+   "outlet": "Politico Europe"
+  },
+  {
+   "article_index": 12,
+   "language": "en",
+   "country": "Turkey",
+   "outlet": "Anadolu Agency"
+  }
+ ],
+ "candidates": [
+  {
+   "label": "A",
+   "preliminary_divergences": [
+    "Turkish outlets (Anadolu, index 0, 9, 12) foreground Turkey's defense-industrial role — US interest in Turkish shipbuilding and drones, the F-35 and KAAN engine deals, and Turkey as a capability model — a commercial/host angle absent from German, Spanish, and Belgian coverage.",
+    "The UK outlet (Guardian, index 3) and Turkish Anadolu (index 9) center Trump's grievance that allies refused to join US operations against Iran, while German (index 1, 7), Spanish (index 2), and Belgian (index 6, 11) sources omit the Iran dimension and focus instead on defense-spending and eastern-flank framing.",
+    "The Japanese outlet (index 4) characterizes the €70 billion Ukraine aid pledge as 'largely symbolic' and aimed at signaling to Trump, whereas the German Tagesschau (index 7) frames the commitment concretely as replacing halted US funding with specific EU-loan and bilateral tranches.",
+    "Ukrainian (index 5, 10) and Belgian/Politico (index 6, 11) outlets extensively cover the Poland-Ukraine diplomatic rift over the Order of the White Eagle and the UPA unit renaming, a bilateral conflict entirely absent from Turkish, German, Spanish, Japanese, and South Korean coverage.",
+    "Spanish (El País, index 2) and Belgian (Politico, index 6) coverage foreground Baltic states' escalatory posture — Lithuania's nuclear constitutional amendment and Nauseda's warning of alliance fracture — while German and Turkish outlets emphasize reassurance and unity framings instead.",
+    "German outlets (index 1, 2) center Chancellor Merz's defensive pushback against Trump's 'ridiculous' spending criticism, while the Turkish Anadolu piece (index 9) presents the US demand for 5% GDP spending through Ambassador Whitaker's framing that ranks Germany among the leaders rather than laggards."
+   ],
+   "coverage_gaps": [
+    "Despite the assignment flagging the attendance of South Korean and Pakistani leaders as signaling broader geopolitical stakes, the South Korean coverage (index 8) is a bare announcement and Pakistan's perspective is absent entirely from the corpus.",
+    "No Russian perspective appears anywhere in the corpus, even though the alliance's deliberations are framed as a response to a 'concrete' Russian threat.",
+    "Turkey is the summit host across three Turkish-outlet articles, yet no Turkish government position on Ukraine aid or burden-sharing is quoted — coverage is limited to Turkey's defense-industry interests.",
+    "Italy is named as pushing back on the written aid commitment (index 4), but no Italian official or outlet is quoted to explain that dissenting position.",
+    "Every quoted actor is a government official, an international-organization figure, or a think-tank analyst; no civil-society voices, defense-industry workers, or affected communities (such as Ukrainians or eastern-flank populations) appear anywhere in the corpus.",
+    "No perspective addresses the human or on-the-ground consequences of the planned reduction of US troops in Europe, despite Rubio and Hegseth signaling force-posture drawdowns."
+   ]
+  },
+  {
+   "label": "B",
+   "preliminary_divergences": [
+    "Spanish-language coverage (El País) provides a detailed account of Baltic leaders' security concerns, including specific Russian threats and constitutional changes to host nuclear weapons, a regional focus largely absent from English-language articles, which emphasize US-European burden-sharing disputes and aggregate aid pledges.",
+    "Ukrainian media (Kyiv Independent, Politico Europe articles sourced from Ukraine) foreground the diplomatic crisis between Poland and Ukraine, including historical grievances and its impact on aid pledges, whereas other regional clusters treat the Poland-Ukraine friction as peripheral or omit it entirely.",
+    "German-language reporting (Tagesschau) breaks down the EUR 140 billion aid package into EU loans and bilateral contributions with financial specificity, a degree of detail on funding architecture not matched in English-language or Spanish-language articles.",
+    "Turkish state media (Anadolu Agency) highlights US interest in Turkey's defense industry and Trump's personal deference to Erdoğan, framing the summit partly as a bilateral commercial and diplomatic opportunity, a perspective absent from the rest of the European and Asian outlets."
+   ],
+   "coverage_gaps": [
+    "No Russian official or expert reaction is included, despite the summit being centrally about deterring Russia; this omission forecloses an understanding of how Moscow interprets NATO divisions and pledges.",
+    "Ukrainian civil society, veteran, or humanitarian voices are entirely absent — every quoted actor from Ukraine is a government official — leaving the domestic reception of foreign aid unexamined.",
+    "No U.S. congressional or independent policy voices appear; the entire American perspective is filtered through the Trump administration, obscuring potential bipartisan or institutional checks on NATO posture.",
+    "No non-NATO Asian voice beyond a single sentence on South Korea's attendance — the strategic calculus of Indo-Pacific partners regarding NATO's eastward reach is not explored.",
+    "The corpus lacks any assessment from NATO military commanders on the operational ramifications of the 5% spending target or the alliance's force posture review, reducing the debate to political statements."
+   ]
+  },
+  {
+   "label": "C",
+   "preliminary_divergences": [
+    "Spanish-language sources foreground Baltic frontline threat perceptions and nuclear deterrence — including Lithuania's constitutional amendment on nuclear weapons and Estonia's call to maintain pressure on Russia — while English-language sources foreground financial aid pledges and US-Europe burden-sharing disputes.",
+    "German-language sources frame the total aid commitment as effectively replacing halted US military funding for Ukraine, whereas English-language sources frame the annual pledges as a largely symbolic signal to Trump that allies have taken over financing.",
+    "Ukrainian regional sources foreground the Poland-Ukraine diplomatic crisis over the Ukrainian Insurgent Army renaming and its impact on summit aid discussions, while no other regional cluster covers this bilateral dispute at all.",
+    "Turkish regional sources foreground US-Turkey bilateral defense cooperation — including potential F-35 and KAAN fighter jet deals and growing US interest in Turkish defense industrial capacity — while no other regional cluster covers this angle.",
+    "South Korean regional coverage reduces the summit to a brief announcement of President Lee's attendance and a subsequent Mongolia visit, omitting all substantive summit agenda items that every other regional cluster addresses."
+   ],
+   "coverage_gaps": [
+    "No Russian government or media perspective is represented anywhere in the corpus, despite Russia being the central adversary whose actions drive the summit's entire agenda.",
+    "No Turkish official is quoted about the summit's agenda or Turkey's positions on Ukraine aid and alliance cohesion, despite Turkey being the summit host in Ankara.",
+    "No Italian perspective explains Italy's reported pushback against the written aid commitment, leaving a significant internal alliance divergence unexamined.",
+    "No Ukrainian government voice addresses the aid pledges or Ukraine's expectations from the summit; the only Ukrainian officials quoted discuss the Poland bilateral dispute rather than the summit's core security decisions.",
+    "No civil society, peace movement, or citizen perspectives appear anywhere in the corpus — every quoted actor is a government official, international organization representative, or a single think tank analyst.",
+    "No article covers Pakistani leadership's attendance or agenda at the summit, despite the assignment noting Pakistani leaders' presence as signaling broader geopolitical stakes beyond the transatlantic core.",
+    "No article addresses the domestic economic impact of the 5% GDP defense spending target on member states' budgets, social programs, or public opinion, despite this being the central burden-sharing dispute at the summit."
+   ]
+  },
+  {
+   "label": "D",
+   "preliminary_divergences": [
+    "Turkish-outlet coverage (Anadolu Agency) uniquely foregrounds Turkey's defense industrial capacity as a model for NATO allies and Trump's personal relationship with Erdogan, including potential F-35 and KAAN fighter jet deals, while no other regional cluster mentions Turkey's defense industry role or the Trump-Erdogan bilateral dynamic.",
+    "The Spanish-language source (El País, Spain) provides the most detailed treatment of Baltic security concerns — including Lithuania's constitutional amendment on nuclear weapons, Estonia's call to maintain pressure on Russia, and Latvia's warnings about hybrid attacks — while English-language sources from Western Europe and North America mention Baltic positions only in passing or through the lens of the 5% spending target.",
+    "Ukrainian outlets (Kyiv Independent) center the Poland-Ukraine diplomatic crisis over the Ukrainian Insurgent Army unit naming and the revocation of Zelensky's Order of the White Eagle as a major storyline, while most other regional clusters either omit this bilateral dispute entirely or mention it only as context for Poland's caution on aid pledges.",
+    "German-language coverage (Tagesschau) presents the €140 billion aid pledge as a straightforward factual commitment replacing US funding, while English-language UK and US-oriented sources (The Guardian, Anadolu Agency) frame the same pledge as largely symbolic and primarily aimed at managing Trump's dissatisfaction with the alliance.",
+    "Nordic coverage (Sweden via Anadolu Agency) frames the summit through the lens of alliance unity and long-term Ukraine support with Sweden's own ambitious 5% spending target by 2030, whereas US-oriented coverage foregrounds Trump's grievances about burden-sharing and the Iran operations dispute as the summit's defining tension.",
+    "The Belgian-outlet coverage (Politico Europe) uniquely amplifies Lithuania's warning that NATO risks fracturing into two or three tiers based on defense spending disparities, a structural-cohesion framing largely absent from US, Turkish, and German coverage which focuses on bilateral spending disputes rather than alliance fragmentation.",
+    "Japanese coverage (Japan Today) frames the €70 billion pledge as a demonstration of steadfast backing for Zelenskyy and notes Italy's pushback on the written commitment, a detail absent from all other regional clusters."
+   ],
+   "coverage_gaps": [
+    "No Russian or Russian-language perspectives are present despite Russia being the primary adversary driving NATO's summit agenda, meaning Moscow's framing of the alliance's decisions, its response to Lithuania's nuclear amendment, and its characterization of the aid pledges are entirely absent.",
+    "No Ukrainian government voice beyond Foreign Minister Sybiha's diplomatic crisis management with Poland is quoted; President Zelensky's direct reaction to the €70 billion aid package or the broader summit agenda is missing from the corpus.",
+    "The South Korean article provides no substantive detail about President Lee's agenda or positions, leaving the Indo-Pacific dimension of NATO engagement — including North Korean ammunition supplies to Russia and broader Asian security linkages — effectively uncovered.",
+    "Pakistan's leader is mentioned in the assignment's selection reason as attending the summit, yet no article in the corpus covers Pakistani participation or its significance for NATO's outreach beyond the transatlantic core.",
+    "No defense industry analysts, arms manufacturers, or military logistics experts are quoted anywhere in the corpus, despite the €140 billion aid commitment raising major questions about European defense production capacity and supply chain readiness.",
+    "No civil society voices — including Ukrainian civil society, European peace movements, anti-war organizations, or humanitarian NGOs — appear in the corpus; every quoted actor is a government official, diplomat, or think-tank analyst.",
+    "No coverage from Southern European NATO members such as Italy, Spain (as a national perspective rather than El País covering Germany-Baltic meetings), Greece, or Portugal, despite Italy's reported pushback on the written aid commitment and Southern European states' historically different threat perceptions and spending levels.",
+    "No article addresses the economic or fiscal impact of the 5% GDP defense spending target on European domestic budgets, welfare states, or public opinion, despite this being a central point of political contestation within allied democracies.",
+    "Turkey's own perspective as summit host — including its positions on Ukraine, its balancing act between Russia and NATO, and its leverage from hosting the summit — is covered only through the lens of US-Turkey bilateral relations and defense deals, not from Turkish domestic political or strategic perspectives."
+   ]
+  },
+  {
+   "label": "E",
+   "preliminary_divergences": [
+    "Spanish-language coverage (El País) foregrounds the Baltic states' framing of a concrete, imminent Russian military threat (airspace violations, hybrid attacks, submarine cable sabotage, nuclear deterrence debate) in far greater depth than any English or German-language article, which mention Baltic concerns only briefly.",
+    "Ukrainian-outlet coverage (Kyiv Independent) frames the Poland-Ukraine relationship through the lens of Warsaw's grievances and the Volyn/Order of the White Eagle dispute as a bilateral diplomatic crisis requiring Ukrainian concessions, while Turkish-outlet (Anadolu) and Belgian-outlet (Politico) coverage of the same summit largely omit this friction and instead emphasize burden-sharing and unity themes.",
+    "German-language coverage (Tagesschau) characterizes the €70/140 billion Ukraine aid pledge as effectively replacing halted US funding, whereas English-language coverage from Turkey (Anadolu) and the UK (Guardian) frames the same pledge primarily as a symbolic gesture meant to reassure Trump that Europe has taken over financing.",
+    "US government actors quoted in Turkish-outlet (Anadolu) and UK-outlet (Guardian) coverage characterize the transatlantic relationship as 'ridiculous' and 'one-sided,' demanding rapid European responsibility-taking, while German and Nordic-sourced articles (DW, Tagesschau, and Swedish PM quotes via Anadolu) frame the same burden-sharing debate as a matter of continental solidarity and steadfast support for Ukraine rather than a US grievance.",
+    "Polish framing (via Kyiv Independent and Politico) emphasizes Poland's need for 'special consideration' due to eastern border defense burdens as a rationale for caution on Ukraine aid, while French and German framing (Anadolu, DW) emphasizes strategic autonomy and capability-building without referencing Poland's border-burden argument."
+   ],
+   "coverage_gaps": [
+    "No coverage from Russia or pro-Russian sources presenting Moscow's perspective on NATO enlargement, the Baltic nuclear deterrence debate, or the aid pledges, despite Russia being the central adversarial actor throughout the corpus.",
+    "No coverage from Turkey's own domestic political or opposition voices beyond the Anadolu Agency's framing of the summit host's diplomatic interests (F-35, KAAN engine), leaving Turkey's substantive negotiating position underexplored despite it hosting the summit.",
+    "No civil-society, humanitarian, military-expert (outside one Atlantic Council fellow), or ordinary-citizen voices anywhere in the corpus — nearly every quoted actor is a head of state, minister, or senior official, omitting perspectives on the human or economic costs of the spending pledges.",
+    "South Korean and Pakistani attendance at the summit, flagged in the assignment as broadening geopolitical stakes, is covered by only a single brief headline-style article (Yonhap) with no substantive detail on their agendas, positions, or reasons for attendance, and Pakistan is not covered at all despite being named in the assignment.",
+    "No Italian government voices are quoted despite Italy being reported as pushing back against the written Ukraine aid commitment, leaving that dissenting position unexplained and unsupported by direct quotation.",
+    "No EU institutional voices (European Commission, European Council) are quoted despite the EU loan mechanism financing a significant portion of the pledged Ukraine aid.",
+    "No coverage addresses how Ukraine itself views the burden-sharing debate or the 5% GDP spending target beyond the bilateral Poland dispute, leaving Kyiv's direct stake in NATO's internal financing debate largely unaddressed."
+   ]
+  }
+ ]
+}
