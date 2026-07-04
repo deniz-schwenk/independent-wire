@@ -90,3 +90,14 @@ worth the added architecture.
   under-flagging + verdict churn, not over-flagging.
 - *passive_obscuring actor carry-over* — an independent prompt improvement, still
   worth a look, unrelated to this split.
+
+## Render follow-up (noted 2026-07-04, not yet scheduled)
+
+The borderline tier ships as an appended bias-card section (built in
+TASK-BIAS-TIER-MAPPING, renders only when non-empty, EN/DE via
+de_render_labels.json). Deferred design iteration per Deniz: consider a
+visual tag/pill treatment ("Grauzone" / "borderline") on the findings
+themselves instead of or in addition to the appended section, plus
+wording review of the DE label. Also surface the per-finding
+provenance ("2/2 extracted · 2/2 confirmed") once the dual-judge
+variant lands.
