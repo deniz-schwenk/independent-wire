@@ -421,6 +421,66 @@ BIAS_DETECTOR_SCHEMA = {
     "additionalProperties": False,
 }
 
+# ---------------------------------------------------------------- Bias stage split (TASK-BIAS-STAGE-SPLIT)
+# The single-call emit-then-retract BIAS_DETECTOR_SCHEMA above reproduced only
+# ~51% of its spans across identical runs (docs/BIAS-STAGE-MODEL-EVAL-2026-07.md).
+# It is replaced by a two-phase composite: generous candidate extraction (2x
+# cheap open-weight) -> deterministic Python union -> closed per-candidate
+# judgment (Opus 4.6). These two schemas are the agent boundaries of that split.
+
+# Phase A — candidate extraction. Deliberately minimal: a verbatim span and a
+# best-guess pattern name. Coverage is the goal; the judge decides. issue_hint
+# is a free string (not enum-constrained) — it is only a hint, the judge
+# re-derives the confirmed `issue`, and a strict enum would add schema-retry
+# churn on the open-weight extractor for a non-load-bearing field.
+BIAS_CANDIDATES_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "candidates": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "excerpt": {"type": "string"},
+                    "issue_hint": {"type": "string"},
+                },
+                "required": ["excerpt", "issue_hint"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    "required": ["candidates"],
+    "additionalProperties": False,
+}
+
+# Phase B — per-candidate judgment. FIELD ORDER IS LOAD-BEARING: `explanation`
+# precedes `issue`/`is_bias` so the model writes its reasoning before committing
+# to the verdict (examine-then-judge, in-schema). `issue` is nullable — null when
+# the candidate is cleared (is_bias=false). One judgment per input candidate,
+# keyed by candidate_id.
+BIAS_JUDGE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "judgments": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "candidate_id": {"type": "integer"},
+                    "explanation": {"type": "string"},
+                    "issue": {"type": ["string", "null"]},
+                    "is_bias": {"type": "boolean"},
+                },
+                "required": ["candidate_id", "explanation", "issue", "is_bias"],
+                "additionalProperties": False,
+            },
+        },
+        "reader_note": {"type": "string"},
+    },
+    "required": ["judgments", "reader_note"],
+    "additionalProperties": False,
+}
+
 # ---------------------------------------------------------------- Hydration Aggregator Phase 1
 # Per-chunk article analysis. Each entry corresponds to one input article
 # and carries its index, a one-paragraph summary, and the actor-quoted list.

@@ -108,6 +108,16 @@ def _collect_agent_metrics(stage: Any) -> dict:
         if provider_used:
             out["provider_used"] = provider_used
         out[marker_key] = fallback_used
+    # Generic loud-metrics hook: composite/multi-call wrappers (e.g. the bias
+    # extract->union->judge composite) expose an `extra_log_fields` dict of
+    # per-stage counters (models/providers, extraction counts, invalid-span
+    # drops, union size, confirmed count). Merged verbatim; plain Agents and the
+    # fallback wrappers carry no such attribute, so the log shape is unchanged
+    # for them. `setdefault` keeps any marker keys already set above authoritative.
+    extra = getattr(agent, "extra_log_fields", None)
+    if isinstance(extra, dict):
+        for k, v in extra.items():
+            out.setdefault(k, v)
     return out
 
 

@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from src.agent import Agent
+from src.bias_composite import BiasComposite
 from src.editor_fallback import EditorWithFallback
 from src.perspective_fallback import PerspectiveWithFallback
 from src.qa_fallback import QaAnalyzeWithFallback
@@ -26,7 +27,8 @@ from src.runner.stage_lists import (
     production_stage_names,
 )
 from src.schemas import (
-    BIAS_DETECTOR_SCHEMA,
+    BIAS_CANDIDATES_SCHEMA,
+    BIAS_JUDGE_SCHEMA,
     CLUSTER_ASSIGNMENT_SCHEMA,
     CONSOLIDATOR_SCHEMA,
     CURATOR_TOPIC_DISCOVERY_SCHEMA,
@@ -466,16 +468,46 @@ def create_agents() -> dict[str, Agent]:
             ),
             output_schema=QA_ANALYZE_SCHEMA,
         ),
-        "bias_language": Agent(
+        # bias_language — extract -> union -> judge composite (TASK-BIAS-STAGE-SPLIT).
+        # Replaces the single-call bias_detector agent, whose emit-then-retract
+        # verdict reproduced only ~51% of its spans cross-run
+        # (docs/BIAS-STAGE-MODEL-EVAL-2026-07.md). The composite presents itself
+        # as a single agent (same output shape) so BiasLanguageStage + every
+        # downstream consumer are untouched. ROLLBACK = revert this commit (the
+        # single-call Agent above + agents/bias_detector/ prompts return together).
+        #   Phase A: deepseek-v4-pro, reasoning=none (the xhigh structured=None
+        #     pathology does not apply at none — 5 prod stages prove it daily),
+        #     temperature 0.8 both passes (natural variance = coverage), fp8 pin
+        #     [baidu, wandb, parasail], default max_tokens.
+        #   Phase B: opus-4.6, temp 0.1, reasoning=none, closed per-candidate
+        #     judgment (BIAS_JUDGE_SCHEMA field order is load-bearing).
+        "bias_language": BiasComposite(
+            extractor=Agent(
+                name="bias_candidate_extractor",
+                model="deepseek/deepseek-v4-pro",
+                system_prompt_path=str(
+                    agents_dir / "bias_candidate_extractor" / "SYSTEM.md"),
+                instructions_path=str(
+                    agents_dir / "bias_candidate_extractor" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.8,
+                provider="openrouter",
+                reasoning="none",
+                provider_routing=DEEPSEEK_V4_PRO_FP8_ROUTING,
+                output_schema=BIAS_CANDIDATES_SCHEMA,
+            ),
+            judge=Agent(
+                name="bias_judge",
+                model="anthropic/claude-opus-4.6",
+                system_prompt_path=str(agents_dir / "bias_judge" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "bias_judge" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.1,
+                provider="openrouter",
+                reasoning="none",
+                output_schema=BIAS_JUDGE_SCHEMA,
+            ),
             name="bias_language",
-            model="anthropic/claude-opus-4.6",
-            system_prompt_path=str(agents_dir / "bias_detector" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "bias_detector" / "INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.1,
-            provider="openrouter",
-            reasoning="none",
-            output_schema=BIAS_DETECTOR_SCHEMA,
         ),
         # Consolidator — replaces the legacy PerspectiveSyncStage,
         # validate_coverage_gaps_stage, and consolidate_missing_coverage
