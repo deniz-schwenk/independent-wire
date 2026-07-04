@@ -20,6 +20,27 @@ LOG="$LOGDIR/run-$TODAY.log"
 export PATH="$HOME/.local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 cd "$REPO"
 
+# --- Branch guard (TASK-RUNNER-BRANCH-GUARD) --------------------------------
+# The launchd runner builds whatever branch is checked out; on 2026-07-04 it ran
+# on a leftover feature branch and the publish landed off-main (third occurrence
+# of the leftover-checkout hazard). Refuse to run unless `main` is checked out —
+# abort loudly BEFORE any fetch / pull / pipeline / publish / push. NEVER
+# auto-checkout: a working tree left on a branch may be intentional, and a runner
+# must not silently move it. This is a read-only branch check ("HEAD" for a
+# detached checkout, "UNKNOWN" if git can't answer — both are != main → abort).
+CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo UNKNOWN)"
+if [[ "$CURRENT_BRANCH" != "main" ]]; then
+  {
+    echo "===================================================="
+    echo "ABORT — daily_run.sh — $TODAY — $(date)"
+    echo "Refusing to run: checked-out branch is '$CURRENT_BRANCH', not 'main'."
+    echo "No fetch / pull / pipeline / publish / push was performed."
+    echo "Fix: cd '$REPO' && git checkout main  (the runner will NOT move your tree)."
+    echo "===================================================="
+  } | tee -a "$LOG" >&2
+  exit 1
+fi
+
 trap 'echo "===== FAILED — $TODAY — $(date) — see log above =====" >> "$LOG"' ERR
 
 {
