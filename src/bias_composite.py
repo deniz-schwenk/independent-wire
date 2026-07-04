@@ -6,9 +6,11 @@ confirmed spans across identical cache-cold runs
 decision, not the model). This composite replaces it with three calls whose
 individual pieces are each more repeatable:
 
-  Phase A  two GENEROUS candidate-extraction calls (deepseek-v4-pro, reasoning
-           none, temperature 0.8 -> natural variance = coverage, fp8-pinned).
-           Extractor instability is *harmless* — it only widens recall.
+  Phase A  three GENEROUS candidate-extraction calls (deepseek-v4-pro, reasoning
+           none, temperature 0.8 -> natural variance = coverage, fp8-pinned;
+           TASK-BIAS-THIRD-EXTRACTOR). Extractor instability is *harmless* — it
+           only widens recall; a third pass drops a p=0.8 candidate's miss
+           probability from ~4% to ~1%.
   union    DETERMINISTIC Python: verbatim-substring validate, then
            POSITION-ANCHORED merge — resolve each span to its character
            interval(s) and merge only spans that overlap at the same location
@@ -69,6 +71,13 @@ JUDGE_MESSAGE = (
 # model to keep the most clearly loaded ones, so the head of the list is best).
 EXTRACTOR_CANDIDATE_CAP = 18
 
+# Number of independent extraction passes (TASK-BIAS-THIRD-EXTRACTOR). Three
+# passes drop the miss probability of a p=0.8 candidate from ~4% (two passes) to
+# ~1%; production runs each article exactly once, so missed surfacing is
+# unobservable live and is hardened here. Also the ``extraction_confidence``
+# denominator ("K/3").
+EXTRACTION_PASSES = 3
+
 
 # --------------------------------------------------------------------------- #
 # Deterministic union (pure function — no LLM, no I/O)
@@ -86,13 +95,16 @@ def _occurrences(excerpt: str, body: str) -> list[tuple[int, int]]:
 
 
 def build_union(
-    run1: list[dict],
-    run2: list[dict],
+    runs: list[list[dict]],
     article_body: str,
     cap: int = EXTRACTOR_CANDIDATE_CAP,
 ) -> tuple[list[dict], dict]:
-    """Merge two extractor candidate lists into one ordered, position-merged,
+    """Merge N extractor candidate lists into one ordered, position-merged,
     confidence-tagged candidate list.
+
+    ``runs`` is the list of per-pass candidate lists (three in production —
+    TASK-BIAS-THIRD-EXTRACTOR; a failed pass contributes an empty list so the
+    confidence denominator stays fixed at ``len(runs)``).
 
     Rules (all deterministic):
     - each run is truncated to the first ``cap`` items (extractor cost cap);
@@ -109,19 +121,20 @@ def build_union(
     - a family presents its **shortest** variant to the judge (tie: earliest
       position, then string); the full variant list is kept in ``variants``
       metadata (never shown to the judge, never rendered);
-    - a family's ``extraction_confidence`` is ``"2/2"`` when its variants,
-      together, were contributed by *both* runs (the location was independently
-      flagged twice — the join / max over its variants), else ``"1/2"``;
+    - a family's ``extraction_confidence`` is ``"K/N"`` where K is the number of
+      passes (of ``N = len(runs)``) that flagged the location — the join over its
+      variants' contributing runs (e.g. ``"3/3"``, ``"2/3"``, ``"1/3"``);
     - order is by the representative's position in ``article_body`` (excerpt
       string as tiebreak); ``candidate_id`` is 1..N in that order.
 
     Returns ``(candidates, stats)`` where each candidate is ``{"candidate_id",
     "excerpt", "issue_hint", "extraction_confidence", "variants"}``.
     """
+    n_runs = len(runs)
     invalid_dropped = 0
     # distinct excerpt -> {"runs": set[int], "hint": str}
     distinct: dict[str, dict] = {}
-    for run_idx, run in ((1, run1), (2, run2)):
+    for run_idx, run in enumerate(runs, start=1):
         for item in (run or [])[:cap]:
             if not isinstance(item, dict):
                 continue
@@ -189,12 +202,12 @@ def build_union(
         # representative = shortest variant (tie: earliest position, then string)
         rep = min(members, key=lambda m: (len(m), _pos_of(m), m))
         variants = sorted(members, key=lambda m: (_pos_of(m), len(m), m))
-        # confidence = join over variants: 2/2 iff both runs contributed to the
-        # family (the location was flagged independently by each pass).
+        # confidence = join over variants: K/N where K passes (of N) flagged the
+        # location (some distinct span containing a variant came from that pass).
         family_runs: set[int] = set()
         for m in members:
             family_runs |= distinct[m]["runs"]
-        confidence = "2/2" if family_runs >= {1, 2} else "1/2"
+        confidence = f"{len(family_runs)}/{n_runs}"
         candidates.append({
             "excerpt": rep,
             "issue_hint": distinct[rep]["hint"],
@@ -209,8 +222,7 @@ def build_union(
         del c["_pos"]
 
     stats = {
-        "extract_run1_raw": len(run1 or []),
-        "extract_run2_raw": len(run2 or []),
+        "extract_raw": [len(r or []) for r in runs],  # per-pass raw emission count
         "extractor_cap": cap,
         "invalid_span_drops": invalid_dropped,
         "distinct_excerpts": len(distinct),   # valid spans before position merge
@@ -372,7 +384,7 @@ class BiasComposite:
         self.extractor = extractor
         self.judge = judge
         self.name = name
-        self.model = f"bias-composite({extractor.model} x2 -> {judge.model} x2)"
+        self.model = f"bias-composite({extractor.model} x3 -> {judge.model} x2)"
         # The composite enforces structured output at both sub-agents; its
         # authoritative decision schema is the judge's (the confirmed verdict).
         # Exposed so create_agents' "every agent wires a schema" contract holds.
@@ -415,23 +427,21 @@ class BiasComposite:
                 logger.warning("bias extractor pass failed: %s", exc)
                 return None
 
-        r1, r2 = await asyncio.gather(_extract(), _extract())
-        if r1 is None and r2 is None:
-            raise AgentError("bias extraction failed on both passes")
+        results = await asyncio.gather(
+            *(_extract() for _ in range(EXTRACTION_PASSES)))
+        if all(r is None for r in results):
+            raise AgentError("bias extraction failed on all passes")
         ext_provider = ""
-        run1 = run2 = []
-        for res, holder in ((r1, "run1"), (r2, "run2")):
+        runs: list[list[dict]] = []
+        for res in results:
             if res is None:
+                runs.append([])            # failed pass -> empty (denominator fixed)
                 continue
             self._account(res)
             ext_provider = ext_provider or res.provider
-            cands = (res.structured or {}).get("candidates") or []
-            if holder == "run1":
-                run1 = cands
-            else:
-                run2 = cands
+            runs.append((res.structured or {}).get("candidates") or [])
 
-        candidates, stats = build_union(run1, run2, article_body)
+        candidates, stats = build_union(runs, article_body)
 
         # --- Phase B: TWO closed judgment votes, deterministic aggregation ----
         # (skip both on an empty candidate list). Identical input to both calls;
@@ -483,11 +493,11 @@ class BiasComposite:
         self.extra_log_fields = {
             "extractor_model": self.extractor.model,
             "extractor_provider": ext_provider,
+            "extraction_passes": EXTRACTION_PASSES,
             "judge_model": self.judge.model,
             "judge1_provider": judge1_provider,
             "judge2_provider": judge2_provider,
-            "extract_run1_raw": stats["extract_run1_raw"],
-            "extract_run2_raw": stats["extract_run2_raw"],
+            "extract_raw": stats["extract_raw"],
             "extractor_cap": stats["extractor_cap"],
             "invalid_span_drops": stats["invalid_span_drops"],
             "distinct_excerpts": stats["distinct_excerpts"],
@@ -499,9 +509,9 @@ class BiasComposite:
             "judge_disagreements": disagreements,
         }
         logger.info(
-            "bias composite: extracted %d/%d (raw), union=%d, invalid_drops=%d, "
+            "bias composite: extracted %s (raw/pass), union=%d, invalid_drops=%d, "
             "confirmed=%d, borderline=%d, cleared=%d, judge_disagree=%d%s",
-            stats["extract_run1_raw"], stats["extract_run2_raw"],
+            stats["extract_raw"],
             stats["union_size"], stats["invalid_span_drops"], len(findings),
             len(borderline), cleared_count, disagreements,
             " (judge skipped: empty candidates)" if judge_skipped else "",

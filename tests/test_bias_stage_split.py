@@ -48,35 +48,34 @@ def test_union_drops_non_substring_excerpts_and_counts_them():
         {"excerpt": "NOT IN THE ARTICLE", "issue_hint": "loaded_term"},
         {"excerpt": "", "issue_hint": "hedging"},
     ]
-    cands, stats = build_union(run1, [], ARTICLE)
+    cands, stats = build_union([run1, [], []], ARTICLE)
     assert [c["excerpt"] for c in cands] == ["a devastating blow"]
     assert stats["invalid_span_drops"] == 2
-    assert stats["extract_run1_raw"] == 3
+    assert stats["extract_raw"] == [3, 0, 0]          # per-pass raw emission count
     assert stats["union_size"] == 1
 
 
-def test_union_identical_span_both_runs_is_2_of_2():
-    run1 = [{"excerpt": "quietly doubled", "issue_hint": "passive_obscuring"}]
-    run2 = [{"excerpt": "quietly doubled", "issue_hint": "passive_obscuring"}]
-    cands, _ = build_union(run1, run2, ARTICLE)
+def test_union_span_in_all_three_passes_is_3_of_3():
+    run = [{"excerpt": "quietly doubled", "issue_hint": "passive_obscuring"}]
+    cands, _ = build_union([run, list(run), list(run)], ARTICLE)
     assert len(cands) == 1
-    assert cands[0]["extraction_confidence"] == "2/2"
+    assert cands[0]["extraction_confidence"] == "3/3"
 
 
 def test_union_contained_span_keeps_shorter_and_folds_agreement():
-    # run1 emits the long span, run2 the short one it contains -> keep the short
-    # ("devastating"), and both runs count toward its agreement -> 2/2.
+    # pass 1 emits the long span, pass 2 the short one it contains, pass 3 empty
+    # -> keep the short ("devastating"); two of three passes flagged it -> 2/3.
     run1 = [{"excerpt": "a devastating blow", "issue_hint": "evaluative_adjective"}]
     run2 = [{"excerpt": "devastating", "issue_hint": "evaluative_adjective"}]
-    cands, _ = build_union(run1, run2, ARTICLE)
+    cands, _ = build_union([run1, run2, []], ARTICLE)
     assert [c["excerpt"] for c in cands] == ["devastating"]
-    assert cands[0]["extraction_confidence"] == "2/2"
+    assert cands[0]["extraction_confidence"] == "2/3"
 
 
-def test_union_single_run_span_is_1_of_2():
+def test_union_single_pass_span_is_1_of_3():
     run1 = [{"excerpt": "prudent", "issue_hint": "loaded_term"}]
-    cands, _ = build_union(run1, [], ARTICLE)
-    assert cands[0]["extraction_confidence"] == "1/2"
+    cands, _ = build_union([run1, [], []], ARTICLE)
+    assert cands[0]["extraction_confidence"] == "1/3"
 
 
 def test_union_orders_by_article_position_and_assigns_ids():
@@ -86,7 +85,7 @@ def test_union_orders_by_article_position_and_assigns_ids():
         {"excerpt": "devastating", "issue_hint": "evaluative_adjective"},
         {"excerpt": "quietly doubled", "issue_hint": "passive_obscuring"},
     ]
-    cands, _ = build_union(run1, [], ARTICLE)
+    cands, _ = build_union([run1, [], []], ARTICLE)
     assert [c["excerpt"] for c in cands] == ["devastating", "quietly doubled", "prudent"]
     assert [c["candidate_id"] for c in cands] == [1, 2, 3]
 
@@ -94,19 +93,19 @@ def test_union_orders_by_article_position_and_assigns_ids():
 def test_union_issue_hint_from_first_run():
     run1 = [{"excerpt": "prudent", "issue_hint": "loaded_term"}]
     run2 = [{"excerpt": "prudent", "issue_hint": "hedging"}]
-    cands, _ = build_union(run1, run2, ARTICLE)
-    assert cands[0]["issue_hint"] == "loaded_term"  # run1 wins
+    cands, _ = build_union([run1, run2, []], ARTICLE)
+    assert cands[0]["issue_hint"] == "loaded_term"  # first pass wins
 
 
 def test_union_empty_inputs_yield_empty():
-    cands, stats = build_union([], [], ARTICLE)
+    cands, stats = build_union([[], [], []], ARTICLE)
     assert cands == []
     assert stats["union_size"] == 0
 
 
 def test_union_no_internal_pos_key_leaks():
     cands, _ = build_union(
-        [{"excerpt": "prudent", "issue_hint": "loaded_term"}], [], ARTICLE)
+        [[{"excerpt": "prudent", "issue_hint": "loaded_term"}], [], []], ARTICLE)
     # `variants` is deliberate merge-family metadata; `_pos` must never leak.
     assert set(cands[0].keys()) == {
         "candidate_id", "excerpt", "issue_hint", "extraction_confidence",
@@ -133,7 +132,7 @@ def test_merge_a_nested_spans_at_same_location_merge():
     # each) -> one family, shortest variant presented.
     run1 = [{"excerpt": "a devastating blow", "issue_hint": "evaluative_adjective"}]
     run2 = [{"excerpt": "devastating", "issue_hint": "evaluative_adjective"}]
-    cands, stats = build_union(run1, run2, MERGE_ARTICLE)
+    cands, stats = build_union([run1, run2, []], MERGE_ARTICLE)
     assert stats["union_size"] == 1
     assert cands[0]["excerpt"] == "devastating"                 # shortest variant
     # variants are ordered by article position: "a devastating blow" starts two
@@ -146,7 +145,7 @@ def test_merge_b_partial_overlap_at_same_location_merges():
     # neither contains the other -> still merge (same location).
     run1 = [{"excerpt": "a devastating", "issue_hint": "evaluative_adjective"}]
     run2 = [{"excerpt": "devastating blow", "issue_hint": "evaluative_adjective"}]
-    cands, stats = build_union(run1, run2, MERGE_ARTICLE)
+    cands, stats = build_union([run1, run2, []], MERGE_ARTICLE)
     assert stats["union_size"] == 1
     assert cands[0]["excerpt"] == "a devastating"               # shortest (13 < 16)
     assert set(cands[0]["variants"]) == {"a devastating", "devastating blow"}
@@ -161,7 +160,7 @@ def test_merge_c_negation_does_not_merge_across_locations():
         {"excerpt": "ongoing defiance", "issue_hint": "loaded_term"},
         {"excerpt": "ongoing defiance in some localities", "issue_hint": "loaded_term"},
     ]
-    cands, stats = build_union(run1, [], MERGE_ARTICLE)
+    cands, stats = build_union([run1, [], []], MERGE_ARTICLE)
     excerpts = [c["excerpt"] for c in cands]
     assert "ongoing defiance" in excerpts
     assert "ongoing defiance in some localities" in excerpts
@@ -176,35 +175,35 @@ def test_merge_d_ambiguous_multioccurrence_stays_unmerged():
         {"excerpt": "soared", "issue_hint": "intensifier"},          # occurs 3x
         {"excerpt": "soared beyond all forecasts", "issue_hint": "intensifier"},
     ]
-    cands, stats = build_union(run1, [], body)
+    cands, stats = build_union([run1, [], []], body)
     excerpts = [c["excerpt"] for c in cands]
     assert "soared" in excerpts                                 # stands alone
     assert "soared beyond all forecasts" in excerpts
     assert stats["union_size"] == 2
 
 
-def test_merge_e_confidence_is_max_over_variants():
-    # A family whose variants come from BOTH runs is 2/2 (the join / max over
-    # variants); a family drawn from a single run is 1/2.
+def test_merge_e_confidence_counts_contributing_passes():
+    # A family whose variants come from TWO of three passes is 2/3 (the join
+    # over its variants' contributing passes); a family from a single pass 1/3.
     run1 = [{"excerpt": "a devastating blow", "issue_hint": "evaluative_adjective"}]
     run2 = [{"excerpt": "devastating", "issue_hint": "evaluative_adjective"}]
-    cands, _ = build_union(run1, run2, MERGE_ARTICLE)
-    assert cands[0]["extraction_confidence"] == "2/2"           # both runs -> max
+    cands, _ = build_union([run1, run2, []], MERGE_ARTICLE)
+    assert cands[0]["extraction_confidence"] == "2/3"           # two passes flagged
 
-    # same family, both variants from run1 only -> 1/2 (max of {1/2, 1/2}).
+    # same family, both variants from pass 1 only -> 1/3.
     run1_only = [
         {"excerpt": "a devastating blow", "issue_hint": "evaluative_adjective"},
         {"excerpt": "devastating", "issue_hint": "evaluative_adjective"},
     ]
-    cands2, _ = build_union(run1_only, [], MERGE_ARTICLE)
-    assert cands2[0]["extraction_confidence"] == "1/2"
+    cands2, _ = build_union([run1_only, [], []], MERGE_ARTICLE)
+    assert cands2[0]["extraction_confidence"] == "1/3"
 
 
 def test_extractor_cap_truncates_each_run():
     # Each run is capped before the union; a 30-item run keeps only the first 18.
     body = " ".join(f"word{i}" for i in range(40))
     run = [{"excerpt": f"word{i}", "issue_hint": "loaded_term"} for i in range(30)]
-    cands, stats = build_union(run, [], body, cap=18)
+    cands, stats = build_union([run, [], []], body, cap=18)
     assert stats["union_size"] == 18
     kept = {c["excerpt"] for c in cands}
     assert "word0" in kept and "word17" in kept
@@ -216,9 +215,9 @@ def test_extractor_cap_truncates_each_run():
 # --------------------------------------------------------------------------- #
 CANDS = [
     {"candidate_id": 1, "excerpt": "devastating", "issue_hint": "evaluative_adjective",
-     "extraction_confidence": "2/2"},
+     "extraction_confidence": "3/3"},
     {"candidate_id": 2, "excerpt": "prudent", "issue_hint": "loaded_term",
-     "extraction_confidence": "1/2"},
+     "extraction_confidence": "1/3"},
 ]
 
 
@@ -399,8 +398,8 @@ async def test_composite_runs_extract_then_judge_and_maps():
 
     res = await comp.run("msg", context={"article_body": ARTICLE, "bias_card": {"x": 1}})
 
-    # two extraction passes, TWO judge votes (identical input to both)
-    assert len(extractor.calls) == 2
+    # THREE extraction passes, TWO judge votes (identical input to both)
+    assert len(extractor.calls) == 3
     assert len(judge.calls) == 2
     assert extractor.calls[0]["message"] == EXTRACT_MESSAGE
     assert extractor.calls[0]["context"] == {"article_body": ARTICLE}
@@ -418,22 +417,27 @@ async def test_composite_runs_extract_then_judge_and_maps():
     assert len(findings) == 1
     assert findings[0]["excerpt"] == "devastating"
     assert findings[0]["finding_valid"] is True
+    # all three passes flagged it (identical extractor output) -> 3/3
+    assert findings[0]["extraction_confidence"] == "3/3"
     assert findings[0]["judge_confidence"] == "2/2"
     assert findings[0]["judge_votes"] == "confirmed 2/2"
     assert len(borderline) == 1
     assert borderline[0]["excerpt"] == "quietly doubled"
+    assert borderline[0]["extraction_confidence"] == "3/3"
     assert borderline[0]["judge_votes"] == "borderline 2/2"
     assert "finding_valid" not in borderline[0]
     assert res.structured["reader_note"].startswith("The article calls")
 
-    # aggregated metrics: 2 extract + 2 judge = 4 calls * 0.02 / 500
-    assert comp.last_cost_usd == pytest.approx(0.08)
-    assert comp.last_tokens == 2000
+    # aggregated metrics: 3 extract + 2 judge = 5 calls * 0.02 / 500
+    assert comp.last_cost_usd == pytest.approx(0.10)
+    assert comp.last_tokens == 2500
     # loud metrics
     x = comp.extra_log_fields
     assert x["union_size"] == 2 and x["confirmed_count"] == 1
     assert x["borderline_count"] == 1 and x["cleared_count"] == 0
     assert x["judge_disagreements"] == 0            # identical votes
+    assert x["extraction_passes"] == 3
+    assert x["extract_raw"] == [2, 2, 2]            # each pass emitted 2 candidates
     assert x["judge_skipped"] is False
     assert x["extractor_model"] == "deepseek/deepseek-v4-pro"
     assert x["judge_model"] == "anthropic/claude-opus-4.6"
@@ -448,7 +452,7 @@ async def test_composite_empty_candidates_skips_judge():
 
     res = await comp.run("m", context={"article_body": ARTICLE})
 
-    assert len(extractor.calls) == 2
+    assert len(extractor.calls) == 3
     assert judge.calls == []                       # judge skipped
     assert res.structured["language_bias"]["findings"] == []
     assert res.structured["language_bias"]["borderline"] == []   # valid-empty
@@ -469,8 +473,8 @@ async def test_composite_one_extractor_failure_still_proceeds():
         "anthropic/claude-opus-4.6",
         {"judgments": [{"candidate_id": 1, "explanation": "x", "issue": "loaded_term",
                         "verdict": "confirmed"}], "reader_note": "note"})
-    # extractor that fails on the 2nd of its two invocations: simulate by a
-    # wrapper agent alternating success/failure.
+    # extractor that fails on the 2nd of its THREE invocations: passes 1 and 3
+    # survive, so the union is still built (a failed pass -> empty run slot).
     class Flaky(FakeAgent):
         def __init__(self, *a):
             super().__init__(*a)
@@ -489,8 +493,11 @@ async def test_composite_one_extractor_failure_still_proceeds():
         {"candidates": [{"excerpt": "prudent", "issue_hint": "loaded_term"}]})
     comp = BiasComposite(extractor, judge)
     res = await comp.run("m", context={"article_body": ARTICLE})
-    # one pass survived -> union built -> judge ran -> one confirmed finding
-    assert res.structured["language_bias"]["findings"][0]["excerpt"] == "prudent"
+    # two of three passes survived -> union built -> judge ran -> confirmed finding
+    assert len(extractor.calls) == 3
+    f = res.structured["language_bias"]["findings"][0]
+    assert f["excerpt"] == "prudent"
+    assert f["extraction_confidence"] == "2/3"     # 2 of 3 passes flagged it
 
 
 @pytest.mark.asyncio
