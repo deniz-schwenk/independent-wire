@@ -1,0 +1,13 @@
+{
+ "full_flips": 0,
+ "hard_pass": true,
+ "presence_stable": 0,
+ "confirmed_families": 3,
+ "jbar_confirmed_informational": 0.178,
+ "mean_confirmed": 0.27,
+ "mean_borderline": 2.4,
+ "mean_cost": 0.1294,
+ "cost_pass": true,
+ "verdict": "PASS — zero full flips",
+ "flip_detail": []
+}

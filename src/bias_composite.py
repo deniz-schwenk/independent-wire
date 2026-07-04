@@ -16,9 +16,14 @@ individual pieces are each more repeatable:
            and never merge (a negation stays distinct from an affirmation).
            Present the shortest variant, keep the variant list, stable order by
            article position, candidate_id 1..N, 2/2-vs-1/2 agreement confidence.
-  Phase B  one CLOSED per-candidate judgment call (Opus 4.6, reasoning none):
-           a TERNARY verdict (confirmed / borderline / cleared) over a fixed
-           candidate list, explanation-before-verdict (TASK-BIAS-TIER-MAPPING).
+  Phase B  TWO CLOSED per-candidate judgment votes (Opus 4.6, reasoning none):
+           identical input to both calls, each a TERNARY verdict (confirmed /
+           borderline / cleared), explanation-before-verdict. Python assigns the
+           tier from the two votes — both-confirmed => confirmed, both-cleared =>
+           cleared, anything else => borderline (TASK-BIAS-DUAL-JUDGE). A single
+           sample cannot perceive its own boundary; marginality is only visible
+           ACROSS samples, so the second vote is what makes a straddler land in
+           the (ungated) gray zone instead of flipping poles cold-to-cold.
 
 The wrapper is a thin composite over ordinary :class:`~src.agent.Agent`
 instances — same pattern family as the fallback wrappers. It duck-types the
@@ -38,6 +43,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+from collections import Counter
 from typing import Any
 
 from src.agent import Agent, AgentError, AgentResult
@@ -225,61 +231,126 @@ def _resolved_issue(judgment: dict, candidate: dict) -> str:
     return issue
 
 
-def map_to_findings(
-    candidates: list[dict], judgments: list[dict]
-) -> list[dict]:
-    """Turn ``confirmed`` judgments into entries in the existing
-    ``bias_language_findings`` slot shape, plus the additive
-    ``extraction_confidence`` field — byte-for-byte the shape today's
-    consumers expect.
+# --------------------------------------------------------------------------- #
+# Dual-judge vote aggregation (TASK-BIAS-DUAL-JUDGE)
+# --------------------------------------------------------------------------- #
+# Marginality is only observable ACROSS samples: a single judge call cannot feel
+# that it sits on a boundary, so a genuinely borderline candidate commits to
+# opposite poles across cold runs. We run the judge TWICE (identical input) and
+# assign the tier from the two votes IN PYTHON — deterministic-before-LLM in its
+# purest form: the LLM only votes, the tier is code.
+_VERDICTS = ("confirmed", "borderline", "cleared")
+# Explanation/issue pick priority: a borderline vote names both readings by
+# design, so it wins; otherwise the confirmed vote; cleared last. Ties broken by
+# call order (call 1 before call 2) via a stable min.
+_PICK_PRIORITY = {"borderline": 0, "confirmed": 1, "cleared": 2}
 
-    The ``excerpt`` is taken from the *candidate* (verbatim, Python-owned
-    reference data), never from the judge output; the judge contributes only the
-    verdict fields (``issue``, ``explanation``) — originary output only.
+
+def _norm_verdict(judgment: Any) -> str:
+    """The judge's verdict normalized to one of ``_VERDICTS``; anything missing
+    or malformed is treated as ``cleared`` (the conservative pole — a candidate
+    the judge did not clearly address is never confirmed)."""
+    if isinstance(judgment, dict):
+        v = judgment.get("verdict")
+        if v in _VERDICTS:
+            return v
+    return "cleared"
+
+
+def aggregate_family(candidate: dict, j1: Any, j2: Any) -> dict:
+    """Deterministic tier + presentation for one merged candidate family from
+    the two judge votes (``j1`` = call 1, ``j2`` = call 2).
+
+    Tier rule (TASK-BIAS-DUAL-JUDGE):
+      both confirmed -> confirmed; both cleared -> cleared; ANY other
+      combination (any disagreement, or any borderline vote) -> borderline.
+
+    Presentation: the explanation/issue come from the highest-priority vote
+    (borderline > confirmed > cleared; ties -> call 1). ``judge_votes`` is the
+    honest vote split (e.g. ``"confirmed 1/2 · cleared 1/2"``); ``judge_confidence``
+    is the confirmed-vote fraction (``"2/2"`` for a confirmed finding).
     """
-    by_id = {c["candidate_id"]: c for c in candidates}
+    v1, v2 = _norm_verdict(j1), _norm_verdict(j2)
+    if v1 == "confirmed" and v2 == "confirmed":
+        tier = "confirmed"
+    elif v1 == "cleared" and v2 == "cleared":
+        tier = "cleared"
+    else:
+        tier = "borderline"
+
+    votes = [(v1, j1), (v2, j2)]
+    _, picked = min(votes, key=lambda t: _PICK_PRIORITY[t[0]])  # stable: call1 wins tie
+    picked = picked if isinstance(picked, dict) else {}
+    counts = Counter([v1, v2])
+    judge_votes = " · ".join(
+        f"{v} {counts[v]}/2" for v in _VERDICTS if counts[v]
+    )
+    return {
+        "tier": tier,
+        "issue": _resolved_issue(picked, candidate),
+        "explanation": picked.get("explanation", "") or "",
+        "judge_votes": judge_votes,
+        "judge_confidence": f"{counts['confirmed']}/2",
+        "v1": v1,
+        "v2": v2,
+    }
+
+
+def aggregate_judgments(
+    candidates: list[dict], judgments1: list[dict], judgments2: list[dict]
+) -> tuple[list[dict], list[dict], int, list[dict]]:
+    """Aggregate two judge votes per candidate family into
+    ``(findings, borderline, cleared_count, family_debug)``.
+
+    - ``findings`` (tier confirmed) use the existing ``bias_language_findings``
+      shape plus the additive ``extraction_confidence`` / ``judge_confidence``
+      / ``judge_votes``.
+    - ``borderline`` (tier borderline) use the ``bias_borderline_candidates``
+      shape plus ``judge_votes`` (no ``finding_valid``).
+    - ``cleared`` (tier cleared) are dropped, only counted.
+    - ``family_debug`` is measurement-only: every family's aggregated tier +
+      both raw votes + position, for the flip-distance gate.
+
+    Iterating over *candidates* (not judgments) guarantees every merged family
+    gets exactly one tier; a candidate no judge addressed aggregates to cleared.
+    """
+    by_id1 = {j.get("candidate_id"): j for j in (judgments1 or []) if isinstance(j, dict)}
+    by_id2 = {j.get("candidate_id"): j for j in (judgments2 or []) if isinstance(j, dict)}
     findings: list[dict] = []
-    for j in judgments or []:
-        if not isinstance(j, dict) or j.get("verdict") != "confirmed":
-            continue
-        cand = by_id.get(j.get("candidate_id"))
-        if cand is None:
-            continue  # judge referenced an id outside the list — ignore
-        findings.append({
+    borderline: list[dict] = []
+    cleared_count = 0
+    family_debug: list[dict] = []
+    for cand in candidates:
+        cid = cand["candidate_id"]
+        agg = aggregate_family(cand, by_id1.get(cid), by_id2.get(cid))
+        family_debug.append({
             "excerpt": cand["excerpt"],
-            "issue": _resolved_issue(j, cand),
-            "explanation": j.get("explanation", "") or "",
-            "finding_valid": True,
-            "extraction_confidence": cand["extraction_confidence"],
+            "tier": agg["tier"],
+            "v1": agg["v1"],
+            "v2": agg["v2"],
+            "judge_votes": agg["judge_votes"],
         })
-    return findings
-
-
-def map_to_borderline(
-    candidates: list[dict], judgments: list[dict]
-) -> list[dict]:
-    """Turn ``borderline`` judgments into the additive
-    ``bias_borderline_candidates`` slot shape (TASK-BIAS-TIER-MAPPING):
-    ``{excerpt, issue, explanation, extraction_confidence}`` — the confirmed
-    shape without ``finding_valid`` (these are not findings; they are the honest
-    gray zone). Same originary-output discipline: excerpt from the candidate,
-    verdict fields from the judge.
-    """
-    by_id = {c["candidate_id"]: c for c in candidates}
-    out: list[dict] = []
-    for j in judgments or []:
-        if not isinstance(j, dict) or j.get("verdict") != "borderline":
-            continue
-        cand = by_id.get(j.get("candidate_id"))
-        if cand is None:
-            continue
-        out.append({
-            "excerpt": cand["excerpt"],
-            "issue": _resolved_issue(j, cand),
-            "explanation": j.get("explanation", "") or "",
-            "extraction_confidence": cand["extraction_confidence"],
-        })
-    return out
+        if agg["tier"] == "confirmed":
+            findings.append({
+                "excerpt": cand["excerpt"],
+                "issue": agg["issue"],
+                "explanation": agg["explanation"],
+                "finding_valid": True,
+                "extraction_confidence": cand["extraction_confidence"],
+                "judge_confidence": agg["judge_confidence"],
+                "judge_votes": agg["judge_votes"],
+            })
+        elif agg["tier"] == "borderline":
+            borderline.append({
+                "excerpt": cand["excerpt"],
+                "issue": agg["issue"],
+                "explanation": agg["explanation"],
+                "extraction_confidence": cand["extraction_confidence"],
+                "judge_votes": agg["judge_votes"],
+            })
+        else:
+            cleared_count += 1
+    return findings, borderline, cleared_count, family_debug
 
 
 class BiasComposite:
@@ -301,7 +372,7 @@ class BiasComposite:
         self.extractor = extractor
         self.judge = judge
         self.name = name
-        self.model = f"bias-composite({extractor.model} x2 -> {judge.model})"
+        self.model = f"bias-composite({extractor.model} x2 -> {judge.model} x2)"
         # The composite enforces structured output at both sub-agents; its
         # authoritative decision schema is the judge's (the confirmed verdict).
         # Exposed so create_agents' "every agent wires a schema" contract holds.
@@ -323,32 +394,6 @@ class BiasComposite:
         self.last_judgments_debug = []
         self.extractor.reset_call_metrics()
         self.judge.reset_call_metrics()
-
-    @staticmethod
-    def _judgment_breakdown(
-        candidates: list[dict], judgments: list[dict], article_body: str
-    ) -> list[dict]:
-        """Every judged candidate as ``{excerpt, verdict, pos, end}`` (position
-        of the candidate's excerpt in the article). Measurement-only — used by
-        the gate to detect full flips (confirmed↔cleared) across cold runs."""
-        by_id = {c["candidate_id"]: c for c in candidates}
-        out: list[dict] = []
-        for j in judgments or []:
-            if not isinstance(j, dict):
-                continue
-            cand = by_id.get(j.get("candidate_id"))
-            verdict = j.get("verdict")
-            if cand is None or verdict not in ("confirmed", "borderline", "cleared"):
-                continue
-            exc = cand["excerpt"]
-            pos = article_body.find(exc)
-            out.append({
-                "excerpt": exc,
-                "verdict": verdict,
-                "pos": pos,
-                "end": (pos + len(exc)) if pos >= 0 else -1,
-            })
-        return out
 
     def _account(self, result: AgentResult) -> None:
         self.last_cost_usd += result.cost_usd
@@ -388,10 +433,13 @@ class BiasComposite:
 
         candidates, stats = build_union(run1, run2, article_body)
 
-        # --- Phase B: closed judgment (skip on empty candidate list) ---------
+        # --- Phase B: TWO closed judgment votes, deterministic aggregation ----
+        # (skip both on an empty candidate list). Identical input to both calls;
+        # Python assigns the tier from the two votes (TASK-BIAS-DUAL-JUDGE).
         judge_skipped = not candidates
-        judge_provider = ""
-        judgments: list[dict] = []
+        judge1_provider = judge2_provider = ""
+        judgments1: list[dict] = []
+        judgments2: list[dict] = []
         reader_note = ""
         if not judge_skipped:
             judge_input = [
@@ -402,33 +450,42 @@ class BiasComposite:
                 }
                 for c in candidates
             ]
-            jres = await self.judge.run(
-                JUDGE_MESSAGE,
-                context={"article_body": article_body, "candidates": judge_input},
+            judge_ctx = {"article_body": article_body, "candidates": judge_input}
+            jres1, jres2 = await asyncio.gather(
+                self.judge.run(JUDGE_MESSAGE, context=judge_ctx),
+                self.judge.run(JUDGE_MESSAGE, context=judge_ctx),
             )
-            self._account(jres)
-            judge_provider = jres.provider
-            parsed = jres.structured or {}
-            judgments = parsed.get("judgments") or []
-            reader_note = parsed.get("reader_note", "") or ""
+            for jres, which in ((jres1, 1), (jres2, 2)):
+                self._account(jres)
+                parsed = jres.structured or {}
+                if which == 1:
+                    judgments1 = parsed.get("judgments") or []
+                    judge1_provider = jres.provider
+                else:
+                    judgments2 = parsed.get("judgments") or []
+                    judge2_provider = jres.provider
+            # the reader_note is a whole-article summary; take call 1's (its
+            # findings drive the confirmed set the note describes).
+            reader_note = (jres1.structured or {}).get("reader_note", "") or ""
 
-        findings = map_to_findings(candidates, judgments)
-        borderline = map_to_borderline(candidates, judgments)
-        by_id = {c["candidate_id"]: c for c in candidates}
-        cleared_count = sum(
-            1 for j in (judgments or [])
-            if isinstance(j, dict) and j.get("verdict") == "cleared"
-            and j.get("candidate_id") in by_id
-        )
-        self.last_judgments_debug = self._judgment_breakdown(
-            candidates, judgments, article_body)
+        findings, borderline, cleared_count, family_debug = aggregate_judgments(
+            candidates, judgments1, judgments2)
+
+        # attach positions to the measurement-only debug (gate reads pos/end).
+        for d in family_debug:
+            pos = article_body.find(d["excerpt"])
+            d["pos"] = pos
+            d["end"] = (pos + len(d["excerpt"])) if pos >= 0 else -1
+        self.last_judgments_debug = family_debug
+        disagreements = sum(1 for d in family_debug if d["v1"] != d["v2"])
 
         # --- loud metrics ----------------------------------------------------
         self.extra_log_fields = {
             "extractor_model": self.extractor.model,
             "extractor_provider": ext_provider,
             "judge_model": self.judge.model,
-            "judge_provider": judge_provider,
+            "judge1_provider": judge1_provider,
+            "judge2_provider": judge2_provider,
             "extract_run1_raw": stats["extract_run1_raw"],
             "extract_run2_raw": stats["extract_run2_raw"],
             "extractor_cap": stats["extractor_cap"],
@@ -439,13 +496,14 @@ class BiasComposite:
             "confirmed_count": len(findings),
             "borderline_count": len(borderline),
             "cleared_count": cleared_count,
+            "judge_disagreements": disagreements,
         }
         logger.info(
             "bias composite: extracted %d/%d (raw), union=%d, invalid_drops=%d, "
-            "confirmed=%d, borderline=%d, cleared=%d%s",
+            "confirmed=%d, borderline=%d, cleared=%d, judge_disagree=%d%s",
             stats["extract_run1_raw"], stats["extract_run2_raw"],
             stats["union_size"], stats["invalid_span_drops"], len(findings),
-            len(borderline), cleared_count,
+            len(borderline), cleared_count, disagreements,
             " (judge skipped: empty candidates)" if judge_skipped else "",
         )
 
@@ -459,5 +517,5 @@ class BiasComposite:
             tokens_used=self.last_tokens,
             cost_usd=self.last_cost_usd,
             model=self.model,
-            provider=judge_provider or ext_provider,
+            provider=judge1_provider or ext_provider,
         )

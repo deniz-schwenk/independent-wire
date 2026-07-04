@@ -1740,10 +1740,17 @@ def build_bias_card(tp: dict) -> str:
                 "loaded_term": "#9f1239",
                 "hedging": "#64748b",
             }.get(issue, "#64748b")
+            # Honest vote split, when the dual-judge composite supplied it.
+            votes = b.get("judge_votes", "")
+            votes_html = (
+                f' <span class="bias-votes" style="font-family:var(--font-mono);'
+                f'font-size:0.72rem;color:var(--color-text-subtle)">({_esc(votes)})</span>'
+                if votes else ""
+            )
             bl_parts.append(
                 f'<div class="bias-finding bias-borderline">\n'
                 f'  <span class="bias-excerpt">{_esc(b.get("excerpt", ""))}</span> '
-                f'{_badge(RL.L("bias_issue", issue, issue), issue_color)}\n'
+                f'{_badge(RL.L("bias_issue", issue, issue), issue_color)}{votes_html}\n'
                 f'  <div class="bias-explanation">{_esc(b.get("explanation", ""))}</div>\n'
                 f'</div>\n'
             )

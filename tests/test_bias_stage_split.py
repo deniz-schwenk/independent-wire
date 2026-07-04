@@ -26,9 +26,9 @@ from src.bias_composite import (
     BiasComposite,
     EXTRACT_MESSAGE,
     JUDGE_MESSAGE,
+    aggregate_family,
+    aggregate_judgments,
     build_union,
-    map_to_borderline,
-    map_to_findings,
 )
 from src.runner.runner import _collect_agent_metrics
 from src.schemas import BIAS_CANDIDATES_SCHEMA, BIAS_JUDGE_SCHEMA
@@ -212,7 +212,7 @@ def test_extractor_cap_truncates_each_run():
 
 
 # --------------------------------------------------------------------------- #
-# map_to_findings
+# Dual-judge vote aggregation (TASK-BIAS-DUAL-JUDGE)
 # --------------------------------------------------------------------------- #
 CANDS = [
     {"candidate_id": 1, "excerpt": "devastating", "issue_hint": "evaluative_adjective",
@@ -222,84 +222,131 @@ CANDS = [
 ]
 
 
-def test_map_keeps_only_confirmed_and_uses_candidate_excerpt():
-    # confirmed -> finding; borderline + cleared -> NOT findings.
-    judgments = [
-        {"candidate_id": 1, "explanation": "own voice", "issue": "evaluative_adjective",
-         "verdict": "confirmed"},
-        {"candidate_id": 2, "explanation": "backed by fact", "issue": None,
-         "verdict": "cleared"},
-    ]
-    findings = map_to_findings(CANDS, judgments)
-    assert len(findings) == 1
+def _v(verdict, explanation="e", issue="loaded_term"):
+    return {"candidate_id": 1, "verdict": verdict, "explanation": explanation,
+            "issue": issue}
+
+
+# --- the full 3×3 vote matrix -> tier -------------------------------------- #
+# both-confirmed => confirmed, both-cleared => cleared, everything else => borderline.
+@pytest.mark.parametrize("v1,v2,tier", [
+    ("confirmed", "confirmed", "confirmed"),
+    ("cleared", "cleared", "cleared"),
+    ("borderline", "borderline", "borderline"),
+    ("confirmed", "cleared", "borderline"),     # disagreement across poles
+    ("cleared", "confirmed", "borderline"),
+    ("confirmed", "borderline", "borderline"),
+    ("borderline", "confirmed", "borderline"),
+    ("cleared", "borderline", "borderline"),
+    ("borderline", "cleared", "borderline"),
+])
+def test_vote_matrix_tier(v1, v2, tier):
+    agg = aggregate_family(CANDS[0], _v(v1), _v(v2))
+    assert agg["tier"] == tier
+
+
+def test_vote_summary_and_judge_confidence():
+    assert aggregate_family(CANDS[0], _v("confirmed"), _v("confirmed"))["judge_votes"] \
+        == "confirmed 2/2"
+    assert aggregate_family(CANDS[0], _v("confirmed"), _v("cleared"))["judge_votes"] \
+        == "confirmed 1/2 · cleared 1/2"
+    assert aggregate_family(CANDS[0], _v("borderline"), _v("cleared"))["judge_votes"] \
+        == "borderline 1/2 · cleared 1/2"
+    # judge_confidence = confirmed-vote fraction
+    assert aggregate_family(CANDS[0], _v("confirmed"), _v("confirmed"))["judge_confidence"] == "2/2"
+    assert aggregate_family(CANDS[0], _v("confirmed"), _v("cleared"))["judge_confidence"] == "1/2"
+    assert aggregate_family(CANDS[0], _v("borderline"), _v("borderline"))["judge_confidence"] == "0/2"
+
+
+# --- explanation/issue pick: borderline > confirmed > cleared, tie -> call 1 -- #
+def test_pick_prefers_borderline_explanation():
+    agg = aggregate_family(
+        CANDS[0],
+        _v("confirmed", explanation="own voice", issue="evaluative_adjective"),
+        _v("borderline", explanation="both readings hold", issue="loaded_term"))
+    assert agg["explanation"] == "both readings hold"   # borderline wins
+    assert agg["issue"] == "loaded_term"                # issue follows the pick
+
+
+def test_pick_confirmed_when_no_borderline():
+    # confirmed + cleared -> borderline tier, but explanation comes from confirmed.
+    agg = aggregate_family(
+        CANDS[0],
+        _v("cleared", explanation="defensible", issue=None),
+        _v("confirmed", explanation="own voice", issue="evaluative_adjective"))
+    assert agg["tier"] == "borderline"
+    assert agg["explanation"] == "own voice"
+    assert agg["issue"] == "evaluative_adjective"
+
+
+def test_pick_tie_breaks_to_call_one():
+    agg = aggregate_family(
+        CANDS[0],
+        _v("confirmed", explanation="first", issue="loaded_term"),
+        _v("confirmed", explanation="second", issue="hedging"))
+    assert agg["explanation"] == "first"                # call 1 wins the tie
+
+
+def test_pick_issue_falls_back_to_hint_when_null():
+    agg = aggregate_family(
+        CANDS[0],
+        _v("confirmed", explanation="x", issue=None),
+        _v("confirmed", explanation="y", issue=None))
+    assert agg["issue"] == "evaluative_adjective"       # candidate issue_hint
+
+
+def test_missing_vote_treated_as_cleared():
+    # one judge omits this candidate -> (confirmed, cleared) -> borderline.
+    assert aggregate_family(CANDS[0], _v("confirmed"), None)["tier"] == "borderline"
+    assert aggregate_family(CANDS[0], None, None)["tier"] == "cleared"
+
+
+# --- aggregate_judgments: build findings / borderline / cleared / debug ------ #
+def test_aggregate_judgments_splits_three_tiers():
+    j1 = [_v("confirmed") | {"candidate_id": 1},
+          {"candidate_id": 2, "verdict": "borderline", "explanation": "both",
+           "issue": "loaded_term"}]
+    j2 = [{"candidate_id": 1, "verdict": "confirmed", "explanation": "own voice",
+           "issue": "evaluative_adjective"},
+          {"candidate_id": 2, "verdict": "cleared", "explanation": "d", "issue": None}]
+    findings, borderline, cleared, debug = aggregate_judgments(CANDS, j1, j2)
+    # cid1 both confirmed -> finding; cid2 borderline+cleared -> borderline
+    assert [f["excerpt"] for f in findings] == ["devastating"]
+    assert [b["excerpt"] for b in borderline] == ["prudent"]
+    assert cleared == 0
+    # confirmed finding carries judge_confidence 2/2 + judge_votes
     f = findings[0]
-    assert f["excerpt"] == "devastating"          # from candidate, not judge
-    assert f["issue"] == "evaluative_adjective"
-    assert f["explanation"] == "own voice"
-    assert f["finding_valid"] is True
-    assert f["extraction_confidence"] == "2/2"
-
-
-def test_map_confirmed_with_null_issue_falls_back_to_hint():
-    judgments = [{"candidate_id": 2, "explanation": "x", "issue": None,
-                  "verdict": "confirmed"}]
-    findings = map_to_findings(CANDS, judgments)
-    assert findings[0]["issue"] == "loaded_term"  # issue_hint fallback
-
-
-def test_map_ignores_unknown_candidate_id():
-    judgments = [{"candidate_id": 99, "explanation": "x", "issue": "hedging",
-                  "verdict": "confirmed"}]
-    assert map_to_findings(CANDS, judgments) == []
-
-
-def test_map_finding_shape_is_exact():
-    # Byte-compatibility with existing bias_language_findings consumers: the
-    # confirmed shape is unchanged from the pre-three-tier composite.
-    judgments = [{"candidate_id": 1, "explanation": "x", "issue": "loaded_term",
-                  "verdict": "confirmed"}]
-    f = map_to_findings(CANDS, judgments)[0]
+    assert f["judge_confidence"] == "2/2"
+    assert f["judge_votes"] == "confirmed 2/2"
     assert set(f.keys()) == {
-        "excerpt", "issue", "explanation", "finding_valid", "extraction_confidence"}
-
-
-# --------------------------------------------------------------------------- #
-# map_to_borderline (TASK-BIAS-TIER-MAPPING — the additive gray zone)
-# --------------------------------------------------------------------------- #
-def test_map_borderline_keeps_only_borderline_verdicts():
-    judgments = [
-        {"candidate_id": 1, "explanation": "own voice", "issue": "evaluative_adjective",
-         "verdict": "confirmed"},
-        {"candidate_id": 2, "explanation": "both readings hold", "issue": "loaded_term",
-         "verdict": "borderline"},
-    ]
-    bl = map_to_borderline(CANDS, judgments)
-    assert len(bl) == 1
-    assert bl[0]["excerpt"] == "prudent"          # from candidate #2
-    assert bl[0]["issue"] == "loaded_term"
-    assert bl[0]["explanation"] == "both readings hold"
-    assert bl[0]["extraction_confidence"] == "1/2"
-
-
-def test_map_borderline_shape_has_no_finding_valid():
-    judgments = [{"candidate_id": 2, "explanation": "x", "issue": "loaded_term",
-                  "verdict": "borderline"}]
-    b = map_to_borderline(CANDS, judgments)[0]
+        "excerpt", "issue", "explanation", "finding_valid",
+        "extraction_confidence", "judge_confidence", "judge_votes"}
+    # borderline entry carries the honest vote split, no finding_valid
+    b = borderline[0]
+    assert b["judge_votes"] == "borderline 1/2 · cleared 1/2"
     assert set(b.keys()) == {
-        "excerpt", "issue", "explanation", "extraction_confidence"}
+        "excerpt", "issue", "explanation", "extraction_confidence", "judge_votes"}
+    # debug carries both votes + tier for every family
+    assert {d["excerpt"]: d["tier"] for d in debug} == {
+        "devastating": "confirmed", "prudent": "borderline"}
 
 
-def test_map_borderline_null_issue_falls_back_to_hint():
-    judgments = [{"candidate_id": 1, "explanation": "x", "issue": None,
-                  "verdict": "borderline"}]
-    assert map_to_borderline(CANDS, judgments)[0]["issue"] == "evaluative_adjective"
+def test_aggregate_judgments_cleared_dropped_and_counted():
+    j = [{"candidate_id": 1, "verdict": "cleared", "explanation": "d", "issue": None},
+         {"candidate_id": 2, "verdict": "cleared", "explanation": "d", "issue": None}]
+    findings, borderline, cleared, debug = aggregate_judgments(CANDS, j, j)
+    assert findings == [] and borderline == []
+    assert cleared == 2
+    assert all(d["tier"] == "cleared" for d in debug)
 
 
-def test_map_cleared_is_dropped_from_both():
-    judgments = [{"candidate_id": 1, "explanation": "defensible", "issue": None,
-                  "verdict": "cleared"}]
-    assert map_to_findings(CANDS, judgments) == []
-    assert map_to_borderline(CANDS, judgments) == []
+def test_aggregate_judgments_confirmed_needs_both():
+    # confirmed in call 1 only -> borderline, NOT confirmed.
+    j1 = [{"candidate_id": 1, "verdict": "confirmed", "explanation": "x", "issue": "e"}]
+    j2 = [{"candidate_id": 1, "verdict": "cleared", "explanation": "y", "issue": None}]
+    findings, borderline, cleared, _ = aggregate_judgments([CANDS[0]], j1, j2)
+    assert findings == []
+    assert len(borderline) == 1
 
 
 # --------------------------------------------------------------------------- #
@@ -352,39 +399,45 @@ async def test_composite_runs_extract_then_judge_and_maps():
 
     res = await comp.run("msg", context={"article_body": ARTICLE, "bias_card": {"x": 1}})
 
-    # two extraction passes, one judge call
+    # two extraction passes, TWO judge votes (identical input to both)
     assert len(extractor.calls) == 2
-    assert len(judge.calls) == 1
+    assert len(judge.calls) == 2
     assert extractor.calls[0]["message"] == EXTRACT_MESSAGE
     assert extractor.calls[0]["context"] == {"article_body": ARTICLE}
     assert judge.calls[0]["message"] == JUDGE_MESSAGE
+    assert judge.calls[0]["context"] == judge.calls[1]["context"]   # identical
     # judge sees the numbered candidate list (id/excerpt/issue_hint only)
     jc = judge.calls[0]["context"]
     assert jc["article_body"] == ARTICLE
     assert [c["candidate_id"] for c in jc["candidates"]] == [1, 2]
     assert set(jc["candidates"][0].keys()) == {"candidate_id", "excerpt", "issue_hint"}
 
-    # output shape + three-tier mapping: confirmed -> findings, borderline -> borderline
+    # both votes identical -> cid1 confirmed (2/2), cid2 borderline (2/2)
     findings = res.structured["language_bias"]["findings"]
     borderline = res.structured["language_bias"]["borderline"]
     assert len(findings) == 1
     assert findings[0]["excerpt"] == "devastating"
     assert findings[0]["finding_valid"] is True
+    assert findings[0]["judge_confidence"] == "2/2"
+    assert findings[0]["judge_votes"] == "confirmed 2/2"
     assert len(borderline) == 1
     assert borderline[0]["excerpt"] == "quietly doubled"
+    assert borderline[0]["judge_votes"] == "borderline 2/2"
     assert "finding_valid" not in borderline[0]
     assert res.structured["reader_note"].startswith("The article calls")
 
-    # aggregated metrics: 2 extract + 1 judge = 3 calls * 0.02 / 500
-    assert comp.last_cost_usd == pytest.approx(0.06)
-    assert comp.last_tokens == 1500
+    # aggregated metrics: 2 extract + 2 judge = 4 calls * 0.02 / 500
+    assert comp.last_cost_usd == pytest.approx(0.08)
+    assert comp.last_tokens == 2000
     # loud metrics
     x = comp.extra_log_fields
     assert x["union_size"] == 2 and x["confirmed_count"] == 1
     assert x["borderline_count"] == 1 and x["cleared_count"] == 0
+    assert x["judge_disagreements"] == 0            # identical votes
     assert x["judge_skipped"] is False
     assert x["extractor_model"] == "deepseek/deepseek-v4-pro"
     assert x["judge_model"] == "anthropic/claude-opus-4.6"
+    assert x["judge1_provider"] == "FakeProv" and x["judge2_provider"] == "FakeProv"
 
 
 @pytest.mark.asyncio
@@ -489,15 +542,18 @@ async def test_composite_cleared_dropped_and_debug_breakdown():
     comp = BiasComposite(extractor, judge)
     res = await comp.run("m", context={"article_body": ARTICLE})
 
+    # both judge votes identical -> cid1 confirmed, cid2 borderline, cid3 cleared
     assert len(res.structured["language_bias"]["findings"]) == 1
     assert len(res.structured["language_bias"]["borderline"]) == 1
     x = comp.extra_log_fields
     assert (x["confirmed_count"], x["borderline_count"], x["cleared_count"]) == (1, 1, 1)
-    # measurement-only debug: every judged candidate + verdict + position, incl.
-    # cleared (needed by the full-flip gate). Not in the rendered structured.
-    dbg = {d["excerpt"]: d["verdict"] for d in comp.last_judgments_debug}
+    assert x["judge_disagreements"] == 0
+    # measurement-only debug: every family's aggregated tier + both votes +
+    # position, incl. cleared (needed by the full-flip gate). Not rendered.
+    dbg = {d["excerpt"]: d["tier"] for d in comp.last_judgments_debug}
     assert dbg == {"devastating": "confirmed", "quietly doubled": "borderline",
                    "prudent": "cleared"}
+    assert all(d["v1"] and d["v2"] for d in comp.last_judgments_debug)
     assert all(d["pos"] >= 0 and d["end"] > d["pos"] for d in comp.last_judgments_debug)
 
 
@@ -654,12 +710,15 @@ def test_card_borderline_section_renders_when_present():
     from scripts.render import build_bias_card
     html = build_bias_card(_tp_with([
         {"excerpt": "quietly doubled", "issue": "passive_obscuring",
-         "explanation": "reads two ways", "extraction_confidence": "1/2"},
+         "explanation": "reads two ways", "extraction_confidence": "1/2",
+         "judge_votes": "confirmed 1/2 · cleared 1/2"},
     ]))
     assert "Borderline formulations" in html
     assert "Defensible readings exist on both sides" in html
     assert "quietly doubled" in html
     assert "reads two ways" in html
+    # honest vote split rendered when present (TASK-BIAS-DUAL-JUDGE)
+    assert "confirmed 1/2 · cleared 1/2" in html
 
 
 def test_card_findings_unaffected_by_borderline_absence():

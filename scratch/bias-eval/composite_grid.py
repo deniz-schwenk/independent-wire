@@ -276,6 +276,148 @@ def cmd_scorev2():
               indent=1, ensure_ascii=False)
 
 
+_TIER_PRI = {"confirmed": 0, "borderline": 1, "cleared": 2}
+
+
+def _cluster_families_across_reps(reps):
+    """Union-find over every judged span across all 3 reps (positional overlap,
+    rep-agnostic). Returns clusters as lists of (rep, tier, excerpt, v1, v2)."""
+    spans = []  # (rep, pos, end, tier, excerpt, v1, v2)
+    for r in range(3):
+        for d in reps[r].get("judged", []):
+            if d.get("pos", -1) >= 0:
+                spans.append((r, d["pos"], d["end"], d["tier"], d["excerpt"],
+                              d.get("v1"), d.get("v2")))
+    parent = list(range(len(spans)))
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for i in range(len(spans)):
+        for j in range(i + 1, len(spans)):
+            _, pi, ei, *_ = spans[i]
+            _, pj, ej, *_ = spans[j]
+            if pi < ej and pj < ei:                      # positional overlap
+                ri, rj = find(i), find(j)
+                if ri != rj:
+                    parent[rj] = ri
+    groups = {}
+    for i, s in enumerate(spans):
+        groups.setdefault(find(i), []).append(
+            {"rep": s[0], "tier": s[3], "excerpt": s[4], "v1": s[5], "v2": s[6]})
+    return list(groups.values())
+
+
+def _per_rep_tier(cluster):
+    """Reduce a cluster to one tier per rep (priority confirmed>borderline>
+    cleared); reps with no span in the cluster are 'absent'."""
+    out = {}
+    for m in cluster:
+        r = m["rep"]
+        if r not in out or _TIER_PRI[m["tier"]] < _TIER_PRI[out[r]]:
+            out[r] = m["tier"]
+    return {r: out.get(r, "absent") for r in range(3)}
+
+
+def cmd_scorev3():
+    """Gate v3 (TASK-BIAS-DUAL-JUDGE) — metrics redefined for sparsity.
+
+    HARD (pass/fail): ZERO full flips at the AGGREGATE level — no family may be
+      `confirmed` in one rep and `cleared` in another (cross-rep clustered).
+    PRIMARY report: presence stability — every family confirmed in any rep must
+      appear as confirmed or borderline in ALL reps.
+    Informational: Jaccard on the confirmed set (sparsity footnote); $/article.
+    """
+    flips_total = 0
+    flip_detail = []
+    conf_clusters = pres_stable = drift_absent = 0
+    JE, costs, confirmed_all, bord_all = [], [], [], []
+    print("gate v3 — dual-judge aggregate stability:\n")
+    print(f"{'article':22} {'confirmed':12} {'Jconf':>6} {'borderline':12} "
+          f"{'flips':>5} {'presence':>9}")
+    for date, n in ARTICLES:
+        reps = []
+        for r in (0, 1, 2):
+            f = RAW / f"{date}_{n}__r{r}.json"
+            if not f.exists():
+                print(f"  MISSING {date}#{n} r{r}"); return
+            reps.append(json.load(open(f)))
+        if not all(x.get("ok") for x in reps):
+            print(f"  ERROR cell {date}#{n}: {[x.get('error') for x in reps]}"); return
+        for x in reps:
+            costs.append(x.get("cost_usd", 0) or 0)
+        conf_sets = [x.get("excerpts", []) for x in reps]
+        confirmed_all += [len(s) for s in conf_sets]
+        bord_all += [len(x.get("borderline_excerpts", [])) for x in reps]
+        je = 1 - sum(_je(conf_sets[i], conf_sets[j])
+                     for i, j in itertools.combinations(range(3), 2)) / 3
+        JE.append(je)
+
+        clusters = _cluster_families_across_reps(reps)
+        art_flips = art_conf = art_pres = 0
+        for cl in clusters:
+            tiers = _per_rep_tier(cl)
+            tset = set(tiers.values())
+            if "confirmed" in tset:
+                art_conf += 1
+                if "cleared" in tset:                    # confirmed↔cleared = flip
+                    art_flips += 1
+                    votes = "; ".join(
+                        f"r{m['rep']}:{m['tier']}({m['v1']}/{m['v2']})"
+                        for m in sorted(cl, key=lambda m: m["rep"]))
+                    flip_detail.append(
+                        f"{date}#{n}: '{cl[0]['excerpt']}' — {votes}")
+                    drift_absent += 0
+                elif tset <= {"confirmed", "borderline"}:  # present in all reps seen
+                    # present-stable only if NOT absent in any rep
+                    if "absent" not in tset:
+                        art_pres += 1
+                    else:
+                        drift_absent += 1
+                else:
+                    drift_absent += 1
+        flips_total += art_flips
+        conf_clusters += art_conf
+        pres_stable += art_pres
+        print(f"  {date}#{n:<18} {str([len(s) for s in conf_sets]):12} {je:6.2f} "
+              f"{str([len(x.get('borderline_excerpts', [])) for x in reps]):12} "
+              f"{art_flips:5} {f'{art_pres}/{art_conf}':>9}")
+
+    mean_cost = sum(costs) / (len(ARTICLES) * 3)
+    jbar_e = sum(JE) / len(JE)
+    mean_conf = sum(confirmed_all) / len(confirmed_all)
+    mean_bord = sum(bord_all) / len(bord_all)
+    print(f"\n  HARD     full flips (confirmed↔cleared, aggregate) = {flips_total}   (PASS = 0)")
+    print(f"  PRIMARY  presence stability = {pres_stable}/{conf_clusters} confirmed "
+          f"families confirmed|borderline in all reps")
+    print(f"  ---")
+    print(f"  confirmed-set Jbar_exact = {jbar_e:.3f}  (informational; sparse — a "
+          f"1-vs-0 rep transition scores 0.67 by construction)")
+    print(f"  mean confirmed {mean_conf:.2f}/article · mean borderline {mean_bord:.2f}/article")
+    print(f"  mean $ / composite run = ${mean_cost:.4f}   (target ≤ $0.15/article)")
+    if flip_detail:
+        print("\n  FLIPPING FAMILIES (both votes, both reps):")
+        for d in flip_detail:
+            print(f"    - {d}")
+    hard_pass = flips_total == 0
+    cost_pass = mean_cost <= 0.15
+    verdict = ("PASS — zero full flips" if hard_pass
+               else f"STOP+REPORT — {flips_total} full flip(s) (HARD gate)")
+    print(f"\n  >>> GATE v3: {verdict}   (cost {'OK' if cost_pass else 'OVER'})")
+    json.dump({"full_flips": flips_total, "hard_pass": hard_pass,
+               "presence_stable": pres_stable, "confirmed_families": conf_clusters,
+               "jbar_confirmed_informational": round(jbar_e, 3),
+               "mean_confirmed": round(mean_conf, 2),
+               "mean_borderline": round(mean_bord, 2),
+               "mean_cost": round(mean_cost, 4), "cost_pass": cost_pass,
+               "verdict": verdict, "flip_detail": flip_detail},
+              open(Path(__file__).resolve().parent / "composite_gate_v3.json", "w"),
+              indent=1, ensure_ascii=False)
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "run"
     if cmd == "run":
@@ -284,3 +426,5 @@ if __name__ == "__main__":
         cmd_score()
     elif cmd == "scorev2":
         cmd_scorev2()
+    elif cmd == "scorev3":
+        cmd_scorev3()
