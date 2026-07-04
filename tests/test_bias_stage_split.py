@@ -106,8 +106,108 @@ def test_union_empty_inputs_yield_empty():
 def test_union_no_internal_pos_key_leaks():
     cands, _ = build_union(
         [{"excerpt": "prudent", "issue_hint": "loaded_term"}], [], ARTICLE)
+    # `variants` is deliberate merge-family metadata; `_pos` must never leak.
     assert set(cands[0].keys()) == {
-        "candidate_id", "excerpt", "issue_hint", "extraction_confidence"}
+        "candidate_id", "excerpt", "issue_hint", "extraction_confidence",
+        "variants"}
+    assert cands[0]["variants"] == ["prudent"]
+
+
+# --------------------------------------------------------------------------- #
+# build_union — position-anchored merge (TASK-BIAS-DEDUP-FIX)
+# --------------------------------------------------------------------------- #
+# A crafted article giving us (i) a nested + partial-overlap cluster around
+# "devastating" and (ii) the SAME words "ongoing defiance" occurring twice —
+# once negated ("no ongoing defiance") and once affirmed — so the negation
+# guard can be exercised.
+MERGE_ARTICLE = (
+    "The audit found no ongoing defiance among the northern councils. "
+    "Yet ongoing defiance in some localities dealt a devastating blow to "
+    "public trust through the winter."
+)
+
+
+def test_merge_a_nested_spans_at_same_location_merge():
+    # "devastating" is nested inside "a devastating blow" (single occurrence
+    # each) -> one family, shortest variant presented.
+    run1 = [{"excerpt": "a devastating blow", "issue_hint": "evaluative_adjective"}]
+    run2 = [{"excerpt": "devastating", "issue_hint": "evaluative_adjective"}]
+    cands, stats = build_union(run1, run2, MERGE_ARTICLE)
+    assert stats["union_size"] == 1
+    assert cands[0]["excerpt"] == "devastating"                 # shortest variant
+    # variants are ordered by article position: "a devastating blow" starts two
+    # chars before "devastating".
+    assert cands[0]["variants"] == ["a devastating blow", "devastating"]
+
+
+def test_merge_b_partial_overlap_at_same_location_merges():
+    # "a devastating" and "devastating blow" overlap on "devastating" but
+    # neither contains the other -> still merge (same location).
+    run1 = [{"excerpt": "a devastating", "issue_hint": "evaluative_adjective"}]
+    run2 = [{"excerpt": "devastating blow", "issue_hint": "evaluative_adjective"}]
+    cands, stats = build_union(run1, run2, MERGE_ARTICLE)
+    assert stats["union_size"] == 1
+    assert cands[0]["excerpt"] == "a devastating"               # shortest (13 < 16)
+    assert set(cands[0]["variants"]) == {"a devastating", "devastating blow"}
+
+
+def test_merge_c_negation_does_not_merge_across_locations():
+    # "ongoing defiance" occurs twice (once inside "no ongoing defiance" at P1,
+    # once inside "ongoing defiance in some localities" at P2). Because it is
+    # multi-occurrence it is location-ambiguous and must NOT collapse the P2
+    # affirmation — the negation stays a distinct candidate.
+    run1 = [
+        {"excerpt": "ongoing defiance", "issue_hint": "loaded_term"},
+        {"excerpt": "ongoing defiance in some localities", "issue_hint": "loaded_term"},
+    ]
+    cands, stats = build_union(run1, [], MERGE_ARTICLE)
+    excerpts = [c["excerpt"] for c in cands]
+    assert "ongoing defiance" in excerpts
+    assert "ongoing defiance in some localities" in excerpts
+    assert stats["union_size"] == 2                             # NOT merged
+
+
+def test_merge_d_ambiguous_multioccurrence_stays_unmerged():
+    # An excerpt occurring more than once never merges with an overlapping
+    # single-occurrence span, even a longer one that contains one occurrence.
+    body = "Costs soared. Prices soared beyond all forecasts. Costs soared again."
+    run1 = [
+        {"excerpt": "soared", "issue_hint": "intensifier"},          # occurs 3x
+        {"excerpt": "soared beyond all forecasts", "issue_hint": "intensifier"},
+    ]
+    cands, stats = build_union(run1, [], body)
+    excerpts = [c["excerpt"] for c in cands]
+    assert "soared" in excerpts                                 # stands alone
+    assert "soared beyond all forecasts" in excerpts
+    assert stats["union_size"] == 2
+
+
+def test_merge_e_confidence_is_max_over_variants():
+    # A family whose variants come from BOTH runs is 2/2 (the join / max over
+    # variants); a family drawn from a single run is 1/2.
+    run1 = [{"excerpt": "a devastating blow", "issue_hint": "evaluative_adjective"}]
+    run2 = [{"excerpt": "devastating", "issue_hint": "evaluative_adjective"}]
+    cands, _ = build_union(run1, run2, MERGE_ARTICLE)
+    assert cands[0]["extraction_confidence"] == "2/2"           # both runs -> max
+
+    # same family, both variants from run1 only -> 1/2 (max of {1/2, 1/2}).
+    run1_only = [
+        {"excerpt": "a devastating blow", "issue_hint": "evaluative_adjective"},
+        {"excerpt": "devastating", "issue_hint": "evaluative_adjective"},
+    ]
+    cands2, _ = build_union(run1_only, [], MERGE_ARTICLE)
+    assert cands2[0]["extraction_confidence"] == "1/2"
+
+
+def test_extractor_cap_truncates_each_run():
+    # Each run is capped before the union; a 30-item run keeps only the first 18.
+    body = " ".join(f"word{i}" for i in range(40))
+    run = [{"excerpt": f"word{i}", "issue_hint": "loaded_term"} for i in range(30)]
+    cands, stats = build_union(run, [], body, cap=18)
+    assert stats["union_size"] == 18
+    kept = {c["excerpt"] for c in cands}
+    assert "word0" in kept and "word17" in kept
+    assert "word18" not in kept                                 # dropped by cap
 
 
 # --------------------------------------------------------------------------- #

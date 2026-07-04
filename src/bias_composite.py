@@ -9,9 +9,13 @@ individual pieces are each more repeatable:
   Phase A  two GENEROUS candidate-extraction calls (deepseek-v4-pro, reasoning
            none, temperature 0.8 -> natural variance = coverage, fp8-pinned).
            Extractor instability is *harmless* — it only widens recall.
-  union    DETERMINISTIC Python: verbatim-substring validate, merge both runs,
-           dedup (identical + contained spans -> keep the shorter), stable order
-           by article position, candidate_id 1..N, 2/2/1-2 agreement confidence.
+  union    DETERMINISTIC Python: verbatim-substring validate, then
+           POSITION-ANCHORED merge — resolve each span to its character
+           interval(s) and merge only spans that overlap at the same location
+           (nesting or partial overlap); multi-occurrence spans are ambiguous
+           and never merge (a negation stays distinct from an affirmation).
+           Present the shortest variant, keep the variant list, stable order by
+           article position, candidate_id 1..N, 2/2-vs-1/2 agreement confidence.
   Phase B  one CLOSED per-candidate judgment call (Opus 4.6, reasoning none):
            yes/no over a fixed candidate list, explanation-before-verdict.
 
@@ -48,36 +52,67 @@ JUDGE_MESSAGE = (
     "constitutes linguistic bias in the article's own voice."
 )
 
+# Extractor cap: how many candidates from EACH extraction pass are carried into
+# the union (TASK-BIAS-DEDUP-FIX lowered this 25 -> 18 for the ≤ $0.06/article
+# cost target). The extractor prompt is authoritative and untouched — the cap is
+# enforced here deterministically, on the raw emission order (the prompt asks the
+# model to keep the most clearly loaded ones, so the head of the list is best).
+EXTRACTOR_CANDIDATE_CAP = 18
+
 
 # --------------------------------------------------------------------------- #
 # Deterministic union (pure function — no LLM, no I/O)
 # --------------------------------------------------------------------------- #
+def _occurrences(excerpt: str, body: str) -> list[tuple[int, int]]:
+    """All ``[start, end)`` character intervals where ``excerpt`` occurs in
+    ``body`` (overlap-aware). Every excerpt reaching this point is already
+    validated as a substring, so the list is non-empty."""
+    spans: list[tuple[int, int]] = []
+    i = body.find(excerpt)
+    while i != -1:
+        spans.append((i, i + len(excerpt)))
+        i = body.find(excerpt, i + 1)
+    return spans
+
+
 def build_union(
-    run1: list[dict], run2: list[dict], article_body: str
+    run1: list[dict],
+    run2: list[dict],
+    article_body: str,
+    cap: int = EXTRACTOR_CANDIDATE_CAP,
 ) -> tuple[list[dict], dict]:
-    """Merge two extractor candidate lists into one ordered, de-duplicated,
+    """Merge two extractor candidate lists into one ordered, position-merged,
     confidence-tagged candidate list.
 
     Rules (all deterministic):
+    - each run is truncated to the first ``cap`` items (extractor cost cap);
     - every ``excerpt`` must be an exact substring of ``article_body`` (invalid
       spans are dropped and counted);
-    - identical spans across runs collapse; a span fully contained in a longer
-      span collapses into the shorter (minimal) span — the judge only ever sees
-      minimal spans;
-    - a kept span's ``extraction_confidence`` is ``"2/2"`` when *either run*
-      contributed a span at that location (i.e. some distinct excerpt containing
-      it came from each run), else ``"1/2"``;
-    - order is by first position in ``article_body`` (excerpt string as
-      tiebreak); ``candidate_id`` is 1..N in that order.
+    - **position-anchored merge** (TASK-BIAS-DEDUP-FIX): each validated excerpt
+      is resolved to its character interval(s) in ``article_body``. Two
+      candidates merge into one *family* only when their intervals overlap **at
+      the same location** — nesting or partial overlap. No string-similarity
+      merging: a span variant of the same finding collapses, but two unrelated
+      occurrences of the same words never do (a negation stays distinct from an
+      affirmation). An excerpt that occurs **more than once** is location-
+      ambiguous and never merges (conservative by design);
+    - a family presents its **shortest** variant to the judge (tie: earliest
+      position, then string); the full variant list is kept in ``variants``
+      metadata (never shown to the judge, never rendered);
+    - a family's ``extraction_confidence`` is ``"2/2"`` when its variants,
+      together, were contributed by *both* runs (the location was independently
+      flagged twice — the join / max over its variants), else ``"1/2"``;
+    - order is by the representative's position in ``article_body`` (excerpt
+      string as tiebreak); ``candidate_id`` is 1..N in that order.
 
-    Returns ``(candidates, stats)`` where each candidate is
-    ``{"candidate_id", "excerpt", "issue_hint", "extraction_confidence"}``.
+    Returns ``(candidates, stats)`` where each candidate is ``{"candidate_id",
+    "excerpt", "issue_hint", "extraction_confidence", "variants"}``.
     """
     invalid_dropped = 0
     # distinct excerpt -> {"runs": set[int], "hint": str}
     distinct: dict[str, dict] = {}
     for run_idx, run in ((1, run1), (2, run2)):
-        for item in run or []:
+        for item in (run or [])[:cap]:
             if not isinstance(item, dict):
                 continue
             excerpt = item.get("excerpt")
@@ -99,33 +134,63 @@ def build_union(
                     rec["hint"] = hint
 
     excerpts = list(distinct.keys())
-    # A span is KEPT iff it is minimal: no *other* distinct span is a strictly
-    # shorter substring of it.
-    kept: list[str] = []
+    # Resolve each distinct excerpt to its occurrence interval(s). Exactly-once
+    # excerpts have a definite location; multi-occurrence excerpts are
+    # location-ambiguous and are excluded from any merge.
+    intervals: dict[str, list[tuple[int, int]]] = {
+        e: _occurrences(e, article_body) for e in excerpts
+    }
+    unambiguous = {e: intervals[e][0] for e in excerpts if len(intervals[e]) == 1}
+
+    # Union-find over the unambiguous excerpts: merge a pair iff their single
+    # intervals overlap (nesting or partial overlap). Merging is transitive
+    # (a chain A–B, B–C puts A,B,C in one family).
+    parent: dict[str, str] = {e: e for e in excerpts}
+
+    def find(x: str) -> str:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a: str, b: str) -> None:
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[rb] = ra
+
+    u_keys = list(unambiguous.keys())
+    for i in range(len(u_keys)):
+        sa, ea = unambiguous[u_keys[i]]
+        for j in range(i + 1, len(u_keys)):
+            sb, eb = unambiguous[u_keys[j]]
+            if sa < eb and sb < ea:  # half-open interval overlap
+                union(u_keys[i], u_keys[j])
+
+    # Group excerpts into merge families.
+    families: dict[str, list[str]] = {}
     for e in excerpts:
-        minimal = True
-        for f in excerpts:
-            if f != e and len(f) < len(e) and f in e:
-                minimal = False
-                break
-        if minimal:
-            kept.append(e)
+        families.setdefault(find(e), []).append(e)
+
+    def _pos_of(e: str) -> int:
+        return intervals[e][0][0]
 
     candidates: list[dict] = []
-    for k in kept:
-        # runs(K) = union of runs of every distinct span that contains K
-        # (K itself included) — agreement propagates from longer spans down to
-        # the minimal one they collapse into.
-        runs: set[int] = set()
-        for d, rec in distinct.items():
-            if k in d:  # k is a substring of d (or equal)
-                runs |= rec["runs"]
-        confidence = "2/2" if runs >= {1, 2} else "1/2"
+    for members in families.values():
+        # representative = shortest variant (tie: earliest position, then string)
+        rep = min(members, key=lambda m: (len(m), _pos_of(m), m))
+        variants = sorted(members, key=lambda m: (_pos_of(m), len(m), m))
+        # confidence = join over variants: 2/2 iff both runs contributed to the
+        # family (the location was flagged independently by each pass).
+        family_runs: set[int] = set()
+        for m in members:
+            family_runs |= distinct[m]["runs"]
+        confidence = "2/2" if family_runs >= {1, 2} else "1/2"
         candidates.append({
-            "excerpt": k,
-            "issue_hint": distinct[k]["hint"],
+            "excerpt": rep,
+            "issue_hint": distinct[rep]["hint"],
             "extraction_confidence": confidence,
-            "_pos": article_body.index(k),
+            "variants": variants,
+            "_pos": _pos_of(rep),
         })
 
     candidates.sort(key=lambda c: (c["_pos"], c["excerpt"]))
@@ -136,8 +201,10 @@ def build_union(
     stats = {
         "extract_run1_raw": len(run1 or []),
         "extract_run2_raw": len(run2 or []),
+        "extractor_cap": cap,
         "invalid_span_drops": invalid_dropped,
-        "union_size": len(candidates),
+        "distinct_excerpts": len(distinct),   # valid spans before position merge
+        "union_size": len(candidates),        # families after position merge
     }
     return candidates, stats
 
@@ -287,7 +354,9 @@ class BiasComposite:
             "judge_provider": judge_provider,
             "extract_run1_raw": stats["extract_run1_raw"],
             "extract_run2_raw": stats["extract_run2_raw"],
+            "extractor_cap": stats["extractor_cap"],
             "invalid_span_drops": stats["invalid_span_drops"],
+            "distinct_excerpts": stats["distinct_excerpts"],
             "union_size": stats["union_size"],
             "judge_skipped": judge_skipped,
             "confirmed_count": len(findings),
