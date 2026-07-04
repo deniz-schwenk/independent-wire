@@ -3,24 +3,40 @@
   "Jbar_exact": 0.51,
   "Jbar_soft": 0.337,
   "cost": 0.6653,
-  "mean_dur": 18.2
+  "mean_tokens": 6072,
+  "max_tokens": 7150,
+  "total_tokens": 91080
+ },
+ "opus48": {
+  "Jbar_exact": 0.496,
+  "Jbar_soft": 0.264,
+  "cost": 1.4198,
+  "mean_tokens": 9786,
+  "max_tokens": 11629,
+  "total_tokens": 146800
  },
  "sonnet5": {
   "Jbar_exact": 0.685,
   "Jbar_soft": 0.551,
   "cost": 1.1727,
-  "mean_dur": 65.3
+  "mean_tokens": 13818,
+  "max_tokens": 17523,
+  "total_tokens": 207280
  },
  "glm": {
   "Jbar_exact": 0.798,
   "Jbar_soft": 0.678,
   "cost": 0.438,
-  "mean_dur": 82.8
+  "mean_tokens": 11454,
+  "max_tokens": 17878,
+  "total_tokens": 171810
  },
  "deepseek": {
   "Jbar_exact": 0.8,
   "Jbar_soft": 0.8,
   "cost": 0.1618,
-  "mean_dur": 98.1
+  "mean_tokens": 10907,
+  "max_tokens": 14354,
+  "total_tokens": 163607
  }
 }

@@ -103,6 +103,9 @@
    "mean_total": 7.27,
    "cost": 0.6653,
    "mean_dur_s": 18.2,
+   "mean_tokens": 6072,
+   "max_tokens_call": 7150,
+   "total_tokens": 91080,
    "served": [
     "Anthropic"
    ],
@@ -214,6 +217,9 @@
    "mean_total": 1.53,
    "cost": 0.438,
    "mean_dur_s": 82.8,
+   "mean_tokens": 11454,
+   "max_tokens_call": 17878,
+   "total_tokens": 171810,
    "served": [
     "Baidu"
    ],
@@ -325,6 +331,9 @@
    "mean_total": 0.87,
    "cost": 0.1618,
    "mean_dur_s": 98.1,
+   "mean_tokens": 10907,
+   "max_tokens_call": 14354,
+   "total_tokens": 163607,
    "served": [
     "Baidu"
    ],
@@ -436,8 +445,125 @@
    "mean_total": 3.8,
    "cost": 1.1727,
    "mean_dur_s": 65.3,
+   "mean_tokens": 13818,
+   "max_tokens_call": 17523,
+   "total_tokens": 207280,
    "served": [
     "Azure"
+   ],
+   "precondition_fail": [],
+   "n_articles_scored": 5
+  }
+ },
+ "opus48": {
+  "per_article": [
+   {
+    "date": "2026-06-13",
+    "n": 0,
+    "valid_counts": [
+     1,
+     1,
+     1
+    ],
+    "total_counts": [
+     3,
+     3,
+     3
+    ],
+    "C": 0,
+    "Ctot": 0,
+    "J": 0.0,
+    "D": 0.0
+   },
+   {
+    "date": "2026-06-17",
+    "n": 1,
+    "valid_counts": [
+     0,
+     0,
+     0
+    ],
+    "total_counts": [
+     0,
+     0,
+     2
+    ],
+    "C": 0,
+    "Ctot": 2,
+    "J": 0.0,
+    "D": 0.0
+   },
+   {
+    "date": "2026-06-02",
+    "n": 2,
+    "valid_counts": [
+     1,
+     2,
+     2
+    ],
+    "total_counts": [
+     3,
+     3,
+     4
+    ],
+    "C": 1,
+    "Ctot": 1,
+    "J": 0.889,
+    "D": 0.5
+   },
+   {
+    "date": "2026-06-22",
+    "n": 2,
+    "valid_counts": [
+     4,
+     2,
+     2
+    ],
+    "total_counts": [
+     4,
+     3,
+     4
+    ],
+    "C": 2,
+    "Ctot": 1,
+    "J": 0.656,
+    "D": 0.167
+   },
+   {
+    "date": "2026-06-20",
+    "n": 0,
+    "valid_counts": [
+     3,
+     3,
+     3
+    ],
+    "total_counts": [
+     4,
+     4,
+     4
+    ],
+    "C": 0,
+    "Ctot": 0,
+    "J": 0.933,
+    "D": 0.222
+   }
+  ],
+  "agg": {
+   "Jbar": 0.496,
+   "Jmax": 0.933,
+   "Cmax": 2,
+   "Cmean": 0.6,
+   "Ctotmax": 2,
+   "Dbar": 0.178,
+   "mean_valid": 1.67,
+   "mean_total": 2.93,
+   "cost": 1.4198,
+   "mean_dur_s": 33.3,
+   "mean_tokens": 9786,
+   "max_tokens_call": 11629,
+   "total_tokens": 146800,
+   "served": [
+    "Anthropic"
    ],
    "precondition_fail": [],
    "n_articles_scored": 5

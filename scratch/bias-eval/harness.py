@@ -126,12 +126,14 @@ def build_agent(arm: str) -> Agent:
             reasoning={"enabled": True, "effort": "high"},
             **common,
         )
-    if arm == "golden":
-        # Quality ceiling: Opus-4.8 via the identical prompt/schema/input
-        # path. 4.x-reasoning family rejects non-default temperature, so temp
-        # is omitted and effort set explicitly (same shape as sonnet5).
+    if arm in ("golden", "opus48"):
+        # Opus-4.8, adaptive thinking enabled + effort high, via the identical
+        # prompt/schema/input path. 4.x-reasoning family rejects non-default
+        # temperature, so temp is omitted and effort set explicitly (same
+        # shape as sonnet5). Doubles as the Phase-0 stability ceiling ('opus48')
+        # and the (unentered) Phase-1 golden reference ('golden').
         return Agent(
-            name="bias_golden",
+            name=f"bias_{arm}",
             model="anthropic/claude-opus-4.8",
             temperature=None,
             max_tokens=64000,

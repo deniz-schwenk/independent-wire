@@ -18,7 +18,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 RAW = HERE / "raw"
-ARMS = ["incumbent", "glm", "deepseek", "sonnet5"]
+# opus48 = Opus-4.8 (adaptive thinking, effort high) — the stability CEILING
+# reference, scored alongside but not a swap candidate.
+ARMS = ["incumbent", "glm", "deepseek", "sonnet5", "opus48"]
 ARTICLES = [("2026-06-13", 0), ("2026-06-17", 1), ("2026-06-02", 2),
             ("2026-06-22", 2), ("2026-06-20", 0)]
 CATS = ["evaluative_adjective", "emotionalizing", "passive_obscuring",
@@ -80,6 +82,7 @@ def score_arm(arm):
     served = set()
     cost = 0.0
     dur = []
+    toks = []
     for date, n in ARTICLES:
         reps = [load(arm, date, n, r) for r in (0, 1, 2)]
         if any(r is None for r in reps):
@@ -90,6 +93,8 @@ def score_arm(arm):
             cost += r.get("cost_usd", 0) or 0
             if r.get("duration_s") is not None:
                 dur.append(r["duration_s"])
+            if r.get("tokens"):
+                toks.append(r["tokens"])
             if r.get("served_provider"):
                 served.add(r["served_provider"])
             fs = findings(r)
@@ -123,6 +128,9 @@ def score_arm(arm):
         "mean_valid": round(mean([c for p in good for c in p["valid_counts"]]), 2) if good else None,
         "mean_total": round(mean([c for p in good for c in p["total_counts"]]), 2) if good else None,
         "cost": round(cost, 4), "mean_dur_s": round(mean(dur), 1) if dur else None,
+        "mean_tokens": int(mean(toks)) if toks else None,
+        "max_tokens_call": max(toks) if toks else None,
+        "total_tokens": sum(toks) if toks else None,
         "served": sorted(served), "precondition_fail": precondition_fail,
         "n_articles_scored": len(good),
     }
@@ -137,14 +145,15 @@ def main():
 
     inc = results["incumbent"]["agg"]
     print("\n=== Phase-0 per-arm aggregates ===")
-    hdr = f"{'arm':10} {'Jbar':>6} {'Jmax':>6} {'Cmax':>5} {'Cmean':>6} {'Ctotmx':>7} {'Dbar':>6} {'mV':>5} {'mT':>5} {'cost$':>7} {'dur':>6} precond"
+    hdr = f"{'arm':10} {'Jbar':>6} {'Jmax':>6} {'Cmax':>5} {'Cmean':>6} {'Dbar':>6} {'mV':>5} {'mT':>5} {'meanTok':>8} {'maxTok':>7} {'cost$':>7} {'dur':>6} precond"
     print(hdr)
     for arm in ARMS:
         a = results[arm]["agg"]
         pf = "OK" if not a["precondition_fail"] else f"FAIL({len(a['precondition_fail'])})"
         print(f"{arm:10} {str(a['Jbar']):>6} {str(a['Jmax']):>6} {str(a['Cmax']):>5} "
-              f"{str(a['Cmean']):>6} {str(a['Ctotmax']):>7} {str(a['Dbar']):>6} "
-              f"{str(a['mean_valid']):>5} {str(a['mean_total']):>5} {str(a['cost']):>7} "
+              f"{str(a['Cmean']):>6} {str(a['Dbar']):>6} "
+              f"{str(a['mean_valid']):>5} {str(a['mean_total']):>5} {str(a['mean_tokens']):>8} "
+              f"{str(a['max_tokens_call']):>7} {str(a['cost']):>7} "
               f"{str(a['mean_dur_s']):>6} {pf}")
 
     print("\n=== GATE (PASS iff Jbar<=inc AND Cmax<=inc AND no precondition fail) ===")

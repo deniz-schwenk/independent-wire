@@ -1,37 +1,44 @@
 PHASE-0 STABILITY GATE — full detail (3 cache-cold repeats per cell)
+tokens_used = reasoning + output (OpenRouter usage.total_tokens)
 
-arm        article              valid_counts   Jexact  Jsoft
-incumbent  Pope/Spain           [3, 3, 2]        0.39   0.39
-incumbent  Bolsonaro            [3, 3, 2]        0.39   0.22
-incumbent  Anthropic IPO        [4, 6, 6]        0.81   0.52
-incumbent  DRC Ebola            [7, 4, 5]        0.30   0.30
-incumbent  US-Iran/Hezbollah    [5, 5, 4]        0.65   0.24
-           >>> AGG              Jbar_exact=0.510 Jbar_soft=0.337 cost=$0.665
+== incumbent ==
+  Pope/Spain           valid=[3, 3, 2]   tok=[5132, 5187, 5243] Jexact=0.39 Jsoft=0.39
+  Bolsonaro            valid=[3, 3, 2]   tok=[5673, 5732, 5667] Jexact=0.39 Jsoft=0.22
+  Anthropic IPO        valid=[4, 6, 6]   tok=[6127, 6224, 6272] Jexact=0.81 Jsoft=0.52
+  DRC Ebola            valid=[7, 4, 5]   tok=[6330, 6274, 6266] Jexact=0.30 Jsoft=0.30
+  US-Iran/Hezbollah    valid=[5, 5, 4]   tok=[6986, 7150, 6817] Jexact=0.65 Jsoft=0.24
+  >>> Jbar_exact=0.510 Jbar_soft=0.337 mean_tok=6072 max_tok=7150 cost=$0.665
 
-sonnet5    Pope/Spain           [2, 4, 5]        0.74   0.53
-sonnet5    Bolsonaro            [0, 1, 1]        1.00   1.00
-sonnet5    Anthropic IPO        [4, 2, 3]        0.60   0.36
-sonnet5    DRC Ebola            [6, 6, 5]        0.57   0.52
-sonnet5    US-Iran/Hezbollah    [5, 5, 4]        0.52   0.34
-           >>> AGG              Jbar_exact=0.685 Jbar_soft=0.551 cost=$1.173
+== opus48 ==
+  Pope/Spain           valid=[1, 1, 1]   tok=[8115, 7947, 8585] Jexact=0.00 Jsoft=0.00
+  Bolsonaro            valid=[0, 0, 0]   tok=[9564, 8726, 9007] Jexact=0.00 Jsoft=0.00
+  Anthropic IPO        valid=[1, 2, 2]   tok=[10309, 9494, 9956] Jexact=0.89 Jsoft=0.56
+  DRC Ebola            valid=[4, 2, 2]   tok=[10287, 10569, 10221] Jexact=0.66 Jsoft=0.33
+  US-Iran/Hezbollah    valid=[3, 3, 3]   tok=[11134, 11257, 11629] Jexact=0.93 Jsoft=0.43
+  >>> Jbar_exact=0.496 Jbar_soft=0.264 mean_tok=9786 max_tok=11629 cost=$1.420
 
-glm        Pope/Spain           [1, 1, 1]        1.00   1.00
-glm        Bolsonaro            [0, 0, 1]        0.67   0.67
-glm        Anthropic IPO        [4, 2, 2]        0.66   0.56
-glm        DRC Ebola            [2, 1, 1]        0.83   0.33
-glm        US-Iran/Hezbollah    [1, 1, 2]        0.83   0.83
-           >>> AGG              Jbar_exact=0.798 Jbar_soft=0.678 cost=$0.438
+== sonnet5 ==
+  Pope/Spain           valid=[2, 4, 5]   tok=[11822, 10780, 11035] Jexact=0.74 Jsoft=0.53
+  Bolsonaro            valid=[0, 1, 1]   tok=[13694, 17371, 11021] Jexact=1.00 Jsoft=1.00
+  Anthropic IPO        valid=[4, 2, 3]   tok=[13222, 14810, 13094] Jexact=0.60 Jsoft=0.36
+  DRC Ebola            valid=[6, 6, 5]   tok=[12400, 12479, 14644] Jexact=0.57 Jsoft=0.52
+  US-Iran/Hezbollah    valid=[5, 5, 4]   tok=[16159, 17523, 17226] Jexact=0.52 Jsoft=0.34
+  >>> Jbar_exact=0.685 Jbar_soft=0.551 mean_tok=13818 max_tok=17523 cost=$1.173
 
-deepseek   Pope/Spain           [0, 2, 1]        0.83   0.83
-deepseek   Bolsonaro            [1, 1, 0]        0.67   0.67
-deepseek   Anthropic IPO        [0, 0, 3]        0.67   0.67
-deepseek   DRC Ebola            [1, 0, 2]        0.83   0.83
-deepseek   US-Iran/Hezbollah    [0, 1, 1]        1.00   1.00
-           >>> AGG              Jbar_exact=0.800 Jbar_soft=0.800 cost=$0.162
+== glm ==
+  Pope/Spain           valid=[1, 1, 1]   tok=[11944, 8617, 17878] Jexact=1.00 Jsoft=1.00
+  Bolsonaro            valid=[0, 0, 1]   tok=[8422, 8978, 10626] Jexact=0.67 Jsoft=0.67
+  Anthropic IPO        valid=[4, 2, 2]   tok=[11244, 10735, 11131] Jexact=0.66 Jsoft=0.56
+  DRC Ebola            valid=[2, 1, 1]   tok=[10390, 12884, 12144] Jexact=0.83 Jsoft=0.33
+  US-Iran/Hezbollah    valid=[1, 1, 2]   tok=[13305, 12712, 10800] Jexact=0.83 Jsoft=0.83
+  >>> Jbar_exact=0.798 Jbar_soft=0.678 mean_tok=11454 max_tok=17878 cost=$0.438
 
-GATE (PASS iff Jbar_exact <= incumbent AND Cmax <= incumbent AND no precondition-fail):
-  incumbent bar: Jbar_exact<=0.510, Cmax<=3
+== deepseek ==
+  Pope/Spain           valid=[0, 2, 1]   tok=[8554, 10405, 9556] Jexact=0.83 Jsoft=0.83
+  Bolsonaro            valid=[1, 1, 0]   tok=[10492, 11592, 10438] Jexact=0.67 Jsoft=0.67
+  Anthropic IPO        valid=[0, 0, 3]   tok=[9191, 9502, 11854] Jexact=0.67 Jsoft=0.67
+  DRC Ebola            valid=[1, 0, 2]   tok=[12834, 10291, 13596] Jexact=0.83 Jsoft=0.83
+  US-Iran/Hezbollah    valid=[0, 1, 1]   tok=[7676, 13272, 14354] Jexact=1.00 Jsoft=1.00
+  >>> Jbar_exact=0.800 Jbar_soft=0.800 mean_tok=10907 max_tok=14354 cost=$0.162
 
-  glm        Jbar_exact=0.798 Jbar_soft=0.678 Cmax=2 mean_valid=1.33 -> FAIL  (Jbar>inc)
-  deepseek   Jbar_exact=0.800 Jbar_soft=0.800 Cmax=3 mean_valid=0.87 -> FAIL  (Jbar>inc)
-  sonnet5    Jbar_exact=0.685 Jbar_soft=0.551 Cmax=3 mean_valid=3.53 -> FAIL  (Jbar>inc)
+consolidated 75 raw records
