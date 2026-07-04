@@ -820,11 +820,20 @@ class TopicBus(BaseModel):
         optional_write=True,
     )
 
-    # 4B.9 Bias Detector phase (2 slots). bias_language_findings carries
+    # 4B.9 Bias Detector phase (3 slots). bias_language_findings carries
     # optional_write=True: a genuinely neutral article legitimately yields
     # zero findings (H2, docs/CODE-REVIEW-2026-07-02.md). bias_reader_note
     # stays required — the agent emits a reader-note even on clean runs.
+    # bias_borderline_candidates (TASK-BIAS-TIER-MAPPING) is the additive
+    # honest gray zone: candidates the three-tier judge rated `borderline`
+    # (a defensible reading exists on both sides). optional_write=True —
+    # most articles yield none — same tp/mcp visibility as the findings slot.
     bias_language_findings: list = Slot(
+        default_factory=list,
+        visibility=["tp", "mcp"],
+        optional_write=True,
+    )
+    bias_borderline_candidates: list = Slot(
         default_factory=list,
         visibility=["tp", "mcp"],
         optional_write=True,

@@ -1643,7 +1643,8 @@ class BiasLanguageStage(_AgentStageBase):
     """Bias Language agent wrapper.
 
     Reads the post-mirror `qa_corrected_article` plus the slots that compose
-    the deterministic bias_card context. Writes `bias_language_findings` and
+    the deterministic bias_card context. Writes `bias_language_findings`,
+    `bias_borderline_candidates` (the additive three-tier gray zone), and
     `bias_reader_note`. The bias_card context is built per V1 §870-944 via
     `_build_bias_card_for_agent_input`.
     """
@@ -1658,7 +1659,11 @@ class BiasLanguageStage(_AgentStageBase):
         "qa_corrections",
         "qa_divergences",
     )
-    writes = ("bias_language_findings", "bias_reader_note")
+    writes = (
+        "bias_language_findings",
+        "bias_borderline_candidates",
+        "bias_reader_note",
+    )
     agent_role = "bias_language"
 
     def __init__(self, agent: Agent) -> None:
@@ -1686,14 +1691,19 @@ class BiasLanguageStage(_AgentStageBase):
         language_bias = parsed.get("language_bias") or {}
         if isinstance(language_bias, dict):
             findings = language_bias.get("findings") or []
+            borderline = language_bias.get("borderline") or []
         else:
             findings = []
+            borderline = []
         if not isinstance(findings, list):
             findings = []
+        if not isinstance(borderline, list):
+            borderline = []
 
         return topic_bus.model_copy(
             update={
                 "bias_language_findings": findings,
+                "bias_borderline_candidates": borderline,
                 "bias_reader_note": parsed.get("reader_note", "") or "",
             }
         )

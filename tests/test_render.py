@@ -159,6 +159,8 @@ def test_select_by_visibility_topicbus_tp():
         # (renamed 2026-05-21 from `single_voices`; threshold dropped).
         "mentioned_actors",
         "bias_language_findings",
+        # Additive three-tier gray zone (TASK-BIAS-TIER-MAPPING).
+        "bias_borderline_candidates",
         "bias_reader_note",
         # Consolidator output (LLM); replaces the legacy pair
         # `coverage_gaps_validated` + `consolidated_missing_coverage`.
@@ -407,6 +409,7 @@ def test_compose_bias_card_shape():
     card = compose_bias_card(tb)
     assert set(card) == {
         "language",
+        "borderline",
         "source",
         "geographical",
         "selection",
@@ -415,6 +418,8 @@ def test_compose_bias_card_shape():
     }
     # language: list of findings
     assert card["language"] == tb.bias_language_findings
+    # borderline: additive three-tier gray zone (TASK-BIAS-TIER-MAPPING)
+    assert card["borderline"] == tb.bias_borderline_candidates
     # source: by_country + by_language + represented + total
     assert set(card["source"]) == {"by_country", "by_language", "represented", "total"}
     assert card["source"]["total"] == 3

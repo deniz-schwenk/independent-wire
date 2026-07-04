@@ -1096,7 +1096,11 @@ def test_bias_language_metadata():
     m = get_stage_meta(s)
     assert m.kind == "topic"
     assert "qa_corrected_article" in m.reads
-    assert m.writes == ("bias_language_findings", "bias_reader_note")
+    assert m.writes == (
+        "bias_language_findings",
+        "bias_borderline_candidates",
+        "bias_reader_note",
+    )
 
 
 def test_bias_language_happy_path():

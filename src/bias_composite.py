@@ -17,17 +17,21 @@ individual pieces are each more repeatable:
            Present the shortest variant, keep the variant list, stable order by
            article position, candidate_id 1..N, 2/2-vs-1/2 agreement confidence.
   Phase B  one CLOSED per-candidate judgment call (Opus 4.6, reasoning none):
-           yes/no over a fixed candidate list, explanation-before-verdict.
+           a TERNARY verdict (confirmed / borderline / cleared) over a fixed
+           candidate list, explanation-before-verdict (TASK-BIAS-TIER-MAPPING).
 
 The wrapper is a thin composite over ordinary :class:`~src.agent.Agent`
 instances — same pattern family as the fallback wrappers. It duck-types the
 members ``BiasLanguageStage`` and the runner touch (``run``, ``name``,
 ``last_cost_usd``, ``last_tokens``, ``reset_call_metrics``) so it drops straight
 into ``agents["bias_language"]`` with the stage code unchanged, and returns an
-:class:`~src.agent.AgentResult` whose ``structured`` is the *same*
-``{"language_bias": {"findings": [...]}, "reader_note": ...}`` shape the old
-bias_detector agent produced — so the outer Bus slot + every downstream consumer
-stay untouched. Loud per-stage metrics are surfaced via ``extra_log_fields``.
+:class:`~src.agent.AgentResult` whose ``structured`` is
+``{"language_bias": {"findings": [...], "borderline": [...]}, "reader_note": ...}``:
+``findings`` is byte-for-byte the shape the old bias_detector agent produced (so
+the ``bias_language_findings`` slot + every downstream consumer stay untouched),
+and ``borderline`` feeds the additive ``bias_borderline_candidates`` slot.
+``cleared`` verdicts are dropped (counted in metrics). Loud per-stage metrics are
+surfaced via ``extra_log_fields``.
 """
 from __future__ import annotations
 
@@ -212,12 +216,22 @@ def build_union(
 # --------------------------------------------------------------------------- #
 # Mapping judgments back to the existing outer contract
 # --------------------------------------------------------------------------- #
+def _resolved_issue(judgment: dict, candidate: dict) -> str:
+    """The confirmed/borderline ``issue`` string, falling back to the
+    extractor's ``issue_hint`` when the judge left it null/empty."""
+    issue = judgment.get("issue")
+    if not isinstance(issue, str) or not issue:
+        return candidate.get("issue_hint", "")
+    return issue
+
+
 def map_to_findings(
     candidates: list[dict], judgments: list[dict]
 ) -> list[dict]:
-    """Turn confirmed judgments (``is_bias=true``) into entries in the existing
+    """Turn ``confirmed`` judgments into entries in the existing
     ``bias_language_findings`` slot shape, plus the additive
-    ``extraction_confidence`` field.
+    ``extraction_confidence`` field — byte-for-byte the shape today's
+    consumers expect.
 
     The ``excerpt`` is taken from the *candidate* (verbatim, Python-owned
     reference data), never from the judge output; the judge contributes only the
@@ -226,23 +240,46 @@ def map_to_findings(
     by_id = {c["candidate_id"]: c for c in candidates}
     findings: list[dict] = []
     for j in judgments or []:
-        if not isinstance(j, dict) or j.get("is_bias") is not True:
+        if not isinstance(j, dict) or j.get("verdict") != "confirmed":
             continue
-        cid = j.get("candidate_id")
-        cand = by_id.get(cid)
+        cand = by_id.get(j.get("candidate_id"))
         if cand is None:
             continue  # judge referenced an id outside the list — ignore
-        issue = j.get("issue")
-        if not isinstance(issue, str) or not issue:
-            issue = cand.get("issue_hint", "")  # confirmed but null issue
         findings.append({
             "excerpt": cand["excerpt"],
-            "issue": issue,
+            "issue": _resolved_issue(j, cand),
             "explanation": j.get("explanation", "") or "",
             "finding_valid": True,
             "extraction_confidence": cand["extraction_confidence"],
         })
     return findings
+
+
+def map_to_borderline(
+    candidates: list[dict], judgments: list[dict]
+) -> list[dict]:
+    """Turn ``borderline`` judgments into the additive
+    ``bias_borderline_candidates`` slot shape (TASK-BIAS-TIER-MAPPING):
+    ``{excerpt, issue, explanation, extraction_confidence}`` — the confirmed
+    shape without ``finding_valid`` (these are not findings; they are the honest
+    gray zone). Same originary-output discipline: excerpt from the candidate,
+    verdict fields from the judge.
+    """
+    by_id = {c["candidate_id"]: c for c in candidates}
+    out: list[dict] = []
+    for j in judgments or []:
+        if not isinstance(j, dict) or j.get("verdict") != "borderline":
+            continue
+        cand = by_id.get(j.get("candidate_id"))
+        if cand is None:
+            continue
+        out.append({
+            "excerpt": cand["excerpt"],
+            "issue": _resolved_issue(j, cand),
+            "explanation": j.get("explanation", "") or "",
+            "extraction_confidence": cand["extraction_confidence"],
+        })
+    return out
 
 
 class BiasComposite:
@@ -274,13 +311,44 @@ class BiasComposite:
         self.last_tokens: int = 0
         # Loud, per-call metrics surfaced into run_stage_log.jsonl.
         self.extra_log_fields: dict = {}
+        # Measurement-only per-candidate verdict breakdown (excerpt/verdict/
+        # position) for the stability grid — NOT logged, NOT rendered, NOT part
+        # of the outer contract. The flip-distance gate reads it.
+        self.last_judgments_debug: list[dict] = []
 
     def reset_call_metrics(self) -> None:
         self.last_cost_usd = 0.0
         self.last_tokens = 0
         self.extra_log_fields = {}
+        self.last_judgments_debug = []
         self.extractor.reset_call_metrics()
         self.judge.reset_call_metrics()
+
+    @staticmethod
+    def _judgment_breakdown(
+        candidates: list[dict], judgments: list[dict], article_body: str
+    ) -> list[dict]:
+        """Every judged candidate as ``{excerpt, verdict, pos, end}`` (position
+        of the candidate's excerpt in the article). Measurement-only — used by
+        the gate to detect full flips (confirmed↔cleared) across cold runs."""
+        by_id = {c["candidate_id"]: c for c in candidates}
+        out: list[dict] = []
+        for j in judgments or []:
+            if not isinstance(j, dict):
+                continue
+            cand = by_id.get(j.get("candidate_id"))
+            verdict = j.get("verdict")
+            if cand is None or verdict not in ("confirmed", "borderline", "cleared"):
+                continue
+            exc = cand["excerpt"]
+            pos = article_body.find(exc)
+            out.append({
+                "excerpt": exc,
+                "verdict": verdict,
+                "pos": pos,
+                "end": (pos + len(exc)) if pos >= 0 else -1,
+            })
+        return out
 
     def _account(self, result: AgentResult) -> None:
         self.last_cost_usd += result.cost_usd
@@ -345,6 +413,15 @@ class BiasComposite:
             reader_note = parsed.get("reader_note", "") or ""
 
         findings = map_to_findings(candidates, judgments)
+        borderline = map_to_borderline(candidates, judgments)
+        by_id = {c["candidate_id"]: c for c in candidates}
+        cleared_count = sum(
+            1 for j in (judgments or [])
+            if isinstance(j, dict) and j.get("verdict") == "cleared"
+            and j.get("candidate_id") in by_id
+        )
+        self.last_judgments_debug = self._judgment_breakdown(
+            candidates, judgments, article_body)
 
         # --- loud metrics ----------------------------------------------------
         self.extra_log_fields = {
@@ -360,17 +437,20 @@ class BiasComposite:
             "union_size": stats["union_size"],
             "judge_skipped": judge_skipped,
             "confirmed_count": len(findings),
+            "borderline_count": len(borderline),
+            "cleared_count": cleared_count,
         }
         logger.info(
             "bias composite: extracted %d/%d (raw), union=%d, invalid_drops=%d, "
-            "confirmed=%d%s",
+            "confirmed=%d, borderline=%d, cleared=%d%s",
             stats["extract_run1_raw"], stats["extract_run2_raw"],
             stats["union_size"], stats["invalid_span_drops"], len(findings),
+            len(borderline), cleared_count,
             " (judge skipped: empty candidates)" if judge_skipped else "",
         )
 
         structured = {
-            "language_bias": {"findings": findings},
+            "language_bias": {"findings": findings, "borderline": borderline},
             "reader_note": reader_note,
         }
         return AgentResult(

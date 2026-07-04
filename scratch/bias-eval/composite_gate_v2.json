@@ -1,0 +1,102 @@
+{
+ "jbar_confirmed": 0.544,
+ "full_flips": 2,
+ "jbar_borderline": 0.871,
+ "mean_confirmed": 0.53,
+ "mean_borderline": 1.87,
+ "mean_cost": 0.0683,
+ "primary_pass": false,
+ "hard_pass": false,
+ "verdict": "STOP+REPORT — 2 full flip(s) (HARD gate); see families above",
+ "flip_detail": [
+  "2026-06-20#0: 'a deliberate test of Washington's credibility' (confirmed r0) ↔ 'a deliberate test of Washington's credibility' (cleared r1)",
+  "2026-06-20#0: 'a deliberate test of Washington's credibility' (confirmed r0) ↔ 'a deliberate test' (cleared r2)"
+ ],
+ "per_article": [
+  [
+   "2026-06-13",
+   0,
+   [
+    1,
+    0,
+    0
+   ],
+   0.6666666666666667,
+   [
+    2,
+    2,
+    2
+   ],
+   0.7777777777777778,
+   0
+  ],
+  [
+   "2026-06-17",
+   1,
+   [
+    0,
+    0,
+    0
+   ],
+   0.0,
+   [
+    2,
+    1,
+    2
+   ],
+   0.8333333333333334,
+   0
+  ],
+  [
+   "2026-06-02",
+   2,
+   [
+    0,
+    1,
+    0
+   ],
+   0.6666666666666667,
+   [
+    1,
+    2,
+    2
+   ],
+   1.0,
+   0
+  ],
+  [
+   "2026-06-22",
+   2,
+   [
+    1,
+    2,
+    2
+   ],
+   0.7222222222222223,
+   [
+    3,
+    3,
+    4
+   ],
+   0.7444444444444445,
+   0
+  ],
+  [
+   "2026-06-20",
+   0,
+   [
+    1,
+    0,
+    0
+   ],
+   0.6666666666666667,
+   [
+    0,
+    1,
+    1
+   ],
+   1.0,
+   2
+  ]
+ ]
+}

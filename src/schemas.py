@@ -454,10 +454,14 @@ BIAS_CANDIDATES_SCHEMA = {
 }
 
 # Phase B — per-candidate judgment. FIELD ORDER IS LOAD-BEARING: `explanation`
-# precedes `issue`/`is_bias` so the model writes its reasoning before committing
-# to the verdict (examine-then-judge, in-schema). `issue` is nullable — null when
-# the candidate is cleared (is_bias=false). One judgment per input candidate,
-# keyed by candidate_id.
+# precedes `issue`/`verdict` so the model writes its reasoning before committing
+# to the verdict (examine-then-judge, in-schema). The verdict is ternary
+# (TASK-BIAS-TIER-MAPPING): `confirmed` (clear own-voice bias), `borderline`
+# (a genuinely defensible reading exists on both sides), `cleared` (legitimate
+# practice or a defensible word choice). `issue` carries the pattern name for
+# `confirmed` and `borderline`; it is null for `cleared` — nullable so the strict
+# decoder accepts the cleared case (the prompt requires it present for the other
+# two). One judgment per input candidate, keyed by candidate_id.
 BIAS_JUDGE_SCHEMA = {
     "type": "object",
     "properties": {
@@ -469,9 +473,12 @@ BIAS_JUDGE_SCHEMA = {
                     "candidate_id": {"type": "integer"},
                     "explanation": {"type": "string"},
                     "issue": {"type": ["string", "null"]},
-                    "is_bias": {"type": "boolean"},
+                    "verdict": {
+                        "type": "string",
+                        "enum": ["confirmed", "borderline", "cleared"],
+                    },
                 },
-                "required": ["candidate_id", "explanation", "issue", "is_bias"],
+                "required": ["candidate_id", "explanation", "issue", "verdict"],
                 "additionalProperties": False,
             },
         },

@@ -213,6 +213,7 @@ _TP_RESHAPED_SLOTS: dict[str, str] = {
     "transparency_card": "transparency",
     # Bias-card-derived slots (composed via compose_bias_card)
     "bias_language_findings": "bias_analysis.language",
+    "bias_borderline_candidates": "bias_analysis.borderline",
     "bias_reader_note": "bias_analysis.reader_note",
     "source_balance": "bias_analysis.source / bias_analysis.geographical",
     "qa_problems_found": "bias_analysis.selection.qa_problems_found",
@@ -305,6 +306,8 @@ def compose_bias_card(topic_bus: TopicBus) -> dict:
 
     Dimension mapping per ARCH §4B.12:
     - language: bias_language_findings (LLM-emitted linguistic findings)
+    - borderline: bias_borderline_candidates (three-tier gray zone; additive,
+                  usually empty — TASK-BIAS-TIER-MAPPING)
     - source: source_balance.{by_country, by_language, represented} + total
     - geographical: source_balance.{represented, by_country, missing_from_dossier}
     - selection: perspective_missing_positions + qa_problems_found
@@ -323,6 +326,7 @@ def compose_bias_card(topic_bus: TopicBus) -> dict:
 
     return {
         "language": list(topic_bus.bias_language_findings),
+        "borderline": list(topic_bus.bias_borderline_candidates),
         "source": {
             "by_country": dict(sb.by_country),
             "by_language": dict(sb.by_language),

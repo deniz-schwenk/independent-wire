@@ -27,6 +27,7 @@ from src.bias_composite import (
     EXTRACT_MESSAGE,
     JUDGE_MESSAGE,
     build_union,
+    map_to_borderline,
     map_to_findings,
 )
 from src.runner.runner import _collect_agent_metrics
@@ -222,11 +223,12 @@ CANDS = [
 
 
 def test_map_keeps_only_confirmed_and_uses_candidate_excerpt():
+    # confirmed -> finding; borderline + cleared -> NOT findings.
     judgments = [
         {"candidate_id": 1, "explanation": "own voice", "issue": "evaluative_adjective",
-         "is_bias": True},
+         "verdict": "confirmed"},
         {"candidate_id": 2, "explanation": "backed by fact", "issue": None,
-         "is_bias": False},
+         "verdict": "cleared"},
     ]
     findings = map_to_findings(CANDS, judgments)
     assert len(findings) == 1
@@ -239,21 +241,65 @@ def test_map_keeps_only_confirmed_and_uses_candidate_excerpt():
 
 
 def test_map_confirmed_with_null_issue_falls_back_to_hint():
-    judgments = [{"candidate_id": 2, "explanation": "x", "issue": None, "is_bias": True}]
+    judgments = [{"candidate_id": 2, "explanation": "x", "issue": None,
+                  "verdict": "confirmed"}]
     findings = map_to_findings(CANDS, judgments)
     assert findings[0]["issue"] == "loaded_term"  # issue_hint fallback
 
 
 def test_map_ignores_unknown_candidate_id():
-    judgments = [{"candidate_id": 99, "explanation": "x", "issue": "hedging", "is_bias": True}]
+    judgments = [{"candidate_id": 99, "explanation": "x", "issue": "hedging",
+                  "verdict": "confirmed"}]
     assert map_to_findings(CANDS, judgments) == []
 
 
 def test_map_finding_shape_is_exact():
-    judgments = [{"candidate_id": 1, "explanation": "x", "issue": "loaded_term", "is_bias": True}]
+    # Byte-compatibility with existing bias_language_findings consumers: the
+    # confirmed shape is unchanged from the pre-three-tier composite.
+    judgments = [{"candidate_id": 1, "explanation": "x", "issue": "loaded_term",
+                  "verdict": "confirmed"}]
     f = map_to_findings(CANDS, judgments)[0]
     assert set(f.keys()) == {
         "excerpt", "issue", "explanation", "finding_valid", "extraction_confidence"}
+
+
+# --------------------------------------------------------------------------- #
+# map_to_borderline (TASK-BIAS-TIER-MAPPING — the additive gray zone)
+# --------------------------------------------------------------------------- #
+def test_map_borderline_keeps_only_borderline_verdicts():
+    judgments = [
+        {"candidate_id": 1, "explanation": "own voice", "issue": "evaluative_adjective",
+         "verdict": "confirmed"},
+        {"candidate_id": 2, "explanation": "both readings hold", "issue": "loaded_term",
+         "verdict": "borderline"},
+    ]
+    bl = map_to_borderline(CANDS, judgments)
+    assert len(bl) == 1
+    assert bl[0]["excerpt"] == "prudent"          # from candidate #2
+    assert bl[0]["issue"] == "loaded_term"
+    assert bl[0]["explanation"] == "both readings hold"
+    assert bl[0]["extraction_confidence"] == "1/2"
+
+
+def test_map_borderline_shape_has_no_finding_valid():
+    judgments = [{"candidate_id": 2, "explanation": "x", "issue": "loaded_term",
+                  "verdict": "borderline"}]
+    b = map_to_borderline(CANDS, judgments)[0]
+    assert set(b.keys()) == {
+        "excerpt", "issue", "explanation", "extraction_confidence"}
+
+
+def test_map_borderline_null_issue_falls_back_to_hint():
+    judgments = [{"candidate_id": 1, "explanation": "x", "issue": None,
+                  "verdict": "borderline"}]
+    assert map_to_borderline(CANDS, judgments)[0]["issue"] == "evaluative_adjective"
+
+
+def test_map_cleared_is_dropped_from_both():
+    judgments = [{"candidate_id": 1, "explanation": "defensible", "issue": None,
+                  "verdict": "cleared"}]
+    assert map_to_findings(CANDS, judgments) == []
+    assert map_to_borderline(CANDS, judgments) == []
 
 
 # --------------------------------------------------------------------------- #
@@ -298,8 +344,9 @@ async def test_composite_runs_extract_then_judge_and_maps():
         "anthropic/claude-opus-4.6",
         {"judgments": [
             {"candidate_id": 1, "explanation": "own voice", "issue": "evaluative_adjective",
-             "is_bias": True},
-            {"candidate_id": 2, "explanation": "backed", "issue": None, "is_bias": False},
+             "verdict": "confirmed"},
+            {"candidate_id": 2, "explanation": "both readings hold", "issue": "passive_obscuring",
+             "verdict": "borderline"},
         ], "reader_note": "The article calls the impact devastating in its own voice."})
     comp = BiasComposite(extractor, judge, name="bias_language")
 
@@ -317,11 +364,15 @@ async def test_composite_runs_extract_then_judge_and_maps():
     assert [c["candidate_id"] for c in jc["candidates"]] == [1, 2]
     assert set(jc["candidates"][0].keys()) == {"candidate_id", "excerpt", "issue_hint"}
 
-    # output shape + mapping
+    # output shape + three-tier mapping: confirmed -> findings, borderline -> borderline
     findings = res.structured["language_bias"]["findings"]
+    borderline = res.structured["language_bias"]["borderline"]
     assert len(findings) == 1
     assert findings[0]["excerpt"] == "devastating"
     assert findings[0]["finding_valid"] is True
+    assert len(borderline) == 1
+    assert borderline[0]["excerpt"] == "quietly doubled"
+    assert "finding_valid" not in borderline[0]
     assert res.structured["reader_note"].startswith("The article calls")
 
     # aggregated metrics: 2 extract + 1 judge = 3 calls * 0.02 / 500
@@ -330,6 +381,7 @@ async def test_composite_runs_extract_then_judge_and_maps():
     # loud metrics
     x = comp.extra_log_fields
     assert x["union_size"] == 2 and x["confirmed_count"] == 1
+    assert x["borderline_count"] == 1 and x["cleared_count"] == 0
     assert x["judge_skipped"] is False
     assert x["extractor_model"] == "deepseek/deepseek-v4-pro"
     assert x["judge_model"] == "anthropic/claude-opus-4.6"
@@ -346,9 +398,12 @@ async def test_composite_empty_candidates_skips_judge():
     assert len(extractor.calls) == 2
     assert judge.calls == []                       # judge skipped
     assert res.structured["language_bias"]["findings"] == []
+    assert res.structured["language_bias"]["borderline"] == []   # valid-empty
     assert res.structured["reader_note"] == ""     # valid-empty path
     assert comp.extra_log_fields["judge_skipped"] is True
     assert comp.extra_log_fields["union_size"] == 0
+    assert comp.extra_log_fields["borderline_count"] == 0
+    assert comp.extra_log_fields["cleared_count"] == 0
 
 
 @pytest.mark.asyncio
@@ -360,7 +415,7 @@ async def test_composite_one_extractor_failure_still_proceeds():
     judge = FakeAgent(
         "anthropic/claude-opus-4.6",
         {"judgments": [{"candidate_id": 1, "explanation": "x", "issue": "loaded_term",
-                        "is_bias": True}], "reader_note": "note"})
+                        "verdict": "confirmed"}], "reader_note": "note"})
     # extractor that fails on the 2nd of its two invocations: simulate by a
     # wrapper agent alternating success/failure.
     class Flaky(FakeAgent):
@@ -402,10 +457,48 @@ def test_composite_reset_clears_accumulators_and_underlying():
     comp.last_cost_usd = 1.0
     comp.last_tokens = 10
     comp.extra_log_fields = {"x": 1}
+    comp.last_judgments_debug = [{"excerpt": "x"}]
     comp.reset_call_metrics()
     assert comp.last_cost_usd == 0.0 and comp.last_tokens == 0
     assert comp.extra_log_fields == {}
+    assert comp.last_judgments_debug == []
     assert extractor.reset_count == 1 and judge.reset_count == 1
+
+
+@pytest.mark.asyncio
+async def test_composite_cleared_dropped_and_debug_breakdown():
+    # confirmed + borderline + cleared, one each -> findings=1, borderline=1,
+    # cleared dropped but counted; the grid-facing debug carries all three.
+    extractor = FakeAgent(
+        "deepseek/deepseek-v4-pro",
+        {"candidates": [
+            {"excerpt": "devastating", "issue_hint": "evaluative_adjective"},
+            {"excerpt": "quietly doubled", "issue_hint": "passive_obscuring"},
+            {"excerpt": "prudent", "issue_hint": "loaded_term"},
+        ]})
+    judge = FakeAgent(
+        "anthropic/claude-opus-4.6",
+        {"judgments": [
+            {"candidate_id": 1, "explanation": "own voice", "issue": "evaluative_adjective",
+             "verdict": "confirmed"},
+            {"candidate_id": 2, "explanation": "both hold", "issue": "passive_obscuring",
+             "verdict": "borderline"},
+            {"candidate_id": 3, "explanation": "defensible", "issue": None,
+             "verdict": "cleared"},
+        ], "reader_note": "note"})
+    comp = BiasComposite(extractor, judge)
+    res = await comp.run("m", context={"article_body": ARTICLE})
+
+    assert len(res.structured["language_bias"]["findings"]) == 1
+    assert len(res.structured["language_bias"]["borderline"]) == 1
+    x = comp.extra_log_fields
+    assert (x["confirmed_count"], x["borderline_count"], x["cleared_count"]) == (1, 1, 1)
+    # measurement-only debug: every judged candidate + verdict + position, incl.
+    # cleared (needed by the full-flip gate). Not in the rendered structured.
+    dbg = {d["excerpt"]: d["verdict"] for d in comp.last_judgments_debug}
+    assert dbg == {"devastating": "confirmed", "quietly doubled": "borderline",
+                   "prudent": "cleared"}
+    assert all(d["pos"] >= 0 and d["end"] > d["pos"] for d in comp.last_judgments_debug)
 
 
 # --------------------------------------------------------------------------- #
@@ -433,11 +526,22 @@ def test_runner_surfaces_extra_log_fields():
 # Judge schema field order (load-bearing)
 # --------------------------------------------------------------------------- #
 def test_judge_schema_field_order_explanation_before_verdict():
-    props = list(
-        BIAS_JUDGE_SCHEMA["properties"]["judgments"]["items"]["properties"].keys())
-    assert props == ["candidate_id", "explanation", "issue", "is_bias"]
+    item = BIAS_JUDGE_SCHEMA["properties"]["judgments"]["items"]
+    props = list(item["properties"].keys())
+    assert props == ["candidate_id", "explanation", "issue", "verdict"]
     assert props.index("explanation") < props.index("issue")
-    assert props.index("explanation") < props.index("is_bias")
+    assert props.index("explanation") < props.index("verdict")
+
+
+def test_judge_schema_verdict_is_ternary_enum():
+    item = BIAS_JUDGE_SCHEMA["properties"]["judgments"]["items"]
+    verdict = item["properties"]["verdict"]
+    assert verdict["type"] == "string"
+    assert verdict["enum"] == ["confirmed", "borderline", "cleared"]
+    # issue stays nullable (null for cleared); verdict required, no is_bias.
+    assert item["properties"]["issue"]["type"] == ["string", "null"]
+    assert item["required"] == ["candidate_id", "explanation", "issue", "verdict"]
+    assert "is_bias" not in item["properties"]
 
 
 def test_candidates_schema_shape():
@@ -503,3 +607,70 @@ def test_create_agents_bias_is_composite_both_variants(monkeypatch):
         assert bl.extractor.reasoning == "none"
         assert bl.judge.model == "anthropic/claude-opus-4.6"
         assert bl.judge.temperature == 0.1
+
+
+# --------------------------------------------------------------------------- #
+# New bias_borderline_candidates slot (optional_write / valid-empty) + stage
+# --------------------------------------------------------------------------- #
+def test_borderline_slot_metadata_optional_and_empty_default():
+    from src.bus import TopicBus
+    field = TopicBus.model_fields["bias_borderline_candidates"]
+    extra = field.json_schema_extra or {}
+    assert extra.get("optional_write") is True
+    assert extra.get("visibility") == ["tp", "mcp"]      # same as findings slot
+    assert TopicBus().bias_borderline_candidates == []   # valid-empty default
+
+
+def test_bias_stage_declares_borderline_write():
+    from src.agent_stages import BiasLanguageStage
+    assert "bias_borderline_candidates" in BiasLanguageStage.writes
+    # existing findings/reader_note writes remain
+    assert "bias_language_findings" in BiasLanguageStage.writes
+    assert "bias_reader_note" in BiasLanguageStage.writes
+
+
+# --------------------------------------------------------------------------- #
+# Transparency card: borderline section renders ONLY when non-empty
+# --------------------------------------------------------------------------- #
+def _tp_with(borderline):
+    return {
+        "bias_analysis": {
+            "language": [],
+            "borderline": borderline,
+            "source": {"by_language": {}, "total": 0},
+            "framing": {"cluster_count": 0, "distinct_actor_count": 0},
+        },
+        "sources": [],
+    }
+
+
+def test_card_borderline_section_absent_when_empty():
+    from scripts.render import build_bias_card
+    html = build_bias_card(_tp_with([]))
+    assert "Borderline formulations" not in html
+
+
+def test_card_borderline_section_renders_when_present():
+    from scripts.render import build_bias_card
+    html = build_bias_card(_tp_with([
+        {"excerpt": "quietly doubled", "issue": "passive_obscuring",
+         "explanation": "reads two ways", "extraction_confidence": "1/2"},
+    ]))
+    assert "Borderline formulations" in html
+    assert "Defensible readings exist on both sides" in html
+    assert "quietly doubled" in html
+    assert "reads two ways" in html
+
+
+def test_card_findings_unaffected_by_borderline_absence():
+    # existing findings render path is byte-compatible: a confirmed finding
+    # still renders whether or not a borderline key is present.
+    from scripts.render import build_bias_card
+    tp = _tp_with([])
+    tp["bias_analysis"]["language"] = [
+        {"excerpt": "devastating", "issue": "evaluative_adjective",
+         "explanation": "own voice", "finding_valid": True}
+    ]
+    html = build_bias_card(tp)
+    assert "devastating" in html and "own voice" in html
+    assert "Borderline formulations" not in html

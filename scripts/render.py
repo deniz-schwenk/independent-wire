@@ -1718,6 +1718,39 @@ def build_bias_card(tp: dict) -> str:
         )
     findings_html = "".join(findings_parts)
 
+    # Borderline formulations — additive, honestly labeled gray-zone section
+    # (TASK-BIAS-TIER-MAPPING). Renders ONLY when non-empty; a clean article
+    # shows nothing here. Same badge/excerpt/explanation styling as findings.
+    borderline = [
+        b for b in bias.get("borderline", []) if isinstance(b, dict)
+    ]
+    if borderline:
+        bl_parts = [
+            '<h3 style="font-family:var(--font-sans);font-size:1rem;'
+            f'margin-top:1.5rem">{RL.L("section_heading", "Borderline formulations", "Borderline formulations")}</h3>\n',
+            '<p style="font-family:var(--font-mono);font-size:0.8rem;'
+            'color:var(--color-text-subtle);margin-top:-0.25rem">'
+            f'{RL.L("ui", "borderline_subnote", "Defensible readings exist on both sides")}</p>\n',
+        ]
+        for b in borderline:
+            issue = b.get("issue", "")
+            issue_color = {
+                "evaluative_adjective": "#ca8a04",
+                "intensifier": "#0369a1",
+                "loaded_term": "#9f1239",
+                "hedging": "#64748b",
+            }.get(issue, "#64748b")
+            bl_parts.append(
+                f'<div class="bias-finding bias-borderline">\n'
+                f'  <span class="bias-excerpt">{_esc(b.get("excerpt", ""))}</span> '
+                f'{_badge(RL.L("bias_issue", issue, issue), issue_color)}\n'
+                f'  <div class="bias-explanation">{_esc(b.get("explanation", ""))}</div>\n'
+                f'</div>\n'
+            )
+        borderline_html = "".join(bl_parts)
+    else:
+        borderline_html = ""
+
     # Build bar chart HTML
     bar_parts = []
     if by_language:
@@ -1740,7 +1773,7 @@ def build_bias_card(tp: dict) -> str:
     bar_html = "".join(bar_parts)
 
     # Collapsible details — only if there's content to collapse
-    if findings_html or bar_html:
+    if findings_html or borderline_html or bar_html:
         parts.append(
             f'<details style="margin-top:0.75rem">\n'
             f'<summary style="font-family:var(--font-mono);font-size:0.8rem;'
@@ -1749,6 +1782,7 @@ def build_bias_card(tp: dict) -> str:
             f'{RL.L("ui", "show_detailed_findings", "Show detailed findings")}</summary>\n'
             f'<div style="margin-top:0.5rem">\n'
             f'{findings_html}'
+            f'{borderline_html}'
             f'{bar_html}'
             f'</div>\n'
             f'</details>\n'

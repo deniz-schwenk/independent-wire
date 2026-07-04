@@ -306,6 +306,10 @@ def build_blocks(tp: dict) -> list[dict]:
         b_items.append(item(f"language{i}.explanation",
                             f"bias_analysis.language[{i}].explanation",
                             lf.get("explanation")))
+    for i, bl in enumerate(bias.get("borderline", []) or []):
+        b_items.append(item(f"borderline{i}.explanation",
+                            f"bias_analysis.borderline[{i}].explanation",
+                            bl.get("explanation")))
     b_items.append(item("reader_note", "bias_analysis.reader_note",
                         bias.get("reader_note")))
     block("bias_card", b_items)
