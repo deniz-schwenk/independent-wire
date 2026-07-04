@@ -1,13 +1,12 @@
-# Editor-stage model eval (2026-07) — phases 1-6
+# Editor-stage model eval (2026-07) — complete (phases 1-7)
 
 **Status: DECISION INPUT, not a cutover.** This document reports the
 reconstruction, paid shadow, deterministic layer, consensus filter, blind
-Architect digest, and subagent panels (phases 1-6 of `TASK-EDITOR-MODEL-EVAL`).
-The qualitative arbiter for editorial selection is the **Architect**, via the
-blind digest — those verdicts are **not yet in**. The final decision section is
-appended in a second commit (phase 7) after the Architect returns the filled
-verdict sheet. Nothing in production changed; `scripts/run.py` and `src/` are
-untouched.
+Architect digest, subagent panels (phases 1-6), and — appended below — the
+**unblinded final decision** after the Architect returned the filled verdict
+sheet (phase 7). The qualitative arbiter for editorial selection is the
+**Architect**, via the blind digest. Nothing in production changed;
+`scripts/run.py` and `src/` are untouched — a swap, if taken, is a separate task.
 
 Same eval family as `docs/WRITER-STAGE-MODEL-EVAL-2026-07.md` (protocol
 discipline — byte-faithful reconstruction through the production Agent path,
@@ -228,6 +227,90 @@ All under `scratch/editor-eval/` (untracked raw):
 snapshot + recover invalid cells) → `golden_setup.py` + Opus-4.8 subagents
 (golden) → `score.py` (deterministic + consensus) → `stats.py` (reliability /
 cost roll-up) → `prep_judge.py` (sealed map + digest + verdict sheet + judge
-packets) → 3 judge subagents → `aggregate_panels.py`. Sealed label map:
-`_label_map.json`. Digest: `ARCHITECT-DIGEST.md`. Verdict sheet:
-`ARCHITECT-VERDICTS.md`.
+packets) → 3 judge subagents → `aggregate_panels.py` → `unblind.py` (phase 7).
+Sealed label map: `_label_map.json`. Digest: `ARCHITECT-DIGEST.md`. Verdict
+sheet: `ARCHITECT-VERDICTS.md`.
+
+---
+
+# FINAL — unblinded decision (2026-07-04, phase 7, AUTHORITATIVE)
+
+The Architect returned `ARCHITECT-VERDICTS.md` — best label(s) on the contested
+slots for each of the 20 divergence days (ties allowed). Unblinding via the
+sealed `_label_map.json` (**V=incumbent, W=Sonnet-5, X=DeepSeek, Y=GLM,
+Z=golden**), with the Architect's own blind tally cross-checked exactly against a
+programmatic parse (`unblind.py`).
+
+## Unblinded aggregate (all layers side by side)
+
+Ordered by the Architect tally (the editorial arbiter). Weighting per the brief:
+**deterministic layer > Architect verdicts > panels.**
+
+| arm | Architect wins /20 | panel wins /20 | panel slot-sounder | **1st-attempt valid /22** | final /22 | Jaccard→incumbent | latency | $/call |
+|---|---|---|---|---|---|---|---|---|
+| **GLM-5.2** | **13** | 2 | 68 | **12 (55 %)** | 22 | 0.885 | 103 s | 0.035 |
+| **Sonnet-5** | **12** | 6 | 71 | **22 (100 %)** | 22 | **0.934** | 55 s | 0.075 |
+| Incumbent (Opus-4.6) | 8 | 10 | 75 | 22 | 22 | 1.000 | — | 0.085 |
+| Golden (Opus-4.8) | 8 | 8 | 85 | 22 | 22 | 0.923 | — | — |
+| DeepSeek V4 Pro | 3 | 3 | 56 | **5 (23 %)** | 17 | 0.847 | 179 s | 0.022 |
+
+## Two arbiters disagree — and the disagreement is part of the result
+
+The **Architect ranks the two challengers first** (GLM 13, Sonnet-5 12), **above**
+the incumbent (8) and even the Opus-4.8 golden ceiling (8); the **panels rank the
+incumbent and golden first** (10, 8) and put GLM near-last (2). The split is
+sharpest on GLM. From the Architect's notes, the challengers win on *instinct +
+craft* — GLM's under-reported-systemic catches (a Tatneft refinery strike read as
+"the war biting Russia's domestic economy"; Beijing's information-control angle)
+and Sonnet-5's delta / dedup / bundling arguments — while the incumbent "accepts
+too loosely" and the panels rewarded the more conventional, complete calls. Per
+the brief the Architect outweighs the panels, so the editorial signal favours the
+challengers — **but that signal is not robust across arbiters**, itself a caution
+against reading any single challenger as decisively "better."
+
+## Decision reading (deterministic gate first, then Architect)
+
+1. **DeepSeek V4 Pro — rejected, unanimously.** Fails the deterministic
+   reliability gate outright (23 % first-attempt valid; **5/22 days produced no
+   valid output even after 6 retries**; slowest ~179 s; most divergent
+   selections) and is *last* on both the Architect (3) and panels (3). No path
+   forward for the editor stage.
+
+2. **GLM-5.2 — the Architect's top editorial pick, but blocked by the
+   deterministic gate.** GLM leads the Architect tally (13), yet the deterministic
+   layer — which **outranks** the Architect by the stated weighting — shows only
+   **55 % first-attempt schema-validity** on a stage that **runs once per day with
+   no model fallback**. Nearly half of days would need a silent retry or fail the
+   publish. So GLM is **not swappable as-is** despite the editorial edge; it
+   becomes viable only if the editor stage first gains a model fallback (the
+   pattern the writer/QA stages adopted) *and* the retry latency/cost is accepted,
+   or the xhigh structured-output fragility is resolved. A prerequisite, not a
+   cutover.
+
+3. **Sonnet-5 — the recommended candidate.** The **only arm that clears both
+   bars**: deterministically sound (**100 % first-attempt valid**, fastest
+   challenger ~55 s, cost ≈ incumbent) and the Architect's clear top **among the
+   reliability-passing arms** (12 vs incumbent 8, golden 8), with selections
+   closest to incumbent and golden (Jaccard 0.934). The low-risk, defensible
+   improvement over the incumbent — no new fallback machinery required.
+
+4. **Incumbent Opus-4.6 — reliable, but editorially bettered.** The Architect
+   judged it "accepts too loosely" (8, below both challengers). A real editorial
+   case to move off it; Sonnet-5 is the clean way. Staying put is the zero-risk
+   status quo.
+
+5. **Golden Opus-4.8 — the ceiling is not dominant.** Maximal-care Opus-4.8 tied
+   the incumbent at 8 and drew an Architect flag for a vote/reason incoherence
+   (2026-07-02). Even the ceiling does not clearly win topic selection —
+   underlining that editorial selection is genuinely contested judgment.
+
+## Recommendation
+
+**Swap the editor to Sonnet-5** (`{enabled, effort:high}`, no temperature) — the
+single arm that is both operationally sound and the Architect's strongest
+*reliable* performer. **Do not swap to GLM-5.2 as-is**: its editorial edge is real
+but gated by 55 % first-attempt validity on a no-fallback stage; revisit GLM only
+behind a model fallback. **DeepSeek is out.** This remains **decision input** —
+the swap itself is a separate task (mirroring `TASK-WRITER-SWAP-GLM`), and any
+xhigh model would additionally require adding the editor's first model fallback
+before it could be trusted for a once-a-day, no-retry stage.
