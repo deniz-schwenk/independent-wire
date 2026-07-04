@@ -172,3 +172,32 @@ schema checker `qa_fallback._matches` gained additive union-type (`["string",
 "null"]`) support for `EDITOR_SCHEMA`'s follow-up fields (writer/QA unaffected).
 Rollback = the single `create_agents` revert to Opus-4.6 documented in the swap
 commit.
+
+## Perspective-swap → Sonnet-5 + Opus-4.6 fallback — LANDED on branch (2026-07-04)
+
+The blind 5-arm perspective eval (`PERSPECTIVE-STAGE-MODEL-EVAL-2026-07.md`) made
+Sonnet-5 binding for the perspective stage: it beats the incumbent Opus-4.6
+**19–2** pairwise, matches the golden ceiling on the product-core criteria (R1
+substance-cluster 0.98 / R5 0.84 / R9 spectrum-fidelity 0.95), emits the fewest
+confirmed invented positions (2 vs the incumbent's 5), and is fully reliable
+21/21. **Both** open-weight candidates (GLM-5.2, DeepSeek) *regressed below the
+incumbent* on this stage — the opposite of the writer/QA/editor evals — so this
+is a **pure quality call** (TASK-PERSPECTIVE-SWAP-SONNET5). Landed on branch
+`feat/perspective-swap-sonnet5`: `perspective` → `PerspectiveWithFallback`,
+primary Sonnet-5 at the eval's binding operating point — `reasoning
+{enabled, effort:high}`, **no temperature** (the ONE documented config deviation:
+the Claude 5-family rejects non-default temperature/top_p with a 400, so the
+production 0.1 cannot carry over), `max_tokens=64000`, no provider pin
+(Anthropic-served; served provider still recorded per call). Prompts and
+`PERSPECTIVE_SCHEMA` unchanged, so the downstream deterministic enrichment
+(`enrich_perspective_clusters`) is untouched. Exactly one fallback attempt if
+Sonnet-5 finally fails (transport across retries OR a schema-invalid/truncated
+output) on the **pre-swap incumbent VERBATIM** (Opus-4.6, temperature 0.1,
+`reasoning="none"`, default `max_tokens=32000`) — a validated known-good safety
+net; loud, never silent (`model_used`/`provider_used`/`perspective_fallback_used`
+in `run_stage_log.jsonl`). Smoke (`--from/--to PerspectiveStage --topic 1` on the
+largest 2026-07-04 topic, production state copied out and restored byte-identical):
+Sonnet-5 served (provider Azure), fallback **not** triggered, schema-valid, 17
+position clusters + 5 missing positions, **0 invented source_ids / 0 unresolved
+actor refs**, $0.28, ~190s. Rollback = the single `create_agents` revert to
+Opus-4.6 documented in the swap commit.

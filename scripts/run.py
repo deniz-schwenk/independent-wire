@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT))
 
 from src.agent import Agent
 from src.editor_fallback import EditorWithFallback
+from src.perspective_fallback import PerspectiveWithFallback
 from src.qa_fallback import QaAnalyzeWithFallback
 from src.writer_fallback import WriterWithFallback
 from src.runner.runner import PipelineRunner
@@ -301,15 +302,69 @@ def create_agents() -> dict[str, Agent]:
             provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
             output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
         ),
-        "perspective": Agent(
-            name="perspective",
-            model="anthropic/claude-opus-4.6",
-            system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.1,
-            provider="openrouter",
-            reasoning="none",
+        # perspective — swapped to Sonnet-5 (TASK-PERSPECTIVE-SWAP-SONNET5). The
+        # blind 5-arm eval made this operating point binding
+        # (docs/PERSPECTIVE-STAGE-MODEL-EVAL-2026-07.md): Sonnet-5 beats the
+        # incumbent Opus-4.6 19–2, matches the golden ceiling on the
+        # product-core criteria (R1 0.98 / R5 0.84 / R9 0.95), emits the fewest
+        # confirmed invented positions (2 vs incumbent's 5), and is fully
+        # reliable 21/21. BOTH open-weight candidates (GLM-5.2, DeepSeek)
+        # regressed BELOW the incumbent on this stage — the opposite of the
+        # writer/QA evals — so this is a pure quality call.
+        #
+        # Operating point (the ONE documented config deviation): the Claude
+        # 5-family REJECTS non-default temperature/top_p (400), so the
+        # production temperature 0.1 cannot carry over — temperature is omitted
+        # (temperature=None) and reasoning is the explicit block
+        # {enabled, effort:"high"}, max_tokens 64000. Anthropic-served, so no
+        # provider pin (served provider still recorded per call). Prompts +
+        # PERSPECTIVE_SCHEMA unchanged; downstream deterministic enrichment
+        # (enrich_perspective_clusters) is untouched by the unchanged schema.
+        #
+        # Wrapped in PerspectiveWithFallback: primary Sonnet-5, and exactly ONE
+        # fallback attempt if Sonnet-5 finally fails (transport after retries,
+        # OR schema-invalid/truncated output). The fallback is the PRE-SWAP
+        # incumbent VERBATIM (Opus 4.6, temperature 0.1, reasoning=none, default
+        # max_tokens 32000) — a validated known-good safety net. Loud, never
+        # silent (model_used/provider_used/perspective_fallback_used in
+        # run_stage_log.jsonl).
+        #
+        # ROLLBACK (single-edit revert to the pre-swap production perspective):
+        #   "perspective": Agent(
+        #       name="perspective", model="anthropic/claude-opus-4.6",
+        #       system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
+        #       instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
+        #       tools=[], temperature=0.1, provider="openrouter",
+        #       reasoning="none", output_schema=PERSPECTIVE_SCHEMA),
+        "perspective": PerspectiveWithFallback(
+            primary=Agent(
+                name="perspective",
+                model="anthropic/claude-sonnet-5",
+                system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
+                tools=[],
+                # 5-family rejects non-default temperature → omit it entirely.
+                temperature=None,
+                max_tokens=64000,
+                provider="openrouter",
+                reasoning={"enabled": True, "effort": "high"},
+                output_schema=PERSPECTIVE_SCHEMA,
+            ),
+            # Safety net — the PRE-SWAP production perspective VERBATIM: Opus 4.6,
+            # temperature 0.1, reasoning="none", the current default max_tokens
+            # (32000, unset on the pre-swap entry), same prompts +
+            # PERSPECTIVE_SCHEMA. Only the name differs (for log/metric clarity).
+            fallback=Agent(
+                name="perspective_fallback",
+                model="anthropic/claude-opus-4.6",
+                system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.1,
+                provider="openrouter",
+                reasoning="none",
+                output_schema=PERSPECTIVE_SCHEMA,
+            ),
             output_schema=PERSPECTIVE_SCHEMA,
         ),
         # writer — swapped to GLM-5.2 @ xhigh (TASK-WRITER-SWAP-GLM). The
