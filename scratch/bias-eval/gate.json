@@ -1,0 +1,446 @@
+{
+ "incumbent": {
+  "per_article": [
+   {
+    "date": "2026-06-13",
+    "n": 0,
+    "valid_counts": [
+     3,
+     3,
+     2
+    ],
+    "total_counts": [
+     5,
+     6,
+     6
+    ],
+    "C": 1,
+    "Ctot": 1,
+    "J": 0.389,
+    "D": 0.278
+   },
+   {
+    "date": "2026-06-17",
+    "n": 1,
+    "valid_counts": [
+     3,
+     3,
+     2
+    ],
+    "total_counts": [
+     7,
+     8,
+     7
+    ],
+    "C": 1,
+    "Ctot": 1,
+    "J": 0.389,
+    "D": 0.222
+   },
+   {
+    "date": "2026-06-02",
+    "n": 2,
+    "valid_counts": [
+     4,
+     6,
+     6
+    ],
+    "total_counts": [
+     8,
+     9,
+     10
+    ],
+    "C": 2,
+    "Ctot": 2,
+    "J": 0.813,
+    "D": 0.194
+   },
+   {
+    "date": "2026-06-22",
+    "n": 2,
+    "valid_counts": [
+     7,
+     4,
+     5
+    ],
+    "total_counts": [
+     7,
+     6,
+     6
+    ],
+    "C": 3,
+    "Ctot": 1,
+    "J": 0.305,
+    "D": 0.129
+   },
+   {
+    "date": "2026-06-20",
+    "n": 0,
+    "valid_counts": [
+     5,
+     5,
+     4
+    ],
+    "total_counts": [
+     8,
+     10,
+     6
+    ],
+    "C": 1,
+    "Ctot": 4,
+    "J": 0.655,
+    "D": 0.133
+   }
+  ],
+  "agg": {
+   "Jbar": 0.51,
+   "Jmax": 0.813,
+   "Cmax": 3,
+   "Cmean": 1.6,
+   "Ctotmax": 4,
+   "Dbar": 0.191,
+   "mean_valid": 4.13,
+   "mean_total": 7.27,
+   "cost": 0.6653,
+   "mean_dur_s": 18.2,
+   "served": [
+    "Anthropic"
+   ],
+   "precondition_fail": [],
+   "n_articles_scored": 5
+  }
+ },
+ "glm": {
+  "per_article": [
+   {
+    "date": "2026-06-13",
+    "n": 0,
+    "valid_counts": [
+     1,
+     1,
+     1
+    ],
+    "total_counts": [
+     1,
+     1,
+     1
+    ],
+    "C": 0,
+    "Ctot": 0,
+    "J": 1.0,
+    "D": 1.0
+   },
+   {
+    "date": "2026-06-17",
+    "n": 1,
+    "valid_counts": [
+     0,
+     0,
+     1
+    ],
+    "total_counts": [
+     0,
+     0,
+     1
+    ],
+    "C": 1,
+    "Ctot": 1,
+    "J": 0.667,
+    "D": 0.333
+   },
+   {
+    "date": "2026-06-02",
+    "n": 2,
+    "valid_counts": [
+     4,
+     2,
+     2
+    ],
+    "total_counts": [
+     4,
+     2,
+     2
+    ],
+    "C": 2,
+    "Ctot": 2,
+    "J": 0.656,
+    "D": 0.5
+   },
+   {
+    "date": "2026-06-22",
+    "n": 2,
+    "valid_counts": [
+     2,
+     1,
+     1
+    ],
+    "total_counts": [
+     2,
+     2,
+     1
+    ],
+    "C": 1,
+    "Ctot": 1,
+    "J": 0.833,
+    "D": 0.333
+   },
+   {
+    "date": "2026-06-20",
+    "n": 0,
+    "valid_counts": [
+     1,
+     1,
+     2
+    ],
+    "total_counts": [
+     2,
+     1,
+     3
+    ],
+    "C": 1,
+    "Ctot": 2,
+    "J": 0.833,
+    "D": 0.833
+   }
+  ],
+  "agg": {
+   "Jbar": 0.798,
+   "Jmax": 1.0,
+   "Cmax": 2,
+   "Cmean": 1.0,
+   "Ctotmax": 2,
+   "Dbar": 0.6,
+   "mean_valid": 1.33,
+   "mean_total": 1.53,
+   "cost": 0.438,
+   "mean_dur_s": 82.8,
+   "served": [
+    "Baidu"
+   ],
+   "precondition_fail": [],
+   "n_articles_scored": 5
+  }
+ },
+ "deepseek": {
+  "per_article": [
+   {
+    "date": "2026-06-13",
+    "n": 0,
+    "valid_counts": [
+     0,
+     2,
+     1
+    ],
+    "total_counts": [
+     0,
+     2,
+     1
+    ],
+    "C": 2,
+    "Ctot": 2,
+    "J": 0.833,
+    "D": 0.5
+   },
+   {
+    "date": "2026-06-17",
+    "n": 1,
+    "valid_counts": [
+     1,
+     1,
+     0
+    ],
+    "total_counts": [
+     1,
+     1,
+     0
+    ],
+    "C": 1,
+    "Ctot": 1,
+    "J": 0.667,
+    "D": 0.333
+   },
+   {
+    "date": "2026-06-02",
+    "n": 2,
+    "valid_counts": [
+     0,
+     0,
+     3
+    ],
+    "total_counts": [
+     0,
+     0,
+     3
+    ],
+    "C": 3,
+    "Ctot": 3,
+    "J": 0.667,
+    "D": 0.333
+   },
+   {
+    "date": "2026-06-22",
+    "n": 2,
+    "valid_counts": [
+     1,
+     0,
+     2
+    ],
+    "total_counts": [
+     1,
+     0,
+     2
+    ],
+    "C": 2,
+    "Ctot": 2,
+    "J": 0.833,
+    "D": 0.5
+   },
+   {
+    "date": "2026-06-20",
+    "n": 0,
+    "valid_counts": [
+     0,
+     1,
+     1
+    ],
+    "total_counts": [
+     0,
+     1,
+     1
+    ],
+    "C": 1,
+    "Ctot": 1,
+    "J": 1.0,
+    "D": 0.333
+   }
+  ],
+  "agg": {
+   "Jbar": 0.8,
+   "Jmax": 1.0,
+   "Cmax": 3,
+   "Cmean": 1.8,
+   "Ctotmax": 3,
+   "Dbar": 0.4,
+   "mean_valid": 0.87,
+   "mean_total": 0.87,
+   "cost": 0.1618,
+   "mean_dur_s": 98.1,
+   "served": [
+    "Baidu"
+   ],
+   "precondition_fail": [],
+   "n_articles_scored": 5
+  }
+ },
+ "sonnet5": {
+  "per_article": [
+   {
+    "date": "2026-06-13",
+    "n": 0,
+    "valid_counts": [
+     2,
+     4,
+     5
+    ],
+    "total_counts": [
+     2,
+     4,
+     5
+    ],
+    "C": 3,
+    "Ctot": 3,
+    "J": 0.736,
+    "D": 0.483
+   },
+   {
+    "date": "2026-06-17",
+    "n": 1,
+    "valid_counts": [
+     0,
+     1,
+     1
+    ],
+    "total_counts": [
+     0,
+     2,
+     4
+    ],
+    "C": 1,
+    "Ctot": 4,
+    "J": 1.0,
+    "D": 0.333
+   },
+   {
+    "date": "2026-06-02",
+    "n": 2,
+    "valid_counts": [
+     4,
+     2,
+     3
+    ],
+    "total_counts": [
+     4,
+     2,
+     3
+    ],
+    "C": 2,
+    "Ctot": 2,
+    "J": 0.6,
+    "D": 0.528
+   },
+   {
+    "date": "2026-06-22",
+    "n": 2,
+    "valid_counts": [
+     6,
+     6,
+     5
+    ],
+    "total_counts": [
+     6,
+     6,
+     5
+    ],
+    "C": 1,
+    "Ctot": 1,
+    "J": 0.573,
+    "D": 0.289
+   },
+   {
+    "date": "2026-06-20",
+    "n": 0,
+    "valid_counts": [
+     5,
+     5,
+     4
+    ],
+    "total_counts": [
+     5,
+     5,
+     4
+    ],
+    "C": 1,
+    "Ctot": 1,
+    "J": 0.516,
+    "D": 0.2
+   }
+  ],
+  "agg": {
+   "Jbar": 0.685,
+   "Jmax": 1.0,
+   "Cmax": 3,
+   "Cmean": 1.6,
+   "Ctotmax": 4,
+   "Dbar": 0.367,
+   "mean_valid": 3.53,
+   "mean_total": 3.8,
+   "cost": 1.1727,
+   "mean_dur_s": 65.3,
+   "served": [
+    "Azure"
+   ],
+   "precondition_fail": [],
+   "n_articles_scored": 5
+  }
+ }
+}

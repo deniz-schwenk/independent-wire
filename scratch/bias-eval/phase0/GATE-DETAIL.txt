@@ -1,0 +1,37 @@
+PHASE-0 STABILITY GATE — full detail (3 cache-cold repeats per cell)
+
+arm        article              valid_counts   Jexact  Jsoft
+incumbent  Pope/Spain           [3, 3, 2]        0.39   0.39
+incumbent  Bolsonaro            [3, 3, 2]        0.39   0.22
+incumbent  Anthropic IPO        [4, 6, 6]        0.81   0.52
+incumbent  DRC Ebola            [7, 4, 5]        0.30   0.30
+incumbent  US-Iran/Hezbollah    [5, 5, 4]        0.65   0.24
+           >>> AGG              Jbar_exact=0.510 Jbar_soft=0.337 cost=$0.665
+
+sonnet5    Pope/Spain           [2, 4, 5]        0.74   0.53
+sonnet5    Bolsonaro            [0, 1, 1]        1.00   1.00
+sonnet5    Anthropic IPO        [4, 2, 3]        0.60   0.36
+sonnet5    DRC Ebola            [6, 6, 5]        0.57   0.52
+sonnet5    US-Iran/Hezbollah    [5, 5, 4]        0.52   0.34
+           >>> AGG              Jbar_exact=0.685 Jbar_soft=0.551 cost=$1.173
+
+glm        Pope/Spain           [1, 1, 1]        1.00   1.00
+glm        Bolsonaro            [0, 0, 1]        0.67   0.67
+glm        Anthropic IPO        [4, 2, 2]        0.66   0.56
+glm        DRC Ebola            [2, 1, 1]        0.83   0.33
+glm        US-Iran/Hezbollah    [1, 1, 2]        0.83   0.83
+           >>> AGG              Jbar_exact=0.798 Jbar_soft=0.678 cost=$0.438
+
+deepseek   Pope/Spain           [0, 2, 1]        0.83   0.83
+deepseek   Bolsonaro            [1, 1, 0]        0.67   0.67
+deepseek   Anthropic IPO        [0, 0, 3]        0.67   0.67
+deepseek   DRC Ebola            [1, 0, 2]        0.83   0.83
+deepseek   US-Iran/Hezbollah    [0, 1, 1]        1.00   1.00
+           >>> AGG              Jbar_exact=0.800 Jbar_soft=0.800 cost=$0.162
+
+GATE (PASS iff Jbar_exact <= incumbent AND Cmax <= incumbent AND no precondition-fail):
+  incumbent bar: Jbar_exact<=0.510, Cmax<=3
+
+  glm        Jbar_exact=0.798 Jbar_soft=0.678 Cmax=2 mean_valid=1.33 -> FAIL  (Jbar>inc)
+  deepseek   Jbar_exact=0.800 Jbar_soft=0.800 Cmax=3 mean_valid=0.87 -> FAIL  (Jbar>inc)
+  sonnet5    Jbar_exact=0.685 Jbar_soft=0.551 Cmax=3 mean_valid=3.53 -> FAIL  (Jbar>inc)

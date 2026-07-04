@@ -1,0 +1,26 @@
+{
+ "incumbent": {
+  "Jbar_exact": 0.51,
+  "Jbar_soft": 0.337,
+  "cost": 0.6653,
+  "mean_dur": 18.2
+ },
+ "sonnet5": {
+  "Jbar_exact": 0.685,
+  "Jbar_soft": 0.551,
+  "cost": 1.1727,
+  "mean_dur": 65.3
+ },
+ "glm": {
+  "Jbar_exact": 0.798,
+  "Jbar_soft": 0.678,
+  "cost": 0.438,
+  "mean_dur": 82.8
+ },
+ "deepseek": {
+  "Jbar_exact": 0.8,
+  "Jbar_soft": 0.8,
+  "cost": 0.1618,
+  "mean_dur": 98.1
+ }
+}
