@@ -259,3 +259,49 @@ uv run python scratch/bias-eval/score_phase0.py        # gate table + gate.json
 Well under the $10 cap. Judging free (would have been blind CC subagents).
 Decision input, not a cutover. Production `bias_language` stays
 `anthropic/claude-opus-4.6` (temp 0.1, reasoning none); no code changed.
+
+## 9. Addendum — emission / self-retraction analysis (what the gate really measures)
+
+The `finding_valid` boolean makes the stage's internal examine-then-judge step
+*visible in the schema*: the model emits a candidate span, drafts its
+`explanation`, and sets `finding_valid:false` to retract it in place (kept as an
+audit trail, filtered by the renderer). Counting **emitted vs kept vs retracted**
+across the 75 grid calls (15/arm) splits the field into two process families:
+
+| arm | emitted | kept | self-retracted | retract % | process |
+|---|---|---|---|---|---|
+| incumbent Opus-4.6 (reasoning none) | 109 | 62 | 47 | 43% | **externalizes** retraction into the schema |
+| opus48 Opus-4.8 (effort high) | 44 | 25 | 19 | 43% | **externalizes** retraction into the schema |
+| sonnet5 (high) | 57 | 53 | 4 | 7% | pre-filters internally |
+| glm (xhigh) | 23 | 20 | 3 | 13% | pre-filters internally |
+| deepseek (xhigh) | 13 | 13 | 0 | 0% | pre-filters internally |
+
+Two readings follow.
+
+**1. The gate measures prompt-design fit as much as model-intrinsic stability.**
+The bias prompt is a two-stage *emit-then-retract* design. The Opus family plays
+it as written — propose a generous candidate set, then retract ~43% via
+`finding_valid` — so their calibration *decision* is externalized where the gate
+can watch it flip. The reasoning arms do the equivalent work *inside the
+reasoning trace* and emit only near-survivors (retract 0–13%), so their
+finding set is already post-filtered. Their high Jbar is therefore not "they
+cannot decide" so much as "the little they surface churns," and it is not a
+clean apples-to-apples read against the incumbent's externalized churn. The
+valid-span instability metric is thus partly a signal of *whether a model uses
+the schema's retraction mechanism the way the prompt intends* — a prompt-design
+fit measure — layered on top of intrinsic determinism. (This does not rescue the
+swap candidates: they still under-flag and, where they flag, churn. It reframes
+*what* the gate proves.) Note Opus-4.8 keeps the same 43% retract rate as
+Opus-4.6 but emits far fewer candidates (44 vs 109) — its "under-flagging" is
+really under-*extraction* at stage one, then the same fractional retract.
+
+**2. The real, robust finding is the incumbent's own 0.51 exact
+repeat-consistency.** Independent of every challenger, the incumbent reconfirms a
+~49%-different span set on identical cold input (Jbar_exact 0.510; soft 0.337).
+On richer articles it is stark — Anthropic-IPO 4/6/6 kept (Jexact 0.81), US-Iran
+5/5/4 kept-but-reshuffled (0.65); Opus-4.8 shows the same signature at lower
+volume (US-Iran 3/3/3, Jexact 0.93). So the stage's confirmed-span verdict is
+only ~half-stable run-to-run **even for the model we keep** — a property of the
+single-call emit-then-retract design, not of any one model. That is the
+actionable signal from this eval, and it is what a redesign must beat. Decided
+direction + acceptance criterion: **`docs/BACKLOG-BIAS-STABILITY.md`**.
