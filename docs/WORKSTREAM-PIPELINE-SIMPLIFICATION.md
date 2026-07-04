@@ -201,3 +201,31 @@ Sonnet-5 served (provider Azure), fallback **not** triggered, schema-valid, 17
 position clusters + 5 missing positions, **0 invented source_ids / 0 unresolved
 actor refs**, $0.28, ~190s. Rollback = the single `create_agents` revert to
 Opus-4.6 documented in the swap commit.
+
+## Queue before Welle B (added 2026-07-04, per Deniz)
+
+1. **Third bias extractor pass** (TASK-BIAS-THIRD-EXTRACTOR, in
+   flight): recall hardening; production cannot observe missed
+   surfacing, so it lands now. Direct-to-main per user instruction.
+2. **hydration_aggregator_phase2 eval** — the last unverified Opus-4.6
+   stage. It SURVIVES the simplification Zielbild (hydration core, not
+   a cut candidate). Same playbook: DeepSeek/GLM/Sonnet-5 arms at their
+   proven operating points, golden, blind panels.
+3. **Render assurance for borderline findings**: built + tested in
+   93ea7bb (card section, EN/DE labels, renders only when non-empty);
+   live verification on the first production card is part of the daily
+   check. Design iteration (tag/pill) stays in BACKLOG-BIAS-STABILITY.
+4. **DeepSeek Pro/Flash stages: reasoning-level sweep** for possible
+   quality gains. Caution baked in: xhigh has documented pathologies
+   (structured=None on small outputs, latency) — controlled shadow
+   evals per stage, never a blind config flip.
+5. **Ollama-Cloud translation pipeline (DE)**: (a) xhigh gain check;
+   (b) audit HOW structured output is guaranteed on Ollama (the
+   OpenRouter lesson: capability claims are optimistic — verify
+   empirically); (c) quantization verification of the Ollama
+   deepseek/glm models — opacity here is a red flag, fp4 provably
+   causes fabrications.
+6. **Ollama migration strategy** for further GLM/DeepSeek stages (cost)
+   — gated strictly on quality parity vs the OpenRouter results.
+
+Then Welle B (runner robustness) → Welle D → Stufe 0/1 as documented.
