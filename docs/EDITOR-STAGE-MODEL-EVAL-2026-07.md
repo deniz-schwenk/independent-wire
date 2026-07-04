@@ -197,6 +197,14 @@ verdicts); the table is presented blind here and is not read as a decision.
 Panels are explicitly a **supporting** signal — the deterministic reliability
 result and the Architect's editorial verdicts (pending) outrank them.
 
+*Limitation:* the panel judges were **Sonnet-4.6** judging a field that contains
+a **Sonnet-5** arm — a same-family self-preference risk (the judges are a
+different model but the same lineage, so "distinct from every arm" holds only at
+the model level, not the family level). It did not visibly bias the result here
+(Sonnet-5 placed mid-pack in the panels, below the two Opus arms), but the risk
+is real; it is one more reason the panels are the **subordinate** signal by
+design, below the deterministic layer and the Architect's cross-model verdicts.
+
 ## Cost + latency
 
 Total eval spend **$4.66 / $12 cap** (probe $0.34 + shadow pass-1 $2.88 + retry
