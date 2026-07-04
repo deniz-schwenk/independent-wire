@@ -53,12 +53,18 @@ _PY_TYPES: dict[str, type | tuple[type, ...]] = {
     "boolean": bool,
     "integer": int,
     "number": (int, float),
+    "null": type(None),
 }
 
 
 def _matches(value: Any, schema: dict) -> bool:
     """Return True iff ``value`` satisfies ``schema`` (supported keywords only)."""
     declared = schema.get("type")
+    # Union type, e.g. ``{"type": ["string", "null"]}`` (EDITOR_SCHEMA's
+    # follow_up_to / follow_up_reason): value matches if it satisfies ANY member
+    # type. Member types here are scalars, so per-member recursion is exact.
+    if isinstance(declared, list):
+        return any(_matches(value, {**schema, "type": t}) for t in declared)
     if declared is not None:
         py = _PY_TYPES.get(declared)
         if py is not None:

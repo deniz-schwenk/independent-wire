@@ -150,3 +150,25 @@ smoke (topic 1, 2026-07-03 reuse): schema-valid, served provider Baidu, fallback
 NOT triggered, 26 inline citations all resolving against `final_sources`, $0.07,
 ~172s (production state backed up + restored byte-identical). Rollback = the
 single `create_agents` revert to Opus-4.6 documented in the swap commit.
+
+## Editor-swap → GLM-5.2 + Sonnet-5 fallback — LANDED (2026-07-04)
+
+The complete 5-arm editor eval (`EDITOR-STAGE-MODEL-EVAL-2026-07.md`, FINAL —
+GLM won the blind Architect tally 13/20 and is the cheapest arm) made GLM-5.2 @
+xhigh binding, but the eval also found GLM/DeepSeek **retry-fragile** under the
+strict `EDITOR_SCHEMA` at xhigh (GLM 55 % / DeepSeek 23 % first-attempt validity;
+Sonnet-5 22/22) and the editor runs **once per day with no native fallback**
+(TASK-EDITOR-SWAP-GLM). Landed on branch `feat/editor-swap-glm`: `editor` →
+`EditorWithFallback`, primary GLM-5.2 @ xhigh temp 0.3 `max_tokens=120000`
+fp8-pinned `[baidu,ambient,venice]`, and exactly one **Sonnet-5** fallback
+(`reasoning {enabled,effort:high}`, no temperature, `max_tokens=64000` — the
+eval's 22/22 operating point) if GLM finally fails (transport across all pinned
+providers OR a schema-invalid/`structured=None` output) — loud, never silent
+(`model_used`/`provider_used`/`editor_fallback_used`, a run-level
+`run_stage_log.jsonl` marker). Deliberate difference from writer/QA: the fallback
+is **Sonnet-5** (the eval's perfectly-reliable, editorial-#2 arm — the validated
+safety net for a no-native-fallback stage), not the Opus-4.6 incumbent. Shared
+schema checker `qa_fallback._matches` gained additive union-type (`["string",
+"null"]`) support for `EDITOR_SCHEMA`'s follow-up fields (writer/QA unaffected).
+Rollback = the single `create_agents` revert to Opus-4.6 documented in the swap
+commit.

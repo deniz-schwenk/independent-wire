@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from src.agent import Agent
+from src.editor_fallback import EditorWithFallback
 from src.qa_fallback import QaAnalyzeWithFallback
 from src.writer_fallback import WriterWithFallback
 from src.runner.runner import PipelineRunner
@@ -92,6 +93,16 @@ GLM_5_2_QA_FP8_ROUTING = {
 # ``allow_fallbacks:false`` + ``quantizations:["fp8"]`` fail LOUD rather than
 # dropping to an unverified/fp4 provider.
 GLM_5_2_WRITER_FP8_ROUTING = {
+    "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
+    "allow_fallbacks": False,
+    "quantizations": ["fp8"],
+}
+
+# Editor GLM-5.2 fp8 pin (TASK-EDITOR-SWAP-GLM). Same three providers as the
+# writer/QA pins — all re-probed under EDITOR_SCHEMA in the eval — but named
+# separately so a per-stage divergence never requires editing another stage's
+# routing.
+GLM_5_2_EDITOR_FP8_ROUTING = {
     "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
@@ -190,15 +201,58 @@ def create_agents() -> dict[str, Agent]:
             reasoning="none",
             output_schema=CLUSTER_ASSIGNMENT_SCHEMA,
         ),
-        "editor": Agent(
-            name="editor",
-            model="anthropic/claude-opus-4.6",
-            system_prompt_path=str(agents_dir / "editor" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "editor" / "INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.3,
-            provider="openrouter",
-            reasoning="none",
+        # editor — swapped to GLM-5.2 @ xhigh (TASK-EDITOR-SWAP-GLM). The
+        # editor-stage eval made this operating point binding (GLM won the blind
+        # Architect tally 13/20 and is the cheapest arm — docs/EDITOR-STAGE-MODEL-
+        # EVAL-2026-07.md, FINAL). GLM is retry-fragile under the strict
+        # EDITOR_SCHEMA at xhigh (55% first-attempt valid, 22/22 after retries),
+        # and the editor runs once per day with no native fallback, so it is
+        # wrapped in EditorWithFallback: primary GLM-5.2 (fp8-pinned), and exactly
+        # one Sonnet-5 fallback if GLM finally fails (transport across all pinned
+        # providers, or a schema-invalid/structured=None output) — loud, never
+        # silent (model_used/provider_used/editor_fallback_used in
+        # run_stage_log.jsonl). Sonnet-5 was the eval's 22/22 first-attempt arm
+        # and editorial #2 — a validated known-good safety net.
+        #
+        # ROLLBACK (single-edit revert to the pre-swap production editor):
+        #   "editor": Agent(
+        #       name="editor", model="anthropic/claude-opus-4.6",
+        #       system_prompt_path=str(agents_dir / "editor" / "SYSTEM.md"),
+        #       instructions_path=str(agents_dir / "editor" / "INSTRUCTIONS.md"),
+        #       tools=[], temperature=0.3, provider="openrouter",
+        #       reasoning="none", output_schema=EDITOR_SCHEMA),
+        "editor": EditorWithFallback(
+            primary=Agent(
+                name="editor",
+                model="z-ai/glm-5.2",
+                system_prompt_path=str(agents_dir / "editor" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "editor" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.3,
+                max_tokens=120000,
+                provider="openrouter",
+                reasoning="xhigh",
+                provider_routing=GLM_5_2_EDITOR_FP8_ROUTING,
+                output_schema=EDITOR_SCHEMA,
+            ),
+            # 4th line of defence. Sonnet-5 (Claude 5 family): adaptive thinking
+            # via reasoning {enabled:true, effort:high} — the eval's exact 22/22
+            # first-attempt operating point — and NO temperature (the 5 family
+            # 400s on any non-default temperature). Deliberately Sonnet-5, not
+            # the pre-swap Opus-4.6 incumbent: Sonnet-5 is the validated
+            # known-good reliability net for this stage.
+            fallback=Agent(
+                name="editor_fallback",
+                model="anthropic/claude-sonnet-5",
+                system_prompt_path=str(agents_dir / "editor" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "editor" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=None,
+                max_tokens=64000,
+                provider="openrouter",
+                reasoning={"enabled": True, "effort": "high"},
+                output_schema=EDITOR_SCHEMA,
+            ),
             output_schema=EDITOR_SCHEMA,
         ),
         "researcher_plan": Agent(
