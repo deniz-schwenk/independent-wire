@@ -82,16 +82,33 @@ def _collect_agent_metrics(stage: Any) -> dict:
         "cost_usd": round(float(cost or 0.0), 6),
         "tokens": int(tokens or 0),
     }
-    # Model-fallback marker. Wrappers that can substitute a model expose
-    # `last_model_used` + `last_provider_used` and a fallback flag, recording
-    # which model actually served this stage and whether the fallback fired.
+    # Loud model/provider logging for EVERY LLM-backed stage
+    # (TASK-LLM-STAGE-LOUD-LOGGING). Any agent that tracks the served model
+    # exposes `last_model_used` / `last_provider_used`: the base Agent sets them
+    # on each `run()`, and every fallback wrapper (editor/writer/qa/perspective/
+    # hydration_phase2) sets them to the model that actually served. This is the
+    # single seam — plain agents no longer need per-stage wrapping to be
+    # observable. `model_used` falls back to the requested `model`; `provider_used`
+    # is logged as the literal "unknown" when a response omits provider metadata,
+    # never dropped. The BiasComposite deliberately reports per-sub-agent
+    # `extractor_model`/`judge_model` via `extra_log_fields` and exposes no
+    # `last_model_used`, so it is left untouched here.
+    if hasattr(agent, "last_model_used"):
+        out["model_used"] = (
+            getattr(agent, "last_model_used", "")
+            or getattr(agent, "model", "")
+            or "unknown"
+        )
+        out["provider_used"] = getattr(agent, "last_provider_used", "") or "unknown"
+    # Model-fallback marker. Wrappers that can substitute a model additionally
+    # record whether the fallback fired, under a stage-specific key.
     # Two shapes are supported:
     #   * qa_analyze (TASK-QA-SWAP-GLM) predates the generic key: it exposes
     #     `last_qa_fallback_used` and its marker is the fixed "qa_fallback_used".
     #   * newer wrappers (writer, TASK-WRITER-SWAP-GLM) declare their own log key
     #     via `fallback_marker_key` + a generic `last_fallback_used`.
-    # Plain Agents and deterministic stages carry none of these, so the keys are
-    # omitted for them — no log-shape change elsewhere.
+    # Plain Agents and deterministic stages carry no fallback flag, so no marker
+    # key is emitted for them.
     marker_key: str | None = None
     fallback_used = False
     if getattr(agent, "fallback_marker_key", None):
@@ -101,12 +118,6 @@ def _collect_agent_metrics(stage: Any) -> dict:
         marker_key = "qa_fallback_used"
         fallback_used = bool(agent.last_qa_fallback_used)
     if marker_key is not None:
-        model_used = getattr(agent, "last_model_used", "") or ""
-        if model_used:
-            out["model_used"] = model_used
-        provider_used = getattr(agent, "last_provider_used", "") or ""
-        if provider_used:
-            out["provider_used"] = provider_used
         out[marker_key] = fallback_used
     # Generic loud-metrics hook: composite/multi-call wrappers (e.g. the bias
     # extract->union->judge composite) expose an `extra_log_fields` dict of

@@ -575,14 +575,22 @@ def test_runner_surfaces_extra_log_fields():
             extra_log_fields={"union_size": 4, "confirmed_count": 2,
                               "invalid_span_drops": 1, "judge_skipped": False,
                               "extractor_model": "deepseek/deepseek-v4-pro"})
-    # MagicMock auto-creates last_qa_fallback_used; force the hasattr-gated path off
+    # MagicMock auto-creates any attribute; delete the ones the real BiasComposite
+    # does NOT expose so the hasattr-gated paths stay off (it reports per-sub-agent
+    # extractor_model/judge_model via extra_log_fields, never last_model_used /
+    # last_qa_fallback_used).
     del Stage.agent.last_qa_fallback_used
+    del Stage.agent.last_model_used
+    del Stage.agent.last_provider_used
     out = _collect_agent_metrics(Stage())
     assert out["cost_usd"] == pytest.approx(0.06)
     assert out["union_size"] == 4
     assert out["confirmed_count"] == 2
     assert out["invalid_span_drops"] == 1
     assert out["extractor_model"] == "deepseek/deepseek-v4-pro"
+    # Composite path stays untouched: no generic model_used/provider_used.
+    assert "model_used" not in out
+    assert "provider_used" not in out
 
 
 # --------------------------------------------------------------------------- #

@@ -229,12 +229,23 @@ class Agent:
         # chunk dispatch). See TASK-RUN-STAGE-LOG-COST.
         self.last_cost_usd: float = 0.0
         self.last_tokens: int = 0
+        # Served model + provider of the most recent `run()` call, surfaced into
+        # run_stage_log.jsonl by the runner's `_collect_agent_metrics` so EVERY
+        # LLM stage records which model/provider actually served it — not just
+        # the fallback-wrapped stages (TASK-LLM-STAGE-LOUD-LOGGING). `model_used`
+        # is the resolved id from the response (falls back to the requested
+        # model); `provider_used` is the response's `provider` metadata (empty
+        # until the first call; the runner logs "unknown" if a response omits it).
+        self.last_model_used: str = ""
+        self.last_provider_used: str = ""
 
     def reset_call_metrics(self) -> None:
         """Zero the per-stage cost/token accumulators. Called by the runner
         before each stage execution."""
         self.last_cost_usd = 0.0
         self.last_tokens = 0
+        self.last_model_used = ""
+        self.last_provider_used = ""
 
     def _load_system_content(self) -> str:
         """Load the SYSTEM.md (role-only) content for this agent."""
@@ -827,6 +838,14 @@ class Agent:
 
         self.last_cost_usd += total_cost_usd
         self.last_tokens += total_tokens
+        # Record which model/provider served this call for loud stage logging.
+        # For multi-call stages (e.g. HydrationPhase1's parallel chunk dispatch)
+        # this reflects the last-completed call; all such calls share one model
+        # config and a pinned provider, so the value is stable. `provider_served`
+        # is "" when the response omits provider metadata — the runner maps that
+        # to "unknown" rather than dropping the field.
+        self.last_model_used = model_used
+        self.last_provider_used = provider_served
 
         return AgentResult(
             content=content,
