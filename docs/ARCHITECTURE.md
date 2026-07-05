@@ -358,7 +358,7 @@ Authoritative table in `docs/AGENT-IO-MAP.md` §1; snapshot here. All via OpenRo
 | bias_language | anthropic/claude-opus-4.6 | 0.1 | none | |
 | researcher_hydrated_plan | anthropic/claude-opus-4.6 | 0.5 | none | Hydrated variant of researcher_plan |
 | hydration_aggregator_phase1 | deepseek/deepseek-v4-pro | 0.3 | none | Per-chunk extraction (parallel, chunked) |
-| hydration_aggregator_phase2 | anthropic/claude-opus-4.6 | 0.1 | none | Cross-corpus reducer (single call) |
+| hydration_aggregator_phase2 | z-ai/glm-5.2 (→ opus-4.6 fallback) | 0.1 | xhigh | Cross-corpus reducer (single call). Swapped Opus-4.6 → GLM-5.2 @ xhigh (fp8-pinned) 2026-07-05 per docs/HYDRATION-P2-MODEL-EVAL-2026-07.md (TASK-HYDRATION-P2-GLM-SWAP): ties Opus-4.8 golden, ½ fabrications, 2.7× cheaper; one-shot Opus-4.6 fallback (loud, `hydration_phase2_fallback_used`) |
 | consolidator | deepseek/deepseek-v4-pro | 0.3 | none | Post-QA: consolidates perspective_missing_positions + merged_coverage_gaps into voices_missing + topics_missing (replaces removed `perspective_sync` agent and two deterministic gap-handling stages, commit `3f59ab9`) |
 
 **Migration pending:** All `anthropic/claude-opus-4.6` agents above are staged for simultaneous migration to `anthropic/claude-opus-4.7` as a single workstream (`WP-OPUS-4.7-MIGRATION`). Opus 4.7 removes `temperature`, `top_p`, `top_k` as supported parameters (returns 400 on any non-default value) and replaces discrete reasoning levels with `output_config.effort` (low / medium / high / xhigh / max, always active). This requires `src/agent.py` refactor plus per-agent effort-level evaluation before cutover — not a drop-in swap.

@@ -16,6 +16,7 @@ sys.path.insert(0, str(ROOT))
 from src.agent import Agent
 from src.bias_composite import BiasComposite
 from src.editor_fallback import EditorWithFallback
+from src.hydration_phase2_fallback import HydrationPhase2WithFallback
 from src.perspective_fallback import PerspectiveWithFallback
 from src.qa_fallback import QaAnalyzeWithFallback
 from src.writer_fallback import WriterWithFallback
@@ -106,6 +107,19 @@ GLM_5_2_WRITER_FP8_ROUTING = {
 # separately so a per-stage divergence never requires editing another stage's
 # routing.
 GLM_5_2_EDITOR_FP8_ROUTING = {
+    "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
+    "allow_fallbacks": False,
+    "quantizations": ["fp8"],
+}
+
+# Hydration-Phase-2 GLM-5.2 fp8 pin (TASK-HYDRATION-P2-GLM-SWAP). Same three fp8
+# providers verified for the editor/qa/writer swaps
+# (docs/GLM-PROVIDER-VERIFICATION-2026-07.md) and the exact pin the phase-2 eval
+# arm ran under (docs/HYDRATION-P2-MODEL-EVAL-2026-07.md). Named separately so a
+# per-stage divergence never requires editing another stage's routing.
+# ``allow_fallbacks:false`` + ``quantizations:["fp8"]`` fail LOUD rather than
+# dropping to an unverified/fp4 provider.
+GLM_5_2_HYDRATION_P2_FP8_ROUTING = {
     "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
@@ -600,16 +614,60 @@ def create_agents_hydrated() -> dict[str, Agent]:
         #     output_schema=HYDRATION_PHASE1_SCHEMA,
         # ),
         # --- END fallback alternative ---
-        "hydration_aggregator_phase2": Agent(
-            name="hydration_aggregator_phase2",
-            model="anthropic/claude-opus-4.6",
-            system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE2-SYSTEM.md"),
-            instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE2-INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.1,
-            max_tokens=32000,
-            provider="openrouter",
-            reasoning="none",
+        # hydration_aggregator_phase2 — swapped to GLM-5.2 @ xhigh
+        # (TASK-HYDRATION-P2-GLM-SWAP). The phase-2 model eval made this operating
+        # point binding (docs/HYDRATION-P2-MODEL-EVAL-2026-07.md): GLM-5.2 ties the
+        # Opus-4.8 golden ceiling at overall 4.46, halves fabrications vs the
+        # pre-swap Opus-4.6 incumbent (8 vs 14 across 21 topics — the incumbent
+        # itself fabricated on 10/21), and is 2.7x cheaper (~$0.019/topic).
+        # Wrapped in HydrationPhase2WithFallback: primary GLM-5.2 (fp8-pinned), and
+        # exactly ONE fallback attempt if GLM finally fails (transport across all
+        # pinned providers after retries, OR schema-invalid/structured=None
+        # output) — loud, never silent (model_used/provider_used/
+        # hydration_phase2_fallback_used in run_stage_log.jsonl).
+        #
+        # The fallback is the PRE-SWAP production incumbent VERBATIM (Opus 4.6,
+        # temperature 0.1, reasoning=none, max_tokens 32000), so the worst case
+        # degrades to the exact prior behaviour — same rationale as the writer swap.
+        #
+        # ROLLBACK (single-edit revert to the pre-swap production reducer):
+        #   "hydration_aggregator_phase2": Agent(
+        #       name="hydration_aggregator_phase2",
+        #       model="anthropic/claude-opus-4.6",
+        #       system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE2-SYSTEM.md"),
+        #       instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE2-INSTRUCTIONS.md"),
+        #       tools=[], temperature=0.1, max_tokens=32000, provider="openrouter",
+        #       reasoning="none", output_schema=HYDRATION_PHASE2_SCHEMA),
+        "hydration_aggregator_phase2": HydrationPhase2WithFallback(
+            primary=Agent(
+                name="hydration_aggregator_phase2",
+                model="z-ai/glm-5.2",
+                system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE2-SYSTEM.md"),
+                instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE2-INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.1,
+                max_tokens=120000,
+                provider="openrouter",
+                reasoning="xhigh",
+                provider_routing=GLM_5_2_HYDRATION_P2_FP8_ROUTING,
+                output_schema=HYDRATION_PHASE2_SCHEMA,
+            ),
+            # 4th line of defence — the PRE-SWAP production reducer VERBATIM:
+            # Opus 4.6, temperature 0.1, reasoning="none", max_tokens 32000, same
+            # PHASE2 prompts + HYDRATION_PHASE2_SCHEMA. Only the name differs (for
+            # log/metric clarity).
+            fallback=Agent(
+                name="hydration_aggregator_phase2_fallback",
+                model="anthropic/claude-opus-4.6",
+                system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE2-SYSTEM.md"),
+                instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE2-INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.1,
+                max_tokens=32000,
+                provider="openrouter",
+                reasoning="none",
+                output_schema=HYDRATION_PHASE2_SCHEMA,
+            ),
             output_schema=HYDRATION_PHASE2_SCHEMA,
         ),
     })
