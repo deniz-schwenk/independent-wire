@@ -1758,6 +1758,32 @@ def build_bias_card(tp: dict) -> str:
     else:
         borderline_html = ""
 
+    # Legend for the tier + vote notation (TASK-BIAS-CARD-LEGEND). Render-only,
+    # inside the collapse, after the finding content (confirmed findings +
+    # borderline). Rendered once whenever there is any finding content to explain
+    # (never on a clean article, and not for a bars-only collapse). Muted styling
+    # consistent with `.bias-votes`. German mirror via RL.L per line
+    # (config/de_render_labels.json "bias_legend" category) — the label mechanism
+    # is a per-string lookup, so a multi-line block is carried as one key per
+    # line, no new translation path. HONEST WORDING (Deniz + Architect,
+    # 2026-07-05): "two independent checks by the SAME judge model" — never
+    # "Judge A / Judge B", which would overstate independence.
+    if findings_html or borderline_html:
+        legend_html = (
+            '<div class="bias-legend" style="font-family:var(--font-mono);'
+            'font-size:0.78rem;line-height:1.5;color:var(--color-text-subtle);'
+            'margin-top:1.25rem;padding-top:0.6rem;'
+            'border-top:1px solid var(--color-border-light)">\n'
+            f'  <strong style="color:var(--color-text-secondary)">'
+            f'{RL.L("bias_legend", "heading", "How to read these findings")}</strong><br>\n'
+            f'  {RL.L("bias_legend", "line_badge", "The badge (e.g. loaded_term) is the bias category of the flagged excerpt.")}<br>\n'
+            f'  {RL.L("bias_legend", "line_checks", "Each excerpt is checked twice, independently, by the same judge model — each pass votes confirmed / borderline / cleared, and the parenthetical is that split.")}<br>\n'
+            f'  {RL.L("bias_legend", "line_tier", "The tier is assigned in code, not by the model (2&times; confirmed &rarr; confirmed; 2&times; cleared &rarr; not shown here; any disagreement or borderline vote &rarr; borderline). Splits are shown because disagreement is itself information.")}\n'
+            '</div>\n'
+        )
+    else:
+        legend_html = ""
+
     # Build bar chart HTML
     bar_parts = []
     if by_language:
@@ -1790,6 +1816,7 @@ def build_bias_card(tp: dict) -> str:
             f'<div style="margin-top:0.5rem">\n'
             f'{findings_html}'
             f'{borderline_html}'
+            f'{legend_html}'
             f'{bar_html}'
             f'</div>\n'
             f'</details>\n'

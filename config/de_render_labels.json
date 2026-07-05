@@ -56,6 +56,13 @@
     "passive_obscuring": "Verschleierndes Passiv"
   },
 
+  "bias_legend": {
+    "heading": "So lesen Sie diese Befunde",
+    "line_badge": "Das Etikett (z. B. „Wertbesetzter Begriff“) ist die Bias-Kategorie der markierten Textstelle.",
+    "line_checks": "Jede Textstelle wird zweimal unabhängig vom selben Judge-Modell geprüft — jeder Durchlauf stimmt ab: confirmed / borderline / cleared, und der Klammerzusatz zeigt diese Aufteilung.",
+    "line_tier": "Die Einstufung erfolgt im Code, nicht durch das Modell (2&times; confirmed &rarr; confirmed; 2&times; cleared &rarr; hier nicht angezeigt; jede Uneinigkeit oder borderline-Stimme &rarr; borderline). Aufteilungen werden angezeigt, weil Uneinigkeit selbst eine Information ist."
+  },
+
   "bias_dimension": {
     "language": "Sprache",
     "source": "Quellen",
