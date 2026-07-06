@@ -39,10 +39,27 @@ def setup_logging():
 
 
 def load_sources() -> list[dict]:
-    """Load enabled feed sources from config/sources.json."""
+    """Load enabled ``daily`` feed sources from config/sources.json.
+
+    Access-flag guard (TASK-REGISTRY-A1, "ONE catalog, two access patterns"):
+    only entries with ``access == "daily"`` feed the daily 06:00 chain. The
+    ``on_demand`` slice (the registry retrieval catalog) is invisible here — it
+    is fetched per-topic by the researcher arm, not unconditionally. A missing
+    ``access`` field is treated as ``"daily"`` (backward-compatible), but logged
+    loudly once per run so the schema gap cannot pass silently.
+    """
     path = ROOT / "config" / "sources.json"
     data = json.loads(path.read_text(encoding="utf-8"))
-    return [s for s in data["feeds"] if s.get("enabled", True)]
+    enabled = [s for s in data["feeds"] if s.get("enabled", True)]
+    missing_access = [s for s in enabled if "access" not in s]
+    if missing_access:
+        logger.warning(
+            "sources.json: %d enabled feed(s) have no 'access' field; "
+            "treating as 'daily' (add access: daily|on_demand): %s",
+            len(missing_access),
+            ", ".join(sorted(s.get("name", "?") for s in missing_access))[:300],
+        )
+    return [s for s in enabled if s.get("access", "daily") == "daily"]
 
 
 def parse_rss_entries(feed_data, source: dict, cutoff: datetime) -> list[dict]:

@@ -8,6 +8,7 @@
       "type": "rss",
       "region": "Middle East",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -16,6 +17,7 @@
       "type": "rss",
       "region": "Middle East",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -24,6 +26,7 @@
       "type": "rss",
       "region": "Middle East",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -32,6 +35,7 @@
       "type": "rss",
       "region": "Middle East",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -40,6 +44,7 @@
       "type": "rss",
       "region": "East Asia",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -48,6 +53,7 @@
       "type": "rss",
       "region": "East Asia",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -56,6 +62,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -64,6 +71,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -72,6 +80,7 @@
       "type": "rss",
       "region": "Africa",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -80,6 +89,7 @@
       "type": "rss",
       "region": "Africa",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -88,6 +98,7 @@
       "type": "rss",
       "region": "Africa",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -96,6 +107,7 @@
       "type": "rss",
       "region": "Latin America",
       "language": "pt",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -104,6 +116,7 @@
       "type": "rss",
       "region": "Latin America",
       "language": "es",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -112,6 +125,7 @@
       "type": "rss",
       "region": "South Asia",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -120,6 +134,7 @@
       "type": "rss",
       "region": "South Asia",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -128,6 +143,7 @@
       "type": "rss",
       "region": "Southeast Asia",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -136,6 +152,7 @@
       "type": "rss",
       "region": "East Asia",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -144,6 +161,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -152,6 +170,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -160,6 +179,7 @@
       "type": "api",
       "region": "Global",
       "language": "multi",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -168,6 +188,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -176,6 +197,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -184,6 +206,7 @@
       "type": "rss",
       "region": "North America",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -192,6 +215,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -200,6 +224,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -208,6 +233,7 @@
       "type": "rss",
       "region": "International",
       "language": "it",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -216,6 +242,7 @@
       "type": "rss",
       "region": "North America",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -224,6 +251,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -232,6 +260,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -240,6 +269,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "de",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -248,6 +278,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "de",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -256,6 +287,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "ru",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -264,6 +296,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "ru",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -272,6 +305,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -280,6 +314,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -288,6 +323,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "es",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -296,6 +332,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "tr",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -304,6 +341,7 @@
       "type": "rss",
       "region": "East Asia",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -312,6 +350,7 @@
       "type": "rss",
       "region": "Central Asia",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -320,6 +359,7 @@
       "type": "rss",
       "region": "Middle East",
       "language": "ar",
+      "access": "daily",
       "enabled": false
     },
     {
@@ -328,6 +368,7 @@
       "type": "rss",
       "region": "Africa",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -336,6 +377,7 @@
       "type": "rss",
       "region": "Africa",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -344,6 +386,7 @@
       "type": "rss",
       "region": "Africa",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -352,6 +395,7 @@
       "type": "rss",
       "region": "Latin America",
       "language": "es",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -360,6 +404,7 @@
       "type": "rss",
       "region": "Latin America",
       "language": "pt",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -368,6 +413,7 @@
       "type": "rss",
       "region": "Latin America",
       "language": "es",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -376,6 +422,7 @@
       "type": "rss",
       "region": "Latin America",
       "language": "es",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -384,6 +431,7 @@
       "type": "rss",
       "region": "Latin America",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -392,6 +440,7 @@
       "type": "rss",
       "region": "East Asia",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -400,6 +449,7 @@
       "type": "rss",
       "region": "East Asia",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -408,6 +458,7 @@
       "type": "rss",
       "region": "South Asia",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -416,6 +467,7 @@
       "type": "rss",
       "region": "Southeast Asia",
       "language": "vi",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -424,6 +476,7 @@
       "type": "rss",
       "region": "Pacific",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -432,6 +485,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -440,6 +494,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -448,6 +503,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -456,6 +512,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -464,6 +521,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -472,6 +530,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -480,6 +539,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -488,6 +548,7 @@
       "type": "rss",
       "region": "International",
       "language": "fr",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -496,6 +557,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -504,6 +566,7 @@
       "type": "rss",
       "region": "Europe",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -512,6 +575,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -520,6 +584,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -528,6 +593,7 @@
       "type": "rss",
       "region": "International",
       "language": "en",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -536,6 +602,7 @@
       "type": "rss",
       "region": "Middle East",
       "language": "ar",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -544,6 +611,7 @@
       "type": "rss",
       "region": "South Asia",
       "language": "bn",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -552,6 +620,7 @@
       "type": "rss",
       "region": "South Asia",
       "language": "ne",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -560,6 +629,7 @@
       "type": "rss",
       "region": "Southeast Asia",
       "language": "th",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -568,6 +638,7 @@
       "type": "rss",
       "region": "Africa",
       "language": "zu",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -576,6 +647,7 @@
       "type": "rss",
       "region": "Africa",
       "language": "sw",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -584,6 +656,7 @@
       "type": "rss",
       "region": "Central Asia",
       "language": "uz",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -592,6 +665,7 @@
       "type": "rss",
       "region": "Middle East",
       "language": "ar",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -600,6 +674,7 @@
       "type": "rss",
       "region": "Middle East",
       "language": "ar",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -608,6 +683,7 @@
       "type": "rss",
       "region": "Southeast Asia",
       "language": "th",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -616,6 +692,7 @@
       "type": "rss",
       "region": "East Asia",
       "language": "zh",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -624,6 +701,7 @@
       "type": "rss",
       "region": "East Asia",
       "language": "ja",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -632,6 +710,7 @@
       "type": "rss",
       "region": "East Asia",
       "language": "ja",
+      "access": "daily",
       "enabled": true
     },
     {
@@ -640,7 +719,2538 @@
       "type": "rss",
       "region": "East Asia",
       "language": "zh",
+      "access": "daily",
       "enabled": true
+    },
+    {
+      "name": "BBC",
+      "url": "https://feeds.bbci.co.uk/news/rss.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "bbc.com",
+      "languages": [
+        "ar",
+        "en",
+        "es",
+        "fa",
+        "fr",
+        "hi",
+        "ja",
+        "pt",
+        "ru",
+        "sw",
+        "tr",
+        "uk",
+        "ur",
+        "vi",
+        "zh"
+      ],
+      "country": "United Kingdom",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 1,
+      "editorial_independence_observed": "publicly_funded_autonomous",
+      "proposed_beat_tags": [
+        "iran",
+        "strikes",
+        "ebola",
+        "ukraine",
+        "outbreak",
+        "lebanon"
+      ],
+      "evidence": {
+        "appearance_count": 116,
+        "distinct_topics": 77,
+        "first_seen": "2026-05-27",
+        "last_seen": "2026-07-05"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Euronews",
+      "url": "https://www.euronews.com/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "euronews.com",
+      "languages": [
+        "ar",
+        "de",
+        "en",
+        "es",
+        "fa",
+        "fr",
+        "it",
+        "pl",
+        "pt",
+        "ru",
+        "tr"
+      ],
+      "country": "France",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "iran",
+        "strikes",
+        "ebola",
+        "trump",
+        "congo",
+        "outbreak"
+      ],
+      "evidence": {
+        "appearance_count": 44,
+        "distinct_topics": 41,
+        "first_seen": "2026-05-28",
+        "last_seen": "2026-07-05"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Al Jazeera",
+      "url": "https://www.aljazeera.net/aljazeerarss/a7c186be-1baa-4bd4-9d80-a84db769f779/73d0e1b4-532f-45ef-b135-bfdff8b8cab9",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "aljazeera.net",
+      "languages": [
+        "ar"
+      ],
+      "country": "Qatar",
+      "region_bucket": "middle_east_north_africa",
+      "tier_observed": 2,
+      "editorial_independence_observed": "publicly_funded_autonomous",
+      "proposed_beat_tags": [
+        "strikes",
+        "iran",
+        "ukraine",
+        "drone",
+        "heatwave",
+        "europe"
+      ],
+      "evidence": {
+        "appearance_count": 30,
+        "distinct_topics": 29,
+        "first_seen": "2026-05-27",
+        "last_seen": "2026-07-03"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "BBC",
+      "url": "https://feeds.bbci.co.uk/news/rss.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "bbc.co.uk",
+      "languages": [
+        "en"
+      ],
+      "country": "United Kingdom",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 1,
+      "editorial_independence_observed": "publicly_funded_autonomous",
+      "proposed_beat_tags": [
+        "iran",
+        "heatwave",
+        "france",
+        "ukrainian",
+        "cryptocurrency",
+        "billion"
+      ],
+      "evidence": {
+        "appearance_count": 22,
+        "distinct_topics": 20,
+        "first_seen": "2026-06-05",
+        "last_seen": "2026-07-05"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Human Rights Watch",
+      "url": "https://www.hrw.org/rss/news",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "hrw.org",
+      "languages": [
+        "ar",
+        "de",
+        "en",
+        "fr",
+        "hu"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "ebola",
+        "strikes",
+        "lebanon",
+        "israel",
+        "congo",
+        "outbreak"
+      ],
+      "evidence": {
+        "appearance_count": 20,
+        "distinct_topics": 18,
+        "first_seen": "2026-05-28",
+        "last_seen": "2026-07-04"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Die Zeit",
+      "url": "https://newsfeed.zeit.de/index",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "zeit.de",
+      "languages": [
+        "de"
+      ],
+      "country": "Germany",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "trump",
+        "approves",
+        "bill",
+        "congress",
+        "testifies",
+        "epstein"
+      ],
+      "evidence": {
+        "appearance_count": 13,
+        "distinct_topics": 13,
+        "first_seen": "2026-05-30",
+        "last_seen": "2026-07-01"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Iran International",
+      "url": "https://www.iranintl.com/feed",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "iranintl.com",
+      "languages": [
+        "ar",
+        "en",
+        "fa"
+      ],
+      "country": "International",
+      "region_bucket": "middle_east_north_africa",
+      "tier_observed": 3,
+      "editorial_independence_observed": "state_influenced",
+      "proposed_beat_tags": [
+        "iran",
+        "strikes",
+        "gulf",
+        "exchange",
+        "leader",
+        "funeral"
+      ],
+      "evidence": {
+        "appearance_count": 8,
+        "distinct_topics": 7,
+        "first_seen": "2026-05-28",
+        "last_seen": "2026-07-03"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Ukrainska Pravda",
+      "url": "https://www.pravda.com.ua/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "pravda.com.ua",
+      "languages": [
+        "ru",
+        "uk"
+      ],
+      "country": "Ukraine",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "ukraine",
+        "summit",
+        "trump",
+        "soldiers",
+        "proposes",
+        "entry"
+      ],
+      "evidence": {
+        "appearance_count": 8,
+        "distinct_topics": 8,
+        "first_seen": "2026-05-27",
+        "last_seen": "2026-07-04"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Lianhe Zaobao",
+      "url": "https://www.zaobao.com.sg/rss/news.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "zaobao.com.sg",
+      "languages": [
+        "zh"
+      ],
+      "country": "Singapore",
+      "region_bucket": "east_asia_pacific",
+      "tier_observed": 2,
+      "editorial_independence_observed": "state_influenced",
+      "proposed_beat_tags": [
+        "strikes",
+        "korea",
+        "iran",
+        "alan",
+        "fed",
+        "chair"
+      ],
+      "evidence": {
+        "appearance_count": 8,
+        "distinct_topics": 8,
+        "first_seen": "2026-05-31",
+        "last_seen": "2026-06-27"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Amnesty International",
+      "url": "https://www.amnesty.org/en/feed/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "amnesty.org",
+      "languages": [
+        "en",
+        "fr"
+      ],
+      "country": "United Kingdom",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "leader",
+        "lebanon",
+        "rsf",
+        "crimes",
+        "accuses",
+        "international"
+      ],
+      "evidence": {
+        "appearance_count": 7,
+        "distinct_topics": 5,
+        "first_seen": "2026-06-14",
+        "last_seen": "2026-07-05"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "한겨레",
+      "url": "https://www.hani.co.kr/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "hani.co.kr",
+      "languages": [
+        "ko"
+      ],
+      "country": "South Korea",
+      "region_bucket": "east_asia_pacific",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "south",
+        "korea",
+        "alan",
+        "fed",
+        "chair",
+        "dies"
+      ],
+      "evidence": {
+        "appearance_count": 7,
+        "distinct_topics": 7,
+        "first_seen": "2026-05-30",
+        "last_seen": "2026-06-30"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Interfax",
+      "url": "https://www.interfax.ru/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "interfax.ru",
+      "languages": [
+        "ru"
+      ],
+      "country": "Russia",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "strikes",
+        "iran",
+        "trump",
+        "lebanon",
+        "israel",
+        "election"
+      ],
+      "evidence": {
+        "appearance_count": 7,
+        "distinct_topics": 7,
+        "first_seen": "2026-05-27",
+        "last_seen": "2026-06-14"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Vedomosti",
+      "url": "https://www.vedomosti.ru/rss/articles",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "vedomosti.ru",
+      "languages": [
+        "ru"
+      ],
+      "country": "Russia",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 3,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "korea",
+        "ties",
+        "north",
+        "russia",
+        "soldiers",
+        "attack"
+      ],
+      "evidence": {
+        "appearance_count": 7,
+        "distinct_topics": 7,
+        "first_seen": "2026-05-28",
+        "last_seen": "2026-07-01"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Aaj Tak",
+      "url": "https://www.aajtak.in/rssfeeds?id=home",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "aajtak.in",
+      "languages": [
+        "hi"
+      ],
+      "country": "India",
+      "region_bucket": "south_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "trump",
+        "judge",
+        "strikes",
+        "bill",
+        "congress",
+        "testifies"
+      ],
+      "evidence": {
+        "appearance_count": 6,
+        "distinct_topics": 6,
+        "first_seen": "2026-05-30",
+        "last_seen": "2026-06-21"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Médecins Sans Frontières",
+      "url": "https://www.msf.fr/rss.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "msf.fr",
+      "languages": [
+        "fr"
+      ],
+      "country": "France",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "ebola",
+        "congo",
+        "face",
+        "israeli",
+        "lebanon",
+        "ground"
+      ],
+      "evidence": {
+        "appearance_count": 6,
+        "distinct_topics": 6,
+        "first_seen": "2026-05-27",
+        "last_seen": "2026-06-22"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "The New Arab",
+      "url": "https://www.alaraby.co.uk/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "alaraby.co.uk",
+      "languages": [
+        "ar"
+      ],
+      "country": "United Kingdom",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 3,
+      "editorial_independence_observed": "state_influenced",
+      "proposed_beat_tags": [
+        "iran",
+        "exchange",
+        "strikes",
+        "strait",
+        "negotiations",
+        "stall"
+      ],
+      "evidence": {
+        "appearance_count": 5,
+        "distinct_topics": 5,
+        "first_seen": "2026-05-30",
+        "last_seen": "2026-06-23"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Daily Maverick",
+      "url": "https://www.dailymaverick.co.za/dmrss/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "dailymaverick.co.za",
+      "languages": [
+        "en"
+      ],
+      "country": "South Africa",
+      "region_bucket": "sub_saharan_africa",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "deadline",
+        "south",
+        "anti",
+        "passes",
+        "fear",
+        "africa"
+      ],
+      "evidence": {
+        "appearance_count": 5,
+        "distinct_topics": 1,
+        "first_seen": "2026-06-30",
+        "last_seen": "2026-06-30"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "ICRC",
+      "url": "https://www.icrc.org/en/rss/general",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "icrc.org",
+      "languages": [
+        "en",
+        "fr"
+      ],
+      "country": "Switzerland",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 1,
+      "editorial_independence_observed": "publicly_funded_autonomous",
+      "proposed_beat_tags": [
+        "strikes",
+        "iran",
+        "exchange",
+        "threats",
+        "states",
+        "united"
+      ],
+      "evidence": {
+        "appearance_count": 5,
+        "distinct_topics": 5,
+        "first_seen": "2026-05-27",
+        "last_seen": "2026-07-04"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Il Fatto Quotidiano",
+      "url": "https://www.ilfattoquotidiano.it/feed/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "ilfattoquotidiano.it",
+      "languages": [
+        "it"
+      ],
+      "country": "Italy",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "europe",
+        "reach",
+        "grips",
+        "heatwave",
+        "shatter",
+        "records"
+      ],
+      "evidence": {
+        "appearance_count": 5,
+        "distinct_topics": 5,
+        "first_seen": "2026-05-29",
+        "last_seen": "2026-06-26"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "The Independent",
+      "url": "https://www.independent.co.uk/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "independent.co.uk",
+      "languages": [
+        "en"
+      ],
+      "country": "United Kingdom",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "russian",
+        "fleet",
+        "navy",
+        "intercepts",
+        "shadow",
+        "tanker"
+      ],
+      "evidence": {
+        "appearance_count": 5,
+        "distinct_topics": 5,
+        "first_seen": "2026-06-01",
+        "last_seen": "2026-07-05"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "The Straits Times",
+      "url": "https://www.straitstimes.com/rss.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "straitstimes.com",
+      "languages": [
+        "en"
+      ],
+      "country": "Singapore",
+      "region_bucket": "east_asia_pacific",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "brazil",
+        "sentenced",
+        "eduardo",
+        "four",
+        "bolsonaro",
+        "confirms"
+      ],
+      "evidence": {
+        "appearance_count": 5,
+        "distinct_topics": 5,
+        "first_seen": "2026-06-17",
+        "last_seen": "2026-06-26"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Cumhuriyet",
+      "url": "https://www.cumhuriyet.com.tr/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "cumhuriyet.com.tr",
+      "languages": [
+        "tr"
+      ],
+      "country": "Turkey",
+      "region_bucket": "middle_east_north_africa",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "workers",
+        "health",
+        "cases",
+        "congo",
+        "surpass",
+        "face"
+      ],
+      "evidence": {
+        "appearance_count": 4,
+        "distinct_topics": 4,
+        "first_seen": "2026-06-15",
+        "last_seen": "2026-07-01"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "European Pravda",
+      "url": "https://www.eurointegration.com.ua/rss/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "eurointegration.com.ua",
+      "languages": [
+        "en",
+        "ru",
+        "uk"
+      ],
+      "country": "Ukraine",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 3,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "ukraine",
+        "nato",
+        "agreement",
+        "reach",
+        "rights",
+        "hungary"
+      ],
+      "evidence": {
+        "appearance_count": 4,
+        "distinct_topics": 3,
+        "first_seen": "2026-05-29",
+        "last_seen": "2026-07-04"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Haberler",
+      "url": "https://rss.haberler.com/rssnew.aspx",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "haberler.com",
+      "languages": [
+        "tr"
+      ],
+      "country": "Turkey",
+      "region_bucket": "middle_east_north_africa",
+      "tier_observed": 3,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "anthropic",
+        "alphabet",
+        "files",
+        "announces",
+        "ipo",
+        "company"
+      ],
+      "evidence": {
+        "appearance_count": 4,
+        "distinct_topics": 4,
+        "first_seen": "2026-06-02",
+        "last_seen": "2026-06-28"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "The Korea Economic Daily",
+      "url": "https://www.hankyung.com/feed/all-news",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "hankyung.com",
+      "languages": [
+        "ko"
+      ],
+      "country": "South Korea",
+      "region_bucket": "east_asia_pacific",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "south",
+        "summit",
+        "trilateral",
+        "macron",
+        "trump",
+        "zelensky"
+      ],
+      "evidence": {
+        "appearance_count": 4,
+        "distinct_topics": 3,
+        "first_seen": "2026-05-29",
+        "last_seen": "2026-06-30"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Khabaronline",
+      "url": "https://www.khabaronline.ir/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "khabaronline.ir",
+      "languages": [
+        "fa"
+      ],
+      "country": "Iran",
+      "region_bucket": "middle_east_north_africa",
+      "tier_observed": 3,
+      "editorial_independence_observed": "state_influenced",
+      "proposed_beat_tags": [
+        "iran",
+        "governance",
+        "paper",
+        "white",
+        "releases",
+        "china"
+      ],
+      "evidence": {
+        "appearance_count": 4,
+        "distinct_topics": 4,
+        "first_seen": "2026-06-18",
+        "last_seen": "2026-07-01"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Kommersant",
+      "url": "https://www.kommersant.ru/rss/news.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "kommersant.ru",
+      "languages": [
+        "ru"
+      ],
+      "country": "Russia",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "state_influenced",
+      "proposed_beat_tags": [
+        "soldiers",
+        "proposes",
+        "entry",
+        "russian",
+        "ban",
+        "sanctions"
+      ],
+      "evidence": {
+        "appearance_count": 4,
+        "distinct_topics": 4,
+        "first_seen": "2026-06-06",
+        "last_seen": "2026-06-29"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Los Angeles Times",
+      "url": "https://www.latimes.com/index.rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "latimes.com",
+      "languages": [
+        "en"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "trump",
+        "governor",
+        "california",
+        "accuses",
+        "directing",
+        "newsom"
+      ],
+      "evidence": {
+        "appearance_count": 4,
+        "distinct_topics": 4,
+        "first_seen": "2026-05-30",
+        "last_seen": "2026-06-16"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Ouest-France",
+      "url": "https://www.ouest-france.fr/rss/une",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "ouest-france.fr",
+      "languages": [
+        "fr"
+      ],
+      "country": "France",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "heatwave",
+        "france",
+        "triggers",
+        "alerts",
+        "europe",
+        "health"
+      ],
+      "evidence": {
+        "appearance_count": 4,
+        "distinct_topics": 4,
+        "first_seen": "2026-06-21",
+        "last_seen": "2026-06-29"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "RBC-Ukraine",
+      "url": "https://www.rbc.ua/static/rss/all.rus.rss.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "rbc.ua",
+      "languages": [
+        "en",
+        "uk"
+      ],
+      "country": "Ukraine",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 3,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "strikes",
+        "strips",
+        "honor",
+        "zelensky",
+        "poland",
+        "highest"
+      ],
+      "evidence": {
+        "appearance_count": 4,
+        "distinct_topics": 3,
+        "first_seen": "2026-05-28",
+        "last_seen": "2026-07-04"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "STAT",
+      "url": "https://www.statnews.com/feed/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "statnews.com",
+      "languages": [
+        "en"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": 3,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "ebola",
+        "congo",
+        "outbreak",
+        "spread",
+        "dengue",
+        "outbreaks"
+      ],
+      "evidence": {
+        "appearance_count": 4,
+        "distinct_topics": 4,
+        "first_seen": "2026-05-31",
+        "last_seen": "2026-06-22"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Tabnak",
+      "url": "https://www.tabnak.ir/fa/rss/allnews",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "tabnak.ir",
+      "languages": [
+        "fa"
+      ],
+      "country": "Iran",
+      "region_bucket": "middle_east_north_africa",
+      "tier_observed": 3,
+      "editorial_independence_observed": "state_influenced",
+      "proposed_beat_tags": [
+        "iran",
+        "strikes",
+        "threats",
+        "states",
+        "exchange",
+        "united"
+      ],
+      "evidence": {
+        "appearance_count": 4,
+        "distinct_topics": 4,
+        "first_seen": "2026-05-27",
+        "last_seen": "2026-07-05"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Corriere della Sera",
+      "url": "https://www.corriere.it/rss/news.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "corriere.it",
+      "languages": [
+        "it"
+      ],
+      "country": "Italy",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "christian",
+        "collapses",
+        "eriksen",
+        "denmark",
+        "again",
+        "friendly"
+      ],
+      "evidence": {
+        "appearance_count": 3,
+        "distinct_topics": 3,
+        "first_seen": "2026-06-08",
+        "last_seen": "2026-06-25"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Donya-e-Eqtesad",
+      "url": "https://donya-e-eqtesad.com/feeds",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "donya-e-eqtesad.com",
+      "languages": [
+        "fa"
+      ],
+      "country": "Iran",
+      "region_bucket": "middle_east_north_africa",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "governance",
+        "paper",
+        "white",
+        "releases",
+        "china",
+        "negotiations"
+      ],
+      "evidence": {
+        "appearance_count": 3,
+        "distinct_topics": 3,
+        "first_seen": "2026-05-29",
+        "last_seen": "2026-06-20"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Frankfurter Allgemeine Zeitung",
+      "url": "https://www.faz.net/rss/aktuell/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "faz.net",
+      "languages": [
+        "de"
+      ],
+      "country": "Germany",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "security",
+        "seat",
+        "fails",
+        "win",
+        "germany",
+        "council"
+      ],
+      "evidence": {
+        "appearance_count": 3,
+        "distinct_topics": 3,
+        "first_seen": "2026-06-04",
+        "last_seen": "2026-06-30"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Fortune",
+      "url": "https://fortune.com/feed/fortune-feeds/?id=3230629",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "fortune.com",
+      "languages": [
+        "en"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "record",
+        "heatwave",
+        "europe",
+        "temperatures",
+        "continues",
+        "openai"
+      ],
+      "evidence": {
+        "appearance_count": 3,
+        "distinct_topics": 3,
+        "first_seen": "2026-06-09",
+        "last_seen": "2026-07-02"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "La Croix",
+      "url": "https://www.la-croix.com/feeds/rss/site.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "la-croix.com",
+      "languages": [
+        "fr"
+      ],
+      "country": "France",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "soldiers",
+        "attack",
+        "niger",
+        "gunmen",
+        "airport",
+        "killing"
+      ],
+      "evidence": {
+        "appearance_count": 3,
+        "distinct_topics": 3,
+        "first_seen": "2026-06-07",
+        "last_seen": "2026-06-29"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "La Vanguardia",
+      "url": "https://www.lavanguardia.com/rss/home.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "lavanguardia.com",
+      "languages": [
+        "es"
+      ],
+      "country": "Spain",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "close",
+        "runoff",
+        "election",
+        "too",
+        "peru",
+        "presidential"
+      ],
+      "evidence": {
+        "appearance_count": 3,
+        "distinct_topics": 3,
+        "first_seen": "2026-06-10",
+        "last_seen": "2026-07-03"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Observador",
+      "url": "https://observador.pt/feed/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "observador.pt",
+      "languages": [
+        "pt"
+      ],
+      "country": "Portugal",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "congo",
+        "outbreak",
+        "ebola",
+        "continues",
+        "uganda",
+        "prompts"
+      ],
+      "evidence": {
+        "appearance_count": 3,
+        "distinct_topics": 3,
+        "first_seen": "2026-06-07",
+        "last_seen": "2026-06-16"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Radio Okapi",
+      "url": "https://www.radiookapi.net/feed",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "radiookapi.net",
+      "languages": [
+        "fr"
+      ],
+      "country": "Democratic Republic of the Congo",
+      "region_bucket": "sub_saharan_africa",
+      "tier_observed": 3,
+      "editorial_independence_observed": "publicly_funded_autonomous",
+      "proposed_beat_tags": [
+        "ebola",
+        "outbreak",
+        "congo",
+        "confirmed",
+        "deaths",
+        "drc"
+      ],
+      "evidence": {
+        "appearance_count": 3,
+        "distinct_topics": 3,
+        "first_seen": "2026-06-12",
+        "last_seen": "2026-06-24"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Yeni Şafak",
+      "url": "https://www.yenisafak.com/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "yenisafak.com",
+      "languages": [
+        "ar",
+        "tr"
+      ],
+      "country": "Turkey",
+      "region_bucket": "middle_east_north_africa",
+      "tier_observed": 3,
+      "editorial_independence_observed": "state_influenced",
+      "proposed_beat_tags": [
+        "fighter",
+        "germany",
+        "abandon",
+        "jet",
+        "joint",
+        "project"
+      ],
+      "evidence": {
+        "appearance_count": 3,
+        "distinct_topics": 3,
+        "first_seen": "2026-06-09",
+        "last_seen": "2026-07-04"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "24 Kanal",
+      "url": "https://24tv.ua/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "24tv.ua",
+      "languages": [
+        "uk"
+      ],
+      "country": "Ukraine",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 3,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "targets",
+        "monaco",
+        "bombing",
+        "iermolaiev",
+        "ukrainian",
+        "oligarch"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-05-27",
+        "last_seen": "2026-07-01"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Deutsches Ärzteblatt",
+      "url": "https://www.aerzteblatt.de/rss/news",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "aerzteblatt.de",
+      "languages": [
+        "de"
+      ],
+      "country": "Germany",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "congo",
+        "ebola",
+        "crimean",
+        "fever",
+        "outbreaks",
+        "hemorrhagic"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-01",
+        "last_seen": "2026-06-29"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "An-Nahar",
+      "url": "https://www.annahar.com/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "annahar.com",
+      "languages": [
+        "ar"
+      ],
+      "country": "Lebanon",
+      "region_bucket": "middle_east_north_africa",
+      "tier_observed": 3,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "negotiations",
+        "iran",
+        "peace",
+        "setbacks",
+        "israeli",
+        "face"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-20",
+        "last_seen": "2026-07-04"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "الشرق (Asharq)",
+      "url": "https://asharq.com/rss.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "asharq.com",
+      "languages": [
+        "ar"
+      ],
+      "country": "Saudi Arabia",
+      "region_bucket": "middle_east_north_africa",
+      "tier_observed": 2,
+      "editorial_independence_observed": "state_influenced",
+      "proposed_beat_tags": [
+        "quarantine",
+        "drc",
+        "plans",
+        "outbreak",
+        "ebola",
+        "uganda"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-05-29",
+        "last_seen": "2026-06-03"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Asr Iran",
+      "url": "https://www.asriran.com/fa/rss/allnews",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "asriran.com",
+      "languages": [
+        "fa"
+      ],
+      "country": "Iran",
+      "region_bucket": "middle_east_north_africa",
+      "tier_observed": 3,
+      "editorial_independence_observed": "state_influenced",
+      "proposed_beat_tags": [
+        "satrapi",
+        "dies",
+        "persepolis",
+        "marjane",
+        "author",
+        "attacks"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-05",
+        "last_seen": "2026-06-07"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Brussels Signal",
+      "url": "https://brusselssignal.eu/feed/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "brusselssignal.eu",
+      "languages": [
+        "en"
+      ],
+      "country": "Belgium",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "strikes",
+        "ukrainian",
+        "counterattacks",
+        "russian",
+        "orders",
+        "trial"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-21",
+        "last_seen": "2026-07-04"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Business Insider",
+      "url": "https://feeds.businessinsider.com/custom/all",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "businessinsider.com",
+      "languages": [
+        "en"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "billion",
+        "record",
+        "raises",
+        "spacex",
+        "ipo",
+        "breaking"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-12",
+        "last_seen": "2026-07-01"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Censor.net",
+      "url": "https://assets.censor.net/rss/censor.net/rss_uk_news.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "censor.net",
+      "languages": [
+        "en",
+        "uk"
+      ],
+      "country": "Ukraine",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "strips",
+        "honor",
+        "zelensky",
+        "poland",
+        "highest",
+        "strikes"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-20",
+        "last_seen": "2026-07-04"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Council on Foreign Relations",
+      "url": "https://www.cfr.org/feed",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "cfr.org",
+      "languages": [
+        "en"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "offensive",
+        "strikes",
+        "israel",
+        "suburbs",
+        "widening",
+        "despite"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-05-29",
+        "last_seen": "2026-06-27"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "CoinDesk",
+      "url": "https://www.coindesk.com/arc/outboundfeeds/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "coindesk.com",
+      "languages": [
+        "en"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "cryptocurrency",
+        "billion",
+        "trump",
+        "income",
+        "exceed",
+        "since"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-07-01",
+        "last_seen": "2026-07-02"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Center for Strategic and International Studies",
+      "url": "https://www.csis.org/rss.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "csis.org",
+      "languages": [
+        "en"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "forced",
+        "displacement",
+        "million",
+        "reaches",
+        "ebola",
+        "korea"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-11",
+        "last_seen": "2026-06-28"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Deadline",
+      "url": "https://deadline.com/feed/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "deadline.com",
+      "languages": [
+        "en"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "satrapi",
+        "dies",
+        "persepolis",
+        "marjane",
+        "author",
+        "approves"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-05",
+        "last_seen": "2026-06-13"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Diário de Notícias",
+      "url": "https://www.dn.pt/stories.rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "dn.pt",
+      "languages": [
+        "pt"
+      ],
+      "country": "Portugal",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "grips",
+        "heatwave",
+        "shatter",
+        "europe",
+        "records",
+        "temperatures"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-04",
+        "last_seen": "2026-06-26"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "El Mundo",
+      "url": "https://www.elmundo.es/rss/googlenews/portada.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "elmundo.es",
+      "languages": [
+        "es"
+      ],
+      "country": "Spain",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "orders",
+        "trial",
+        "judge",
+        "stand",
+        "spanish",
+        "corruption"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-21",
+        "last_seen": "2026-06-24"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Europe 1",
+      "url": "https://www.europe1.fr/rss.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "europe1.fr",
+      "languages": [
+        "fr"
+      ],
+      "country": "France",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "confirms",
+        "doctor",
+        "ebola",
+        "france",
+        "returning",
+        "caledonia"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-25",
+        "last_seen": "2026-06-29"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "HotNews",
+      "url": "https://hotnews.ro/feed",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "hotnews.ro",
+      "languages": [
+        "ro"
+      ],
+      "country": "Romania",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "businessman",
+        "arrests",
+        "associate",
+        "traber",
+        "close",
+        "russia"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-05-29",
+        "last_seen": "2026-06-18"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "InfoMoney",
+      "url": "https://www.infomoney.com.br/feed/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "infomoney.com.br",
+      "languages": [
+        "pt"
+      ],
+      "country": "Brazil",
+      "region_bucket": "latin_america_caribbean",
+      "tier_observed": 3,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "fleet",
+        "navy",
+        "intercepts",
+        "shadow",
+        "russian",
+        "tanker"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-01",
+        "last_seen": "2026-06-11"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Internazionale",
+      "url": "https://www.internazionale.it/sitemaps/rss.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "internazionale.it",
+      "languages": [
+        "en"
+      ],
+      "country": "Italy",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "iran",
+        "peace",
+        "iranian",
+        "pakistan",
+        "mediates",
+        "businessman"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-18",
+        "last_seen": "2026-06-23"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Jeune Afrique",
+      "url": "https://www.jeuneafrique.com/feed/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "jeuneafrique.com",
+      "languages": [
+        "fr"
+      ],
+      "country": "France",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "record",
+        "heatwave",
+        "europe",
+        "temperatures",
+        "continues",
+        "deadline"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-25",
+        "last_seen": "2026-06-30"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "La Voz de Galicia",
+      "url": "https://www.lavozdegalicia.es/index.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "lavozdegalicia.es",
+      "languages": [
+        "es"
+      ],
+      "country": "Spain",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "orders",
+        "trial",
+        "judge",
+        "stand",
+        "spanish",
+        "corruption"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-14",
+        "last_seen": "2026-06-21"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Le Dauphiné Libéré",
+      "url": "https://www.ledauphine.com/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "ledauphine.com",
+      "languages": [
+        "fr"
+      ],
+      "country": "France",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "geneva",
+        "thousands",
+        "fire",
+        "protests",
+        "anti",
+        "tear"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-15",
+        "last_seen": "2026-06-25"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Lowy Institute",
+      "url": "https://www.lowyinstitute.org/the-interpreter/rss.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "lowyinstitute.org",
+      "languages": [
+        "en"
+      ],
+      "country": "Australia",
+      "region_bucket": "east_asia_pacific",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "caledonia",
+        "election",
+        "anti",
+        "independence",
+        "results",
+        "show"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-05",
+        "last_seen": "2026-06-29"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Maeil Business Newspaper (MK)",
+      "url": "https://www.mk.co.kr/rss/30000001/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "mk.co.kr",
+      "languages": [
+        "en",
+        "ko"
+      ],
+      "country": "South Korea",
+      "region_bucket": "east_asia_pacific",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "negotiations",
+        "iran",
+        "peace",
+        "setbacks",
+        "israeli",
+        "face"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-20",
+        "last_seen": "2026-06-30"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Moskovsky Komsomolets",
+      "url": "https://www.mk.ru/rss/index.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "mk.ru",
+      "languages": [
+        "ru"
+      ],
+      "country": "Russia",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 3,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "strips",
+        "honor",
+        "zelensky",
+        "poland",
+        "highest",
+        "vucic"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-20",
+        "last_seen": "2026-06-28"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "n-tv",
+      "url": "https://www.n-tv.de/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "n-tv.de",
+      "languages": [
+        "de"
+      ],
+      "country": "Germany",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "record",
+        "heatwave",
+        "europe",
+        "temperatures",
+        "continues",
+        "leader"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-25",
+        "last_seen": "2026-07-03"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "NBC News",
+      "url": "https://feeds.nbcnews.com/nbcnews/public/news",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "nbcnews.com",
+      "languages": [
+        "en"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": 2,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": [
+        "trump",
+        "governor",
+        "california",
+        "accuses",
+        "directing",
+        "newsom"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-05-30",
+        "last_seen": "2026-06-16"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "NK News",
+      "url": "https://www.nknews.org/feed/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "nknews.org",
+      "languages": [
+        "en"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "north",
+        "korea",
+        "jinping",
+        "week",
+        "trip",
+        "rare"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-05",
+        "last_seen": "2026-06-06"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Open",
+      "url": "https://www.open.online/feed/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "open.online",
+      "languages": [
+        "it"
+      ],
+      "country": "Italy",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "targets",
+        "monaco",
+        "bombing",
+        "iermolaiev",
+        "ukrainian",
+        "oligarch"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-16",
+        "last_seen": "2026-07-01"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Radio Svoboda",
+      "url": "https://www.radiosvoboda.org/api/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "radiosvoboda.org",
+      "languages": [
+        "uk"
+      ],
+      "country": "Ukraine",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 2,
+      "editorial_independence_observed": "state_influenced",
+      "proposed_beat_tags": [
+        "ukraine",
+        "agreement",
+        "reach",
+        "rights",
+        "hungary",
+        "minority"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-05-27",
+        "last_seen": "2026-06-04"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Radio Free Europe/Radio Liberty",
+      "url": "https://www.rferl.org/api/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "rferl.org",
+      "languages": [
+        "en"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "soldiers",
+        "proposes",
+        "entry",
+        "russian",
+        "ban",
+        "sanctions"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-03",
+        "last_seen": "2026-06-10"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Sky News Arabia",
+      "url": "https://www.skynewsarabia.com/rss.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "skynewsarabia.com",
+      "languages": [
+        "ar"
+      ],
+      "country": "United Arab Emirates",
+      "region_bucket": "middle_east_north_africa",
+      "tier_observed": 2,
+      "editorial_independence_observed": "state_influenced",
+      "proposed_beat_tags": [
+        "iran",
+        "leader",
+        "funeral",
+        "supreme",
+        "slain",
+        "khamenei"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-14",
+        "last_seen": "2026-07-05"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Die Tageszeitung (taz)",
+      "url": "https://taz.de/!p4608;rss/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "taz.de",
+      "languages": [
+        "de"
+      ],
+      "country": "Germany",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "election",
+        "trump",
+        "presidential",
+        "candidate",
+        "colombia",
+        "admiring"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-02",
+        "last_seen": "2026-06-04"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Telex",
+      "url": "https://telex.hu/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "telex.hu",
+      "languages": [
+        "hu"
+      ],
+      "country": "Hungary",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "rights",
+        "pride",
+        "celebrate",
+        "political",
+        "marches",
+        "lgbt"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-04",
+        "last_seen": "2026-06-28"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "TF1 Info",
+      "url": "https://www.tf1info.fr/feeds/rss-une.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "tf1info.fr",
+      "languages": [
+        "fr"
+      ],
+      "country": "France",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "heatwave",
+        "prompts",
+        "restrict",
+        "alcohol",
+        "european",
+        "france"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-01",
+        "last_seen": "2026-06-21"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "Thanh Niên",
+      "url": "https://thanhnien.vn/rss/home.rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "thanhnien.vn",
+      "languages": [
+        "vi"
+      ],
+      "country": "Vietnam",
+      "region_bucket": "east_asia_pacific",
+      "tier_observed": 2,
+      "editorial_independence_observed": "state_directed",
+      "proposed_beat_tags": [
+        "trump",
+        "governor",
+        "california",
+        "accuses",
+        "directing",
+        "newsom"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-16",
+        "last_seen": "2026-07-01"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "TIME",
+      "url": "https://time.com/rss/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "time.com",
+      "languages": [
+        "en"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "anthropic",
+        "alphabet",
+        "files",
+        "announces",
+        "ipo",
+        "company"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-02",
+        "last_seen": "2026-06-14"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "TSN",
+      "url": "https://tsn.ua/rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "tsn.ua",
+      "languages": [
+        "uk"
+      ],
+      "country": "Ukraine",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "equipment",
+        "escalate",
+        "ukraine",
+        "military",
+        "belarus",
+        "tensions"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-25",
+        "last_seen": "2026-07-03"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "UNN",
+      "url": "https://unn.ua/rss/news_uk.xml",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "unn.ua",
+      "languages": [
+        "en"
+      ],
+      "country": "Ukraine",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "ukraine",
+        "convenes",
+        "summit",
+        "divisions",
+        "nato",
+        "aid"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-03",
+        "last_seen": "2026-07-04"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "VietnamPlus",
+      "url": "https://www.vietnamplus.vn/rss/home.rss",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "vietnamplus.vn",
+      "languages": [
+        "vi"
+      ],
+      "country": "Vietnam",
+      "region_bucket": "east_asia_pacific",
+      "tier_observed": 2,
+      "editorial_independence_observed": "state_directed",
+      "proposed_beat_tags": [
+        "congo",
+        "outbreak",
+        "ebola",
+        "confirmed",
+        "deaths",
+        "suspected"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-01",
+        "last_seen": "2026-06-12"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "美国之音中文网",
+      "url": "https://www.voachinese.com/api/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "voachinese.com",
+      "languages": [
+        "zh"
+      ],
+      "country": "United States",
+      "region_bucket": "north_america",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "north",
+        "korea",
+        "summit",
+        "reaffirm",
+        "china",
+        "kim"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-05",
+        "last_seen": "2026-06-10"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "ZDFheute",
+      "url": "https://www.zdfheute.de/rss/zdf/nachrichten",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "zdfheute.de",
+      "languages": [
+        "de"
+      ],
+      "country": "Germany",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 1,
+      "editorial_independence_observed": "publicly_funded_autonomous",
+      "proposed_beat_tags": [
+        "bill",
+        "congress",
+        "testifies",
+        "epstein",
+        "attempted",
+        "gates"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-04",
+        "last_seen": "2026-06-11"
+      },
+      "seed_review": "pending"
+    },
+    {
+      "name": "ZN.UA",
+      "url": "https://zn.ua/ukr/rss/full/",
+      "type": "rss",
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "zn.ua",
+      "languages": [
+        "ru",
+        "uk"
+      ],
+      "country": "Russia",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": null,
+      "editorial_independence_observed": null,
+      "proposed_beat_tags": [
+        "fighter",
+        "germany",
+        "abandon",
+        "jet",
+        "joint",
+        "project"
+      ],
+      "evidence": {
+        "appearance_count": 2,
+        "distinct_topics": 2,
+        "first_seen": "2026-06-09",
+        "last_seen": "2026-06-21"
+      },
+      "seed_review": "pending"
     }
   ]
 }
