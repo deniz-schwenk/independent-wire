@@ -42,6 +42,7 @@ LANGUAGE_NAMES: dict[str, str] = {
     "he": "Hebrew", "ur": "Urdu", "hi": "Hindi", "bn": "Bengali",
     "zh": "Chinese", "ja": "Japanese", "ko": "Korean", "vi": "Vietnamese",
     "th": "Thai", "id": "Indonesian", "ms": "Malay", "sw": "Swahili",
+    "ne": "Nepali", "zu": "Zulu", "uz": "Uzbek",
 }
 
 COUNTRY_ALIASES: dict[str, str] = {

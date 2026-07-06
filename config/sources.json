@@ -585,6 +585,62 @@
       "region": "Central Asia",
       "language": "uz",
       "enabled": true
+    },
+    {
+      "name": "Al-Sumaria",
+      "url": "https://www.alsumaria.tv/Rss/iraq-latest-news/ar",
+      "type": "rss",
+      "region": "Middle East",
+      "language": "ar",
+      "enabled": true
+    },
+    {
+      "name": "Mosaique FM",
+      "url": "https://www.mosaiquefm.net/ar/rss",
+      "type": "rss",
+      "region": "Middle East",
+      "language": "ar",
+      "enabled": true
+    },
+    {
+      "name": "Khaosod",
+      "url": "https://www.khaosod.co.th/feed",
+      "type": "rss",
+      "region": "Southeast Asia",
+      "language": "th",
+      "enabled": true
+    },
+    {
+      "name": "Liberty Times",
+      "url": "https://news.ltn.com.tw/rss/all.xml",
+      "type": "rss",
+      "region": "East Asia",
+      "language": "zh",
+      "enabled": true
+    },
+    {
+      "name": "Mainichi Shimbun",
+      "url": "https://mainichi.jp/rss/etc/mainichi-flash.rss",
+      "type": "rss",
+      "region": "East Asia",
+      "language": "ja",
+      "enabled": true
+    },
+    {
+      "name": "Asahi Shimbun",
+      "url": "https://rss.asahi.com/rss/asahi/newsheadlines.rdf",
+      "type": "rss",
+      "region": "East Asia",
+      "language": "ja",
+      "enabled": true
+    },
+    {
+      "name": "Initium Media",
+      "url": "https://theinitium.com/rss",
+      "type": "rss",
+      "region": "East Asia",
+      "language": "zh",
+      "enabled": true
     }
   ]
 }

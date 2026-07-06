@@ -306,6 +306,15 @@
     "editorial_independence": "state_influenced",
     "bias_note": "London-based pan-Arab daily; majority shareholder reportedly based in Doha, Qatar since 2013"
   },
+  "alsumaria.tv": {
+    "outlet": "Al-Sumaria",
+    "country": "Iraq",
+    "language": "ar",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Privately owned Iraqi satellite broadcaster and news site, one of the most-watched in Iraq. Commercial/mainstream rather than party-organ; operates within Iraq's politically fragmented and pressured media landscape."
+  },
   "ana.ir": {
     "outlet": "Azad News Agency",
     "country": "Iran",
@@ -1632,6 +1641,15 @@
     "editorial_independence": "state_influenced",
     "bias_note": "Iranian Persian-language news site published by Khabar Publishing Group, associated with politician Ali Larijani; operating under Iranian media regulation."
   },
+  "khaosod.co.th": {
+    "outlet": "Khaosod",
+    "country": "Thailand",
+    "language": "th",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Major Thai daily (founded 1991) owned by the privately held Matichon Group; one of the country's best-selling papers. Independent domestic desk with a populist, mass-market register; generally more sympathetic to pro-democracy/opposition narratives than state-aligned press. Thai-language flagship (the separate khaosodenglish.com export edition deliberately not used)."
+  },
   "kommersant.ru": {
     "outlet": "Kommersant",
     "country": "Russia",
@@ -1815,6 +1833,15 @@
     "editorial_independence": "independent",
     "bias_note": "Lebanese francophone daily, privately held; main shareholders Eddé family, Choueiri group and Pharaon family"
   },
+  "ltn.com.tw": {
+    "outlet": "Liberty Times",
+    "country": "Taiwan",
+    "language": "zh",
+    "type": "newspaper",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Taiwan's largest-circulation daily, privately owned (Liberty Times Group). Strongly pro-DPP / pro-Taiwan-independence (pan-green) editorial line. Hard-news desk is professional and high-volume; feed spans news./ec./sports. subdomains under ltn.com.tw."
+  },
   "m24.ru": {
     "outlet": "Moscow 24",
     "country": "Russia",
@@ -1841,6 +1868,15 @@
     "tier": 2,
     "editorial_independence": "independent",
     "bias_note": "Egyptian independent investigative, journalist-owned, blocked in Egypt since 2017"
+  },
+  "mainichi.jp": {
+    "outlet": "Mainichi Shimbun",
+    "country": "Japan",
+    "language": "ja",
+    "type": "newspaper",
+    "tier": 1,
+    "editorial_independence": "independent",
+    "bias_note": "One of Japan's 'big three' national dailies. Mainstream, broadly centrist to slightly center-left editorial stance; serious general-news and investigative desk. Privately owned commercial paper."
   },
   "mashreghnews.ir": {
     "outlet": "Mashregh News",
@@ -1994,6 +2030,15 @@
     "tier": 3,
     "editorial_independence": "independent",
     "bias_note": "Largest English-language Moroccan news source"
+  },
+  "mosaiquefm.net": {
+    "outlet": "Mosaique FM",
+    "country": "Tunisia",
+    "language": "ar",
+    "type": "broadcaster",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Tunisia's first private radio station and one of the country's most-followed news sources. Commercial and independently owned; publishes parallel Arabic and French news desks. Arabic desk (/ar) used for non-Latin priority."
   },
   "msf.es": {
     "outlet": "Médecins Sans Frontières Spain",
@@ -2954,6 +2999,15 @@
     "tier": 2,
     "editorial_independence": "independent",
     "bias_note": "Indian national English daily owned by The Hindu Group / Kasturi & Sons Ltd (private, family-controlled)."
+  },
+  "theinitium.com": {
+    "outlet": "Initium Media",
+    "country": "Hong Kong",
+    "language": "zh",
+    "type": "digital_native",
+    "tier": 2,
+    "editorial_independence": "independent",
+    "bias_note": "Independent Chinese-language digital outlet (founded 2015 in Hong Kong, now operating partly from Singapore/Taipei). Investigative, liberal, critical of Beijing; a leading independent zh voice outside mainland state control."
   },
   "theins.ru": {
     "outlet": "The Insider",

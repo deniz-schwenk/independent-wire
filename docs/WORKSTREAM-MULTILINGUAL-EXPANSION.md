@@ -18,6 +18,16 @@ They are coupled: the new feeds bring exactly the languages the clustering exist
   `config/outlet_registry.json`, native pipeline, MADLAD flag OFF. All verified live from the
   Mini runner. Feeds: ar Al-Masry Al-Youm · bn Prothom Alo · ne Online Khabar · th Prachatai ·
   zu Isolezwe · sw Mwananchi · uz Kun.uz.
+- **Batch 2 — LIVE** (2026-07-06, this commit): 7 more independent non-Latin feeds
+  (ar/th/zh/ja), same additive pattern, MADLAD flag OFF. All 7 re-verified live from this
+  machine via the real fetch path (207 entries/24h, 0 encoding warnings). Feeds:
+  ar Al-Sumaria (Iraq) · ar Mosaique FM (Tunisia) · th Khaosod (supplements Prachatai's
+  low volume; nothing removed) · zh Liberty Times (Taiwan, pan-green lean recorded) ·
+  ja Mainichi Shimbun · ja Asahi Shimbun (registry entry pre-existed — left unchanged;
+  feed added on the verified `https://rss.asahi.com/...` URL) · zh Initium Media (HK).
+  `LANGUAGE_NAMES` gap closed for ne/zu/uz (ja/zh/th were already present). Landed after the
+  2026-07-06 06:00 run verified the HydrationPhase2 GLM-5.2 swap green (one production change
+  per day). Observation window: 3 days, same checklist as Batch 1.
 - **MADLAD sidecar** — built (commit `7e920b1`; flag `IW_CLUSTER_TRANSLATE`, default OFF; slot
   `curator_findings_clustering`), validated, 7-day shadow-tested (stable), requirements spec
   complete. **NOT enabled.** Model self-converted (Apache-2.0, CT2-int8, ~2.8 GB) on the Mini.
@@ -89,6 +99,15 @@ They are coupled: the new feeds bring exactly the languages the clustering exist
 - 2026-07-01 — MADLAD finalized (convert/latency/control sweep, all pass); requirements spec +
   off-topic re-audit done (no recalibration); 7-day shadow = stable; batch 1 (7 feeds) integrated
   and pushed (`dcf5be6`); this tracker created.
+- 2026-07-06 — Batch 2 integrated (7 feeds ar/th/zh/ja) after the 06:00 run validated the
+  HydrationPhase2 GLM-5.2 swap green. Re-verified all 7 live from this machine via the real
+  fetch path (Al-Sumaria 20 · Mosaique FM 40 · Khaosod 50 · Liberty Times 40 · Mainichi 20 ·
+  Asahi 35 · Initium 2 = 207 entries/24h; 0 mojibake, 0 encoding warnings; Asahi on verified
+  https URL; Liberty Times spans news./ec./sports.ltn.com.tw → all fold to `ltn.com.tw`).
+  asahi.com registry entry pre-existed (tier-1 independent) — left unchanged. `LANGUAGE_NAMES`
+  ne/zu/uz added. `sources.json` +7, `outlet_registry.json` +6 (asahi already present),
+  `_helpers.py` +3 langs. Full suite: 880 passed, 4 skipped, 1 pre-existing env-only failure
+  (`test_curator_monitor`, missing 05-11 baseline fixture). MADLAD flag stays OFF.
 
 ## Pre-enable additions from CODE-REVIEW-2026-07-02 (added 2026-07-02)
 
