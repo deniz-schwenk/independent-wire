@@ -274,6 +274,17 @@ async def _search_duckduckgo(query: str, n: int) -> str:
         return f"Error: DuckDuckGo search failed: {e}"
 
 
+async def _search_registry(query: str, n: int) -> str:
+    """Deterministic, LLM-free retrieval over the catalog's on_demand feeds.
+
+    Implemented in :mod:`src.tools.registry_search` (Phase A2). $0/query;
+    returns the same plain-text block shape as the Sonar path. Not active in
+    production until IW_SEARCH_PROVIDER is flipped (a later phase)."""
+    from src.tools.registry_search import _search_registry as _impl
+
+    return await _impl(query, n)
+
+
 # Provider dispatch map
 PROVIDERS: dict[str, Any] = {
     "perplexity": _search_perplexity,
@@ -282,6 +293,7 @@ PROVIDERS: dict[str, Any] = {
     "grok_x": _search_grok_x,
     "ollama": _search_ollama,
     "duckduckgo": _search_duckduckgo,
+    "registry": _search_registry,
 }
 
 
@@ -336,10 +348,14 @@ web_search_tool = Tool(
             "provider": {
                 "type": "string",
                 "description": (
-                    "Search provider: perplexity, brave, grok, grok_x, ollama, duckduckgo "
+                    "Search provider: perplexity, brave, grok, grok_x, ollama, "
+                    "duckduckgo, registry "
                     "(default: from IW_SEARCH_PROVIDER env or ollama)"
                 ),
-                "enum": ["perplexity", "brave", "grok", "grok_x", "ollama", "duckduckgo"],
+                "enum": [
+                    "perplexity", "brave", "grok", "grok_x", "ollama",
+                    "duckduckgo", "registry",
+                ],
             },
         },
         "required": ["query"],
