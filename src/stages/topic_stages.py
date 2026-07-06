@@ -2064,12 +2064,34 @@ def _enrich_url_dates(search_results: list[dict]) -> None:
             sr["url_dates"] = urls_with_dates
 
 
+class _SearchStageMetrics:
+    """Lightweight marker attached as ``researcher_search.agent`` so the runner's
+    generic per-stage metrics collector (``_collect_agent_metrics``) surfaces
+    search-stage fields into ``run_stage_log.jsonl``. It is NOT an Agent — it
+    exposes only the duck-typed hooks the runner reads: ``reset_call_metrics``,
+    ``last_cost_usd``, ``last_tokens``, and ``extra_log_fields``. Deliberately no
+    ``last_model_used`` (search is tool-backed, not LLM-backed), so the runner's
+    ``provider_used`` comes from ``extra_log_fields``, not the LLM seam. Safe
+    under the runner's sequential per-topic execution (one reset→run→collect at a
+    time). TASK-SEARCH-PROVIDER-FLIP condition 2."""
+
+    def __init__(self) -> None:
+        self.reset_call_metrics()
+
+    def reset_call_metrics(self) -> None:
+        self.last_cost_usd: float = 0.0
+        self.last_tokens: int = 0
+        self.extra_log_fields: dict = {}
+
+
 def make_researcher_search(web_search_tool: Any) -> Callable:
     """Build a researcher_search topic-stage closing over an injected
     `web_search_tool`. The tool object must expose
     `async def execute(query: str) -> str` returning a plain-text result
     block in V1's `N. title\\n   url\\n   snippet` shape.
     """
+
+    metrics = _SearchStageMetrics()
 
     @topic_stage_def(
         reads=("researcher_plan_queries",),
@@ -2078,8 +2100,40 @@ def make_researcher_search(web_search_tool: Any) -> Callable:
     async def researcher_search(
         topic_bus: TopicBus, run_bus: RunBusReadOnly
     ) -> TopicBus:
+        # Which provider will actually serve (accounts for the ollama→DDG
+        # missing-key fallback). Read once — the fallback condition is
+        # process-wide and constant within a run.
+        from src.tools.web_search import effective_search_provider
+
+        provider_used = effective_search_provider()
         queries = list(topic_bus.researcher_plan_queries or [])
+        query_strs = [
+            q.get("query", "")
+            for q in queries
+            if isinstance(q, dict) and q.get("query")
+        ]
+
+        def _emit(n_results_total: int) -> None:
+            # Loud search-stage markers → run_stage_log.jsonl. cost_usd is 0.0:
+            # ollama is flat-rate ($0 marginal); the retired Sonar path never
+            # captured per-call cost at this seam either (dies with Sonar — see
+            # TASK-SEARCH-COST-LOGGING).
+            metrics.last_cost_usd = 0.0
+            metrics.last_tokens = 0
+            metrics.extra_log_fields = {
+                "provider_used": provider_used,
+                "n_queries": len(query_strs),
+                "n_results_total": n_results_total,
+            }
+            if provider_used == "duckduckgo":
+                logger.warning(
+                    "researcher_search: provider_used=duckduckgo — ollama key "
+                    "missing, search DEGRADED to the free fallback. Set "
+                    "OLLAMA_API_KEY, or IW_SEARCH_PROVIDER=perplexity to revert."
+                )
+
         if not queries:
+            _emit(0)
             return topic_bus
 
         search_results: list[dict] = []
@@ -2122,8 +2176,17 @@ def make_researcher_search(web_search_tool: Any) -> Callable:
         deduped = _deduplicate_search_results(search_results)
         _enrich_url_dates(deduped)
 
+        # Distinct URLs handed to the assembler across all queries (deduped).
+        n_results_total = sum(
+            len(_URL_PATTERN.findall(sr.get("results", "") or "")) for sr in deduped
+        )
+        _emit(n_results_total)
+
         return topic_bus.model_copy(update={"researcher_search_results": deduped})
 
+    # Expose the marker on the stage callable so the runner's metrics collector
+    # picks it up (it reads `getattr(stage, "agent", None)`).
+    researcher_search.agent = metrics
     return researcher_search
 
 

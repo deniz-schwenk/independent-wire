@@ -326,6 +326,16 @@ dependencies = [
 
 `pydantic` is V2's contribution (RunBus + TopicBus models). `fastembed` + `scikit-learn` + `numpy` are the Brief 1 / Brief 2 contributions, raising the site-packages ceiling from 400 → 600 MB (rationale in `docs/ADR-COHERENCE-STAGE-DEPENDENCY-ADDENDUM-2026-05-15.md`). `trafilatura` and `aiohttp` serve the Hydration variant only. No langchain. No pytorch. Production variant runs without `trafilatura` / `aiohttp` if hydration is disabled.
 
+### External service dependencies
+
+API keys live in the environment, never in config (see Configuration above).
+
+- **OpenRouter** (`OPENROUTER_API_KEY`) — all LLM agent calls; per-stage cost metered into `run_stage_log.jsonl`.
+- **Ollama subscription** (`OLLAMA_API_KEY`, flat-rate, $0 marginal) — two production consumers:
+  - **`web_search` default** since **2026-07-06** (`IW_SEARCH_PROVIDER=ollama`, `src/tools/web_search.py`), replacing Perplexity/Sonar as a cost-driven interim bridge ahead of the registry endgame. Basis: `scratch/registry-shadow/BACKTEST-3ARM-REPORT.md` (QUALIFIED GO). One-line revert: `IW_SEARCH_PROVIDER=perplexity` (the Sonar path is retained). The parked `feat/registry-a2` registry backend is the eventual $0 replacement. If `OLLAMA_API_KEY` is absent the search path degrades to DuckDuckGo, logged loudly as `provider_used=duckduckgo` — never silent.
+  - **German translation** primary provider (`ollama-cloud`, step 1 of the `translate_de.py` fallback chain).
+  - **Watch item (unquantified limits):** the subscription now carries **translation + search** concurrently; monitor for 429/5xx and latency spikes on days both run. The `web_fetch` tool (`src/tools/web_fetch.py`) also targets this API but is registered-only/dormant — hydration fetch is trafilatura, not Ollama.
+
 ---
 
 ## What This Architecture Enables (Without Rewriting)
@@ -476,7 +486,7 @@ independent-wire/
 │   ├── schemas.py            # Strict-mode JSON schemas (OpenRouter response_format)
 │   └── tools/
 │       ├── registry.py
-│       ├── web_search.py     # web_search tool (Perplexity, Brave, DuckDuckGo)
+│       ├── web_search.py     # web_search tool (Ollama default, Perplexity, Brave, DuckDuckGo)
 │       ├── web_fetch.py
 │       └── file_ops.py
 ├── agents/                   # Agent prompts (two-file convention since S13)

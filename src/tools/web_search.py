@@ -11,8 +11,28 @@ from src.tools.registry import Tool
 
 logger = logging.getLogger(__name__)
 
-# Default provider, overridable via env var
-DEFAULT_PROVIDER = os.environ.get("IW_SEARCH_PROVIDER", "perplexity")
+# Default provider, overridable via env var.
+# Interim flip (2026-07-06, TASK-SEARCH-PROVIDER-FLIP): default is `ollama`
+# (flat-rate subscription, $0 marginal) instead of `perplexity` (Sonar) — a
+# cost-driven bridge ahead of the registry endgame; basis in
+# scratch/registry-shadow/BACKTEST-3ARM-REPORT.md (QUALIFIED GO).
+# ONE-LINE REVERT: set `IW_SEARCH_PROVIDER=perplexity` in the environment (the
+# perplexity/Sonar code path is retained deliberately as the revert target).
+DEFAULT_PROVIDER = os.environ.get("IW_SEARCH_PROVIDER", "ollama")
+
+
+def effective_search_provider(provider: str | None = None) -> str:
+    """The provider that will ACTUALLY serve a query, accounting for the one
+    silent-substitution path: ``ollama`` with no ``OLLAMA_API_KEY`` falls back
+    to DuckDuckGo (see :func:`_search_ollama`). Every other provider surfaces
+    its own missing-key error rather than swapping provider, so the configured
+    name is the served name. Used for loud ``provider_used`` logging on the
+    search stage — the fallback must never be silent (TASK-SEARCH-PROVIDER-FLIP
+    condition 2)."""
+    p = (provider or DEFAULT_PROVIDER).strip().lower()
+    if p == "ollama" and not os.environ.get("OLLAMA_API_KEY"):
+        return "duckduckgo"
+    return p
 
 
 def _format_results(query: str, items: list[dict[str, Any]], n: int) -> str:
@@ -199,7 +219,11 @@ async def _search_ollama(query: str, n: int) -> str:
     """Search via Ollama Web Search API. Needs OLLAMA_API_KEY."""
     api_key = os.environ.get("OLLAMA_API_KEY")
     if not api_key:
-        logger.warning("OLLAMA_API_KEY not set, falling back to DuckDuckGo")
+        logger.warning(
+            "web_search: OLLAMA_API_KEY missing — falling back to DuckDuckGo "
+            "(provider_used=duckduckgo). Set OLLAMA_API_KEY, or "
+            "IW_SEARCH_PROVIDER=perplexity to revert to Sonar."
+        )
         return await _search_duckduckgo(query, n)
 
     try:
@@ -269,12 +293,12 @@ async def web_search_handler(
     """Search the web using the configured or specified provider.
 
     Providers:
-    - perplexity: Via OpenRouter, uses OPENROUTER_API_KEY (default)
+    - ollama: Ollama Web Search API, uses OLLAMA_API_KEY (default since 2026-07-06)
+    - perplexity: Via OpenRouter, uses OPENROUTER_API_KEY (revert target)
     - brave: Brave Search API, uses BRAVE_API_KEY
     - grok: xAI Grok web search, uses XAI_API_KEY
     - grok_x: xAI Grok X/Twitter search, uses XAI_API_KEY
-    - ollama: Ollama Web Search API, uses OLLAMA_API_KEY
-    - duckduckgo: Free, no API key needed (fallback)
+    - duckduckgo: Free, no API key needed (ollama's missing-key fallback)
     """
     p = (provider or DEFAULT_PROVIDER).strip().lower()
     n = min(max(num_results, 1), 10)
@@ -295,7 +319,7 @@ web_search_tool = Tool(
     name="web_search",
     description=(
         "Search the web for current information. Returns results with titles, URLs, and summaries. "
-        "Supports multiple providers: perplexity (default), brave, grok, ollama, duckduckgo."
+        "Supports multiple providers: ollama (default), perplexity, brave, grok, duckduckgo."
     ),
     parameters={
         "type": "object",
@@ -313,7 +337,7 @@ web_search_tool = Tool(
                 "type": "string",
                 "description": (
                     "Search provider: perplexity, brave, grok, grok_x, ollama, duckduckgo "
-                    "(default: from IW_SEARCH_PROVIDER env or perplexity)"
+                    "(default: from IW_SEARCH_PROVIDER env or ollama)"
                 ),
                 "enum": ["perplexity", "brave", "grok", "grok_x", "ollama", "duckduckgo"],
             },
