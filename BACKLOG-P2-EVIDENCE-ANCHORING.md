@@ -53,3 +53,13 @@ citation test into the pipeline itself.
 ## Cost
 Verification itself: $0 (pure Python). Slight token increase from the evidence fields
 (quotes are short); expected well under +20% of the stage's ~$0.02/topic.
+
+## Scope-Erweiterung (2026-07-05, aus WP-OLLAMA-3a): Das Muster gilt auch für qa_analyze
+Die Stage-Probe ergab: die QA-Produktions-Baseline (GLM@xhigh, OpenRouter) trägt selbst
+~12 von Richtern angekreidete invented findings über 6 Items — Fabrikation ist dort kein
+Provider-Problem, sondern latent im Stage-Design. Dasselbe Anchoring-Rezept ist anwendbar:
+QA-Findings deklarieren das wörtliche Belegzitat VOR dem Verdikt; Python verifiziert
+fuzzy gegen Artikel+Quellen; Nicht-Verifizierbares wird `unverified` statt publiziert.
+Aktivierung: als zweite Stufe NACH dem P2-Anchoring (gleiches Gate-Muster, eigener Task).
+Beleg: scratch/ollama-probe/stages/REPORT-STAGES.md (invented-findings 12-13/6 Items
+auf BEIDEN Armen).
