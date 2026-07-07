@@ -92,3 +92,8 @@ docs/gravitational-assign/
 docs/gravitational-recalibration-*/
 docs/pre-cluster/
 docs/triple-stage-cutover/
+
+# Transient architect/CC workspace — never stage (multi-GB model artifacts
+# live here). NOTE: 19 legacy-tracked files under scratch/bias-eval/ remain
+# tracked (ignore only affects untracked); dedup vs docs/evals pending.
+scratch/
