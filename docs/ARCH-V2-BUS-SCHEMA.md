@@ -365,39 +365,50 @@ This is the single place where the five Vision dimensions are surfaced explicitl
 
 The V2 pipeline is a sequence of stages, each operating on either the RunBus or a single TopicBus. Stages declare their target Bus type explicitly. Each stage has a precondition (which slots must be populated before it runs) and a postcondition (which slots it populates).
 
+**Scope of these lists:** §5.1 and §5.2 enumerate exactly the `build_production_stages()` / `build_hydrated_stages()` output in `src/runner/stage_lists.py` — the run-scoped list then the topic-scoped list, using each stage's exact identifier (class-style names are agent-wrapper stages, snake_case names are deterministic Python stages); the runner-internal steps `instantiate_topic_buses`, `render`, and `finalize_run` bracket these lists but are not part of `build_*_stages`, so they are shown parenthetically and not numbered.
+
 ### 5.1 Stage list (production variant)
 
 ```
-RUN STAGES (operate on RunBus, run once per pipeline run)
-1. init_run                      — Construct RunBus with all slots at empty defaults; set run_id, run_date, run_variant="production"; populate max_produce from the --max-produce CLI flag (default 3)
-2. curator                       — Reads RSS feeds; populates curator_findings, curator_topics_unsliced, curator_topics
-3. editor                        — Reads curator_topics + previous_coverage; populates editor_assignments
-4. select_topics                 — Python: sort editor_assignments by priority desc, take top run_bus.max_produce; produces a list of selected assignments
-5. instantiate_topic_buses       — Python: for each selected assignment, the Pipeline Runner constructs a TopicBus with that assignment as editor_selected_topic; the Runner holds the collection (the RunBus does not)
+RUN STAGES (operate on RunBus, run once per pipeline run) — 8 stages
+1. init_run                       — Construct RunBus with all slots at empty defaults; set run_id, run_date, run_variant="production"; populate max_produce from the --max-produce CLI flag (default 3)
+2. fetch_findings                 — Python: load the day's fetched RSS findings (raw/{date}/feeds.json) into curator_findings
+3. pre_cluster_findings           — Python: deterministic Agglomerative pre-clustering of curator_findings into ~250 micro-clusters (pinned fastembed singleton)
+4. CuratorTopicDiscoveryStage     — LLM (DeepSeek V4 Flash): reads the compressed micro-clusters (top-K-by-centroid titles); emits ~10–20 superordinate topic names only (no per-finding assignments)
+5. gravitational_assign           — Python: assigns findings to the discovered topics by cosine threshold (T=0.55, PER_FINDING_CAP=3); populates curator_topics_unsliced
+6. assemble_curator_topics        — Python: assembles curator_topics from the assignments (preserves the Editor's curator_topics input shape)
+7. EditorStage                    — Reads curator_topics + previous_coverage; populates editor_assignments
+8. select_topics                  — Python: sort editor_assignments by priority desc, take top run_bus.max_produce; produces the list of selected assignments
 
-TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
-6. researcher_plan               — Reads editor_selected_topic; populates researcher_plan_queries
-7. researcher_search             — Python: executes queries via web_search; populates researcher_search_results
-8. researcher_assemble           — Reads researcher_search_results; populates researcher_assemble_dossier
-9. merge_sources                 — Python: hydration_pre_dossier is empty in production; copies research dossier sources into merged_sources_pre_renumber
-10. renumber_sources              — Python: assigns final src-NNN IDs; populates final_sources, id_rename_map
-10b. filter_media_actors_quoted   — Python: drops `type=media` entries from every source's actors_quoted list (outlets are sources, not policy actors); logs a per-topic tally
-10c. consolidate_actors           — Python: flattens final_sources[].actors_quoted[] into a deduped final_actors[] with stable actor-NNN IDs; logs a per-topic tally. Runs after the media filter so type=media never enters the flat list.
-11. normalize_pre_research        — Python: rewrites IDs in merged_preliminary_divergences and merged_coverage_gaps using id_rename_map
-12. perspective                   — Reads final_sources + final_actors + merged_preliminary_divergences + merged_coverage_gaps; populates perspective_clusters (with per-cluster actor_ids[]), perspective_missing_positions
-13. mirror_perspective_synced     — Python: empty-then-fill mirror. perspective_clusters_synced is empty; the stage fills it from perspective_clusters as a 1:1 copy.
-14. writer                        — Reads final_sources + perspective_clusters_synced + perspective_missing_positions + merged_coverage_gaps + editor_selected_topic; populates writer_article
-15. qa_analyze                    — Reads writer_article + final_sources + perspective_clusters_synced; populates qa_problems_found, qa_corrections, qa_corrected_article (only changed fields; empty otherwise), qa_divergences
-16. mirror_qa_corrected           — Python: empty-then-fill mirror. Fills empty fields of qa_corrected_article from writer_article. Final state: qa_corrected_article has all four fields populated.
-16b. consolidator                  — LLM (DeepSeek V4 Pro): reads perspective_missing_positions + merged_coverage_gaps; writes what_is_missing as `{voices_missing: [...], topics_missing: [...]}` — deduped consolidation classified per entry as missing voice or missing topic.
-17. compute_source_balance        — Python: aggregates final_sources into source_balance
-18. derive_mentioned_actors       — Python: collects every canonical actor absent from every cluster's actor_ids[] into a deterministically-grouped bracket; tier derived per actor from quotes (verbatim → stated, else position → reported, else mentioned). Writes `mentioned_actors` `{position_label, summary, actors_stated, actors_reported, actors_mentioned, actor_ids, source_ids, counts}`.
-19. bias_language                 — Reads qa_corrected_article; populates bias_language_findings, bias_reader_note
-20. compose_transparency_card     — Python: assembles transparency_card from editor_selected_topic.selection_reason (cleaned), the parent RunBus's run_id and run_date, qa_problems_found, qa_corrections, and writer_article (as article_original) if qa modified anything
+  (runner-internal, not part of build_production_stages: instantiate_topic_buses — for each selected assignment the Runner constructs a TopicBus with that assignment as editor_selected_topic and holds the collection; the RunBus does not)
 
-RUN STAGES (operate on RunBus again, run once after all topic stages complete)
-21. render                        — For each TopicBus the Runner holds, for each requested output (tp, mcp, rss): apply the corresponding render function with (topic_bus, run_bus); write to disk or return
-22. finalize_run                  — Python: write run_stage_log, write run_topic_manifest into run_bus (summary entries, not full TopicBus contents), close RunBus
+TOPIC STAGES (operate on each TopicBus, one execution per TopicBus) — 24 stages
+1. ResearcherPlanStage            — Reads editor_selected_topic; populates researcher_plan_queries
+2. researcher_search              — Python: executes queries via web_search; populates researcher_search_results
+3. ResearcherAssembleStage        — Reads researcher_search_results; populates researcher_assemble_dossier
+4. merge_sources                  — Python: hydration_pre_dossier is empty in production; copies research dossier sources into merged_sources_pre_renumber
+5. renumber_sources               — Python: assigns final src-NNN IDs; populates final_sources, id_rename_map
+6. filter_media_actors_quoted     — Python: drops `type=media` entries from every source's actors_quoted list (outlets are sources, not policy actors); logs a per-topic tally
+7. propagate_outlet_metadata      — Python: copies tier / editorial_independence / bias_note (and country / language / type) onto sources via lookup_outlet
+8. consolidate_actors             — Python: flattens final_sources[].actors_quoted[] into a deduped final_actors[] with stable actor-NNN IDs. Runs after the media filter so type=media never enters the flat list
+9. ResolveActorAliasesStage       — LLM (DeepSeek V4 Flash): merges duplicate person/org identities; writes canonical_actors + actor_alias_mapping
+10. partition_canonical_actors_by_evidence — Python: splits canonical_actors[] into three evidence-tiered pools
+11. normalize_pre_research        — Python: rewrites source IDs in merged_preliminary_divergences and merged_coverage_gaps to canonical src-NNN via id_rename_map
+12. PerspectiveStage              — Reads final_sources + final_actors + merged_preliminary_divergences + merged_coverage_gaps; populates perspective_clusters (with per-cluster actor_ids[]), perspective_missing_positions
+13. enrich_perspective_clusters   — Python: attaches pc-NNN ids, validated actor_ids, regions, languages, n_actors/n_sources/n_regions/n_languages to perspective_clusters
+14. mirror_perspective_synced     — Python: empty-then-fill mirror. perspective_clusters_synced is empty; the stage fills it from perspective_clusters as a 1:1 copy
+15. WriterStage                   — Reads final_sources + perspective_clusters_synced + perspective_missing_positions + merged_coverage_gaps + editor_selected_topic; populates writer_article
+16. QaAnalyzeStage                — Reads writer_article + final_sources + perspective_clusters_synced; populates qa_problems_found, qa_corrections, qa_corrected_article (only changed fields; empty otherwise), qa_divergences
+17. mirror_qa_corrected           — Python: empty-then-fill mirror. Fills empty fields of qa_corrected_article from writer_article. Final state: qa_corrected_article has all four fields populated
+18. ConsolidatorStage             — LLM (DeepSeek V4 Pro): reads perspective_missing_positions + merged_coverage_gaps; writes what_is_missing as `{voices_missing: [...], topics_missing: [...]}` — deduped consolidation classified per entry as missing voice or missing topic
+19. prune_unused_sources_and_clusters — Python: drops dead-weight sources and empty position clusters
+20. cleanup_stale_references      — Python: filters every actor, alias, perspective cluster, divergence, and mention reference left dangling by the prune
+21. compute_source_balance        — Python: aggregates final_sources into source_balance
+22. derive_mentioned_actors       — Python: collects every canonical actor absent from every cluster's actor_ids[] into a deterministically-grouped bracket; tier derived per actor from quotes (verbatim → stated, else position → reported, else mentioned). Writes `mentioned_actors` `{position_label, summary, actors_stated, actors_reported, actors_mentioned, actor_ids, source_ids, counts}`
+23. BiasLanguageStage             — Reads qa_corrected_article; populates bias_language_findings, bias_reader_note
+24. compose_transparency_card     — Python: assembles transparency_card from editor_selected_topic.selection_reason (cleaned), the parent RunBus's run_id and run_date, qa_problems_found, qa_corrections, and writer_article (as article_original) if qa modified anything
+
+  (runner-internal, not part of build_production_stages: render — for each TopicBus, apply the tp/mcp/rss render functions with (topic_bus, run_bus) and write to disk; finalize_run — write run_stage_log + run_topic_manifest into run_bus, close RunBus)
 ```
 
 ### 5.2 Stage list (hydrated variant)
@@ -407,45 +418,54 @@ Run stages diverge from production: hydrated adds `attach_hydration_urls_to_assi
 **Why `attach_hydration_urls_to_assignments` is a run-stage and sits where it does.** The stage walks `run_bus.editor_assignments` (every assignment, not just the top-N selection) and matches each to a Curator cluster by token overlap, lifting the cluster's URL list onto `assignment.raw_data.hydration_urls`. The operation is cross-topic by construction — it touches the full assignment list before topic-level work begins — and the data it produces (URL lists per assignment) must exist before `select_topics` runs so that the selected subset enters topic-stage execution with its hydration URLs already attached. Run-stage placement between Editor (which writes `editor_assignments`) and `select_topics` (which trims to `max_produce`) is the only point in the pipeline where (a) the full assignment list is visible and (b) downstream topic-level work has not yet split the work into per-TopicBus lanes. A topic-stage placement would force the runner to re-walk the full Curator output for each TopicBus instance — duplicate work and a violation of the run/topic phase boundary.
 
 ```
-RUN STAGES (operate on RunBus)
-1. init_run                                 — Same as production stage 1
-2. curator                                  — Same as production stage 2
-3. editor                                   — Same as production stage 3
-4. attach_hydration_urls_to_assignments     — Python: scans run_bus.editor_assignments; for each assignment, looks up cluster source URLs in run_bus.curator_topics_unsliced and writes them into editor_assignments[].raw_data.hydration_urls. Run-stage because it operates on the full editor_assignments list (cross-topic), not on a single TopicBus.
-5. select_topics                            — Same as production stage 4
-6. instantiate_topic_buses                  — Same as production stage 5
+RUN STAGES (operate on RunBus, run once per pipeline run) — 9 stages
+1. init_run                                 — Same as production run-stage 1 (run_variant="hydrated")
+2. fetch_findings                           — Same as production run-stage 2
+3. pre_cluster_findings                     — Same as production run-stage 3
+4. CuratorTopicDiscoveryStage               — Same as production run-stage 4
+5. gravitational_assign                     — Same as production run-stage 5
+6. assemble_curator_topics                  — Same as production run-stage 6
+7. EditorStage                              — Same as production run-stage 7
+8. attach_hydration_urls_to_assignments     — Python: scans run_bus.editor_assignments; for each assignment, looks up cluster source URLs in run_bus.curator_topics_unsliced and writes them into editor_assignments[].raw_data.hydration_urls. Run-stage because it operates on the full editor_assignments list (cross-topic), not on a single TopicBus (see note above)
+9. select_topics                            — Same as production run-stage 8
 
-TOPIC STAGES (operate on each TopicBus, one execution per TopicBus)
-7. hydration_fetch                — Python: aiohttp + trafilatura fetch of editor_selected_topic.raw_data.hydration_urls; populates hydration_fetch_results
-8. hydration_phase1               — Reads hydration_fetch_results (success-only filter); populates hydration_phase1_analyses
-9. hydration_phase2               — Reads hydration_phase1_analyses + hydration_fetch_results metadata; populates hydration_phase2_corpus
-10. assemble_hydration_dossier    — Python: combines phase1 + phase2 + fetch metadata into hydration_pre_dossier (sources carry hydrate-rsrc-NNN IDs)
-11. researcher_plan               — Reads editor_selected_topic + hydration_pre_dossier (gap-aware queries); populates researcher_plan_queries
-12. researcher_search             — Python: executes queries; populates researcher_search_results
-13. researcher_assemble           — Reads researcher_search_results; populates researcher_assemble_dossier (sources carry research-rsrc-NNN IDs)
-14. merge_sources                 — Python: concatenates hydration_pre_dossier.sources and researcher_assemble_dossier.sources; populates merged_sources_pre_renumber
-15. renumber_sources              — Python: assigns final src-NNN IDs; populates final_sources, id_rename_map
-15b. filter_media_actors_quoted   — Python: drops `type=media` entries from every source's actors_quoted list (outlets are sources, not policy actors); logs a per-topic tally
-15c. consolidate_actors           — Python: flattens final_sources[].actors_quoted[] into a deduped final_actors[] with stable actor-NNN IDs.
-16. normalize_pre_research        — Python: rewrites IDs in merged_preliminary_divergences and merged_coverage_gaps
-17. perspective                   — Same as production stage 12 (reads final_sources + final_actors)
-18. enrich_perspective_clusters   — Python: attaches pc-NNN ids, validated actor_ids, regions, languages, n_actors, n_sources, n_regions, n_languages to perspective_clusters
-19. mirror_perspective_synced     — Python: same as production stage 13. perspective_clusters_synced is empty; mirror does 1:1 fill from perspective_clusters.
-20. writer                        — Same as production stage 14
-21. qa_analyze                    — Same as production stage 15
-22. mirror_qa_corrected           — Same as production stage 16
-22b. consolidator                  — Same as production stage 16b
-23. compute_source_balance        — Same as production stage 17
-24. derive_mentioned_actors       — Same as production stage 18
-25. bias_language                 — Same as production stage 19
-26. compose_transparency_card     — Same as production stage 20
+  (runner-internal, not part of build_hydrated_stages: instantiate_topic_buses — as production)
 
-RUN STAGES (operate on RunBus again, run once after all topic stages complete)
-27. render                        — Same as production stage 21
-28. finalize_run                  — Same as production stage 22
+TOPIC STAGES (operate on each TopicBus, one execution per TopicBus) — 29 stages
+1. attach_hydration_urls          — Python: lifts editor_selected_topic.raw_data.hydration_urls onto the TopicBus hydration-URL slot for the fetch stage
+2. hydration_fetch                — Python: aiohttp + trafilatura fetch of the hydration URLs; populates hydration_fetch_results
+3. HydrationPhase1Stage           — Reads hydration_fetch_results (success-only filter); populates hydration_phase1_analyses (per-chunk extraction)
+4. HydrationPhase2Stage           — Reads hydration_phase1_analyses + hydration_fetch_results metadata; populates hydration_phase2_corpus (cross-corpus reducer)
+5. assemble_hydration_dossier     — Python: combines phase1 + phase2 + fetch metadata into hydration_pre_dossier (sources carry hydrate-rsrc-NNN IDs)
+6. ResearcherHydratedPlanStage    — Reads editor_selected_topic + hydration_pre_dossier (gap-aware queries); populates researcher_plan_queries. Hydrated replacement for production topic-stage 1 (ResearcherPlanStage)
+7. researcher_search              — Same as production topic-stage 2
+8. ResearcherAssembleStage        — Same as production topic-stage 3 (sources carry research-rsrc-NNN IDs)
+9. merge_sources                  — Python: concatenates hydration_pre_dossier.sources and researcher_assemble_dossier.sources into merged_sources_pre_renumber (differs from production, where hydration_pre_dossier is empty)
+10. renumber_sources              — Same as production topic-stage 5
+11. filter_media_actors_quoted    — Same as production topic-stage 6
+12. propagate_outlet_metadata     — Same as production topic-stage 7
+13. consolidate_actors            — Same as production topic-stage 8
+14. ResolveActorAliasesStage      — Same as production topic-stage 9
+15. partition_canonical_actors_by_evidence — Same as production topic-stage 10
+16. normalize_pre_research        — Same as production topic-stage 11
+17. PerspectiveStage              — Same as production topic-stage 12
+18. enrich_perspective_clusters   — Same as production topic-stage 13
+19. mirror_perspective_synced     — Same as production topic-stage 14
+20. WriterStage                   — Same as production topic-stage 15
+21. QaAnalyzeStage                — Same as production topic-stage 16
+22. mirror_qa_corrected           — Same as production topic-stage 17
+23. ConsolidatorStage             — Same as production topic-stage 18
+24. prune_unused_sources_and_clusters — Same as production topic-stage 19
+25. cleanup_stale_references      — Same as production topic-stage 20
+26. compute_source_balance        — Same as production topic-stage 21
+27. derive_mentioned_actors       — Same as production topic-stage 22
+28. BiasLanguageStage             — Same as production topic-stage 23
+29. compose_transparency_card     — Same as production topic-stage 24
+
+  (runner-internal, not part of build_hydrated_stages: render, finalize_run — as production)
 ```
 
-The hydrated variant adds one run-stage (`attach_hydration_urls_to_assignments`) between Editor and `select_topics`, plus the hydration topic stages (fetch + phase1 + phase2 + assemble) before the Researcher. All shared stages reuse the same agent calls and the same deterministic logic.
+The hydrated variant adds one run-stage (`attach_hydration_urls_to_assignments`) between Editor and `select_topics`, plus five hydration topic stages (`attach_hydration_urls` + `hydration_fetch` + `HydrationPhase1Stage` + `HydrationPhase2Stage` + `assemble_hydration_dossier`) before the Researcher. All shared stages reuse the same agent calls and the same deterministic logic.
 
 `mirror_perspective_synced` runs exactly once in both variants — after `enrich_perspective_clusters`, with `perspective_clusters_synced` empty, producing a 1:1 fill. The Consolidator owns the full post-QA "what is missing" surface; the prior delta-merge of cluster fields by a `perspective_sync` agent was removed in commit `3f59ab9` after measurement showed 0 substantial structural deltas across 50 invocations.
 
