@@ -535,6 +535,10 @@ Slots NOT in the public TP render: every internal slot, all `researcher_*` (proc
 
 The selection is implemented by filtering against the `visibility` schema metadata (Section 3.7), not by hand-listing slot names. The list above is documentary.
 
+### 6.2.1 Schema versioning
+
+Every published Topic Package carries an explicit `schema_version` string, stamped by `render_tp_public` from the single constant `TP_SCHEMA_VERSION` in `src/bus.py` (the TopicBus contract module) — it is a literal, not a Bus slot, so it does not participate in the visibility filter. It starts at `"1.0"`. Bump rule: increment the **minor** version for additive changes (a new field or slot that older consumers can safely ignore) and the **major** version for renames, removals, or semantic changes to existing fields. This wires directly into the slot-rename policy stated in Section 4B (e.g. `single_voices` → `mentioned_actors`, `qa_proposed_corrections` → `qa_corrections`): a slot rename is a breaking schema event — pre-rename `--reuse` snapshots require manual migration — and therefore forces a **major** bump. The pre-existing top-level `version` field is a legacy V1 TP-format marker, left untouched (additive-only) and not governed by this rule. Topic Packages published before this field are implicitly pre-1.0; backfilling them is a documented non-goal.
+
 ### 6.3 RSS render (example)
 
 ```python

@@ -17,6 +17,12 @@ from pydantic.fields import FieldInfo
 VisibilityTag = Literal["tp", "mcp", "rss", "internal"]
 MirrorGranularity = Literal["slot", "element"]
 
+# Topic Package schema version. Stamped into every published TP JSON by
+# `src/render.py:render_tp_public`. Defined here (the TopicBus contract module)
+# as the single source of truth. Bump rule: docs/ARCH-V2-BUS-SCHEMA.md §6.2.1 —
+# minor for additive fields, major for renames/removals/semantic changes.
+TP_SCHEMA_VERSION = "1.0"
+
 _ALLOWED_VISIBILITIES: frozenset[str] = frozenset({"tp", "mcp", "rss", "internal"})
 
 _MISSING = object()

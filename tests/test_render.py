@@ -10,6 +10,7 @@ import json
 import pytest
 
 from src.bus import (
+    TP_SCHEMA_VERSION,
     EditorAssignment,
     RunBus,
     SourceBalance,
@@ -208,6 +209,7 @@ def test_render_tp_public_shape():
 
     expected_keys = {
         "id",
+        "schema_version",
         "version",
         "status",
         "metadata",
@@ -229,6 +231,7 @@ def test_render_tp_public_shape():
     assert set(out) == expected_keys
 
     assert out["id"] == "tp-2026-04-30-001"
+    assert out["schema_version"] == "1.0"
     assert out["version"] == "1.0"
     assert out["status"] == "review"
     assert isinstance(out["metadata"], dict)
@@ -242,6 +245,22 @@ def test_render_tp_public_shape():
     assert isinstance(out["transparency"], dict)
     # No visualizations field — V2 omits it entirely
     assert "visualizations" not in out
+
+
+def test_render_tp_public_stamps_schema_version():
+    """Every published TP JSON carries an explicit `schema_version`, sourced
+    deterministically from the single constant in src/bus.py (survives a
+    JSON round-trip, as the on-disk publish path writes it)."""
+    rb = _make_runbus()
+    tb = _make_topicbus()
+    out = render_tp_public(tb, rb)
+
+    assert out["schema_version"] == TP_SCHEMA_VERSION == "1.0"
+    # Present after serialization — the runner writes json.dumps(render_tp_public(...)).
+    round_tripped = json.loads(json.dumps(out, ensure_ascii=False))
+    assert round_tripped["schema_version"] == "1.0"
+    # Additive: the legacy `version` field is untouched.
+    assert round_tripped["version"] == "1.0"
 
 
 def test_render_tp_public_metadata_fields():

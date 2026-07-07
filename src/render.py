@@ -21,6 +21,7 @@ from typing import Any, Literal
 from pydantic import BaseModel
 
 from src.bus import (
+    TP_SCHEMA_VERSION,
     EditorAssignment,
     RunBus,
     RunBusReadOnly,
@@ -160,6 +161,11 @@ def render_tp_public(
 
     output = {
         "id": assignment.id,
+        # Pipeline schema version (single source: src/bus.py). Distinct from
+        # the legacy `version` field below (V1 TP-format marker, unmanaged);
+        # `schema_version` is the archive-analysis contract with a documented
+        # bump rule (docs/ARCH-V2-BUS-SCHEMA.md §6.2.1).
+        "schema_version": TP_SCHEMA_VERSION,
         "version": "1.0",
         "status": "review",
         "metadata": metadata,
