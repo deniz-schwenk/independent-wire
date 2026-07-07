@@ -10,6 +10,7 @@ import asyncio
 import hashlib
 import json
 import logging
+import os
 import sys
 import time
 from datetime import datetime, timedelta, timezone
@@ -480,6 +481,111 @@ def _write_collector_log(log_dir: Path | None, run_date: str, line: str) -> None
         logger.warning("collector: could not write window log (%s)", exc)
 
 
+# --- Phase 3: MADLAD translation prewarm (flag-gated, OFF by default) ---------
+# Spreads the MADLAD load across the collector windows: each window translates
+# the non-Latin delta into the SAME cache the 06:00 sidecar reads, so 06:00 sees
+# cache hits instead of one ~24.7 GB translate-the-world peak. All translation
+# logic (backend, batching, cache format/path) is REUSED from
+# src.stages.translate_sidecar.translate_findings — this module only adds the
+# non-Latin selection and the flag gate on top.
+#
+# The env var + truthy contract mirror translate_sidecar.ENABLE_ENV / is_enabled
+# (the authoritative gate). We re-check the flag here WITHOUT importing the heavy
+# sidecar module, so a flag-OFF window pays no import cost and its store is
+# byte-identical to Phase 1.
+_TRANSLATE_ENABLE_ENV = "IW_CLUSTER_TRANSLATE"
+_TRANSLATE_TRUTHY = {"1", "true", "yes", "on", "y", "t"}
+
+
+def _translate_prewarm_enabled() -> bool:
+    return os.environ.get(_TRANSLATE_ENABLE_ENV, "").strip().lower() in _TRANSLATE_TRUTHY
+
+
+def _peak_rss_gb() -> float | None:
+    """Best-effort peak process RSS in GB. macOS ``ru_maxrss`` is bytes, Linux
+    KB. Returns ``None`` if unmeasurable (never raises)."""
+    try:
+        import resource
+
+        peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        scale = 1e9 if sys.platform == "darwin" else 1e6  # bytes vs KB
+        return round(peak / scale, 2)
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _non_latin_delta(delta: list[dict]) -> list[dict]:
+    """The findings in ``delta`` whose language maps to a NON-LATIN script — the
+    prewarm selection (spec: "non-Latin DELTA"). Script classification is
+    single-sourced from the sidecar's FLORES map (``*_Latn`` = Latin). English
+    and unmapped-language findings are excluded (the sidecar would pass them
+    through as native anyway)."""
+    from src.stages import translate_sidecar as ts
+
+    out: list[dict] = []
+    for f in delta:
+        lang = ts.norm_lang(f.get("language"))
+        if lang in ts.ENGLISH_LANGS:
+            continue
+        flores = ts.FLORES.get(lang)
+        if flores is not None and not flores.endswith("_Latn"):
+            out.append(f)
+    return out
+
+
+def _prewarm_translation_cache(
+    delta: list[dict], *, window_label: str, run_date: str, log_dir: Path | None
+) -> dict:
+    """Translate the non-Latin delta via the sidecar backend into the exact cache
+    the 06:00 sidecar reads (``translate_findings(persist=True)`` writes to
+    ``cache_path()`` — the model-named cache, or the ``IW_CLUSTER_TRANSLATE_CACHE``
+    override). Reuses the sidecar's backend/gate/cache verbatim.
+
+    Caller has already confirmed the flag is on. Best-effort: ``translate_findings``
+    never raises, and any unexpected error here degrades to a logged no-op — a
+    prewarm failure must never fail the fetch that already wrote the store."""
+    non_latin = _non_latin_delta(delta)
+    if not non_latin:
+        logger.info(
+            "collector prewarm [%s]: 0 non-Latin in %d-item delta — no-op",
+            window_label, len(delta),
+        )
+        return {"non_latin": 0, "fresh": 0, "cache_hit": 0, "wall_s": 0.0, "peak_rss_gb": None}
+
+    from src.stages import translate_sidecar as ts
+
+    t0 = time.time()
+    try:
+        _entries, stats = ts.translate_findings(non_latin, persist=True)
+    except Exception as exc:  # noqa: BLE001 — never fail the fetch on a prewarm error
+        logger.error(
+            "collector prewarm [%s]: translation failed (%s) — skipped",
+            window_label, exc,
+        )
+        return {"non_latin": len(non_latin), "fresh": 0, "cache_hit": 0, "error": str(exc)}
+    dt = time.time() - t0
+    peak = _peak_rss_gb()
+
+    result = {
+        "non_latin": len(non_latin),
+        "fresh": stats.get("n_translated_fresh", 0),      # findings translated this window
+        "cache_hit": stats.get("n_translated_cache_hit", 0),
+        "native_fallback": stats.get("n_native_fallback", 0),
+        "cache_path": stats.get("cache_path"),
+        "wall_s": round(dt, 1),
+        "peak_rss_gb": peak,
+    }
+    line = (
+        f"  prewarm [{window_label}]: non_latin={len(non_latin)} "
+        f"findings_fresh={result['fresh']} cache_hit={result['cache_hit']} "
+        f"native={result['native_fallback']} wall={dt:.1f}s "
+        f"peak_rss={peak}GB cache={result['cache_path']}"
+    )
+    logger.info(line.strip())
+    _write_collector_log(log_dir, run_date, line)
+    return result
+
+
 async def collect_window(
     *,
     raw_root: Path,
@@ -528,6 +634,20 @@ async def collect_window(
     )
     logger.info("collector window: %s", line)
     _write_collector_log(log_dir, run_date, line)
+
+    # Phase 3 — MADLAD prewarm of the non-Latin delta into the cache the 06:00
+    # sidecar reads. Flag-gated: when IW_CLUSTER_TRANSLATE is unset (production
+    # default) this branch is skipped entirely — no heavy import, and the store
+    # already written above stays byte-identical to Phase 1. Prewarm only writes
+    # the SEPARATE translation cache; it never touches the store.
+    if _translate_prewarm_enabled() and appended:
+        result["prewarm"] = _prewarm_translation_cache(
+            merged[len(existing):],
+            window_label=window_label,
+            run_date=run_date,
+            log_dir=log_dir,
+        )
+
     return result
 
 

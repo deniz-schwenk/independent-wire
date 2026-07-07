@@ -264,3 +264,73 @@ def test_collect_window_cold_start_file_is_single_fetch_shape(ff, tmp_path):
     stripped = [{k: v for k, v in d.items() if k != "first_seen"} for d in store]
     assert stripped == fresh
     assert all(d["first_seen"] == NOW.isoformat() for d in store)
+
+
+# ---------------------------------------------------------------------------
+# Phase 3 — MADLAD translation prewarm (flag-gated)
+# ---------------------------------------------------------------------------
+
+
+def test_non_latin_delta_selects_non_latin_scripts_only(ff):
+    """Selection uses the sidecar FLORES map: non-Latin script in, Latin / English
+    / unmapped out. Single-sourced classification (no duplicated language table)."""
+    delta = [
+        _finding("english", "http://x/en", lang="en"),   # excluded (English)
+        _finding("deutsch", "http://x/de", lang="de"),    # excluded (deu_Latn)
+        _finding("arabic", "http://x/ar", lang="ar"),     # included (arb_Arab)
+        _finding("bengali", "http://x/bn", lang="bn"),    # included (ben_Beng)
+        _finding("russian", "http://x/ru", lang="ru"),    # included (rus_Cyrl)
+        _finding("nepali", "http://x/ne", lang="ne"),     # included (npi_Deva)
+        _finding("klingon", "http://x/tlh", lang="tlh"),  # excluded (no FLORES)
+    ]
+    got = {f["title"] for f in ff._non_latin_delta(delta)}
+    assert got == {"arabic", "bengali", "russian", "nepali"}
+
+
+def test_prewarm_skipped_when_flag_off(ff, tmp_path, monkeypatch):
+    """Flag unset (production default) → no prewarm key in the result, and the
+    store is written exactly as in Phase 1 (prewarm never touches it)."""
+    monkeypatch.delenv("IW_CLUSTER_TRANSLATE", raising=False)
+    r = asyncio.run(
+        ff.collect_window(
+            raw_root=tmp_path, run_date="2026-07-08", now_utc=NOW,
+            window_label="14:00", log_dir=tmp_path / "logs",
+            fetch_fn=_fake_fetch([_finding("arabic", "http://x/ar", lang="ar")]),
+        )
+    )
+    assert "prewarm" not in r
+    store = json.loads((tmp_path / "2026-07-08" / "feeds.json").read_text())
+    assert [d["title"] for d in store] == ["arabic"]
+
+
+def test_prewarm_flag_on_no_backend_is_graceful(ff, tmp_path, monkeypatch):
+    """Flag on but no CT2 backend available → prewarm runs, selects the non-Latin
+    delta, degrades to native (fresh=0) without crashing, and writes only under
+    the isolated scratch cache — never the real output/_translate_cache."""
+    from src.stages import translate_sidecar as ts
+
+    monkeypatch.setenv("IW_CLUSTER_TRANSLATE", "1")
+    monkeypatch.delenv("IW_CLUSTER_TRANSLATE_CT2_DIR", raising=False)
+    cache = tmp_path / "cache" / "madlad.json"
+    monkeypatch.setenv("IW_CLUSTER_TRANSLATE_CACHE", str(cache))
+    ts._reset_backend_for_tests()  # clear any singleton from another test
+
+    r = asyncio.run(
+        ff.collect_window(
+            raw_root=tmp_path, run_date="2026-07-08", now_utc=NOW,
+            window_label="14:00", log_dir=tmp_path / "logs",
+            fetch_fn=_fake_fetch([
+                _finding("arabic", "http://x/ar", lang="ar"),
+                _finding("deutsch", "http://x/de", lang="de"),  # Latin → not selected
+            ]),
+        )
+    )
+    ts._reset_backend_for_tests()
+
+    assert "prewarm" in r
+    pw = r["prewarm"]
+    assert pw["non_latin"] == 1        # only the Arabic finding selected
+    assert pw["fresh"] == 0            # no backend → native fallback, nothing translated
+    # store is unaffected by prewarm (both findings present)
+    store = json.loads((tmp_path / "2026-07-08" / "feeds.json").read_text())
+    assert {d["title"] for d in store} == {"arabic", "deutsch"}
