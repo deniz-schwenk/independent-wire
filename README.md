@@ -4,7 +4,7 @@
 
 **[→ Read the latest dossiers at independent-wire.org](https://independent-wire.org)**
 
-Independent Wire is an open-source AI pipeline that produces multi-perspective news dossiers with full source transparency. It scans 66 sources across 11 language streams, identifies where coverage diverges, documents which voices are missing, and publishes everything — including its own biases and limitations.
+Independent Wire is an open-source AI pipeline that produces multi-perspective news dossiers with full source transparency. It scans 80 sources across 11 language streams, identifies where coverage diverges, documents which voices are missing, and publishes everything — including its own biases and limitations.
 
 No publisher. No engagement algorithm. No hidden editorial line. Every decision the system makes is traceable, auditable, and open.
 
@@ -32,7 +32,7 @@ The pipeline runs on two levels. **Run-level** stages select the day's topics; *
 
 ```mermaid
 flowchart TD
-    RSS["RSS fetch<br/>66 sources · 11 language streams · ~1,200 findings"]:::det
+    RSS["RSS fetch<br/>80 sources · 11 language streams · ~1,200 findings"]:::det
     RSS --> RUN
 
     subgraph RUN["RUN LEVEL · select the day's topics"]
@@ -79,9 +79,10 @@ Each stage uses the cheapest model that does its job well. Cheap, broad work (cl
 | Role | Model |
 |---|---|
 | Curator · Researcher-assemble · Actor resolution | DeepSeek V4 Flash |
-| Hydration extraction · Consolidator | DeepSeek V4 Pro |
-| Editor · Researcher-plan · Perspective · Writer · Bias | Claude Opus 4.6 |
-| QA / Fact-Check | Claude Sonnet 4.6 |
+| Hydration extraction · Bias extraction · Consolidator | DeepSeek V4 Pro |
+| Editor · Writer · QA / Fact-Check · Hydration synthesis | GLM-5.2 |
+| Perspective | Claude Sonnet 5 |
+| Researcher-plan · Bias judge | Claude Opus 4.6 |
 
 All models are called through OpenRouter. **Every agent's prompt lives in the repo under `agents/`** — readable, forkable, and under the same license as the code.
 
@@ -99,8 +100,8 @@ Operational and publishing daily at [independent-wire.org](https://independent-w
 
 | Component | Status |
 |---|---|
-| Pipeline (hydrated, 12 agents, 4 models) | ✅ Operational |
-| Source base (66 feeds, 11 language streams) | ✅ Live |
+| Pipeline (hydrated, 12 agents, 5 models) | ✅ Operational |
+| Source base (80 feeds, 11 language streams) | ✅ Live |
 | Topic Package rendering (self-contained HTML) | ✅ Live |
 | Publication website | ✅ [independent-wire.org](https://independent-wire.org) |
 | Bilingual edition (English + German) | ✅ Live — [independent-wire.org/de](https://independent-wire.org/de/) |
