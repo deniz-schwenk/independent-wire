@@ -1,11 +1,15 @@
-"""Clustering translate-to-English sidecar — NLLB-local, isolated, flagged.
+"""Clustering translate-to-English sidecar — MADLAD-local, isolated, flagged.
 
 Authoritative reference: TASK-CLUSTER-TRANSLATE-SIDECAR.md.
 Empirical basis: scratch/feed-batch1/REPORT-TRANSLATE-EVAL.md
 (TASK-CLUSTER-TRANSLATE-EVAL) — embedding an English translation of each
 finding closes the genuine embedding-bridge gap (Bengali 0 → 5-6 attach) with
 no regression on the working languages (ar/ne hold and sharpen), and a local
-NLLB-200 matches reliable translation on attach at zero per-run cost.
+translation model matches reliable translation on attach at zero per-run cost.
+The production backend is MADLAD-400-3B (Apache-2.0, CT2-int8, sentencepiece
+``<2en>`` source-prefix); NLLB-200 (CC-BY-NC) was the eval-time model and is no
+longer used. Integration spec + enablement gates:
+``scratch/MADLAD-INTEGRATION-REQUIREMENTS.md``.
 
 What this stage does
 --------------------
@@ -37,7 +41,7 @@ behaviour byte-for-byte.
 
 Determinism + cache
 -------------------
-NLLB runs with a fixed beam (``num_beams=4``, ``do_sample=False``) so output is
+MADLAD runs with a fixed beam (``beam_size=4``, no sampling) so output is
 reproducible. A persistent JSON cache keyed by a content-hash of
 ``(model, lang, title, summary)`` means each unique finding is translated once;
 repeats across days are free and clustering stays reproducible. Cache path:
@@ -54,12 +58,16 @@ also pass through as native (no-op).
 Runtime / dependencies
 ----------------------
 The translation backend is an **optional, lazily-imported** dependency — the
-default-off path adds nothing to the pinned dependency set. Backend resolution
-prefers a lean CTranslate2 NLLB model (``IW_CLUSTER_TRANSLATE_CT2_DIR`` pointing
-at a converted model) and falls back to ``transformers`` + ``torch`` (the
-runtime the eval used). The pinned fastembed embedder is untouched — the sidecar
-only feeds English text INTO it. One backend instance per process (module
-singleton) keeps the one-runtime-per-process invariant.
+default-off path adds nothing to the pinned dependency set. The runtime is a lean
+CTranslate2 MADLAD-400 model (``IW_CLUSTER_TRANSLATE_CT2_DIR``) tokenised with
+**sentencepiece only** — no torch, no transformers at runtime (those are
+conversion-only; proven byte-identical, see
+``scratch/MADLAD-INTEGRATION-REQUIREMENTS.md`` §2-§3). Install via the optional
+``multilingual`` extra (``ctranslate2`` + ``sentencepiece``). When no CT2 dir or
+tokenizer is available the backend resolves to ``None`` and findings degrade to
+native text. The pinned fastembed embedder is untouched — the sidecar only feeds
+English text INTO it. One backend instance per process (module singleton) keeps
+the one-runtime-per-process invariant.
 """
 
 from __future__ import annotations
@@ -81,16 +89,24 @@ _REPO = Path(__file__).resolve().parents[2]
 ENABLE_ENV = "IW_CLUSTER_TRANSLATE"
 CACHE_ENV = "IW_CLUSTER_TRANSLATE_CACHE"
 CT2_DIR_ENV = "IW_CLUSTER_TRANSLATE_CT2_DIR"
+SPIECE_ENV = "IW_CLUSTER_TRANSLATE_SPIECE"
 
-MODEL_NAME = "facebook/nllb-200-distilled-600M"
-"""NLLB-200 distilled 600M — the model validated in the translate eval. Local,
+MODEL_NAME = "google/madlad400-3b-mt"
+"""MADLAD-400-3B (Apache-2.0) — the production translation model. Local,
 deterministic, no API key. Pinned here so a model change explicitly invalidates
-the content-hash cache (the model name is part of the cache key)."""
+the content-hash cache (the model name is part of the cache key). The prior
+NLLB-200 (CC-BY-NC) is retired; this swap turns every stale NLLB cache entry into
+a clean miss (``content_key`` hashes MODEL_NAME) and changes the on-disk cache
+file name derived by ``cache_path()`` — no manual purge needed."""
 
-TARGET_FLORES = "eng_Latn"
+# MADLAD sets the English target via this source-side prefix piece (a native
+# 256000-vocab SentencePiece piece, id 38); there is no NLLB-style target_prefix.
+TARGET_PREFIX = "<2en>"
+EOS_PIECE = "</s>"   # add_source_eos:false → the </s> must come from tokenization
+PAD_PIECE = "<pad>"  # dropped on decode alongside </s>
 NUM_BEAMS = 4
 MAX_LENGTH = 200
-TRANSLATE_BATCH = 16
+TRANSLATE_BATCH = 16  # outer chunk — bounds each CT2 translate_batch call (RAM headroom)
 MAX_ATTEMPTS_NOTE = "no retry — deterministic beam; fall back to native on error"
 
 _TRUTHY = {"1", "true", "yes", "on", "y", "t"}
@@ -102,6 +118,10 @@ ENGLISH_LANGS = frozenset({"en", "eng", "english", "en-us", "en-gb", "en_us", "e
 # production source pool (en/de/es/fr/it/pt/ru/tr/vi + ko/fa/he/id/zh) and the
 # batch-1 diversification languages (ar/bn/ne/sw/uz/zu/zh) plus common
 # neighbours. A language absent from this map falls back to native (logged once).
+# For the MADLAD backend the FLORES *values* are unused — MADLAD auto-detects the
+# source and always targets ``<2en>``; this dict is kept purely as the
+# translate-vs-native language GATE (its KEYS decide which languages are
+# attempted, spec §2).
 FLORES: dict[str, str] = {
     # production pool
     "de": "deu_Latn",
@@ -272,78 +292,89 @@ class _Backend(Protocol):
         ...
 
 
-class _CTranslate2NLLB:
-    """Lean CTranslate2 NLLB backend — preferred when a converted model dir is
-    available (``IW_CLUSTER_TRANSLATE_CT2_DIR``) and ``ctranslate2`` +
-    ``transformers`` (tokenizer only) are importable. Lower footprint than full
-    torch inference."""
+# SentencePiece tokenization (transformers-free). Proven byte-identical to the
+# transformers AutoTokenizer path across the whole production + batch-1 language
+# pool (spec §2-§3); the frozen reference lives in
+# tests/data/madlad_tok_equiv_golden.json and is checked by
+# tests/test_madlad_tok_equiv.py without importing torch/transformers.
+def _madlad_encode(sp: Any, text: str) -> list[str]:
+    """Encode one source string to MADLAD input pieces: the ``<2en>`` target
+    prefix on the source + the ``</s>`` eos piece (config has
+    ``add_source_eos:false`` so eos must come from tokenization)."""
+    return sp.encode(TARGET_PREFIX + " " + text, out_type=str) + [EOS_PIECE]
 
-    name = "ctranslate2"
+
+def _madlad_decode(sp: Any, pieces: Sequence[str]) -> str:
+    """Decode hypothesis pieces to text: drop ``</s>`` / ``<pad>``, map the
+    remaining pieces to ids, then ``sp.decode``."""
+    ids = [sp.piece_to_id(p) for p in pieces if p not in (EOS_PIECE, PAD_PIECE)]
+    return sp.decode(ids).strip()
+
+
+def _resolve_spiece_path(model_dir: str) -> Optional[Path]:
+    """Locate the MADLAD SentencePiece model. Order: ``IW_CLUSTER_TRANSLATE_SPIECE``
+    env → ``spiece.model`` inside the CT2 model dir (the recommended
+    one-dir-to-distribute convention, spec §4). Returns ``None`` if neither
+    exists — ``spiece.model`` is NOT part of the CT2 dir by default and must be
+    staged separately (the top deployment gap)."""
+    override = os.environ.get(SPIECE_ENV, "").strip()
+    if override:
+        p = Path(override)
+        return p if p.exists() else None
+    if model_dir:
+        p = Path(model_dir) / "spiece.model"
+        if p.exists():
+            return p
+    return None
+
+
+class _CTranslate2MADLAD:
+    """Lean, transformers-free CTranslate2 MADLAD-400 backend.
+
+    Drives a CT2-int8 ``google/madlad400-3b-mt`` model tokenised with
+    **sentencepiece only** — no torch, no transformers at runtime (those are
+    conversion-only, spec §3). MADLAD sets the English target via the ``<2en>``
+    *source*-prefix piece and auto-detects the source language, so there is no
+    NLLB-style ``target_prefix``; ``src_flores`` is accepted for interface parity
+    but unused (the ``FLORES`` dict still GATES which languages are attempted).
+    Deterministic beam decode (``beam_size=NUM_BEAMS``, no sampling)."""
+
+    name = "ctranslate2-madlad"
 
     def __init__(self, model_dir: str) -> None:
-        import ctranslate2  # noqa: F401 — availability probe
-        from transformers import AutoTokenizer
+        import ctranslate2
+        import sentencepiece
 
-        self._ct2 = __import__("ctranslate2")
-        self._translator = self._ct2.Translator(model_dir, device="cpu")
-        self._tok = AutoTokenizer.from_pretrained(MODEL_NAME)
+        spiece = _resolve_spiece_path(model_dir)
+        if spiece is None:
+            raise FileNotFoundError(
+                f"MADLAD backend: spiece.model not found — set {SPIECE_ENV} or "
+                f"place spiece.model in the CT2 dir ({model_dir!r})"
+            )
+        self._sp = sentencepiece.SentencePieceProcessor()
+        self._sp.Load(str(spiece))
+        self._translator = ctranslate2.Translator(model_dir, device="cpu")
 
     def translate(self, texts: Sequence[str], src_flores: str) -> list[str]:
-        self._tok.src_lang = src_flores
-        out: list[str] = []
-        for i in range(0, len(texts), TRANSLATE_BATCH):
-            chunk = list(texts[i : i + TRANSLATE_BATCH])
-            tokenised = [
-                self._tok.convert_ids_to_tokens(self._tok.encode(t)) for t in chunk
-            ]
+        # src_flores unused — MADLAD keys on the <2en> target prefix only.
+        out: list[str] = [""] * len(texts)
+        # MADLAD hallucinates on empty input ("" -> "2000s in music"), so we
+        # translate only non-empty segments and leave "" for the rest. (The
+        # finding-level empty_text guard skips a finding only when BOTH its title
+        # and summary are empty; a finding with one empty segment still lands
+        # here, so this per-segment guard is required.)
+        idx = [i for i, t in enumerate(texts) if (t or "").strip()]
+        for b in range(0, len(idx), TRANSLATE_BATCH):
+            batch_idx = idx[b : b + TRANSLATE_BATCH]
+            tokenised = [_madlad_encode(self._sp, texts[i]) for i in batch_idx]
             results = self._translator.translate_batch(
                 tokenised,
-                target_prefix=[[TARGET_FLORES]] * len(tokenised),
                 beam_size=NUM_BEAMS,
                 max_decoding_length=MAX_LENGTH,
+                max_batch_size=TRANSLATE_BATCH,
             )
-            for r in results:
-                toks = r.hypotheses[0]
-                if toks and toks[0] == TARGET_FLORES:
-                    toks = toks[1:]
-                out.append(self._tok.decode(self._tok.convert_tokens_to_ids(toks)).strip())
-        return out
-
-
-class _TransformersNLLB:
-    """transformers + torch NLLB backend — the runtime the eval used. Heavier
-    than CTranslate2 but already proven. Deterministic (num_beams=4,
-    do_sample=False)."""
-
-    name = "transformers"
-
-    def __init__(self) -> None:
-        import torch
-        from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-
-        self._torch = torch
-        self._tok = AutoTokenizer.from_pretrained(MODEL_NAME)
-        self._model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
-        self._model.eval()
-        self._bos = self._tok.convert_tokens_to_ids(TARGET_FLORES)
-
-    def translate(self, texts: Sequence[str], src_flores: str) -> list[str]:
-        self._tok.src_lang = src_flores
-        out: list[str] = []
-        for i in range(0, len(texts), TRANSLATE_BATCH):
-            chunk = list(texts[i : i + TRANSLATE_BATCH])
-            enc = self._tok(
-                chunk, return_tensors="pt", padding=True, truncation=True, max_length=128
-            )
-            with self._torch.no_grad():
-                gen = self._model.generate(
-                    **enc,
-                    forced_bos_token_id=self._bos,
-                    num_beams=NUM_BEAMS,
-                    do_sample=False,
-                    max_length=MAX_LENGTH,
-                )
-            out.extend(t.strip() for t in self._tok.batch_decode(gen, skip_special_tokens=True))
+            for i, r in zip(batch_idx, results):
+                out[i] = _madlad_decode(self._sp, r.hypotheses[0])
         return out
 
 
@@ -353,9 +384,11 @@ _BACKEND: Any = "__unprobed__"
 
 
 def _resolve_backend() -> Optional[_Backend]:
-    """Resolve the translation backend once per process: CTranslate2 (preferred)
-    → transformers → None. ``None`` means no runtime is installed; callers must
-    fall back to native text. Never raises."""
+    """Resolve the translation backend once per process: CTranslate2 MADLAD when
+    a converted model dir (``IW_CLUSTER_TRANSLATE_CT2_DIR``), ``sentencepiece``
+    and the ``spiece.model`` tokenizer are available, else ``None``. ``None``
+    means callers fall back to native text (graceful degradation). There is no
+    transformers/torch runtime path — those are conversion-only. Never raises."""
     global _BACKEND
     if _BACKEND != "__unprobed__":
         return _BACKEND
@@ -363,24 +396,20 @@ def _resolve_backend() -> Optional[_Backend]:
     ct2_dir = os.environ.get(CT2_DIR_ENV, "").strip()
     if ct2_dir:
         try:
-            _BACKEND = _CTranslate2NLLB(ct2_dir)
-            logger.info("translate_sidecar: backend=ctranslate2 (%s)", ct2_dir)
+            _BACKEND = _CTranslate2MADLAD(ct2_dir)
+            logger.info("translate_sidecar: backend=ctranslate2-madlad (%s)", ct2_dir)
             return _BACKEND
-        except Exception as exc:  # noqa: BLE001 — any import/load failure → next backend
-            logger.warning("translate_sidecar: ctranslate2 backend unavailable (%s)", exc)
+        except Exception as exc:  # noqa: BLE001 — any import/load failure → native
+            logger.warning("translate_sidecar: MADLAD backend unavailable (%s)", exc)
 
-    try:
-        _BACKEND = _TransformersNLLB()
-        logger.info("translate_sidecar: backend=transformers (%s)", MODEL_NAME)
-        return _BACKEND
-    except Exception as exc:  # noqa: BLE001
-        logger.warning(
-            "translate_sidecar: no translation backend available (%s); "
-            "findings will embed native text (graceful degradation)",
-            exc,
-        )
-        _BACKEND = None
-        return None
+    logger.warning(
+        "translate_sidecar: no translation backend available (set %s to a CT2 "
+        "MADLAD dir and install the 'multilingual' extra); findings will embed "
+        "native text (graceful degradation)",
+        CT2_DIR_ENV,
+    )
+    _BACKEND = None
+    return None
 
 
 def _reset_backend_for_tests() -> None:
@@ -592,6 +621,7 @@ __all__ = [
     "CACHE_ENV",
     "CT2_DIR_ENV",
     "ENABLE_ENV",
+    "SPIECE_ENV",
     "FLORES",
     "MODEL_NAME",
     "cache_path",
