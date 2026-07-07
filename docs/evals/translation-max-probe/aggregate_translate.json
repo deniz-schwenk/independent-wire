@@ -1,0 +1,253 @@
+{
+ "per_tp": [
+  {
+   "tp_id": "tp-2026-07-04-001",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "fidelity": 4.95,
+     "terminology": 4.933,
+     "naturalness": 4.967
+    },
+    "candidate": {
+     "fidelity": 4.917,
+     "terminology": 4.883,
+     "naturalness": 4.833
+    }
+   },
+   "errors": {
+    "baseline": {
+     "mistranslation": 0,
+     "omission": 0,
+     "addition": 0,
+     "wrong_language": 0
+    },
+    "candidate": {
+     "mistranslation": 1,
+     "omission": 0,
+     "addition": 2,
+     "wrong_language": 1
+    }
+   },
+   "segment_wtl": {
+    "cand_win": 3,
+    "tie": 19,
+    "cand_loss": 8
+   },
+   "n_segments": 30
+  },
+  {
+   "tp_id": "tp-2026-07-04-002",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "fidelity": 4.917,
+     "terminology": 4.983,
+     "naturalness": 4.85
+    },
+    "candidate": {
+     "fidelity": 5.0,
+     "terminology": 4.967,
+     "naturalness": 4.917
+    }
+   },
+   "errors": {
+    "baseline": {
+     "mistranslation": 1,
+     "omission": 4,
+     "addition": 0,
+     "wrong_language": 0
+    },
+    "candidate": {
+     "mistranslation": 0,
+     "omission": 0,
+     "addition": 0,
+     "wrong_language": 0
+    }
+   },
+   "segment_wtl": {
+    "cand_win": 6,
+    "tie": 21,
+    "cand_loss": 3
+   },
+   "n_segments": 30
+  },
+  {
+   "tp_id": "tp-2026-07-04-003",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "fidelity": 4.983,
+     "terminology": 5.0,
+     "naturalness": 4.983
+    },
+    "candidate": {
+     "fidelity": 5.0,
+     "terminology": 4.95,
+     "naturalness": 4.933
+    }
+   },
+   "errors": {
+    "baseline": {
+     "mistranslation": 1,
+     "omission": 0,
+     "addition": 0,
+     "wrong_language": 0
+    },
+    "candidate": {
+     "mistranslation": 0,
+     "omission": 0,
+     "addition": 0,
+     "wrong_language": 0
+    }
+   },
+   "segment_wtl": {
+    "cand_win": 2,
+    "tie": 25,
+    "cand_loss": 3
+   },
+   "n_segments": 30
+  },
+  {
+   "tp_id": "tp-2026-07-05-001",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "fidelity": 4.983,
+     "terminology": 4.917,
+     "naturalness": 4.917
+    },
+    "candidate": {
+     "fidelity": 4.967,
+     "terminology": 4.95,
+     "naturalness": 4.883
+    }
+   },
+   "errors": {
+    "baseline": {
+     "mistranslation": 1,
+     "omission": 0,
+     "addition": 0,
+     "wrong_language": 0
+    },
+    "candidate": {
+     "mistranslation": 0,
+     "omission": 0,
+     "addition": 2,
+     "wrong_language": 0
+    }
+   },
+   "segment_wtl": {
+    "cand_win": 4,
+    "tie": 21,
+    "cand_loss": 5
+   },
+   "n_segments": 30
+  },
+  {
+   "tp_id": "tp-2026-07-05-002",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "fidelity": 4.917,
+     "terminology": 4.967,
+     "naturalness": 4.817
+    },
+    "candidate": {
+     "fidelity": 4.833,
+     "terminology": 4.9,
+     "naturalness": 4.467
+    }
+   },
+   "errors": {
+    "baseline": {
+     "mistranslation": 0,
+     "omission": 0,
+     "addition": 2,
+     "wrong_language": 3
+    },
+    "candidate": {
+     "mistranslation": 0,
+     "omission": 0,
+     "addition": 0,
+     "wrong_language": 10
+    }
+   },
+   "segment_wtl": {
+    "cand_win": 3,
+    "tie": 21,
+    "cand_loss": 6
+   },
+   "n_segments": 30
+  },
+  {
+   "tp_id": "tp-2026-07-05-003",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "fidelity": 5.0,
+     "terminology": 5.0,
+     "naturalness": 4.817
+    },
+    "candidate": {
+     "fidelity": 4.917,
+     "terminology": 4.933,
+     "naturalness": 4.95
+    }
+   },
+   "errors": {
+    "baseline": {
+     "mistranslation": 0,
+     "omission": 0,
+     "addition": 0,
+     "wrong_language": 0
+    },
+    "candidate": {
+     "mistranslation": 2,
+     "omission": 0,
+     "addition": 2,
+     "wrong_language": 0
+    }
+   },
+   "segment_wtl": {
+    "cand_win": 5,
+    "tie": 21,
+    "cand_loss": 4
+   },
+   "n_segments": 30
+  }
+ ],
+ "overall": {
+  "means": {
+   "baseline": {
+    "fidelity": 4.958,
+    "terminology": 4.967,
+    "naturalness": 4.892
+   },
+   "candidate": {
+    "fidelity": 4.939,
+    "terminology": 4.93,
+    "naturalness": 4.83
+   }
+  },
+  "errors": {
+   "baseline": {
+    "mistranslation": 3,
+    "omission": 4,
+    "addition": 2,
+    "wrong_language": 3
+   },
+   "candidate": {
+    "mistranslation": 3,
+    "omission": 0,
+    "addition": 6,
+    "wrong_language": 11
+   }
+  },
+  "segment_wtl": {
+   "cand_win": 23,
+   "tie": 128,
+   "cand_loss": 29
+  }
+ }
+}

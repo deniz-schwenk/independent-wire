@@ -1,0 +1,1080 @@
+{
+  "n_verdicts": 63,
+  "packet_sizes": [
+    5
+  ],
+  "n_topics_judged": 21,
+  "aggregate": {
+    "deepseek": {
+      "mean_correctness": 2.825,
+      "rubric_passrate": 0.756,
+      "rubric_by_criterion": {
+        "R1": 0.516,
+        "R2": 1.0,
+        "R3": 0.976,
+        "R4": 0.897,
+        "R5": 0.452,
+        "R6": 0.508,
+        "R7": 0.96,
+        "R8": 1.0,
+        "R9": 0.492
+      },
+      "confirmed_charges_total": 7,
+      "confirmed_charges_topics": 5,
+      "mean_rank": 4.81,
+      "n_correctness_scores": 63
+    },
+    "glm": {
+      "mean_correctness": 3.619,
+      "rubric_passrate": 0.874,
+      "rubric_by_criterion": {
+        "R1": 0.754,
+        "R2": 0.992,
+        "R3": 1.0,
+        "R4": 0.937,
+        "R5": 0.73,
+        "R6": 0.77,
+        "R7": 1.0,
+        "R8": 0.992,
+        "R9": 0.69
+      },
+      "confirmed_charges_total": 3,
+      "confirmed_charges_topics": 3,
+      "mean_rank": 3.429,
+      "n_correctness_scores": 63
+    },
+    "golden": {
+      "mean_correctness": 4.508,
+      "rubric_passrate": 0.965,
+      "rubric_by_criterion": {
+        "R1": 0.984,
+        "R2": 1.0,
+        "R3": 1.0,
+        "R4": 0.976,
+        "R5": 0.905,
+        "R6": 0.913,
+        "R7": 0.992,
+        "R8": 1.0,
+        "R9": 0.913
+      },
+      "confirmed_charges_total": 1,
+      "confirmed_charges_topics": 1,
+      "mean_rank": 1.683,
+      "n_correctness_scores": 63
+    },
+    "incumbent": {
+      "mean_correctness": 3.746,
+      "rubric_passrate": 0.899,
+      "rubric_by_criterion": {
+        "R1": 0.849,
+        "R2": 1.0,
+        "R3": 1.0,
+        "R4": 0.921,
+        "R5": 0.683,
+        "R6": 0.881,
+        "R7": 0.952,
+        "R8": 0.984,
+        "R9": 0.817
+      },
+      "confirmed_charges_total": 5,
+      "confirmed_charges_topics": 4,
+      "mean_rank": 3.095,
+      "n_correctness_scores": 63
+    },
+    "sonnet5": {
+      "mean_correctness": 4.286,
+      "rubric_passrate": 0.938,
+      "rubric_by_criterion": {
+        "R1": 0.984,
+        "R2": 1.0,
+        "R3": 1.0,
+        "R4": 0.913,
+        "R5": 0.841,
+        "R6": 0.762,
+        "R7": 0.992,
+        "R8": 1.0,
+        "R9": 0.952
+      },
+      "confirmed_charges_total": 2,
+      "confirmed_charges_topics": 2,
+      "mean_rank": 1.984,
+      "n_correctness_scores": 63
+    }
+  },
+  "pairwise": {
+    "deepseek>glm": 3,
+    "deepseek>incumbent": 1,
+    "glm>deepseek": 18,
+    "glm>golden": 2,
+    "glm>incumbent": 7,
+    "glm>sonnet5": 5,
+    "golden>deepseek": 21,
+    "golden>glm": 19,
+    "golden>incumbent": 18,
+    "golden>sonnet5": 12,
+    "incumbent>deepseek": 20,
+    "incumbent>glm": 14,
+    "incumbent>golden": 3,
+    "incumbent>sonnet5": 2,
+    "sonnet5>deepseek": 21,
+    "sonnet5>glm": 16,
+    "sonnet5>golden": 9,
+    "sonnet5>incumbent": 19
+  },
+  "per_topic_correctness": {
+    "2026-06-28/topic-0": {
+      "deepseek": 4.0,
+      "glm": 3.0,
+      "incumbent": 4.33,
+      "sonnet5": 4.33,
+      "golden": 4.0
+    },
+    "2026-06-28/topic-1": {
+      "glm": 4.0,
+      "golden": 5.0,
+      "deepseek": 3.0,
+      "sonnet5": 4.33,
+      "incumbent": 3.67
+    },
+    "2026-06-28/topic-2": {
+      "glm": 4.33,
+      "incumbent": 4.0,
+      "sonnet5": 4.67,
+      "golden": 5.0,
+      "deepseek": 2.67
+    },
+    "2026-06-29/topic-0": {
+      "sonnet5": 4.33,
+      "incumbent": 3.33,
+      "glm": 3.33,
+      "golden": 4.0,
+      "deepseek": 2.67
+    },
+    "2026-06-29/topic-1": {
+      "golden": 5.0,
+      "sonnet5": 4.0,
+      "deepseek": 2.67,
+      "incumbent": 3.67,
+      "glm": 3.33
+    },
+    "2026-06-29/topic-2": {
+      "glm": 3.67,
+      "sonnet5": 3.67,
+      "deepseek": 3.0,
+      "golden": 5.0,
+      "incumbent": 4.0
+    },
+    "2026-06-30/topic-0": {
+      "glm": 4.0,
+      "sonnet5": 3.33,
+      "golden": 4.67,
+      "deepseek": 2.67,
+      "incumbent": 3.33
+    },
+    "2026-06-30/topic-1": {
+      "incumbent": 4.0,
+      "glm": 3.67,
+      "deepseek": 3.0,
+      "sonnet5": 4.67,
+      "golden": 4.33
+    },
+    "2026-06-30/topic-2": {
+      "sonnet5": 4.0,
+      "golden": 3.33,
+      "incumbent": 2.67,
+      "deepseek": 2.0,
+      "glm": 3.67
+    },
+    "2026-07-01/topic-0": {
+      "glm": 4.0,
+      "deepseek": 2.67,
+      "golden": 4.67,
+      "sonnet5": 3.0,
+      "incumbent": 5.0
+    },
+    "2026-07-01/topic-1": {
+      "golden": 4.0,
+      "glm": 3.33,
+      "deepseek": 2.0,
+      "sonnet5": 4.33,
+      "incumbent": 3.67
+    },
+    "2026-07-01/topic-2": {
+      "sonnet5": 4.0,
+      "deepseek": 3.0,
+      "glm": 4.0,
+      "incumbent": 4.0,
+      "golden": 4.67
+    },
+    "2026-07-02/topic-0": {
+      "sonnet5": 5.0,
+      "glm": 3.33,
+      "golden": 4.67,
+      "incumbent": 3.67,
+      "deepseek": 2.33
+    },
+    "2026-07-02/topic-1": {
+      "sonnet5": 4.67,
+      "glm": 4.0,
+      "deepseek": 2.67,
+      "golden": 4.33,
+      "incumbent": 4.67
+    },
+    "2026-07-02/topic-2": {
+      "sonnet5": 5.0,
+      "incumbent": 4.0,
+      "golden": 4.67,
+      "deepseek": 2.67,
+      "glm": 3.67
+    },
+    "2026-07-03/topic-0": {
+      "glm": 4.67,
+      "golden": 4.0,
+      "deepseek": 3.0,
+      "sonnet5": 4.67,
+      "incumbent": 3.33
+    },
+    "2026-07-03/topic-1": {
+      "sonnet5": 5.0,
+      "deepseek": 3.33,
+      "golden": 4.67,
+      "incumbent": 4.0,
+      "glm": 2.67
+    },
+    "2026-07-03/topic-2": {
+      "golden": 5.0,
+      "incumbent": 4.0,
+      "glm": 3.33,
+      "sonnet5": 4.0,
+      "deepseek": 3.33
+    },
+    "2026-07-04/topic-0": {
+      "golden": 4.33,
+      "sonnet5": 4.0,
+      "incumbent": 2.33,
+      "deepseek": 3.0,
+      "glm": 3.0
+    },
+    "2026-07-04/topic-1": {
+      "sonnet5": 4.33,
+      "glm": 3.0,
+      "golden": 4.33,
+      "incumbent": 3.0,
+      "deepseek": 2.67
+    },
+    "2026-07-04/topic-2": {
+      "incumbent": 4.0,
+      "sonnet5": 4.67,
+      "golden": 5.0,
+      "glm": 4.0,
+      "deepseek": 3.0
+    }
+  },
+  "per_topic": {
+    "2026-06-28/topic-0": {
+      "arms": {
+        "deepseek": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        },
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-06-28/topic-1": {
+      "arms": {
+        "glm": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        },
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-06-28/topic-2": {
+      "arms": {
+        "glm": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        },
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-06-29/topic-0": {
+      "arms": {
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-06-29/topic-1": {
+      "arms": {
+        "golden": {
+          "confirmed_charges": []
+        },
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": [
+            {
+              "n_judges": 3,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'Community resistance and critical shortages of protective equipment and disinfectants are severely undermining the Ebola response' / actor-005 in mentioned",
+                  "why": "actor-005 (Croix-Rouge de la RDC) is a mentioned-pool actor whose only dossier position (src-005) is conducting cholera response activities — case management, decontamination, safe burials, WASH — in Kwango province. It holds no position about community resistance or protective-supply shortages in the Ebola response, so assigning it to this cluster attributes a position the dossier does not back. (actor-005 is also, correctly, placed in the cholera-neglect cluster, confirming its actual position lies elsewhere.)"
+                },
+                {
+                  "judge": 2,
+                  "claim": "actor-005 placed as 'mentioned' in cluster 'Community resistance and critical shortages of protective equipment and disinfectants are severely undermining the Ebola response'",
+                  "why": "actor-005 (Croix-Rouge de la RDC) appears only in src-005, whose subject is the cholera response in Kwango province (community case management, decontamination, safe burial). The dossier gives Croix-Rouge no position on Ebola community resistance or on protective-equipment shortages; attaching it to this Ebola-resistance cluster attributes a position the source does not support. C also correctly places actor-005 in its cholera cluster, confirming the resistance-cluster placement is a spurious extra attribution."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'Community resistance and critical shortages of protective equipment and disinfectants are severely undermining the Ebola response...' / mentioned: actor-005",
+                  "why": "actor-005 (Croix-Rouge de la RDC) is assigned to the community-resistance cluster, but its only dossier position (src-005) concerns community-based cholera response in Kwango province (case management, decontamination, safe burials) — it holds no position about Ebola community resistance or PPE shortages, so this attribution is unsupported."
+                }
+              ]
+            },
+            {
+              "n_judges": 2,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'African-led institutional coordination and the \"one team, one plan, one budget\" framework are the most effective approach to controlling the Ebola outbreak' / actor-013 and actor-014 in reported",
+                  "why": "actor-013 (Kenya MoH, src-019) and actor-014 (Dr. Pierre Somse / CAR, src-020) hold the distinct position that neighboring states must scale up national surveillance and border preparedness; neither source frames its stance as endorsing the IMST 'one team, one plan, one budget' continental-coordination model as the most effective approach. Folding these preparedness actors into the institutional-milestone cluster attributes to them a claim the dossier does not support and collapses a substantively distinct position (R1)."
+                },
+                {
+                  "judge": 2,
+                  "claim": "actor-013 and actor-014 placed as 'reported' in cluster 'African-led institutional coordination and the \"one team, one plan, one budget\" framework are the most effective approach', with src-019 and src-020 in source_ids",
+                  "why": "actor-013 (Kenya MoH, src-019) and actor-014 (Dr. Pierre Somse, CAR, src-020) describe their own national preparedness scaling and surveillance; neither source references the IMST or endorses the 'one team, one plan, one budget' framework, and neither country is part of that continental structure. Assigning them to a cluster defined by that specific framework attributes a framework-endorsement position the dossier does not back."
+                }
+              ]
+            }
+          ]
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-06-29/topic-2": {
+      "arms": {
+        "glm": {
+          "confirmed_charges": []
+        },
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-06-30/topic-0": {
+      "arms": {
+        "glm": {
+          "confirmed_charges": [
+            {
+              "n_judges": 3,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'Korea's semiconductor investment is a competitive threat to rival chip-producing nations' — position_summary naming 'ChangXin Memory Technologies' (src-018)",
+                  "why": "The src-018 (Sina Finance) summary refers only generically to 'Chinese memory chip and AI chip companies'; it names no specific firm. 'ChangXin Memory Technologies' is a specific company attribution introduced from outside knowledge, not supported by the dossier."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'Korea's semiconductor investment is a competitive threat to rival chip-producing nations' / src-018 summary: 'mainland Chinese outlets assessing pressure on companies like ChangXin Memory Technologies'",
+                  "why": "The src-018 (Sina Finance) summary frames the plan only as 'a competitive threat to Chinese memory chip and AI chip companies' and names no specific firm. 'ChangXin Memory Technologies' is a specific company invented from outside knowledge; the dossier does not name it."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'Korea's semiconductor investment is a competitive threat to rival chip-producing nations' / position_summary: 'mainland Chinese outlets assessing pressure on companies like ChangXin Memory Technologies'",
+                  "why": "src-018 (the only mainland-China source) is summarized as framing the plan as a threat to 'Chinese memory chip and AI chip companies' generically; no source in the dossier names ChangXin Memory Technologies. Naming that specific company is an unsupported attribution imported from outside knowledge."
+                }
+              ]
+            }
+          ]
+        },
+        "sonnet5": {
+          "confirmed_charges": [
+            {
+              "n_judges": 3,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'China views the investment as a direct competitive threat to its own memory chip and AI chip industries' — position_summary naming 'ChangXin Memory Technologies' (src-018)",
+                  "why": "The src-018 (Sina Finance) summary references only 'Chinese memory chip and AI chip companies' generically and names no specific firm. 'ChangXin Memory Technologies' is a specific company attribution imported from outside knowledge and not supported by the dossier."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'China views the investment as a direct competitive threat...' / src-018 summary: 'Chinese semiconductor firms such as ChangXin Memory Technologies'",
+                  "why": "The src-018 (Sina Finance) summary names no specific company, framing the threat generically to 'Chinese memory chip and AI chip companies'. 'ChangXin Memory Technologies' is invented from outside knowledge and unsupported by the dossier."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'China views the investment as a direct competitive threat to its own memory chip and AI chip industries' / position_summary: 'intensifying pressure on Chinese semiconductor firms such as ChangXin Memory Technologies'",
+                  "why": "src-018 is summarized only as framing the plan as a threat to 'Chinese memory chip and AI chip companies' with no firm named. Introducing ChangXin Memory Technologies as a specific firm is an unsupported attribution not backed by any dossier source."
+                }
+              ]
+            }
+          ]
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-06-30/topic-1": {
+      "arms": {
+        "incumbent": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        },
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-06-30/topic-2": {
+      "arms": {
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": [
+            {
+              "n_judges": 3,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'Conclusions about the attack should not be drawn prematurely while the investigation is still establishing the facts.' / stated actor-005",
+                  "why": "actor-005 (Wesemann) holds only the narrow position (src-005) that 'the investigation will need to clarify whether the mother and the baby were at the centre for an appointment or living there' — a factual-clarification statement, not a call against drawing premature conclusions. The restraint/'give the investigation space' position in the dossier belongs to Olaf Lies (src-013), who is in no actor pool; assigning it to Wesemann as 'stated' stretches his quote beyond what it supports."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'Conclusions about the attack should not be drawn prematurely while the investigation is still establishing the facts.' / stated: actor-005",
+                  "why": "actor-005 (Joerg Wesemann) has a single quote in the pool (src-005): the investigation 'will need to clarify whether the mother and the baby were at the centre for an appointment or living there.' That is a procedural clarification about one fact, not a 'do not draw premature conclusions / give the investigation space' position. The restraint position in the dossier belongs to Olaf Lies (src-013) and Behrens; Wesemann is misattributed to this cluster."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'Conclusions about the attack should not be drawn prematurely while the investigation is still establishing the facts.' / stated: actor-005",
+                  "why": "actor-005 (Joerg Wesemann) has exactly one stated position in the pool (src-005): that the investigation must clarify whether the mother and baby were at the centre for an appointment or living there. He never calls for restraint or warns against premature conclusions; that 'give the investigation space / time for mourning and factual investigation' position belongs to Olaf Lies in src-013, who is not assigned an actor id. Placing Wesemann in this cluster attributes a position he does not hold."
+                }
+              ]
+            }
+          ]
+        },
+        "incumbent": {
+          "confirmed_charges": [
+            {
+              "n_judges": 2,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'Premature conclusions should be avoided; investigations must be given space to establish the full facts' / stated actor-004",
+                  "why": "actor-004 (Merz) never holds this position in the dossier; his only stated content is 'shocking to the core' and condolences (src-003, src-013). The 'don't draw premature conclusions / give investigations space' position is Olaf Lies's (src-013), and Lies is in no actor pool. Attributing this cluster to Merz as 'stated' is an unsupported actor attribution."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'Premature conclusions should be avoided; investigations must be given space to establish the full facts' / stated: actor-004",
+                  "why": "The cluster's own summary attributes the restraint call to 'Lower Saxony's Minister-President' (Olaf Lies, src-013), yet the stated actor is actor-004 (Merz). Merz's only positions in the dossier are condolences ('shocking to the core' / 'Many people who wanted to help and protect lost their lives'). Merz never called for restraint or for giving the investigation space; this is a misattribution."
+                }
+              ]
+            },
+            {
+              "n_judges": 2,
+              "citations": [
+                {
+                  "judge": 2,
+                  "claim": "cluster 'The suspect was known to police for prior threats but was not classified as particularly violent, and he had no firearms licence' / stated: actor-005",
+                  "why": "actor-005 (Joerg Wesemann) never states anything about the suspect's record, violence classification, or firearms licence. His only quote (src-005) is that the investigation must clarify whether the mother and baby lived at the centre or had an appointment. This threats/no-licence position is held only by Schuol (actor-002); Wesemann is misattributed."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'The suspect was known to police for prior threats but was not classified as particularly violent, and he had no firearms licence' / stated: actor-005",
+                  "why": "actor-005 (Joerg Wesemann) holds only the src-005 position that the investigation must clarify whether the mother and baby lived at or were visiting the centre. The suspect's threat record, non-violent classification, and lack of firearms licence are stated exclusively by actor-002 (Schuol). Wesemann is not a source for this position, so his inclusion in this cluster is an unsupported attribution."
+                }
+              ]
+            }
+          ]
+        },
+        "deepseek": {
+          "confirmed_charges": [
+            {
+              "n_judges": 3,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'The shooting was an isolated, cold-blooded family tragedy...' / stated actor-003, actor-004 and mentioned actor-009",
+                  "why": "actor-003 (Brokelmann) holds only a relief/thanks/condolence position and actor-004 (Merz) only a shock/condolence position; neither states the 'no political, economic, or misogynistic motive' family-tragedy thesis (that is Behrens/Schuol). actor-009 (Stadtsprecher) holds only the 'no danger to the nearby daycare/school' position. Sweeping all of them into the family-tragedy cluster forces quoted actors into a cluster whose position they do not hold, the exact R5 failure the rubric warns against."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'The shooting was an isolated, cold-blooded family tragedy...' / stated: actor-003, actor-004; mentioned: actor-009",
+                  "why": "actor-003 (Brokelmann) and actor-004 (Merz) do not hold the 'apolitical isolated family tragedy, no systemic implication' position; Brokelmann's only quotes are relief/thanks/condolences and Merz's only quotes are shock/condolences. actor-009 (Stadtsprecher Stade) speaks only to the safety of the nearby daycare/school, unrelated to the motive framing. A source's presence in source_ids does not force every quoted actor into the cluster (R5); these three actors are misassigned here."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'The isolated, cold-blooded family tragedy...' / stated: actor-003, actor-004",
+                  "why": "actor-003 (Brokelmann) and actor-004 (Merz) express relief, gratitude to police, and condolences; neither makes the motive claim (custody-only, no political/economic/misogynistic motive) that defines this cluster. Their positional signal is condolence, not a ruling on motive, so lumping them into the motive cluster attributes to them a position the dossier does not back."
+                }
+              ]
+            },
+            {
+              "n_judges": 3,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'The suspect's Turkish origin and the custody case have ignited a necessary public debate about the German youth welfare system's treatment of families from minority backgrounds and the potential for stigmatization' (src-022, src-023)",
+                  "why": "src-022 reports only that the incident 'sparked societal debates about family law and social services'; src-023 reports debate on family courts, youth offices and gun-licence controls. Neither source frames the debate as concerning the treatment of minority-background families, 'ethnic equity,' or 'institutional bias.' The minority-treatment/stigmatization thesis is invented beyond what the two cited sources support."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'The suspect's Turkish origin and the custody case have ignited a necessary public debate about the German youth welfare system's treatment of families from minority backgrounds and the potential for stigmatization' (summary: 'touch on ethnic equity and institutional bias'), source_ids src-022, src-023",
+                  "why": "The two cited sources do not support this position. src-022 (DW Turkish) says only that the incident 'sparked societal debates in Germany about family law and social services'; src-023 (Cumhuriyet) says it 'intensified public debate on family courts, youth offices, and gun license controls.' Neither source frames the debate as being about the welfare system's 'treatment of families from minority backgrounds,' 'ethnic equity,' 'institutional bias,' or 'stigmatization.' These are inserted from outside the dossier."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'The suspect's Turkish origin and the custody case have ignited a necessary public debate about the German youth welfare system's treatment of families from minority backgrounds and the potential for stigmatization.' (source_ids src-022, src-023)",
+                  "why": "src-022 reports the incident sparked societal debates about family law and social services; src-023 reports intensified public debate on family courts, youth offices, and gun licence controls. Neither source frames the debate as being about the youth welfare system's 'treatment of families from minority backgrounds,' 'ethnic equity,' 'institutional bias,' or 'stigmatization.' That minority-bias/ethnic-equity position is assembled beyond what the two cited sources support and is present in no source in the dossier."
+                }
+              ]
+            }
+          ]
+        },
+        "glm": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-07-01/topic-0": {
+      "arms": {
+        "glm": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "sonnet5": {
+          "confirmed_charges": [
+            {
+              "n_judges": 3,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'Independent reporting and analysts frame Trump's crypto empire as a structural, self-dealing conflict of interest built through his own deregulatory power with no legal mechanism to check it' / reported: [actor-001]",
+                  "why": "actor-001 (Trump) is placed as a 'reported' holder of a critical self-dealing position. Trump's only reported-pool positions (src-002 'not subject to federal conflict-of-interest laws'; src-004 wanted the US to be 'crypto capital of the world' and moved to quash the federal crackdown) are defensive/pro-crypto, not an admission of self-dealing. No source has Trump holding or reporting the self-dealing conflict thesis this cluster states; this is a cross-position misassignment of the actor."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'Independent reporting and analysts frame Trump's crypto empire as a structural, self-dealing conflict of interest built through his own deregulatory power with no legal mechanism to check it' -> reported: actor-001",
+                  "why": "actor-001 (Trump) is placed as a holder of a self-dealing/critic position. Trump's only reported positions in the pool are defense-side: that he is not subject to federal conflict-of-interest laws (src-002) and that he wanted the US to be the 'crypto capital of the world' and moved to quash the federal crackdown (src-004). No source has Trump holding or endorsing the structural self-dealing critique this cluster expresses; the attribution reverses his actual stance."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'Independent reporting and analysts frame Trump's crypto empire as a structural, self-dealing conflict of interest built through his own deregulatory power with no legal mechanism to check it' / reported: actor-001",
+                  "why": "The cluster thesis is a critical judgment AGAINST Trump (that he is engaged in self-dealing). actor-001 (Donald Trump) does not hold this position: his reported quotes in the dossier (src-002: he is not subject to federal conflict-of-interest laws; src-004: he wanted the US to be the 'crypto capital of the world' and moved to quash a federal crackdown) are defenses/descriptions of his own aims, not an endorsement of the self-dealing critique. Assigning Trump as a holder of a position that indicts him is an unsupported attribution."
+                }
+              ]
+            }
+          ]
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-07-01/topic-1": {
+      "arms": {
+        "golden": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": [
+            {
+              "n_judges": 3,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'Investigators are considering the possibility that Ukrainian security services orchestrated the attack...' / mentioned: actor-013",
+                  "why": "actor-013 (SBU) is a mentioned-pool actor whose only dossier position (src-005) is that the SBU ACCUSED Iermolaiev of running an alcohol business in Crimea. The SBU-orchestrated-the-bombing hypothesis (src-017/018) is attributed to investigators/Le Figaro, not to the SBU itself; the SBU holds no position that it organized the attack. Assigning actor-013 to this cluster attributes to it a position the dossier does not support."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'Investigators are considering the possibility that Ukrainian security services orchestrated the attack...' assigns mentioned: actor-013 (SBU)",
+                  "why": "actor-013 (SBU) appears in the dossier only in the mentioned pool at src-005, where the SBU ACCUSED Iermolaiev of running a Crimea alcohol business. The SBU-organized-attack hypothesis (src-017/018) is reported ABOUT Iermolaiev (actor-011 reported pool) and does not quote or attribute any position to the SBU. Placing actor-013 in the SBU-orchestrated cluster conflates the SBU-as-accuser with the SBU-as-suspected-perpetrator, an attribution the sources do not support."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'Investigators are considering the possibility that Ukrainian security services orchestrated the attack...' / mentioned: actor-013",
+                  "why": "actor-013 (Security Service of Ukraine) is assigned to the SBU-organized-attack cluster, but its only dossier position (src-005) is accusing Iermolaiev of managing an alcohol business in Crimea after annexation. The SBU-orchestrated-the-bombing hypothesis comes from src-017/src-018 (Le Figaro via Meduza/Lenta) and attributes no actor; the SBU is the alleged perpetrator in that theory, not an actor stating it. Placing actor-013 in this cluster conflates 'SBU accused him' with 'SBU organized the attack' — a position the SBU does not hold in the dossier."
+                }
+              ]
+            }
+          ]
+        },
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": [
+            {
+              "n_judges": 2,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'The Monaco bombing was a targeted attempted assassination, not a terrorist attack' / stated: actor-004, actor-008",
+                  "why": "actor-004 (Prince Albert II) and actor-008 (Prefect of Alpes-Maritimes) are assigned to the assassination-not-terrorism CLASSIFICATION cluster, but neither takes a position on that classification. actor-004's only quotes condemn a 'heinous crime'/'odious act' and express shock; actor-008's quote concerns mobilizing security forces. Their positional signal is condemnation/shock (correctly placed by E in the separate 'unprecedented shock' cluster), not the assassination-versus-terrorism thesis, so their placement here is an unsupported attribution."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'The Monaco bombing was a targeted attempted assassination, not a terrorist attack' / stated: actor-004, actor-008",
+                  "why": "actor-004 (Prince Albert II) and actor-008 (Prefect of Alpes-Maritimes) are placed in the assassination-not-terrorism classification cluster, but neither made any classification of the attack as assassination versus terrorism. Prince Albert's only positions are condemnation ('heinous crime'/'odious act'/shock) and the Prefect's is that security forces are mobilized — both belong solely to the 'unprecedented shock/mobilization' cluster (where E also correctly places them). Their appearance in the classification cluster is an actor assignment neither's dossier position supports."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-07-01/topic-2": {
+      "arms": {
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-07-02/topic-0": {
+      "arms": {
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-07-02/topic-1": {
+      "arms": {
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-07-02/topic-2": {
+      "arms": {
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": [
+            {
+              "n_judges": 2,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'Trump has pursued a deliberate pro-crypto deregulatory agenda that directly benefits his personal financial interests' — position_summary states Trump '...shaped legislation like the GENIUS Act'",
+                  "why": "No source summary in the dossier mentions the GENIUS Act. src-007 references deregulation and the pardon of Changpeng Zhao, but no source names the GENIUS Act; this specific legislative detail is imported from outside knowledge."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'Trump has pursued a deliberate pro-crypto deregulatory agenda...' position_summary: 'shaped legislation like the GENIUS Act'",
+                  "why": "No source in the dossier (src-007 or any other summary) mentions a 'GENIUS Act'. The pardon of Changpeng Zhao and the 'crypto capital' framing are dossier-supported (src-007), but the GENIUS Act detail is imported from outside knowledge and appears in no source summary."
+                }
+              ]
+            }
+          ]
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-07-03/topic-0": {
+      "arms": {
+        "glm": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        },
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-07-03/topic-1": {
+      "arms": {
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": [
+            {
+              "n_judges": 3,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'The Russian attack deliberately targeted civilians and civilian infrastructure, constituting terrorism and war crimes' / actor-001 (stated)",
+                  "why": "actor-001 (Klitschko) carries no terrorism/war-crimes positional signal in any pool: his stated quotes are limited to calling it the 'most massive attack' and declaring a day of mourning. Assigning him to a cluster whose thesis is deliberate-civilian-targeting-as-terrorism/war-crime is an unsupported attribution of a legal/moral position he never states."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'The Russian attack deliberately targeted civilians and civilian infrastructure, constituting terrorism and war crimes' / actor-042 (BookChef publishing house)",
+                  "why": "actor-042's only quotes (src-016, src-017) report the destruction of ~800,000 books at a logistics warehouse and a vow to keep operating; the publisher holds no position that the strike constitutes terrorism or a war crime. It is a damage/impact voice folded into a political-thesis cluster it does not hold."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'The Russian attack deliberately targeted civilians and civilian infrastructure, constituting terrorism and war crimes' / actor-022 (Yurii Danylovych, biologist)",
+                  "why": "actor-022's quote (src-007) calls the gutting of the biochemistry lab 'a catastrophe for medical and biological science of Ukraine' — a scientific-loss characterization, not the substantive terrorism/war-crimes thesis. Assigning this actor to that cluster attributes a position the dossier does not back for him."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'The Russian attack deliberately targeted civilians and civilian infrastructure, constituting terrorism and war crimes' assigns actor-001 (Klitschko) as a holder of this position",
+                  "why": "Klitschko's only dossier positions are describing the strike as the 'most massive attack' and declaring a day of mourning (src-001/003/005/007/008/012/014). Calling an attack the largest and decreeing mourning is a scale/administrative statement; no quote in any source has Klitschko assert the strike was a deliberate war crime or act of terrorism. The output attributes the cluster's specific terrorism/war-crimes thesis to him without support."
+                },
+                {
+                  "judge": 3,
+                  "claim": "the same 'terrorism and war crimes' cluster assigns residents actor-005 (Svitlana), actor-017 (Voitenko), actor-018 (Voloshyna), actor-021 (Plekhova), actor-026 (Polishchuk), actor-038 (Shevchuk), plus actor-022 (biologist Danylovych) and actor-042 (BookChef) as stated holders",
+                  "why": "These actors' dossier quotes are personal fear/displacement testimony (Svitlana 'It wasn't scary, I've been through it before'; Voitenko, Plekhova, Polishchuk, Shevchuk, Voloshyna describing sheltering and terror) and descriptions of scientific/publishing loss (biologist src-007; BookChef src-016/017). None of them states or argues that the attack constitutes terrorism or war crimes. Attributing that specific legal/political thesis to toll-and-loss witnesses is an unsupported attribution and clusters by subject (civilian harm) rather than by the substantive position claimed."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-07-03/topic-2": {
+      "arms": {
+        "golden": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": []
+        },
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-07-04/topic-0": {
+      "arms": {
+        "golden": {
+          "confirmed_charges": []
+        },
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": [
+            {
+              "n_judges": 3,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'The Nord Stream sabotage indictment implicates Ukraine and should affect its European integration prospects' — stated: [actor-003, actor-004]",
+                  "why": "actor-003 (Zelensky) is assigned to the pro-indictment cluster, but his only Nord Stream position in the dossier (src-008, canonical_actors_stated) is that he 'does not have enough information to respond in detail to the accusations.' He does not hold the position that the indictment implicates Ukraine or should affect EU integration; only actor-004 (Peskov) states that. This attributes to Zelensky a position the dossier does not support."
+                },
+                {
+                  "judge": 1,
+                  "claim": "cluster 'Ukraine's long-range strikes on Crimea and Russian refineries are a deliberate strategic campaign to degrade Russia's war-sustaining capacity and force peace' — stated: [actor-003, actor-009, actor-014]",
+                  "why": "actor-009 (Sergej Aksjonow, Moscow-installed Crimea governor) is assigned to the Ukrainian strategic-campaign thesis, but his dossier quotes (src-002 power outages; src-004 fuel unavailable) only report impact on occupied Crimea. He does not endorse or hold the Ukrainian framing that the strikes are a deliberate campaign to force peace; assigning him here attributes the opposing side's thesis to a Russian occupation official."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'The Nord Stream sabotage indictment implicates Ukraine and should affect its European integration prospects' / stated actor-003 (Zelensky)",
+                  "why": "The cluster's substantive position is Russia's (Peskov's) argument that the indictment should weigh against Ukraine's EU integration. In the only backing source, src-008, Zelensky merely says he lacks sufficient information to respond in detail; he does not state or endorse this pro-Russian position. Listing Zelensky as a 'stated' holder of it attributes a position the dossier does not support."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'Ukraine's long-range strikes on Crimea and Russian refineries are a deliberate strategic campaign to degrade Russia's war-sustaining capacity and force peace' / stated actor-009 (Aksyonov)",
+                  "why": "actor-009 is the Moscow-installed Crimea governor; in src-002/src-004 he reports power outages and fuel shortages, i.e. the impact of the strikes on his territory. He does not endorse the Ukrainian framing that the strikes are a legitimate strategic campaign to 'force peace.' Placing him as a 'stated' holder of the pro-Ukraine position mis-assigns an occupation official to the opposite-valence cluster."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'Russia's appointment of a new South Ossetia leader signals potential annexation or leverage against Georgia' / stated actor-025 (Kambolov) and actor-004 (Peskov)",
+                  "why": "The cluster's thesis is the Georgian opposition/analyst warning that Moscow may annex or blackmail Georgia. In src-007, actor-025 (Kambolov) only describes checkpoint difficulties and carries no such warning, and actor-004 (Peskov) explicitly DENIES a link between the leadership change and annexation. Both are placed as 'stated' holders of a warning position they do not hold (Peskov holds the opposite)."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'The Nord Stream sabotage indictment implicates Ukraine and should affect its European integration prospects' / actor-003",
+                  "why": "actor-003 (Zelensky) is listed as a 'stated' holder of this pro-Russia position, but his only src-008 position is that he lacks sufficient information to respond in detail. He does not hold or endorse the position that the indictment implicates Ukraine or should affect EU integration; that is solely Peskov's (actor-004) position."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'Ukraine's long-range strikes on Crimea and Russian refineries are a deliberate strategic campaign ... to force peace' / actor-009",
+                  "why": "actor-009 (Aksjonow, Moscow-installed Crimea governor) is placed as a 'stated' holder of the Ukrainian strategic framing, but his stated positions (src-002/src-004) only report power outages and fuel shortages in Crimea as damage suffered. He does not adopt Ukraine's framing that the strikes are a deliberate campaign to force peace; that framing belongs to the Ukrainian actors (003, 014)."
+                }
+              ]
+            }
+          ]
+        },
+        "deepseek": {
+          "confirmed_charges": [
+            {
+              "n_judges": 3,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'The German indictment implicating Ukraine in the Nord Stream pipeline sabotage should be a serious factor in the European Union's discussions...' — stated: [actor-004, actor-003]",
+                  "why": "actor-003 (Zelensky) is placed in the pro-indictment cluster, but his only Nord Stream position (src-008) is that he lacks sufficient information to respond in detail. The dossier does not support him holding the position that the indictment should weigh against Ukraine's EU integration; that position is held only by actor-004 (Peskov)."
+                },
+                {
+                  "judge": 1,
+                  "claim": "cluster 'Ukraine's systematic long-range strikes on Crimea and Russian military infrastructure are an effective strategy...' — stated: [actor-003, actor-014, actor-009]",
+                  "why": "actor-009 (Aksjonow, occupation governor of Crimea) is assigned to the Ukrainian strategic-success thesis, but his src-002/src-004 quotes only report power outages and fuel shortages on the Russian-occupied side. He does not hold the Ukrainian position that the strikes are an effective strategy; his statements are impact reports, not endorsement of Ukraine's campaign."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'Ukraine's systematic long-range strikes on Crimea and Russian military infrastructure are an effective strategy...' / stated actor-009 (Aksyonov)",
+                  "why": "actor-009 is the Moscow-installed Crimea governor who in src-002/src-004 reports outages and fuel shortages (the strikes' impact on occupied Crimea). He does not state that Ukraine's strikes are an 'effective strategy'; listing him as a 'stated' holder of the pro-Ukraine strategic position mis-assigns him to the opposite-valence cluster."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'The German indictment implicating Ukraine in the Nord Stream pipeline sabotage should be a serious factor in the European Union's discussions ...' / actor-003",
+                  "why": "actor-003 (Zelensky) is written into the 'stated' list of this Russia-aligned cluster, yet his own src-008 position is only that he lacks sufficient information to respond. The output's own summary even notes his deflection, so listing him as a stated holder of the cluster's position is a misassignment; only actor-004 (Peskov) holds it."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'Ukraine's systematic long-range strikes on Crimea and Russian military infrastructure are an effective strategy that degrades Russian combat power ...' / actor-009",
+                  "why": "actor-009 (Moscow-installed Crimea governor) is listed as 'stated' holder of the Ukrainian effectiveness/strategy framing. His stated positions (src-002/src-004) only report outages and fuel restrictions as damage; he does not endorse the Ukrainian strategic claim that the strikes are effectively degrading Russian combat power."
+                }
+              ]
+            }
+          ]
+        },
+        "glm": {
+          "confirmed_charges": [
+            {
+              "n_judges": 3,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'Ukraine's long-range strikes constitute a deliberate strategic campaign to degrade Russian military potential and force Moscow toward peace' — stated: [actor-003, actor-009, actor-014]",
+                  "why": "actor-009 (Aksjonow, Moscow-installed Crimea governor) is assigned to the Ukrainian strategic-campaign thesis, but his dossier quotes (src-002 outages; src-004 fuel unavailable) only report the impact of the strikes on occupied Crimea. He does not hold the Ukrainian position that the strikes are a deliberate campaign to force peace; this attributes the opposing side's thesis to a Russian occupation official."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'Ukraine's long-range strikes constitute a deliberate strategic campaign to degrade Russian military potential and force Moscow toward peace' / stated actor-009 (Aksyonov)",
+                  "why": "actor-009 is the Moscow-installed Crimea governor reporting fuel shortages and outages in src-002/src-004 (impact of the strikes), not endorsing the Ukrainian claim that they are a strategic campaign to force peace. Listing him as a 'stated' holder of the pro-Ukraine position mis-assigns an occupation official to the opposite-valence cluster."
+                },
+                {
+                  "judge": 3,
+                  "claim": "cluster 'Ukraine's long-range strikes constitute a deliberate strategic campaign to degrade Russian military potential and force Moscow toward peace' / actor-009",
+                  "why": "actor-009 (Moscow-installed Crimea governor) is listed as a 'stated' holder of the Ukrainian strategic framing, but his stated positions (src-002/src-004) only report Crimean outages and fuel shortages as damage suffered; he does not hold the Ukrainian claim that the strikes are a strategic campaign to force Moscow toward peace."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-07-04/topic-1": {
+      "arms": {
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "incumbent": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": [
+            {
+              "n_judges": 2,
+              "citations": [
+                {
+                  "judge": 1,
+                  "claim": "cluster 'Turkey is leveraging the summit to perform a strategic balancing act...' / actor-012 placed in stated",
+                  "why": "actor-012 (Rich Outzen) belongs to the canonical_actors_reported pool (src-010, evidence_type 'reported'); writing him into the cluster's 'stated' sub-list re-classifies him across pools, which R5 forbids."
+                },
+                {
+                  "judge": 2,
+                  "claim": "cluster 'Turkey is leveraging the summit to perform a strategic balancing act...' / actor-012 (Outzen) in stated",
+                  "why": "actor-012 (Outzen, Atlantic Council) appears only in the reported pool (src-010) and his signal is that US firms increasingly buy Turkish defense products. He is written into the 'stated' sub-list here, a pool-crossing misclassification, and his reported position is about US procurement of Turkish equipment, not Turkey's Moscow-Washington balancing act."
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "n_judges": 3
+    },
+    "2026-07-04/topic-2": {
+      "arms": {
+        "incumbent": {
+          "confirmed_charges": []
+        },
+        "sonnet5": {
+          "confirmed_charges": []
+        },
+        "golden": {
+          "confirmed_charges": []
+        },
+        "glm": {
+          "confirmed_charges": []
+        },
+        "deepseek": {
+          "confirmed_charges": []
+        }
+      },
+      "n_judges": 3
+    }
+  }
+}

@@ -1,0 +1,319 @@
+{
+ "stage": "phase1",
+ "n_items": 8,
+ "per_item": [
+  {
+   "item_id": "phase1__2026-07-03__t0",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 5.0,
+     "evidence_typing": 4.5,
+     "completeness": 4.0
+    },
+    "candidate": {
+     "faithfulness": 5.0,
+     "evidence_typing": 4.5,
+     "completeness": 4.0
+    }
+   },
+   "combined": {
+    "baseline": 4.5,
+    "candidate": 4.5
+   },
+   "wtl": "tie",
+   "errors": {
+    "baseline": {
+     "invented_actor": 0,
+     "fabricated_quote": 0,
+     "evidence_mislabel": 0,
+     "dropped_actor": 1
+    },
+    "candidate": {
+     "invented_actor": 0,
+     "fabricated_quote": 0,
+     "evidence_mislabel": 0,
+     "dropped_actor": 2
+    }
+   }
+  },
+  {
+   "item_id": "phase1__2026-07-03__t1",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 5.0,
+     "evidence_typing": 4.0,
+     "completeness": 4.0
+    },
+    "candidate": {
+     "faithfulness": 4.0,
+     "evidence_typing": 4.0,
+     "completeness": 5.0
+    }
+   },
+   "combined": {
+    "baseline": 4.333,
+    "candidate": 4.333
+   },
+   "wtl": "tie",
+   "errors": {
+    "baseline": {
+     "invented_actor": 0,
+     "fabricated_quote": 0,
+     "evidence_mislabel": 0,
+     "dropped_actor": 2
+    },
+    "candidate": {
+     "invented_actor": 2,
+     "fabricated_quote": 0,
+     "evidence_mislabel": 1,
+     "dropped_actor": 0
+    }
+   }
+  },
+  {
+   "item_id": "phase1__2026-07-03__t2",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 5.0,
+     "evidence_typing": 5.0,
+     "completeness": 5.0
+    },
+    "candidate": {
+     "faithfulness": 4.0,
+     "evidence_typing": 4.0,
+     "completeness": 4.0
+    }
+   },
+   "combined": {
+    "baseline": 5.0,
+    "candidate": 4.0
+   },
+   "wtl": "cand_loss",
+   "errors": {
+    "baseline": {
+     "invented_actor": 0,
+     "fabricated_quote": 0,
+     "evidence_mislabel": 0,
+     "dropped_actor": 0
+    },
+    "candidate": {
+     "invented_actor": 2,
+     "fabricated_quote": 0,
+     "evidence_mislabel": 0,
+     "dropped_actor": 1
+    }
+   }
+  },
+  {
+   "item_id": "phase1__2026-07-04__t0",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 4.0,
+     "evidence_typing": 4.0,
+     "completeness": 3.5
+    },
+    "candidate": {
+     "faithfulness": 2.0,
+     "evidence_typing": 3.5,
+     "completeness": 4.0
+    }
+   },
+   "combined": {
+    "baseline": 3.833,
+    "candidate": 3.167
+   },
+   "wtl": "cand_loss",
+   "errors": {
+    "baseline": {
+     "invented_actor": 2,
+     "fabricated_quote": 2,
+     "evidence_mislabel": 0,
+     "dropped_actor": 2
+    },
+    "candidate": {
+     "invented_actor": 2,
+     "fabricated_quote": 2,
+     "evidence_mislabel": 1,
+     "dropped_actor": 0
+    }
+   }
+  },
+  {
+   "item_id": "phase1__2026-07-04__t1",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 5.0,
+     "evidence_typing": 5.0,
+     "completeness": 4.0
+    },
+    "candidate": {
+     "faithfulness": 5.0,
+     "evidence_typing": 5.0,
+     "completeness": 5.0
+    }
+   },
+   "combined": {
+    "baseline": 4.667,
+    "candidate": 5.0
+   },
+   "wtl": "cand_win",
+   "errors": {
+    "baseline": {
+     "invented_actor": 0,
+     "fabricated_quote": 0,
+     "evidence_mislabel": 0,
+     "dropped_actor": 1
+    },
+    "candidate": {
+     "invented_actor": 0,
+     "fabricated_quote": 0,
+     "evidence_mislabel": 0,
+     "dropped_actor": 0
+    }
+   }
+  },
+  {
+   "item_id": "phase1__2026-07-04__t2",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 4.5,
+     "evidence_typing": 4.0,
+     "completeness": 4.5
+    },
+    "candidate": {
+     "faithfulness": 5.0,
+     "evidence_typing": 4.0,
+     "completeness": 4.0
+    }
+   },
+   "combined": {
+    "baseline": 4.333,
+    "candidate": 4.333
+   },
+   "wtl": "tie",
+   "errors": {
+    "baseline": {
+     "invented_actor": 0,
+     "fabricated_quote": 1,
+     "evidence_mislabel": 1,
+     "dropped_actor": 0
+    },
+    "candidate": {
+     "invented_actor": 0,
+     "fabricated_quote": 0,
+     "evidence_mislabel": 0,
+     "dropped_actor": 2
+    }
+   }
+  },
+  {
+   "item_id": "phase1__2026-07-05__t0",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 4.0,
+     "evidence_typing": 4.0,
+     "completeness": 4.0
+    },
+    "candidate": {
+     "faithfulness": 4.5,
+     "evidence_typing": 4.0,
+     "completeness": 4.5
+    }
+   },
+   "combined": {
+    "baseline": 4.0,
+    "candidate": 4.333
+   },
+   "wtl": "cand_win",
+   "errors": {
+    "baseline": {
+     "invented_actor": 0,
+     "fabricated_quote": 2,
+     "evidence_mislabel": 1,
+     "dropped_actor": 1
+    },
+    "candidate": {
+     "invented_actor": 0,
+     "fabricated_quote": 1,
+     "evidence_mislabel": 1,
+     "dropped_actor": 0
+    }
+   }
+  },
+  {
+   "item_id": "phase1__2026-07-05__t2",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 2.0,
+     "evidence_typing": 3.0,
+     "completeness": 4.0
+    },
+    "candidate": {
+     "faithfulness": 2.5,
+     "evidence_typing": 3.0,
+     "completeness": 4.0
+    }
+   },
+   "combined": {
+    "baseline": 3.0,
+    "candidate": 3.167
+   },
+   "wtl": "cand_win",
+   "errors": {
+    "baseline": {
+     "invented_actor": 2,
+     "fabricated_quote": 2,
+     "evidence_mislabel": 2,
+     "dropped_actor": 2
+    },
+    "candidate": {
+     "invented_actor": 2,
+     "fabricated_quote": 2,
+     "evidence_mislabel": 1,
+     "dropped_actor": 2
+    }
+   }
+  }
+ ],
+ "overall": {
+  "means": {
+   "baseline": {
+    "faithfulness": 4.312,
+    "evidence_typing": 4.188,
+    "completeness": 4.125
+   },
+   "candidate": {
+    "faithfulness": 4.0,
+    "evidence_typing": 4.0,
+    "completeness": 4.312
+   }
+  },
+  "errors": {
+   "baseline": {
+    "invented_actor": 4,
+    "fabricated_quote": 7,
+    "evidence_mislabel": 4,
+    "dropped_actor": 9
+   },
+   "candidate": {
+    "invented_actor": 8,
+    "fabricated_quote": 5,
+    "evidence_mislabel": 4,
+    "dropped_actor": 7
+   }
+  },
+  "wtl": {
+   "cand_win": 3,
+   "tie": 3,
+   "cand_loss": 2
+  }
+ }
+}

@@ -1,0 +1,467 @@
+{
+  "results": [
+    {
+      "label": "glm/2026-06-12",
+      "status": "ok",
+      "cost_usd": 0.03409352,
+      "latency_s": 97.5,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-13",
+      "status": "ok",
+      "cost_usd": 0.03827532,
+      "latency_s": 114.2,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-14",
+      "status": "schema-invalid",
+      "cost_usd": 0.0310406,
+      "latency_s": 79.1,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-15",
+      "status": "schema-invalid",
+      "cost_usd": 0.02814804,
+      "latency_s": 80.7,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-16",
+      "status": "schema-invalid",
+      "cost_usd": 0.04471372,
+      "latency_s": 134.7,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-17",
+      "status": "ok",
+      "cost_usd": 0.05446928,
+      "latency_s": 161.3,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-18",
+      "status": "schema-invalid",
+      "cost_usd": 0.023856008,
+      "latency_s": 64.0,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-19",
+      "status": "ok",
+      "cost_usd": 0.03945128,
+      "latency_s": 117.3,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-20",
+      "status": "ok",
+      "cost_usd": 0.041400408,
+      "latency_s": 125.9,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-21",
+      "status": "ok",
+      "cost_usd": 0.0263738,
+      "latency_s": 69.8,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-22",
+      "status": "schema-invalid",
+      "cost_usd": 0.043451728,
+      "latency_s": 121.8,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-23",
+      "status": "schema-invalid",
+      "cost_usd": 0.04800204,
+      "latency_s": 134.9,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-24",
+      "status": "ok",
+      "cost_usd": 0.045869328,
+      "latency_s": 133.4,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-25",
+      "status": "schema-invalid",
+      "cost_usd": 0.031671368,
+      "latency_s": 86.6,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-26",
+      "status": "schema-invalid",
+      "cost_usd": 0.031157328,
+      "latency_s": 88.5,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-27",
+      "status": "ok",
+      "cost_usd": 0.025966008,
+      "latency_s": 72.6,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-28",
+      "status": "schema-invalid",
+      "cost_usd": 0.032233408,
+      "latency_s": 92.2,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-29",
+      "status": "ok",
+      "cost_usd": 0.029268088,
+      "latency_s": 80.9,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-06-30",
+      "status": "schema-invalid",
+      "cost_usd": 0.031811568,
+      "latency_s": 91.1,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-07-01",
+      "status": "ok",
+      "cost_usd": 0.024797848,
+      "latency_s": 63.9,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-07-02",
+      "status": "ok",
+      "cost_usd": 0.032647288,
+      "latency_s": 91.8,
+      "provider": "Baidu"
+    },
+    {
+      "label": "glm/2026-07-03",
+      "status": "ok",
+      "cost_usd": 0.029203728,
+      "latency_s": 73.7,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-12",
+      "status": "schema-invalid",
+      "cost_usd": 0.0250348995,
+      "latency_s": 206.8,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-13",
+      "status": "schema-invalid",
+      "cost_usd": 0.026260983,
+      "latency_s": 219.7,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-14",
+      "status": "ok",
+      "cost_usd": 0.021642309,
+      "latency_s": 167.2,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-15",
+      "status": "schema-invalid",
+      "cost_usd": 0.0213267015,
+      "latency_s": 160.7,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-16",
+      "status": "schema-invalid",
+      "cost_usd": 0.01698957,
+      "latency_s": 121.0,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-17",
+      "status": "schema-invalid",
+      "cost_usd": 0.0179105355,
+      "latency_s": 139.0,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-18",
+      "status": "schema-invalid",
+      "cost_usd": 0.023931414,
+      "latency_s": 191.9,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-19",
+      "status": "ok",
+      "cost_usd": 0.027901224,
+      "latency_s": 223.4,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-20",
+      "status": "schema-invalid",
+      "cost_usd": 0.014524029,
+      "latency_s": 103.4,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-21",
+      "status": "ok",
+      "cost_usd": 0.0268600995,
+      "latency_s": 206.8,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-22",
+      "status": "ok",
+      "cost_usd": 0.0193433175,
+      "latency_s": 143.5,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-23",
+      "status": "schema-invalid",
+      "cost_usd": 0.018045144,
+      "latency_s": 134.7,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-24",
+      "status": "schema-invalid",
+      "cost_usd": 0.020764692,
+      "latency_s": 158.9,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-25",
+      "status": "schema-invalid",
+      "cost_usd": 0.017456517,
+      "latency_s": 136.7,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-26",
+      "status": "schema-invalid",
+      "cost_usd": 0.020054385,
+      "latency_s": 155.7,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-27",
+      "status": "schema-invalid",
+      "cost_usd": 0.0166176855,
+      "latency_s": 127.0,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-28",
+      "status": "schema-invalid",
+      "cost_usd": 0.025018929,
+      "latency_s": 200.4,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-29",
+      "status": "schema-invalid",
+      "cost_usd": 0.024809031,
+      "latency_s": 214.8,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-06-30",
+      "status": "schema-invalid",
+      "cost_usd": 0.0195121485,
+      "latency_s": 155.1,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-07-01",
+      "status": "ok",
+      "cost_usd": 0.0217632285,
+      "latency_s": 160.5,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-07-02",
+      "status": "schema-invalid",
+      "cost_usd": 0.022004307,
+      "latency_s": 173.1,
+      "provider": "Baidu"
+    },
+    {
+      "label": "deepseek/2026-07-03",
+      "status": "schema-invalid",
+      "cost_usd": 0.019074861,
+      "latency_s": 139.4,
+      "provider": "Baidu"
+    },
+    {
+      "label": "sonnet5/2026-06-12",
+      "status": "ok",
+      "cost_usd": 0.07635,
+      "latency_s": 57.7,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-13",
+      "status": "ok",
+      "cost_usd": 0.069488,
+      "latency_s": 52.1,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-14",
+      "status": "ok",
+      "cost_usd": 0.074732,
+      "latency_s": 54.4,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-15",
+      "status": "ok",
+      "cost_usd": 0.073228,
+      "latency_s": 56.4,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-16",
+      "status": "ok",
+      "cost_usd": 0.076836,
+      "latency_s": 58.6,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-17",
+      "status": "ok",
+      "cost_usd": 0.082556,
+      "latency_s": 61.4,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-18",
+      "status": "ok",
+      "cost_usd": 0.07624,
+      "latency_s": 55.1,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-19",
+      "status": "ok",
+      "cost_usd": 0.06917,
+      "latency_s": 49.4,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-20",
+      "status": "ok",
+      "cost_usd": 0.078396,
+      "latency_s": 60.7,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-21",
+      "status": "ok",
+      "cost_usd": 0.068396,
+      "latency_s": 48.9,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-22",
+      "status": "ok",
+      "cost_usd": 0.077542,
+      "latency_s": 58.8,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-23",
+      "status": "ok",
+      "cost_usd": 0.069348,
+      "latency_s": 48.8,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-24",
+      "status": "ok",
+      "cost_usd": 0.074254,
+      "latency_s": 56.5,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-25",
+      "status": "ok",
+      "cost_usd": 0.092342,
+      "latency_s": 68.4,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-26",
+      "status": "ok",
+      "cost_usd": 0.073318,
+      "latency_s": 54.7,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-27",
+      "status": "ok",
+      "cost_usd": 0.073168,
+      "latency_s": 50.5,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-28",
+      "status": "ok",
+      "cost_usd": 0.076738,
+      "latency_s": 55.1,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-29",
+      "status": "ok",
+      "cost_usd": 0.085478,
+      "latency_s": 59.2,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-06-30",
+      "status": "ok",
+      "cost_usd": 0.075178,
+      "latency_s": 52.4,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-07-01",
+      "status": "ok",
+      "cost_usd": 0.066706,
+      "latency_s": 46.3,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-07-02",
+      "status": "ok",
+      "cost_usd": 0.065368,
+      "latency_s": 45.2,
+      "provider": "Azure"
+    },
+    {
+      "label": "sonnet5/2026-07-03",
+      "status": "ok",
+      "cost_usd": 0.073566,
+      "latency_s": 52.8,
+      "provider": "Azure"
+    }
+  ],
+  "run_spend_usd": 2.8831
+}

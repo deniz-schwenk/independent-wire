@@ -1,0 +1,301 @@
+{
+ "stage": "bias",
+ "n_items": 8,
+ "per_item": [
+  {
+   "item_id": "bias__2026-07-03__t0",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "recall": 3.5,
+     "precision": 3.0,
+     "span_quality": 4.0
+    },
+    "candidate": {
+     "recall": 5.0,
+     "precision": 4.0,
+     "span_quality": 4.5
+    }
+   },
+   "combined": {
+    "baseline": 3.5,
+    "candidate": 4.5
+   },
+   "wtl": "cand_win",
+   "errors": {
+    "baseline": {
+     "non_verbatim": 0,
+     "missed_obvious": 2,
+     "neutral_flagged": 2
+    },
+    "candidate": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 1
+    }
+   }
+  },
+  {
+   "item_id": "bias__2026-07-03__t1",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "recall": 4.0,
+     "precision": 4.0,
+     "span_quality": 4.5
+    },
+    "candidate": {
+     "recall": 5.0,
+     "precision": 4.0,
+     "span_quality": 4.0
+    }
+   },
+   "combined": {
+    "baseline": 4.167,
+    "candidate": 4.333
+   },
+   "wtl": "cand_win",
+   "errors": {
+    "baseline": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 0
+    },
+    "candidate": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 0
+    }
+   }
+  },
+  {
+   "item_id": "bias__2026-07-03__t2",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "recall": 4.0,
+     "precision": 3.0,
+     "span_quality": 4.0
+    },
+    "candidate": {
+     "recall": 4.0,
+     "precision": 3.0,
+     "span_quality": 3.5
+    }
+   },
+   "combined": {
+    "baseline": 3.667,
+    "candidate": 3.5
+   },
+   "wtl": "cand_loss",
+   "errors": {
+    "baseline": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 2
+    },
+    "candidate": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 2
+    }
+   }
+  },
+  {
+   "item_id": "bias__2026-07-04__t0",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "recall": 4.0,
+     "precision": 3.5,
+     "span_quality": 4.0
+    },
+    "candidate": {
+     "recall": 5.0,
+     "precision": 4.0,
+     "span_quality": 4.0
+    }
+   },
+   "combined": {
+    "baseline": 3.833,
+    "candidate": 4.333
+   },
+   "wtl": "cand_win",
+   "errors": {
+    "baseline": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 1
+    },
+    "candidate": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 0
+    }
+   }
+  },
+  {
+   "item_id": "bias__2026-07-04__t1",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "recall": 4.0,
+     "precision": 3.0,
+     "span_quality": 3.5
+    },
+    "candidate": {
+     "recall": 4.5,
+     "precision": 4.0,
+     "span_quality": 4.0
+    }
+   },
+   "combined": {
+    "baseline": 3.5,
+    "candidate": 4.167
+   },
+   "wtl": "cand_win",
+   "errors": {
+    "baseline": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 2
+    },
+    "candidate": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 2
+    }
+   }
+  },
+  {
+   "item_id": "bias__2026-07-04__t2",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "recall": 4.0,
+     "precision": 3.0,
+     "span_quality": 4.0
+    },
+    "candidate": {
+     "recall": 4.0,
+     "precision": 3.0,
+     "span_quality": 3.0
+    }
+   },
+   "combined": {
+    "baseline": 3.667,
+    "candidate": 3.333
+   },
+   "wtl": "cand_loss",
+   "errors": {
+    "baseline": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 2
+    },
+    "candidate": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 2
+    }
+   }
+  },
+  {
+   "item_id": "bias__2026-07-05__t0",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "recall": 4.0,
+     "precision": 4.0,
+     "span_quality": 4.0
+    },
+    "candidate": {
+     "recall": 4.0,
+     "precision": 4.0,
+     "span_quality": 4.5
+    }
+   },
+   "combined": {
+    "baseline": 4.0,
+    "candidate": 4.167
+   },
+   "wtl": "cand_win",
+   "errors": {
+    "baseline": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 0
+    },
+    "candidate": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 0
+    }
+   }
+  },
+  {
+   "item_id": "bias__2026-07-05__t2",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "recall": 4.0,
+     "precision": 3.5,
+     "span_quality": 3.5
+    },
+    "candidate": {
+     "recall": 5.0,
+     "precision": 3.5,
+     "span_quality": 4.0
+    }
+   },
+   "combined": {
+    "baseline": 3.667,
+    "candidate": 4.167
+   },
+   "wtl": "cand_win",
+   "errors": {
+    "baseline": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 2
+    },
+    "candidate": {
+     "non_verbatim": 0,
+     "missed_obvious": 0,
+     "neutral_flagged": 1
+    }
+   }
+  }
+ ],
+ "overall": {
+  "means": {
+   "baseline": {
+    "recall": 3.938,
+    "precision": 3.375,
+    "span_quality": 3.938
+   },
+   "candidate": {
+    "recall": 4.562,
+    "precision": 3.688,
+    "span_quality": 3.938
+   }
+  },
+  "errors": {
+   "baseline": {
+    "non_verbatim": 0,
+    "missed_obvious": 2,
+    "neutral_flagged": 11
+   },
+   "candidate": {
+    "non_verbatim": 0,
+    "missed_obvious": 0,
+    "neutral_flagged": 8
+   }
+  },
+  "wtl": {
+   "cand_win": 6,
+   "tie": 0,
+   "cand_loss": 2
+  }
+ }
+}

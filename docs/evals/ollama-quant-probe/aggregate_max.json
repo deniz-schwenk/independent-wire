@@ -1,0 +1,341 @@
+{
+ "run1_glm": {
+  "pair": "glm",
+  "n_items": 10,
+  "n_scores": {
+   "baseline": 20,
+   "candidate": 20
+  },
+  "mean_quality": {
+   "baseline": 4.35,
+   "candidate": 4.4
+  },
+  "artifact_totals": {
+   "fabricated_contrast": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "fabricated_actor": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "numeric_corruption": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "repetition_degeneration": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "truncation": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "schema_violation": {
+    "baseline": 0,
+    "candidate": 0
+   }
+  },
+  "artifact_item_incidence": {
+   "fabricated_contrast": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "fabricated_actor": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "numeric_corruption": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "repetition_degeneration": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "truncation": {
+    "baseline": 0,
+    "candidate": 0
+   },
+   "schema_violation": {
+    "baseline": 0,
+    "candidate": 0
+   }
+  },
+  "candidate_vs_baseline_wtl": {
+   "cand_win": 2,
+   "tie": 7,
+   "cand_loss": 1
+  },
+  "missing_verdicts": [],
+  "per_item": [
+   {
+    "date": "2026-06-28",
+    "topic": 0,
+    "baseline_j0": 4,
+    "baseline_j1": 4,
+    "candidate_j0": 4,
+    "candidate_j1": 4,
+    "baseline_mean": 4.0,
+    "candidate_mean": 4.0,
+    "disagree_baseline": false,
+    "disagree_candidate": false
+   },
+   {
+    "date": "2026-06-29",
+    "topic": 2,
+    "baseline_j0": 4,
+    "baseline_j1": 4,
+    "candidate_j0": 4,
+    "candidate_j1": 4,
+    "baseline_mean": 4.0,
+    "candidate_mean": 4.0,
+    "disagree_baseline": false,
+    "disagree_candidate": false
+   },
+   {
+    "date": "2026-06-30",
+    "topic": 1,
+    "baseline_j0": 4,
+    "baseline_j1": 4,
+    "candidate_j0": 4,
+    "candidate_j1": 4,
+    "baseline_mean": 4.0,
+    "candidate_mean": 4.0,
+    "disagree_baseline": false,
+    "disagree_candidate": false
+   },
+   {
+    "date": "2026-07-01",
+    "topic": 1,
+    "baseline_j0": 5,
+    "baseline_j1": 4,
+    "candidate_j0": 5,
+    "candidate_j1": 4,
+    "baseline_mean": 4.5,
+    "candidate_mean": 4.5,
+    "disagree_baseline": false,
+    "disagree_candidate": false
+   },
+   {
+    "date": "2026-07-01",
+    "topic": 2,
+    "baseline_j0": 5,
+    "baseline_j1": 4,
+    "candidate_j0": 5,
+    "candidate_j1": 5,
+    "baseline_mean": 4.5,
+    "candidate_mean": 5.0,
+    "disagree_baseline": false,
+    "disagree_candidate": false
+   },
+   {
+    "date": "2026-07-02",
+    "topic": 0,
+    "baseline_j0": 4,
+    "baseline_j1": 4,
+    "candidate_j0": 4,
+    "candidate_j1": 4,
+    "baseline_mean": 4.0,
+    "candidate_mean": 4.0,
+    "disagree_baseline": false,
+    "disagree_candidate": false
+   },
+   {
+    "date": "2026-07-02",
+    "topic": 1,
+    "baseline_j0": 5,
+    "baseline_j1": 5,
+    "candidate_j0": 4,
+    "candidate_j1": 4,
+    "baseline_mean": 5.0,
+    "candidate_mean": 4.0,
+    "disagree_baseline": false,
+    "disagree_candidate": false
+   },
+   {
+    "date": "2026-07-03",
+    "topic": 1,
+    "baseline_j0": 5,
+    "baseline_j1": 5,
+    "candidate_j0": 5,
+    "candidate_j1": 5,
+    "baseline_mean": 5.0,
+    "candidate_mean": 5.0,
+    "disagree_baseline": false,
+    "disagree_candidate": false
+   },
+   {
+    "date": "2026-07-04",
+    "topic": 0,
+    "baseline_j0": 4,
+    "baseline_j1": 4,
+    "candidate_j0": 5,
+    "candidate_j1": 5,
+    "baseline_mean": 4.0,
+    "candidate_mean": 5.0,
+    "disagree_baseline": false,
+    "disagree_candidate": false
+   },
+   {
+    "date": "2026-07-04",
+    "topic": 1,
+    "baseline_j0": 5,
+    "baseline_j1": 4,
+    "candidate_j0": 5,
+    "candidate_j1": 4,
+    "baseline_mean": 4.5,
+    "candidate_mean": 4.5,
+    "disagree_baseline": false,
+    "disagree_candidate": false
+   }
+  ]
+ },
+ "run1b_glmmax": {
+  "baseline_mean": 4.35,
+  "candidate_mean": 4.45,
+  "wtl": {
+   "win": 2,
+   "tie": 8,
+   "loss": 0
+  },
+  "artifacts": {
+   "fabricated_contrast": {
+    "candidate": 0,
+    "baseline": 1
+   },
+   "fabricated_actor": {
+    "candidate": 0,
+    "baseline": 0
+   },
+   "numeric_corruption": {
+    "candidate": 0,
+    "baseline": 0
+   },
+   "repetition_degeneration": {
+    "candidate": 0,
+    "baseline": 0
+   },
+   "truncation": {
+    "candidate": 0,
+    "baseline": 0
+   },
+   "schema_violation": {
+    "candidate": 0,
+    "baseline": 0
+   }
+  },
+  "n_scores": {
+   "baseline": 20,
+   "candidate": 20
+  },
+  "missing": [],
+  "rows": [
+   [
+    "2026-06-28",
+    0,
+    4,
+    4,
+    4,
+    4,
+    4.0,
+    4.0
+   ],
+   [
+    "2026-06-29",
+    2,
+    4,
+    5,
+    5,
+    5,
+    4.5,
+    5.0
+   ],
+   [
+    "2026-06-30",
+    1,
+    4,
+    5,
+    4,
+    5,
+    4.5,
+    4.5
+   ],
+   [
+    "2026-07-01",
+    1,
+    4,
+    5,
+    4,
+    5,
+    4.5,
+    4.5
+   ],
+   [
+    "2026-07-01",
+    2,
+    4,
+    5,
+    4,
+    5,
+    4.5,
+    4.5
+   ],
+   [
+    "2026-07-02",
+    0,
+    4,
+    5,
+    4,
+    5,
+    4.5,
+    4.5
+   ],
+   [
+    "2026-07-02",
+    1,
+    4,
+    5,
+    4,
+    5,
+    4.5,
+    4.5
+   ],
+   [
+    "2026-07-03",
+    1,
+    4,
+    5,
+    4,
+    5,
+    4.5,
+    4.5
+   ],
+   [
+    "2026-07-04",
+    0,
+    4,
+    5,
+    4,
+    5,
+    4.5,
+    4.5
+   ],
+   [
+    "2026-07-04",
+    1,
+    4,
+    3,
+    4,
+    4,
+    3.5,
+    4.0
+   ]
+  ]
+ },
+ "latency": {
+  "xhigh": 41.3,
+  "high": 30.0,
+  "max": 17.4
+ }
+}

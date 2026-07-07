@@ -1,0 +1,404 @@
+{
+  "n_cases_judged": 21,
+  "n_cases_missing_verdict": 0,
+  "missing_cases": [],
+  "n_cases_malformed": 0,
+  "malformed_cases": [],
+  "correctness_mean": {
+    "glm-5.2-shadow": 4.571,
+    "incumbent-sonnet-4.6": 3.571
+  },
+  "correctness_dist": {
+    "glm-5.2-shadow": {
+      "1": 0,
+      "2": 0,
+      "3": 2,
+      "4": 5,
+      "5": 14
+    },
+    "incumbent-sonnet-4.6": {
+      "1": 0,
+      "2": 2,
+      "3": 6,
+      "4": 12,
+      "5": 1
+    }
+  },
+  "fabrications_total": {
+    "glm-5.2-shadow": 2,
+    "incumbent-sonnet-4.6": 15
+  },
+  "fabrications_mean": {
+    "glm-5.2-shadow": 0.095,
+    "incumbent-sonnet-4.6": 0.714
+  },
+  "fabrications_topics_with_any": {
+    "glm-5.2-shadow": 2,
+    "incumbent-sonnet-4.6": 10
+  },
+  "pairwise": {
+    "glm_win": 13,
+    "tie": 1,
+    "incumbent_win": 7
+  },
+  "pairwise_glm_win_or_tie": 14,
+  "per_case": [
+    {
+      "case": "case-01",
+      "date": "2026-06-26",
+      "topic": "topic-0",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 4,
+        "glm-5.2-shadow": 4
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 0,
+        "glm-5.2-shadow": 0
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "Both analyses are accurate with no fabrications: A correctly catches the Koizumi quote misattribution and the Russia-NK overstatement, but pads with two self-cancelling non-problems (June 28 date, Lianhe Zaobao). B finds more substantive, verifiable issues — the src-007 'primary deterrence responsibility' vs 'primary defense role' misattribution, the narrowed object of China's protest in src-015, "
+    },
+    {
+      "case": "case-02",
+      "date": "2026-06-26",
+      "topic": "topic-1",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 4,
+        "glm-5.2-shadow": 4
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 1,
+        "glm-5.2-shadow": 0
+      },
+      "pairwise_winner": "incumbent-sonnet-4.6",
+      "rationale": "Both correctly flag the real 2-vs-3 nuclear-reactor and 40-vs-48 drowning divergences with accurate corrections; A additionally catches a genuine misquote of Castellan (article dropped the 38C/18C comparator) that B misses, and surfaces both divergences transparently. A's one flaw is mischaracterizing src-004 as listing 'Bugey, Nogent-sur-Seine, and Golfech' (src-004 attributes three reactors to N"
+    },
+    {
+      "case": "case-03",
+      "date": "2026-06-26",
+      "topic": "topic-2",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 3,
+        "glm-5.2-shadow": 5
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 0,
+        "glm-5.2-shadow": 0
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "Output B caught the single clearest article error — the unsupported 'Swiss-mediated' attribution absent from every source — corrected it cleanly, and offered four well-grounded divergences with no padding. Output A found the genuine 'released funds' framing issue and sound divergences, but padded problems_found with three self-negating non-findings plus a duplicate and missed the Swiss fabrication"
+    },
+    {
+      "case": "case-04",
+      "date": "2026-06-27",
+      "topic": "topic-0",
+      "A": "glm-5.2-shadow",
+      "B": "incumbent-sonnet-4.6",
+      "correctness": {
+        "glm-5.2-shadow": 5,
+        "incumbent-sonnet-4.6": 2
+      },
+      "fabrications": {
+        "glm-5.2-shadow": 0,
+        "incumbent-sonnet-4.6": 1
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "Output A found two genuine, well-supported problems (the Biden-origin detail misattributed to The Atlantic, and the unsupported 'regardless of sentence' clause), applied accurate corrections, and reported real divergences with no fabrication. Output B padded problems_found with seven non-issues it concluded needed no fix, its only substantive corrections were minor duplicate citation tweaks to the"
+    },
+    {
+      "case": "case-05",
+      "date": "2026-06-27",
+      "topic": "topic-1",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 4,
+        "glm-5.2-shadow": 4
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 2,
+        "glm-5.2-shadow": 0
+      },
+      "pairwise_winner": "incumbent-sonnet-4.6",
+      "rationale": "Both correctly catch the core defect (article claims a lawsuit was 'filed' while src-008 only supports a 'legal challenge'). A additionally catches a genuine, verifiable error B misses (src-008's designation is 'national security AND supply chain risk') and fixes it, but clutters problems_found with self-negating factually_incorrect flags (John Coleman, Kate Koren) that admit no error exists. B is"
+    },
+    {
+      "case": "case-06",
+      "date": "2026-06-27",
+      "topic": "topic-2",
+      "A": "glm-5.2-shadow",
+      "B": "incumbent-sonnet-4.6",
+      "correctness": {
+        "glm-5.2-shadow": 5,
+        "incumbent-sonnet-4.6": 4
+      },
+      "fabrications": {
+        "glm-5.2-shadow": 0,
+        "incumbent-sonnet-4.6": 0
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "Output A catches the clearest objective error (the article lists 'French' coverage though no French-language source exists; France 24 is English) and correctly fixes it, with all findings well-supported. Output B does valid subtler work on the unsupported Macron 'national fiscal sovereignty' framing and the G7 'next forum/both expected to attend' embellishment, but misses the French-language error"
+    },
+    {
+      "case": "case-07",
+      "date": "2026-06-28",
+      "topic": "topic-0",
+      "A": "glm-5.2-shadow",
+      "B": "incumbent-sonnet-4.6",
+      "correctness": {
+        "glm-5.2-shadow": 5,
+        "incumbent-sonnet-4.6": 4
+      },
+      "fabrications": {
+        "glm-5.2-shadow": 0,
+        "incumbent-sonnet-4.6": 0
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "Both correctly flag the unsupported 'not directed at any third country' subheadline claim; A's two findings are both accurate and actionable (including a defensible timing fix), and its four divergences are well-supported. B lands one genuine extra catch (the 'nearly 10' vs 'more than 10' number discrepancy) but clutters problems_found with five self-retracted or duplicate non-findings plus a spec"
+    },
+    {
+      "case": "case-08",
+      "date": "2026-06-28",
+      "topic": "topic-1",
+      "A": "glm-5.2-shadow",
+      "B": "incumbent-sonnet-4.6",
+      "correctness": {
+        "glm-5.2-shadow": 5,
+        "incumbent-sonnet-4.6": 3
+      },
+      "fabrications": {
+        "glm-5.2-shadow": 0,
+        "incumbent-sonnet-4.6": 2
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "Output_A's four findings are all real and verifiable (Seoul June-13 URL and Barcelona theme-unveiling excluded from 'same weekend', planning-tense mismatch, 2025-dated Fidesz sources, unsupported 'without reported incident') and its corrections implement them accurately with no fabrication. Output_B lands two genuine catches (imprecise 'removal', src-012/013 date issue) but leaves the date issue u"
+    },
+    {
+      "case": "case-09",
+      "date": "2026-06-28",
+      "topic": "topic-2",
+      "A": "glm-5.2-shadow",
+      "B": "incumbent-sonnet-4.6",
+      "correctness": {
+        "glm-5.2-shadow": 3,
+        "incumbent-sonnet-4.6": 4
+      },
+      "fabrications": {
+        "glm-5.2-shadow": 1,
+        "incumbent-sonnet-4.6": 1
+      },
+      "pairwise_winner": "incumbent-sonnet-4.6",
+      "rationale": "Both correctly catch the one hard factual error (src-002 names Knezevic, not Andrija Mandic) and both flag the src-004 November-2025 date divergence and the unconfirmed death toll. Output A over-corrects: it degrades the correct 'November 2024' to vague 'late 2024' and deletes the true, uncontradicted 'killing fifteen people,' damaging accurate content, whereas B correctly reasons that Nov 2024 is"
+    },
+    {
+      "case": "case-10",
+      "date": "2026-06-29",
+      "topic": "topic-0",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 3,
+        "glm-5.2-shadow": 5
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 2,
+        "glm-5.2-shadow": 0
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "Output B's three findings are all real and precise: the misattributed FLNKS-president name, the unsupported 'democratic correction' phrasing, and the Bougival 'now-rejected' claim wrongly cited to src-017 instead of src-001. Output A catches the name issue but its temporal 'trigger' finding (problems 1 and 4, one a self-admitted duplicate) mischaracterizes the article, which attributes the 2024 un"
+    },
+    {
+      "case": "case-11",
+      "date": "2026-06-29",
+      "topic": "topic-1",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 3,
+        "glm-5.2-shadow": 5
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 2,
+        "glm-5.2-shadow": 0
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "Output A pads problems_found with three self-retracted non-issues and mischaracterizes two excerpts (the article's 'follows' already sequences the PHEIC before June 29, and src-009's summary attributes the framing to AFP, not AHF as A claims — the AHF inference rests only on the URL slug), though its AFP/AHF catch has some merit. Output B is narrow but every assertion is accurate and well-supporte"
+    },
+    {
+      "case": "case-12",
+      "date": "2026-06-29",
+      "topic": "topic-2",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 4,
+        "glm-5.2-shadow": 5
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 0,
+        "glm-5.2-shadow": 0
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "Both are fabrication-free and correctly identify and fix the real 25-vs-29 casualty divergence flagged in preliminary_divergences. A adds a valid catch (the omitted 'up to 400' Taliban hospital-toll claim in src-020) but pads its list with two items mislabeled 'factually_incorrect' that it then concedes need no correction. B is tighter: two genuine problems, including the internal 'closed' vs 'lar"
+    },
+    {
+      "case": "case-13",
+      "date": "2026-06-30",
+      "topic": "topic-0",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 3,
+        "glm-5.2-shadow": 5
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 0,
+        "glm-5.2-shadow": 0
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "Output B identifies a real, substantive gap — the article omits the robotics-initiative pillar (src-004) and the 1,450 trillion won headline figure (src-013) — and fixes it accurately with correct math and source support. Output A's only actionable fix (a 'May 2026' temporal qualifier) is minor and correct, but 10 of its 11 problems_found are self-retracting flags whose type labels contradict thei"
+    },
+    {
+      "case": "case-14",
+      "date": "2026-06-30",
+      "topic": "topic-1",
+      "A": "glm-5.2-shadow",
+      "B": "incumbent-sonnet-4.6",
+      "correctness": {
+        "glm-5.2-shadow": 4,
+        "incumbent-sonnet-4.6": 4
+      },
+      "fabrications": {
+        "glm-5.2-shadow": 0,
+        "incumbent-sonnet-4.6": 0
+      },
+      "pairwise_winner": "incumbent-sonnet-4.6",
+      "rationale": "Both correctly flag the Kubayi/Lamola dual 'Justice Minister' problem with sound corrections and neither fabricates (B's cabinet-reshuffle note is explicitly hedged, its one weak item is self-retracted). B additionally catches three genuine, source-verifiable citation errors A missed — the 600M rand figure over-cited to src-006/src-007 (only src-004 reports it), the unsupported 'by mid-June' quali"
+    },
+    {
+      "case": "case-15",
+      "date": "2026-06-30",
+      "topic": "topic-2",
+      "A": "glm-5.2-shadow",
+      "B": "incumbent-sonnet-4.6",
+      "correctness": {
+        "glm-5.2-shadow": 4,
+        "incumbent-sonnet-4.6": 4
+      },
+      "fabrications": {
+        "glm-5.2-shadow": 0,
+        "incumbent-sonnet-4.6": 0
+      },
+      "pairwise_winner": "incumbent-sonnet-4.6",
+      "rationale": "Both are well-grounded with no fabrications: A correctly catches the 34-year-old/lived-at-facility citation mismatch and the unsupported second-person-in-custody claim, while B uniquely catches two subtler real issues A missed (the Spanish-language pseudo-verbatim quote from a German-speaking police chief via El Pais, and the article over-attributing the list of prior shootings to DW/src-003). A's"
+    },
+    {
+      "case": "case-16",
+      "date": "2026-07-01",
+      "topic": "topic-0",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 5,
+        "glm-5.2-shadow": 3
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 0,
+        "glm-5.2-shadow": 1
+      },
+      "pairwise_winner": "incumbent-sonnet-4.6",
+      "rationale": "Output A catches three clearly source-verifiable fixes B misses entirely (Kelly's altered direct quote per src-002, the 49% stake detail per src-009, and the Trump Organization spokesperson attribution per src-003), plus the Cumhuriyet-vs-Yahoo figure divergence, with all corrections grounded in the sources. Output B correctly flags the Cumhuriyet divergence but over-asserts that src-001/003/005 d"
+    },
+    {
+      "case": "case-17",
+      "date": "2026-07-01",
+      "topic": "topic-1",
+      "A": "glm-5.2-shadow",
+      "B": "incumbent-sonnet-4.6",
+      "correctness": {
+        "glm-5.2-shadow": 5,
+        "incumbent-sonnet-4.6": 3
+      },
+      "fabrications": {
+        "glm-5.2-shadow": 0,
+        "incumbent-sonnet-4.6": 2
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "Output A's six findings are all real and well-supported (unsupported wife/mother-in-law identification, singular-woman mismatch, unsourced age 62, Versobank co-owner vs majority-owner discrepancy, initial 'likely terrorist attack' framing, omitted prosecutor organized-crime characterization) with accurate, internally consistent corrections. Output B catches the genuine embedded-Russian-quote misre"
+    },
+    {
+      "case": "case-18",
+      "date": "2026-07-01",
+      "topic": "topic-2",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 4,
+        "glm-5.2-shadow": 5
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 1,
+        "glm-5.2-shadow": 0
+      },
+      "pairwise_winner": "incumbent-sonnet-4.6",
+      "rationale": "Output_A surfaces more genuine, warranted fixes (Wang Yi's Spanish quote wrongly attributed as verbatim, the 'Mojtaba Khamenei' name anomaly, and the conflated Trump Truth Social statements), though its 'held in Qatari accounts' flag is essentially unsupported and its five-clause 'collapse' is a thin nuance. Output_B is fully precise and lands the strong Gargash catch (src-023 dated April, plus 'r"
+    },
+    {
+      "case": "case-19",
+      "date": "2026-07-02",
+      "topic": "topic-0",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 2,
+        "glm-5.2-shadow": 5
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 1,
+        "glm-5.2-shadow": 0
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "B catches a real citation error (src-003 is cited for 1.4M but reports 'one million'), fixes it in the corrected article, and its three problems plus the Baja California Sur correction are all verifiable and non-redundant. A duplicates the same location problem twice, misuses qa_corrections as self-referential meta-commentary, misses the src-003 citation error entirely, and asserts an unverifiable"
+    },
+    {
+      "case": "case-20",
+      "date": "2026-07-02",
+      "topic": "topic-1",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 4,
+        "glm-5.2-shadow": 5
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 0,
+        "glm-5.2-shadow": 0
+      },
+      "pairwise_winner": "tie",
+      "rationale": "Neither output fabricates: A's two applied fixes (Abu Zerega 'predominantly Zaghawa' vs sources' 'non-Arab ethnic groups', and Wallenberg 'led by' vs 'coalition of') are warranted, though its problems_found is padded with six self-negating 'no error' entries, and its Yagoub explanation is muddled. B's single catch — the unsupported '200-page' count, absent from every source — is a real, sharp find"
+    },
+    {
+      "case": "case-21",
+      "date": "2026-07-02",
+      "topic": "topic-2",
+      "A": "incumbent-sonnet-4.6",
+      "B": "glm-5.2-shadow",
+      "correctness": {
+        "incumbent-sonnet-4.6": 4,
+        "glm-5.2-shadow": 5
+      },
+      "fabrications": {
+        "incumbent-sonnet-4.6": 0,
+        "glm-5.2-shadow": 0
+      },
+      "pairwise_winner": "glm-5.2-shadow",
+      "rationale": "Both correctly catch the real issues (WLF income divergence, the 87%-since-launch vs from-peak mischaracterization, and the uncited 'not advanced through committee' claim) with accurate corrections and no fabricated source content. Output A is thorough but cluttered with five self-retracting problems_found entries and adds an editorializing 'progressive advocacy' label plus a 'Center for American "
+    }
+  ]
+}

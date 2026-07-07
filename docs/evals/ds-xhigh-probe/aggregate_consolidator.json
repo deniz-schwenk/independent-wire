@@ -1,0 +1,319 @@
+{
+ "stage": "consolidator",
+ "n_items": 8,
+ "per_item": [
+  {
+   "item_id": "consolidator__2026-07-03__t0",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 5.0
+    },
+    "candidate": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 5.0
+    }
+   },
+   "combined": {
+    "baseline": 5.0,
+    "candidate": 5.0
+   },
+   "wtl": "tie",
+   "errors": {
+    "baseline": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    },
+    "candidate": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    }
+   }
+  },
+  {
+   "item_id": "consolidator__2026-07-03__t1",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 5.0
+    },
+    "candidate": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 5.0
+    }
+   },
+   "combined": {
+    "baseline": 5.0,
+    "candidate": 5.0
+   },
+   "wtl": "tie",
+   "errors": {
+    "baseline": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    },
+    "candidate": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    }
+   }
+  },
+  {
+   "item_id": "consolidator__2026-07-03__t2",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 5.0
+    },
+    "candidate": {
+     "faithfulness": 5.0,
+     "classification": 4.5,
+     "dedup_coverage": 5.0
+    }
+   },
+   "combined": {
+    "baseline": 5.0,
+    "candidate": 4.833
+   },
+   "wtl": "cand_loss",
+   "errors": {
+    "baseline": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    },
+    "candidate": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    }
+   }
+  },
+  {
+   "item_id": "consolidator__2026-07-04__t0",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 3.5
+    },
+    "candidate": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 5.0
+    }
+   },
+   "combined": {
+    "baseline": 4.5,
+    "candidate": 5.0
+   },
+   "wtl": "cand_win",
+   "errors": {
+    "baseline": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 2
+    },
+    "candidate": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    }
+   }
+  },
+  {
+   "item_id": "consolidator__2026-07-04__t1",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 4.0
+    },
+    "candidate": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 5.0
+    }
+   },
+   "combined": {
+    "baseline": 4.667,
+    "candidate": 5.0
+   },
+   "wtl": "cand_win",
+   "errors": {
+    "baseline": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    },
+    "candidate": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    }
+   }
+  },
+  {
+   "item_id": "consolidator__2026-07-04__t2",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 5.0
+    },
+    "candidate": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 4.0
+    }
+   },
+   "combined": {
+    "baseline": 5.0,
+    "candidate": 4.667
+   },
+   "wtl": "cand_loss",
+   "errors": {
+    "baseline": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    },
+    "candidate": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    }
+   }
+  },
+  {
+   "item_id": "consolidator__2026-07-05__t0",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 5.0
+    },
+    "candidate": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 5.0
+    }
+   },
+   "combined": {
+    "baseline": 5.0,
+    "candidate": 5.0
+   },
+   "wtl": "tie",
+   "errors": {
+    "baseline": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    },
+    "candidate": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    }
+   }
+  },
+  {
+   "item_id": "consolidator__2026-07-05__t2",
+   "n_verdicts": 2,
+   "means": {
+    "baseline": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 4.5
+    },
+    "candidate": {
+     "faithfulness": 5.0,
+     "classification": 5.0,
+     "dedup_coverage": 5.0
+    }
+   },
+   "combined": {
+    "baseline": 4.833,
+    "candidate": 5.0
+   },
+   "wtl": "cand_win",
+   "errors": {
+    "baseline": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    },
+    "candidate": {
+     "fabrication": 0,
+     "misclassification": 0,
+     "dropped_gap": 0,
+     "redundant": 0
+    }
+   }
+  }
+ ],
+ "overall": {
+  "means": {
+   "baseline": {
+    "faithfulness": 5.0,
+    "classification": 5.0,
+    "dedup_coverage": 4.625
+   },
+   "candidate": {
+    "faithfulness": 5.0,
+    "classification": 4.938,
+    "dedup_coverage": 4.875
+   }
+  },
+  "errors": {
+   "baseline": {
+    "fabrication": 0,
+    "misclassification": 0,
+    "dropped_gap": 0,
+    "redundant": 2
+   },
+   "candidate": {
+    "fabrication": 0,
+    "misclassification": 0,
+    "dropped_gap": 0,
+    "redundant": 0
+   }
+  },
+  "wtl": {
+   "cand_win": 3,
+   "tie": 3,
+   "cand_loss": 2
+  }
+ }
+}

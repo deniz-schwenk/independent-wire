@@ -1,0 +1,254 @@
+{
+  "labels": [
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z"
+  ],
+  "n_divergence_days_with_panels": 20,
+  "missing_verdicts": [],
+  "label_day_wins": {
+    "V": 10,
+    "W": 6,
+    "X": 3,
+    "Z": 8,
+    "Y": 2
+  },
+  "label_slot_sounder_counts": {
+    "V": 75,
+    "W": 71,
+    "X": 56,
+    "Y": 68,
+    "Z": 85
+  },
+  "majority_agreement_days": 20,
+  "panel_day_agreement_rate": 1.0,
+  "per_day": {
+    "2026-06-12": {
+      "winners": [
+        "V",
+        "W"
+      ],
+      "votes": {
+        "V": 3,
+        "W": 3
+      },
+      "n_judges": 3
+    },
+    "2026-06-13": {
+      "winners": [
+        "W",
+        "X"
+      ],
+      "votes": {
+        "Y": 1,
+        "W": 2,
+        "X": 2
+      },
+      "n_judges": 3
+    },
+    "2026-06-14": {
+      "winners": [
+        "V",
+        "Z"
+      ],
+      "votes": {
+        "V": 3,
+        "Z": 3
+      },
+      "n_judges": 3
+    },
+    "2026-06-15": {
+      "winners": [
+        "V"
+      ],
+      "votes": {
+        "V": 3,
+        "W": 1,
+        "Z": 2
+      },
+      "n_judges": 3
+    },
+    "2026-06-16": {
+      "winners": [
+        "Y"
+      ],
+      "votes": {
+        "Y": 2,
+        "Z": 1
+      },
+      "n_judges": 3
+    },
+    "2026-06-17": {
+      "winners": [
+        "Z"
+      ],
+      "votes": {
+        "Z": 3,
+        "Y": 1
+      },
+      "n_judges": 3
+    },
+    "2026-06-18": {
+      "winners": [
+        "V",
+        "Z"
+      ],
+      "votes": {
+        "V": 3,
+        "Z": 3,
+        "W": 2
+      },
+      "n_judges": 3
+    },
+    "2026-06-19": {
+      "winners": [
+        "W"
+      ],
+      "votes": {
+        "V": 2,
+        "W": 3,
+        "Y": 1
+      },
+      "n_judges": 3
+    },
+    "2026-06-20": {
+      "winners": [
+        "Y"
+      ],
+      "votes": {
+        "Y": 3,
+        "Z": 1
+      },
+      "n_judges": 3
+    },
+    "2026-06-21": {
+      "winners": [
+        "Z"
+      ],
+      "votes": {
+        "Z": 2,
+        "V": 1,
+        "W": 1
+      },
+      "n_judges": 3
+    },
+    "2026-06-22": {
+      "winners": [
+        "V",
+        "W"
+      ],
+      "votes": {
+        "V": 2,
+        "W": 2,
+        "X": 1,
+        "Y": 1,
+        "Z": 1
+      },
+      "n_judges": 3
+    },
+    "2026-06-24": {
+      "winners": [
+        "X"
+      ],
+      "votes": {
+        "X": 3,
+        "Z": 2,
+        "V": 2
+      },
+      "n_judges": 3
+    },
+    "2026-06-25": {
+      "winners": [
+        "V",
+        "Z"
+      ],
+      "votes": {
+        "V": 2,
+        "Z": 2,
+        "W": 1,
+        "Y": 1
+      },
+      "n_judges": 3
+    },
+    "2026-06-26": {
+      "winners": [
+        "V"
+      ],
+      "votes": {
+        "V": 3,
+        "W": 1
+      },
+      "n_judges": 3
+    },
+    "2026-06-27": {
+      "winners": [
+        "V",
+        "Z"
+      ],
+      "votes": {
+        "V": 3,
+        "Z": 3,
+        "W": 1
+      },
+      "n_judges": 3
+    },
+    "2026-06-28": {
+      "winners": [
+        "V",
+        "W"
+      ],
+      "votes": {
+        "V": 3,
+        "W": 3
+      },
+      "n_judges": 3
+    },
+    "2026-06-30": {
+      "winners": [
+        "X",
+        "Z"
+      ],
+      "votes": {
+        "W": 1,
+        "Y": 1,
+        "X": 2,
+        "Z": 2
+      },
+      "n_judges": 3
+    },
+    "2026-07-01": {
+      "winners": [
+        "V"
+      ],
+      "votes": {
+        "V": 3,
+        "Z": 1,
+        "W": 2
+      },
+      "n_judges": 3
+    },
+    "2026-07-02": {
+      "winners": [
+        "W"
+      ],
+      "votes": {
+        "W": 3,
+        "X": 1
+      },
+      "n_judges": 3
+    },
+    "2026-07-03": {
+      "winners": [
+        "Z"
+      ],
+      "votes": {
+        "Y": 2,
+        "Z": 3,
+        "V": 1
+      },
+      "n_judges": 3
+    }
+  }
+}
