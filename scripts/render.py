@@ -878,7 +878,18 @@ def build_source_map(tp: dict) -> str:
 def build_reader_note(tp: dict) -> str:
     note = tp.get("bias_analysis", {}).get("reader_note", "")
     if not note:
-        return ""
+        # The bias judge emits an empty reader_note when it confirms nothing
+        # (agents/bias_judge/INSTRUCTIONS.md: "stays empty when there are
+        # none") — a genuinely clean article. Rather than drop the card and
+        # leave a bare heading, show a deterministic language-aware note that
+        # the article's own voice was verified clean. German string lives in
+        # config/de_render_labels.json (ui.reader_note_none_confirmed).
+        note = RL.L(
+            "ui",
+            "reader_note_none_confirmed",
+            "No instances of linguistic bias in the article's own voice "
+            "were verified.",
+        )
     return f'<div class="reader-note">{_esc(note)}</div>\n'
 
 

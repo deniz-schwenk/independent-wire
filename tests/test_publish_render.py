@@ -7,6 +7,7 @@ full pipeline run.
 
 from __future__ import annotations
 
+from scripts import render_labels as RL
 from scripts.publish import extract_metadata
 from scripts.render import (
     build_actors_section,
@@ -14,6 +15,7 @@ from scripts.render import (
     build_meta_bar,
     build_perspectives,
     build_mentioned_actors_section,
+    build_reader_note,
     build_sources_table,
     build_transparency,
     build_what_is_missing_section,
@@ -1530,3 +1532,55 @@ def test_publish_extract_metadata_uses_v2_paths(tmp_path):
     meta = extract_metadata(path)
     assert meta["languages_count"] == 4
     assert meta["stakeholders_count"] == 12
+
+
+# ---------------------------------------------------------------------------
+# Reader-note card: deterministic language-aware default on a clean article
+# (bias judge emits an empty reader_note when it confirms nothing —
+# agents/bias_judge/INSTRUCTIONS.md). Regression for the 2026-07-08 tp-001
+# empty-card observation. English default is inline; German comes from
+# config/de_render_labels.json (ui.reader_note_none_confirmed).
+# ---------------------------------------------------------------------------
+
+
+def test_reader_note_passthrough_when_present():
+    try:
+        RL.set_lang("en")
+        html = build_reader_note({"bias_analysis": {"reader_note": "A confirmed finding."}})
+    finally:
+        RL.set_lang("en")
+    assert "A confirmed finding." in html
+    assert 'class="reader-note"' in html
+
+
+def test_reader_note_empty_renders_english_default():
+    try:
+        RL.set_lang("en")
+        html = build_reader_note({"bias_analysis": {"reader_note": ""}})
+    finally:
+        RL.set_lang("en")
+    # card is NOT dropped; it carries the clean-article default
+    assert 'class="reader-note"' in html
+    assert "No instances of linguistic bias in the article" in html
+    assert "were verified" in html
+
+
+def test_reader_note_empty_renders_german_default():
+    try:
+        RL.set_lang("de")
+        html = build_reader_note({"bias_analysis": {"reader_note": ""}})
+    finally:
+        RL.set_lang("en")
+    assert 'class="reader-note"' in html
+    assert "Es wurden keine Fälle von sprachlicher Voreingenommenheit" in html
+
+
+def test_reader_note_missing_key_renders_default():
+    """No bias_analysis at all still yields the default, never a bare card."""
+    try:
+        RL.set_lang("en")
+        html = build_reader_note({})
+    finally:
+        RL.set_lang("en")
+    assert 'class="reader-note"' in html
+    assert "were verified" in html

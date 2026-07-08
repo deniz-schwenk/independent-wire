@@ -111,6 +111,7 @@
     "show_detailed_findings": "Detaillierte Befunde anzeigen",
     "borderline_subnote": "Auf beiden Seiten sind vertretbare Lesarten möglich",
     "no_language_bias_findings": "Keine sprachlichen Verzerrungen gefunden",
+    "reader_note_none_confirmed": "Es wurden keine Fälle von sprachlicher Voreingenommenheit in der eigenen Stimme des Artikels verifiziert.",
     "quote_details": "Zitatdetails",
     "selection_reason": "Auswahlgrund",
     "qa_corrections": "QA-Korrekturen",
