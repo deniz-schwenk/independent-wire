@@ -820,14 +820,18 @@ class TopicBus(BaseModel):
         optional_write=True,
     )
 
-    # 4B.9 Bias Detector phase (3 slots). bias_language_findings carries
-    # optional_write=True: a genuinely neutral article legitimately yields
-    # zero findings (H2, docs/CODE-REVIEW-2026-07-02.md). bias_reader_note
-    # stays required — the agent emits a reader-note even on clean runs.
+    # 4B.9 Bias Detector phase (3 slots). All three carry optional_write=True:
+    # a genuinely neutral article legitimately yields zero findings
+    # (H2, docs/CODE-REVIEW-2026-07-02.md). bias_reader_note is optional for
+    # the same reason — the bias_judge prompt emits an EMPTY reader_note when
+    # nothing is confirmed (agents/bias_judge/INSTRUCTIONS.md), so a fully
+    # clean article legitimately leaves this slot empty. Requiring it here
+    # dropped a clean lead topic on 2026-07-08 (judge cleared all candidates,
+    # empty note, StagePostconditionError → no TP published).
     # bias_borderline_candidates (TASK-BIAS-TIER-MAPPING) is the additive
     # honest gray zone: candidates the three-tier judge rated `borderline`
-    # (a defensible reading exists on both sides). optional_write=True —
-    # most articles yield none — same tp/mcp visibility as the findings slot.
+    # (a defensible reading exists on both sides) — most articles yield none.
+    # All three share tp/mcp visibility.
     bias_language_findings: list = Slot(
         default_factory=list,
         visibility=["tp", "mcp"],
@@ -838,7 +842,7 @@ class TopicBus(BaseModel):
         visibility=["tp", "mcp"],
         optional_write=True,
     )
-    bias_reader_note: str = Slot("", visibility=["tp", "mcp"])
+    bias_reader_note: str = Slot("", visibility=["tp", "mcp"], optional_write=True)
 
     # 4B.10 What-is-missing (single slot owned by ConsolidatorStage).
     # The LLM Consolidator reads `perspective_missing_positions[]`

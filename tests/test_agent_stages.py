@@ -2065,6 +2065,37 @@ def test_bias_language_findings_empty_passes_postcondition():
     )
 
 
+def test_bias_reader_note_empty_passes_postcondition():
+    """Regression (2026-07-08): a fully clean article — the judge clears every
+    candidate, so there are zero confirmed findings AND the bias_judge prompt
+    emits an EMPTY reader_note ("stays empty when there are none",
+    agents/bias_judge/INSTRUCTIONS.md). On 2026-07-08 this dropped the clean
+    lead topic (us-launches-strikes-against-iran): bias_reader_note was a
+    required write, the empty string tripped the writes gate, and no TP was
+    published. The fix marks bias_reader_note optional_write=True (aligning the
+    bus contract with the prompt). All three bias slots empty must now pass the
+    writes gate; reverting the flag makes this raise StagePostconditionError."""
+    fake = FakeAgent(
+        structured={
+            "language_bias": {"findings": [], "borderline": []},
+            "reader_note": "",
+        }
+    )
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.qa_corrected_article = WriterArticle(headline="H", body="B", summary="Sm")
+    tb.final_sources = [
+        {"id": "src-001", "country": "United States", "language": "en"}
+    ]
+    stage = BiasLanguageStage(fake)
+    tb_after = _run(stage, tb, _ro())
+    assert tb_after.bias_language_findings == []
+    assert tb_after.bias_borderline_candidates == []
+    assert tb_after.bias_reader_note == ""  # the fully-clean case
+    validate_postconditions(
+        stage, tb, tb_after, run_bus_before=_ro(), run_bus_after=_ro()
+    )
+
+
 def test_hydration_phase1_empty_analyses_passes_postcondition():
     """H3: every hydration fetch failed → HydrationPhase1Stage's deliberate
     graceful zero-fetch early-out writes hydration_phase1_analyses=[]. It must
