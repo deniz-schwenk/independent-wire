@@ -95,6 +95,13 @@ Each artifact line: *filename — role · original path*.
 - `MADLAD-FINALIZE-REPORT.md` — backend finalize report (rebuild + backfill lift) · orig `scratch/MADLAD-FINALIZE-REPORT.md`
 - `MADLAD-SHADOW-STABILITY.md` — multi-day shadow stability report · orig `scratch/MADLAD-SHADOW-STABILITY.md`
 
+## madlad-floor-gate — do the clustering floors (0.55 assign / 0.30 pre-cluster) stay safe under MADLAD translation for the non-Latin languages never in the May calibration (ar/zh/ja/th/bn/ne)? + Latin native baseline → **GO ×6 (zh/ja GO\* single-day); measurement only, no flag flipped** (2026-07-10)
+> Authored gate (not a scratch copy): the harness is git-tracked at `tools/madlad_floor_eval/`; raw distributions / translation maps / per-batch labels stay in gitignored `scratch/floor-eval/`.
+- `REPORT.md` — full report: P0 calibration reproduction (13/13 PASS), P1 blind labelset, P2 per-language GO/NO-GO with raw distributions, P3 Latin native baseline
+- `labels/{ar,zh,ja,th,bn,ne}.json` — 780 blind on/off-topic labels (130/lang), Opus-4.8 spawned-subagent judges, native-text-only (circularity guard)
+- `labels/architect_review_sample.json` + `labels/architect_blind_review.json` — 79-pair 10 % stratified blind re-review by the Architect subagent → 79/79 agreement, κ=1.0, PASS
+- `labels/_meta.json` — per-language counts, seed 20260707, method
+
 ---
 
 ## Excluded (with reason)
