@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>org.independent-wire.collector</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/zsh</string>
+        <string>-l</string>
+        <string>/Users/denizschwenk/iw/independent-wire/scripts/collector_run.sh</string>
+    </array>
+    <!-- Intraday collector grid: 10:00 / 14:00 / 18:00 / 22:00 / 02:00 local.
+         The 06:00 slot is the main run (org.independent-wire.daily), which
+         performs the final delta fetch itself — no collision, no special case. -->
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict>
+            <key>Hour</key><integer>10</integer>
+            <key>Minute</key><integer>0</integer>
+        </dict>
+        <dict>
+            <key>Hour</key><integer>14</integer>
+            <key>Minute</key><integer>0</integer>
+        </dict>
+        <dict>
+            <key>Hour</key><integer>18</integer>
+            <key>Minute</key><integer>0</integer>
+        </dict>
+        <dict>
+            <key>Hour</key><integer>22</integer>
+            <key>Minute</key><integer>0</integer>
+        </dict>
+        <dict>
+            <key>Hour</key><integer>2</integer>
+            <key>Minute</key><integer>0</integer>
+        </dict>
+    </array>
+    <!-- Do NOT fire on load: installing the agent must not trigger a fetch. -->
+    <key>RunAtLoad</key>
+    <false/>
+    <key>StandardOutPath</key>
+    <string>/tmp/iw-collector.out</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/iw-collector.err</string>
+</dict>
+</plist>
