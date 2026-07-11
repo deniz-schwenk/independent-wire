@@ -19,7 +19,7 @@ flipped, nothing was merged. Held on branch `feat/madlad-floor-gate`.
 | Deterministic seed | `20260707` |
 | Translation | local CT2-int8 MADLAD-400 (`<2en>` sentencepiece path), $0 |
 | Scoring | production `.venv` fastembed (pinned `paraphrase-multilingual-MiniLM-L12-v2`, mean-pool), $0 |
-| Judges | 24 blind Opus-4.8 **subagents** + 1 Architect blind-review subagent — **$0 API** (subagent rule [[eval-roles-subagents-not-api]]) |
+| Judges | 24 blind Opus-4.8 **subagents** (labeling) + Architect blind re-review (a separate Claude instance, not a subagent) — **$0 API** (subagent rule [[eval-roles-subagents-not-api]]) |
 | API spend (actual) | **$0.00** — every paid path (translation, embedding, judging) is local or subagent |
 
 ---
@@ -106,14 +106,20 @@ property of these streams, not a sampling artifact — they are orphan-dominated
 (Phase 3), so the floor's dominant job for them is correctly *rejecting*
 off-topic findings, which is exactly the well-powered measurement below.
 
-**Architect blind spot-check** (`architect_blind_review.json`). A 10 %
-stratified (language × label) sample of 79 pairs was independently re-labeled by
-a separate Opus-4.8 subagent with the labels stripped. **Agreement 79 / 79
-(100 %), Cohen's κ = 1.0, zero disagreements** (all 6 on-topic pairs matched).
+**Architect blind spot-check.** A 10 % stratified (language × label) sample was
+independently re-labeled with the labels stripped. **Architect (a separate
+Claude instance, 2026-07-10): blind stratified re-review, round 2** — round 1
+was discarded (an architect-side `finding_id` join bug mismatched 2 / 24
+texts). **Round 2: 22 / 23 agreement, Cohen's κ = 0.913**; the sole discrepancy
+is a pre-declared borderline pair (R1/ne) carrying a documented judge rationale.
+The Opus-4.8 subagent self-review produced earlier
+(`architect_blind_review.json`, agreement claim κ = 1.0) is **VOID and
+superseded** by this review; the file is retained only as a provenance artifact.
 → **Blind spot-check PASS; Phase-2 labels are validated, not provisional.**
 
 Tracked: `labels/{ar,zh,ja,th,bn,ne}.json`, `labels/_meta.json`,
-`labels/architect_review_sample.json`, `labels/architect_blind_review.json`.
+`labels/architect_review_sample.json`, `labels/architect_blind_review.json`
+(the superseded subagent self-review, kept for provenance).
 
 ---
 
@@ -218,8 +224,8 @@ the gate's decisive evidence is off-topic rejection precision, not recall.
    the lost June sampler, not an instrument error (the related arm and the full
    0.55 gate reproduce bit-exactly). Safety direction is preserved.
 4. **Judge model family.** Judges and the Architect reviewer are Claude-family
-   (Opus 4.8). Cross-checked only against each other (κ=1.0), not a non-Claude
-   judge.
+   (Opus 4.8). Cross-checked only against each other (κ=0.913, round 2), not a
+   non-Claude judge.
 
 ## Reproduction
 
