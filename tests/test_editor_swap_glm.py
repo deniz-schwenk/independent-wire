@@ -130,10 +130,13 @@ async def test_fallback_sonnet5_request_body_exact(prompt_file):
 class _FakeAgent:
     """Duck-typed stand-in for an Agent inside the wrapper."""
 
-    def __init__(self, model, result=None, exc=None):
+    def __init__(self, model, result=None, exc=None, results=None):
         self.model = model
         self._result = result
         self._exc = exc
+        # Optional per-draw sequence (for redraw tests). When exhausted, the
+        # last entry repeats. Falls back to the single fixed `result` otherwise.
+        self._results = list(results) if results is not None else None
         self.run_calls = 0
         self.reset_calls = 0
         self.last_cost_usd = 0.0
@@ -143,6 +146,8 @@ class _FakeAgent:
         self.run_calls += 1
         if self._exc is not None:
             raise self._exc
+        if self._results is not None:
+            return self._results[min(self.run_calls - 1, len(self._results) - 1)]
         return self._result
 
     def reset_call_metrics(self):
@@ -234,12 +239,137 @@ async def test_fallback_on_schema_invalid_output(bad_structured, caplog):
         res = await e.run("msg")
 
     assert res is fallback._result
+    # Persistent schema-invalid output → the primary is redrawn to exhaustion
+    # (1 attempt + 2 redraws) before the one-shot fallback (TASK-EDITOR-GLM-REDRAW).
+    assert primary.run_calls == 3
+    assert e.last_redraw_count == 2
     assert fallback.run_calls == 1
     assert e.last_fallback_used is True
     assert e.last_model_used == "anthropic/claude-sonnet-5"
-    # primary DID return (not raised), so both attempts are accounted
-    assert e.last_cost_usd == pytest.approx(0.10) and e.last_tokens == 13900
+    # primary DID return (not raised) on all 3 draws, so all are accounted
+    # alongside the fallback: 3×(0.03/13000) + 0.07/900.
+    assert e.last_cost_usd == pytest.approx(0.16) and e.last_tokens == 39900
     assert "not schema-valid" in caplog.text
+    # The primary provider is captured before the fallback overwrites it.
+    assert e.extra_log_fields["editor_primary_provider"] == "Baidu"
+    assert e.extra_log_fields["editor_redraw_count"] == 2
+
+
+@pytest.mark.asyncio
+async def test_redraw_recovers_without_fallback(caplog):
+    """The core new behavior: an intermittent structured=None on the first draw
+    is recovered by a whole-call redraw — GLM still serves, no Sonnet-5 fallback
+    (TASK-EDITOR-GLM-REDRAW)."""
+    primary = _FakeAgent(
+        "z-ai/glm-5.2",
+        results=[
+            _result("z-ai/glm-5.2", None, cost=0.03, tokens=13000, provider="Baidu"),        # draw 1: empty
+            _result("z-ai/glm-5.2", VALID_OUTPUT, cost=0.04, tokens=15000, provider="Baidu"),  # redraw: valid
+        ],
+    )
+    fallback = _FakeAgent("anthropic/claude-sonnet-5")
+    e = EditorWithFallback(primary, fallback, EDITOR_SCHEMA)
+
+    with caplog.at_level(logging.WARNING, logger="src.editor_fallback"):
+        res = await e.run("msg")
+
+    assert res.structured == VALID_OUTPUT
+    assert primary.run_calls == 2            # 1 attempt + 1 redraw
+    assert fallback.run_calls == 0           # GLM recovered — no fallback
+    assert e.last_fallback_used is False
+    assert e.last_redraw_count == 1
+    assert e.last_model_used == "z-ai/glm-5.2"
+    assert e.last_provider_used == "Baidu"
+    # both GLM draws are accounted (0.03/13000 + 0.04/15000)
+    assert e.last_cost_usd == pytest.approx(0.07) and e.last_tokens == 28000
+    assert e.extra_log_fields == {"editor_redraw_count": 1, "editor_primary_provider": "Baidu"}
+    assert "REDRAW 1/2" in caplog.text
+    assert "recovered after 1 redraw" in caplog.text
+    assert "FALLBACK" not in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_transport_failure_is_not_redrawn(caplog):
+    """A transport failure (provider outage) is NOT a redraw case — redrawing
+    cannot fix an outage, so the primary is attempted exactly once before the
+    Sonnet-5 fallback."""
+    primary = _FakeAgent("z-ai/glm-5.2", exc=AgentAPIError("all providers down", status_code=503))
+    fallback = _FakeAgent(
+        "anthropic/claude-sonnet-5",
+        result=_result("anthropic/claude-sonnet-5", VALID_OUTPUT, cost=0.07, tokens=800, provider="Azure"),
+    )
+    e = EditorWithFallback(primary, fallback, EDITOR_SCHEMA)
+
+    with caplog.at_level(logging.WARNING, logger="src.editor_fallback"):
+        res = await e.run("msg")
+
+    assert res is fallback._result
+    assert primary.run_calls == 1            # NOT redrawn on transport failure
+    assert e.last_redraw_count == 0
+    assert e.last_fallback_used is True
+    assert "REDRAW" not in caplog.text
+    assert "transport failure" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_no_redraw_when_first_draw_valid():
+    """First-draw-valid (the common day) is unchanged: zero redraws, GLM served."""
+    primary = _FakeAgent(
+        "z-ai/glm-5.2",
+        result=_result("z-ai/glm-5.2", VALID_OUTPUT, cost=0.03, tokens=14000, provider="Venice"),
+    )
+    fallback = _FakeAgent("anthropic/claude-sonnet-5")
+    e = EditorWithFallback(primary, fallback, EDITOR_SCHEMA)
+    res = await e.run("msg")
+
+    assert res is primary._result
+    assert primary.run_calls == 1
+    assert e.last_redraw_count == 0
+    assert e.last_fallback_used is False
+    assert e.extra_log_fields == {"editor_redraw_count": 0, "editor_primary_provider": "Venice"}
+
+
+@pytest.mark.asyncio
+async def test_runner_surfaces_redraw_count_and_primary_provider():
+    """editor_redraw_count + editor_primary_provider reach run_stage_log via the
+    runner's generic extra_log_fields hook (no runner change)."""
+    primary = _FakeAgent(
+        "z-ai/glm-5.2",
+        results=[
+            _result("z-ai/glm-5.2", None, cost=0.03, tokens=13000, provider="Ambient"),
+            _result("z-ai/glm-5.2", VALID_OUTPUT, cost=0.04, tokens=15000, provider="Ambient"),
+        ],
+    )
+    fallback = _FakeAgent("anthropic/claude-sonnet-5")
+    e = EditorWithFallback(primary, fallback, EDITOR_SCHEMA)
+    await e.run("msg")
+
+    metrics = _collect_agent_metrics(_Stage(e))
+    assert metrics["editor_redraw_count"] == 1
+    assert metrics["editor_primary_provider"] == "Ambient"   # closes the lever-3 blindness
+    assert metrics["editor_fallback_used"] is False
+    assert metrics["model_used"] == "z-ai/glm-5.2"
+
+
+@pytest.mark.asyncio
+async def test_fallback_logs_primary_provider_before_overwrite(caplog):
+    """On exhaustion→fallback, the GLM primary provider is recorded even though
+    last_provider_used is overwritten by the Sonnet-5 provider."""
+    primary = _FakeAgent(
+        "z-ai/glm-5.2",
+        result=_result("z-ai/glm-5.2", None, cost=0.03, tokens=13000, provider="Ambient"),
+    )
+    fallback = _FakeAgent(
+        "anthropic/claude-sonnet-5",
+        result=_result("anthropic/claude-sonnet-5", VALID_OUTPUT, cost=0.07, tokens=900, provider="Amazon Bedrock"),
+    )
+    e = EditorWithFallback(primary, fallback, EDITOR_SCHEMA)
+    with caplog.at_level(logging.WARNING, logger="src.editor_fallback"):
+        await e.run("msg")
+
+    assert e.last_provider_used == "Amazon Bedrock"                     # served (fallback) provider
+    assert e.extra_log_fields["editor_primary_provider"] == "Ambient"  # GLM provider preserved
+    assert "primary provider=Ambient" in caplog.text
 
 
 @pytest.mark.asyncio
@@ -267,6 +397,8 @@ async def test_reset_call_metrics_clears_markers_and_underlying():
     assert e.last_cost_usd == 0.0 and e.last_tokens == 0
     assert e.last_model_used == "" and e.last_provider_used == ""
     assert e.last_fallback_used is False
+    assert e.last_redraw_count == 0 and e.last_primary_provider == ""
+    assert e.extra_log_fields == {}
     assert primary.reset_calls == 1 and fallback.reset_calls == 1
 
 

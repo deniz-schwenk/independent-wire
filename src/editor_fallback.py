@@ -8,11 +8,19 @@ validity, 22/22 after retries; provider pin from
 docs/GLM-PROVIDER-VERIFICATION-2026-07.md, all three re-probed under
 EDITOR_SCHEMA in the eval). This module is the **4th line of defence** behind
 that call: the pinned-provider order, ``allow_fallbacks:false``, and Agent's
-built-in transport retries are lines 1-3 and stay in Agent/OpenRouter. If GLM
-*finally* fails — a transport error across all pinned providers after those
-retries, OR a final output that is not schema-valid (the ``structured=None``
-truncation/parse failure this stage is prone to at xhigh) — this wrapper makes
-**exactly one** fallback attempt and returns that instead.
+built-in transport retries are lines 1-3 and stay in Agent/OpenRouter. On a
+schema-invalid result (the intermittent failure this stage is prone to at xhigh
+— an empty ``structured=None`` message OR, as the 2026-07-09 replay probe found,
+a parseable-but-non-conforming JSON dict; src/agent.py's in-call parse-retry
+loop fixes neither — it only re-prompts on *unparseable* content and never
+re-checks the schema), this wrapper **redraws the whole GLM call up to
+``max_redraws`` (=2) times**, stopping at the first schema-valid draw
+(TASK-EDITOR-GLM-REDRAW — reinstates the editor eval's own recovery mechanism,
+attempts-to-valid ``{1:12,2:7,3:1,4:1,5:1}``). Only if GLM *finally* fails —
+``max_redraws`` schema-invalid draws exhausted, OR a transport error across all
+pinned providers (an outage, which is NOT redrawn) — does this wrapper make
+**exactly one** Sonnet-5 fallback attempt and return that instead.
+``editor_redraw_count`` and the GLM primary's provider are logged loud.
 
 Deliberate choice of fallback: the editor fallback is **Sonnet-5**
 (``anthropic/claude-sonnet-5``, ``reasoning {enabled:true, effort:"high"}``, no
@@ -81,11 +89,22 @@ class EditorWithFallback:
         fallback: Agent,
         output_schema: dict,
         name: str = "editor",
+        max_redraws: int = 2,
     ) -> None:
         self.primary = primary
         self.fallback = fallback
         self.output_schema = output_schema
         self.name = name
+        # Bounded whole-call GLM redraws before the Sonnet-5 fallback
+        # (TASK-EDITOR-GLM-REDRAW). GLM-5.2 @ xhigh intermittently returns a
+        # schema-invalid output — structured=None, or (per the 2026-07-09 replay
+        # probe: 0/14 empty, 8/14 schema-invalid) a parseable-but-non-conforming
+        # dict — that src/agent.py's in-call parse-retry loop does not fix (it
+        # only re-prompts on unparseable content, never re-checks the schema).
+        # The editor eval's own recovery mechanism was a fresh whole-call redraw
+        # (attempts-to-valid {1:12,2:7,3:1,4:1,5:1}). max_redraws=2 → up to 3
+        # GLM attempts total before the one-shot fallback.
+        self.max_redraws = max_redraws
         # Display model — the intended primary. ``last_model_used`` records what
         # actually served the most recent call.
         self.model = primary.model
@@ -105,6 +124,15 @@ class EditorWithFallback:
         self.last_model_used: str = ""
         self.last_provider_used: str = ""
         self.last_fallback_used: bool = False
+        # Redraw observability (TASK-EDITOR-GLM-REDRAW). `editor_redraw_count`
+        # (how many GLM whole-call redraws this stage needed) and
+        # `editor_primary_provider` (the GLM primary's provider, captured BEFORE
+        # any fallback overwrites `last_provider_used` — closes the diagnosis's
+        # lever-3 blindness) are surfaced verbatim via the runner's generic
+        # `extra_log_fields` hook, so no runner change is needed.
+        self.last_redraw_count: int = 0
+        self.last_primary_provider: str = ""
+        self.extra_log_fields: dict = {}
 
     def reset_call_metrics(self) -> None:
         """Zero per-stage accumulators + markers. Called by the runner before
@@ -114,6 +142,9 @@ class EditorWithFallback:
         self.last_model_used = ""
         self.last_provider_used = ""
         self.last_fallback_used = False
+        self.last_redraw_count = 0
+        self.last_primary_provider = ""
+        self.extra_log_fields = {}
         # Keep the underlying agents' own accumulators from drifting across
         # runs; this wrapper does its own summation from each AgentResult.
         self.primary.reset_call_metrics()
@@ -124,41 +155,90 @@ class EditorWithFallback:
         self.last_tokens += result.tokens_used
 
     async def run(self, *args: Any, **kwargs: Any) -> AgentResult:
-        """Run the primary; fall back to Sonnet-5 exactly once on final failure.
+        """Redraw the GLM primary up to ``max_redraws`` times, then fall back to
+        Sonnet-5 exactly once on final failure.
 
-        Final failure = the primary raised after its built-in retries (transport
-        failure across all pinned providers) OR returned an output that is not
-        schema-valid (``structured=None`` / malformed). A transport failure on
-        the *fallback* is allowed to propagate — that is the loud terminal
-        failure (the run fails), not a silent success.
+        The primary's schema-invalid failure is intermittent at xhigh
+        (structured=None, or a parseable-but-non-conforming dict — the in-call
+        parse-retry loop fixes neither), and a fresh whole-call redraw recovers
+        it (the editor eval's own recovery mechanism). So on a schema-invalid
+        result we redraw the whole call, stopping at the first schema-valid
+        draw, before the fallback.
+
+        A **transport failure** (the primary raising ``AgentError`` after its
+        built-in retries — a provider outage across all pinned providers) is NOT
+        a redraw case: redrawing cannot fix an outage, so it breaks straight to
+        the fallback, exactly as before. A transport failure on the *fallback*
+        is allowed to propagate — that is the loud terminal failure (the run
+        fails), not a silent success.
+
+        Final failure = ``max_redraws`` schema-invalid draws exhausted OR a
+        transport failure.
         """
         failure_reason: str | None = None
         result: AgentResult | None = None
+        redraw_count = 0
+        primary_provider = ""
 
-        try:
-            result = await self.primary.run(*args, **kwargs)
-        except AgentError as exc:
-            failure_reason = f"transport failure after retries ({exc})"
+        for draw in range(self.max_redraws + 1):
+            try:
+                result = await self.primary.run(*args, **kwargs)
+            except AgentError as exc:
+                result = None
+                failure_reason = f"transport failure after retries ({exc})"
+                break  # provider outage — redrawing cannot help; go to fallback
 
-        if result is not None:
             self._account(result)
-            if not output_is_schema_valid(result.structured, self.output_schema):
-                failure_reason = "final output not schema-valid (structured=None / malformed)"
+            primary_provider = result.provider or primary_provider
+            if output_is_schema_valid(result.structured, self.output_schema):
+                failure_reason = None
+                break
+
+            failure_reason = "final output not schema-valid (structured=None / malformed)"
+            if draw < self.max_redraws:
+                redraw_count += 1
+                logger.warning(
+                    "editor REDRAW %d/%d: primary %s returned a non-schema-valid "
+                    "output (structured=None / malformed); redrawing the whole call.",
+                    redraw_count,
+                    self.max_redraws,
+                    self.primary.model,
+                )
+
+        # Redraw observability — surfaced verbatim via the runner's
+        # `extra_log_fields` hook. `editor_primary_provider` is captured here,
+        # before the fallback path overwrites `last_provider_used`.
+        self.last_redraw_count = redraw_count
+        self.last_primary_provider = primary_provider
+        self.extra_log_fields = {
+            "editor_redraw_count": redraw_count,
+            "editor_primary_provider": primary_provider or "unknown",
+        }
 
         if failure_reason is None:
-            # Primary served a valid result — the common path.
+            # Primary served a valid result (possibly after redraws) — common path.
             assert result is not None  # for type-checkers; guaranteed here
             self.last_model_used = result.model or self.primary.model
             self.last_provider_used = result.provider
             self.last_fallback_used = False
+            if redraw_count:
+                logger.warning(
+                    "editor primary %s recovered after %d redraw(s) "
+                    "(provider=%s) — no fallback needed.",
+                    self.primary.model,
+                    redraw_count,
+                    primary_provider or "unknown",
+                )
             return result
 
         logger.warning(
-            "editor FALLBACK: primary %s failed — %s. Making exactly one "
-            "fallback attempt on %s. (This is the model fallback, not a silent "
-            "substitution.)",
+            "editor FALLBACK: primary %s failed after %d redraw(s) — %s "
+            "(primary provider=%s). Making exactly one fallback attempt on %s. "
+            "(This is the model fallback, not a silent substitution.)",
             self.primary.model,
+            redraw_count,
             failure_reason,
+            primary_provider or "unknown",
             self.fallback.model,
         )
 
