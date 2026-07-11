@@ -157,6 +157,60 @@ def test_translate_findings_native_passthrough_reasons(tmp_path):
     assert bk.calls == 0  # nothing eligible to translate
 
 
+def test_translate_findings_non_latin_scope(tmp_path):
+    """Sidecar scope (TASK-MADLAD-MERGE-AND-SCOPE): only NON-LATIN scripts are
+    translated; Latin-script non-English languages pass through native even
+    though they carry a FLORES mapping and a working backend is available."""
+    latin = _findings(
+        ("es", "título", "resumen"),   # spa_Latn
+        ("pt", "título", "resumo"),    # por_Latn
+        ("vi", "tiêu đề", "tóm tắt"),  # vie_Latn
+        ("tr", "başlık", "özet"),      # tur_Latn
+    )
+    non_latin = _findings(
+        ("ar", "عنوان", "ملخص"),        # arb_Arab
+        ("zh", "标题", "摘要"),          # zho_Hans
+        ("ja", "見出し", "要約"),         # jpn_Jpan
+        ("th", "หัวข้อ", "สรุป"),          # tha_Thai
+        ("bn", "শিরোনাম", "সারাংশ"),      # ben_Beng
+        ("ne", "शीर्षक", "सारांश"),        # npi_Deva
+    )
+    bk = FakeBackend()
+    entries, stats = ts.translate_findings(
+        latin + non_latin, cache_file=tmp_path / "c.json", backend=bk
+    )
+
+    # Latin-script inputs: passthrough, tagged latin_script_native, never sent.
+    for e in entries[: len(latin)]:
+        assert e["translated"] is False
+        assert e["reason"] == "latin_script_native"
+    assert stats["native_reasons"]["latin_script_native"] == len(latin)
+
+    # Non-Latin-script inputs: translated (English prefix propagated).
+    for e in entries[len(latin) :]:
+        assert e["translated"] is True
+        assert e["title"].startswith("EN[")
+    assert stats["n_translated_fresh"] == len(non_latin)
+
+    # The backend only ever saw the non-Latin group (one batch per FLORES code,
+    # two segments each) — no Latin text reached it.
+    assert bk.calls == len(non_latin)
+    assert bk.segments == 2 * len(non_latin)
+
+
+def test_is_latin_script_predicate():
+    """The scope predicate keys on the FLORES script suffix: Latin excluded,
+    every non-Latin script (incl. ru → rus_Cyrl) kept in scope."""
+    assert ts._is_latin_script("spa_Latn") is True
+    assert ts._is_latin_script("tur_Latn") is True
+    for code in ("rus_Cyrl", "arb_Arab", "zho_Hans", "jpn_Jpan", "tha_Thai",
+                 "ben_Beng", "npi_Deva", "heb_Hebr", "kor_Hang", "ell_Grek"):
+        assert ts._is_latin_script(code) is False
+    # Every Latin FLORES value in the live map is excluded; every non-Latin kept.
+    for lang, flores in ts.FLORES.items():
+        assert ts._is_latin_script(flores) == flores.endswith("_Latn")
+
+
 def test_translate_findings_no_backend_degrades_to_native(tmp_path):
     fs = _findings(("bn", "ব", "স"))
     entries, stats = ts.translate_findings(

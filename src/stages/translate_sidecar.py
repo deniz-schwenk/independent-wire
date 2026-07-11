@@ -52,8 +52,9 @@ Graceful degradation
 If translation is unavailable (no backend installed) or errors for a finding,
 the stage falls back to embedding that finding's native text (today's
 behaviour) and logs the fallback. The pipeline never crashes because translation
-failed. English findings and findings whose language has no FLORES-200 mapping
-also pass through as native (no-op).
+failed. English findings, findings whose language has no FLORES-200 mapping, and
+Latin-script languages (non-Latin-only scope — see ``_is_latin_script``) also
+pass through as native (no-op).
 
 Runtime / dependencies
 ----------------------
@@ -165,6 +166,21 @@ FLORES: dict[str, str] = {
     "uk": "ukr_Cyrl",
     "el": "ell_Grek",
 }
+
+# Sidecar scope (TASK-MADLAD-MERGE-AND-SCOPE, 2026-07-11): translate NON-LATIN
+# scripts only. Latin-script non-English languages (FLORES ``*_Latn``:
+# de/es/fr/it/pt/tr/vi/id/sw/uz/zu/ha/yo/ig/so/rw/pl/nl …) are already natively
+# aligned to the English embedding space, so translating them costs ≈1pp
+# clustering recall for no gain — they pass through native. Only non-Latin
+# scripts (Arab / Beng / Cyrl / Deva / Ethi / Grek / Hang / Hans / Hebr / Jpan /
+# Sinh / Taml / Thai …) are attempted; ``ru`` (rus_Cyrl) and every other
+# non-``_Latn`` FLORES code stay in scope. Rationale + Latin native baseline:
+# docs/evals/madlad-floor-gate/REPORT.md Phase 3. The check is on the FLORES
+# script suffix, so any future ``*_Latn`` entry is auto-excluded.
+def _is_latin_script(flores: str) -> bool:
+    """True iff the FLORES code targets a Latin script (``*_Latn``)."""
+    return flores.endswith("_Latn")
+
 
 # A few full language-name aliases seen in real feed metadata (e.g. the literal
 # value "English" tagged on some sources). Normalised before the FLORES lookup.
@@ -474,6 +490,11 @@ def translate_findings(
         flores = FLORES.get(lang)
         if flores is None:
             _native(i, lang, "no_flores_mapping")
+            continue
+        if _is_latin_script(flores):
+            # Non-Latin-only scope: Latin-script languages pass through native
+            # (natively aligned; see _is_latin_script comment + REPORT P3).
+            _native(i, lang, "latin_script_native")
             continue
         if not (title.strip() or summary.strip()):
             _native(i, lang, "empty_text")
