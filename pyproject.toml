@@ -48,6 +48,14 @@ telegram = ["python-telegram-bot>=20.0"]
 search-brave = []              # Brave uses only httpx (already a core dep)
 search-duckduckgo = ["duckduckgo-search"]
 dev = ["pytest", "pytest-asyncio"]
+# Optional MADLAD-400 clustering translate-sidecar runtime (flag
+# IW_CLUSTER_TRANSLATE, default OFF; src/stages/translate_sidecar.py).
+# Sentencepiece-only inference — torch/transformers are conversion-only and
+# deliberately excluded (proven byte-identical, see
+# scratch/MADLAD-INTEGRATION-REQUIREMENTS.md §3). The <5 cap hedges a
+# hypothetical CT2 5.x format break; the model was converted with ct2 4.5.0.
+# Not installed by default — base/production install is unchanged.
+multilingual = ["ctranslate2>=4.5.0,<5", "sentencepiece>=0.2.0"]
 # Eval-only dependencies. Used by scripts/eval_clustering.py and the
 # embedding/clustering evaluation harnesses. hdbscan is not imported by
 # any module under src/ — production import graph is unaffected.

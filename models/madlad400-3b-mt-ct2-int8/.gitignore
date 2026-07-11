@@ -1,0 +1,13 @@
+# This directory holds the LICENSE + provenance packaging for the MADLAD-400-3B
+# CTranslate2-int8 translation artifact (used by the optional clustering
+# translate-sidecar, flag IW_CLUSTER_TRANSLATE, default OFF).
+#
+# The runtime weights + tokenizer are a ~2.8 GB Apache-2.0 DATA artifact fetched
+# or converted separately (see MODEL-CARD.md) — they are NEVER committed. Ignore
+# everything here except the license packaging, so dropping the weights into this
+# dir (config.json / model.bin / shared_vocabulary.json / spiece.model) can never
+# accidentally stage multi-GB blobs into a lean AGPL repo.
+*
+!.gitignore
+!LICENSE
+!MODEL-CARD.md
