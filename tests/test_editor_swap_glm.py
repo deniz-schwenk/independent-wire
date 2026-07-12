@@ -92,7 +92,8 @@ async def test_primary_glm_request_body_exact(prompt_file):
     assert kw["max_tokens"] == 120000
     assert kw["extra_body"]["reasoning"] == {"effort": "xhigh"}
     assert kw["extra_body"]["provider"] == {
-        "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
+        # Reordered to enforcing providers first (TASK-EDITOR-PIN-REORDER).
+        "order": ["venice/fp8", "streamlake/fp8", "baidu/fp8"],
         "allow_fallbacks": False,
         "quantizations": ["fp8"],
         "require_parameters": True,  # added by Agent for schema calls
@@ -344,7 +345,13 @@ def test_editor_output_schema_validity_gate():
 
 
 def test_glm_editor_routing_constant_is_fp8_and_fail_loud():
-    assert GLM_5_2_EDITOR_FP8_ROUTING["order"] == ["baidu/fp8", "ambient/fp8", "venice/fp8"]
+    # Order reordered to enforcing-providers-first (TASK-EDITOR-PIN-REORDER,
+    # basis scratch/editor-provider-probe/REPORT.md): Venice + StreamLake enforce
+    # strict json_schema 100 % (18/18 provider-verified draws each), Baidu 16-19 %.
+    # Baidu stays as slot #3 (usable only behind the redraw + Sonnet-5 net);
+    # Ambient dropped (delisted/unroutable for z-ai/glm-5.2 fp8). StreamLake is #2
+    # not #1 due to the documented xhigh reasoning-token truncation prior.
+    assert GLM_5_2_EDITOR_FP8_ROUTING["order"] == ["venice/fp8", "streamlake/fp8", "baidu/fp8"]
     assert GLM_5_2_EDITOR_FP8_ROUTING["allow_fallbacks"] is False
     assert GLM_5_2_EDITOR_FP8_ROUTING["quantizations"] == ["fp8"]
     assert all(t.endswith("/fp8") for t in GLM_5_2_EDITOR_FP8_ROUTING["order"])

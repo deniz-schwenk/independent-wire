@@ -102,12 +102,34 @@ GLM_5_2_WRITER_FP8_ROUTING = {
     "quantizations": ["fp8"],
 }
 
-# Editor GLM-5.2 fp8 pin (TASK-EDITOR-SWAP-GLM). Same three providers as the
-# writer/QA pins — all re-probed under EDITOR_SCHEMA in the eval — but named
-# separately so a per-stage divergence never requires editing another stage's
-# routing.
+# Editor GLM-5.2 fp8 pin. Named separately from the writer/QA pins so a
+# per-stage divergence never requires editing another stage's routing.
+#
+# ORDER REORDERED 2026-07-15 (TASK-EDITOR-PIN-REORDER), basis
+# scratch/editor-provider-probe/REPORT.md (TASK-EDITOR-PROVIDER-STRICT-PROBE):
+# despite all fp8 endpoints advertising `structured_outputs`, only some PROVIDERS
+# actually enforce strict json_schema decoding. Measured schema-valid rate at the
+# editor's exact operating point (strict json_schema + require_parameters +
+# max_tokens=120000 @ xhigh, 18 provider-verified draws each over two real editor
+# inputs): Venice 100 %, StreamLake 100 %, Baidu 16-19 %, GMICloud 39 %. Baidu was
+# the pre-reorder slot #1 → the source of the ~50 %/day Sonnet-5 fallback (it
+# accepts response_format and emits a bare top-level array). Ambient dropped: it
+# is currently delisted/unroutable for z-ai/glm-5.2 fp8 (404 "No endpoints found"
+# even with no schema). require_parameters:true is KEPT — it correctly filters the
+# honest non-enforcers (z-ai / atlas-cloud advertise structured_outputs:false and
+# 404 the strict request); it just can't catch the false advertisers, which the
+# provider-order does.
+#
+# StreamLake is slot #2, NOT #1: an earlier verification saw it burn ~89 k xhigh
+# reasoning tokens on a trivial input (truncation risk on large inputs); the probe
+# saw none (18/18 valid, no truncation) but two 10-topic inputs are not a
+# truncation stress-test. Promote to #1 only after a truncation re-check. Baidu is
+# kept as slot #3 — usable only behind the GLM redraw net + Sonnet-5 fallback
+# (TASK-EDITOR-GLM-REDRAW), never relied on for a valid first attempt — so the pin
+# never depends on only two providers. ``allow_fallbacks:false`` + ``quantizations:
+# ["fp8"]`` still fail LOUD rather than dropping to an unverified/fp4 provider.
 GLM_5_2_EDITOR_FP8_ROUTING = {
-    "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
+    "order": ["venice/fp8", "streamlake/fp8", "baidu/fp8"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
 }
