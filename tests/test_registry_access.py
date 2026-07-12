@@ -73,8 +73,12 @@ def test_no_warning_when_every_entry_has_access(monkeypatch, tmp_path, caplog):
 
 # ---------------------------------------------------- ingestion round-trip --
 def test_catalog_split_counts():
-    assert len(DAILY) == 80
-    assert len(ON_DEMAND) == 83
+    # TASK-FEED-HYGIENE (2026-07-12) moved IAEA + WHO daily->on_demand (reachable
+    # but their cadence misses the 24h window), so daily 80->78, on_demand 83->85.
+    # The three disabled feeds (RT / Indian Express / Morocco World News) stay
+    # access:daily with enabled:false, so they remain in the DAILY split count.
+    assert len(DAILY) == 78
+    assert len(ON_DEMAND) == 85
     assert all(f.get("access") in ("daily", "on_demand") for f in FEEDS)
 
 
@@ -101,4 +105,46 @@ def test_on_demand_entries_shape_and_language_normalisation():
         assert isinstance(f["proposed_beat_tags"], list)
         assert set(f["evidence"]) == {"appearance_count", "distinct_topics", "first_seen", "last_seen"}
         hosts.add(f["outlet_hostname"])
-    assert len(hosts) == 83  # no duplicate hostnames ingested
+    assert len(hosts) == 85  # no duplicate hostnames (83 seed + IAEA/WHO hygiene reclassification)
+
+
+# --------------------------------------------- TASK-FEED-HYGIENE 2026-07-12 --
+def _by_name(name):
+    return next(f for f in FEEDS if f["name"] == name)
+
+
+def test_feed_hygiene_disabled_feeds_have_reason_and_are_filtered(monkeypatch, tmp_path):
+    """The 3 unreachable feeds are disabled (access:daily, enabled:false) with a
+    documented disabled_reason, and load_sources filters them out."""
+    for name in ("RT", "Indian Express", "Morocco World News"):
+        f = _by_name(name)
+        assert f["access"] == "daily"
+        assert f["enabled"] is False
+        assert f.get("disabled_reason"), f"{name} missing disabled_reason"
+    names = {f["name"] for f in load_sources()}
+    assert names.isdisjoint({"RT", "Indian Express", "Morocco World News"})
+
+
+def test_feed_hygiene_iaea_who_reclassified_on_demand():
+    """IAEA + WHO moved daily->on_demand with a documented note and zero-observation
+    evidence (manual reclassification, not a shadow observation)."""
+    for name in ("IAEA", "WHO"):
+        f = _by_name(name)
+        assert f["access"] == "on_demand"
+        assert f.get("note"), f"{name} missing reclassification note"
+        assert f["evidence"]["appearance_count"] == 0  # not shadow-observed
+        assert f["seed_review"] == "pending"
+    assert {"IAEA", "WHO"}.isdisjoint({f["name"] for f in load_sources()})  # invisible to daily
+
+
+def test_loader_tolerates_hygiene_fields(monkeypatch, tmp_path):
+    """load_sources tolerates the additive disabled_reason / note fields and still
+    returns exactly the enabled daily feeds (extra fields are ignored, no crash)."""
+    _point_at(monkeypatch, tmp_path, [
+        {"name": "Live", "url": "u1", "type": "rss", "access": "daily", "enabled": True},
+        {"name": "Dead", "url": "u2", "type": "rss", "access": "daily", "enabled": False,
+         "disabled_reason": "unreachable from DE/EU, checked 2026-07-12"},
+        {"name": "Slow", "url": "u3", "type": "rss", "access": "on_demand",
+         "note": "reachable but cadence misses the 24h window; retrieved on demand"},
+    ])
+    assert [f["name"] for f in load_sources()] == ["Live"]

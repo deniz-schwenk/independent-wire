@@ -315,7 +315,8 @@
       "region": "Europe",
       "language": "en",
       "access": "daily",
-      "enabled": true
+      "enabled": false,
+      "disabled_reason": "Unreachable from the DE/EU production network: DNS resolution fails (rt.com does not resolve) — EU sanctions geoblock. 0 entries in the 38-day archive (never delivered). Checked 2026-07-12 (TASK-FEED-HYGIENE, scratch/feed-hygiene/)."
     },
     {
       "name": "El Pais",
@@ -387,7 +388,8 @@
       "region": "Africa",
       "language": "en",
       "access": "daily",
-      "enabled": true
+      "enabled": false,
+      "disabled_reason": "HTTP 403 on the feed URL and on /feed and /category/news/feed/, with both the production and a browser User-Agent — hard bot/geo block, no working feed path found. 0 entries in the 38-day archive (never delivered). Checked 2026-07-12 (TASK-FEED-HYGIENE, scratch/feed-hygiene/)."
     },
     {
       "name": "Clarin",
@@ -459,7 +461,8 @@
       "region": "South Asia",
       "language": "en",
       "access": "daily",
-      "enabled": true
+      "enabled": false,
+      "disabled_reason": "HTTP 403 on all tried feed paths (/section/india/feed/, /feed/, /print/front-page/feed/), with both the production and a browser User-Agent — hard bot/geo block, no working feed path found. 0 entries in the 38-day archive (never delivered). Checked 2026-07-12 (TASK-FEED-HYGIENE, scratch/feed-hygiene/)."
     },
     {
       "name": "VnExpress",
@@ -519,19 +522,45 @@
       "name": "IAEA",
       "url": "https://www.iaea.org/feeds/topnews",
       "type": "rss",
-      "region": "International",
-      "language": "en",
-      "access": "daily",
-      "enabled": true
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "iaea.org",
+      "languages": ["en"],
+      "country": "Austria",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 1,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": ["nuclear", "iaea", "iran", "safeguards"],
+      "evidence": {
+        "appearance_count": 0,
+        "distinct_topics": 0,
+        "first_seen": null,
+        "last_seen": null
+      },
+      "seed_review": "pending",
+      "note": "Reclassified daily->on_demand by TASK-FEED-HYGIENE 2026-07-12: reachable and publishing (feed returns 15 items, newest 2.9d old) but its cadence structurally misses the 24h daily freshness window -> 0/38 daily deliveries. Moved to on_demand so the registry arm can retrieve it topic-conditionally (nuclear/IAEA topics). evidence is zero because this is a manual hygiene reclassification, not a shadow observation."
     },
     {
       "name": "WHO",
       "url": "https://www.who.int/rss-feeds/news-english.xml",
       "type": "rss",
-      "region": "International",
-      "language": "en",
-      "access": "daily",
-      "enabled": true
+      "access": "on_demand",
+      "access_type": "public",
+      "outlet_hostname": "who.int",
+      "languages": ["en"],
+      "country": "Switzerland",
+      "region_bucket": "europe_central_asia",
+      "tier_observed": 1,
+      "editorial_independence_observed": "independent",
+      "proposed_beat_tags": ["health", "who", "outbreak", "pandemic"],
+      "evidence": {
+        "appearance_count": 0,
+        "distinct_topics": 0,
+        "first_seen": null,
+        "last_seen": null
+      },
+      "seed_review": "pending",
+      "note": "Reclassified daily->on_demand by TASK-FEED-HYGIENE 2026-07-12: reachable and publishing (feed returns 25 items, newest 4.3d old, last daily delivery 2026-06-25) but its cadence structurally misses the 24h daily freshness window -> 0/38 daily deliveries. Moved to on_demand so the registry arm can retrieve it topic-conditionally (health/outbreak topics). evidence is zero because this is a manual hygiene reclassification, not a shadow observation."
     },
     {
       "name": "Krebs on Security",
