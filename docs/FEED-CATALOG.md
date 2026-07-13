@@ -2,7 +2,7 @@
 
 **Source:** [github.com/koala73/worldmonitor](https://github.com/koala73/worldmonitor) `src/config/feeds.ts`
 **Extracted:** 2026-04-07
-**Status:** Working catalog for feed expansion — the candidate markers below reflect the 2026-04-07 snapshot, not the live config. The canonical source list is [`config/sources.json`](../config/sources.json): currently **66 feeds (65 enabled, 1 disabled) across 11 language streams**, schema v0.3.
+**Status:** Working catalog for feed expansion — the candidate markers below reflect the 2026-04-07 snapshot, not the live config. The canonical, live source list is [`config/sources.json`](../config/sources.json) (schema v0.3); consult it for current feed counts and language streams — no live numbers are duplicated here.
 **Purpose:** Reference catalog for feed expansion and the no-free-RSS transparency policy. No code imported from WorldMonitor.
 **Rule:** Google News proxy URLs (news.google.com/rss/search) are BANNED. Must find direct RSS URLs.
 

@@ -142,15 +142,10 @@ def create_agents() -> dict[str, Agent]:
     The base agent configs below are inherited by
     :func:`create_agents_hydrated` and are the production source of truth.
 
-    Models via OpenRouter (eval-validated, April 2026; Researcher Plan promoted
-    to Opus 4.6 in Researcher-Polish iter 1, May 2026; Researcher Assemble
-    migrated to DeepSeek V4 Flash per Wave-1 Sweep #3, 2026-05-18; Curator
-    Topic Discovery + Resolve Actor Aliases migrated to DeepSeek V4 Flash
-    per Wave-2 + variance smoke, 2026-05-19):
-    - google/gemini-3-flash-preview: (no production agents currently)
-    - deepseek/deepseek-v4-flash: Curator Topic Discovery (reasoning=medium), Researcher Assemble (reasoning=none), Resolve Actor Aliases (reasoning=none)
-    - anthropic/claude-opus-4.6: Editor, Researcher Plan, Perspective, Writer, Bias Language (reasoning=none)
-    - anthropic/claude-sonnet-4.6: QA-Analyze (reasoning=none, NEVER use r-medium)
+    Model/provider assignments: the return dict below is the single source
+    of truth. Do not duplicate model names here (duplicated truth drifts);
+    see also the docs/ARCHITECTURE.md model table. Historical migration
+    notes live in git history.
     """
     agents_dir = ROOT / "agents"
 
