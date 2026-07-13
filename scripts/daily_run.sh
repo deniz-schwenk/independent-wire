@@ -55,7 +55,7 @@ trap 'echo "===== FAILED — $TODAY — $(date) — see log above =====" >> "$LO
   git pull --rebase origin main
 
   echo "[2/6] uv sync (match deps to pulled code)"
-  "$UV" sync
+  "$UV" sync --extra multilingual
 
   echo "[3/6] fetch feeds"
   "$UV" run python scripts/fetch_feeds.py
