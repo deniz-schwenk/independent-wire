@@ -2084,6 +2084,17 @@ class _SearchStageMetrics:
         self.extra_log_fields: dict = {}
 
 
+def _topic_provenance_key(topic_bus: TopicBus) -> str:
+    """Filesystem-safe per-topic key for the merge-mode provenance channel map,
+    derived from the selected topic's stable id (fallback: topic_slug)."""
+    est = getattr(topic_bus, "editor_selected_topic", None)
+    key = ""
+    if est is not None:
+        key = getattr(est, "id", "") or getattr(est, "topic_slug", "") or ""
+    key = _re.sub(r"[^A-Za-z0-9_.-]", "-", str(key)).strip("-")
+    return key or "unknown"
+
+
 def make_researcher_search(web_search_tool: Any) -> Callable:
     """Build a researcher_search topic-stage closing over an injected
     `web_search_tool`. The tool object must expose
@@ -2106,6 +2117,12 @@ def make_researcher_search(web_search_tool: Any) -> Callable:
         from src.tools.web_search import effective_search_provider
 
         provider_used = effective_search_provider()
+        # merge mode accumulates a per-URL retrieval channel across this topic's
+        # queries; isolate per topic (topic-stages run sequentially per topic).
+        if provider_used == "merge":
+            from src.tools.web_search import reset_merge_provenance
+
+            reset_merge_provenance()
         queries = list(topic_bus.researcher_plan_queries or [])
         query_strs = [
             q.get("query", "")
@@ -2181,6 +2198,39 @@ def make_researcher_search(web_search_tool: Any) -> Callable:
             len(_URL_PATTERN.findall(sr.get("results", "") or "")) for sr in deduped
         )
         _emit(n_results_total)
+
+        # merge mode only: stamp the deterministic per-topic url→channel artifact
+        # next to the run's per-topic Bus snapshots (D3 groundwork; Python only,
+        # best-effort — a missing run_id/run_date or write error is non-fatal and
+        # does not touch the plain-text contract handed to the assembler).
+        if provider_used == "merge":
+            from src.tools.web_search import (
+                drain_merge_provenance,
+                write_provenance_channel_map,
+            )
+
+            provenance = drain_merge_provenance()
+            if provenance:
+                try:
+                    written = write_provenance_channel_map(
+                        getattr(run_bus, "run_date", "") or "",
+                        getattr(run_bus, "run_id", "") or "",
+                        _topic_provenance_key(topic_bus),
+                        provenance,
+                    )
+                    if written is not None:
+                        logger.info(
+                            "researcher_search[merge]: wrote provenance channel "
+                            "map (%d urls) → %s",
+                            len(provenance),
+                            written,
+                        )
+                except Exception as e:  # best-effort groundwork — never fatal
+                    logger.warning(
+                        "researcher_search: provenance channel-map write "
+                        "skipped: %s",
+                        e,
+                    )
 
         return topic_bus.model_copy(update={"researcher_search_results": deduped})
 
