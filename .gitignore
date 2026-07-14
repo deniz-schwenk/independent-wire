@@ -97,3 +97,6 @@ docs/triple-stage-cutover/
 # live here). NOTE: 19 legacy-tracked files under scratch/bias-eval/ remain
 # tracked (ignore only affects untracked); dedup vs docs/evals pending.
 scratch/
+
+# Cowork operational docs are local-only (never on GitHub)
+COWORK-*.md
