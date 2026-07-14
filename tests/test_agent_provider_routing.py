@@ -131,8 +131,11 @@ def test_production_pin_constants_are_fp8_and_fail_loud():
 
     for cfg, expect_order in (
         (DEEPSEEK_V4_PRO_FP8_ROUTING, ["baidu/fp8", "wandb/fp8", "parasail/fp8"]),
+        # streamlake/fp8 removed 2026-07-14 — it regressed and now rejects strict
+        # json_schema (400), which dropped tp-2026-07-14-002. See the re-
+        # verification note in docs/DEEPSEEK-FP8-PIN-2026-07.md.
         (DEEPSEEK_V4_FLASH_FP8_ROUTING,
-         ["baidu/fp8", "wandb/fp8", "streamlake/fp8", "parasail/fp8", "akashml/fp8"]),
+         ["baidu/fp8", "wandb/fp8", "parasail/fp8", "akashml/fp8"]),
     ):
         assert cfg["order"] == expect_order
         assert cfg["allow_fallbacks"] is False          # fail loud, never fp4/unverified

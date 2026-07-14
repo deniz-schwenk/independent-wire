@@ -17,6 +17,7 @@ from src.agent import Agent
 from src.bias_composite import BiasComposite
 from src.editor_fallback import EditorWithFallback
 from src.hydration_phase2_fallback import HydrationPhase2WithFallback
+from src.flash_stage_fallback import FlashStageWithFallback
 from src.perspective_fallback import PerspectiveWithFallback
 from src.qa_fallback import QaAnalyzeWithFallback
 from src.writer_fallback import WriterWithFallback
@@ -64,7 +65,18 @@ DEEPSEEK_V4_PRO_FP8_ROUTING = {
     "quantizations": ["fp8"],
 }
 DEEPSEEK_V4_FLASH_FP8_ROUTING = {
-    "order": ["baidu/fp8", "wandb/fp8", "streamlake/fp8", "parasail/fp8", "akashml/fp8"],
+    # streamlake/fp8 REMOVED 2026-07-14. It regressed since the 2026-07-02
+    # verification (where it PASSED) and now rejects strict json_schema —
+    # "Model 'deepseek/deepseek-v4-flash' does not support 'json_schema'
+    # response format. Supported formats: json_object" (HTTP 400, non-
+    # retryable). When baidu/wandb were transiently 429-rate-limited, routing
+    # fell to streamlake and the 400 dropped tp-2026-07-14-002 at
+    # researcher_assemble. Re-verified 2026-07-14 with forced single-provider
+    # strict-schema probes ({answer:int}, require_parameters:true): baidu,
+    # wandb, parasail, akashml all PASS; streamlake INCAPABLE (400 with AND
+    # without require_parameters). Order below is the 4 still-verified fp8
+    # endpoints (>= the 3-provider robustness bar).
+    "order": ["baidu/fp8", "wandb/fp8", "parasail/fp8", "akashml/fp8"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
 }
@@ -134,6 +146,37 @@ def setup_logging():
     )
 
 
+def _gemini_flash_fallback(
+    *,
+    name: str,
+    system_prompt_path: str,
+    instructions_path: str,
+    temperature: float,
+    reasoning: str,
+    output_schema: dict,
+    max_tokens: int = 64000,
+) -> Agent:
+    """Build the shared google/gemini-3-flash-preview fallback Agent for a
+    deepseek-v4-flash stage — the stage's PRE-migration incumbent, on a
+    different provider ecosystem (Google) so a broad DeepSeek rate-limit event
+    does not take it down with the primary. Re-verified 2026-07-14 to honor
+    strict json_schema on all three flash-stage schemas. Runs at the stage's
+    original Gemini operating point; NO fp8 provider_routing (that pin is
+    DeepSeek-specific). See src/flash_stage_fallback.py."""
+    return Agent(
+        name=name,
+        model="google/gemini-3-flash-preview",
+        system_prompt_path=system_prompt_path,
+        instructions_path=instructions_path,
+        tools=[],
+        temperature=temperature,
+        max_tokens=max_tokens,
+        provider="openrouter",
+        reasoning=reasoning,
+        output_schema=output_schema,
+    )
+
+
 def create_agents() -> dict[str, Agent]:
     """Create all pipeline agents with their configurations.
 
@@ -180,18 +223,36 @@ def create_agents() -> dict[str, Agent]:
         # Variant dskflash-t05-rmedium: zero emission-count variance
         # (25.0 ± 0.0), zero duplicates across 3 reps. max_tokens=160k per
         # architect's Wave-2 DeepSeek uniform setting.
-        "curator_topic_discovery": Agent(
-            name="curator_topic_discovery",
-            model="deepseek/deepseek-v4-flash",
-            system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.5,
-            provider="openrouter",
-            reasoning="medium",
-            max_tokens=160000,
-            provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
+        # curator_topic_discovery is RUN-LEVEL: a failure kills the whole day's
+        # run (no per-topic isolation), so the flash fallback matters most here.
+        # Same wrapper as researcher_assemble; gemini-3-flash-preview is this
+        # stage's pre-migration incumbent too. Loud marker
+        # curator_topic_discovery_fallback_used. See src/flash_stage_fallback.py.
+        "curator_topic_discovery": FlashStageWithFallback(
+            primary=Agent(
+                name="curator_topic_discovery",
+                model="deepseek/deepseek-v4-flash",
+                system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.5,
+                provider="openrouter",
+                reasoning="medium",
+                max_tokens=160000,
+                provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
+                output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
+            ),
+            fallback=_gemini_flash_fallback(
+                name="curator_topic_discovery_fallback",
+                system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
+                temperature=1.0,       # original Gemini operating point
+                reasoning="none",
+                output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
+            ),
             output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
+            name="curator_topic_discovery",
+            fallback_marker_key="curator_topic_discovery_fallback_used",
         ),
         # Hypothesis 2 LLM-based cluster→topic assignment — TASK-CLUSTER-
         # LLM-ASSIGNMENT. Not wired into build_production_stages /
@@ -280,18 +341,37 @@ def create_agents() -> dict[str, Agent]:
         ),
         # Researcher Assemble: DeepSeek V4 Flash per Wave-1 Sweep #3 — see docs/cost-efficiency-sweep-2026-05-18/researcher_assemble-report.md.
         # max_tokens raised from 16k → 160k 2026-05-19 to align with Wave-2 uniform DeepSeek setting.
-        "researcher_assemble": Agent(
-            name="researcher_assemble",
-            model="deepseek/deepseek-v4-flash",
-            system_prompt_path=str(agents_dir / "researcher" / "ASSEMBLE-SYSTEM.md"),
-            instructions_path=str(agents_dir / "researcher" / "ASSEMBLE-INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.5,
-            max_tokens=160000,
-            provider="openrouter",
-            reasoning="none",
-            provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
+        # researcher_assemble is a no-fallback schema-bearing stage (a topic
+        # dies if it fails). Wrapped in FlashStageWithFallback: primary
+        # DeepSeek-V4-Flash (fp8-pinned), and exactly one gemini-3-flash-preview
+        # fallback (the pre-migration incumbent) if Flash finally fails. Loud,
+        # never silent (researcher_assemble_fallback_used in run_stage_log.jsonl).
+        # See src/flash_stage_fallback.py (TASK-RESEARCHER-ASSEMBLE-FALLBACK).
+        "researcher_assemble": FlashStageWithFallback(
+            primary=Agent(
+                name="researcher_assemble",
+                model="deepseek/deepseek-v4-flash",
+                system_prompt_path=str(agents_dir / "researcher" / "ASSEMBLE-SYSTEM.md"),
+                instructions_path=str(agents_dir / "researcher" / "ASSEMBLE-INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.5,
+                max_tokens=160000,
+                provider="openrouter",
+                reasoning="none",
+                provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
+                output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
+            ),
+            fallback=_gemini_flash_fallback(
+                name="researcher_assemble_fallback",
+                system_prompt_path=str(agents_dir / "researcher" / "ASSEMBLE-SYSTEM.md"),
+                instructions_path=str(agents_dir / "researcher" / "ASSEMBLE-INSTRUCTIONS.md"),
+                temperature=0.2,       # original Gemini operating point
+                reasoning="none",
+                output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
+            ),
             output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
+            name="researcher_assemble",
+            fallback_marker_key="researcher_assemble_fallback_used",
         ),
         # DeepSeek V4 Flash per Wave-2 Sweep #2 (2026-05-18) — see
         # docs/cost-efficiency-sweep-wave-2-2026-05-18/resolve_actor_aliases-report.md.
@@ -300,18 +380,34 @@ def create_agents() -> dict[str, Agent]:
         # (Wave-2 showed extraction-class doesn't benefit from reasoning on
         # this role). max_tokens=160k per architect's Wave-2 DeepSeek uniform
         # setting.
-        "resolve_actor_aliases": Agent(
-            name="resolve_actor_aliases",
-            model="deepseek/deepseek-v4-flash",
-            system_prompt_path=str(agents_dir / "resolve_actor_aliases" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "resolve_actor_aliases" / "INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.5,
-            max_tokens=160000,
-            provider="openrouter",
-            reasoning="none",
-            provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
+        # resolve_actor_aliases — per-topic; same flash fallback wrapper.
+        # gemini-3-flash-preview is this stage's pre-migration incumbent. Loud
+        # marker resolve_actor_aliases_fallback_used. See src/flash_stage_fallback.py.
+        "resolve_actor_aliases": FlashStageWithFallback(
+            primary=Agent(
+                name="resolve_actor_aliases",
+                model="deepseek/deepseek-v4-flash",
+                system_prompt_path=str(agents_dir / "resolve_actor_aliases" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "resolve_actor_aliases" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.5,
+                max_tokens=160000,
+                provider="openrouter",
+                reasoning="none",
+                provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
+                output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
+            ),
+            fallback=_gemini_flash_fallback(
+                name="resolve_actor_aliases_fallback",
+                system_prompt_path=str(agents_dir / "resolve_actor_aliases" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "resolve_actor_aliases" / "INSTRUCTIONS.md"),
+                temperature=1.0,       # original Gemini operating point
+                reasoning="none",      # extraction-class: no reasoning benefit (Wave-2)
+                output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
+            ),
             output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
+            name="resolve_actor_aliases",
+            fallback_marker_key="resolve_actor_aliases_fallback_used",
         ),
         # perspective — swapped to Sonnet-5 (TASK-PERSPECTIVE-SWAP-SONNET5). The
         # blind 5-arm eval made this operating point binding

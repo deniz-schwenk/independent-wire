@@ -663,31 +663,45 @@ def test_resolver_does_not_mutate_final_actors():
 
 
 def test_resolver_agent_registration_carries_y_config():
-    """Production registration ships the post-Wave-2 config:
+    """Production registration ships the post-Wave-2 config on the PRIMARY:
     ``model="deepseek/deepseek-v4-flash"``, ``temperature=0.5``,
     ``reasoning="none"``, ``max_tokens=160000`` (commit a7130dd,
-    2026-05-19, per Wave-2 Sweep #2). Regression-guards against
-    accidental reverts to the pre-Wave-2 Gemini Y-config
-    (``temperature=1.0`` + ``reasoning="medium"``)."""
+    2026-05-19, per Wave-2 Sweep #2). Regression-guards against accidental
+    reverts of the *primary* to the pre-Wave-2 Gemini Y-config
+    (``temperature=1.0`` + ``reasoning="medium"``).
+
+    As of 2026-07-14 the stage is wrapped in ``FlashStageWithFallback`` with a
+    ``google/gemini-3-flash-preview`` fallback (TASK-RESEARCHER-ASSEMBLE-FALLBACK,
+    extended) — so Gemini + ``temperature=1.0`` now legitimately appear in the
+    *fallback* sub-block. The Y-config guard is therefore scoped to the primary
+    sub-block (``primary=Agent(`` … ``fallback=``), where a revert would land."""
     run_py = (
         Path(__file__).resolve().parents[1] / "scripts" / "run.py"
     ).read_text(encoding="utf-8")
-    # Locate the resolve_actor_aliases agent registration block.
-    needle = '"resolve_actor_aliases": Agent('
+    # Locate the resolve_actor_aliases registration block (now wrapped).
+    needle = '"resolve_actor_aliases": FlashStageWithFallback('
     start = run_py.find(needle)
-    assert start != -1, "resolve_actor_aliases agent registration not found"
-    # Slice from the resolver registration to the next agent registration
-    # so we don't catch values from neighboring blocks.
-    after = run_py.find('"perspective": Agent(', start)
+    assert start != -1, "resolve_actor_aliases registration not found"
+    # Slice to the next registration so we don't catch neighboring blocks
+    # (the commented-out "perspective": Agent( sentinel is a stable anchor).
+    after = run_py.find('"perspective": ', start)
     assert after > start
     block = run_py[start:after]
-    assert 'model="deepseek/deepseek-v4-flash"' in block
-    assert "temperature=0.5" in block
-    assert 'reasoning="none"' in block
-    assert "max_tokens=160000" in block
-    # Defensive: the deprecated pre-Wave-2 Gemini Y-config values must
-    # NOT be in this block.
-    assert "google/gemini-3-flash-preview" not in block
-    assert "temperature=1.0" not in block
-    assert 'reasoning="medium"' not in block
-    assert "max_tokens=66000" not in block
+
+    # The primary sub-block carries the post-Wave-2 DeepSeek config ...
+    primary = block[block.find("primary=Agent("):block.find("fallback=")]
+    assert 'model="deepseek/deepseek-v4-flash"' in primary
+    assert "temperature=0.5" in primary
+    assert 'reasoning="none"' in primary
+    assert "max_tokens=160000" in primary
+    # ... and must NOT have reverted to the deprecated Gemini Y-config.
+    assert "google/gemini-3-flash-preview" not in primary
+    assert "temperature=1.0" not in primary
+    assert 'reasoning="medium"' not in primary
+    assert "max_tokens=66000" not in primary
+
+    # The fallback is the shared gemini-3-flash-preview net (built by the
+    # _gemini_flash_fallback helper — the model string lives there).
+    fallback = block[block.find("fallback="):]
+    assert "_gemini_flash_fallback(" in fallback
+    assert 'fallback_marker_key="resolve_actor_aliases_fallback_used"' in block
