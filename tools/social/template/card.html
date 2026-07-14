@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SETN card</title>
+<style>
+/* @font-face rules (extracted Space Grotesk / Space Mono woff2, inlined as
+   data: URIs by render_card.py — zero network at render time). */
+/* __FONTFACE__ */
+
+:root {
+  --font-sans: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --color-primary: #3b82f6;
+}
+html, body { margin: 0; padding: 0; background: #ffffff; }
+body { overflow: hidden; }
+</style>
+</head>
+<body>
+
+<!-- Root motif — "Final 2B Broadsheet". Markup + inline styles reproduced
+     verbatim from the approved template (template/source_template.html).
+     Dynamic values are filled by the plain-JS logic below (no React, no DC
+     runtime). -->
+<div id="card" style="width: 1080px; height: 1080px; background: #ffffff; color: #000000; box-sizing: border-box; display: flex; flex-direction: column; padding: 72px 88px; font-family: var(--font-sans, 'Space Grotesk', sans-serif);" data-screen-label="Final 2B Broadsheet">
+
+  <!-- Head: centred wordmark -->
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
+    <div style="font-weight: 800; font-size: 26px; letter-spacing: -0.03em; text-transform: uppercase; line-height: 1;">Independent Wire</div>
+    <div style="width: 48px; border-top: 3px solid #000000;"></div>
+  </div>
+
+  <!-- Middle -->
+  <div style="flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 64px;">
+    <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: var(--color-primary, #3b82f6);">Same Event · Two Names</div>
+
+    <!-- Word pair, side by side (default) -->
+    <div id="row" style="display: none; align-items: baseline; justify-content: center; gap: 40px; font-weight: 800; line-height: 1; white-space: nowrap;">
+      <span id="rowA" style="letter-spacing: -0.04em;"></span>
+      <span id="rowSlash" style="font-weight: 400; color: #cccccc;">/</span>
+      <span id="rowB" style="letter-spacing: -0.04em;"></span>
+    </div>
+
+    <!-- Word pair, stacked (edge case: long words) -->
+    <div id="stacked" style="display: none; flex-direction: column; align-items: center; font-weight: 800; line-height: 1; white-space: nowrap;">
+      <span id="stackA" style="letter-spacing: -0.04em;"></span>
+      <span style="font-weight: 400; font-size: 48px; color: #cccccc; line-height: 1.6;">/</span>
+      <span id="stackB" style="letter-spacing: -0.04em;"></span>
+    </div>
+
+    <!-- Evidence layer -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; width: 640px;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0 24px;">
+        <div id="origA" style="font-family: var(--font-mono); font-size: 24px; color: #444444; text-align: center;"></div>
+        <div id="srcA" style="font-family: var(--font-mono); font-size: 15px; letter-spacing: 0.16em; text-transform: uppercase; color: #767676; text-align: center;"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0 24px;">
+        <div id="origB" style="font-family: var(--font-mono); font-size: 24px; color: #444444; text-align: center;"></div>
+        <div id="srcB" style="font-family: var(--font-mono); font-size: 15px; letter-spacing: 0.16em; text-transform: uppercase; color: #767676; text-align: center;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Foot -->
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 26px;">
+    <div style="font-size: 23px; color: #444444; letter-spacing: -0.02em;">“The same event, named two ways.”</div>
+    <div style="width: 100%; border-top: 1px solid #e0e0e0;"></div>
+    <div style="width: 100%; display: flex; justify-content: space-between; align-items: baseline;">
+      <div id="dossier" style="font-family: var(--font-mono); font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: #767676;"></div>
+      <div style="font-family: var(--font-mono); font-size: 15px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;">independent-wire.org</div>
+      <div style="font-family: var(--font-mono); font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: #767676;">Open source · traceable</div>
+    </div>
+  </div>
+</div>
+
+<!-- Card data injected by render_card.py (JSON, not executed). -->
+<script id="carddata" type="application/json">__CARD_JSON__</script>
+
+<script>
+/* Plain-JS re-implementation of the DCLogic component (design source of truth:
+   template/source_template.html). Deterministic; no LLM, no network. The
+   sizing algorithm is byte-identical to the template's DCLogic.renderVals(). */
+(function () {
+  "use strict";
+  var P;
+  try { P = JSON.parse(document.getElementById('carddata').textContent) || {}; }
+  catch (e) { P = {}; }
+
+  function prop(name, dflt) {
+    var v = P[name];
+    return (v === undefined || v === null) ? dflt : v;
+  }
+
+  // Hidden probe — exactly the inline styles the motif measures with.
+  var probe = null;
+  function measure(text, size) {
+    if (!probe) {
+      probe = document.createElement('span');
+      probe.style.position = 'absolute';
+      probe.style.visibility = 'hidden';
+      probe.style.left = '-99999px';
+      probe.style.top = '0';
+      probe.style.whiteSpace = 'nowrap';
+      probe.style.fontFamily = "'Space Grotesk', sans-serif";
+      probe.style.fontWeight = '800';
+      probe.style.letterSpacing = '-0.04em';
+      probe.style.lineHeight = '1';
+      document.body.appendChild(probe);
+    }
+    probe.style.fontSize = size + 'px';
+    probe.textContent = text;
+    return probe.getBoundingClientRect().width;
+  }
+
+  function renderVals() {
+    var wordA = prop('wordA', 'seizure');
+    var wordB = prop('wordB', 'piracy');
+    var layout = prop('layout', 'auto');
+
+    // Inner width: 1080 - 2*88 padding.
+    var inner = 904;
+    // Row: subtract slash (~40px) + 2 * 40px gap.
+    var rowAvail = inner - 120;
+    var combined = measure(wordA, 100) + measure(wordB, 100);
+    var rowSize = Math.min(150, Math.floor((rowAvail * 100) / Math.max(1, combined)));
+    // Safety clamp: re-measure the real width at target size.
+    while (rowSize > 40 && measure(wordA, rowSize) + measure(wordB, rowSize) + 120 > inner) {
+      rowSize -= 2;
+    }
+
+    // Stacked: each word may use the full inner width.
+    var widest = Math.max(measure(wordA, 100), measure(wordB, 100));
+    var stackSize = Math.min(190, Math.floor((inner * 100) / Math.max(1, widest)));
+    while (stackSize > 40 && Math.max(measure(wordA, stackSize), measure(wordB, stackSize)) > inner) {
+      stackSize -= 2;
+    }
+
+    // Auto: stack once the row would fall below 96px. Input layout values are
+    // "auto" | "row" | "stacked" (the template's editor used the German
+    // "nebeneinander"/"gestapelt"; same semantics).
+    var stacked;
+    if (layout === 'row') stacked = false;
+    else if (layout === 'stacked') stacked = true;
+    else stacked = rowSize < 96;
+
+    return {
+      wordA: wordA,
+      wordB: wordB,
+      isRow: !stacked,
+      isStacked: stacked,
+      rowFontSize: rowSize + 'px',
+      rowSlashSize: Math.round(rowSize * 0.42) + 'px',
+      stackFontSize: stackSize + 'px',
+      originalA: prop('originalA', '“seizure”'),
+      originalB: prop('originalB', '‏“دزدی دریایی”'),
+      sourceA: prop('sourceA', 'U.S. CENTCOM · EN'),
+      sourceB: prop('sourceB', 'IRNA · FA'),
+      dossierId: prop('dossierId', 'tp-2026-04-19-001'),
+      dossierDate: prop('dossierDate', 'April 19, 2026')
+    };
+  }
+
+  function apply(v) {
+    var set = function (id, text) { document.getElementById(id).textContent = text; };
+    var sz = function (id, s) { document.getElementById(id).style.fontSize = s; };
+    // Verbatim text (no quote insertion, no RLM/mark trimming, no case change).
+    set('rowA', v.wordA); set('rowB', v.wordB);
+    set('stackA', v.wordA); set('stackB', v.wordB);
+    sz('rowA', v.rowFontSize); sz('rowB', v.rowFontSize); sz('rowSlash', v.rowSlashSize);
+    sz('stackA', v.stackFontSize); sz('stackB', v.stackFontSize);
+    document.getElementById('row').style.display = v.isRow ? 'flex' : 'none';
+    document.getElementById('stacked').style.display = v.isStacked ? 'flex' : 'none';
+    set('origA', v.originalA); set('origB', v.originalB);
+    set('srcA', v.sourceA); set('srcB', v.sourceB);
+    set('dossier', v.dossierId + ' · ' + v.dossierDate);
+  }
+
+  function run() {
+    // fonts.ready has already resolved (see caller) → measure with real metrics.
+    var v = renderVals();
+    apply(v);
+    // Deterministic layout/size read-out for tests (no pixel analysis needed).
+    window.__CARD_META__ = {
+      layout: v.isStacked ? 'stacked' : 'row',
+      rowFontSize: v.rowFontSize,
+      rowSlashSize: v.rowSlashSize,
+      stackFontSize: v.stackFontSize
+    };
+    // Catch any subset load triggered by the applied strings, then signal after
+    // two frames so layout has painted — the screenshot waits on __RENDERED__.
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve())
+      .then(function () {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { window.__RENDERED__ = true; });
+        });
+      });
+  }
+
+  // Wait for document.fonts.ready BEFORE measuring and BEFORE the screenshot.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(run);
+  } else {
+    window.addEventListener('load', run);
+  }
+})();
+</script>
+</body>
+</html>
