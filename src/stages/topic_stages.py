@@ -45,6 +45,7 @@ from __future__ import annotations
 import copy
 import logging
 import re
+import unicodedata
 from typing import Any, Callable, Optional
 from urllib.parse import urlsplit
 
@@ -373,6 +374,63 @@ async def propagate_outlet_metadata(
 # 10c. consolidate_actors
 # ---------------------------------------------------------------------------
 
+# Conservative British→American spelling folds, Latin-script only. A DELIBERATE
+# fixed table (not a general suffix rule): only these exact tokens fold, so the
+# key stays predictable and no unintended pair collapses. Extend only with
+# evidence of a real published duplicate.
+_ACTOR_TOKEN_FOLDS: dict[str, str] = {
+    "centre": "center",
+    "organisation": "organization",
+    "defence": "defense",
+}
+
+# Strip a whole parenthetical segment, e.g. " (IMO)". Non-greedy, unnested.
+_PAREN_RE = re.compile(r"\([^)]*\)")
+_WS_RE = re.compile(r"\s+")
+# Leading/trailing punctuation + whitespace to trim off the final key.
+_EDGE_STRIP = " \t\r\n.,;:!?-–—_/\\|'\"“”‘’()[]{}"
+
+
+def _is_latin_actor_name(text: str) -> bool:
+    """True unless the name contains a non-Latin *letter* (Cyrillic, Arabic,
+    CJK, …). Digit/punct-only or empty names count as Latin (folds are inert on
+    them). Gates the structural Latin-only normalization below."""
+    for ch in text:
+        if not ch.isalpha():
+            continue
+        try:
+            if not unicodedata.name(ch).startswith("LATIN"):
+                return False
+        except ValueError:
+            return False
+    return True
+
+
+def _actor_norm_key(name: str) -> str:
+    """Deterministic merge key for an actor name (deterministic-before-LLM).
+
+    Latin-script names: Unicode NFKC → casefold → strip parenthetical segments
+    (``... (IMO) ...``) → collapse whitespace → per-token British→American folds
+    from :data:`_ACTOR_TOKEN_FOLDS` → strip leading/trailing punctuation. So
+    ``International Maritime Organization (IMO) Council`` and ``International
+    Maritime Organization Council`` share the key ``international maritime
+    organization council``; ``Joint Maritime Information Centre (JMIC)`` folds
+    onto ``joint maritime information center``.
+
+    Non-Latin names get NFKC + casefold + outer-whitespace strip ONLY — no
+    parenthetical stripping, no folds, no transliteration (when in doubt, do not
+    merge). Deliberate limits: equality of this key merges records; there is no
+    fuzzy/edit-distance/substring matching, so distinguishing prefixes
+    (``US Navy-led …``) and role suffixes (``… spokesperson``, ``… Council``)
+    keep entities separate — those semantic cases stay with the LLM aliaser."""
+    base = unicodedata.normalize("NFKC", name).casefold()
+    if not _is_latin_actor_name(base):
+        return base.strip()
+    stripped = _PAREN_RE.sub(" ", base)
+    collapsed = _WS_RE.sub(" ", stripped).strip()
+    folded = " ".join(_ACTOR_TOKEN_FOLDS.get(tok, tok) for tok in collapsed.split(" "))
+    return folded.strip(_EDGE_STRIP)
+
 
 @topic_stage_def(
     reads=("final_sources",),
@@ -388,15 +446,24 @@ async def consolidate_actors(
     are already gone) and before ``PerspectiveStage`` (which receives the
     flat list and emits per-cluster ``actor_ids[]``).
 
-    Dedup is exact-string-match on the actor's ``name`` field
-    (case-sensitive, no normalisation). "Donald Trump" / "President
-    Trump" / "Trump" therefore yield three distinct entries — alias
-    resolution is a deferred future workstream.
+    Dedup merges records whose deterministic normalization key
+    (:func:`_actor_norm_key`) is EQUAL — folding parenthetical/case/
+    spelling variants (``International Maritime Organization (IMO)`` ==
+    ``International Maritime Organization``; ``… Centre`` == ``… Center``)
+    before the LLM aliaser runs (deterministic-before-LLM). Equality only:
+    no fuzzy match, edit distance, or substring logic, so distinguishing
+    prefixes (``US Navy-led …``) and role suffixes (``… spokesperson``,
+    ``… Council``) stay separate entities — those semantic cases (e.g.
+    "President Trump" == "Trump") remain the LLM aliaser's job. Non-Latin
+    names normalize by NFKC + casefold only (no folds; when in doubt, do
+    not merge).
 
-    For role/type conflicts (the same actor name classified differently
-    across sources) the first encountered value wins. Quote records
-    accumulate one entry per source-membership; ``verbatim`` may be
-    ``None`` when the source paraphrases.
+    Merge semantics: ``source_ids`` and ``quotes`` are unioned (ordered,
+    deduped); the display ``name`` is the longest original variant; ``role``
+    and ``type`` take the first non-null across variants (a WARNING is logged
+    when merged variants disagree on a non-null ``type``). ``verbatim`` may
+    be ``None`` when the source paraphrases. IDs are assigned ``actor-NNN``
+    in first-appearance order after merging.
 
     Phase-1 schema per TASK-PERSPECTIVE-ACTOR-SCOPING §1.1::
 
@@ -416,9 +483,13 @@ async def consolidate_actors(
     if not final_sources:
         return topic_bus
 
-    # Insertion-ordered dict from name -> actor record so we can both
-    # dedup and preserve first-appearance order for ID assignment.
-    by_name: dict[str, dict] = {}
+    # Insertion-ordered dict from normalization key -> actor record so we
+    # dedup by key, merge variants, and preserve first-appearance order for
+    # ID assignment. `_meta` holds per-group merge bookkeeping (variant names
+    # + non-null types seen) and is stripped before emit.
+    by_key: dict[str, dict] = {}
+    meta: dict[str, dict] = {}
+    exact_names: set[str] = set()
     sources_seen = 0
     for source in final_sources:
         if not isinstance(source, dict):
@@ -436,6 +507,7 @@ async def consolidate_actors(
             name = entry.get("name")
             if not isinstance(name, str) or not name:
                 continue
+            exact_names.add(name)
             role = entry.get("role") or ""
             atype = entry.get("type") or ""
             position = entry.get("position") or ""
@@ -452,17 +524,37 @@ async def consolidate_actors(
             if evidence_type not in ("stated", "reported", "mentioned"):
                 evidence_type = None
 
-            record = by_name.get(name)
+            # Merge on the normalization key; fall back to the raw name so a
+            # key that normalizes to empty (all-punctuation) never collapses
+            # unrelated actors together.
+            key = _actor_norm_key(name) or name
+            record = by_key.get(key)
             if record is None:
                 record = {
-                    "id": "",  # filled after the dedup loop
+                    "id": "",  # filled after the merge loop
                     "name": name,
                     "role": role,
                     "type": atype,
                     "source_ids": [],
                     "quotes": [],
                 }
-                by_name[name] = record
+                by_key[key] = record
+                meta[key] = {"variants": [], "types": []}
+            else:
+                # display name = longest original variant (tie -> keep the
+                # earlier-seen one, so output is order-deterministic).
+                if len(name) > len(record["name"]):
+                    record["name"] = name
+                # role / type = first non-null across variants.
+                if not record["role"] and role:
+                    record["role"] = role
+                if not record["type"] and atype:
+                    record["type"] = atype
+            m = meta[key]
+            if name not in m["variants"]:
+                m["variants"].append(name)
+            if atype and atype not in m["types"]:
+                m["types"].append(atype)
             # source_ids accumulates one entry per distinct source the
             # actor appears in (a single source contributing two
             # paraphrased and verbatim entries shouldn't double-count).
@@ -478,14 +570,38 @@ async def consolidate_actors(
             )
 
     final_actors: list[dict] = []
-    for i, record in enumerate(by_name.values(), start=1):
+    merge_groups = 0
+    for i, (key, record) in enumerate(by_key.items(), start=1):
         record["id"] = f"actor-{i:03d}"
+        m = meta[key]
+        if len(m["variants"]) > 1:
+            merge_groups += 1
+            logger.info(
+                "consolidate_actors: merged %d variants into %s %r: %s",
+                len(m["variants"]),
+                record["id"],
+                record["name"],
+                m["variants"],
+            )
+            if len(m["types"]) > 1:
+                logger.warning(
+                    "consolidate_actors: merged variants of %s %r disagree on "
+                    "type %s — kept first non-null %r",
+                    record["id"],
+                    record["name"],
+                    m["types"],
+                    record["type"],
+                )
         final_actors.append(record)
 
     logger.info(
-        "consolidate_actors: %d unique actors across %d sources",
+        "consolidate_actors: %d actors across %d sources "
+        "(normalized %d -> %d; %d merge group(s))",
         len(final_actors),
         sources_seen,
+        len(exact_names),
+        len(final_actors),
+        merge_groups,
     )
 
     return topic_bus.model_copy(update={"final_actors": final_actors})
