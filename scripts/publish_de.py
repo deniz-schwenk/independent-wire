@@ -29,6 +29,7 @@ sys.path.insert(0, str(REPO))
 
 from scripts import render          # noqa: E402  (render.render(tp, lang='de', ...))
 from scripts import publish         # noqa: E402  (build_index, lang='de')
+from scripts import render_labels as RL  # noqa: E402  (position_count metric)
 
 OUTPUT_DIR = REPO / "output"
 SITE_DIR = REPO / "site"
@@ -126,7 +127,8 @@ def de_meta(tp_json: Path, de_json: Path) -> dict:
         "word_count": article.get("word_count", len(article.get("body", "").split())),
         "sources_count": len(g.get("sources", [])),
         "languages_count": len(bias.get("source", {}).get("by_language", {})),
-        "stakeholders_count": bias.get("framing", {}).get("distinct_actor_count", 0),
+        # Distinct mapped positions; None -> metric omitted (older-schema TPs).
+        "positions_count": RL.position_count(g),
         "divergences_count": len(g.get("divergences", [])),
         "html_filename": f"reports/{g['id']}.html",
         "follow_up": g.get("metadata", {}).get("follow_up"),

@@ -175,9 +175,9 @@ def extract_metadata(json_path: Path) -> dict:
         "word_count": article.get("word_count", len(article.get("body", "").split())),
         "sources_count": len(tp.get("sources", [])),
         "languages_count": len(bias.get("source", {}).get("by_language", {})),
-        "stakeholders_count": (
-            bias.get("framing", {}).get("distinct_actor_count", 0)
-        ),
+        # Distinct mapped positions (perspectives.position_clusters). None ->
+        # metric omitted from the card (older-schema TPs), never rendered as 0.
+        "positions_count": RL.position_count(tp),
         "divergences_count": len(tp.get("divergences", [])),
         "html_filename": f"reports/{tp['id']}.html",
         "follow_up": follow_up,
@@ -251,6 +251,15 @@ def build_card(meta: dict, index: int, reports_dir: Path | None = None) -> str:
             f'<span class="follow-up-date">({formatted_date})</span>'
             f'</div>\n'
         )
+    # Positions metric (distinct mapped position_clusters) sits between
+    # Languages and Divergences; omitted entirely when absent (older-schema TPs).
+    positions_item = ""
+    if meta.get("positions_count") is not None:
+        positions_item = (
+            f'\n    <div class="meta-item"><span class="meta-number">'
+            f'{meta["positions_count"]}</span><span class="meta-label">'
+            f'{RL.L("meta_bar", "Positions", "Positions")}</span></div>'
+        )
     return f"""<article class="tp-card">
   <span class="topic-id">{_esc(topic_num)}</span>
   <h2><a href="{_esc(meta['html_filename'])}">{_esc(meta['headline'])}</a></h2>
@@ -258,8 +267,7 @@ def build_card(meta: dict, index: int, reports_dir: Path | None = None) -> str:
   <p class="summary">{_esc(meta['summary'])}</p>
 {follow_up_hint}  <div class="meta-bar">
     <div class="meta-item"><span class="meta-number">{meta['sources_count']}</span><span class="meta-label">{RL.L("meta_bar", "Sources", "Sources")}</span></div>
-    <div class="meta-item"><span class="meta-number">{meta['languages_count']}</span><span class="meta-label">{RL.L("meta_bar", "Languages", "Languages")}</span></div>
-    <div class="meta-item"><span class="meta-number">{meta['stakeholders_count']}</span><span class="meta-label">{RL.L("meta_bar", "Stakeholders", "Stakeholders")}</span></div>
+    <div class="meta-item"><span class="meta-number">{meta['languages_count']}</span><span class="meta-label">{RL.L("meta_bar", "Languages", "Languages")}</span></div>{positions_item}
     <div class="meta-item"><span class="meta-number">{meta['divergences_count']}</span><span class="meta-label">{RL.L("meta_bar", "Divergences", "Divergences")}</span></div>
   </div>
   <div class="card-footer"><span>{meta['word_count']:,} {RL.L("ui", "words", "words")} &middot; {_format_date(meta['date'])}</span><a href="{_esc(meta['html_filename'])}" class="read-link">&rarr; {RL.L("ui", "read_dossier", "READ DOSSIER")}</a></div>
@@ -299,18 +307,25 @@ def _bucket_bar(label: str, count: int, *, light: bool = False) -> str:
 
 def build_card_mid(meta: dict, reports_dir: Path | None = None) -> str:
     """TIER 1 (YESTERDAY) — mid card: id line, headline (h3), two-line
-    subheadline, and a four-metric transparency footer (Sources / Languages /
-    Stakeholders / Divergences). No summary, no stat meta-bar, no follow-up hint.
+    subheadline, and a transparency footer (Sources / Languages / Positions /
+    Divergences). No summary, no stat meta-bar, no follow-up hint.
 
     ``reports_dir`` is accepted for signature symmetry with ``build_card``; mid
     cards carry no follow-up hint, so there is nothing to degrade and it is
     currently unused.
     """
+    # Positions segment omitted when absent (older-schema TPs), never shown as 0.
+    positions_stat = ""
+    if meta.get("positions_count") is not None:
+        positions_stat = (
+            f' &middot; <b>{meta["positions_count"]}</b> '
+            f'{RL.L("meta_bar", "Positions", "Positions")}'
+        )
     return f"""<article class="tp-card-mid">
   <span class="topic-id">{_esc(meta['id'])}</span>
   <h3><a href="{_esc(meta['html_filename'])}">{_esc(meta['headline'])}</a></h3>
   <p class="subheadline-mid">{_esc(meta['subheadline'])}</p>
-  <div class="card-footer"><span class="mid-stats"><b>{meta['sources_count']}</b> {RL.L("meta_bar", "Sources", "Sources")} &middot; <b>{meta['languages_count']}</b> {RL.L("meta_bar", "Languages", "Languages")} &middot; <b>{meta['stakeholders_count']}</b> {RL.L("meta_bar", "Stakeholders", "Stakeholders")} &middot; <b>{meta['divergences_count']}</b> {RL.L("meta_bar", "Divergences", "Divergences")}</span><a href="{_esc(meta['html_filename'])}" class="read-link">&rarr; {RL.L("ui", "read", "READ")}</a></div>
+  <div class="card-footer"><span class="mid-stats"><b>{meta['sources_count']}</b> {RL.L("meta_bar", "Sources", "Sources")} &middot; <b>{meta['languages_count']}</b> {RL.L("meta_bar", "Languages", "Languages")}{positions_stat} &middot; <b>{meta['divergences_count']}</b> {RL.L("meta_bar", "Divergences", "Divergences")}</span><a href="{_esc(meta['html_filename'])}" class="read-link">&rarr; {RL.L("ui", "read", "READ")}</a></div>
 </article>"""
 
 

@@ -970,23 +970,43 @@ def test_meta_bar_languages_count_correct():
     assert ">3</span><span class=\"meta-label\">Languages<" in html
 
 
-def test_meta_bar_stakeholders_uses_distinct_actor_count():
-    """Bug 6: stakeholder count must read
-    `bias_analysis.framing.distinct_actor_count`. The old bug returned 2
-    (the count of dict keys in `perspectives`) — guard against it."""
+def test_meta_bar_shows_position_count():
+    """The third metric is Positions = len(perspectives.position_clusters), not
+    the old actor/stakeholder count. Four cells: Sources / Languages /
+    Positions / Divergences."""
     tp = {
         "sources": [],
         "bias_analysis": {
             "source": {"by_language": {}},
+            # distinct_actor_count stays in the package but no longer drives the box.
             "framing": {"distinct_actor_count": 18},
         },
-        "perspectives": {"position_clusters": [], "missing_positions": []},
+        "perspectives": {
+            "position_clusters": [{"id": f"pc-{i:03d}"} for i in range(3)],
+            "missing_positions": [],
+        },
         "divergences": [],
     }
     html = build_meta_bar(tp)
-    assert ">18</span><span class=\"meta-label\">Stakeholders<" in html
-    # Regression guard: the old bug emitted 2 (the count of perspective dict keys).
-    assert ">2</span><span class=\"meta-label\">Stakeholders<" not in html
+    assert ">3</span><span class=\"meta-label\">Positions<" in html
+    # The actor-count metric is gone from the box.
+    assert "Stakeholders" not in html
+    assert ">18<" not in html
+
+
+def test_meta_bar_omits_positions_when_empty_or_missing():
+    """Older-schema TPs with no position_clusters omit the metric entirely
+    (Sources / Languages / Divergences), never render Positions as 0."""
+    for perspectives in ({"position_clusters": [], "missing_positions": []}, {}):
+        tp = {
+            "sources": [{"id": "src-001"}],
+            "bias_analysis": {"source": {"by_language": {"en": 1}}},
+            "perspectives": perspectives,
+            "divergences": [],
+        }
+        html = build_meta_bar(tp)
+        assert "Positions" not in html
+        assert "Sources" in html and "Languages" in html and "Divergences" in html
 
 
 # ---------------------------------------------------------------------------
@@ -1512,15 +1532,18 @@ def test_qa_corrections_wrapper_all_applied():
 
 def test_publish_extract_metadata_uses_v2_paths(tmp_path):
     """Index-card metadata extraction also needs the V2-schema paths.
-    Languages count from `bias_analysis.source.by_language` and
-    stakeholders from `bias_analysis.framing.distinct_actor_count`."""
+    Languages count from `bias_analysis.source.by_language` and positions
+    from `perspectives.position_clusters`."""
     import json
     tp = {
         "id": "tp-2026-05-05-001",
         "metadata": {"date": "2026-05-05"},
         "article": {"headline": "h", "subheadline": "s", "summary": "x", "word_count": 100},
         "sources": [{"id": "src-001"}, {"id": "src-002"}],
-        "perspectives": {"position_clusters": [], "missing_positions": []},
+        "perspectives": {
+            "position_clusters": [{"id": f"pc-{i:03d}"} for i in range(9)],
+            "missing_positions": [],
+        },
         "divergences": [],
         "bias_analysis": {
             "source": {"by_language": {"en": 1, "de": 1, "fa": 1, "ru": 1}},
@@ -1531,7 +1554,25 @@ def test_publish_extract_metadata_uses_v2_paths(tmp_path):
     path.write_text(json.dumps(tp))
     meta = extract_metadata(path)
     assert meta["languages_count"] == 4
-    assert meta["stakeholders_count"] == 12
+    assert meta["positions_count"] == 9
+
+
+def test_publish_extract_metadata_omits_positions_when_absent(tmp_path):
+    """Older-schema TP with no position_clusters -> positions_count is None so
+    the card omits the metric rather than rendering 0."""
+    import json
+    tp = {
+        "id": "tp-2026-01-01-001",
+        "metadata": {"date": "2026-01-01"},
+        "article": {"headline": "h", "subheadline": "s", "summary": "x", "word_count": 10},
+        "sources": [{"id": "src-001"}],
+        "divergences": [],
+        "bias_analysis": {"source": {"by_language": {"en": 1}}},
+    }
+    path = tmp_path / "tp.json"
+    path.write_text(json.dumps(tp))
+    meta = extract_metadata(path)
+    assert meta["positions_count"] is None
 
 
 # ---------------------------------------------------------------------------

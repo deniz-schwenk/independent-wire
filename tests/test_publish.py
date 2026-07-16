@@ -45,7 +45,7 @@ def _make_meta(tp_id: str, date: str, *, headline: str = "H") -> dict:
         "html_filename": f"reports/{tp_id}.html",
         "sources_count": 5,
         "languages_count": 3,
-        "stakeholders_count": 4,
+        "positions_count": 4,
         "divergences_count": 2,
         "word_count": 800,
         "follow_up": None,
@@ -120,7 +120,7 @@ def test_decay_tiers_structure_and_counts():
 def test_yesterday_submarker_and_four_metric_footer():
     """YESTERDAY shows a single date sub-marker (same class as EARLIER) and the
     mid card carries the four-metric transparency footer (Sources / Languages /
-    Stakeholders / Divergences) — not the old sources/words/date line."""
+    Positions / Divergences) — not the old sources/words/date line."""
     publish = _load_publish_module()
     metas = [
         _make_meta("tp-2026-05-31-001", "2026-05-31"),  # TODAY anchor
@@ -135,10 +135,30 @@ def test_yesterday_submarker_and_four_metric_footer():
     # Four-metric footer present (uppercasing is done in CSS, so the HTML carries
     # the mixed-case labels). _make_meta sets 5 / 3 / 4 / 2.
     assert 'class="mid-stats"' in html
-    for label in ("Sources", "Languages", "Stakeholders", "Divergences"):
+    for label in ("Sources", "Languages", "Positions", "Divergences"):
         assert label in html
+    assert "Stakeholders" not in html
     # The old mid footer text is gone.
     assert "words &middot;" not in html.split('class="tp-card-mid"')[1]
+
+
+def test_build_card_positions_metric_present_and_omitted():
+    """The index hero card shows the Positions cell when positions_count is set,
+    and omits it (falling back to a three-metric box) when it is None."""
+    publish = _load_publish_module()
+
+    with_positions = _make_meta("tp-2026-05-08-001", "2026-05-08")
+    html = publish.build_card(with_positions, 1)
+    assert '<span class="meta-label">Positions</span>' in html
+    # Ordered Sources / Languages / Positions / Divergences.
+    assert html.index("Languages") < html.index("Positions") < html.index("Divergences")
+
+    absent = _make_meta("tp-2026-05-08-002", "2026-05-08")
+    absent["positions_count"] = None
+    html2 = publish.build_card(absent, 2)
+    assert "Positions" not in html2
+    for label in ("Sources", "Languages", "Divergences"):
+        assert label in html2
 
 
 def test_tier_omits_empty_buckets():
