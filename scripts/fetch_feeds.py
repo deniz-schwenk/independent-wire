@@ -23,7 +23,19 @@ import httpx
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from src.url_canonical import canonical_url  # noqa: E402  (ROOT on sys.path)
+
 logger = logging.getLogger("fetch_feeds")
+
+
+def _dedup_url_key(finding: dict) -> str:
+    """Canonical dedup key for a finding's URL: the tracking-param/casing/
+    fragment/trailing-slash-normalized form when the URL is usable, else the
+    stripped raw URL (so blank/relative URLs behave exactly as before). URL
+    variants of the same article (e.g. ``?traffic_source=rss``) collapse to one
+    key here, before any LLM stage sees them."""
+    raw = (finding.get("source_url") or "").strip()
+    return canonical_url(raw) or raw
 
 GDELT_API_URL = (
     "https://api.gdeltproject.org/api/v2/doc/doc"
@@ -177,11 +189,16 @@ async def fetch_gdelt(client: httpx.AsyncClient, source: dict) -> list[dict]:
 
 
 def deduplicate(findings: list[dict]) -> list[dict]:
-    """Deduplicate findings by URL."""
+    """Deduplicate findings by canonical URL (in-run).
+
+    Keys on :func:`_dedup_url_key` so tracking-param / casing / fragment /
+    trailing-slash variants of the same article collapse; the first occurrence
+    in ingestion order wins (deterministic tie-break). URL-less findings are
+    never deduped (each is kept)."""
     seen_urls: set[str] = set()
     unique: list[dict] = []
     for f in findings:
-        url = f.get("source_url", "")
+        url = _dedup_url_key(f)
         if url and url in seen_urls:
             continue
         if url:
@@ -210,9 +227,11 @@ UNDATED_SEEN_RETENTION_DAYS = 30
 
 
 def _undated_fingerprint(finding: dict) -> str:
-    """Stable cross-day identity for an undated entry: the article URL when
-    present (most stable), else source_name + title."""
-    url = (finding.get("source_url") or "").strip()
+    """Stable cross-day identity for an undated entry: the canonical article URL
+    when present (most stable), else source_name + title. Sharing
+    :func:`_dedup_url_key` keeps a tracking-param variant from re-entering the
+    pipeline as a "new" undated sighting."""
+    url = _dedup_url_key(finding)
     basis = url or f"{finding.get('source_name', '')}\x1f{finding.get('title', '')}"
     return hashlib.sha256(basis.encode("utf-8")).hexdigest()
 
@@ -298,13 +317,16 @@ def target_run_date(now_local: datetime) -> str:
 
 
 def _store_identity(f: dict) -> str:
-    """Deterministic dedup identity for a finding in the day store: the article
-    URL when present (the stable GUID-equivalent), else source_name + title. The
-    URL branch reproduces today's single-fetch ``deduplicate`` semantics exactly;
-    the title fallback additionally catches url-less items that reappear in a
-    later window (``deduplicate`` leaves those un-deduped — harmless within one
-    fetch, but they would accumulate across windows)."""
-    url = (f.get("source_url") or "").strip()
+    """Deterministic dedup identity for a finding in the day store: the canonical
+    article URL when present (the stable GUID-equivalent), else source_name +
+    title. The URL branch uses :func:`_dedup_url_key`, so a tracking-param variant
+    arriving in a later collector window collapses onto the record already in the
+    store — and because :func:`merge_append` preserves that earlier record, the
+    earliest ``first_seen`` (and its original URL) wins. The title fallback
+    additionally catches url-less items that reappear in a later window
+    (``deduplicate`` leaves those un-deduped — harmless within one fetch, but they
+    would accumulate across windows)."""
+    url = _dedup_url_key(f)
     if url:
         return "u\x1f" + url
     return "t\x1f" + (f.get("source_name") or "") + "\x1f" + (f.get("title") or "")
