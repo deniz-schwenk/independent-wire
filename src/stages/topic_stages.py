@@ -47,7 +47,6 @@ import logging
 import re
 import unicodedata
 from typing import Any, Callable, Optional
-from urllib.parse import urlsplit
 
 from src.bus import (
     RunBusReadOnly,
@@ -63,6 +62,7 @@ from src.stages._helpers import (
     strip_stale_quantifiers,
 )
 from src.stages.run_stages import mirror_stage
+from src.url_canonical import canonical_url
 
 logger = logging.getLogger(__name__)
 
@@ -116,39 +116,21 @@ async def merge_sources(topic_bus: TopicBus, run_bus: RunBusReadOnly) -> TopicBu
 
 
 def _normalize_source_url(url: Any) -> Optional[str]:
-    """Conservatively normalize a source URL for duplicate detection.
+    """Canonical dedup key for a source URL (safety-net at TP assembly).
 
-    Returns a canonical form used only as a dedup key, or ``None`` when the
-    value is not a usable absolute URL (in which case the source must never
-    be deduped — each such source keeps its own id).
+    Thin delegate to :func:`src.url_canonical.canonical_url` — the single
+    shared canonicalizer also used by ingestion dedup, so a duplicate that
+    slips past ingestion (e.g. because the two variants arrived on different
+    ingestion paths, only one carrying the tracking param) still collapses
+    here. Returns ``None`` when the value is not a usable absolute URL, in
+    which case the source must never be deduped (each keeps its own id).
 
-    Conservative normalization (agreed scope):
-    - lowercase the scheme and host (netloc),
-    - strip the URL fragment,
-    - strip a single trailing slash on the path.
-
-    Deliberately NOT done: stripping ``www.``, or altering / dropping the
-    query string. ``http://h/a?x=1`` and ``HTTP://H/a/#frag?`` already differ
-    in query, so they stay distinct; only scheme-case, host-case, fragment,
-    and one trailing slash are neutralized.
+    Normalization: lowercase scheme + host, strip fragment, strip a single
+    trailing slash, and remove known tracking query params (``traffic_source``,
+    ``utm_*``, ``fbclid``, …); every other query param is preserved. Two URLs
+    that differ in a real query value stay distinct.
     """
-    if not isinstance(url, str):
-        return None
-    raw = url.strip()
-    if not raw:
-        return None
-    parts = urlsplit(raw)
-    if not parts.netloc:
-        return None  # relative / unparseable -> never dedup
-    scheme = parts.scheme.lower()
-    host = parts.netloc.lower()
-    path = parts.path
-    if path.endswith("/"):
-        path = path[:-1]  # strip a single trailing slash
-    rebuilt = f"{scheme}://{host}{path}"
-    if parts.query:
-        rebuilt += f"?{parts.query}"
-    return rebuilt
+    return canonical_url(url)
 
 
 @topic_stage_def(
@@ -203,6 +185,18 @@ async def renumber_sources(
         norm_url = _normalize_source_url(src.get("url"))
         if norm_url is not None and norm_url in url_to_id:
             # Duplicate URL: drop this source, point its id at the survivor.
+            # Loud safety-net warning — a duplicate reaching TP assembly means
+            # ingestion-level canonical-URL dedup missed a variant (or the two
+            # variants arrived on different ingestion paths). The published TP is
+            # kept clean either way; the survivor's ORIGINAL url is retained.
+            logger.warning(
+                "renumber_sources: safety-net dropped duplicate source url=%r "
+                "(canonical=%r collides with %s) — ingestion dedup missed this "
+                "pair",
+                src.get("url"),
+                norm_url,
+                url_to_id[norm_url],
+            )
             rename_map[map_key] = url_to_id[norm_url]
             continue
 

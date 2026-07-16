@@ -105,3 +105,79 @@ def test_parse_gdelt_seendate_empty_or_malformed(fetch_feeds_module):
     assert fetch_feeds_module._parse_gdelt_seendate("") is None
     assert fetch_feeds_module._parse_gdelt_seendate("not-a-date") is None
     assert fetch_feeds_module._parse_gdelt_seendate(None) is None  # type: ignore[arg-type]
+
+
+# ---------------------------------------------------------------------------
+# Canonical-URL dedup + merge policy (TASK-SOURCE-URL-DEDUP)
+# ---------------------------------------------------------------------------
+
+
+def _finding(title: str, url: str, **extra) -> dict:
+    return {"title": title, "source_url": url, "source_name": "Al Jazeera", **extra}
+
+
+# The published tp-2026-07-14-001 leak: same article, one URL carries
+# ?traffic_source=rss (src-026) and the other does not (src-033).
+_REPRO_TRACKING = (
+    "https://www.aljazeera.com/news/2026/7/13/trump-says-us-will-become-"
+    "guardian-of-strait-of-hormuz-and-collect-tolls?traffic_source=rss"
+)
+_REPRO_CLEAN = (
+    "https://www.aljazeera.com/news/2026/7/13/trump-says-us-will-become-"
+    "guardian-of-strait-of-hormuz-and-collect-tolls"
+)
+
+
+def test_deduplicate_collapses_reproducer_pair(fetch_feeds_module):
+    """The 2026-07-14 reproducer pair collapses to one record through the
+    in-run dedup function; the first in ingestion order survives."""
+    findings = [
+        _finding("Trump on Hormuz", _REPRO_TRACKING),
+        _finding("Trump on Hormuz", _REPRO_CLEAN),
+    ]
+    out = fetch_feeds_module.deduplicate(findings)
+    assert len(out) == 1
+    # First in ingestion order wins → original (tracking) URL retained verbatim.
+    assert out[0]["source_url"] == _REPRO_TRACKING
+
+
+def test_deduplicate_keeps_distinct_articles(fetch_feeds_module):
+    """No behavior change for genuinely different URLs (different article key)."""
+    findings = [
+        _finding("A", "https://h.example/story?id=1"),
+        _finding("B", "https://h.example/story?id=2"),
+    ]
+    assert len(fetch_feeds_module.deduplicate(findings)) == 2
+
+
+def test_deduplicate_keeps_urlless_findings(fetch_feeds_module):
+    """URL-less findings are never deduped (each kept)."""
+    findings = [_finding("A", ""), _finding("B", "")]
+    assert len(fetch_feeds_module.deduplicate(findings)) == 2
+
+
+def test_merge_append_earliest_first_seen_wins_original_url_retained(fetch_feeds_module):
+    """Merge policy: the clean URL enters first (earliest first_seen); a later
+    collector window carrying the tracking-param variant collapses onto it —
+    the earliest record survives with its ORIGINAL url and first_seen."""
+    iso1 = "2026-07-14T06:00:00+00:00"
+    iso2 = "2026-07-14T10:00:00+00:00"
+    existing, _ = fetch_feeds_module.merge_append(
+        [], [_finding("Trump on Hormuz", _REPRO_CLEAN)], iso1
+    )
+    assert existing[0]["first_seen"] == iso1
+
+    merged, appended = fetch_feeds_module.merge_append(
+        existing, [_finding("Trump on Hormuz", _REPRO_TRACKING)], iso2
+    )
+    assert appended == 0  # tracking variant recognized as a duplicate
+    assert len(merged) == 1
+    assert merged[0]["source_url"] == _REPRO_CLEAN  # original of the survivor
+    assert merged[0]["first_seen"] == iso1  # earliest stamp preserved
+
+
+def test_store_identity_matches_across_tracking_variants(fetch_feeds_module):
+    """The store dedup identity is stable across a tracking-param variant."""
+    a = fetch_feeds_module._store_identity(_finding("x", _REPRO_TRACKING))
+    b = fetch_feeds_module._store_identity(_finding("x", _REPRO_CLEAN))
+    assert a == b

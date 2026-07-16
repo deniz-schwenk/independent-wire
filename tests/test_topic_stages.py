@@ -313,6 +313,50 @@ def test_renumber_sources_no_url_sources_never_deduped():
     }
 
 
+def test_renumber_sources_safety_net_collapses_tracking_variant(caplog):
+    """tp-2026-07-14-001 leak: src-026 (?traffic_source=rss) vs src-033 (clean)
+    reached TP assembly. The safety net collapses them to one src id, retains the
+    SURVIVOR's original url, and logs a loud warning (ingestion dedup missed it)."""
+    tracking = (
+        "https://www.aljazeera.com/news/2026/7/13/trump-says-us-will-become-"
+        "guardian-of-strait-of-hormuz-and-collect-tolls?traffic_source=rss"
+    )
+    clean = (
+        "https://www.aljazeera.com/news/2026/7/13/trump-says-us-will-become-"
+        "guardian-of-strait-of-hormuz-and-collect-tolls"
+    )
+    tb = TopicBus()
+    tb.merged_sources_pre_renumber = [
+        {"id": "hydrate-rsrc-026", "url": tracking, "outlet": "Al Jazeera"},
+        {"id": "research-rsrc-033", "url": clean, "outlet": "Al Jazeera"},
+    ]
+    import logging
+
+    with caplog.at_level(logging.WARNING):
+        tb_after = _run(renumber_sources, tb, _ro())
+
+    assert [s["id"] for s in tb_after.final_sources] == ["src-001"]
+    assert tb_after.final_sources[0]["url"] == tracking  # survivor's ORIGINAL url
+    assert tb_after.id_rename_map == {
+        "hydrate-rsrc-026": "src-001",
+        "research-rsrc-033": "src-001",
+    }
+    assert any(
+        "safety-net" in r.getMessage() and r.levelno == logging.WARNING
+        for r in caplog.records
+    )
+
+
+def test_normalize_source_url_strips_tracking_params():
+    """Tracking params collapse at the assembly layer too (shared canonicalizer):
+    the ?traffic_source variant and utm_* normalize to the clean form."""
+    clean = _normalize_source_url("https://h.example/a")
+    assert _normalize_source_url("https://h.example/a?traffic_source=rss") == clean
+    assert _normalize_source_url("https://h.example/a?utm_source=x&utm_medium=y") == clean
+    # A real (non-tracking) query param is preserved and stays distinct.
+    assert _normalize_source_url("https://h.example/a?id=1") != clean
+
+
 def test_normalize_source_url_dedup_equivalences():
     """Scheme-case, host-case, fragment, and a single trailing slash are
     neutralized (these forms dedupe)."""
@@ -325,10 +369,12 @@ def test_normalize_source_url_dedup_equivalences():
 
 
 def test_normalize_source_url_distinctions_preserved():
-    """`www.` and the query string are NOT altered (these forms stay distinct)."""
+    """`www.` and non-tracking query params are NOT altered (stay distinct).
+
+    Only known trackers are stripped; a real query param like ``x`` is kept."""
     base = _normalize_source_url("https://h.example/a")
     assert _normalize_source_url("https://www.h.example/a") != base  # www. kept
-    assert _normalize_source_url("https://h.example/a?x=1") != base  # query kept
+    assert _normalize_source_url("https://h.example/a?x=1") != base  # real query kept
     # Two different queries do not collapse.
     assert _normalize_source_url("https://h.example/a?x=1") != _normalize_source_url(
         "https://h.example/a?x=2"
