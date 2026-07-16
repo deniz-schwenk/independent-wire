@@ -96,6 +96,24 @@ def count_noun(n: int, noun_key: str, en_default: str) -> str:
     return f"{n} {word}" if word else en_default
 
 
+# --------------------------------------------------- shared stats-box metric
+
+def position_count(tp: dict) -> int | None:
+    """Number of distinct mapped positions for the stats box, or ``None`` when
+    the metric should be omitted.
+
+    Reads ``tp["perspectives"]["position_clusters"]`` — the count of mapped
+    opinion positions, the project's core claim in one figure. Returns ``None``
+    (metric omitted, never rendered as 0) when the slot is missing or empty, as
+    on older-schema TPs. Shared by both stats-box builders (``publish.py`` index
+    cards, ``render.py`` dossier meta bar) so the two page types stay in sync —
+    this is not a label, it is render-path infrastructure."""
+    clusters = (tp.get("perspectives") or {}).get("position_clusters")
+    if isinstance(clusters, list) and clusters:
+        return len(clusters)
+    return None
+
+
 # ----------------------------------------------------------- DE/EN switch
 
 def build_lang_switch(current_lang: str, en_href: str, de_href: str) -> str:

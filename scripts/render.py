@@ -812,17 +812,20 @@ def build_meta_bar(tp: dict) -> str:
     sources_count = len(tp.get("sources", []))
     bias = tp.get("bias_analysis", {})
     lang_count = len(bias.get("source", {}).get("by_language", {}))
-    persp_count = (
-        bias.get("framing", {}).get("distinct_actor_count", 0)
-    )
     div_count = len(tp.get("divergences", []))
 
+    # Sources / Languages / Positions / Divergences. The Positions metric
+    # (distinct mapped position_clusters) is omitted on older-schema TPs that
+    # carry no clusters, rather than rendered as 0.
     items = [
         (sources_count, RL.L("meta_bar", "Sources", "Sources")),
         (lang_count, RL.L("meta_bar", "Languages", "Languages")),
-        (persp_count, RL.L("meta_bar", "Stakeholders", "Stakeholders")),
-        (div_count, RL.L("meta_bar", "Divergences", "Divergences")),
     ]
+    positions_count = RL.position_count(tp)
+    if positions_count is not None:
+        items.append((positions_count, RL.L("meta_bar", "Positions", "Positions")))
+    items.append((div_count, RL.L("meta_bar", "Divergences", "Divergences")))
+
     inner = "\n".join(
         f'<div class="meta-item"><span class="meta-number">{n}</span>'
         f'<span class="meta-label">{label}</span></div>'
