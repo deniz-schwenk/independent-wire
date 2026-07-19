@@ -369,7 +369,15 @@ _CURATOR_RAW_DATA_FIELDS: tuple[str, ...] = (
 # Asian sources" on a topic with none in the final set). geographic_coverage
 # and languages stay — they are a legitimate breadth signal for the selection
 # decision.
+#
+# topic_id is the exception to "originary output only": it is a pass-through
+# identity the agent is expected to echo verbatim (the established ID-key
+# pattern), so it must be in the agent view for the Editor to copy it back. The
+# strict EDITOR_SCHEMA forces the field; Python then joins raw_data and
+# hydration URLs on it, independent of any Editor title rewrite
+# (TASK-CLUSTER-ID-JOIN).
 _EDITOR_AGENT_TOPIC_FIELDS: tuple[str, ...] = (
+    "topic_id",
     "title",
     "summary",
     "geographic_coverage",
@@ -381,12 +389,18 @@ _EDITOR_AGENT_TOPIC_FIELDS: tuple[str, ...] = (
 def _attach_raw_data_from_curated(
     raw_assignments: list[dict], curated_topics: list[dict]
 ) -> None:
-    """Attach Curator's enrichment to Editor's assignments in place. Match
-    by exact title first, then by slug. V1: src/pipeline.py:1928-1988."""
+    """Attach Curator's enrichment to Editor's assignments in place.
+
+    Match by the deterministic ``topic_id`` join key first (echoed verbatim
+    by the Editor, survives any title rewrite). The exact-title → slug path
+    is retained only as a loud fallback, used when an assignment's topic_id
+    is missing or unknown — see TASK-CLUSTER-ID-JOIN. V1: src/pipeline.py:
+    1928-1988."""
 
     def _extract(t: dict) -> dict:
         return {k: t[k] for k in _CURATOR_RAW_DATA_FIELDS if k in t}
 
+    id_lookup: dict[str, dict] = {}
     title_lookup: dict[str, dict] = {}
     slug_buckets: dict[str, list[dict]] = {}
     for t in curated_topics:
@@ -394,6 +408,9 @@ def _attach_raw_data_from_curated(
             continue
         title = t.get("title") or ""
         raw_data = _extract(t)
+        tid = t.get("topic_id") or ""
+        if tid and tid not in id_lookup:
+            id_lookup[tid] = raw_data
         if title and title not in title_lookup:
             title_lookup[title] = raw_data
         slug = _slugify(title)
@@ -406,6 +423,21 @@ def _attach_raw_data_from_curated(
         if a.get("raw_data"):
             continue
         title = a.get("title") or ""
+        # Primary: deterministic topic_id join. No fallback warning fires
+        # when this succeeds — the linkage is title-rewrite-proof.
+        tid = a.get("topic_id") or ""
+        if tid and tid in id_lookup:
+            a["raw_data"] = id_lookup[tid]
+            continue
+        # Fallback: topic_id missing or unknown → demote to the fragile
+        # title/slug join, loudly. Name the assignment (topic_id + title) so
+        # the fallback is never silent.
+        logger.warning(
+            "editor assignment (topic_id=%r, title=%r) did not match a "
+            "curated topic by topic_id; falling back to title/slug join",
+            tid,
+            title,
+        )
         if title in title_lookup:
             a["raw_data"] = title_lookup[title]
             continue
@@ -479,6 +511,10 @@ def _assign_ids_and_slugs(
             {
                 "id": f"tp-{run_date}-{seq:03d}",
                 "title": title,
+                # Preserve the Curator join key echoed by the Editor so the
+                # hydration-URL join (attach_hydration_urls_to_assignments)
+                # can match on it after this stage. (TASK-CLUSTER-ID-JOIN)
+                "topic_id": a.get("topic_id", "") or "",
                 "priority": entry["priority"],
                 "topic_slug": slug,
                 "selection_reason": a.get("selection_reason", ""),
@@ -493,6 +529,7 @@ def _assign_ids_and_slugs(
             {
                 "id": "",
                 "title": a.get("title", "") or "",
+                "topic_id": a.get("topic_id", "") or "",
                 "priority": entry["priority"],
                 "topic_slug": "",
                 "selection_reason": a.get("selection_reason", ""),

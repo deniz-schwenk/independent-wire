@@ -98,6 +98,13 @@ EDITOR_SCHEMA = {
             "items": {
                 "type": "object",
                 "properties": {
+                    # Deterministic join key echoed verbatim from the input
+                    # topic (`ct-{run_date}-NN`). Identity before judgement —
+                    # placed first so the linkage back to the source cluster is
+                    # independent of any Editor title rewrite. Python matches on
+                    # this; the title/slug and token-overlap joins are demoted
+                    # to loud fallbacks (TASK-CLUSTER-ID-JOIN).
+                    "topic_id": {"type": "string"},
                     "title": {"type": "string"},
                     "priority": {"type": "integer"},
                     "selection_reason": {"type": "string"},
@@ -105,7 +112,7 @@ EDITOR_SCHEMA = {
                     "follow_up_reason": {"type": ["string", "null"]},
                 },
                 "required": [
-                    "title", "priority", "selection_reason",
+                    "topic_id", "title", "priority", "selection_reason",
                     "follow_up_to", "follow_up_reason",
                 ],
                 "additionalProperties": False,

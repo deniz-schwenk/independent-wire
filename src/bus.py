@@ -122,10 +122,17 @@ class EditorAssignment(_StrictSubModel):
     Field set traces to ARCH-V2 §4A.3 (LLM-emitted: title, priority,
     selection_reason, follow_up_to, follow_up_reason; Python-added: id,
     topic_slug) plus §4B.2's reference to `editor_selected_topic.raw_data`.
+
+    `topic_id` is the deterministic Curator→Editor→hydration join key
+    (`ct-{run_date}-NN`) — echoed verbatim by the Editor and preserved by
+    Python so the raw-data and hydration-URL joins survive a title rewrite
+    (TASK-CLUSTER-ID-JOIN). Default `""` keeps older snapshots / legacy
+    callers valid; the join falls back to title/slug when it is empty.
     """
 
     id: str = ""
     topic_slug: str = ""
+    topic_id: str = ""
     title: str = ""
     priority: int = 0
     selection_reason: str = ""

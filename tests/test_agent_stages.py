@@ -217,6 +217,8 @@ def test_editor_agent_view_excludes_source_stats_and_does_not_mutate():
     """
     curated = [
         {
+            # topic_id IS shown to the agent — the join key it echoes back.
+            "topic_id": "ct-2026-04-30-00",
             "title": "US transit fees",
             "summary": "fees on Strait of Hormuz",
             "geographic_coverage": ["North America", "Middle East"],
@@ -260,6 +262,9 @@ def test_editor_agent_view_excludes_source_stats_and_does_not_mutate():
     # Agent view == exactly the allow-list, no more. Asserting against the
     # constant makes adding a field deliberate; accidental passthrough fails.
     assert agent_keys == set(_EDITOR_AGENT_TOPIC_FIELDS)
+    # topic_id is the deterministic join key the agent must echo — it is
+    # explicitly IN the agent view (the ID-key exception to originary-only).
+    assert agent_topics[0]["topic_id"] == "ct-2026-04-30-00"
     # source_count/source_diversity/source_ids are withheld outright; so are
     # the provisional source-geography fields missing_regions/missing_languages
     # (the Editor runs pre-hydration — that geography is not the final set).

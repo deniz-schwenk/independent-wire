@@ -29,10 +29,11 @@ from src.runner.runner import _collect_agent_metrics
 from src.schemas import EDITOR_SCHEMA
 from scripts.run import GLM_5_2_EDITOR_FP8_ROUTING
 
-# Minimal EDITOR_SCHEMA-valid output (one assignment, all five required keys).
+# Minimal EDITOR_SCHEMA-valid output (one assignment, all six required keys).
 VALID_OUTPUT = {
     "assignments": [
         {
+            "topic_id": "ct-2026-04-30-00",
             "title": "A topic",
             "priority": 5,
             "selection_reason": "Because it is contested and significant.",
