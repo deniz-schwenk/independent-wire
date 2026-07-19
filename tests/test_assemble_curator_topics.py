@@ -74,6 +74,7 @@ def test_stage_metadata():
         "curator_findings",
         "curator_discovered_topics",
         "curator_topic_assignments",
+        "run_date",
     }
     assert meta.writes == ("curator_topics_unsliced", "curator_topics")
 
@@ -383,3 +384,68 @@ def test_no_discovered_topics_empty_slots():
 
 def test_default_max_topics_pinned():
     assert DEFAULT_MAX_TOPICS == 10
+
+
+# ---------------------------------------------------------------------------
+# 9. Deterministic topic_id join key (TASK-CLUSTER-ID-JOIN)
+# ---------------------------------------------------------------------------
+
+
+def test_topic_ids_deterministic_unique_and_keyed_to_discovered_index():
+    """Each discovered topic gets a deterministic ``topic_id``
+    (``ct-{run_date}-NN``) keyed to its DISCOVERED index — unique, stable
+    across identical runs, and present with the same value in both
+    ``curator_topics_unsliced`` and the sliced ``curator_topics``, regardless
+    of the source_count sort that reorders the output."""
+    findings = _make_findings()
+    # Discovered order: Climate (index 0, 1 source), Iran (index 1, 2 sources).
+    # The source_count sort puts Iran first in the OUTPUT, but the topic_id is
+    # keyed to the discovered index, not the output position.
+    discovered = [
+        {"title": "Climate story", "summary": "Climate-related"},
+        {"title": "Iran story", "summary": "Iran-related"},
+    ]
+    assignments = [
+        {
+            "topic_index": 0, "topic_title": "Climate story", "n_assigned": 1,
+            "assignments": [{"source_id": "finding-3", "similarity": 0.9}],
+        },
+        {
+            "topic_index": 1, "topic_title": "Iran story", "n_assigned": 2,
+            "assignments": [
+                {"source_id": "finding-0", "similarity": 0.9},
+                {"source_id": "finding-1", "similarity": 0.85},
+            ],
+        },
+    ]
+    rb = _make_rb(
+        findings=findings, discovered=discovered, assignments=assignments,
+        run_date="2026-05-16",
+    )
+    out = _run(assemble_curator_topics, rb)
+
+    unsliced = out.curator_topics_unsliced
+    # Iran sorts ahead of Climate (2 vs 1 sources), but ids track discovered idx.
+    assert [t["title"] for t in unsliced] == ["Iran story", "Climate story"]
+    by_title = {t["title"]: t for t in unsliced}
+    assert by_title["Climate story"]["topic_id"] == "ct-2026-05-16-00"
+    assert by_title["Iran story"]["topic_id"] == "ct-2026-05-16-01"
+
+    # Unique across topics.
+    ids = [t["topic_id"] for t in unsliced]
+    assert len(ids) == len(set(ids))
+
+    # Same topic_id per topic in the sliced Editor-facing list.
+    sliced_by_title = {t["title"]: t for t in out.curator_topics}
+    assert sliced_by_title["Iran story"]["topic_id"] == "ct-2026-05-16-01"
+    assert sliced_by_title["Climate story"]["topic_id"] == "ct-2026-05-16-00"
+
+    # Determinism — a second identical run yields byte-identical ids.
+    rb2 = _make_rb(
+        findings=copy.deepcopy(findings),
+        discovered=copy.deepcopy(discovered),
+        assignments=copy.deepcopy(assignments),
+        run_date="2026-05-16",
+    )
+    out2 = _run(assemble_curator_topics, rb2)
+    assert [t["topic_id"] for t in out2.curator_topics_unsliced] == ids

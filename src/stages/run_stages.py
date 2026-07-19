@@ -643,6 +643,17 @@ def make_attach_hydration_urls_to_assignments(
         clusters = list(run_bus.curator_topics_unsliced or [])
         country_by_outlet = _load_country_lookup(sp)
 
+        # Deterministic join index: topic_id → cluster. Clusters carry
+        # topic_id since assemble_curator_topics (TASK-CLUSTER-ID-JOIN); the
+        # token-overlap heuristic below is demoted to a loud fallback.
+        cluster_by_id: dict[str, dict] = {}
+        for c in clusters:
+            if not isinstance(c, dict):
+                continue
+            cid = c.get("topic_id") or ""
+            if cid and cid not in cluster_by_id:
+                cluster_by_id[cid] = c
+
         updated: list[dict] = []
         for assignment in run_bus.editor_assignments or []:
             if not isinstance(assignment, dict):
@@ -650,7 +661,23 @@ def make_attach_hydration_urls_to_assignments(
                 continue
             updated_assignment = copy.deepcopy(assignment)
             title = updated_assignment.get("title", "")
-            cluster, tied_count = _match_cluster(title, clusters)
+            # Primary: deterministic topic_id join, title-rewrite-proof.
+            tid = updated_assignment.get("topic_id") or ""
+            cluster = cluster_by_id.get(tid) if tid else None
+            if cluster is not None:
+                tied_count = 1  # exact id match — no tie concept
+            else:
+                # Fallback: topic_id missing or unknown → fragile token
+                # overlap, loudly. Name the assignment (id + title).
+                logger.warning(
+                    "attach_hydration_urls_to_assignments: assignment %r "
+                    "(title=%r) did not match a cluster by topic_id "
+                    "(topic_id=%r); falling back to token-overlap join",
+                    updated_assignment.get("id"),
+                    title,
+                    tid,
+                )
+                cluster, tied_count = _match_cluster(title, clusters)
             if cluster is None:
                 logger.warning(
                     "attach_hydration_urls_to_assignments: no cluster "
@@ -733,6 +760,7 @@ the Editor's input window is unchanged by the cutover."""
         "curator_findings",
         "curator_discovered_topics",
         "curator_topic_assignments",
+        "run_date",
     ),
     writes=("curator_topics_unsliced", "curator_topics"),
 )
@@ -777,6 +805,7 @@ async def assemble_curator_topics(run_bus: RunBus) -> RunBus:
     assignments_record = run_bus.curator_topic_assignments or {}
     assignment_topics = list(assignments_record.get("topics") or [])
     raw_findings = list(run_bus.curator_findings or [])
+    run_date = run_bus.run_date or ""
 
     # Positional index — topic_index → list[source_id]
     assignments_by_index: dict[int, list[str]] = {}
@@ -791,10 +820,17 @@ async def assemble_curator_topics(run_bus: RunBus) -> RunBus:
         ]
         assignments_by_index[int(ti)] = sids
 
-    # Build per-topic dicts in discovered order
+    # Build per-topic dicts in discovered order. `topic_id` is the
+    # deterministic Curator→Editor→hydration join key, keyed to the
+    # discovered-topics index `i` — the same positional index that already
+    # drives `assignments_by_index`. It is assigned BEFORE the source_count
+    # sort below, so it stays bound to its topic through the reorder and is
+    # identical in `curator_topics_unsliced` and the sliced `curator_topics`.
+    # (TASK-CLUSTER-ID-JOIN)
     topics: list[dict] = []
     for i, t in enumerate(discovered):
         topics.append({
+            "topic_id": f"ct-{run_date}-{i:02d}",
             "title": t.get("title", ""),
             "summary": t.get("summary", ""),
             "source_ids": assignments_by_index.get(i, []),
