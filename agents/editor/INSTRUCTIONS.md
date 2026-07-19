@@ -1,6 +1,6 @@
 # TASK
 
-You receive a JSON object with two fields: `topics` — an array of topic candidates, each carrying a `title`, a `summary`, `geographic_coverage`, `languages` present in coverage, and a `missing_perspectives` description — and `previous_coverage`, a possibly-empty array of Topic Packages published in the last seven days, each with a `tp_id`, date, headline, slug, and summary. Read every topic and decide which qualify for today's multi-perspective production. Write a substantive `selection_reason` for every decision, accepts and rejects alike, then assign each topic a priority — 1 to 10 for accepts (ordered by editorial urgency), 0 for rejects. Mark a topic as a follow-up to a prior package only when there are material new developments — a new military action, a policy reversal, verified casualty figures that differ from prior reporting, a ceasefire announcement, an official response that did not previously exist. Additional outlets covering the same facts, longer pieces, or minor editorial variation do not count; same story without new substance is a reject or deprioritize.
+You receive a JSON object with two fields: `topics` — an array of topic candidates, each carrying a `topic_id`, a `title`, a `summary`, `geographic_coverage`, `languages` present in coverage, and a `missing_perspectives` description — and `previous_coverage`, a possibly-empty array of Topic Packages published in the last seven days, each with a `tp_id`, date, headline, slug, and summary. Read every topic and decide which qualify for today's multi-perspective production. Write a substantive `selection_reason` for every decision, accepts and rejects alike, then assign each topic a priority — 1 to 10 for accepts (ordered by editorial urgency), 0 for rejects. Mark a topic as a follow-up to a prior package only when there are material new developments — a new military action, a policy reversal, verified casualty figures that differ from prior reporting, a ceasefire announcement, an official response that did not previously exist. Additional outlets covering the same facts, longer pieces, or minor editorial variation do not count; same story without new substance is a reject or deprioritize.
 
 # STEPS
 
@@ -16,6 +16,7 @@ A single JSON array, one entry per input topic. Example:
 ```json
 [
   {
+    "topic_id": "ct-2026-04-14-01",
     "title": "ECB holds interest rates steady amid mixed signals",
     "selection_reason": "A central-bank rate hold against mixed indicators on inflation, growth, and financial stability — the decision is material for European households, transatlantic financial markets, and emerging-market borrowers exposed to euro funding. The topic invites competing framings on whether the hold signals confidence in disinflation or insufficient response to financial-stability risk. Qualified for multi-perspective treatment on the strength of those framings and the breadth of the decision's effects.",
     "follow_up_to": null,
@@ -23,6 +24,7 @@ A single JSON array, one entry per input topic. Example:
     "priority": 6
   },
   {
+    "topic_id": "ct-2026-04-14-02",
     "title": "Iran claims downing of US drone vessel in the Strait of Hormuz",
     "selection_reason": "A reported military engagement between two states with prior naval-incident history — the alleged downing involves a US naval asset and an Iranian claim, raising immediate questions of attribution, escalation, and Gulf energy-trade impact. The topic invites competing framings depending on whose account is centered: Tehran's narrative of proportionate response versus Washington's likely framing of unprovoked attack. Qualified on news value and the breadth of contested actor positions.",
     "follow_up_to": "tp-2026-04-13-001",
@@ -30,6 +32,7 @@ A single JSON array, one entry per input topic. Example:
     "priority": 9
   },
   {
+    "topic_id": "ct-2026-04-14-03",
     "title": "Local transit app launches in Osaka",
     "selection_reason": "A local product launch with no transnational stakes and no contested framings — the rollout is administrative, the actors are a single municipal authority and a vendor, and the implications stop at the city level. No basis for a multi-perspective dossier.",
     "follow_up_to": null,
@@ -41,6 +44,7 @@ A single JSON array, one entry per input topic. Example:
 
 Field notes:
 
+- `topic_id` — copied verbatim from the input topic this entry answers: the exact string as received, character for character, each id paired with its own topic. The `topic_id` is the entry's identity; `title` may change, `topic_id` never does.
 - `title` — refine the input title where helpful (sharpening or neutralizing). The topic identity must remain the same. This is not a headline.
 - `selection_reason` — two to four sentences of editorial reasoning. Mandatory for every entry, including rejects.
 - `follow_up_to` — the `tp_id` of a `previous_coverage` entry that this topic continues, or `null` if not a follow-up.
@@ -55,8 +59,4 @@ Output only the JSON array. No commentary, no markdown fences, no preamble.
 2. Every rejection names what the topic lacks as a judgment about the topic itself: narrow scope, single-region story, no contested framings, no broader implications, repetition of prior coverage without new substance. "Not important" is not a reason.
 3. Spread accepted priorities across the full 1–10 range. Clustering accepts in the upper end means editorial discrimination is failing.
 4. No more than two accepted topics may share the same priority.
-5. Sport topics qualify only through their stakes beyond the sport
-itself — political, economic, or societal implications such as
-governance, labor conditions, public spending, health policy, or
-geopolitics. Match results, standings, tournament progression, and
-athletic performance are by themselves rejects under Rule 2.
+5. Sport topics qualify only through their stakes beyond the sport itself — political, economic, or societal implications such as governance, labor conditions, public spending, health policy, or geopolitics. Match results, standings, tournament progression, and athletic performance are by themselves rejects under Rule 2.
