@@ -30,18 +30,77 @@ def _sha(p: Path) -> str:
 
 
 # ── pure-Python page assembly (no browser) ───────────────────────────────────
-def test_build_page_does_not_modify_input_strings():
-    """The verbatim RTL string (RLM + typographic quotes) must appear in the
-    embedded card data exactly — no quote insertion, no RLM/mark trimming."""
-    card = json.loads((TESTDATA / "rtl_farsi.json").read_text(encoding="utf-8"))
-    page = rc._build_page(card)
-    assert card["originalB"] == "‏“دزدی دریایی”"
-    # exact string embedded (JSON-encoded, so match the escaped form)
-    assert json.dumps(card["originalB"], ensure_ascii=False)[1:-1] in page
+def test_build_page_strips_quotes_and_rlm():
+    """The renderer strips typographic quotes and RLM from originalA/originalB
+    and sorts wordA/wordB alphabetically.  Input dicts must not be mutated."""
+    card_orig = json.loads((TESTDATA / "rtl_farsi.json").read_text(encoding="utf-8"))
+    # snapshot before calling _build_page
+    orig_originalA = card_orig["originalA"]
+    orig_originalB = card_orig["originalB"]
+    page = rc._build_page(card_orig)
+    # input dict must not be mutated
+    assert card_orig["originalA"] == orig_originalA
+    assert card_orig["originalB"] == orig_originalB
+    # the embedded data has quotes stripped and no RLM — extract via _build_page
+    # which returns a dict of normalised data; check via regex on page source
+    import re
+    m = re.search(r'<script id="carddata"[^>]*>(.*?)</script>', page, re.DOTALL)
+    assert m, "card data script tag not found"
+    embedded = json.loads(m.group(1))
+    assert "\u200f" not in embedded.get("originalB", "")
+    assert "\u201c" not in embedded.get("originalA", "")
+    assert "\u201d" not in embedded.get("originalA", "")
     # fonts inlined as data: URIs, zero external refs
     assert "data:font/woff2;base64," in page
     assert "__FONTFACE__" not in page and "__CARD_JSON__" not in page
     assert "http://" not in page and "https://" not in page
+
+
+def test_alphabetical_sort_swaps():
+    """wordA/wordB must be sorted alphabetically (case-insensitive).  When B
+    sorts before A, the paired original/source fields swap too."""
+    card = {
+        "wordA": "terror",
+        "wordB": "resistance",
+        "originalA": "terror attacks",
+        "originalB": "المقاومة",
+        "sourceA": "DONALD TRUMP · AL JAZEERA · EN",
+        "sourceB": "GAZA-BEWOHNER · QUDS PRESS · AR",
+        "dossierId": "tp-test",
+        "dossierDate": "Jan 1, 2026",
+    }
+    import re as _re
+    page = rc._build_page(card)
+    m = _re.search(r'<script id="carddata"[^>]*>(.*?)</script>', page, _re.DOTALL)
+    assert m, "card data script tag not found"
+    embedded = json.loads(m.group(1))
+    # "resistance" < "terror" alphabetically → should be swapped
+    assert embedded["wordA"] == "resistance"
+    assert embedded["wordB"] == "terror"
+    assert embedded["originalA"] == "المقاومة"
+    assert embedded["originalB"] == "terror attacks"
+    assert embedded["sourceA"] == "GAZA-BEWOHNER · QUDS PRESS · AR"
+    assert embedded["sourceB"] == "DONALD TRUMP · AL JAZEERA · EN"
+
+
+def test_alphabetical_sort_no_swap_when_already_sorted():
+    """When wordA already sorts before wordB, no swap occurs."""
+    card = {
+        "wordA": "annexation",
+        "wordB": "reunification",
+        "originalA": "annexation",
+        "originalB": "reunification",
+        "sourceA": "A · EN",
+        "sourceB": "B · DE",
+        "dossierId": "tp-test",
+        "dossierDate": "Jan 1, 2026",
+    }
+    import re as _re
+    page = rc._build_page(card)
+    m = _re.search(r'<script id="carddata"[^>]*>(.*?)</script>', page, _re.DOTALL)
+    embedded = json.loads(m.group(1))
+    assert embedded["wordA"] == "annexation"
+    assert embedded["wordB"] == "reunification"
 
 
 def test_build_page_ignores_unknown_fields():

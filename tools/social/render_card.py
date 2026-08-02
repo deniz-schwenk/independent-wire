@@ -67,10 +67,54 @@ def _build_fontface_css() -> str:
     return "\n".join(rules)
 
 
+def _strip_quotes(s: str) -> str:
+    """Remove leading/trailing typographic or ASCII quotation marks and the
+    Unicode RLM (U+200F) that RTL inputs carry.  Handles paired quotes like
+    ``"…"`` and ``"…"`` as well as ASCII ``"…"``.  RLM is stripped because
+    direction is handled by the browser's bidi algorithm."""
+    import unicodedata
+    # Strip U+200F RIGHT-TO-LEFT MARK
+    s = s.replace("\u200f", "")
+    # Strip paired quotes: outermost layer only
+    pairs = [("\u201c", "\u201d"), ("\u201e", "\u201d"), ("\u2018", "\u2019"), ('"', '"')]
+    for o, c in pairs:
+        if s.startswith(o) and s.endswith(c) and len(s) >= 2:
+            s = s[len(o):len(s) - len(c)]
+            break
+    return s
+
+
 def _build_page(card: dict) -> str:
-    """Assemble the self-contained render page: template + inlined fonts + data."""
+    """Assemble the self-contained render page: template + inlined fonts + data.
+
+    Applies two normalisations required by the SETN design rules:
+
+    1. **Alphabetical order** — ``wordA``/``wordB`` are sorted by their English
+       display term (case-insensitive).  If the swap happens, the matching
+       ``originalA``/``originalB`` and ``sourceA``/``sourceB`` are swapped too.
+    2. **Quote removal** — typographic and ASCII quotation marks surrounding
+       ``originalA``/``originalB`` are stripped.  The thesis line in the
+       template carries no quotes either.
+    """
     html = CARD_HTML.read_text(encoding="utf-8")
+
+    # --- 1. alphabetical sort by English display term ------------------------
     data = {k: card[k] for k in _CARD_FIELDS if k in card}
+    word_a = data.get("wordA", "")
+    word_b = data.get("wordB", "")
+    if word_b.lower() < word_a.lower():
+        # swap: B comes first alphabetically
+        data["wordA"], data["wordB"] = word_b, word_a
+        for pair in [("originalA", "originalB"), ("sourceA", "sourceB")]:
+            a_k, b_k = pair
+            if a_k in data and b_k in data:
+                data[a_k], data[b_k] = data[b_k], data[a_k]
+
+    # --- 2. strip quotation marks from original fields -----------------------
+    for key in ("originalA", "originalB"):
+        if key in data:
+            data[key] = _strip_quotes(data[key])
+
     # JSON embedded in a <script type="application/json"> — escape "</" so a
     # value containing "</script>" cannot close the tag early (valid JSON).
     payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")

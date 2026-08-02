@@ -64,7 +64,7 @@ body { overflow: hidden; }
 
   <!-- Foot -->
   <div style="display: flex; flex-direction: column; align-items: center; gap: 26px;">
-    <div style="font-size: 23px; color: #444444; letter-spacing: -0.02em;">“The same event, named two ways.”</div>
+    <div style="font-size: 23px; color: #444444; letter-spacing: -0.02em;">The same event, named two ways.</div>
     <div style="width: 100%; border-top: 1px solid #e0e0e0;"></div>
     <div style="width: 100%; display: flex; justify-content: space-between; align-items: baseline;">
       <div id="dossier" style="font-family: var(--font-mono); font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: #767676;"></div>
@@ -152,8 +152,8 @@ body { overflow: hidden; }
       rowFontSize: rowSize + 'px',
       rowSlashSize: Math.round(rowSize * 0.42) + 'px',
       stackFontSize: stackSize + 'px',
-      originalA: prop('originalA', '“seizure”'),
-      originalB: prop('originalB', '‏“دزدی دریایی”'),
+      originalA: prop('originalA', 'seizure'),
+      originalB: prop('originalB', 'دزدی دریایی'),
       sourceA: prop('sourceA', 'U.S. CENTCOM · EN'),
       sourceB: prop('sourceB', 'IRNA · FA'),
       dossierId: prop('dossierId', 'tp-2026-04-19-001'),
@@ -164,7 +164,8 @@ body { overflow: hidden; }
   function apply(v) {
     var set = function (id, text) { document.getElementById(id).textContent = text; };
     var sz = function (id, s) { document.getElementById(id).style.fontSize = s; };
-    // Verbatim text (no quote insertion, no RLM/mark trimming, no case change).
+    // Text with quotes and RLM stripped by the renderer (design rule:
+    // no quotation marks around original terms, no RTL marks needed).
     set('rowA', v.wordA); set('rowB', v.wordB);
     set('stackA', v.wordA); set('stackB', v.wordB);
     sz('rowA', v.rowFontSize); sz('rowB', v.rowFontSize); sz('rowSlash', v.rowSlashSize);
