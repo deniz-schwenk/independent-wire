@@ -5025,7 +5025,7 @@
   },
   "primature.gouv.cd": {
     "display_name": "Primature DRC",
-    "country": "Congo (DRC)",
+    "country": "Democratic Republic of the Congo",
     "language": "fr",
     "type": "intergovernmental",
     "tier": 3,
@@ -5340,7 +5340,7 @@
   },
   "7sur7.cd": {
     "display_name": "7sur7.cd",
-    "country": "Congo (DRC)",
+    "country": "Democratic Republic of the Congo",
     "language": "fr",
     "type": "digital_native",
     "tier": 4,
@@ -5439,7 +5439,7 @@
   },
   "africanews.com": {
     "display_name": "Africanews",
-    "country": "Congo (Brazzaville)",
+    "country": "Congo",
     "language": "en",
     "type": "broadcaster",
     "tier": 3,
@@ -6006,7 +6006,7 @@
   },
   "fr.africanews.com": {
     "display_name": "Africanews (French)",
-    "country": "Congo (Brazzaville)",
+    "country": "Congo",
     "language": "fr",
     "type": "broadcaster",
     "tier": 3,
