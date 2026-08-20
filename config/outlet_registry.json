@@ -9,6 +9,7 @@
       "blog",
       "broadcaster",
       "digital_native",
+      "government",
       "intergovernmental",
       "investigative_nonprofit",
       "magazine",
@@ -32,7 +33,7 @@
       "state_directed",
       "state_influenced"
     ],
-    "type_vocabulary_notes": "academic = universities, peer-reviewed journals, state public-health / scientific institutes. think_tank = policy advocacy / research institutions (member-funded, foundation-funded, or government-supervised) with explicit policy-output orientation (Atlantic Council, Brookings, ISW, SWP Berlin, OSW, Baker Institute, Arms Control Association). The distinction is the transparency layer the project surfaces."
+    "type_vocabulary_notes": "academic = universities, peer-reviewed journals, state public-health / scientific institutes. think_tank = policy advocacy / research institutions (member-funded, foundation-funded, or government-supervised) with explicit policy-output orientation (Atlantic Council, Brookings, ISW, SWP Berlin, OSW, Baker Institute, Arms Control Association). The distinction is the transparency layer the project surfaces. government = national or subnational government body: ministries, parliaments, central banks, official press offices. intergovernmental is reserved for IGOs with multiple member states (UN, WHO, IAEA, ASEAN, European Parliament); state_broadcaster is reserved for state-run broadcasters and news agencies."
   },
   "163.com": {
     "outlet": "NetEase",
@@ -621,7 +622,7 @@
     "outlet": "US Centers for Disease Control and Prevention",
     "country": "United States",
     "language": "en",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "US federal public-health agency under HHS; primary source for US disease surveillance and guidance."
@@ -747,7 +748,7 @@
     "outlet": "Doordarshan News (Prasar Bharati)",
     "country": "India",
     "language": "hi",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "Indian public-broadcast TV news channel operated by Doordarshan under Prasar Bharati."
@@ -792,7 +793,7 @@
     "outlet": "French Ministry for Europe and Foreign Affairs",
     "country": "France",
     "language": "fr",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "Official site of the French foreign ministry (Quai d'Orsay); diplomatic statements and country files."
@@ -1032,7 +1033,7 @@
     "outlet": "PRC Ministry of Foreign Affairs",
     "country": "China",
     "language": "zh",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "PRC Ministry of Foreign Affairs official site; spokesperson remarks and diplomatic statements."
@@ -1226,7 +1227,7 @@
     "outlet": "UK Government",
     "country": "United Kingdom",
     "language": "en",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "Central UK government information portal run by Government Digital Service; hosts pages for ministerial departments and public bodies."
@@ -1319,7 +1320,7 @@
     "outlet": "US Department of the Treasury",
     "country": "United States",
     "language": "en",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "US Treasury Department official site; press releases, sanctions designations, and policy statements."
@@ -1699,7 +1700,7 @@
     "outlet": "Kyiv City Council / Kyiv City State Administration",
     "country": "Ukraine",
     "language": "uk",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 3,
     "editorial_independence": "state_directed",
     "bias_note": "Municipal government portal of Kyiv; official statements from the city council and mayor's office."
@@ -1936,7 +1937,7 @@
     "outlet": "PRC Ministry of Foreign Affairs",
     "country": "China",
     "language": "zh",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "PRC MFA alias domain; mirrors fmprc.gov.cn content with spokesperson remarks and ministry news."
@@ -1945,7 +1946,7 @@
     "outlet": "Türkiye Ministry of Foreign Affairs",
     "country": "Turkey",
     "language": "tr",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "Türkiye's foreign ministry; diplomatic statements, press releases, and country-relations files."
@@ -2008,7 +2009,7 @@
     "outlet": "PRC Ministry of Commerce (MOFCOM)",
     "country": "China",
     "language": "zh",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "PRC Ministry of Commerce; foreign trade policy, investment regulation, and trade negotiation announcements."
@@ -2170,7 +2171,7 @@
     "outlet": "All India Radio News (Prasar Bharati)",
     "country": "India",
     "language": "en",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "News Services Division of All India Radio under Prasar Bharati; 510+ daily bulletins in 82 languages."
@@ -2695,7 +2696,7 @@
     "outlet": "Russian Security Council",
     "country": "Russia",
     "language": "ru",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "Constitutional consultative body chaired by the Russian president; national-security policy statements."
@@ -2713,7 +2714,7 @@
     "outlet": "Türkiye Ministry of Health (Travel Health)",
     "country": "Turkey",
     "language": "tr",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 3,
     "editorial_independence": "state_directed",
     "bias_note": "Türkiye Ministry of Health travel-health portal run by the General Directorate for Borders and Coasts."
@@ -3328,7 +3329,7 @@
     "outlet": "PRC Embassy in Samoa",
     "country": "China",
     "language": "zh",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 4,
     "editorial_independence": "state_directed",
     "bias_note": "PRC embassy in the Independent State of Samoa; bilateral statements and consular notices."
@@ -4577,7 +4578,7 @@
     "display_name": "Oman MFA",
     "country": "Oman",
     "language": "en",
-    "type": "intergovernmental",
+    "type": "government",
     "tier": 3,
     "editorial_independence": "state_directed",
     "bias_note": "Official Omani Ministry of Foreign Affairs"
@@ -4873,7 +4874,7 @@
     "display_name": "Saudi MFA",
     "country": "Saudi Arabia",
     "language": "ar",
-    "type": "intergovernmental",
+    "type": "government",
     "tier": 3,
     "editorial_independence": "state_directed",
     "bias_note": "Official Saudi Ministry of Foreign Affairs"
@@ -5026,7 +5027,7 @@
     "display_name": "Primature DRC",
     "country": "Democratic Republic of the Congo",
     "language": "fr",
-    "type": "intergovernmental",
+    "type": "government",
     "tier": 3,
     "editorial_independence": "state_directed",
     "bias_note": "Official website of DRC Prime Minister's office"
@@ -5080,7 +5081,7 @@
     "display_name": "Permanent Mission of the Russian Federation to the UN",
     "country": "Russia",
     "language": "en",
-    "type": "intergovernmental",
+    "type": "government",
     "tier": 4,
     "editorial_independence": "state_directed",
     "bias_note": "Russian federal agency for CIS affairs"
@@ -5098,7 +5099,7 @@
     "display_name": "Santé Publique France",
     "country": "France",
     "language": "fr",
-    "type": "intergovernmental",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "French national public health agency"
@@ -5611,7 +5612,7 @@
     "display_name": "Bundesregierung",
     "country": "Germany",
     "language": "de",
-    "type": "intergovernmental",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "Official website of the German Federal Government"
@@ -5728,7 +5729,7 @@
     "display_name": "Congress.gov",
     "country": "United States",
     "language": "en",
-    "type": "intergovernmental",
+    "type": "government",
     "tier": 1,
     "editorial_independence": "state_directed",
     "bias_note": "Official website of the United States Congress"
@@ -5980,9 +5981,9 @@
     "display_name": "Federal Reserve",
     "country": "United States",
     "language": "en",
-    "type": "intergovernmental",
+    "type": "government",
     "tier": 1,
-    "editorial_independence": "independent",
+    "editorial_independence": "state_directed",
     "bias_note": "Official website of the US Federal Reserve System"
   },
   "finance.yahoo.co.jp": {
