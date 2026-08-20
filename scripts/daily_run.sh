@@ -41,6 +41,88 @@ if [[ "$CURRENT_BRANCH" != "main" ]]; then
   exit 1
 fi
 
+# --- Stale git index.lock guard (TASK-DAILY-RUN-LOCK-GUARD) -----------------
+# Two vacation incidents (2026-07-18, 2026-08-07) lost the morning publish to a
+# stale zero-byte .git/index.lock left by an interrupted git process: step
+# [6/6] `git add site/` died on "Unable to create index.lock: File exists" and
+# nothing shipped. A lock is removed ONLY when it is both demonstrably
+# abandoned (mtime older than STALE_LOCK_MIN) and provably unowned (no process
+# named `git` anywhere on the box). Every other case — a young lock, a live git
+# process, or an mtime we cannot read — REFUSES the run instead of pulling: a
+# missed publish is recoverable by rerunning, a git index corrupted by racing a
+# live operation is not. Deliberately placed AFTER the branch guard so a tree
+# parked on a feature branch is refused without this ever touching its .git/.
+STALE_LOCK_MIN=60
+GIT_DIR_PATH="$(git rev-parse --absolute-git-dir 2>/dev/null || echo "$REPO/.git")"
+LOCK="$GIT_DIR_PATH/index.lock"
+if [[ -e "$LOCK" ]]; then
+  # BSD stat/date (this runner is macOS-only). An unreadable mtime yields
+  # age -1, which fails safe into the refusal branch — never into removal.
+  LOCK_MTIME="$(stat -f %m "$LOCK" 2>/dev/null || echo "")"
+  if [[ -n "$LOCK_MTIME" ]]; then
+    LOCK_AGE_MIN=$(( ( $(date +%s) - LOCK_MTIME ) / 60 ))
+    LOCK_AGE_TEXT="${LOCK_AGE_MIN} min (mtime $(date -r "$LOCK_MTIME"))"
+  else
+    LOCK_AGE_MIN=-1
+    LOCK_AGE_TEXT="unknown — mtime unreadable"
+  fi
+  # `pgrep -x git` matches processes named exactly `git`, box-wide: a git
+  # command running in ANY repo blocks removal. Conservative on purpose — the
+  # cost of a false positive is one skipped run, the cost of a false negative
+  # is a corrupted index. Wrapped in `if` so pgrep's exit 1 (= no match) does
+  # not trip `set -e`.
+  if pgrep -x git >/dev/null 2>&1; then
+    GIT_RUNNING=yes
+  else
+    GIT_RUNNING=no
+  fi
+
+  if (( LOCK_AGE_MIN >= STALE_LOCK_MIN )) && [[ "$GIT_RUNNING" == "no" ]]; then
+    # Remove first, report the verified outcome second — never log a removal
+    # that did not happen (e.g. a permissions failure).
+    if rm -f "$LOCK" && [[ ! -e "$LOCK" ]]; then
+      {
+        echo "===================================================="
+        echo "GUARD — daily_run.sh — $TODAY — $(date)"
+        echo "REMOVED stale git index.lock: $LOCK"
+        echo "  age at removal: $LOCK_AGE_TEXT (threshold ${STALE_LOCK_MIN} min)"
+        echo "  no process named 'git' was running — the lock was abandoned, not live."
+        echo "Continuing with the run. Recurrence means the lock producer needs root-causing."
+        echo "===================================================="
+      } | tee -a "$LOG" >&2
+    else
+      {
+        echo "===================================================="
+        echo "ABORT — daily_run.sh — $TODAY — $(date)"
+        echo "Stale git index.lock is removable by policy but rm FAILED: $LOCK"
+        echo "  age: $LOCK_AGE_TEXT"
+        echo "No fetch / pull / pipeline / publish / push was performed."
+        echo "Fix: check ownership/permissions on '$LOCK', then rerun."
+        echo "===================================================="
+      } | tee -a "$LOG" >&2
+      exit 1
+    fi
+  else
+    {
+      echo "===================================================="
+      echo "ABORT — daily_run.sh — $TODAY — $(date)"
+      echo "Refusing to run: git index.lock present and NOT provably stale: $LOCK"
+      echo "  lock age:            $LOCK_AGE_TEXT (removal threshold ${STALE_LOCK_MIN} min)"
+      echo "  git process running: $GIT_RUNNING"
+      echo "A lock that is too young, held while git is live, or of unverifiable age"
+      echo "may belong to a running operation — removing it could corrupt the index."
+      echo "No fetch / pull / pipeline / publish / push was performed."
+      echo "Fix: wait for the git operation to finish, or once certain no git is"
+      echo "     running: rm '$LOCK'  (the runner will retry on the next trigger)."
+      echo "===================================================="
+    } | tee -a "$LOG" >&2
+    exit 1
+  fi
+else
+  echo "[guard] $(date) — no git index.lock at $LOCK — OK" >> "$LOG"
+fi
+# --- end stale git index.lock guard -----------------------------------------
+
 trap 'echo "===== FAILED — $TODAY — $(date) — see log above =====" >> "$LOG"' ERR
 
 {
