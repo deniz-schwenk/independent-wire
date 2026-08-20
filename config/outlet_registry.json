@@ -1,7 +1,7 @@
 {
   "_schema": {
     "version": "1.0",
-    "description": "Authoritative mapping from outlet hostname to canonical metadata. Single source of truth for outlet country/language/type plus tier/editorial_independence/bias_note (migrated from config/sources.json 2026-05-29). Country values match the canonical names in src/stages/_helpers.py:COUNTRY_ALIASES targets so they pass normalise_country() unchanged.",
+    "description": "Authoritative mapping from outlet hostname to canonical metadata. Single source of truth for outlet country/language/type plus tier/editorial_independence/bias_note (migrated from config/sources.json 2026-05-29). Country values match the canonical names in src/stages/_helpers.py:COUNTRY_ALIASES targets so they pass normalise_country() unchanged. Country is the outlet's operating headquarters — the seat of the legal publishing entity — not its editorial origin, founding location, or the region it covers.",
     "key_format": "Top-level keys are normalised hostnames (lowercase, no leading 'www.'). Subdomain matches fall back to the parent domain when no exact entry is present (see src/outlet_registry.py:lookup_outlet).",
     "type_vocabulary": [
       "academic",
@@ -4070,9 +4070,9 @@
     "bias_note": "Major Korean daily; progressive; employee-owned since 2006"
   },
   "lansinginstitute.org": {
-    "display_name": "Lansing Institute",
-    "country": "Russia",
-    "language": "ru",
+    "display_name": "Robert Lansing Institute for Global Threats and Democracies Studies",
+    "country": "United States",
+    "language": "en",
     "type": "think_tank",
     "tier": 4,
     "editorial_independence": "state_influenced",
@@ -4153,7 +4153,7 @@
   "svoboda.org": {
     "display_name": "Radio Svoboda",
     "country": "Czech Republic",
-    "language": "uk",
+    "language": "ru",
     "type": "broadcaster",
     "tier": 2,
     "editorial_independence": "publicly_funded_autonomous",
@@ -4304,9 +4304,9 @@
     "bias_note": "Thai business daily; Bangkok Post group"
   },
   "biz.heraldcorp.com": {
-    "display_name": "The Biz Herald",
+    "display_name": "Herald Business / 헤럴드경제",
     "country": "South Korea",
-    "language": "en",
+    "language": "ko",
     "type": "digital_native",
     "tier": 4,
     "editorial_independence": "independent",
@@ -4378,7 +4378,7 @@
   "cepal.org": {
     "display_name": "ECLAC/CEPAL",
     "country": "Chile",
-    "language": "en",
+    "language": "es",
     "type": "intergovernmental",
     "tier": 2,
     "editorial_independence": "independent",
@@ -4399,7 +4399,7 @@
     "language": "zh",
     "type": "think_tank",
     "tier": 3,
-    "editorial_independence": "state_influenced",
+    "editorial_independence": "state_directed",
     "bias_note": "Chinese MFA think-tank publication"
   },
   "cnbce.com": {
@@ -4522,7 +4522,7 @@
   "epochtimes.com": {
     "display_name": "The Epoch Times",
     "country": "United States",
-    "language": "en",
+    "language": "zh",
     "type": "newspaper",
     "tier": 3,
     "editorial_independence": "independent",
@@ -4576,7 +4576,7 @@
   "fm.gov.om": {
     "display_name": "Oman MFA",
     "country": "Oman",
-    "language": "ar",
+    "language": "en",
     "type": "intergovernmental",
     "tier": 3,
     "editorial_independence": "state_directed",
@@ -4709,12 +4709,11 @@
     "bias_note": "Legal news and research; University of Pittsburgh School of Law"
   },
   "khaligyoun.com": {
-    "display_name": "Khalij Online",
+    "display_name": "خليجيون / Khaligyoun",
     "country": "Iran",
     "language": "ar",
     "type": "digital_native",
     "tier": 4,
-    "editorial_independence": "state_influenced",
     "bias_note": "Arabic site covering Gulf affairs from Iranian perspective"
   },
   "kpler.com": {
@@ -4737,7 +4736,7 @@
   },
   "lanouvelletribune.info": {
     "display_name": "La Nouvelle Tribune",
-    "country": "France",
+    "country": "Canada",
     "language": "fr",
     "type": "digital_native",
     "tier": 4,
@@ -4854,11 +4853,11 @@
   },
   "melliun.org": {
     "display_name": "Melliun",
-    "country": "Iran",
+    "country": "Germany",
     "language": "fa",
     "type": "digital_native",
     "tier": 4,
-    "editorial_independence": "state_influenced",
+    "editorial_independence": "independent",
     "bias_note": "Iranian news/commentary site"
   },
   "mk.co.kr": {
@@ -4873,7 +4872,7 @@
   "mofa.gov.sa": {
     "display_name": "Saudi MFA",
     "country": "Saudi Arabia",
-    "language": "en",
+    "language": "ar",
     "type": "intergovernmental",
     "tier": 3,
     "editorial_independence": "state_directed",
@@ -4971,7 +4970,7 @@
   },
   "ochaopt.org": {
     "display_name": "OCHA oPt",
-    "country": "United States",
+    "country": "Palestine",
     "language": "en",
     "type": "intergovernmental",
     "tier": 2,
@@ -5078,7 +5077,7 @@
     "bias_note": "Portuguese public broadcaster; licence fee funded"
   },
   "russiaun.ru": {
-    "display_name": "Rossotrudnichestvo",
+    "display_name": "Permanent Mission of the Russian Federation to the UN",
     "country": "Russia",
     "language": "en",
     "type": "intergovernmental",
@@ -5439,7 +5438,7 @@
   },
   "africanews.com": {
     "display_name": "Africanews",
-    "country": "Congo",
+    "country": "France",
     "language": "en",
     "type": "broadcaster",
     "tier": 3,
@@ -5456,8 +5455,8 @@
     "bias_note": "Romanian national news agency"
   },
   "alaraby.com": {
-    "display_name": "The Arab Weekly",
-    "country": "United Kingdom",
+    "display_name": "Al Araby TV / التلفزيون العربي",
+    "country": "Qatar",
     "language": "ar",
     "type": "digital_native",
     "tier": 3,
@@ -5479,7 +5478,7 @@
     "language": "ar",
     "type": "digital_native",
     "tier": 4,
-    "editorial_independence": "independent",
+    "editorial_independence": "state_influenced",
     "bias_note": "Lebanese-Arab news and analysis site"
   },
   "alternatives-economiques.fr": {
@@ -5726,7 +5725,7 @@
     "bias_note": "IT industry trade publication; Foundry (IDG)"
   },
   "congress.gov": {
-    "display_name": "US Congress",
+    "display_name": "Congress.gov",
     "country": "United States",
     "language": "en",
     "type": "intergovernmental",
@@ -5827,10 +5826,10 @@
   "dialogo-americas.com": {
     "display_name": "Dialogo Americas",
     "country": "United States",
-    "language": "es",
-    "type": "digital_native",
+    "language": "en",
+    "type": "magazine",
     "tier": 4,
-    "editorial_independence": "independent",
+    "editorial_independence": "state_directed",
     "bias_note": "US Southern Command-sponsored news"
   },
   "digi24.ro": {
@@ -5861,8 +5860,8 @@
     "bias_note": "Major Portuguese daily; Globalnoticias"
   },
   "doctorswithoutborders.org": {
-    "display_name": "Medecins Sans Frontieres",
-    "country": "Switzerland",
+    "display_name": "Doctors Without Borders / MSF-USA",
+    "country": "United States",
     "language": "en",
     "type": "ngo",
     "tier": 1,
@@ -6006,7 +6005,7 @@
   },
   "fr.africanews.com": {
     "display_name": "Africanews (French)",
-    "country": "Congo",
+    "country": "France",
     "language": "fr",
     "type": "broadcaster",
     "tier": 3,
