@@ -370,7 +370,7 @@
     "outlet": "Japan Ministry of Foreign Affairs (Overseas Safety)",
     "country": "Japan",
     "language": "ja",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 3,
     "editorial_independence": "state_directed",
     "bias_note": "Japan MFA travel-safety subdomain; official travel advisories for Japanese nationals abroad."
@@ -559,7 +559,7 @@
     "outlet": "German Federal Ministry of Defence",
     "country": "Germany",
     "language": "de",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "German federal defence ministry; press releases and official statements on Bundeswehr matters."
@@ -568,7 +568,7 @@
     "outlet": "Indonesia National Border Management Agency",
     "country": "Indonesia",
     "language": "id",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 3,
     "editorial_independence": "state_directed",
     "bias_note": "Indonesian government agency coordinating land and maritime border management policy."
@@ -748,7 +748,7 @@
     "outlet": "Doordarshan News (Prasar Bharati)",
     "country": "India",
     "language": "hi",
-    "type": "government",
+    "type": "state_broadcaster",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "Indian public-broadcast TV news channel operated by Doordarshan under Prasar Bharati."
@@ -2171,7 +2171,7 @@
     "outlet": "All India Radio News (Prasar Bharati)",
     "country": "India",
     "language": "en",
-    "type": "government",
+    "type": "state_broadcaster",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "News Services Division of All India Radio under Prasar Bharati; 510+ daily bulletins in 82 languages."
@@ -2579,7 +2579,7 @@
     "outlet": "Government of the Netherlands",
     "country": "Netherlands",
     "language": "nl",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "Dutch central-government portal published by the Ministry of General Affairs; cross-ministry news and law."
@@ -2588,7 +2588,7 @@
     "outlet": "Robert Koch Institute",
     "country": "Germany",
     "language": "de",
-    "type": "state_broadcaster",
+    "type": "government",
     "tier": 2,
     "editorial_independence": "state_directed",
     "bias_note": "German federal public-health institute under the Federal Ministry of Health; disease surveillance and guidance."
