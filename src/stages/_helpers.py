@@ -36,6 +36,12 @@ LANGUAGE_NAMES: dict[str, str] = {
     "en": "English", "de": "German", "fr": "French", "es": "Spanish",
     "it": "Italian", "pt": "Portuguese", "nl": "Dutch", "sv": "Swedish",
     "no": "Norwegian", "da": "Danish", "fi": "Finnish", "el": "Greek",
+    # Baltic codes added 2026-08-21: config/outlet_registry.json carries four
+    # entries on them (err.ee, delfi.ee = et; lrt.lt, lrytas.lt = lt) that had
+    # no canonical name here, so tests/test_outlet_registry_schema.py could not
+    # assert language conformance without excluding them. Additive only —
+    # normalise_language() already returned these codes unchanged.
+    "et": "Estonian", "lt": "Lithuanian",
     "tr": "Turkish", "ru": "Russian", "uk": "Ukrainian", "pl": "Polish",
     "cs": "Czech", "hu": "Hungarian", "ro": "Romanian", "bg": "Bulgarian",
     "sr": "Serbian", "hr": "Croatian", "ar": "Arabic", "fa": "Persian",

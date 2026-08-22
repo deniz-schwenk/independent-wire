@@ -3450,7 +3450,7 @@
     "bias_note": "Hebrew sister site of The Times of Israel; co-founded by David Horovitz and US investor Seth Klarman"
   },
   "europapress.es": {
-    "display_name": "Europa Press",
+    "outlet": "Europa Press",
     "country": "Spain",
     "language": "es",
     "type": "news_agency",
@@ -3459,7 +3459,7 @@
     "bias_note": "Private news agency founded 1957; Spain's largest wire service"
   },
   "straitstimes.com": {
-    "display_name": "The Straits Times",
+    "outlet": "The Straits Times",
     "country": "Singapore",
     "language": "en",
     "type": "newspaper",
@@ -3468,7 +3468,7 @@
     "bias_note": "Flagship English daily of SPH Media; historically linked to Singapore government oversight"
   },
   "justsecurity.org": {
-    "display_name": "Just Security",
+    "outlet": "Just Security",
     "country": "United States",
     "language": "en",
     "type": "think_tank",
@@ -3477,7 +3477,7 @@
     "bias_note": "Law and national security analysis at NYU School of Law"
   },
   "news.yahoo.co.jp": {
-    "display_name": "Yahoo News Japan",
+    "outlet": "Yahoo News Japan",
     "country": "Japan",
     "language": "ja",
     "type": "aggregator",
@@ -3486,7 +3486,7 @@
     "bias_note": "Aggregator distributing content from Japanese wire services and media partners"
   },
   "rtve.es": {
-    "display_name": "RTVE",
+    "outlet": "RTVE",
     "country": "Spain",
     "language": "es",
     "type": "public_broadcaster",
@@ -3495,7 +3495,7 @@
     "bias_note": "Spain's public broadcasting corporation; funded by state grant and advertising"
   },
   "efe.com": {
-    "display_name": "EFE",
+    "outlet": "EFE",
     "country": "Spain",
     "language": "es",
     "type": "news_agency",
@@ -3504,7 +3504,7 @@
     "bias_note": "Spain's largest news agency; founded 1939; privately held cooperative"
   },
   "gcaptain.com": {
-    "display_name": "gCaptain",
+    "outlet": "gCaptain",
     "country": "United States",
     "language": "en",
     "type": "digital_native",
@@ -3513,7 +3513,7 @@
     "bias_note": "Maritime industry news and data; founded by John Konrad"
   },
   "nv.ua": {
-    "display_name": "NV (Novoye Vremya)",
+    "outlet": "NV (Novoye Vremya)",
     "country": "Ukraine",
     "language": "uk",
     "type": "magazine",
@@ -3522,7 +3522,7 @@
     "bias_note": "Ukrainian news magazine; owned by Staffler family since 2014"
   },
   "oglobo.globo.com": {
-    "display_name": "O Globo",
+    "outlet": "O Globo",
     "country": "Brazil",
     "language": "pt",
     "type": "newspaper",
@@ -3531,7 +3531,7 @@
     "bias_note": "Major Brazilian daily; part of Grupo Globo media conglomerate"
   },
   "amnesty.org": {
-    "display_name": "Amnesty International",
+    "outlet": "Amnesty International",
     "country": "United Kingdom",
     "language": "en",
     "type": "ngo",
@@ -3540,7 +3540,7 @@
     "bias_note": "Global human rights NGO; funded by individual donations; no government funding accepted"
   },
   "cumhuriyet.com.tr": {
-    "display_name": "Cumhuriyet",
+    "outlet": "Cumhuriyet",
     "country": "Turkey",
     "language": "tr",
     "type": "newspaper",
@@ -3549,7 +3549,7 @@
     "bias_note": "Turkey's oldest daily; privately owned; secular-republican editorial line"
   },
   "defensenews.com": {
-    "display_name": "Defense News",
+    "outlet": "Defense News",
     "country": "United States",
     "language": "en",
     "type": "magazine",
@@ -3558,7 +3558,7 @@
     "bias_note": "Defense industry trade publication; Sightline Media Group"
   },
   "finance.sina.com.cn": {
-    "display_name": "Sina Finance",
+    "outlet": "Sina Finance",
     "country": "China",
     "language": "zh",
     "type": "digital_native",
@@ -3567,7 +3567,7 @@
     "bias_note": "Financial news vertical of Sina.com; subject to PRC content regulations"
   },
   "ilfattoquotidiano.it": {
-    "display_name": "Il Fatto Quotidiano",
+    "outlet": "Il Fatto Quotidiano",
     "country": "Italy",
     "language": "it",
     "type": "newspaper",
@@ -3576,7 +3576,7 @@
     "bias_note": "Italian daily; independently owned; no advertising revenue model"
   },
   "observador.pt": {
-    "display_name": "Observador",
+    "outlet": "Observador",
     "country": "Portugal",
     "language": "pt",
     "type": "digital_native",
@@ -3585,7 +3585,7 @@
     "bias_note": "Portuguese digital-native news site; launched 2014; privately owned"
   },
   "ouest-france.fr": {
-    "display_name": "Ouest-France",
+    "outlet": "Ouest-France",
     "country": "France",
     "language": "fr",
     "type": "newspaper",
@@ -3594,7 +3594,7 @@
     "bias_note": "France's largest regional daily; cooperative ownership"
   },
   "time.com": {
-    "display_name": "Time",
+    "outlet": "Time",
     "country": "United States",
     "language": "en",
     "type": "magazine",
@@ -3603,7 +3603,7 @@
     "bias_note": "Weekly news magazine; owned by Time USA LLC (Marc Benioff since 2018)"
   },
   "ynetnews.com": {
-    "display_name": "Ynetnews",
+    "outlet": "Ynetnews",
     "country": "Israel",
     "language": "en",
     "type": "digital_native",
@@ -3612,7 +3612,7 @@
     "bias_note": "English edition of Ynet; owned by Yedioth Ahronoth group"
   },
   "euromaidanpress.com": {
-    "display_name": "Euromaidan Press",
+    "outlet": "Euromaidan Press",
     "country": "Ukraine",
     "language": "en",
     "type": "digital_native",
@@ -3621,7 +3621,7 @@
     "bias_note": "Volunteer-run English site covering Ukraine; founded during 2014 Maidan"
   },
   "gulfnews.com": {
-    "display_name": "Gulf News",
+    "outlet": "Gulf News",
     "country": "United Arab Emirates",
     "language": "en",
     "type": "newspaper",
@@ -3630,7 +3630,7 @@
     "bias_note": "Dubai-based English daily; operates under UAE media regulations"
   },
   "hankyung.com": {
-    "display_name": "Hankyung (Korea Economic Daily)",
+    "outlet": "Hankyung (Korea Economic Daily)",
     "country": "South Korea",
     "language": "ko",
     "type": "newspaper",
@@ -3639,7 +3639,7 @@
     "bias_note": "Major Korean business daily; publicly listed"
   },
   "internazionale.it": {
-    "display_name": "Internazionale",
+    "outlet": "Internazionale",
     "country": "Italy",
     "language": "it",
     "type": "magazine",
@@ -3648,7 +3648,7 @@
     "bias_note": "Italian news magazine curating international journalism; independently owned"
   },
   "leparisien.fr": {
-    "display_name": "Le Parisien",
+    "outlet": "Le Parisien",
     "country": "France",
     "language": "fr",
     "type": "newspaper",
@@ -3657,7 +3657,7 @@
     "bias_note": "Major French daily; owned by Groupe Les Echos (LVMH)"
   },
   "politico.com": {
-    "display_name": "Politico",
+    "outlet": "Politico",
     "country": "United States",
     "language": "en",
     "type": "newspaper",
@@ -3666,7 +3666,7 @@
     "bias_note": "Political journalism; owned by Axel Springer SE since 2021"
   },
   "radiofarda.com": {
-    "display_name": "Radio Farda",
+    "outlet": "Radio Farda",
     "country": "Czech Republic",
     "language": "fa",
     "type": "broadcaster",
@@ -3675,7 +3675,7 @@
     "bias_note": "US Congress-funded Persian broadcaster; RFE/RL subsidiary"
   },
   "sankei.com": {
-    "display_name": "Sankei Shimbun",
+    "outlet": "Sankei Shimbun",
     "country": "Japan",
     "language": "ja",
     "type": "newspaper",
@@ -3684,7 +3684,7 @@
     "bias_note": "Major Japanese daily; conservative editorial; Fuji-Sankei group"
   },
   "semana.com": {
-    "display_name": "Semana",
+    "outlet": "Semana",
     "country": "Colombia",
     "language": "es",
     "type": "magazine",
@@ -3693,7 +3693,7 @@
     "bias_note": "Colombian news magazine; founded 1946; privately owned"
   },
   "tf1info.fr": {
-    "display_name": "TF1 Info (LCI)",
+    "outlet": "TF1 Info (LCI)",
     "country": "France",
     "language": "fr",
     "type": "broadcaster",
@@ -3702,7 +3702,7 @@
     "bias_note": "News of TF1; France's largest private TV channel; Bouygues group"
   },
   "vista.ir": {
-    "display_name": "Vista",
+    "outlet": "Vista",
     "country": "Iran",
     "language": "fa",
     "type": "digital_native",
@@ -3711,7 +3711,7 @@
     "bias_note": "Iranian economic news site; operates under Iranian press regulations"
   },
   "youm7.com": {
-    "display_name": "Youm7",
+    "outlet": "Youm7",
     "country": "Egypt",
     "language": "ar",
     "type": "newspaper",
@@ -3720,7 +3720,7 @@
     "bias_note": "Major Egyptian daily; privately owned but operates under restrictive Egyptian media laws"
   },
   "abcnews.com": {
-    "display_name": "ABC News",
+    "outlet": "ABC News",
     "country": "United States",
     "language": "en",
     "type": "broadcaster",
@@ -3729,7 +3729,7 @@
     "bias_note": "US broadcast network news division; Walt Disney Company"
   },
   "abcnyheter.no": {
-    "display_name": "ABC Nyheter",
+    "outlet": "ABC Nyheter",
     "country": "Norway",
     "language": "no",
     "type": "digital_native",
@@ -3738,7 +3738,7 @@
     "bias_note": "Norwegian online news; Amedia"
   },
   "donya-e-eqtesad.com": {
-    "display_name": "Donya-e-Eqtesad",
+    "outlet": "Donya-e-Eqtesad",
     "country": "Iran",
     "language": "fa",
     "type": "newspaper",
@@ -3747,7 +3747,7 @@
     "bias_note": "Iranian economic daily; operates under Iranian press law constraints"
   },
   "guancha.cn": {
-    "display_name": "Guancha",
+    "outlet": "Guancha",
     "country": "China",
     "language": "zh",
     "type": "digital_native",
@@ -3756,7 +3756,7 @@
     "bias_note": "Chinese news and commentary site; nationalist editorial; PRC regulations"
   },
   "infomigrants.net": {
-    "display_name": "InfoMigrants",
+    "outlet": "InfoMigrants",
     "country": "France",
     "language": "en",
     "type": "digital_native",
@@ -3765,7 +3765,7 @@
     "bias_note": "Migrant news site; jointly run by ANSA, CFI, and Deutsche Welle"
   },
   "insurancejournal.com": {
-    "display_name": "Insurance Journal",
+    "outlet": "Insurance Journal",
     "country": "United States",
     "language": "en",
     "type": "magazine",
@@ -3774,7 +3774,7 @@
     "bias_note": "US insurance industry trade publication"
   },
   "iz.ru": {
-    "display_name": "Izvestia",
+    "outlet": "Izvestia",
     "country": "Russia",
     "language": "ru",
     "type": "newspaper",
@@ -3783,7 +3783,7 @@
     "bias_note": "Russian daily; owned by National Media Group (state-linked)"
   },
   "jiji.com": {
-    "display_name": "Jiji Press",
+    "outlet": "Jiji Press",
     "country": "Japan",
     "language": "ja",
     "type": "news_agency",
@@ -3792,7 +3792,7 @@
     "bias_note": "Japanese cooperative news agency; second-largest after Kyodo"
   },
   "masrawy.com": {
-    "display_name": "Masrawy",
+    "outlet": "Masrawy",
     "country": "Egypt",
     "language": "ar",
     "type": "digital_native",
@@ -3801,7 +3801,7 @@
     "bias_note": "Major Egyptian Arabic news portal"
   },
   "n-tv.de": {
-    "display_name": "n-tv",
+    "outlet": "n-tv",
     "country": "Germany",
     "language": "de",
     "type": "broadcaster",
@@ -3810,7 +3810,7 @@
     "bias_note": "German 24-hour news channel; RTL Group (Bertelsmann)"
   },
   "ntv.com.tr": {
-    "display_name": "NTV",
+    "outlet": "NTV",
     "country": "Turkey",
     "language": "tr",
     "type": "broadcaster",
@@ -3819,7 +3819,7 @@
     "bias_note": "Turkish news channel; Doğuş Media Group"
   },
   "nzz.ch": {
-    "display_name": "NZZ",
+    "outlet": "Neue Zürcher Zeitung",
     "country": "Switzerland",
     "language": "de",
     "type": "newspaper",
@@ -3828,7 +3828,7 @@
     "bias_note": "Major Swiss daily; founded 1780; NZZ Foundation"
   },
   "rferl.org": {
-    "display_name": "RFE/RL",
+    "outlet": "RFE/RL",
     "country": "Czech Republic",
     "language": "en",
     "type": "broadcaster",
@@ -3837,7 +3837,7 @@
     "bias_note": "US Congress-funded international broadcaster; editorial charter guarantees independence"
   },
   "seoul.co.kr": {
-    "display_name": "Seoul Shinmun",
+    "outlet": "Seoul Shinmun",
     "country": "South Korea",
     "language": "ko",
     "type": "newspaper",
@@ -3846,7 +3846,7 @@
     "bias_note": "Long-running Korean daily; independently owned"
   },
   "tuoitre.vn": {
-    "display_name": "Tuổi Trẻ",
+    "outlet": "Tuổi Trẻ",
     "country": "Vietnam",
     "language": "vi",
     "type": "newspaper",
@@ -3855,7 +3855,7 @@
     "bias_note": "Major Vietnamese daily; published by HCMC Communist Youth Union"
   },
   "turkiyetoday.com": {
-    "display_name": "Türkiye Today",
+    "outlet": "Türkiye Today",
     "country": "Turkey",
     "language": "en",
     "type": "digital_native",
@@ -3864,7 +3864,7 @@
     "bias_note": "English-language Turkish news site"
   },
   "vz.ru": {
-    "display_name": "Vzglyad",
+    "outlet": "Vzglyad",
     "country": "Russia",
     "language": "ru",
     "type": "digital_native",
@@ -3873,7 +3873,7 @@
     "bias_note": "Russian online news; aligned with government positions"
   },
   "yahoo.com": {
-    "display_name": "Yahoo News",
+    "outlet": "Yahoo News",
     "country": "United States",
     "language": "en",
     "type": "aggregator",
@@ -3882,7 +3882,7 @@
     "bias_note": "News aggregator; redistributes content from partner services"
   },
   "aletihad.ae": {
-    "display_name": "Al Ittihad",
+    "outlet": "Al Ittihad",
     "country": "United Arab Emirates",
     "language": "ar",
     "type": "newspaper",
@@ -3891,7 +3891,7 @@
     "bias_note": "Arabic daily in Abu Dhabi; UAE media regulations"
   },
   "bfmtv.com": {
-    "display_name": "BFMTV",
+    "outlet": "BFMTV",
     "country": "France",
     "language": "fr",
     "type": "broadcaster",
@@ -3900,7 +3900,7 @@
     "bias_note": "French 24-hour news channel; CMA CGM group since 2022"
   },
   "br.de": {
-    "display_name": "BR (Bayerischer Rundfunk)",
+    "outlet": "BR (Bayerischer Rundfunk)",
     "country": "Germany",
     "language": "de",
     "type": "public_broadcaster",
@@ -3909,7 +3909,7 @@
     "bias_note": "Bavarian public broadcaster; ARD member; licence fee funded"
   },
   "caracol.com.co": {
-    "display_name": "Caracol Radio",
+    "outlet": "Caracol Radio",
     "country": "Colombia",
     "language": "es",
     "type": "broadcaster",
@@ -3918,7 +3918,7 @@
     "bias_note": "Major Colombian radio network; PRISA Group"
   },
   "censor.net": {
-    "display_name": "Censor.NET",
+    "outlet": "Censor.NET",
     "country": "Ukraine",
     "language": "uk",
     "type": "digital_native",
@@ -3927,7 +3927,7 @@
     "bias_note": "Ukrainian news portal; pro-European editorial stance"
   },
   "cna.com.tw": {
-    "display_name": "Central News Agency (CNA)",
+    "outlet": "Central News Agency (CNA)",
     "country": "Taiwan",
     "language": "zh",
     "type": "news_agency",
@@ -3936,7 +3936,7 @@
     "bias_note": "Taiwan's national news agency; publicly listed on Taipei Exchange"
   },
   "cnnbrasil.com.br": {
-    "display_name": "CNN Brasil",
+    "outlet": "CNN Brasil",
     "country": "Brazil",
     "language": "pt",
     "type": "broadcaster",
@@ -3945,7 +3945,7 @@
     "bias_note": "Brazilian CNN franchise; Grupo J&F"
   },
   "economictimes.indiatimes.com": {
-    "display_name": "Economic Times",
+    "outlet": "Economic Times",
     "country": "India",
     "language": "en",
     "type": "newspaper",
@@ -3954,7 +3954,7 @@
     "bias_note": "Indian financial daily; Times Group (Bennett Coleman)"
   },
   "ejiltalk.org": {
-    "display_name": "EJIL: Talk!",
+    "outlet": "EJIL: Talk!",
     "country": "Netherlands",
     "language": "en",
     "type": "academic",
@@ -3963,7 +3963,7 @@
     "bias_note": "Blog of European Journal of International Law; Amsterdam Center for International Law"
   },
   "finance.yahoo.com": {
-    "display_name": "Yahoo Finance",
+    "outlet": "Yahoo Finance",
     "country": "United States",
     "language": "en",
     "type": "aggregator",
@@ -3972,7 +3972,7 @@
     "bias_note": "Financial news and data aggregator; Yahoo Inc."
   },
   "fortune.com": {
-    "display_name": "Fortune",
+    "outlet": "Fortune",
     "country": "United States",
     "language": "en",
     "type": "magazine",
@@ -3981,7 +3981,7 @@
     "bias_note": "US business magazine; owned by Fortune Media"
   },
   "g-enews.com": {
-    "display_name": "G-enews",
+    "outlet": "G-enews",
     "country": "South Korea",
     "language": "ko",
     "type": "digital_native",
@@ -3990,7 +3990,7 @@
     "bias_note": "Korean economic news site"
   },
   "gavi.org": {
-    "display_name": "Gavi",
+    "outlet": "Gavi",
     "country": "Switzerland",
     "language": "en",
     "type": "intergovernmental",
@@ -3999,7 +3999,7 @@
     "bias_note": "Vaccine Alliance; public-private partnership; Geneva"
   },
   "heise.de": {
-    "display_name": "Heise Online",
+    "outlet": "Heise Online",
     "country": "Germany",
     "language": "de",
     "type": "digital_native",
@@ -4008,7 +4008,7 @@
     "bias_note": "German technology news; Heise Verlag group"
   },
   "hindi.theprint.in": {
-    "display_name": "The Print (Hindi)",
+    "outlet": "The Print (Hindi)",
     "country": "India",
     "language": "hi",
     "type": "digital_native",
@@ -4017,7 +4017,7 @@
     "bias_note": "Hindi edition of ThePrint.in; founded by Shekhar Gupta"
   },
   "hotnews.ro": {
-    "display_name": "HotNews.ro",
+    "outlet": "HotNews.ro",
     "country": "Romania",
     "language": "ro",
     "type": "digital_native",
@@ -4026,7 +4026,7 @@
     "bias_note": "Major Romanian news site; independently owned"
   },
   "ifpri.org": {
-    "display_name": "IFPRI",
+    "outlet": "IFPRI",
     "country": "United States",
     "language": "en",
     "type": "think_tank",
@@ -4035,7 +4035,7 @@
     "bias_note": "International Food Policy Research Institute; CGIAR"
   },
   "ilsole24ore.com": {
-    "display_name": "Il Sole 24 Ore",
+    "outlet": "Il Sole 24 Ore",
     "country": "Italy",
     "language": "it",
     "type": "newspaper",
@@ -4044,7 +4044,7 @@
     "bias_note": "Italy's main financial daily; Confindustria (business federation)"
   },
   "itfglobal.org": {
-    "display_name": "ITF",
+    "outlet": "ITF",
     "country": "United Kingdom",
     "language": "en",
     "type": "ngo",
@@ -4053,7 +4053,7 @@
     "bias_note": "International Transport Workers' Federation; global trade union"
   },
   "khabarban.com": {
-    "display_name": "Khabarban",
+    "outlet": "Khabarban",
     "country": "Iran",
     "language": "fa",
     "type": "digital_native",
@@ -4062,7 +4062,7 @@
     "bias_note": "Iranian news aggregation portal"
   },
   "khan.co.kr": {
-    "display_name": "Kyunghyang Shinmun",
+    "outlet": "Kyunghyang Shinmun",
     "country": "South Korea",
     "language": "ko",
     "type": "newspaper",
@@ -4071,7 +4071,7 @@
     "bias_note": "Major Korean daily; progressive; employee-owned since 2006"
   },
   "lansinginstitute.org": {
-    "display_name": "Robert Lansing Institute for Global Threats and Democracies Studies",
+    "outlet": "Robert Lansing Institute for Global Threats and Democracies Studies",
     "country": "United States",
     "language": "en",
     "type": "think_tank",
@@ -4080,7 +4080,7 @@
     "bias_note": "Russian policy research institute"
   },
   "lavanguardia.com": {
-    "display_name": "La Vanguardia",
+    "outlet": "La Vanguardia",
     "country": "Spain",
     "language": "es",
     "type": "newspaper",
@@ -4089,7 +4089,7 @@
     "bias_note": "Major Spanish daily; Godó group"
   },
   "mako.co.il": {
-    "display_name": "Mako",
+    "outlet": "N12",
     "country": "Israel",
     "language": "he",
     "type": "digital_native",
@@ -4098,7 +4098,7 @@
     "bias_note": "Israeli news and entertainment portal; Keshet Media Group"
   },
   "modernghana.com": {
-    "display_name": "Modern Ghana",
+    "outlet": "Modern Ghana",
     "country": "Ghana",
     "language": "en",
     "type": "digital_native",
@@ -4107,7 +4107,7 @@
     "bias_note": "Ghanaian news portal"
   },
   "mt.co.kr": {
-    "display_name": "MT (Moneytoday)",
+    "outlet": "MT (Moneytoday)",
     "country": "South Korea",
     "language": "ko",
     "type": "digital_native",
@@ -4116,7 +4116,7 @@
     "bias_note": "Korean financial news site"
   },
   "presstv.co.uk": {
-    "display_name": "Press TV",
+    "outlet": "Press TV",
     "country": "Iran",
     "language": "en",
     "type": "state_broadcaster",
@@ -4125,7 +4125,7 @@
     "bias_note": "English-language Iranian state broadcaster; IRIB funded"
   },
   "rainews.it": {
-    "display_name": "Rai News",
+    "outlet": "Rai News",
     "country": "Italy",
     "language": "it",
     "type": "public_broadcaster",
@@ -4134,7 +4134,7 @@
     "bias_note": "Italian public broadcaster news channel; RAI"
   },
   "rp.pl": {
-    "display_name": "Rzeczpospolita",
+    "outlet": "Rzeczpospolita",
     "country": "Poland",
     "language": "pl",
     "type": "newspaper",
@@ -4143,7 +4143,7 @@
     "bias_note": "Major Polish daily; Presspublica"
   },
   "suspilne.media": {
-    "display_name": "Suspilne",
+    "outlet": "Suspilne",
     "country": "Ukraine",
     "language": "uk",
     "type": "public_broadcaster",
@@ -4152,7 +4152,7 @@
     "bias_note": "Ukrainian public broadcaster; reformed 2017 as independent"
   },
   "svoboda.org": {
-    "display_name": "Radio Svoboda",
+    "outlet": "Radio Svoboda",
     "country": "Czech Republic",
     "language": "ru",
     "type": "broadcaster",
@@ -4161,7 +4161,7 @@
     "bias_note": "RFE/RL Ukrainian service; US Congress-funded"
   },
   "thehill.com": {
-    "display_name": "The Hill",
+    "outlet": "The Hill",
     "country": "United States",
     "language": "en",
     "type": "newspaper",
@@ -4170,7 +4170,7 @@
     "bias_note": "US political newspaper; owned by Nexstar Media Group"
   },
   "tsn.ua": {
-    "display_name": "TSN",
+    "outlet": "TSN",
     "country": "Ukraine",
     "language": "uk",
     "type": "broadcaster",
@@ -4179,7 +4179,7 @@
     "bias_note": "Ukrainian TV news service on 1+1 channel"
   },
   "united24media.com": {
-    "display_name": "United24 Media",
+    "outlet": "United24 Media",
     "country": "Ukraine",
     "language": "en",
     "type": "digital_native",
@@ -4188,7 +4188,7 @@
     "bias_note": "Ukrainian government-affiliated media; United24 fundraising initiative"
   },
   "unn.ua": {
-    "display_name": "UNN",
+    "outlet": "UNN",
     "country": "Ukraine",
     "language": "uk",
     "type": "news_agency",
@@ -4197,7 +4197,7 @@
     "bias_note": "Ukrainian National News agency; privately owned"
   },
   "worldoil.com": {
-    "display_name": "World Oil",
+    "outlet": "World Oil",
     "country": "United States",
     "language": "en",
     "type": "magazine",
@@ -4206,7 +4206,7 @@
     "bias_note": "Oil and gas trade publication; Endeavor Business Media"
   },
   "wowtv.co.kr": {
-    "display_name": "WOW TV",
+    "outlet": "WOW TV",
     "country": "South Korea",
     "language": "ko",
     "type": "digital_native",
@@ -4215,7 +4215,7 @@
     "bias_note": "Korean economic broadcasting channel"
   },
   "zn.ua": {
-    "display_name": "Dzerkalo Tyzhnia",
+    "outlet": "Dzerkalo Tyzhnia",
     "country": "Ukraine",
     "language": "uk",
     "type": "newspaper",
@@ -4224,7 +4224,7 @@
     "bias_note": "Ukrainian weekly analytical newspaper; independently owned"
   },
   "36kr.com": {
-    "display_name": "36Kr",
+    "outlet": "36Kr",
     "country": "China",
     "language": "zh",
     "type": "digital_native",
@@ -4233,7 +4233,7 @@
     "bias_note": "Chinese tech/startup news site; PRC content regulations"
   },
   "aerzteblatt.de": {
-    "display_name": "Deutsches Arzteblatt",
+    "outlet": "Deutsches Arzteblatt",
     "country": "Germany",
     "language": "de",
     "type": "academic",
@@ -4242,7 +4242,7 @@
     "bias_note": "German medical journal; German Medical Association"
   },
   "albayan.ae": {
-    "display_name": "Al Bayan",
+    "outlet": "Al Bayan",
     "country": "United Arab Emirates",
     "language": "ar",
     "type": "newspaper",
@@ -4251,7 +4251,7 @@
     "bias_note": "Arabic daily in Dubai; UAE media regulations"
   },
   "alima.ngo": {
-    "display_name": "ALIMA",
+    "outlet": "ALIMA",
     "country": "France",
     "language": "en",
     "type": "ngo",
@@ -4260,7 +4260,7 @@
     "bias_note": "International medical NGO; West and Central Africa operations"
   },
   "aljarida.com": {
-    "display_name": "Al Jarida",
+    "outlet": "Al Jarida",
     "country": "Kuwait",
     "language": "ar",
     "type": "newspaper",
@@ -4269,7 +4269,7 @@
     "bias_note": "Kuwaiti Arabic daily; privately owned"
   },
   "amarujala.com": {
-    "display_name": "Amar Ujala",
+    "outlet": "Amar Ujala",
     "country": "India",
     "language": "hi",
     "type": "newspaper",
@@ -4278,7 +4278,7 @@
     "bias_note": "Major Hindi daily; privately owned; North India"
   },
   "americanprogress.org": {
-    "display_name": "Center for American Progress",
+    "outlet": "Center for American Progress",
     "country": "United States",
     "language": "en",
     "type": "think_tank",
@@ -4287,7 +4287,7 @@
     "bias_note": "Progressive policy think tank; founded by John Podesta"
   },
   "artemis.bm": {
-    "display_name": "Artemis.bm",
+    "outlet": "Artemis.bm",
     "country": "United Kingdom",
     "language": "en",
     "type": "digital_native",
@@ -4296,7 +4296,7 @@
     "bias_note": "Catastrophe bond and ILS news; independently run"
   },
   "bangkokbiznews.com": {
-    "display_name": "Bangkok Biz News",
+    "outlet": "Bangkok Biz News",
     "country": "Thailand",
     "language": "th",
     "type": "newspaper",
@@ -4305,7 +4305,7 @@
     "bias_note": "Thai business daily; Bangkok Post group"
   },
   "biz.heraldcorp.com": {
-    "display_name": "Herald Business / 헤럴드경제",
+    "outlet": "Herald Business / 헤럴드경제",
     "country": "South Korea",
     "language": "ko",
     "type": "digital_native",
@@ -4314,7 +4314,7 @@
     "bias_note": "Korean business news in English"
   },
   "bnonews.com": {
-    "display_name": "BNO News",
+    "outlet": "BNO News",
     "country": "Netherlands",
     "language": "en",
     "type": "news_agency",
@@ -4323,7 +4323,7 @@
     "bias_note": "Dutch-based news agency; founded by Michael van Poppel"
   },
   "boursorama.com": {
-    "display_name": "Boursorama",
+    "outlet": "Boursorama",
     "country": "France",
     "language": "fr",
     "type": "digital_native",
@@ -4332,7 +4332,7 @@
     "bias_note": "French financial news site; Société Générale"
   },
   "brasildefato.com.br": {
-    "display_name": "Brasil de Fato",
+    "outlet": "Brasil de Fato",
     "country": "Brazil",
     "language": "pt",
     "type": "digital_native",
@@ -4341,7 +4341,7 @@
     "bias_note": "Brazilian alternative news; linked to social movements"
   },
   "brusselssignal.eu": {
-    "display_name": "Brussels Signal",
+    "outlet": "Brussels Signal",
     "country": "Belgium",
     "language": "en",
     "type": "digital_native",
@@ -4350,7 +4350,7 @@
     "bias_note": "Brussels-based EU news site"
   },
   "bta.bg": {
-    "display_name": "BTA",
+    "outlet": "BTA",
     "country": "Bulgaria",
     "language": "bg",
     "type": "news_agency",
@@ -4359,7 +4359,7 @@
     "bias_note": "Bulgarian national news agency"
   },
   "businessinsider.com": {
-    "display_name": "Business Insider",
+    "outlet": "Business Insider",
     "country": "United States",
     "language": "en",
     "type": "digital_native",
@@ -4368,7 +4368,7 @@
     "bias_note": "US business/tech news; Axel Springer SE"
   },
   "ce.cn": {
-    "display_name": "China Economic Net",
+    "outlet": "China Economic Net",
     "country": "China",
     "language": "zh",
     "type": "digital_native",
@@ -4377,7 +4377,7 @@
     "bias_note": "Economic news portal of Economic Daily; state-owned"
   },
   "cepal.org": {
-    "display_name": "ECLAC/CEPAL",
+    "outlet": "ECLAC/CEPAL",
     "country": "Chile",
     "language": "es",
     "type": "intergovernmental",
@@ -4386,7 +4386,7 @@
     "bias_note": "UN Economic Commission for Latin America and the Caribbean"
   },
   "cfr.org": {
-    "display_name": "Council on Foreign Relations",
+    "outlet": "Council on Foreign Relations",
     "country": "United States",
     "language": "en",
     "type": "think_tank",
@@ -4395,7 +4395,7 @@
     "bias_note": "US foreign policy think tank; nonpartisan"
   },
   "cn.chinadiplomacy.org.cn": {
-    "display_name": "China Diplomacy",
+    "outlet": "China Diplomacy",
     "country": "China",
     "language": "zh",
     "type": "think_tank",
@@ -4404,7 +4404,7 @@
     "bias_note": "Chinese MFA think-tank publication"
   },
   "cnbce.com": {
-    "display_name": "CNBCE",
+    "outlet": "CNBCE",
     "country": "Turkey",
     "language": "tr",
     "type": "broadcaster",
@@ -4413,7 +4413,7 @@
     "bias_note": "Turkish business news channel"
   },
   "cnews.fr": {
-    "display_name": "CNews",
+    "outlet": "CNews",
     "country": "France",
     "language": "fr",
     "type": "broadcaster",
@@ -4422,7 +4422,7 @@
     "bias_note": "French 24-hour news channel; Canal+ (Vivendi/Bolloré)"
   },
   "coindesk.com": {
-    "display_name": "CoinDesk",
+    "outlet": "CoinDesk",
     "country": "United States",
     "language": "en",
     "type": "digital_native",
@@ -4431,7 +4431,7 @@
     "bias_note": "Cryptocurrency news; owned by Bullish since 2023"
   },
   "csis.org": {
-    "display_name": "CSIS",
+    "outlet": "CSIS",
     "country": "United States",
     "language": "en",
     "type": "think_tank",
@@ -4440,7 +4440,7 @@
     "bias_note": "Center for Strategic and International Studies; bipartisan"
   },
   "currenttime.tv": {
-    "display_name": "Current Time TV",
+    "outlet": "Current Time TV",
     "country": "Czech Republic",
     "language": "ru",
     "type": "broadcaster",
@@ -4449,7 +4449,7 @@
     "bias_note": "RFE/RL and VOA Russian-language TV; US Congress-funded"
   },
   "dailysabah.com": {
-    "display_name": "Daily Sabah",
+    "outlet": "Daily Sabah",
     "country": "Turkey",
     "language": "en",
     "type": "newspaper",
@@ -4458,7 +4458,7 @@
     "bias_note": "English Turkish daily; close to AKP government"
   },
   "deadline.com": {
-    "display_name": "Deadline",
+    "outlet": "Deadline",
     "country": "United States",
     "language": "en",
     "type": "digital_native",
@@ -4467,7 +4467,7 @@
     "bias_note": "Entertainment industry news; Penske Media Corporation"
   },
   "defence-industry.eu": {
-    "display_name": "Defence Industry EU",
+    "outlet": "Defence Industry EU",
     "country": "Netherlands",
     "language": "en",
     "type": "digital_native",
@@ -4476,7 +4476,7 @@
     "bias_note": "European defence industry news"
   },
   "eadaily.com": {
-    "display_name": "EADaily",
+    "outlet": "EADaily",
     "country": "Russia",
     "language": "ru",
     "type": "news_agency",
@@ -4485,7 +4485,7 @@
     "bias_note": "Russian news agency; Eurasian integration; state narratives"
   },
   "elespectador.com": {
-    "display_name": "El Espectador",
+    "outlet": "El Espectador",
     "country": "Colombia",
     "language": "es",
     "type": "newspaper",
@@ -4494,7 +4494,7 @@
     "bias_note": "Colombian daily; one of oldest in the country"
   },
   "emaratalyoum.com": {
-    "display_name": "Emarat Al Youm",
+    "outlet": "Emarat Al Youm",
     "country": "United Arab Emirates",
     "language": "ar",
     "type": "newspaper",
@@ -4503,7 +4503,7 @@
     "bias_note": "Arabic daily in Dubai; government-owned media group"
   },
   "en.interfax.com.ua": {
-    "display_name": "Interfax-Ukraine (English)",
+    "outlet": "Interfax-Ukraine (English)",
     "country": "Ukraine",
     "language": "en",
     "type": "news_agency",
@@ -4512,7 +4512,7 @@
     "bias_note": "Ukrainian news agency; Interfax group"
   },
   "energyintel.com": {
-    "display_name": "Energy Intelligence",
+    "outlet": "Energy Intelligence",
     "country": "United States",
     "language": "en",
     "type": "newspaper",
@@ -4521,7 +4521,7 @@
     "bias_note": "Energy industry news and analysis; privately held"
   },
   "epochtimes.com": {
-    "display_name": "The Epoch Times",
+    "outlet": "The Epoch Times",
     "country": "United States",
     "language": "zh",
     "type": "newspaper",
@@ -4530,7 +4530,7 @@
     "bias_note": "Multi-language newspaper affiliated with Falun Gong movement"
   },
   "eunews.it": {
-    "display_name": "EUNews",
+    "outlet": "EUNews",
     "country": "Italy",
     "language": "it",
     "type": "digital_native",
@@ -4539,7 +4539,7 @@
     "bias_note": "Italian news site focused on EU affairs"
   },
   "europarl.europa.eu": {
-    "display_name": "European Parliament",
+    "outlet": "European Parliament",
     "country": "Belgium",
     "language": "en",
     "type": "intergovernmental",
@@ -4548,7 +4548,7 @@
     "bias_note": "Official website of the European Parliament"
   },
   "europe1.fr": {
-    "display_name": "Europe 1",
+    "outlet": "Europe 1",
     "country": "France",
     "language": "fr",
     "type": "broadcaster",
@@ -4557,7 +4557,7 @@
     "bias_note": "French radio station; Lagardère group"
   },
   "expansion.com": {
-    "display_name": "Expansion",
+    "outlet": "Expansión",
     "country": "Spain",
     "language": "es",
     "type": "newspaper",
@@ -4566,7 +4566,7 @@
     "bias_note": "Spanish financial daily; Unidad Editorial"
   },
   "fa.alalam.ir": {
-    "display_name": "Al Alam (Persian)",
+    "outlet": "Al Alam (Persian)",
     "country": "Iran",
     "language": "fa",
     "type": "state_broadcaster",
@@ -4575,7 +4575,7 @@
     "bias_note": "Iranian state news channel; IRIB-owned"
   },
   "fm.gov.om": {
-    "display_name": "Oman MFA",
+    "outlet": "Oman MFA",
     "country": "Oman",
     "language": "en",
     "type": "government",
@@ -4584,7 +4584,7 @@
     "bias_note": "Official Omani Ministry of Foreign Affairs"
   },
   "fnn.jp": {
-    "display_name": "Fuji News Network",
+    "outlet": "Fuji News Network",
     "country": "Japan",
     "language": "ja",
     "type": "broadcaster",
@@ -4593,7 +4593,7 @@
     "bias_note": "Japanese news network; Fuji-Sankei group"
   },
   "focus.de": {
-    "display_name": "Focus",
+    "outlet": "Focus",
     "country": "Germany",
     "language": "de",
     "type": "magazine",
@@ -4602,7 +4602,7 @@
     "bias_note": "German weekly news magazine; Hubert Burda Media"
   },
   "gcc-sg.org": {
-    "display_name": "GCC Secretariat",
+    "outlet": "GCC Secretariat",
     "country": "Saudi Arabia",
     "language": "en",
     "type": "intergovernmental",
@@ -4611,7 +4611,7 @@
     "bias_note": "Official website of Gulf Cooperation Council secretariat"
   },
   "greenpeace.org": {
-    "display_name": "Greenpeace",
+    "outlet": "Greenpeace",
     "country": "Netherlands",
     "language": "en",
     "type": "ngo",
@@ -4620,7 +4620,7 @@
     "bias_note": "International environmental NGO; individual donations funded"
   },
   "hankookilbo.com": {
-    "display_name": "Hankook Ilbo",
+    "outlet": "Hankook Ilbo",
     "country": "South Korea",
     "language": "ko",
     "type": "newspaper",
@@ -4629,7 +4629,7 @@
     "bias_note": "Korean daily; Hankook Ilbo group"
   },
   "hindi.news18.com": {
-    "display_name": "News18 Hindi",
+    "outlet": "News18 Hindi",
     "country": "India",
     "language": "hi",
     "type": "broadcaster",
@@ -4638,7 +4638,7 @@
     "bias_note": "Hindi news channel; Network18 (Reliance Industries)"
   },
   "humanite.fr": {
-    "display_name": "L'Humanité",
+    "outlet": "L'Humanité",
     "country": "France",
     "language": "fr",
     "type": "newspaper",
@@ -4647,7 +4647,7 @@
     "bias_note": "French daily; historically tied to French Communist Party"
   },
   "ilpost.it": {
-    "display_name": "Il Post",
+    "outlet": "Il Post",
     "country": "Italy",
     "language": "it",
     "type": "digital_native",
@@ -4656,7 +4656,7 @@
     "bias_note": "Italian digital news site; launched 2010; independently owned"
   },
   "indiatoday.in": {
-    "display_name": "India Today",
+    "outlet": "India Today",
     "country": "India",
     "language": "en",
     "type": "magazine",
@@ -4665,7 +4665,7 @@
     "bias_note": "Major Indian news magazine; India Today Group"
   },
   "interfax-russia.ru": {
-    "display_name": "Interfax-Russia",
+    "outlet": "Interfax-Russia",
     "country": "Russia",
     "language": "ru",
     "type": "news_agency",
@@ -4674,7 +4674,7 @@
     "bias_note": "Russian division of Interfax; independently owned"
   },
   "jansatta.com": {
-    "display_name": "Jansatta",
+    "outlet": "Jansatta",
     "country": "India",
     "language": "hi",
     "type": "newspaper",
@@ -4683,7 +4683,7 @@
     "bias_note": "Hindi daily; Indian Express group"
   },
   "jewishinsider.com": {
-    "display_name": "Jewish Insider",
+    "outlet": "Jewish Insider",
     "country": "United States",
     "language": "en",
     "type": "digital_native",
@@ -4692,7 +4692,7 @@
     "bias_note": "US Jewish community and politics news"
   },
   "jns.org": {
-    "display_name": "JNS",
+    "outlet": "JNS",
     "country": "United States",
     "language": "en",
     "type": "news_agency",
@@ -4701,7 +4701,7 @@
     "bias_note": "Jewish News Syndicate; Jewish and Israel news"
   },
   "jurist.org": {
-    "display_name": "JURIST",
+    "outlet": "JURIST",
     "country": "United States",
     "language": "en",
     "type": "academic",
@@ -4710,7 +4710,7 @@
     "bias_note": "Legal news and research; University of Pittsburgh School of Law"
   },
   "khaligyoun.com": {
-    "display_name": "خليجيون / Khaligyoun",
+    "outlet": "خليجيون / Khaligyoun",
     "country": "Iran",
     "language": "ar",
     "type": "digital_native",
@@ -4718,7 +4718,7 @@
     "bias_note": "Arabic site covering Gulf affairs from Iranian perspective"
   },
   "kpler.com": {
-    "display_name": "Kpler",
+    "outlet": "Kpler",
     "country": "Belgium",
     "language": "en",
     "type": "digital_native",
@@ -4727,7 +4727,7 @@
     "bias_note": "Commodity market data and analytics provider"
   },
   "lanacion.com.ar": {
-    "display_name": "La Nación",
+    "outlet": "La Nación",
     "country": "Argentina",
     "language": "es",
     "type": "newspaper",
@@ -4736,7 +4736,7 @@
     "bias_note": "Major Argentine daily; S.A. La Nación"
   },
   "lanouvelletribune.info": {
-    "display_name": "La Nouvelle Tribune",
+    "outlet": "La Nouvelle Tribune",
     "country": "Canada",
     "language": "fr",
     "type": "digital_native",
@@ -4745,7 +4745,7 @@
     "bias_note": "French online news site"
   },
   "lastampa.it": {
-    "display_name": "La Stampa",
+    "outlet": "La Stampa",
     "country": "Italy",
     "language": "it",
     "type": "newspaper",
@@ -4754,7 +4754,7 @@
     "bias_note": "Major Italian daily; GEDI Gruppo Editoriale (Exor/Elkann)"
   },
   "lb.ua": {
-    "display_name": "LB.ua",
+    "outlet": "LB.ua",
     "country": "Ukraine",
     "language": "uk",
     "type": "digital_native",
@@ -4763,7 +4763,7 @@
     "bias_note": "Ukrainian news site; founded by Svetlana Kuzik"
   },
   "ledauphine.com": {
-    "display_name": "Le Dauphiné Libéré",
+    "outlet": "Le Dauphiné Libéré",
     "country": "France",
     "language": "fr",
     "type": "newspaper",
@@ -4772,7 +4772,7 @@
     "bias_note": "French regional daily; EBRA group"
   },
   "lequipe.fr": {
-    "display_name": "L'Équipe",
+    "outlet": "L'Équipe",
     "country": "France",
     "language": "fr",
     "type": "newspaper",
@@ -4781,7 +4781,7 @@
     "bias_note": "French sports daily; EPA group"
   },
   "lesechos.fr": {
-    "display_name": "Les Échos",
+    "outlet": "Les Échos",
     "country": "France",
     "language": "fr",
     "type": "newspaper",
@@ -4790,7 +4790,7 @@
     "bias_note": "France's leading financial daily; LVMH group"
   },
   "lexpress.fr": {
-    "display_name": "L'Express",
+    "outlet": "L'Express",
     "country": "France",
     "language": "fr",
     "type": "magazine",
@@ -4799,7 +4799,7 @@
     "bias_note": "French weekly news magazine"
   },
   "link.springer.com": {
-    "display_name": "Springer Nature",
+    "outlet": "Springer Nature",
     "country": "Germany",
     "language": "en",
     "type": "academic",
@@ -4808,7 +4808,7 @@
     "bias_note": "Academic publisher; peer-reviewed journals"
   },
   "local10.com": {
-    "display_name": "Local 10 (WPLG)",
+    "outlet": "Local 10 (WPLG)",
     "country": "United States",
     "language": "en",
     "type": "broadcaster",
@@ -4817,7 +4817,7 @@
     "bias_note": "ABC affiliate in Miami; E.W. Scripps Company"
   },
   "lowyinstitute.org": {
-    "display_name": "Lowy Institute",
+    "outlet": "Lowy Institute",
     "country": "Australia",
     "language": "en",
     "type": "think_tank",
@@ -4826,7 +4826,7 @@
     "bias_note": "Australian international policy think tank; Lowy Foundation"
   },
   "lrt.lt": {
-    "display_name": "LRT",
+    "outlet": "LRT",
     "country": "Lithuania",
     "language": "lt",
     "type": "public_broadcaster",
@@ -4835,7 +4835,7 @@
     "bias_note": "Lithuanian National Radio and Television; publicly funded"
   },
   "lrytas.lt": {
-    "display_name": "Lietuvos Rytas",
+    "outlet": "Lietuvos Rytas",
     "country": "Lithuania",
     "language": "lt",
     "type": "newspaper",
@@ -4844,7 +4844,7 @@
     "bias_note": "Major Lithuanian daily; privately owned"
   },
   "mc-doualiya.com": {
-    "display_name": "Monte Carlo Doualiya",
+    "outlet": "Monte Carlo Doualiya",
     "country": "France",
     "language": "ar",
     "type": "broadcaster",
@@ -4853,7 +4853,7 @@
     "bias_note": "Arabic service of RFI; France Médias Monde"
   },
   "melliun.org": {
-    "display_name": "Melliun",
+    "outlet": "Melliun",
     "country": "Germany",
     "language": "fa",
     "type": "digital_native",
@@ -4862,7 +4862,7 @@
     "bias_note": "Iranian news/commentary site"
   },
   "mk.co.kr": {
-    "display_name": "Maeil Business Newspaper",
+    "outlet": "Maeil Business Newspaper",
     "country": "South Korea",
     "language": "ko",
     "type": "newspaper",
@@ -4871,7 +4871,7 @@
     "bias_note": "Major Korean business daily"
   },
   "mofa.gov.sa": {
-    "display_name": "Saudi MFA",
+    "outlet": "Saudi MFA",
     "country": "Saudi Arabia",
     "language": "ar",
     "type": "government",
@@ -4880,7 +4880,7 @@
     "bias_note": "Official Saudi Ministry of Foreign Affairs"
   },
   "money.udn.com": {
-    "display_name": "UDN Money",
+    "outlet": "UDN Money",
     "country": "Taiwan",
     "language": "zh",
     "type": "newspaper",
@@ -4889,7 +4889,7 @@
     "bias_note": "Financial section of United Daily News group"
   },
   "nature.com": {
-    "display_name": "Nature",
+    "outlet": "Nature",
     "country": "United Kingdom",
     "language": "en",
     "type": "academic",
@@ -4898,7 +4898,7 @@
     "bias_note": "Prestigious peer-reviewed scientific journal; Springer Nature"
   },
   "ndtv.in": {
-    "display_name": "NDTV India",
+    "outlet": "NDTV India",
     "country": "India",
     "language": "hi",
     "type": "broadcaster",
@@ -4907,7 +4907,7 @@
     "bias_note": "Hindi news channel; NDTV group"
   },
   "news.cctv.com": {
-    "display_name": "CCTV News",
+    "outlet": "CCTV News",
     "country": "China",
     "language": "zh",
     "type": "state_broadcaster",
@@ -4916,7 +4916,7 @@
     "bias_note": "China Central Television news; state broadcaster"
   },
   "news.web.nhk": {
-    "display_name": "NHK News Web",
+    "outlet": "NHK News Web",
     "country": "Japan",
     "language": "ja",
     "type": "public_broadcaster",
@@ -4925,7 +4925,7 @@
     "bias_note": "NHK online news; Japan's public broadcaster"
   },
   "news1.kr": {
-    "display_name": "News1 Korea",
+    "outlet": "News1 Korea",
     "country": "South Korea",
     "language": "ko",
     "type": "news_agency",
@@ -4934,7 +4934,7 @@
     "bias_note": "Korean news agency"
   },
   "newsweek.com": {
-    "display_name": "Newsweek",
+    "outlet": "Newsweek",
     "country": "United States",
     "language": "en",
     "type": "magazine",
@@ -4943,7 +4943,7 @@
     "bias_note": "Weekly news magazine; owned by IBT Media"
   },
   "newsweekjapan.jp": {
-    "display_name": "Newsweek Japan",
+    "outlet": "Newsweek Japan",
     "country": "Japan",
     "language": "ja",
     "type": "magazine",
@@ -4952,7 +4952,7 @@
     "bias_note": "Japanese edition of Newsweek"
   },
   "nknews.org": {
-    "display_name": "NK News",
+    "outlet": "NK News",
     "country": "United States",
     "language": "en",
     "type": "digital_native",
@@ -4961,7 +4961,7 @@
     "bias_note": "Specialist North Korea news; independently owned subscription service"
   },
   "noticiasaominuto.com": {
-    "display_name": "Notícias ao Minuto",
+    "outlet": "Notícias ao Minuto",
     "country": "Portugal",
     "language": "pt",
     "type": "digital_native",
@@ -4970,7 +4970,7 @@
     "bias_note": "Portuguese digital news site"
   },
   "ochaopt.org": {
-    "display_name": "OCHA oPt",
+    "outlet": "OCHA oPt",
     "country": "Palestine",
     "language": "en",
     "type": "intergovernmental",
@@ -4979,7 +4979,7 @@
     "bias_note": "UN Office for Coordination of Humanitarian Affairs, occupied Palestinian territory"
   },
   "okaz.com.sa": {
-    "display_name": "Okaz",
+    "outlet": "Okaz",
     "country": "Saudi Arabia",
     "language": "ar",
     "type": "newspaper",
@@ -4988,7 +4988,7 @@
     "bias_note": "Saudi daily; operates under Saudi media regulations"
   },
   "open.online": {
-    "display_name": "Open",
+    "outlet": "Open",
     "country": "Italy",
     "language": "it",
     "type": "digital_native",
@@ -4997,7 +4997,7 @@
     "bias_note": "Italian digital news platform"
   },
   "openai.com": {
-    "display_name": "OpenAI",
+    "outlet": "OpenAI",
     "country": "United States",
     "language": "en",
     "type": "digital_native",
@@ -5006,7 +5006,7 @@
     "bias_note": "AI research company blog and announcements"
   },
   "ostro.org": {
-    "display_name": "Ostro",
+    "outlet": "Ostro",
     "country": "Ukraine",
     "language": "uk",
     "type": "digital_native",
@@ -5015,7 +5015,7 @@
     "bias_note": "Ukrainian regional news site covering Donetsk/Luhansk"
   },
   "plo.vn": {
-    "display_name": "Pháp Luật",
+    "outlet": "Pháp Luật",
     "country": "Vietnam",
     "language": "vi",
     "type": "newspaper",
@@ -5024,7 +5024,7 @@
     "bias_note": "Vietnamese legal affairs daily; state-owned"
   },
   "primature.gouv.cd": {
-    "display_name": "Primature DRC",
+    "outlet": "Primature DRC",
     "country": "Democratic Republic of the Congo",
     "language": "fr",
     "type": "government",
@@ -5033,7 +5033,7 @@
     "bias_note": "Official website of DRC Prime Minister's office"
   },
   "redcross.org.ua": {
-    "display_name": "Red Cross Ukraine",
+    "outlet": "Red Cross Ukraine",
     "country": "Ukraine",
     "language": "uk",
     "type": "ngo",
@@ -5042,7 +5042,7 @@
     "bias_note": "Ukrainian Red Cross Society; IFRC member"
   },
   "rmf24.pl": {
-    "display_name": "RMF24",
+    "outlet": "RMF24",
     "country": "Poland",
     "language": "pl",
     "type": "broadcaster",
@@ -5051,7 +5051,7 @@
     "bias_note": "Polish 24-hour news radio; Bauer Media"
   },
   "rnz.co.nz": {
-    "display_name": "RNZ",
+    "outlet": "RNZ",
     "country": "New Zealand",
     "language": "en",
     "type": "public_broadcaster",
@@ -5060,7 +5060,7 @@
     "bias_note": "Radio New Zealand; publicly funded Crown entity"
   },
   "rtbf.be": {
-    "display_name": "RTBF",
+    "outlet": "RTBF",
     "country": "Belgium",
     "language": "fr",
     "type": "public_broadcaster",
@@ -5069,7 +5069,7 @@
     "bias_note": "French-language Belgian public broadcaster; licence fee funded"
   },
   "rtp.pt": {
-    "display_name": "RTP",
+    "outlet": "RTP",
     "country": "Portugal",
     "language": "pt",
     "type": "public_broadcaster",
@@ -5078,7 +5078,7 @@
     "bias_note": "Portuguese public broadcaster; licence fee funded"
   },
   "russiaun.ru": {
-    "display_name": "Permanent Mission of the Russian Federation to the UN",
+    "outlet": "Permanent Mission of the Russian Federation to the UN",
     "country": "Russia",
     "language": "en",
     "type": "government",
@@ -5087,7 +5087,7 @@
     "bias_note": "Russian federal agency for CIS affairs"
   },
   "sabq.org": {
-    "display_name": "Sabq",
+    "outlet": "Sabq",
     "country": "Saudi Arabia",
     "language": "ar",
     "type": "digital_native",
@@ -5096,7 +5096,7 @@
     "bias_note": "Saudi electronic newspaper"
   },
   "santepubliquefrance.fr": {
-    "display_name": "Santé Publique France",
+    "outlet": "Santé Publique France",
     "country": "France",
     "language": "fr",
     "type": "government",
@@ -5105,7 +5105,7 @@
     "bias_note": "French national public health agency"
   },
   "seattletimes.com": {
-    "display_name": "The Seattle Times",
+    "outlet": "The Seattle Times",
     "country": "United States",
     "language": "en",
     "type": "newspaper",
@@ -5114,7 +5114,7 @@
     "bias_note": "Regional US daily; Blethen family owned"
   },
   "skai.gr": {
-    "display_name": "SKAI",
+    "outlet": "SKAI",
     "country": "Greece",
     "language": "el",
     "type": "broadcaster",
@@ -5123,7 +5123,7 @@
     "bias_note": "Greek TV channel and radio; Alafouzos family"
   },
   "sozcu.com.tr": {
-    "display_name": "Sözcü",
+    "outlet": "Sözcü",
     "country": "Turkey",
     "language": "tr",
     "type": "newspaper",
@@ -5132,7 +5132,7 @@
     "bias_note": "Major Turkish opposition-aligned daily; Sözcü Gazetecilik"
   },
   "sputniknews.cn": {
-    "display_name": "Sputnik Chinese",
+    "outlet": "Sputnik Chinese",
     "country": "Russia",
     "language": "zh",
     "type": "state_broadcaster",
@@ -5141,7 +5141,7 @@
     "bias_note": "Chinese edition of Russian state Sputnik; Rossiya Segodnya"
   },
   "srf.ch": {
-    "display_name": "SRF",
+    "outlet": "SRF",
     "country": "Switzerland",
     "language": "de",
     "type": "public_broadcaster",
@@ -5150,7 +5150,7 @@
     "bias_note": "Swiss German public broadcaster; SRG SSR member"
   },
   "t-online.de": {
-    "display_name": "T-Online",
+    "outlet": "T-Online",
     "country": "Germany",
     "language": "de",
     "type": "digital_native",
@@ -5159,7 +5159,7 @@
     "bias_note": "German news portal; formerly Deutsche Telekom internet"
   },
   "t24.com.tr": {
-    "display_name": "T24",
+    "outlet": "T24",
     "country": "Turkey",
     "language": "tr",
     "type": "digital_native",
@@ -5168,7 +5168,7 @@
     "bias_note": "Turkish independent news site"
   },
   "tasnimnews.ir": {
-    "display_name": "Tasnim News Agency",
+    "outlet": "Tasnim News Agency",
     "country": "Iran",
     "language": "fa",
     "type": "news_agency",
@@ -5177,7 +5177,7 @@
     "bias_note": "Iranian news agency; close to IRGC and conservative factions"
   },
   "telex.hu": {
-    "display_name": "Telex",
+    "outlet": "Telex",
     "country": "Hungary",
     "language": "hu",
     "type": "digital_native",
@@ -5186,7 +5186,7 @@
     "bias_note": "Hungarian independent news site; founded 2020; reader-funded"
   },
   "theepochtimes.com": {
-    "display_name": "The Epoch Times",
+    "outlet": "The Epoch Times",
     "country": "United States",
     "language": "en",
     "type": "newspaper",
@@ -5195,7 +5195,7 @@
     "bias_note": "Multi-language newspaper affiliated with Falun Gong movement"
   },
   "theprint.in": {
-    "display_name": "ThePrint",
+    "outlet": "ThePrint",
     "country": "India",
     "language": "en",
     "type": "digital_native",
@@ -5204,7 +5204,7 @@
     "bias_note": "Indian digital news; founded by Shekhar Gupta"
   },
   "trtworld.com": {
-    "display_name": "TRT World",
+    "outlet": "TRT World",
     "country": "Turkey",
     "language": "en",
     "type": "state_broadcaster",
@@ -5213,7 +5213,7 @@
     "bias_note": "English Turkish state broadcaster; TRT international arm"
   },
   "tunisienumerique.com": {
-    "display_name": "Tunisie Numérique",
+    "outlet": "Tunisie Numérique",
     "country": "Tunisia",
     "language": "fr",
     "type": "digital_native",
@@ -5222,7 +5222,7 @@
     "bias_note": "Tunisian digital news site"
   },
   "turkiyegazetesi.com.tr": {
-    "display_name": "Türkiye Gazetesi",
+    "outlet": "Türkiye Gazetesi",
     "country": "Turkey",
     "language": "tr",
     "type": "newspaper",
@@ -5231,7 +5231,7 @@
     "bias_note": "Turkish daily; close to MHP coalition partner"
   },
   "tw.news.yahoo.com": {
-    "display_name": "Yahoo News Taiwan",
+    "outlet": "Yahoo News Taiwan",
     "country": "Taiwan",
     "language": "zh",
     "type": "aggregator",
@@ -5240,7 +5240,7 @@
     "bias_note": "Taiwan Yahoo News; aggregates content from multiple sources"
   },
   "ukrinform.ua": {
-    "display_name": "Ukrinform",
+    "outlet": "Ukrinform",
     "country": "Ukraine",
     "language": "uk",
     "type": "news_agency",
@@ -5249,7 +5249,7 @@
     "bias_note": "Ukrainian national news agency; editorially independent per law"
   },
   "ummat.net": {
-    "display_name": "Ummat",
+    "outlet": "Ummat",
     "country": "Pakistan",
     "language": "ur",
     "type": "newspaper",
@@ -5258,7 +5258,7 @@
     "bias_note": "Pakistani Urdu newspaper"
   },
   "voachinese.com": {
-    "display_name": "Voice of America Chinese",
+    "outlet": "VOA Chinese",
     "country": "United States",
     "language": "zh",
     "type": "broadcaster",
@@ -5267,7 +5267,7 @@
     "bias_note": "US Congress-funded Chinese service of VOA"
   },
   "washingtonblade.com": {
-    "display_name": "Washington Blade",
+    "outlet": "Washington Blade",
     "country": "United States",
     "language": "en",
     "type": "newspaper",
@@ -5276,7 +5276,7 @@
     "bias_note": "LGBTQ+ newspaper; independently owned"
   },
   "washingtonexaminer.com": {
-    "display_name": "Washington Examiner",
+    "outlet": "Washington Examiner",
     "country": "United States",
     "language": "en",
     "type": "newspaper",
@@ -5285,7 +5285,7 @@
     "bias_note": "US political newspaper; MediaDC"
   },
   "welt.de": {
-    "display_name": "Die Welt",
+    "outlet": "Die Welt",
     "country": "Germany",
     "language": "de",
     "type": "newspaper",
@@ -5294,7 +5294,7 @@
     "bias_note": "German daily; Axel Springer SE"
   },
   "wiadomosci.wp.pl": {
-    "display_name": "WP Wiadomości",
+    "outlet": "WP Wiadomości",
     "country": "Poland",
     "language": "pl",
     "type": "digital_native",
@@ -5303,7 +5303,7 @@
     "bias_note": "Polish news portal; Wirtualna Polska group"
   },
   "yetkinreport.com": {
-    "display_name": "YetkinReport",
+    "outlet": "YetkinReport",
     "country": "Turkey",
     "language": "en",
     "type": "blog",
@@ -5312,7 +5312,7 @@
     "bias_note": "Turkish politics blog by journalist Serkan Demirtaş"
   },
   "youtube.com": {
-    "display_name": "YouTube",
+    "outlet": "YouTube",
     "country": "United States",
     "language": "en",
     "type": "aggregator",
@@ -5321,7 +5321,7 @@
     "bias_note": "Video platform; user-generated content from all sources"
   },
   "24chasa.bg": {
-    "display_name": "24 Chasa",
+    "outlet": "24 Chasa",
     "country": "Bulgaria",
     "language": "bg",
     "type": "newspaper",
@@ -5330,7 +5330,7 @@
     "bias_note": "Major Bulgarian daily tabloid"
   },
   "47news.jp": {
-    "display_name": "47 News",
+    "outlet": "47 News",
     "country": "Japan",
     "language": "ja",
     "type": "news_agency",
@@ -5339,7 +5339,7 @@
     "bias_note": "Japanese regional newspaper consortium news wire"
   },
   "7sur7.cd": {
-    "display_name": "7sur7.cd",
+    "outlet": "7sur7.cd",
     "country": "Democratic Republic of the Congo",
     "language": "fr",
     "type": "digital_native",
@@ -5348,7 +5348,7 @@
     "bias_note": "DRC news portal"
   },
   "aaj.tv": {
-    "display_name": "Aaj TV",
+    "outlet": "Aaj TV",
     "country": "Pakistan",
     "language": "ur",
     "type": "broadcaster",
@@ -5357,7 +5357,7 @@
     "bias_note": "Pakistani Urdu news TV channel"
   },
   "aastocks.com": {
-    "display_name": "AAStocks",
+    "outlet": "AAStocks",
     "country": "Hong Kong",
     "language": "zh",
     "type": "digital_native",
@@ -5366,7 +5366,7 @@
     "bias_note": "Hong Kong financial data and news"
   },
   "abc.com.py": {
-    "display_name": "ABC Color",
+    "outlet": "ABC Color",
     "country": "Paraguay",
     "language": "es",
     "type": "newspaper",
@@ -5375,7 +5375,7 @@
     "bias_note": "Major Paraguayan daily"
   },
   "academic.oup.com": {
-    "display_name": "Oxford Academic",
+    "outlet": "Oxford Academic",
     "country": "United Kingdom",
     "language": "en",
     "type": "academic",
@@ -5384,7 +5384,7 @@
     "bias_note": "Oxford University Press academic platform"
   },
   "acaps.org": {
-    "display_name": "ACAPS",
+    "outlet": "ACAPS",
     "country": "Switzerland",
     "language": "en",
     "type": "ngo",
@@ -5393,7 +5393,7 @@
     "bias_note": "Humanitarian needs analysis; Geneva-based"
   },
   "aclu.org": {
-    "display_name": "ACLU",
+    "outlet": "ACLU",
     "country": "United States",
     "language": "en",
     "type": "ngo",
@@ -5402,7 +5402,7 @@
     "bias_note": "American Civil Liberties Union; nonprofit advocacy"
   },
   "actufinance.fr": {
-    "display_name": "Actu Finance",
+    "outlet": "Actu Finance",
     "country": "France",
     "language": "fr",
     "type": "digital_native",
@@ -5411,7 +5411,7 @@
     "bias_note": "French financial news site"
   },
   "adnkronos.com": {
-    "display_name": "Adnkronos",
+    "outlet": "Adnkronos",
     "country": "Italy",
     "language": "it",
     "type": "news_agency",
@@ -5420,7 +5420,7 @@
     "bias_note": "Italian news agency; privately owned"
   },
   "aei.org": {
-    "display_name": "AEI",
+    "outlet": "AEI",
     "country": "United States",
     "language": "en",
     "type": "think_tank",
@@ -5429,7 +5429,7 @@
     "bias_note": "American Enterprise Institute; conservative policy think tank"
   },
   "afr.com": {
-    "display_name": "Australian Financial Review",
+    "outlet": "Australian Financial Review",
     "country": "Australia",
     "language": "en",
     "type": "newspaper",
@@ -5438,7 +5438,7 @@
     "bias_note": "Australia's premier financial daily; Nine Entertainment"
   },
   "africanews.com": {
-    "display_name": "Africanews",
+    "outlet": "Africanews",
     "country": "France",
     "language": "en",
     "type": "broadcaster",
@@ -5447,7 +5447,7 @@
     "bias_note": "Pan-African news channel; Euronews subsidiary"
   },
   "agerpres.ro": {
-    "display_name": "Agerpres",
+    "outlet": "Agerpres",
     "country": "Romania",
     "language": "ro",
     "type": "news_agency",
@@ -5456,7 +5456,7 @@
     "bias_note": "Romanian national news agency"
   },
   "alaraby.com": {
-    "display_name": "Al Araby TV / التلفزيون العربي",
+    "outlet": "Al Araby TV / التلفزيون العربي",
     "country": "Qatar",
     "language": "ar",
     "type": "digital_native",
@@ -5465,7 +5465,7 @@
     "bias_note": "Arabic-language news website; London-based"
   },
   "alhurra.com": {
-    "display_name": "Al Hurra",
+    "outlet": "Al Hurra",
     "country": "United States",
     "language": "ar",
     "type": "broadcaster",
@@ -5474,7 +5474,7 @@
     "bias_note": "US Congress-funded Arabic TV; BBG/USAGM oversight"
   },
   "almodon.com": {
-    "display_name": "Al Modon",
+    "outlet": "Al Modon",
     "country": "Lebanon",
     "language": "ar",
     "type": "digital_native",
@@ -5483,7 +5483,7 @@
     "bias_note": "Lebanese-Arab news and analysis site"
   },
   "alternatives-economiques.fr": {
-    "display_name": "Alternatives Economiques",
+    "outlet": "Alternatives Economiques",
     "country": "France",
     "language": "fr",
     "type": "magazine",
@@ -5492,7 +5492,7 @@
     "bias_note": "French economics magazine; cooperative ownership"
   },
   "amnesty.fr": {
-    "display_name": "Amnesty France",
+    "outlet": "Amnesty France",
     "country": "France",
     "language": "fr",
     "type": "ngo",
@@ -5501,7 +5501,7 @@
     "bias_note": "French section of Amnesty International"
   },
   "artforum.com": {
-    "display_name": "Artforum",
+    "outlet": "Artforum",
     "country": "United States",
     "language": "en",
     "type": "magazine",
@@ -5510,7 +5510,7 @@
     "bias_note": "Contemporary art magazine; independently published since 1962"
   },
   "asean.org": {
-    "display_name": "ASEAN",
+    "outlet": "ASEAN",
     "country": "Indonesia",
     "language": "en",
     "type": "intergovernmental",
@@ -5519,7 +5519,7 @@
     "bias_note": "Official website of ASEAN"
   },
   "asiaone.com": {
-    "display_name": "AsiaOne",
+    "outlet": "AsiaOne",
     "country": "Singapore",
     "language": "en",
     "type": "aggregator",
@@ -5528,7 +5528,7 @@
     "bias_note": "Singapore-based Asian news aggregator; SPH Media"
   },
   "band.com.br": {
-    "display_name": "Band",
+    "outlet": "Band",
     "country": "Brazil",
     "language": "pt",
     "type": "broadcaster",
@@ -5537,7 +5537,7 @@
     "bias_note": "Brazilian TV network; Grupo Bandeirantes"
   },
   "berlingske.dk": {
-    "display_name": "Berlingske",
+    "outlet": "Berlingske",
     "country": "Denmark",
     "language": "da",
     "type": "newspaper",
@@ -5546,7 +5546,7 @@
     "bias_note": "Major Danish daily; founded 1749; independently owned"
   },
   "biobiochile.cl": {
-    "display_name": "BioBioChile",
+    "outlet": "BioBioChile",
     "country": "Chile",
     "language": "es",
     "type": "digital_native",
@@ -5555,7 +5555,7 @@
     "bias_note": "Major Chilean news site"
   },
   "blesk.cz": {
-    "display_name": "Blesk",
+    "outlet": "Blesk",
     "country": "Czech Republic",
     "language": "cs",
     "type": "newspaper",
@@ -5564,7 +5564,7 @@
     "bias_note": "Major Czech tabloid daily"
   },
   "blic.rs": {
-    "display_name": "Blic",
+    "outlet": "Blic",
     "country": "Serbia",
     "language": "sr",
     "type": "newspaper",
@@ -5573,7 +5573,7 @@
     "bias_note": "Major Serbian daily; Ringier Axel Springer"
   },
   "blick.ch": {
-    "display_name": "Blick",
+    "outlet": "Blick",
     "country": "Switzerland",
     "language": "de",
     "type": "newspaper",
@@ -5582,7 +5582,7 @@
     "bias_note": "Major Swiss German tabloid; Ringier"
   },
   "bnamericas.com": {
-    "display_name": "BNamericas",
+    "outlet": "BNamericas",
     "country": "Chile",
     "language": "en",
     "type": "digital_native",
@@ -5591,7 +5591,7 @@
     "bias_note": "Latin American business intelligence service"
   },
   "breakingdefense.com": {
-    "display_name": "Breaking Defense",
+    "outlet": "Breaking Defense",
     "country": "United States",
     "language": "en",
     "type": "magazine",
@@ -5600,7 +5600,7 @@
     "bias_note": "Defense industry news; Metabiologics"
   },
   "brisbanetimes.com.au": {
-    "display_name": "Brisbane Times",
+    "outlet": "Brisbane Times",
     "country": "Australia",
     "language": "en",
     "type": "newspaper",
@@ -5609,7 +5609,7 @@
     "bias_note": "Australian online newspaper; Nine Entertainment"
   },
   "bundesregierung.de": {
-    "display_name": "Bundesregierung",
+    "outlet": "Bundesregierung",
     "country": "Germany",
     "language": "de",
     "type": "government",
@@ -5618,7 +5618,7 @@
     "bias_note": "Official website of the German Federal Government"
   },
   "businesstimes.com.sg": {
-    "display_name": "The Business Times",
+    "outlet": "The Business Times",
     "country": "Singapore",
     "language": "en",
     "type": "newspaper",
@@ -5627,7 +5627,7 @@
     "bias_note": "Singapore business daily; SPH Media Trust"
   },
   "bworldonline.com": {
-    "display_name": "BusinessWorld",
+    "outlet": "BusinessWorld",
     "country": "Philippines",
     "language": "en",
     "type": "newspaper",
@@ -5636,7 +5636,7 @@
     "bias_note": "Philippine business daily"
   },
   "cadenaser.com": {
-    "display_name": "Cadena SER",
+    "outlet": "Cadena SER",
     "country": "Spain",
     "language": "es",
     "type": "broadcaster",
@@ -5645,7 +5645,7 @@
     "bias_note": "Major Spanish radio network; PRISA Media"
   },
   "cambridge.org": {
-    "display_name": "Cambridge University Press",
+    "outlet": "Cambridge University Press",
     "country": "United Kingdom",
     "language": "en",
     "type": "academic",
@@ -5654,7 +5654,7 @@
     "bias_note": "Academic publisher; peer-reviewed journals and books"
   },
   "canalsur.es": {
-    "display_name": "Canal Sur",
+    "outlet": "Canal Sur",
     "country": "Spain",
     "language": "es",
     "type": "public_broadcaster",
@@ -5663,7 +5663,7 @@
     "bias_note": "Andalusian public broadcaster"
   },
   "care.org": {
-    "display_name": "CARE",
+    "outlet": "CARE",
     "country": "United States",
     "language": "en",
     "type": "ngo",
@@ -5672,7 +5672,7 @@
     "bias_note": "International humanitarian organisation fighting global poverty"
   },
   "catalannews.com": {
-    "display_name": "Catalan News",
+    "outlet": "Catalan News",
     "country": "Spain",
     "language": "en",
     "type": "digital_native",
@@ -5681,7 +5681,7 @@
     "bias_note": "English-language news about Catalonia"
   },
   "cato.org": {
-    "display_name": "Cato Institute",
+    "outlet": "Cato Institute",
     "country": "United States",
     "language": "en",
     "type": "think_tank",
@@ -5690,7 +5690,7 @@
     "bias_note": "Libertarian think tank; founded by Edward Crane and Charles Koch"
   },
   "cidrap.umn.edu": {
-    "display_name": "CIDRAP",
+    "outlet": "CIDRAP",
     "country": "United States",
     "language": "en",
     "type": "academic",
@@ -5699,7 +5699,7 @@
     "bias_note": "Center for Infectious Disease Research and Policy; University of Minnesota"
   },
   "clickondetroit.com": {
-    "display_name": "Click on Detroit",
+    "outlet": "Click on Detroit",
     "country": "United States",
     "language": "en",
     "type": "broadcaster",
@@ -5708,7 +5708,7 @@
     "bias_note": "Local TV news; NBC affiliate in Detroit"
   },
   "commondreams.org": {
-    "display_name": "Common Dreams",
+    "outlet": "Common Dreams",
     "country": "United States",
     "language": "en",
     "type": "ngo",
@@ -5717,7 +5717,7 @@
     "bias_note": "Progressive news and advocacy; nonprofit"
   },
   "computerworld.com": {
-    "display_name": "Computerworld",
+    "outlet": "Computerworld",
     "country": "United States",
     "language": "en",
     "type": "digital_native",
@@ -5726,7 +5726,7 @@
     "bias_note": "IT industry trade publication; Foundry (IDG)"
   },
   "congress.gov": {
-    "display_name": "Congress.gov",
+    "outlet": "Congress.gov",
     "country": "United States",
     "language": "en",
     "type": "government",
@@ -5735,7 +5735,7 @@
     "bias_note": "Official website of the United States Congress"
   },
   "correiobraziliense.com.br": {
-    "display_name": "Correio Braziliense",
+    "outlet": "Correio Braziliense",
     "country": "Brazil",
     "language": "pt",
     "type": "newspaper",
@@ -5744,7 +5744,7 @@
     "bias_note": "Major Brazilian daily from Brasilia"
   },
   "csmonitor.com": {
-    "display_name": "Christian Science Monitor",
+    "outlet": "Christian Science Monitor",
     "country": "United States",
     "language": "en",
     "type": "newspaper",
@@ -5753,7 +5753,7 @@
     "bias_note": "International news; Christian Science church but editorially independent"
   },
   "dailypakistan.com.pk": {
-    "display_name": "Daily Pakistan",
+    "outlet": "Daily Pakistan",
     "country": "Pakistan",
     "language": "ur",
     "type": "digital_native",
@@ -5762,7 +5762,7 @@
     "bias_note": "Pakistani Urdu news site"
   },
   "de.marketscreener.com": {
-    "display_name": "MarketScreener Germany",
+    "outlet": "MarketScreener Germany",
     "country": "France",
     "language": "de",
     "type": "digital_native",
@@ -5771,7 +5771,7 @@
     "bias_note": "Financial data and news; Marketscreener.com"
   },
   "defapress.ir": {
-    "display_name": "Defa Press",
+    "outlet": "Defa Press",
     "country": "Iran",
     "language": "fa",
     "type": "news_agency",
@@ -5780,7 +5780,7 @@
     "bias_note": "Iranian pro-IRGC news agency"
   },
   "defence24.pl": {
-    "display_name": "Defence24",
+    "outlet": "Defence24",
     "country": "Poland",
     "language": "pl",
     "type": "digital_native",
@@ -5789,7 +5789,7 @@
     "bias_note": "Polish defence and security news site"
   },
   "defenseone.com": {
-    "display_name": "Defense One",
+    "outlet": "Defense One",
     "country": "United States",
     "language": "en",
     "type": "digital_native",
@@ -5798,7 +5798,7 @@
     "bias_note": "US defense news; GovExec media"
   },
   "delfi.ee": {
-    "display_name": "Delfi",
+    "outlet": "Delfi",
     "country": "Estonia",
     "language": "et",
     "type": "digital_native",
@@ -5807,7 +5807,7 @@
     "bias_note": "Major Estonian news portal; Delfi group"
   },
   "deseret.com": {
-    "display_name": "Deseret News",
+    "outlet": "Deseret News",
     "country": "United States",
     "language": "en",
     "type": "newspaper",
@@ -5816,7 +5816,7 @@
     "bias_note": "Utah daily; Deseret Management (LDS Church subsidiary)"
   },
   "devex.com": {
-    "display_name": "Devex",
+    "outlet": "Devex",
     "country": "United States",
     "language": "en",
     "type": "digital_native",
@@ -5825,7 +5825,7 @@
     "bias_note": "Global development news platform"
   },
   "dialogo-americas.com": {
-    "display_name": "Dialogo Americas",
+    "outlet": "Dialogo Americas",
     "country": "United States",
     "language": "en",
     "type": "magazine",
@@ -5834,7 +5834,7 @@
     "bias_note": "US Southern Command-sponsored news"
   },
   "digi24.ro": {
-    "display_name": "Digi24",
+    "outlet": "Digi24",
     "country": "Romania",
     "language": "ro",
     "type": "broadcaster",
@@ -5843,7 +5843,7 @@
     "bias_note": "Romanian 24-hour news TV; RCS and DSD group"
   },
   "directrelief.org": {
-    "display_name": "Direct Relief",
+    "outlet": "Direct Relief",
     "country": "United States",
     "language": "en",
     "type": "ngo",
@@ -5852,7 +5852,7 @@
     "bias_note": "International humanitarian medical aid organisation"
   },
   "dn.pt": {
-    "display_name": "Diario de Noticias",
+    "outlet": "Diario de Noticias",
     "country": "Portugal",
     "language": "pt",
     "type": "newspaper",
@@ -5861,7 +5861,7 @@
     "bias_note": "Major Portuguese daily; Globalnoticias"
   },
   "doctorswithoutborders.org": {
-    "display_name": "Doctors Without Borders / MSF-USA",
+    "outlet": "Doctors Without Borders / MSF-USA",
     "country": "United States",
     "language": "en",
     "type": "ngo",
@@ -5870,7 +5870,7 @@
     "bias_note": "International humanitarian medical NGO; Nobel Peace Prize 1999"
   },
   "dr.dk": {
-    "display_name": "DR",
+    "outlet": "DR",
     "country": "Denmark",
     "language": "da",
     "type": "public_broadcaster",
@@ -5879,7 +5879,7 @@
     "bias_note": "Danish national broadcaster; licence fee funded"
   },
   "elcomercio.com": {
-    "display_name": "El Comercio",
+    "outlet": "El Comercio",
     "country": "Peru",
     "language": "es",
     "type": "newspaper",
@@ -5888,7 +5888,7 @@
     "bias_note": "Major Peruvian daily; El Comercio group"
   },
   "elespanol.com": {
-    "display_name": "El Espanol",
+    "outlet": "El Espanol",
     "country": "Spain",
     "language": "es",
     "type": "digital_native",
@@ -5897,7 +5897,7 @@
     "bias_note": "Spanish digital news site; founded 2015"
   },
   "en.people.cn": {
-    "display_name": "People's Daily (English)",
+    "outlet": "People's Daily (English)",
     "country": "China",
     "language": "en",
     "type": "state_broadcaster",
@@ -5906,7 +5906,7 @@
     "bias_note": "English edition of People's Daily; official CCP newspaper"
   },
   "english.ahram.org.eg": {
-    "display_name": "Ahram Online",
+    "outlet": "Ahram Online",
     "country": "Egypt",
     "language": "en",
     "type": "newspaper",
@@ -5915,7 +5915,7 @@
     "bias_note": "English edition of Al-Ahram; Egypt's state-owned flagship daily"
   },
   "english.kyodonews.net": {
-    "display_name": "Kyodo News (English)",
+    "outlet": "Kyodo News (English)",
     "country": "Japan",
     "language": "en",
     "type": "news_agency",
@@ -5924,7 +5924,7 @@
     "bias_note": "English service of Japan's Kyodo News agency"
   },
   "eos.org": {
-    "display_name": "Eos",
+    "outlet": "Eos",
     "country": "United States",
     "language": "en",
     "type": "academic",
@@ -5933,7 +5933,7 @@
     "bias_note": "Earth and space science news; published by AGU"
   },
   "espn.com": {
-    "display_name": "ESPN",
+    "outlet": "ESPN",
     "country": "United States",
     "language": "en",
     "type": "broadcaster",
@@ -5942,7 +5942,7 @@
     "bias_note": "Sports media network; owned by Disney"
   },
   "evangelisch.de": {
-    "display_name": "Evangelisch.de",
+    "outlet": "Evangelisch.de",
     "country": "Germany",
     "language": "de",
     "type": "digital_native",
@@ -5951,7 +5951,7 @@
     "bias_note": "Protestant Church news portal; EKD-affiliated"
   },
   "express.co.uk": {
-    "display_name": "Daily Express",
+    "outlet": "Daily Express",
     "country": "United Kingdom",
     "language": "en",
     "type": "newspaper",
@@ -5960,7 +5960,7 @@
     "bias_note": "UK tabloid daily; owned by Reach plc"
   },
   "facebook.com": {
-    "display_name": "Facebook",
+    "outlet": "Facebook",
     "country": "United States",
     "language": "en",
     "type": "aggregator",
@@ -5969,7 +5969,7 @@
     "bias_note": "Social media platform; user-generated content"
   },
   "factcheck.org": {
-    "display_name": "FactCheck.org",
+    "outlet": "FactCheck.org",
     "country": "United States",
     "language": "en",
     "type": "ngo",
@@ -5978,7 +5978,7 @@
     "bias_note": "Nonpartisan fact-checking; Annenberg Public Policy Center, UPenn"
   },
   "federalreserve.gov": {
-    "display_name": "Federal Reserve",
+    "outlet": "Federal Reserve",
     "country": "United States",
     "language": "en",
     "type": "government",
@@ -5987,7 +5987,7 @@
     "bias_note": "Official website of the US Federal Reserve System"
   },
   "finance.yahoo.co.jp": {
-    "display_name": "Yahoo Finance Japan",
+    "outlet": "Yahoo Finance Japan",
     "country": "Japan",
     "language": "ja",
     "type": "aggregator",
@@ -5996,7 +5996,7 @@
     "bias_note": "Japanese financial news aggregator; SoftBank/Z Holdings"
   },
   "foxrochester.com": {
-    "display_name": "Fox Rochester",
+    "outlet": "Fox Rochester",
     "country": "United States",
     "language": "en",
     "type": "broadcaster",
@@ -6005,7 +6005,7 @@
     "bias_note": "Local Fox affiliate in Rochester, NY"
   },
   "fr.africanews.com": {
-    "display_name": "Africanews (French)",
+    "outlet": "Africanews (French)",
     "country": "France",
     "language": "fr",
     "type": "broadcaster",
@@ -6014,7 +6014,7 @@
     "bias_note": "French edition of Africanews; Euronews subsidiary"
   },
   "gbnews.com": {
-    "display_name": "GB News",
+    "outlet": "GB News",
     "country": "United Kingdom",
     "language": "en",
     "type": "broadcaster",
@@ -6023,7 +6023,7 @@
     "bias_note": "UK news channel; launched 2021; privately funded"
   },
   "geo.tv": {
-    "display_name": "GEO TV",
+    "outlet": "GEO TV",
     "country": "Pakistan",
     "language": "ur",
     "type": "broadcaster",
@@ -6032,7 +6032,7 @@
     "bias_note": "Major Pakistani TV channel; Jang Media group"
   },
   "gp.se": {
-    "display_name": "GP",
+    "outlet": "GP",
     "country": "Sweden",
     "language": "sv",
     "type": "newspaper",
@@ -6041,7 +6041,7 @@
     "bias_note": "Goteborgs-Posten; major Swedish regional daily"
   },
   "greenreport.it": {
-    "display_name": "Greenreport",
+    "outlet": "Greenreport",
     "country": "Italy",
     "language": "it",
     "type": "digital_native",
@@ -6050,7 +6050,7 @@
     "bias_note": "Italian environmental news site"
   },
   "halktv.com.tr": {
-    "display_name": "Halk TV",
+    "outlet": "Halk TV",
     "country": "Turkey",
     "language": "tr",
     "type": "broadcaster",
@@ -6059,7 +6059,7 @@
     "bias_note": "Turkish opposition-aligned TV channel"
   },
   "hromadske.ua": {
-    "display_name": "Hromadske",
+    "outlet": "Hromadske",
     "country": "Ukraine",
     "language": "uk",
     "type": "digital_native",
@@ -6068,7 +6068,7 @@
     "bias_note": "Ukrainian public-oriented media; grant-funded"
   },
   "huffpost.com": {
-    "display_name": "HuffPost",
+    "outlet": "HuffPost",
     "country": "United States",
     "language": "en",
     "type": "digital_native",
@@ -6077,7 +6077,7 @@
     "bias_note": "US news site; owned by BuzzFeed since 2020"
   },
   "icct.nl": {
-    "display_name": "ICCT",
+    "outlet": "ICCT",
     "country": "Netherlands",
     "language": "en",
     "type": "think_tank",
@@ -6086,7 +6086,7 @@
     "bias_note": "International Centre for Counter-Terrorism; The Hague"
   },
   "ieefa.org": {
-    "display_name": "IEEFA",
+    "outlet": "IEEFA",
     "country": "United States",
     "language": "en",
     "type": "think_tank",
@@ -6095,7 +6095,7 @@
     "bias_note": "Institute for Energy Economics and Financial Analysis"
   },
   "ifj.org": {
-    "display_name": "IFJ",
+    "outlet": "IFJ",
     "country": "Belgium",
     "language": "en",
     "type": "ngo",
@@ -6104,7 +6104,7 @@
     "bias_note": "International Federation of Journalists; global journalists' union"
   },
   "iiss.org": {
-    "display_name": "IISS",
+    "outlet": "IISS",
     "country": "United Kingdom",
     "language": "en",
     "type": "think_tank",
@@ -6113,7 +6113,7 @@
     "bias_note": "International Institute for Strategic Studies; London-based defence think tank"
   },
   "ilfoglio.it": {
-    "display_name": "Il Foglio",
+    "outlet": "Il Foglio",
     "country": "Italy",
     "language": "it",
     "type": "newspaper",
@@ -6122,7 +6122,7 @@
     "bias_note": "Italian daily; founded by Giuliano Ferrara"
   },
   "ilgiornale.it": {
-    "display_name": "Il Giornale",
+    "outlet": "Il Giornale",
     "country": "Italy",
     "language": "it",
     "type": "newspaper",
@@ -6131,7 +6131,7 @@
     "bias_note": "Italian daily; owned by Paolo Berlusconi family"
   },
   "ilmanifesto.it": {
-    "display_name": "Il Manifesto",
+    "outlet": "Il Manifesto",
     "country": "Italy",
     "language": "it",
     "type": "newspaper",
@@ -6140,7 +6140,7 @@
     "bias_note": "Italian daily; cooperative ownership; historically far-left"
   },
   "imo.org": {
-    "display_name": "IMO",
+    "outlet": "IMO",
     "country": "United Kingdom",
     "language": "en",
     "type": "intergovernmental",
@@ -6149,7 +6149,7 @@
     "bias_note": "International Maritime Organization; UN agency"
   },
   "investing.com": {
-    "display_name": "Investing.com",
+    "outlet": "Investing.com",
     "country": "Israel",
     "language": "en",
     "type": "digital_native",
@@ -6158,7 +6158,7 @@
     "bias_note": "Global financial data and news platform"
   },
   "irishtimes.com": {
-    "display_name": "The Irish Times",
+    "outlet": "The Irish Times",
     "country": "Ireland",
     "language": "en",
     "type": "newspaper",
@@ -6167,7 +6167,7 @@
     "bias_note": "Major Irish daily; Irish Times Trust ownership"
   },
   "issafrica.org": {
-    "display_name": "ISS Africa",
+    "outlet": "ISS Africa",
     "country": "South Africa",
     "language": "en",
     "type": "think_tank",
@@ -6176,7 +6176,7 @@
     "bias_note": "Institute for Security Studies; African crime and conflict research"
   },
   "itmedia.co.jp": {
-    "display_name": "ITmedia",
+    "outlet": "ITmedia",
     "country": "Japan",
     "language": "ja",
     "type": "digital_native",
@@ -6185,7 +6185,7 @@
     "bias_note": "Japanese IT and technology news site"
   },
   "jagran.com": {
-    "display_name": "Dainik Jagran",
+    "outlet": "Dainik Jagran",
     "country": "India",
     "language": "hi",
     "type": "newspaper",
@@ -6194,7 +6194,7 @@
     "bias_note": "India's largest-circulation Hindi daily; Jagran Prakashan Ltd"
   },
   "jta.org": {
-    "display_name": "JTA",
+    "outlet": "JTA",
     "country": "United States",
     "language": "en",
     "type": "news_agency",
@@ -6203,7 +6203,7 @@
     "bias_note": "Jewish Telegraphic Agency; global Jewish news since 1917"
   },
   "kas.de": {
-    "display_name": "Konrad Adenauer Foundation",
+    "outlet": "Konrad Adenauer Foundation",
     "country": "Germany",
     "language": "de",
     "type": "think_tank",
@@ -6212,7 +6212,7 @@
     "bias_note": "German political foundation; affiliated with CDU"
   },
   "khaleejtimes.com": {
-    "display_name": "Khaleej Times",
+    "outlet": "Khaleej Times",
     "country": "United Arab Emirates",
     "language": "en",
     "type": "newspaper",
@@ -6221,7 +6221,7 @@
     "bias_note": "English daily in UAE; operates under UAE media regulations"
   },
   "khaosodenglish.com": {
-    "display_name": "Khaosod English",
+    "outlet": "Khaosod English",
     "country": "Thailand",
     "language": "en",
     "type": "digital_native",
