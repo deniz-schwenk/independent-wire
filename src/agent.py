@@ -14,6 +14,7 @@ import os
 import random
 import time
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -80,7 +81,91 @@ PROVIDER_DEFAULTS: dict[str, dict[str, str | None]] = {
         "base_url": "https://api.deepseek.com",
         "api_key_env": None,
     },
+    # PRODUCTION channel C for the three v4-flash-0731 stages
+    # (TASK-FLASH-0731-SWAP). Same host as ``deepseek`` above, but resolves
+    # its key from the environment so ``daily_run.sh`` (which sources .env)
+    # needs no per-agent key plumbing. Kept as a separate entry rather than
+    # adding an env default to ``deepseek``, so curator_shadow.py's
+    # explicit-key contract is untouched.
+    #
+    # The vendor exposes exactly ONE flash id, ``deepseek-v4-flash``, and
+    # rejects every dated form with a 400 — it serves the 0731 build by
+    # alias, unpinnable (T2d §1.1). The per-call log line below records the
+    # server-echoed model id precisely so an alias roll is visible.
+    "deepseek_direct": {
+        "base_url": "https://api.deepseek.com",
+        "api_key_env": "DEEPSEEK_API_KEY",
+    },
 }
+
+# Providers whose endpoint offers no strict ``json_schema`` decoding. Sending
+# one anyway is not a no-op: on api.deepseek.com the schema block is ignored,
+# and on OpenRouter ``require_parameters: true`` filters the DeepSeek endpoint
+# out of the route entirely and the call 404s (T2b §1.1, T2d §1.4). These
+# providers get ``response_format: {"type": "json_object"}`` instead, and the
+# schema is enforced locally by the caller — the parser chain here, then
+# FlashStageWithFallback's schema check.
+JSON_OBJECT_ONLY_PROVIDERS = frozenset({"deepseek_direct"})
+
+STRUCTURED_OUTPUT_MODES = ("strict_schema", "json_object")
+
+# --- DeepSeek direct-API pricing ---------------------------------------------
+# api.deepseek.com returns no ``usage.cost``. Without this table the three
+# flash stages would log ``cost_usd=0.0`` on every run and the daily cost
+# report would silently lose its primary channel — worse than reporting
+# nothing. USD per 1M tokens from api-docs.deepseek.com/quick_start/pricing,
+# fetched 2026-08-23. DeepSeek bills a PEAK and an OFF-PEAK rate differing by
+# 2x, so the window is part of the price: peak is 01:00-04:00 and 06:00-10:00
+# UTC, Monday to Friday; everything else, weekends included, is off-peak.
+# Production fires 06:00 local = 04:00 UTC under CEST, i.e. minutes after the
+# first peak block closes — an hour of schedule drift doubles this bill.
+# Cross-checked against the vendor's own /user/balance to +4.1% over $1.12 of
+# traffic (T2d §1.5). A served model id absent from the table is logged loudly
+# and reports NO cost rather than a wrong one.
+DEEPSEEK_DIRECT_PRICING_VERSION = "api-docs.deepseek.com @ 2026-08-23"
+DEEPSEEK_DIRECT_PRICES: dict[str, dict[str, tuple[float, float, float]]] = {
+    # model -> window -> (cache_hit_input, cache_miss_input, output)
+    "deepseek-v4-flash": {
+        "offpeak": (0.007, 0.22, 0.66),
+        "peak": (0.014, 0.44, 1.32),
+    },
+    "deepseek-v4-pro": {
+        "offpeak": (0.022, 0.66, 1.98),
+        "peak": (0.044, 1.32, 3.96),
+    },
+}
+
+
+def deepseek_price_window(now: datetime | None = None) -> str:
+    """``"peak"`` or ``"offpeak"`` for a UTC instant (default: now)."""
+    t = now or datetime.now(timezone.utc)
+    if t.weekday() < 5 and (1 <= t.hour < 4 or 6 <= t.hour < 10):
+        return "peak"
+    return "offpeak"
+
+
+def deepseek_direct_cost_usd(
+    model: str, usage: Any, now: datetime | None = None
+) -> float | None:
+    """Cost of one api.deepseek.com call from its own usage counters.
+
+    Returns ``None`` when the model is unpriced or usage is absent, so the
+    caller can distinguish "not measurable" from "free".
+    """
+    rates = DEEPSEEK_DIRECT_PRICES.get((model or "").split(":")[0])
+    if rates is None or usage is None:
+        return None
+    window = rates[deepseek_price_window(now)]
+    hit = getattr(usage, "prompt_cache_hit_tokens", None)
+    miss = getattr(usage, "prompt_cache_miss_tokens", None)
+    if hit is None and miss is None:          # no cache split reported
+        miss, hit = getattr(usage, "prompt_tokens", 0) or 0, 0
+    out = getattr(usage, "completion_tokens", 0) or 0
+    return round(
+        ((hit or 0) * window[0] + (miss or 0) * window[1] + out * window[2])
+        / 1_000_000,
+        8,
+    )
 
 
 class AgentError(Exception):
@@ -155,6 +240,7 @@ class Agent:
         extra_body_override: dict | None = None,
         provider_routing: dict | None = None,
         output_schema: dict | None = None,
+        structured_output_mode: str = "strict_schema",
     ) -> None:
         self.name = name
         self.model = model
@@ -174,6 +260,26 @@ class Agent:
         # and self-documenting at the call site.
         self._provider_routing = provider_routing or {}
         self.output_schema = output_schema
+        # How ``output_schema`` reaches the wire. ``strict_schema`` (the
+        # default, and what every OpenRouter stage has always used) sends a
+        # strict ``json_schema`` response_format so decoding cannot violate
+        # the schema. ``json_object`` sends only ``{"type": "json_object"}``
+        # and leaves enforcement to local validation — required on any route
+        # whose endpoint lacks ``structured_outputs``, which includes BOTH
+        # v4-flash-0731 channels: api.deepseek.com ignores a schema block,
+        # and OpenRouter pinned to the DeepSeek provider 404s on it because
+        # ``require_parameters: true`` filters that endpoint out (T2b §1.1).
+        if structured_output_mode not in STRUCTURED_OUTPUT_MODES:
+            raise AgentError(
+                f"Agent '{name}': structured_output_mode must be one of "
+                f"{STRUCTURED_OUTPUT_MODES}, got {structured_output_mode!r}"
+            )
+        # Providers that cannot strict-decode are coerced regardless of what
+        # the call site asked for — a strict schema there is silently ignored,
+        # which is the worst of both worlds.
+        if provider in JSON_OBJECT_ONLY_PROVIDERS:
+            structured_output_mode = "json_object"
+        self.structured_output_mode = structured_output_mode
 
         for label, path in (
             ("system_prompt_path", system_prompt_path),
@@ -371,6 +477,12 @@ class Agent:
         extra_body: dict = {}
         if self.reasoning is None and self.provider == "openrouter":
             extra_body["reasoning"] = {"effort": "none"}
+        elif self.reasoning is None and self.provider == "deepseek_direct":
+            # The direct API's own default is reasoning ON — leaving the
+            # parameter off is a silent multi-x cost surprise, so "no
+            # reasoning configured" is sent explicitly as none, matching the
+            # OpenRouter branch above.
+            extra_body["reasoning_effort"] = "none"
         elif self.reasoning is not None:
             if self.provider == "openrouter":
                 if isinstance(self.reasoning, bool):
@@ -391,6 +503,24 @@ class Agent:
                     extra_body["think"] = self.reasoning
                 elif isinstance(self.reasoning, str):
                     extra_body["think"] = self.reasoning
+            elif self.provider == "deepseek_direct":
+                # A plain string parameter, NOT the OpenRouter object. The
+                # direct API accepts ``reasoning: {"effort": ...}`` WITHOUT
+                # error and ignores it, so sending the wrong shape here fails
+                # silently into the default rather than loudly (T2d §1.3).
+                if isinstance(self.reasoning, bool):
+                    extra_body["reasoning_effort"] = (
+                        "high" if self.reasoning else "none"
+                    )
+                elif isinstance(self.reasoning, str):
+                    extra_body["reasoning_effort"] = self.reasoning
+                elif isinstance(self.reasoning, dict):
+                    raise AgentError(
+                        f"Agent '{self.name}': provider 'deepseek_direct' takes "
+                        f"a reasoning_effort STRING; the OpenRouter reasoning "
+                        f"object is accepted by the API and silently ignored. "
+                        f"Got {self.reasoning!r}."
+                    )
         # Deep-copy the override so the per-call mutations below (the provider
         # merge and the require_parameters injection) never touch the shared
         # instance dict — closes the setdefault aliasing trap flagged in
@@ -418,7 +548,14 @@ class Agent:
         # ``_parse_or_retry_structured``) stays in place as belt-and-
         # suspenders for providers that fall back or schemas that fail
         # to compile.
-        if output_schema:
+        if output_schema and self.structured_output_mode == "json_object":
+            # No strict decoding available on this route. Ask for JSON and
+            # nothing more; the schema is enforced after the fact by the
+            # parser chain plus the caller's validity check. Deliberately no
+            # ``require_parameters`` — on OpenRouter that flag is exactly what
+            # removes the schema-less DeepSeek endpoint from the route.
+            kwargs["response_format"] = {"type": "json_object"}
+        elif output_schema:
             kwargs["response_format"] = {
                 "type": "json_schema",
                 "json_schema": {
@@ -626,6 +763,33 @@ class Agent:
         except (TypeError, ValueError):
             return None
 
+    def _cost_for(self, response: object) -> float | None:
+        """Cost of one response, whoever served it.
+
+        OpenRouter reports it directly. api.deepseek.com reports nothing, so
+        it is computed from that response's own usage counters against the
+        versioned price table — otherwise the primary channel for three
+        stages would log 0.0 forever. An unpriced model returns ``None`` and
+        says so loudly; the caller keeps ``cost_reported`` false rather than
+        recording a fabricated zero.
+        """
+        reported = self._extract_cost_usd(response)
+        if reported is not None:
+            return reported
+        if self.provider != "deepseek_direct":
+            return None
+        served = getattr(response, "model", None) or self.model
+        cost = deepseek_direct_cost_usd(served, getattr(response, "usage", None))
+        if cost is None:
+            logger.warning(
+                "Agent '%s': deepseek_direct served model %r is absent from the "
+                "price table (%s) — cost cannot be computed and is reported as "
+                "unmeasured. If the vendor rolled its alias, this is the "
+                "tripwire; update DEEPSEEK_DIRECT_PRICES.",
+                self.name, served, DEEPSEEK_DIRECT_PRICING_VERSION,
+            )
+        return cost
+
     async def _parse_or_retry_structured(
         self,
         messages: list[dict],
@@ -684,7 +848,7 @@ class Agent:
             additional_tokens += tokens
             if not observed:
                 usage_missing_count += 1
-            cost = self._extract_cost_usd(response)
+            cost = self._cost_for(response)
             if cost is not None:
                 additional_cost += cost
                 cost_reported = True
@@ -751,7 +915,7 @@ class Agent:
             total_tokens += tokens
             if not observed:
                 usage_missing_count += 1
-            cost = self._extract_cost_usd(response)
+            cost = self._cost_for(response)
             if cost is not None:
                 total_cost_usd += cost
                 cost_reported = True
@@ -788,7 +952,14 @@ class Agent:
         duration = time.monotonic() - start_time
         content = resp_message.content or ""
         model_used = response.model if hasattr(response, "model") else self.model
+        # OpenRouter reports which upstream served the call; a direct vendor
+        # API has no such field. Fall back to the configured provider so
+        # run_stage_log.jsonl always names the CHANNEL — otherwise every
+        # deepseek_direct row would read "unknown" and channel C would be
+        # indistinguishable from a broken OpenRouter response.
         provider_served = getattr(response, "provider", "") or ""
+        if not provider_served and self.provider != "openrouter":
+            provider_served = self.provider
         response_id = getattr(response, "id", "") or ""
 
         # Parse structured output if schema was requested, with retry
@@ -828,12 +999,22 @@ class Agent:
                 duration,
             )
 
+        # One line per call carrying everything an audit needs: the CHANNEL,
+        # the model id AS ECHOED BY THE SERVER (the alias-drift tripwire — the
+        # DeepSeek direct API serves 0731 under an undated alias and there is
+        # no other way to notice a roll), the reasoning setting actually
+        # configured, tokens, and cost. Standing rule, TASK-FLASH-0731-SWAP §3.
         logger.info(
-            "Agent '%s': completed in %.1fs, %s tokens, %d tool calls",
+            "Agent '%s': completed in %.1fs, %s tokens, %d tool calls "
+            "| channel=%s served_model=%s reasoning=%r cost_usd=%s",
             self.name,
             duration,
             _format_tokens_for_log(total_tokens, usage_missing_count),
             len(all_tool_calls),
+            provider_served or self.provider,
+            model_used,
+            self.reasoning,
+            (f"{total_cost_usd:.6f}" if cost_reported else "unreported"),
         )
 
         self.last_cost_usd += total_cost_usd

@@ -663,21 +663,26 @@ def test_resolver_does_not_mutate_final_actors():
 
 
 def test_resolver_agent_registration_carries_y_config():
-    """Production registration ships the post-Wave-2 config on the PRIMARY:
-    ``model="deepseek/deepseek-v4-flash"``, ``temperature=0.5``,
-    ``reasoning="none"``, ``max_tokens=4000`` (commit a7130dd, 2026-05-19,
-    per Wave-2 Sweep #2; max_tokens retuned from the Wave-2 uniform 160000 on
-    2026-08-23 by TASK-FLASH-PIN-REPAIR — 160000 exceeded the pin's minimum
-    provider ceiling and was silently clamped, and this stage's worst observed
-    completion across 55 real calls is 698 tokens). Regression-guards against
-    accidental reverts of the *primary* to the pre-Wave-2 Gemini Y-config
-    (``temperature=1.0`` + ``reasoning="medium"``).
+    """Production registration ships the post-swap config on the PRIMARY:
+    channel C via ``_flash_0731_primary``, ``reasoning="low"``,
+    ``max_tokens=16000`` (TASK-FLASH-0731-SWAP, 2026-08-24; 16000 replaced a
+    first-draft 8000 on review — that value was 1.19x this stage's observed
+    worst completion and the only row under the repo's 2x convention).
 
-    As of 2026-07-14 the stage is wrapped in ``FlashStageWithFallback`` with a
-    ``google/gemini-3-flash-preview`` fallback (TASK-RESEARCHER-ASSEMBLE-FALLBACK,
-    extended) — so Gemini + ``temperature=1.0`` now legitimately appear in the
-    *fallback* sub-block. The Y-config guard is therefore scoped to the primary
-    sub-block (``primary=Agent(`` … ``fallback=``), where a revert would land."""
+    History this guard has tracked: the pre-Wave-2 Gemini Y-config
+    (``temperature=1.0`` + ``reasoning="medium"``) → Wave-2 Sweep #2's
+    ``deepseek/deepseek-v4-flash`` + ``reasoning="none"`` (a7130dd) →
+    ``max_tokens`` 160000 → 4000 (TASK-FLASH-PIN-REPAIR) → today's
+    v4-flash-0731 on api.deepseek.com at ``low``.
+
+    ``reasoning`` moved "none" → "low" deliberately and against Wave-2's
+    finding that this extraction-class role gains nothing from reasoning:
+    that held for the OLD weights. On 0731, T2b §2.2 scored medium at +1.150
+    per pair against control where "none" managed +0.500, and channel C's
+    ``low`` is the calibrated equivalent of channel A's ``medium`` (T2d §1.3,
+    9/9 inputs, ratio 1.10). So the guard now asserts ``reasoning="low"``, and
+    still guards the *primary* sub-block against a revert to the Gemini
+    Y-config, where such a revert would land."""
     run_py = (
         Path(__file__).resolve().parents[1] / "scripts" / "run.py"
     ).read_text(encoding="utf-8")
@@ -691,20 +696,23 @@ def test_resolver_agent_registration_carries_y_config():
     assert after > start
     block = run_py[start:after]
 
-    # The primary sub-block carries the post-Wave-2 DeepSeek config ...
-    primary = block[block.find("primary=Agent("):block.find("fallback=")]
-    assert 'model="deepseek/deepseek-v4-flash"' in primary
-    assert "temperature=0.5" in primary
-    assert 'reasoning="none"' in primary
-    assert "max_tokens=4000," in primary
-    # ... and must NOT have reverted to the deprecated Gemini Y-config.
+    # The primary sub-block carries the post-swap channel-C config. The model
+    # id and temperature now live in the _flash_0731_primary helper, so the
+    # per-stage assertions are the ones the call site actually sets.
+    primary = block[block.find("primary=_flash_0731_primary("):block.find("fallback=")]
+    assert "_flash_0731_primary(" in block
+    assert 'reasoning="low"' in primary
+    assert "max_tokens=16000," in primary
+    # ... and must NOT have reverted to the deprecated Gemini Y-config, nor to
+    # the retired fp8 route.
     assert "google/gemini-3-flash-preview" not in primary
     assert "temperature=1.0" not in primary
     assert 'reasoning="medium"' not in primary
-    assert "max_tokens=66000" not in primary
+    assert "DEEPSEEK_V4_FLASH_FP8_ROUTING" not in primary
 
-    # The fallback is the shared gemini-3-flash-preview net (built by the
-    # _gemini_flash_fallback helper — the model string lives there).
+    # The fallback is the shared channel-A net (built by _flash_0731_fallback —
+    # the dated model id and the DeepSeek-endpoint pin live there).
     fallback = block[block.find("fallback="):]
-    assert "_gemini_flash_fallback(" in fallback
+    assert "_flash_0731_fallback(" in fallback
+    assert "max_tokens=16000," in fallback
     assert 'fallback_marker_key="resolve_actor_aliases_fallback_used"' in block

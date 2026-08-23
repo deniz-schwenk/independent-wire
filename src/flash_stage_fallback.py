@@ -1,42 +1,49 @@
-"""One-shot model fallback for the DeepSeek-V4-Flash schema-bearing stages
-(TASK-RESEARCHER-ASSEMBLE-FALLBACK, extended to the sibling flash stages).
+"""One-shot channel fallback for the three v4-flash-0731 schema-bearing stages
+(TASK-RESEARCHER-ASSEMBLE-FALLBACK, extended to the siblings; retargeted from
+a model fallback to a CHANNEL fallback by TASK-FLASH-0731-SWAP, 2026-08-24).
 
-Three production stages run on ``deepseek/deepseek-v4-flash`` pinned to a closed
-list of fp8 providers verified for strict json_schema
-(``DEEPSEEK_V4_FLASH_FP8_ROUTING`` in ``scripts/run.py``; ``allow_fallbacks:
-false`` fails loud rather than dropping to an unverified/fp4 or schema-incapable
-provider):
+Three production stages run on ``deepseek-v4-flash-0731``, full precision, with
+two independent routes to the same weights (``scripts/run.py``,
+``_flash_0731_primary`` / ``_flash_0731_fallback``):
+
+* **Primary — channel C**, ``api.deepseek.com`` direct. The vendor's own API.
+* **Fallback — channel A**, OpenRouter pinned to ``{"order": ["deepseek"],
+  "allow_fallbacks": false}`` on the dated id ``deepseek/deepseek-v4-flash-0731``.
+
+The stages themselves:
 
 * ``researcher_assemble`` — per-topic; failure drops that topic.
 * ``curator_topic_discovery`` — RUN-LEVEL; failure kills the whole day's run.
 * ``resolve_actor_aliases`` — per-topic; failure drops that topic.
 
-The pinned providers plus Agent's built-in transport retries are lines 1-3 of
-defence. This wrapper is line 4: if the primary *finally* fails — a transport/API
-error across all pinned providers after those retries, OR a final output that is
-not schema-valid — it makes **exactly one** fallback attempt on a different model
-and returns that instead.
+Agent's built-in transport retries are lines 1-2 of defence. This wrapper is
+line 3: if the primary *finally* fails — a transport/API error after those
+retries, OR a final output that is not schema-valid — it makes **exactly one**
+attempt on the fallback channel and returns that instead.
 
-Motivation: on 2026-07-14 the primary's fp8 providers were transiently 429-rate-
-limited and routing fell to streamlake, which returned a non-retryable 400 (it
-had silently dropped strict-json_schema support). That single bad-provider hit
-was fatal and dropped tp-2026-07-14-002 — the stage had no fallback. (streamlake
-has since been removed from the pin; this wrapper is the second, independent line
-of insurance against a *total* deepseek-flash outage — all pinned providers
-rate-limited at once. Especially load-bearing for the run-level
-curator_topic_discovery, whose failure ends the whole run.)
+Why a same-model channel fallback replaced the old cross-model one. Until
+2026-08-24 the net was ``google/gemini-3-flash-preview``, chosen for ecosystem
+independence: a DeepSeek-wide rate-limit event could not take it down with the
+primary. That independence was real, and it was bought by serving a *different
+model's* output into the pipeline whenever it fired — on 2026-07-14 it did, for
+three Topic Packages. Since 0731 is reachable by two unrelated routes, the
+fallback can now preserve both the model and the operating point. What it gives
+up is vendor independence: if DeepSeek is down at the account level rather than
+at one endpoint, both channels are down. That is a deliberate trade, recorded
+here so it is not rediscovered as a surprise. (Channel B, Ollama Cloud, is the
+documented last resort and is NOT in the chain — T2b/T2c found a 65 536 output
+ceiling with 6 % margin on the largest real assemble call, no server-side JSON
+enforcement at all, and a 6.2 % empty-body rate at medium.)
 
-Fallback model: ``google/gemini-3-flash-preview`` — the PRE-migration incumbent
-for all three stages (they *were* Gemini-3-Flash until 2026-05-18/19, Wave-1/2
-sweeps; deepseek-v4-flash won on cost, not quality — docs/AGENT-IO-MAP.md,
-docs/cost-efficiency-sweep-2026-05-18/). Deliberately a different provider
-ecosystem (Google) from DeepSeek-on-OpenRouter, so a broad DeepSeek rate-limit
-event (the 2026-07-14 trigger) does not take the fallback down with the primary.
-Cheap, and re-verified 2026-07-14 to honor strict json_schema against all three
-live schemas (RESEARCHER_ASSEMBLE / CURATOR_TOPIC_DISCOVERY / RESOLVE_ACTOR_
-ALIASES, via the production checker). Each stage's fallback Agent runs at that
-stage's original Gemini operating point and carries NO fp8 provider_routing (the
-pin is DeepSeek-specific); wiring in ``scripts/run.py``.
+**Neither channel offers strict json_schema decoding**, which makes this
+wrapper's schema check load-bearing rather than belt-and-braces. Both agents
+run ``structured_output_mode="json_object"``; conformance is judged HERE,
+against the *live* ``output_schema`` object (passed in) via the checker shared
+with the qa_analyze wrapper
+(:func:`src.qa_fallback.qa_output_is_schema_valid`), so the trigger can never
+drift from the real production schema. An empty or unparseable body yields
+``structured=None``, which that checker treats as invalid — so a runaway that
+produces no content falls back rather than passing an empty payload downstream.
 
 Invariants (identical to the writer/qa/editor fallbacks):
 
@@ -44,18 +51,15 @@ Invariants (identical to the writer/qa/editor fallbacks):
   marker — ``model_used`` + ``provider_used`` + ``<stage>_fallback_used`` — into
   the per-stage ``run_stage_log.jsonl`` row (the runner's ``_collect_agent_metrics``
   reads the marker attributes this wrapper exposes, keyed by the per-instance
-  ``fallback_marker_key``). No code path silently substitutes a model.
+  ``fallback_marker_key``). ``provider_used`` names the channel: ``deepseek_direct``
+  for C, the OpenRouter-reported upstream for A. No code path silently
+  substitutes a model.
 * **Minimal mechanism.** A thin wrapper over two ordinary :class:`~src.agent.Agent`
   instances — no generic multi-model framework. It duck-types the members the
   agent-wrapper stages and the runner touch (``run``, ``name``, ``model``,
   ``temperature``, ``max_tokens``, ``reasoning``, ``last_cost_usd``,
   ``last_tokens``, ``reset_call_metrics``) so it drops in wherever the primary
   ``Agent`` was consumed, in both pipeline variants.
-
-Schema validity is judged against the *live* ``output_schema`` object (passed in)
-via the generic checker shared with the qa_analyze wrapper
-(:func:`src.qa_fallback.qa_output_is_schema_valid`), so the trigger can never
-drift from the real production schema.
 """
 
 from __future__ import annotations
@@ -70,10 +74,10 @@ logger = logging.getLogger(__name__)
 
 
 class FlashStageWithFallback:
-    """Primary DeepSeek-V4-Flash agent with a one-shot gemini-3-flash-preview
-    model fallback, parameterized by stage ``name`` + ``fallback_marker_key``.
+    """Primary channel-C agent with a one-shot channel-A fallback on the same
+    model, parameterized by stage ``name`` + ``fallback_marker_key``.
 
-    Drop-in for the ``agents[...]`` entry of any deepseek-v4-flash schema-bearing
+    Drop-in for the ``agents[...]`` entry of any v4-flash-0731 schema-bearing
     stage: the agent-wrapper stages only call ``.run(...)`` and read the
     duck-typed introspection members (``name`` / ``model`` / ``temperature`` /
     ``max_tokens`` / ``reasoning``); the runner's metric collector reads
@@ -131,15 +135,16 @@ class FlashStageWithFallback:
         self.last_tokens += result.tokens_used
 
     async def run(self, *args: Any, **kwargs: Any) -> AgentResult:
-        """Run the primary; fall back to gemini-3-flash-preview exactly once on
+        """Run the primary; fall back to the other channel exactly once on
         final failure.
 
-        Final failure = the primary raised after its built-in retries (transport
-        failure across all pinned providers, e.g. every fp8 provider 429-limited,
-        or a non-retryable 4xx) OR returned an output that is not schema-valid
-        (truncation / malformed). A transport failure on the *fallback* is
-        allowed to propagate — that is the loud terminal failure, not a silent
-        success.
+        Final failure = the primary raised after its built-in retries (a
+        transport failure or a non-retryable 4xx from api.deepseek.com) OR
+        returned an output that is not schema-valid — which, with no strict
+        decoding on either channel, covers malformed JSON, a truncated body at
+        the stage's ``max_tokens``, and an empty completion from a reasoning
+        runaway. A transport failure on the *fallback* is allowed to propagate
+        — that is the loud terminal failure, not a silent success.
         """
         failure_reason: str | None = None
         result: AgentResult | None = None
@@ -162,13 +167,15 @@ class FlashStageWithFallback:
             return result
 
         logger.warning(
-            "%s FALLBACK: primary %s failed — %s. Making exactly one fallback "
-            "attempt on %s. (This is the model fallback, not a silent "
-            "substitution.)",
+            "%s FALLBACK: primary %s (channel %s) failed — %s. Making exactly "
+            "one fallback attempt on %s (channel %s). (This is the channel "
+            "fallback, not a silent substitution.)",
             self.name,
             self.primary.model,
+            getattr(self.primary, "provider", "?"),
             failure_reason,
             self.fallback.model,
+            getattr(self.fallback, "provider", "?"),
         )
 
         fb = await self.fallback.run(*args, **kwargs)

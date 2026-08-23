@@ -64,77 +64,65 @@ DEEPSEEK_V4_PRO_FP8_ROUTING = {
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
 }
-DEEPSEEK_V4_FLASH_FP8_ROUTING = {
-    # REPAIRED 2026-08-23 (TASK-FLASH-PIN-REPAIR). The 2026-07-14 pin
-    # ["baidu","wandb","parasail","akashml"] had silently decayed to a
-    # 2-provider pin: wandb/fp8 and akashml/fp8 no longer appear on this
-    # model's endpoint list at all (T2 §1.4, re-confirmed against the
-    # endpoints API on 2026-08-23), and allow_fallbacks:false means a dead
-    # tag contributes nothing — it is not an error, just absence.
-    #
-    # Re-verified 2026-08-23 with one forced single-provider call per LIVE
-    # PRODUCTION SCHEMA (curator / assemble / resolve) on the REAL captured
-    # production inputs, at each stage's production operating point and at
-    # the max_tokens set below — not a toy {answer:int} probe. T2 §1.3 is the
-    # reason: akashml/fp8 passed the 2026-07-14 toy probe and then 404'd on
-    # every real input. All four below: 3/3 strict-schema-valid, plus a
-    # fourth call on the largest real researcher_assemble input (248 579
-    # prompt tokens) to close the context question the toy probe cannot.
-    #
-    # Order is reliability evidence, then cost/latency:
-    #   baidu/fp8     T2's only large-n real-input evidence for THIS model id
-    #                 (92% strict overall, 12/12 curator, 36/36 resolve),
-    #                 cheapest by 2.6x, fastest on both long stages. Its 34%
-    #                 strict rate is a -0731 defect, not an incumbent one.
-    #   parasail/fp8  retained from the 2026-07-14 pin, re-verified today.
-    #   alibaba/fp8   new; 4/4 today.
-    #   coreweave/fp8 new; 4/4 today; largest output ceiling of the four.
-    #
-    # Deliberately NOT pinned:
-    #   deepinfra/fp8   capable (T2: 36/36 on real incumbent calls; 3/3 here
-    #                   at <= 65 536) but its max output for THIS model id is
-    #                   65 536, so curator_topic_discovery's max_tokens leaves
-    #                   it filtered out of the route — probe-confirmed HTTP
-    #                   404 "No endpoints found" at 128 000 and strict-valid
-    #                   at 65 536. A per-stage pin split could use it on the
-    #                   two small stages; a single shared constant cannot.
-    #   siliconflow/fp8 does not advertise structured_outputs for this model
-    #                   id, so require_parameters:true filters it out — 404 on
-    #                   all three schemas. (It DOES advertise it for -0731,
-    #                   which is why T2 §6.1 lists it there.)
-    #   streamlake/fp8  passed all three schemas today, but was removed
-    #                   2026-07-14 for a hard 400 on strict json_schema. One
-    #                   clean sweep does not overturn a documented regression
-    #                   while four verified endpoints are available.
-    #   mancer/fp8      passed all three; excluded on cost (4.3x baidu's
-    #                   completion price) and lowest uptime of the set.
-    #   gmicloud, novita  no structured_outputs. All fp4/unreported-quant
-    #                   endpoints are excluded by construction.
-    "order": ["baidu/fp8", "parasail/fp8", "alibaba/fp8", "coreweave/fp8"],
+# --- v4-flash-0731 channel routing (TASK-FLASH-0731-SWAP) --------------------
+# DEEPSEEK_V4_FLASH_FP8_ROUTING is GONE. The three flash stages left fp8
+# entirely on 2026-08-24: they now run full precision on
+# `deepseek-v4-flash-0731`, channel C (api.deepseek.com direct) primary with
+# channel A (OpenRouter, pinned to the vendor's own endpoint) as the one-shot
+# fallback. The pro stages keep their own fp8 pin above; nothing else
+# referenced the flash constant, so it was deleted rather than left to rot.
+# Evidence: docs/evals/dsv4-0731/{T2,T2B,T2D}-REPORT.md.
+#
+# Channel A pin. Two deliberate departures from every other pin in this file:
+#   * NO `quantizations` filter. The DeepSeek endpoint reports quantization
+#     "unknown"; an fp8 (or any) filter excludes it and the call 404s with
+#     "No endpoints found" (T2b §1.1).
+#   * The agents carry `structured_output_mode="json_object"`. This endpoint
+#     declares no `structured_outputs`, so Agent's default strict-schema path
+#     would add `require_parameters: true` — which filters this very endpoint
+#     out of the route. Schema conformance is enforced locally instead, by
+#     FlashStageWithFallback.
+# `allow_fallbacks: false` keeps the fail-loud contract: this is the vendor's
+# own endpoint or nothing, never a third-party host of the same id.
+DEEPSEEK_NATIVE_ROUTING = {
+    "order": ["deepseek"],
     "allow_fallbacks": False,
-    "quantizations": ["fp8"],
 }
 
-# max_tokens for the three DeepSeek-V4-Flash stages (TASK-FLASH-PIN-REPAIR).
-# All three requested 160 000 until 2026-08-23, which is ABOVE Baidu's 131 072
-# output ceiling: OpenRouter clamps rather than erroring, so the value was
-# silently ineffective on the pin's first provider. Each stage now gets a value
-# that (a) every pinned provider accepts — min ceiling is Baidu's 131 072 — and
-# (b) is >= 2x the worst completion ever observed for THIS model id at THAT
-# stage's operating point (T2 §5, n = 6..55 real calls per row):
+# max_tokens for the three v4-flash-0731 stages (TASK-FLASH-0731-SWAP,
+# superseding the fp8-era table from TASK-FLASH-PIN-REPAIR). The old ceiling
+# arithmetic is gone with the pin: channel C's ceiling is 393 216 and channel
+# A's is 384 000, so no pinned provider constrains these values any more. What
+# remains is the >= 2x-worst-observed rule, measured on the SAME captured
+# production inputs at the SAME operating point (T2d Part B, n = 6..18 real
+# calls per row; T2b dsn-med for the channel-A column):
 #
-#   stage                    effort  worst observed  set to    headroom
-#   curator_topic_discovery  medium          61 366  128 000     2.09x
-#   researcher_assemble      none            18 853   40 000     2.12x
-#   resolve_actor_aliases    none               698    4 000     5.73x
+#   stage                    channel  effort  worst obs.  set to    headroom
+#   curator_topic_discovery  C        medium      27 504  128 000     4.65x
+#   researcher_assemble      C        low         61 573* 128 000     2.08x
+#   resolve_actor_aliases    C        low          6 719   16 000     2.38x
+#   curator (A fallback)     A        medium      38 949  128 000     3.29x
+#   assemble (A fallback)    A        medium      38 418  128 000     3.33x
+#   resolve  (A fallback)    A        medium       6 701   16 000     2.39x
 #
-# Tight per-stage caps are not just budget hygiene: the 2026-08-23 probes
-# caught a degenerate repetition runaway (one source emitted 127x, finish_
-# reason "length") on 1 of 6 parasail researcher_assemble calls. A runaway
-# produces no usable output at ANY ceiling, so the cap's job is to end it
-# quickly and loudly — the truncated JSON fails to parse and
-# FlashStageWithFallback fires the Gemini net. At 160 000 that same call would
-# have burned 4x the tokens and ~25 minutes of the daily run's wall clock.
+#   * assemble's worst is measured at `medium`, the higher of the two shadow
+#     arms, so 128 000 covers whichever effort the shadow phase selects.
+#
+# resolve shipped at 8 000 in the first draft of this change — the swap task's
+# specified value, and the one row that fell BELOW the 2x convention at 1.19x
+# over a 9-call worst of 6 719. Raised to 16 000 (2.38x) on review, which also
+# makes the primary and its channel-A fallback agree. The failure mode it
+# removes is cheap but real and self-inflicted: an overrun truncates, fails
+# local validation, and burns a fallback call rather than dropping the topic,
+# so the old value traded a fallback's cost and latency against tokens that
+# are only billed if generated. `resolve_actor_aliases_fallback_used` in
+# run_stage_log.jsonl remains the instrument if the tail turns out longer than
+# 9 calls could show.
+#
+# Tight caps remain worth having for a second reason, unchanged from the fp8
+# era: the 2026-08-23 probes caught a degenerate repetition runaway (one source
+# emitted 127x, finish_reason "length"). A runaway produces no usable output at
+# ANY ceiling, so the cap's job is to end it quickly and loudly.
 #
 # The values are set inline at each of the three registrations below.
 
@@ -203,34 +191,89 @@ def setup_logging():
     )
 
 
-def _gemini_flash_fallback(
+def _flash_0731_primary(
     *,
     name: str,
     system_prompt_path: str,
     instructions_path: str,
-    temperature: float,
     reasoning: str,
+    max_tokens: int,
     output_schema: dict,
-    max_tokens: int = 64000,
 ) -> Agent:
-    """Build the shared google/gemini-3-flash-preview fallback Agent for a
-    deepseek-v4-flash stage — the stage's PRE-migration incumbent, on a
-    different provider ecosystem (Google) so a broad DeepSeek rate-limit event
-    does not take it down with the primary. Re-verified 2026-07-14 to honor
-    strict json_schema on all three flash-stage schemas. Runs at the stage's
-    original Gemini operating point; NO fp8 provider_routing (that pin is
-    DeepSeek-specific). See src/flash_stage_fallback.py."""
+    """Channel C — the PRIMARY for a v4-flash-0731 stage: api.deepseek.com
+    direct (TASK-FLASH-0731-SWAP, owner decision on the T2d matrix).
+
+    Three things here are load-bearing and none of them are obvious:
+
+    * ``model="deepseek-v4-flash"`` is not a typo for the dated id. The vendor
+      exposes exactly one flash id and 400s on every dated form; it serves the
+      0731 build by alias. That alias is unpinnable, which is why Agent logs
+      the SERVER-ECHOED model id on every call (T2d §1.1).
+    * ``reasoning`` is a plain string and reaches the wire as
+      ``reasoning_effort``. The OpenRouter ``{"effort": ...}`` object is
+      *accepted and ignored* by this API, so the wrong shape fails silently
+      into the default; Agent raises on a dict for this provider rather than
+      let that happen (T2d §1.3).
+    * The effort levels are NOT interchangeable with channel A's. Measured
+      paired at an identical cap, C·medium spends 2.64x the reasoning of
+      A·medium on resolve, and **A·medium corresponds to C·low** (T2d §1.3).
+      Hence the fallbacks below all run `medium` while these primaries run
+      lower — that is parity, not a downgrade.
+
+    ``structured_output_mode`` is coerced to json_object by Agent for this
+    provider; schema conformance is enforced by FlashStageWithFallback."""
     return Agent(
         name=name,
-        model="google/gemini-3-flash-preview",
+        model="deepseek-v4-flash",
         system_prompt_path=system_prompt_path,
         instructions_path=instructions_path,
         tools=[],
-        temperature=temperature,
+        temperature=0.5,
         max_tokens=max_tokens,
-        provider="openrouter",
+        provider="deepseek_direct",
         reasoning=reasoning,
         output_schema=output_schema,
+        structured_output_mode="json_object",
+    )
+
+
+def _flash_0731_fallback(
+    *,
+    name: str,
+    system_prompt_path: str,
+    instructions_path: str,
+    max_tokens: int,
+    output_schema: dict,
+) -> Agent:
+    """Channel A — the one-shot FALLBACK for a v4-flash-0731 stage: OpenRouter
+    on the dated id, pinned to the vendor's own endpoint.
+
+    Same weights as the primary reached by a different route, which is the
+    point: a direct-API outage or rate-limit does not take this down with it,
+    and OpenRouter's dated id is the only *pinnable* handle on the 0731 build
+    that exists anywhere. It replaces the pre-2026-08-24
+    ``google/gemini-3-flash-preview`` net — a different model on a different
+    ecosystem, which bought ecosystem independence at the price of serving a
+    different model's output into the pipeline.
+
+    Runs at ``reasoning="medium"``, the T2b-calibrated operating point, which
+    is the channel-A equivalent of the primaries' lower settings (see
+    ``_flash_0731_primary``). ``structured_output_mode="json_object"`` is
+    mandatory, not stylistic: the strict-schema path would inject
+    ``require_parameters: true`` and 404 this endpoint out of its own route."""
+    return Agent(
+        name=name,
+        model="deepseek/deepseek-v4-flash-0731",
+        system_prompt_path=system_prompt_path,
+        instructions_path=instructions_path,
+        tools=[],
+        temperature=0.5,
+        max_tokens=max_tokens,
+        provider="openrouter",
+        reasoning="medium",
+        provider_routing=DEEPSEEK_NATIVE_ROUTING,
+        output_schema=output_schema,
+        structured_output_mode="json_object",
     )
 
 
@@ -275,37 +318,36 @@ def create_agents() -> dict[str, Agent]:
         # the only Curator-side LLM in the new architecture; the
         # gravitational-assign and assemble stages are deterministic
         # Python and need no agent.
-        # DeepSeek V4 Flash per Wave-2 + curator-variance smoke 2026-05-19 — see
-        # docs/curator-variance-2026-05-19/curator-variance-report.md.
-        # Variant dskflash-t05-rmedium: zero emission-count variance
-        # (25.0 ± 0.0), zero duplicates across 3 reps. max_tokens was the
-        # Wave-2 uniform 160k until 2026-08-23; now 128k, derived per stage
-        # (TASK-FLASH-PIN-REPAIR — see the note above the routing pin).
+        # v4-flash-0731 since 2026-08-24 (TASK-FLASH-0731-SWAP); before that,
+        # deepseek-v4-flash fp8-pinned since the Wave-2 curator-variance smoke
+        # (docs/curator-variance-2026-05-19/). Channel C primary, channel A
+        # fallback — see _flash_0731_primary / _flash_0731_fallback.
+        #
+        # `medium` on BOTH channels here, unlike the other two stages: T2d §1.3
+        # found the effort mismatch is stage-dependent and the curator's two
+        # mediums already agree (C 23 110 vs A 25 388 reasoning tokens), so no
+        # translation is needed. `none` is not an option at all — T2b §2.2
+        # scored it BELOW control on both channels through wholesale topic
+        # repetition (29 and 24 duplicate titles, against 0 at medium).
+        #
         # curator_topic_discovery is RUN-LEVEL: a failure kills the whole day's
-        # run (no per-topic isolation), so the flash fallback matters most here.
-        # Same wrapper as researcher_assemble; gemini-3-flash-preview is this
-        # stage's pre-migration incumbent too. Loud marker
-        # curator_topic_discovery_fallback_used. See src/flash_stage_fallback.py.
+        # run (no per-topic isolation), so the fallback matters most here. Loud
+        # marker curator_topic_discovery_fallback_used. See
+        # src/flash_stage_fallback.py.
         "curator_topic_discovery": FlashStageWithFallback(
-            primary=Agent(
+            primary=_flash_0731_primary(
                 name="curator_topic_discovery",
-                model="deepseek/deepseek-v4-flash",
                 system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
                 instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
-                tools=[],
-                temperature=0.5,
-                provider="openrouter",
                 reasoning="medium",
-                max_tokens=128000,   # 2.09x worst observed; see the pin note
-                provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
+                max_tokens=128000,   # 4.65x worst observed; see the note above
                 output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
             ),
-            fallback=_gemini_flash_fallback(
+            fallback=_flash_0731_fallback(
                 name="curator_topic_discovery_fallback",
                 system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
                 instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
-                temperature=1.0,       # original Gemini operating point
-                reasoning="none",
+                max_tokens=128000,   # 3.29x worst observed on channel A
                 output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
             ),
             output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
@@ -397,71 +439,83 @@ def create_agents() -> dict[str, Agent]:
             reasoning="none",
             output_schema=RESEARCHER_PLAN_SCHEMA,
         ),
-        # Researcher Assemble: DeepSeek V4 Flash per Wave-1 Sweep #3 — see docs/cost-efficiency-sweep-2026-05-18/researcher_assemble-report.md.
-        # max_tokens raised from 16k → 160k 2026-05-19 to align with Wave-2 uniform DeepSeek
-        # setting; retuned to 40k 2026-08-23 (TASK-FLASH-PIN-REPAIR — see the note above the pin).
-        # researcher_assemble is a no-fallback schema-bearing stage (a topic
-        # dies if it fails). Wrapped in FlashStageWithFallback: primary
-        # DeepSeek-V4-Flash (fp8-pinned), and exactly one gemini-3-flash-preview
-        # fallback (the pre-migration incumbent) if Flash finally fails. Loud,
-        # never silent (researcher_assemble_fallback_used in run_stage_log.jsonl).
-        # See src/flash_stage_fallback.py (TASK-RESEARCHER-ASSEMBLE-FALLBACK).
+        # v4-flash-0731 since 2026-08-24 (TASK-FLASH-0731-SWAP); DeepSeek V4
+        # Flash before that, per Wave-1 Sweep #3
+        # (docs/cost-efficiency-sweep-2026-05-18/researcher_assemble-report.md).
+        # This is the stage the eval programme recommended swapping FIRST:
+        # 18/18 judged better than control on channel A · medium, +0.750 per
+        # pair (T2b §2.2).
+        #
+        # Effort `low`, not `medium`: T2d §1.3 measured C·medium at 1.51x
+        # A·medium's reasoning here, so `low` is the parity setting and the
+        # cheaper of the two. That mapping was calibrated on `resolve`, not on
+        # this stage, so the swap's shadow phase ran both arms on identical
+        # inputs (2026-08-23, 3 topics). Result: `low` was clean 3/3 at
+        # $0.1467; `medium` cost $0.1869 (+27%) and produced a schema-invalid
+        # body on 1 of 3 topics, which burned a channel-A fallback. `medium`
+        # did extract ~9% more canonical actors after dedup — but it sits
+        # ABOVE the operating point any quality eval validated, and it failed
+        # once. Lower effort wins, and here it does not even need the
+        # tie-break.
+        #
+        # A topic dies if this stage fails, so the one-shot channel-A fallback
+        # is the difference between a thin day and a missing package. Loud,
+        # never silent (researcher_assemble_fallback_used in
+        # run_stage_log.jsonl). See src/flash_stage_fallback.py.
         "researcher_assemble": FlashStageWithFallback(
-            primary=Agent(
+            primary=_flash_0731_primary(
                 name="researcher_assemble",
-                model="deepseek/deepseek-v4-flash",
                 system_prompt_path=str(agents_dir / "researcher" / "ASSEMBLE-SYSTEM.md"),
                 instructions_path=str(agents_dir / "researcher" / "ASSEMBLE-INSTRUCTIONS.md"),
-                tools=[],
-                temperature=0.5,
-                max_tokens=40000,    # 2.12x worst observed; see the pin note
-                provider="openrouter",
-                reasoning="none",
-                provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
+                reasoning="low",
+                max_tokens=128000,   # 2.08x worst observed; see the note above
                 output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
             ),
-            fallback=_gemini_flash_fallback(
+            fallback=_flash_0731_fallback(
                 name="researcher_assemble_fallback",
                 system_prompt_path=str(agents_dir / "researcher" / "ASSEMBLE-SYSTEM.md"),
                 instructions_path=str(agents_dir / "researcher" / "ASSEMBLE-INSTRUCTIONS.md"),
-                temperature=0.2,       # original Gemini operating point
-                reasoning="none",
+                max_tokens=128000,   # 3.33x worst observed on channel A
                 output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
             ),
             output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
             name="researcher_assemble",
             fallback_marker_key="researcher_assemble_fallback_used",
         ),
-        # DeepSeek V4 Flash per Wave-2 Sweep #2 (2026-05-18) — see
-        # docs/cost-efficiency-sweep-wave-2-2026-05-18/resolve_actor_aliases-report.md.
-        # Matches/exceeds baseline on alias pairs, 0 uncovered input IDs across
-        # 3 topics, 10-15× cheaper. reasoning lowered from medium → none
-        # (Wave-2 showed extraction-class doesn't benefit from reasoning on
-        # this role). max_tokens was the Wave-2 uniform 160k until 2026-08-23;
-        # now 4k (TASK-FLASH-PIN-REPAIR — see the note above the routing pin).
-        # resolve_actor_aliases — per-topic; same flash fallback wrapper.
-        # gemini-3-flash-preview is this stage's pre-migration incumbent. Loud
-        # marker resolve_actor_aliases_fallback_used. See src/flash_stage_fallback.py.
+        # v4-flash-0731 since 2026-08-24 (TASK-FLASH-0731-SWAP); DeepSeek V4
+        # Flash before that, per Wave-2 Sweep #2
+        # (docs/cost-efficiency-sweep-wave-2-2026-05-18/resolve_actor_aliases-report.md).
+        #
+        # Effort `low`, up from `none`. Wave-2 concluded this extraction-class
+        # role gained nothing from reasoning, but that was measured on the old
+        # weights: on 0731, T2b §2.2 scored medium at +1.150 per pair against
+        # control while `none` managed +0.500, and reproducibility roughly
+        # doubled (Jaccard 0.47 -> 0.84). `low` on channel C is the calibrated
+        # equivalent of channel A's `medium` — the pairing is measured on THIS
+        # stage, 9/9 inputs, ratio 1.10 (T2d §1.3).
+        #
+        # max_tokens 16 000 is 2.38x the observed worst, and the same value
+        # the channel-A fallback carries. It replaces a first-draft 8 000
+        # (1.19x) — see the note above the routing constant for why that was a
+        # fallback-burn risk rather than a data-loss one, and which counter to
+        # watch.
+        #
+        # Per-topic; loud marker resolve_actor_aliases_fallback_used. See
+        # src/flash_stage_fallback.py.
         "resolve_actor_aliases": FlashStageWithFallback(
-            primary=Agent(
+            primary=_flash_0731_primary(
                 name="resolve_actor_aliases",
-                model="deepseek/deepseek-v4-flash",
                 system_prompt_path=str(agents_dir / "resolve_actor_aliases" / "SYSTEM.md"),
                 instructions_path=str(agents_dir / "resolve_actor_aliases" / "INSTRUCTIONS.md"),
-                tools=[],
-                temperature=0.5,
-                max_tokens=4000,     # 5.73x worst observed; see the pin note
-                provider="openrouter",
-                reasoning="none",
-                provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
+                reasoning="low",
+                max_tokens=16000,    # 2.38x worst observed; see the note above
                 output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
             ),
-            fallback=_gemini_flash_fallback(
+            fallback=_flash_0731_fallback(
                 name="resolve_actor_aliases_fallback",
                 system_prompt_path=str(agents_dir / "resolve_actor_aliases" / "SYSTEM.md"),
                 instructions_path=str(agents_dir / "resolve_actor_aliases" / "INSTRUCTIONS.md"),
-                temperature=1.0,       # original Gemini operating point
-                reasoning="none",      # extraction-class: no reasoning benefit (Wave-2)
+                max_tokens=16000,    # 2.39x worst observed on channel A
                 output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
             ),
             output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
