@@ -56,7 +56,7 @@ Three findings decide any production swap, and only one of them is about the mod
 | **prompt truncation** | **none** | `prompt_eval_count` 86 233 / 248 190 / 18 736 vs OpenRouter's 86 253 / 248 210 / 18 756 on the same messages — a constant 20-token chat-template delta. **`num_ctx` changes nothing**; the cloud runtime sizes its own context |
 | max output | **65 536, enforced LOUDLY** — `HTTP 400 "max_tokens (65537) exceeds model's maximum output tokens (65536)"` | probe |
 | `format: "json"` | accepted, **not grammar-enforcing** — see §2.1 |
-| `format: <JSON Schema>` | accepted; returns valid JSON | probe |
+| `format: <JSON Schema>` | ~~accepted; returns valid JSON~~ — **the field is a no-op on this channel; see §6** | probe (toy; refuted at volume) |
 | reasoning | `think: false / true / "low" / "medium" / "high"` all accepted; `medium` produces 13 k-109 k characters of `thinking` on real inputs | probe + 144 replays |
 | reasoning-token accounting | **not reported separately** — `eval_count` is the total; only `thinking` character length is observable | all replays |
 | pricing | **flat-rate subscription; no per-token cost field in any response** | 144 calls, $0 marginal |
@@ -223,7 +223,7 @@ No implementation here — this is the list of what `src/agent.py` and its calle
 1. **`curator_topic_discovery` rests on 3 inputs / 6 judged pairs per candidate** — the stage is run-level. Directional only, as in T2.
 2. **Served revision is unconfirmed at response level on channel A** (§1.1). The alias is echoed; the dated build is not.
 3. **The `max_tokens` derivation for `medium` is ceiling-limited, not data-limited** (§1.4). Two of three stages sit below the 2× bar because 65 536 is all Ollama Cloud allows. The observed truncation rate (1/168) is reassuring but is not a bound.
-4. **`format: <JSON Schema>` on channel B was probed but not run as a main arm.** It works and it removed the fencing in a single real-input test; quantifying what it buys against `format: "json"` is a follow-up, and it may make channel B's repair dependency disappear.
+4. ~~**`format: <JSON Schema>` on channel B was probed but not run as a main arm.** It works and it removed the fencing in a single real-input test; quantifying what it buys against `format: "json"` is a follow-up, and it may make channel B's repair dependency disappear.~~ **Closed and refuted — see §6.** The A2d probe that suggested this proved nothing: A2e, with no `format` at all, returned the identical body.
 5. **The judge pool is uncalibrated in absolute terms** and pulls toward the candidate; every number is stated control-relative for that reason.
 6. **T2's control rows were measured on a different sample count per stage.** Deltas are computed per-pair, and the assemble comparison is additionally reported on T2's own 6-sample subset — but the controls themselves are second-hand, not re-measured.
 7. **Nothing was run through the real `PipelineRunner`.** Inputs are byte-identical and `resolve` post-processing was replayed, but no downstream stage consumed a candidate output. A swap needs a full `--hydrated` shadow day.
@@ -232,7 +232,90 @@ No implementation here — this is the list of what `src/agent.py` and its calle
 
 ---
 
-## 6. Artifacts
+## 6. Addendum — T2c: is `format: <JSON Schema>` grammar-enforcing on Ollama Cloud?
+
+**Verdict: no. `format` is a no-op on Ollama Cloud — every form of it, on every surface. The repair layer is REQUIRED, not a safety net.** §1.2's row and §5.4's hope are withdrawn; §3 items 2 and 3 stand unchanged.
+
+Scope: Ollama Cloud, `deepseek-v4-flash:0731`, `think: "medium"`, stages `curator_topic_discovery` + `resolve_actor_aliases`, same captured inputs, 4 reps. No quality judging — §2.2's verdicts stand. 48 replay calls + 28 probe calls = **76 calls, $0.00** of the 1.50 EUR cap (Ollama Cloud is flat-rate; nothing here is metered, so the cap could not bind and no OpenRouter call was made).
+
+### 6.1 Mechanism — where the field goes
+
+The daemon implements `format` correctly. Against a **local** model on the same daemon, the three settings produce three distinct, validated behaviours:
+
+| local model `glm-4.7-flash:latest` | raw JSON | conforms to `CURATOR_TOPIC_DISCOVERY_SCHEMA` |
+|---|---|---|
+| `format: <schema>` | yes | **yes** |
+| `format: "json"` | yes | **no** — `$.topics[0]: expected object, got str` |
+| no `format` | no (prose) | no |
+
+That is the positive control: schema mode enforces, `"json"` mode only forces JSON-ness, absence gives prose. Now the same daemon, the same prompt (which says nothing about JSON), against **cloud** models:
+
+| surface | model | `format` sent | result |
+|---|---|---|---|
+| daemon `/api/chat` | `deepseek-v4-flash:0731` | production curator schema | prose |
+| daemon `/api/chat` | `deepseek-v4-flash:0731` | schema minus `required`/`additionalProperties` | prose |
+| daemon `/api/chat` | `deepseek-v4-flash:0731` | schema, `think: false` | prose |
+| daemon `/api/chat` | `deepseek-v4-flash:0731` | `"json"` | prose |
+| daemon `/api/chat` | `deepseek-v4-flash:0731` | *omitted* | prose |
+| daemon `/api/chat` | `deepseek-v4-flash:0731` | **`{"type": "obbbject"}` — not a schema** | **HTTP 200**, prose |
+| daemon `/v1/chat/completions` | `deepseek-v4-flash:0731` | `response_format: json_schema, strict` | prose |
+| daemon `/v1/chat/completions` | `deepseek-v4-flash:0731` | `response_format: json_object` | prose |
+| **`https://ollama.com/api/chat`** (API key, no daemon) | `deepseek-v4-flash:0731` | schema / `"json"` / broken | prose ×3, HTTP 200 |
+| daemon `/api/chat` | `gemma4:31b-cloud` | schema / `"json"` | prose ×2 |
+
+Three things follow. The syntactically **invalid** `format` returning HTTP 200 proves the value is discarded rather than honoured-and-failing. Taking the daemon out of the path entirely — calling `ollama.com` directly with the API key — changes nothing, so this is **Ollama Cloud's behaviour, not the local proxy's**. And a second, unrelated cloud model behaves identically, so it is **not specific to 0731**.
+
+This also retro-explains §2.1: `oll-none`'s **0 % raw-JSON validity on the Curator** was never compatible with an honoured `format: "json"`. The JSON-ness that channel B did show came entirely from the production prompts.
+
+### 6.2 Volume — 48 calls on real inputs
+
+The `format: <schema>` arm differs from T2b's `oll-med` in exactly one request field, so `oll-med` is reused as the comparison rather than re-measured.
+
+| | curator `format:"json"` | curator `format:<schema>` | resolve `format:"json"` | resolve `format:<schema>` |
+|---|---:|---:|---:|---:|
+| n | 12 | 12 | 36 | 36 |
+| raw-JSON validity | 100.0 % | **75.0 %** | 91.7 % | 91.7 % |
+| post-repair usable | 100.0 % | 75.0 % | 97.2 % | 94.4 % |
+| repairs needed | 0 | 0 | 2 | 1 |
+| schema conformance | 100.0 % | 75.0 % | 97.2 % | 94.4 % |
+| **fenced bodies** | 0 | 0 | 2 | **1** |
+| truncated at 65 536 | 0 | 2 | 1 | 2 |
+| thinking chars p50 | 109 068 | 103 466 | 13 277 | 14 633 |
+| calls with zero thinking | 0 | 0 | 0 | 0 |
+| completion p50 / max | 33 691 / 48 679 | 32 018 / 65 536 | 3 645 / 65 536 | 4 022 / 65 536 |
+| latency p50 | 116.0 s | 109.3 s | 16.2 s | 15.4 s |
+| mean payload count | 30.08 | 30.0 | 8.74 | 8.21 |
+| Jaccard / count CV | 0.036 / 0.005 | 0.033 / 0.000 | 0.840 / 0.066 | 0.896 / 0.050 |
+
+**One line settles it: the `format: <schema>` arm emitted a markdown-fenced body** (`resolve_actor_aliases`, 2026-08-19-t1, rep 0, opening ` ```json `). A grammar-constrained decode cannot produce that character sequence. Neither can it produce an empty completion, which this arm did five times.
+
+Everything else in the table is noise between two configurations the server sees as identical. The apparent curator regression is three **empty bodies**, not malformed ones; excluding empties, the two arms are indistinguishable on stage compliance — every non-empty call returned exactly 30 topics but one `format:"json"` call that returned 31, which is also that arm's single breach of the 10-30 bound (1 vs 0 for `format:<schema>`), and neither arm produced a duplicate title.
+
+### 6.3 Reasoning is not suppressed — this is not the Morph failure
+
+T2b §1.5's lesson was Morph silently discarding reasoning. That does not happen here: **96 of 96 calls returned a non-empty `thinking` field**, and the medians move by −5 % (curator) and +10 % (resolve) between arms. Setting `format` neither turns reasoning off nor constrains it. Consistent with §6.1 — the field never reaches the model.
+
+### 6.4 What the volume run did surface: a runaway-reasoning failure mode
+
+The more consequential finding is unrelated to `format`. Pooling both arms — 96 Ollama-Cloud calls at `medium` on these two stages:
+
+- **6 calls (6.2 %) returned an empty body.** Five hit the 65 536 ceiling (`done_reason: "length"`); the sixth stopped on its own after 117 228 characters of thinking and emitted nothing at all.
+- Thinking volume separates the two populations by **11.5×**: median 181 357 characters on the empty calls against 15 771 on the healthy ones. This is a heavy tail, not a gradient — the model either answers promptly or disappears into reasoning.
+- The split between arms (5 of 48 vs 1 of 48) is not significant (Fisher two-sided **p = 0.204**), consistent with one underlying rate.
+- **Both stages are affected, but not evenly, and on `resolve` it is input-driven.** Curator: 3 of 24, spread across two of its three inputs. Resolve: 3 of 72 — and **all three land on the same input** (`2026-08-21-t1`: 3 of 8 reps across both arms, against 0 of 64 everywhere else). Some inputs put this model into a reasoning spiral; most never do.
+
+§5.3 called the 1/168 truncation rate "reassuring but not a bound". With 48 more calls the pooled rate on these two stages is 6.2 %, the mechanism is named, and the worst single input fails 37.5 % of the time. §1.4's ceiling problem is therefore worse than the T2b figure implied — and because the trigger is the input, a shadow day that happens to miss the pathological topics will under-report it.
+
+### 6.5 What this changes
+
+- **Nothing in §3.** Items 2 and 3 (local validation + repair as a first-class step) were written assuming no server-side enforcement on either channel. That assumption is now measured rather than provisional. No new framework delta.
+- **§3 item 3 hardens from "load-bearing" to "the only line of defence" on channel B.** There is no configuration of `format` that reduces it.
+- **A new §3 item, for any stage on channel B:** a runaway-reasoning guard. An empty body — whether it arrives as `done_reason: "length"` or as a clean `stop` — must be a loud, retryable stage error, not a parse failure that degrades into an empty payload. §4's existing preferences (channel A for `resolve`, no Curator swap yet) already sidestep this, so it blocks nothing today; it becomes a prerequisite the moment channel B is chosen for anything.
+- **No change to §2.2 or §4.** No judging was run, and the quality verdicts are untouched.
+
+---
+
+## 7. Artifacts
 
 | what | where |
 |---|---|
@@ -245,3 +328,7 @@ No implementation here — this is the list of what `src/agent.py` and its calle
 | analysis | `scratch/eval/t2b/analyze.py` → `analysis.json` |
 | blind judge packets, keymap, verdicts | `scratch/eval/t2b/judge/packets/`, `keymap.json`, `verdicts/`, `verdicts_scored.json` |
 | transport + repair policy used | `scratch/eval/t2b/t2b_lib.py` |
+| **T2c** replay + preflight calls | `scratch/eval/t2c/logs/calls.jsonl` — 52 calls, $0.00 |
+| **T2c** `format` diagnostics — 24 further calls, recorded per-probe rather than in the call log (they bypass the transport helper by design, to vary surface and host) | `scratch/eval/t2c/diag_format.json` (6), `diag_format2.json` (7), `diag_direct.json` (8), `diag_local_control.json` (3) |
+| **T2c** 48-call replay arm | `scratch/eval/t2c/runs/<stage>/<sample>.rN.json` |
+| **T2c** analysis (metric code imported from T2b's) | `scratch/eval/t2c/analyze_c.py` → `analysis_c.json` |
