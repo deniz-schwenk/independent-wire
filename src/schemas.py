@@ -190,12 +190,26 @@ RESEARCHER_ASSEMBLE_SCHEMA = {
             "type": "array",
             "items": {"type": "string"},
         },
+        # Optional, and never consumed. ASSEMBLE-INSTRUCTIONS.md asks for
+        # "a single JSON object with two top-level fields" and never names
+        # this one; ResearcherAssembleStage builds its dossier from
+        # ``sources`` + ``preliminary_divergences`` only and documents
+        # dropping the key silently; ``merge_sources`` takes coverage_gaps
+        # solely from ``hydration_pre_dossier`` (HydrationPhase2 is the
+        # single source of truth since 2026-05-21). It stayed in
+        # ``required`` until 2026-08-23, which meant provider-side strict
+        # decoding force-filled a key nobody asked for and nobody read —
+        # a coupling that only held while every route enforced the schema
+        # (T2b, docs/evals/dsv4-0731/T2B-REPORT.md). The property is kept
+        # so both shapes validate: outputs that follow the prompt (no key)
+        # and the strict-decoded outputs already on disk (key present,
+        # usually empty).
         "coverage_gaps": {
             "type": "array",
             "items": {"type": "string"},
         },
     },
-    "required": ["sources", "preliminary_divergences", "coverage_gaps"],
+    "required": ["sources", "preliminary_divergences"],
     "additionalProperties": False,
 }
 

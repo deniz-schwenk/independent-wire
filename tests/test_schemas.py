@@ -29,6 +29,7 @@ from src.schemas import (
     CONSOLIDATOR_SCHEMA,
     HYDRATION_PHASE1_SCHEMA,
     HYDRATION_PHASE2_SCHEMA,
+    RESEARCHER_ASSEMBLE_SCHEMA,
 )
 
 
@@ -331,3 +332,109 @@ def test_bias_schema_rejects_non_boolean_finding_valid():
     ])
     with pytest.raises(SchemaError):
         _validate(payload, BIAS_DETECTOR_SCHEMA)
+
+
+# -- RESEARCHER_ASSEMBLE_SCHEMA ---------------------------------------------
+#
+# TASK-ASSEMBLE-SCHEMA-FIX. ``coverage_gaps`` was in ``required`` while
+# agents/researcher/ASSEMBLE-INSTRUCTIONS.md asks for "a single JSON object
+# with two top-level fields" and never names it, and
+# ResearcherAssembleStage drops the key on arrival. Production only held
+# together because provider-side strict decoding force-filled it. These
+# tests pin both shapes as valid so the contract no longer depends on who
+# decodes it.
+#
+# The payload below is a real captured researcher_assemble output
+# (scratch/eval/t2b/partB/runs/dsn-med/researcher_assemble/
+# 2026-08-19-t0.r0.json), trimmed to one source and one divergence.
+
+
+def _assemble_payload(**extra):
+    payload = {
+        "sources": [
+            {
+                "url": (
+                    "https://apnews.com/article/syria-israel-turkey-airstrikes-"
+                    "idlib-3a0e758c87ded0f26ed71b4a92db6816"
+                ),
+                "title": (
+                    "Israel targets air base in northwest Syria to block "
+                    "Turkish troops"
+                ),
+                "outlet": "AP News",
+                "language": "en",
+                "country": "United States",
+                "summary": (
+                    "Baseline factual account of the strike and Israel's "
+                    "stated purpose, quoting Syrian Foreign Minister Asaad "
+                    "al-Shibani's condemnation."
+                ),
+                "actors_quoted": [
+                    {
+                        "name": "Asaad al-Shibani",
+                        "role": "Syrian Foreign Minister",
+                        "type": "government",
+                        "position": (
+                            "Condemns the Israeli strike as unjustified "
+                            "provocation and a violation of Syrian "
+                            "sovereignty."
+                        ),
+                        "verbatim_quote": (
+                            "an unjustified provocation, a violation of "
+                            "Syria's sovereignty"
+                        ),
+                    },
+                ],
+            },
+        ],
+        "preliminary_divergences": [
+            "Western and Arabic media emphasise the unusual US rebuke of "
+            "Israel, while Israeli and Russian-language outlets focus on "
+            "Syria's accusations and the security status quo argument.",
+        ],
+    }
+    payload.update(extra)
+    return payload
+
+
+def test_assemble_schema_validates_output_without_coverage_gaps():
+    """The shape the prompt actually asks for — two top-level fields."""
+    _validate(_assemble_payload(), RESEARCHER_ASSEMBLE_SCHEMA)
+
+
+def test_assemble_schema_still_validates_strict_decoded_output():
+    """Every assemble output on disk was strict-decoded and carries the
+    key (almost always empty). Keeping the property means those stay
+    valid — the change is a relaxation, not a re-shaping."""
+    _validate(
+        _assemble_payload(coverage_gaps=[]), RESEARCHER_ASSEMBLE_SCHEMA
+    )
+    _validate(
+        _assemble_payload(coverage_gaps=["No civil-society voices"]),
+        RESEARCHER_ASSEMBLE_SCHEMA,
+    )
+
+
+def test_assemble_schema_coverage_gaps_is_not_required():
+    """Guard against a future re-tightening: the key's absence is the
+    contract, not an oversight."""
+    assert "coverage_gaps" not in RESEARCHER_ASSEMBLE_SCHEMA["required"]
+    assert "coverage_gaps" in RESEARCHER_ASSEMBLE_SCHEMA["properties"]
+
+
+def test_assemble_schema_still_requires_the_two_real_fields():
+    for missing in ("sources", "preliminary_divergences"):
+        payload = _assemble_payload()
+        del payload[missing]
+        with pytest.raises(SchemaError):
+            _validate(payload, RESEARCHER_ASSEMBLE_SCHEMA)
+
+
+def test_assemble_schema_still_rejects_unknown_top_level_key():
+    """additionalProperties stays false — relaxing one key is not an
+    invitation for undeclared ones."""
+    with pytest.raises(SchemaError):
+        _validate(
+            _assemble_payload(coverage_summary=["x"]),
+            RESEARCHER_ASSEMBLE_SCHEMA,
+        )

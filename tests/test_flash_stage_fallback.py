@@ -140,7 +140,7 @@ async def test_fallback_on_transport_failure(caplog):
     "bad_structured",
     [
         None,                                                          # unparseable / truncated to nothing
-        {"sources": [], "preliminary_divergences": []},                # missing required coverage_gaps
+        {"sources": []},                                               # missing required preliminary_divergences
         {**VALID_OUTPUT, "extra": 1},                                  # additionalProperties: false
         {"sources": [{"url": "x"}], "preliminary_divergences": [], "coverage_gaps": []},  # source item missing required fields
     ],
@@ -166,6 +166,38 @@ async def test_fallback_on_schema_invalid_output(bad_structured, caplog):
     # primary DID return (not raised), so both attempts are accounted
     assert w.last_cost_usd == pytest.approx(0.05) and w.last_tokens == 160900
     assert "not schema-valid" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_no_fallback_when_coverage_gaps_absent(caplog):
+    """TASK-ASSEMBLE-SCHEMA-FIX. The assemble prompt asks for two
+    top-level fields and never names ``coverage_gaps``; the stage drops
+    the key on arrival. This wrapper validates the primary's output
+    against RESEARCHER_ASSEMBLE_SCHEMA locally, so while the key was in
+    ``required`` a fully prompt-compliant dossier read as schema-invalid
+    and burned a Gemini fallback call. It only never happened in
+    production because provider-side strict decoding force-filled the
+    key first (T2b, docs/evals/dsv4-0731/T2B-REPORT.md). The
+    prompt-shaped output must be accepted on the primary.
+    """
+    prompt_shaped = {"sources": [], "preliminary_divergences": []}
+    primary = _FakeAgent(
+        "deepseek/deepseek-v4-flash",
+        result=_result(
+            "deepseek/deepseek-v4-flash", prompt_shaped,
+            cost=0.01, tokens=500, provider="Baidu",
+        ),
+    )
+    fallback = _FakeAgent("google/gemini-3-flash-preview")
+    w = _wrap(primary, fallback)
+
+    with caplog.at_level(logging.WARNING, logger="src.flash_stage_fallback"):
+        res = await w.run("msg", context={})
+
+    assert res is primary._result
+    assert fallback.run_calls == 0
+    assert w.last_fallback_used is False
+    assert "not schema-valid" not in caplog.text
 
 
 @pytest.mark.asyncio
