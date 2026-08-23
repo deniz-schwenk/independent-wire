@@ -65,21 +65,78 @@ DEEPSEEK_V4_PRO_FP8_ROUTING = {
     "quantizations": ["fp8"],
 }
 DEEPSEEK_V4_FLASH_FP8_ROUTING = {
-    # streamlake/fp8 REMOVED 2026-07-14. It regressed since the 2026-07-02
-    # verification (where it PASSED) and now rejects strict json_schema —
-    # "Model 'deepseek/deepseek-v4-flash' does not support 'json_schema'
-    # response format. Supported formats: json_object" (HTTP 400, non-
-    # retryable). When baidu/wandb were transiently 429-rate-limited, routing
-    # fell to streamlake and the 400 dropped tp-2026-07-14-002 at
-    # researcher_assemble. Re-verified 2026-07-14 with forced single-provider
-    # strict-schema probes ({answer:int}, require_parameters:true): baidu,
-    # wandb, parasail, akashml all PASS; streamlake INCAPABLE (400 with AND
-    # without require_parameters). Order below is the 4 still-verified fp8
-    # endpoints (>= the 3-provider robustness bar).
-    "order": ["baidu/fp8", "wandb/fp8", "parasail/fp8", "akashml/fp8"],
+    # REPAIRED 2026-08-23 (TASK-FLASH-PIN-REPAIR). The 2026-07-14 pin
+    # ["baidu","wandb","parasail","akashml"] had silently decayed to a
+    # 2-provider pin: wandb/fp8 and akashml/fp8 no longer appear on this
+    # model's endpoint list at all (T2 §1.4, re-confirmed against the
+    # endpoints API on 2026-08-23), and allow_fallbacks:false means a dead
+    # tag contributes nothing — it is not an error, just absence.
+    #
+    # Re-verified 2026-08-23 with one forced single-provider call per LIVE
+    # PRODUCTION SCHEMA (curator / assemble / resolve) on the REAL captured
+    # production inputs, at each stage's production operating point and at
+    # the max_tokens set below — not a toy {answer:int} probe. T2 §1.3 is the
+    # reason: akashml/fp8 passed the 2026-07-14 toy probe and then 404'd on
+    # every real input. All four below: 3/3 strict-schema-valid, plus a
+    # fourth call on the largest real researcher_assemble input (248 579
+    # prompt tokens) to close the context question the toy probe cannot.
+    #
+    # Order is reliability evidence, then cost/latency:
+    #   baidu/fp8     T2's only large-n real-input evidence for THIS model id
+    #                 (92% strict overall, 12/12 curator, 36/36 resolve),
+    #                 cheapest by 2.6x, fastest on both long stages. Its 34%
+    #                 strict rate is a -0731 defect, not an incumbent one.
+    #   parasail/fp8  retained from the 2026-07-14 pin, re-verified today.
+    #   alibaba/fp8   new; 4/4 today.
+    #   coreweave/fp8 new; 4/4 today; largest output ceiling of the four.
+    #
+    # Deliberately NOT pinned:
+    #   deepinfra/fp8   capable (T2: 36/36 on real incumbent calls; 3/3 here
+    #                   at <= 65 536) but its max output for THIS model id is
+    #                   65 536, so curator_topic_discovery's max_tokens leaves
+    #                   it filtered out of the route — probe-confirmed HTTP
+    #                   404 "No endpoints found" at 128 000 and strict-valid
+    #                   at 65 536. A per-stage pin split could use it on the
+    #                   two small stages; a single shared constant cannot.
+    #   siliconflow/fp8 does not advertise structured_outputs for this model
+    #                   id, so require_parameters:true filters it out — 404 on
+    #                   all three schemas. (It DOES advertise it for -0731,
+    #                   which is why T2 §6.1 lists it there.)
+    #   streamlake/fp8  passed all three schemas today, but was removed
+    #                   2026-07-14 for a hard 400 on strict json_schema. One
+    #                   clean sweep does not overturn a documented regression
+    #                   while four verified endpoints are available.
+    #   mancer/fp8      passed all three; excluded on cost (4.3x baidu's
+    #                   completion price) and lowest uptime of the set.
+    #   gmicloud, novita  no structured_outputs. All fp4/unreported-quant
+    #                   endpoints are excluded by construction.
+    "order": ["baidu/fp8", "parasail/fp8", "alibaba/fp8", "coreweave/fp8"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
 }
+
+# max_tokens for the three DeepSeek-V4-Flash stages (TASK-FLASH-PIN-REPAIR).
+# All three requested 160 000 until 2026-08-23, which is ABOVE Baidu's 131 072
+# output ceiling: OpenRouter clamps rather than erroring, so the value was
+# silently ineffective on the pin's first provider. Each stage now gets a value
+# that (a) every pinned provider accepts — min ceiling is Baidu's 131 072 — and
+# (b) is >= 2x the worst completion ever observed for THIS model id at THAT
+# stage's operating point (T2 §5, n = 6..55 real calls per row):
+#
+#   stage                    effort  worst observed  set to    headroom
+#   curator_topic_discovery  medium          61 366  128 000     2.09x
+#   researcher_assemble      none            18 853   40 000     2.12x
+#   resolve_actor_aliases    none               698    4 000     5.73x
+#
+# Tight per-stage caps are not just budget hygiene: the 2026-08-23 probes
+# caught a degenerate repetition runaway (one source emitted 127x, finish_
+# reason "length") on 1 of 6 parasail researcher_assemble calls. A runaway
+# produces no usable output at ANY ceiling, so the cap's job is to end it
+# quickly and loudly — the truncated JSON fails to parse and
+# FlashStageWithFallback fires the Gemini net. At 160 000 that same call would
+# have burned 4x the tokens and ~25 minutes of the daily run's wall clock.
+#
+# The values are set inline at each of the three registrations below.
 
 # --- GLM-5.2 fp8 pin for qa_analyze (TASK-QA-SWAP-GLM) ------------------------
 # The QA shadow eval (docs/QA-STAGE-MODEL-EVAL-SHADOW-BACKFILL.md v2) made
@@ -221,8 +278,9 @@ def create_agents() -> dict[str, Agent]:
         # DeepSeek V4 Flash per Wave-2 + curator-variance smoke 2026-05-19 — see
         # docs/curator-variance-2026-05-19/curator-variance-report.md.
         # Variant dskflash-t05-rmedium: zero emission-count variance
-        # (25.0 ± 0.0), zero duplicates across 3 reps. max_tokens=160k per
-        # architect's Wave-2 DeepSeek uniform setting.
+        # (25.0 ± 0.0), zero duplicates across 3 reps. max_tokens was the
+        # Wave-2 uniform 160k until 2026-08-23; now 128k, derived per stage
+        # (TASK-FLASH-PIN-REPAIR — see the note above the routing pin).
         # curator_topic_discovery is RUN-LEVEL: a failure kills the whole day's
         # run (no per-topic isolation), so the flash fallback matters most here.
         # Same wrapper as researcher_assemble; gemini-3-flash-preview is this
@@ -238,7 +296,7 @@ def create_agents() -> dict[str, Agent]:
                 temperature=0.5,
                 provider="openrouter",
                 reasoning="medium",
-                max_tokens=160000,
+                max_tokens=128000,   # 2.09x worst observed; see the pin note
                 provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
                 output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
             ),
@@ -340,7 +398,8 @@ def create_agents() -> dict[str, Agent]:
             output_schema=RESEARCHER_PLAN_SCHEMA,
         ),
         # Researcher Assemble: DeepSeek V4 Flash per Wave-1 Sweep #3 — see docs/cost-efficiency-sweep-2026-05-18/researcher_assemble-report.md.
-        # max_tokens raised from 16k → 160k 2026-05-19 to align with Wave-2 uniform DeepSeek setting.
+        # max_tokens raised from 16k → 160k 2026-05-19 to align with Wave-2 uniform DeepSeek
+        # setting; retuned to 40k 2026-08-23 (TASK-FLASH-PIN-REPAIR — see the note above the pin).
         # researcher_assemble is a no-fallback schema-bearing stage (a topic
         # dies if it fails). Wrapped in FlashStageWithFallback: primary
         # DeepSeek-V4-Flash (fp8-pinned), and exactly one gemini-3-flash-preview
@@ -355,7 +414,7 @@ def create_agents() -> dict[str, Agent]:
                 instructions_path=str(agents_dir / "researcher" / "ASSEMBLE-INSTRUCTIONS.md"),
                 tools=[],
                 temperature=0.5,
-                max_tokens=160000,
+                max_tokens=40000,    # 2.12x worst observed; see the pin note
                 provider="openrouter",
                 reasoning="none",
                 provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,
@@ -378,8 +437,8 @@ def create_agents() -> dict[str, Agent]:
         # Matches/exceeds baseline on alias pairs, 0 uncovered input IDs across
         # 3 topics, 10-15× cheaper. reasoning lowered from medium → none
         # (Wave-2 showed extraction-class doesn't benefit from reasoning on
-        # this role). max_tokens=160k per architect's Wave-2 DeepSeek uniform
-        # setting.
+        # this role). max_tokens was the Wave-2 uniform 160k until 2026-08-23;
+        # now 4k (TASK-FLASH-PIN-REPAIR — see the note above the routing pin).
         # resolve_actor_aliases — per-topic; same flash fallback wrapper.
         # gemini-3-flash-preview is this stage's pre-migration incumbent. Loud
         # marker resolve_actor_aliases_fallback_used. See src/flash_stage_fallback.py.
@@ -391,7 +450,7 @@ def create_agents() -> dict[str, Agent]:
                 instructions_path=str(agents_dir / "resolve_actor_aliases" / "INSTRUCTIONS.md"),
                 tools=[],
                 temperature=0.5,
-                max_tokens=160000,
+                max_tokens=4000,     # 5.73x worst observed; see the pin note
                 provider="openrouter",
                 reasoning="none",
                 provider_routing=DEEPSEEK_V4_FLASH_FP8_ROUTING,

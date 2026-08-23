@@ -134,8 +134,15 @@ def test_production_pin_constants_are_fp8_and_fail_loud():
         # streamlake/fp8 removed 2026-07-14 — it regressed and now rejects strict
         # json_schema (400), which dropped tp-2026-07-14-002. See the re-
         # verification note in docs/DEEPSEEK-FP8-PIN-2026-07.md.
+        # Flash pin repaired 2026-08-23 (TASK-FLASH-PIN-REPAIR): wandb/fp8 and
+        # akashml/fp8 no longer exist on deepseek-v4-flash's endpoint list, so
+        # the 4-tag pin was serving from 2 providers. alibaba/fp8 and
+        # coreweave/fp8 replace them, each verified against all three live
+        # production schemas on real captured inputs. Rationale, and why
+        # deepinfra/siliconflow/streamlake/mancer are excluded, is in the
+        # comment on the constant itself.
         (DEEPSEEK_V4_FLASH_FP8_ROUTING,
-         ["baidu/fp8", "wandb/fp8", "parasail/fp8", "akashml/fp8"]),
+         ["baidu/fp8", "parasail/fp8", "alibaba/fp8", "coreweave/fp8"]),
     ):
         assert cfg["order"] == expect_order
         assert cfg["allow_fallbacks"] is False          # fail loud, never fp4/unverified
