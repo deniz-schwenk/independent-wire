@@ -665,9 +665,12 @@ def test_resolver_does_not_mutate_final_actors():
 def test_resolver_agent_registration_carries_y_config():
     """Production registration ships the post-Wave-2 config on the PRIMARY:
     ``model="deepseek/deepseek-v4-flash"``, ``temperature=0.5``,
-    ``reasoning="none"``, ``max_tokens=160000`` (commit a7130dd,
-    2026-05-19, per Wave-2 Sweep #2). Regression-guards against accidental
-    reverts of the *primary* to the pre-Wave-2 Gemini Y-config
+    ``reasoning="none"``, ``max_tokens=4000`` (commit a7130dd, 2026-05-19,
+    per Wave-2 Sweep #2; max_tokens retuned from the Wave-2 uniform 160000 on
+    2026-08-23 by TASK-FLASH-PIN-REPAIR — 160000 exceeded the pin's minimum
+    provider ceiling and was silently clamped, and this stage's worst observed
+    completion across 55 real calls is 698 tokens). Regression-guards against
+    accidental reverts of the *primary* to the pre-Wave-2 Gemini Y-config
     (``temperature=1.0`` + ``reasoning="medium"``).
 
     As of 2026-07-14 the stage is wrapped in ``FlashStageWithFallback`` with a
@@ -693,7 +696,7 @@ def test_resolver_agent_registration_carries_y_config():
     assert 'model="deepseek/deepseek-v4-flash"' in primary
     assert "temperature=0.5" in primary
     assert 'reasoning="none"' in primary
-    assert "max_tokens=160000" in primary
+    assert "max_tokens=4000," in primary
     # ... and must NOT have reverted to the deprecated Gemini Y-config.
     assert "google/gemini-3-flash-preview" not in primary
     assert "temperature=1.0" not in primary
