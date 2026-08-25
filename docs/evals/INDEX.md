@@ -112,3 +112,27 @@ Each artifact line: *filename — role · original path*.
 - **`scratch/MADLAD-INTEGRATION-REQUIREMENTS.md`**: a requirements spec, not evaluation evidence.
 - **Eval tooling scripts** (`score.py`, `report.py`, `backtest.py`, `backtest_3arm.py`, `score_phase0.py`, …): the generators, not the evidence; they remain in `scratch/`.
 - **Smoke / verification dirs** (`scratch/search-flip`, `loud-log-smoke`, `p2-swap-smoke`, `batch2-verify`, `branch-landing`): not evaluations.
+
+
+---
+
+## Standing conventions (owner directives)
+
+### Judge model (2026-08-25)
+Judges are **Opus 5** spawned subagents — context-free, blind, anonymized,
+anchor-free against sources (never candidate-vs-candidate). Fable 5 judges
+only when Opus 5 itself runs as a test candidate (self-judging exclusion).
+Never direct API calls for judging.
+
+### Funnel structure — evals run small (2026-08-26)
+Full factorial matrices (model × level × stage × reps) are retired. Every
+eval strand runs as a sequential funnel:
+- **Phase A — operating-point selection** (small): per model × stage, probe
+  the candidate reasoning levels at minimal reps only. Selection by
+  pre-registered criteria (structural validity, stability), fixed before
+  data is seen.
+- **Phase B — full eval** at the selected level only, full reps.
+- **Phase C — cross-model comparison** between Phase-B results only.
+Each phase is its own CC gate with its own budget slice; later phases are
+briefed only after the earlier phase's report. Context: T3b's full matrix
+produced 648 generations where a funnel would have needed ~250.
