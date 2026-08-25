@@ -34,7 +34,7 @@
       "state_influenced"
     ],
     "type_vocabulary_notes": "academic = universities, peer-reviewed journals, state public-health / scientific institutes. think_tank = policy advocacy / research institutions (member-funded, foundation-funded, or government-supervised) with explicit policy-output orientation (Atlantic Council, Brookings, ISW, SWP Berlin, OSW, Baker Institute, Arms Control Association). The distinction is the transparency layer the project surfaces. government = national or subnational government body: ministries, parliaments, central banks, official press offices. intergovernmental is reserved for IGOs with multiple member states (UN, WHO, IAEA, ASEAN, European Parliament); state_broadcaster is reserved for state-run broadcasters and news agencies. The public_broadcaster / state_broadcaster line is drawn DE FACTO, by documented control (RSF Media Ownership Monitor, State Media Monitor), not by founding statute: a broadcaster whose autonomy statute has been superseded in practice is state_broadcaster. type describes the outlet's CURRENT published form, not its founding lineage: a title that no longer prints is not a newspaper or a magazine, and a title that began in print is not digital_native.",
-    "editorial_independence_notes": "Decision procedure, applied in order: (a) the publisher is a state, a party, or a government body -> state_directed; (b) privately owned with cited evidence of state control, state funding, or an owner holding government office -> state_influenced; (c) privately owned with no such evidence that can be cited -> independent. A difficult national press environment is bias_note material, not an editorial_independence value. DE-FACTO PRECEDENCE (2026-08-25): documented control governs editorial_independence exactly as it already governs the public_broadcaster / state_broadcaster line. Where a recognised classifier (RSF Media Ownership Monitor, State Media Monitor) has assessed the outlet, its finding wins over the mechanical reading of clause (a). A statutorily independent state-funded national agency or broadcaster that SMM records as Independent State-Funded and State-Managed is publicly_funded_autonomous, not state_directed (efe.com, bta.bg, cna.com.tw); one SMM records as State-Controlled or Captured Public is state_directed even where its founding statute promises autonomy (agerpres.ro, ukrinform.ua, rtve.es, rainews.it, canalsur.es, and the USAGM family). MULTI-DONOR RESEARCH BODIES (2026-08-23): a research institute funded predominantly by governments and multilateral bodies with no single controlling state is publicly_funded_autonomous. independent is not supportable because it is not privately owned; state_influenced implies a controlling state that does not exist; intergovernmental requires member states it does not have (ifpri.org and the CGIAR centers). NGOs WITH PARTIAL GOVERNMENT GRANTS (2026-08-23): clause (b) targets editorial leverage over an outlet, not competitively awarded aid or project grants to an operational NGO. A relief or humanitarian organisation with a large but competitively awarded government grant share stays independent, with the share named in bias_note (care.org at ~30% of total support, directrelief.org). GENERAL PRESS SUBSIDIES (2026-08-25): a general, criteria-based press-subsidy scheme open to every qualifying title does NOT trigger clause (b) — record it in bias_note instead. Applying (b) to these would reclassify the whole subsidised European press (ilfoglio.it, ilmanifesto.it, humanite.fr, adnkronos.com). Targeted support tied to named activities from a single payer is different and does trigger (b) (iiss.org, host-nation support for named conferences). GERMAN PARTY FOUNDATIONS (2026-08-25): a party-affiliated political foundation constituted as an e.V., legally independent of its party and predominantly financed from public funds, is publicly_funded_autonomous with the affiliation named in bias_note (kas.de)."
+    "editorial_independence_notes": "Decision procedure, applied in order: (a) the publisher is a state, a party, or a government body -> state_directed; (b) privately owned with cited evidence of state control, state funding, or an owner holding government office -> state_influenced; (c) privately owned with no such evidence that can be cited -> independent. A difficult national press environment is bias_note material, not an editorial_independence value. DE-FACTO PRECEDENCE (2026-08-25): documented control governs editorial_independence exactly as it already governs the public_broadcaster / state_broadcaster line. Where a recognised classifier (RSF Media Ownership Monitor, State Media Monitor) has assessed the outlet, its finding wins over the mechanical reading of clause (a). A statutorily independent state-funded national agency or broadcaster that SMM records as Independent State-Funded and State-Managed is publicly_funded_autonomous, not state_directed (efe.com, bta.bg, cna.com.tw); one SMM records as State-Controlled or Captured Public is state_directed even where its founding statute promises autonomy (agerpres.ro, ukrinform.ua, rtve.es, rainews.it, canalsur.es, and the USAGM family). MULTI-DONOR RESEARCH BODIES (2026-08-23): a research institute funded predominantly by governments and multilateral bodies with no single controlling state is publicly_funded_autonomous. independent is not supportable because it is not privately owned; state_influenced implies a controlling state that does not exist; intergovernmental requires member states it does not have (ifpri.org and the CGIAR centers). NGOs WITH PARTIAL GOVERNMENT GRANTS (2026-08-23): clause (b) targets editorial leverage over an outlet, not competitively awarded aid or project grants to an operational NGO. A relief or humanitarian organisation with a large but competitively awarded government grant share stays independent, with the share named in bias_note (care.org at ~30% of total support, directrelief.org). GENERAL PRESS SUBSIDIES (2026-08-25): a general, criteria-based press-subsidy scheme open to every qualifying title does NOT trigger clause (b) — record it in bias_note instead. Applying (b) to these would reclassify the whole subsidised European press (ilfoglio.it, ilmanifesto.it, humanite.fr, adnkronos.com). Targeted support tied to named activities from a single payer is different and does trigger (b) (iiss.org, host-nation support for named conferences). GERMAN PARTY FOUNDATIONS (2026-08-25): a party-affiliated political foundation constituted as an e.V., legally independent of its party and predominantly financed from public funds, is publicly_funded_autonomous with the affiliation named in bias_note (kas.de). DISCRETIONARY STATE ADVERTISING (2026-08-25): the press-subsidy carve-out does NOT reach state advertising allocated outlet by outlet at official discretion — Turkey's BİK allocation and its analogues in Hungary, Serbia, Egypt and much of Latin America. It is neither a general criteria-based scheme nor support tied to named activities, and classifiers document it as a capture mechanism, so it DOES trigger clause (b) (turkiyetoday.com)."
   },
   "163.com": {
     "outlet": "NetEase",
@@ -3547,7 +3547,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Turkey's oldest daily; privately owned; secular-republican editorial line"
+    "bias_note": "Daily founded 1924; owned by the Cumhuriyet Vakfı foundation and published by Yeni Gün Haber Ajansı Basın ve Yayıncılık A.Ş.; still prints a daily print edition."
   },
   "defensenews.com": {
     "outlet": "Defense News",
@@ -3604,7 +3604,7 @@
     "bias_note": "Weekly news magazine; owned by Time USA LLC (Marc Benioff since 2018)"
   },
   "ynetnews.com": {
-    "outlet": "Ynetnews",
+    "outlet": "Ynet Global",
     "country": "Israel",
     "language": "en",
     "type": "digital_native",
@@ -3691,7 +3691,7 @@
     "type": "magazine",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Colombian news magazine; founded 1946; privately owned"
+    "bias_note": "Colombian news magazine founded 1946 and relaunched in 1982 by Felipe López Caballero; Grupo Gilinski took 50% in January 2019 and 100% in November 2020."
   },
   "tf1info.fr": {
     "outlet": "TF1 Info (LCI)",
@@ -3816,7 +3816,7 @@
     "language": "tr",
     "type": "broadcaster",
     "tier": 2,
-    "editorial_independence": "independent",
+    "editorial_independence": "state_influenced",
     "bias_note": "Turkish news channel; Doğuş Media Group"
   },
   "nzz.ch": {
@@ -3861,7 +3861,7 @@
     "language": "en",
     "type": "digital_native",
     "tier": 4,
-    "editorial_independence": "independent",
+    "editorial_independence": "state_influenced",
     "bias_note": "English-language Turkish news site"
   },
   "vz.ru": {
@@ -3943,10 +3943,10 @@
     "type": "broadcaster",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Brazilian CNN franchise; Grupo J&F"
+    "bias_note": "Brazilian CNN franchise published by Novus Mídia; the Rubens Menin family has held 100% since March 2021."
   },
   "economictimes.indiatimes.com": {
-    "outlet": "Economic Times",
+    "outlet": "The Economic Times",
     "country": "India",
     "language": "en",
     "type": "newspaper",
@@ -4009,7 +4009,7 @@
     "bias_note": "German technology news; Heise Verlag group"
   },
   "hindi.theprint.in": {
-    "outlet": "The Print (Hindi)",
+    "outlet": "ThePrint Hindi",
     "country": "India",
     "language": "hi",
     "type": "digital_native",
@@ -4102,7 +4102,7 @@
     "outlet": "Modern Ghana",
     "country": "Ghana",
     "language": "en",
-    "type": "digital_native",
+    "type": "aggregator",
     "tier": 4,
     "editorial_independence": "independent",
     "bias_note": "Ghanaian news portal"
@@ -4303,7 +4303,7 @@
     "type": "newspaper",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Thai business daily; Bangkok Post group"
+    "bias_note": "Thai business daily published by Krungthep Turakij Media Co Ltd, a media arm of Nation Group (Thailand) PCL."
   },
   "biz.heraldcorp.com": {
     "outlet": "Herald Business / 헤럴드경제",
@@ -4405,7 +4405,7 @@
     "bias_note": "Chinese MFA think-tank publication"
   },
   "cnbce.com": {
-    "outlet": "CNBCE",
+    "outlet": "CNBC-e",
     "country": "Turkey",
     "language": "tr",
     "type": "broadcaster",
@@ -4492,7 +4492,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Colombian daily; one of oldest in the country"
+    "bias_note": "Colombian daily; print has circulated Sundays only since 2 August 2025. Published by Comunican S.A., controlled by Grupo Valorem (Santo Domingo family)."
   },
   "emaratalyoum.com": {
     "outlet": "Emarat Al Youm",
@@ -5130,7 +5130,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Turkish opposition-aligned daily; Sözcü Gazetecilik"
+    "bias_note": "National daily published by Mega Ajans ve Rek. Tic. A.Ş.; ultimate ownership runs through Estetik Yayıncılık A.Ş. to Swiss-registered BEME Media A.G., with founder Burak Akbay the majority holder."
   },
   "sputniknews.cn": {
     "outlet": "Sputnik Chinese",
@@ -5304,13 +5304,13 @@
     "bias_note": "Polish news portal; Wirtualna Polska group"
   },
   "yetkinreport.com": {
-    "outlet": "YetkinReport",
+    "outlet": "Yetkin Report",
     "country": "Turkey",
-    "language": "en",
+    "language": "tr",
     "type": "blog",
     "tier": 4,
     "editorial_independence": "independent",
-    "bias_note": "Turkish politics blog by journalist Serkan Demirtaş"
+    "bias_note": "Turkish politics site founded and run since autumn 2018 by Murat Yetkin, former editor-in-chief of Hürriyet Daily News."
   },
   "youtube.com": {
     "outlet": "YouTube",
@@ -5349,7 +5349,7 @@
     "bias_note": "DRC news portal"
   },
   "aaj.tv": {
-    "outlet": "Aaj TV",
+    "outlet": "Aaj News",
     "country": "Pakistan",
     "language": "ur",
     "type": "broadcaster",
@@ -5550,7 +5550,7 @@
     "outlet": "BioBioChile",
     "country": "Chile",
     "language": "es",
-    "type": "digital_native",
+    "type": "broadcaster",
     "tier": 3,
     "editorial_independence": "independent",
     "bias_note": "Major Chilean news site"
@@ -5757,10 +5757,19 @@
     "outlet": "Daily Pakistan",
     "country": "Pakistan",
     "language": "ur",
-    "type": "digital_native",
+    "type": "newspaper",
     "tier": 4,
     "editorial_independence": "independent",
     "bias_note": "Pakistani Urdu news site"
+  },
+  "en.dailypakistan.com.pk": {
+    "outlet": "Daily Pakistan",
+    "country": "Pakistan",
+    "language": "en",
+    "type": "newspaper",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "English-language edition of Daily Pakistan."
   },
   "de.marketscreener.com": {
     "outlet": "MarketScreener Germany",
@@ -5881,12 +5890,12 @@
   },
   "elcomercio.com": {
     "outlet": "El Comercio",
-    "country": "Peru",
+    "country": "Ecuador",
     "language": "es",
-    "type": "newspaper",
+    "type": "digital_native",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Peruvian daily; El Comercio group"
+    "bias_note": "Quito daily, digital-only since 6 June 2023; 94% of shares acquired in 2015 by Ángel González via Telglovisión S.A. Distinct from El Comercio of Lima, which publishes at elcomercio.pe."
   },
   "elespanol.com": {
     "outlet": "El Espanol",
@@ -6024,13 +6033,13 @@
     "bias_note": "UK news channel; launched 2021; privately funded"
   },
   "geo.tv": {
-    "outlet": "GEO TV",
+    "outlet": "Geo News",
     "country": "Pakistan",
-    "language": "ur",
+    "language": "en",
     "type": "broadcaster",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Pakistani TV channel; Jang Media group"
+    "bias_note": "Major Pakistani TV news channel; the publishing entity is Independent Media Corporation (Pvt) Ltd, Mir Shakil-ur-Rahman 99.90% (RSF Media Ownership Monitor). Urdu output is on the separate host urdu.geo.tv."
   },
   "gp.se": {
     "outlet": "GP",
@@ -6057,7 +6066,7 @@
     "type": "broadcaster",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Turkish opposition-aligned TV channel"
+    "bias_note": "National news and current-affairs television channel operated by Halk Radyo ve Televizyon Yayıncılık A.Ş., Zeytinburnu/İstanbul."
   },
   "hromadske.ua": {
     "outlet": "Hromadske",
@@ -6173,7 +6182,7 @@
     "language": "en",
     "type": "think_tank",
     "tier": 2,
-    "editorial_independence": "independent",
+    "editorial_independence": "publicly_funded_autonomous",
     "bias_note": "Institute for Security Studies; African crime and conflict research"
   },
   "itmedia.co.jp": {
