@@ -347,6 +347,10 @@ def test_glm_writer_routing_constant_is_fp8_and_fail_loud():
 
 def test_create_agents_writer_is_glm_with_opus46_fallback(monkeypatch):
     monkeypatch.setenv("OPENROUTER_API_KEY", "fake-key-for-unit-test")
+    # create_agents() needs a DeepSeek key too since 2026-08-24: the three
+    # flash stages run channel C (api.deepseek.com) as primary
+    # (TASK-FLASH-0731-SWAP).
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "fake-key-for-unit-test")
     from scripts.run import create_agents, create_agents_hydrated
 
     for factory in (create_agents, create_agents_hydrated):

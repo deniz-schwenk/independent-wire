@@ -126,25 +126,42 @@ async def test_non_openrouter_ignores_provider_routing(prompt_file):
 
 
 def test_production_pin_constants_are_fp8_and_fail_loud():
-    """The shipped routing constants pin fp8 by construction and fail loud."""
-    from scripts.run import DEEPSEEK_V4_PRO_FP8_ROUTING, DEEPSEEK_V4_FLASH_FP8_ROUTING
+    """The shipped fp8 routing constant pins fp8 by construction and fails loud.
 
-    for cfg, expect_order in (
-        (DEEPSEEK_V4_PRO_FP8_ROUTING, ["baidu/fp8", "wandb/fp8", "parasail/fp8"]),
-        # streamlake/fp8 removed 2026-07-14 — it regressed and now rejects strict
-        # json_schema (400), which dropped tp-2026-07-14-002. See the re-
-        # verification note in docs/DEEPSEEK-FP8-PIN-2026-07.md.
-        # Flash pin repaired 2026-08-23 (TASK-FLASH-PIN-REPAIR): wandb/fp8 and
-        # akashml/fp8 no longer exist on deepseek-v4-flash's endpoint list, so
-        # the 4-tag pin was serving from 2 providers. alibaba/fp8 and
-        # coreweave/fp8 replace them, each verified against all three live
-        # production schemas on real captured inputs. Rationale, and why
-        # deepinfra/siliconflow/streamlake/mancer are excluded, is in the
-        # comment on the constant itself.
-        (DEEPSEEK_V4_FLASH_FP8_ROUTING,
-         ["baidu/fp8", "parasail/fp8", "alibaba/fp8", "coreweave/fp8"]),
-    ):
-        assert cfg["order"] == expect_order
-        assert cfg["allow_fallbacks"] is False          # fail loud, never fp4/unverified
-        assert cfg["quantizations"] == ["fp8"]          # fp8 by construction
-        assert all(tag.endswith("/fp8") for tag in cfg["order"])
+    Only the PRO constant remains. ``DEEPSEEK_V4_FLASH_FP8_ROUTING`` was
+    deleted on 2026-08-24 (TASK-FLASH-0731-SWAP): the three flash stages left
+    fp8 for full-precision v4-flash-0731 on two non-OpenRouter-pinned channels,
+    and nothing else referenced the constant. The assertion below that it is
+    gone is deliberate — a reintroduced flash fp8 pin would mean the swap was
+    partially reverted, which is exactly the state this guard exists to catch.
+    """
+    import scripts.run as run_mod
+    from scripts.run import DEEPSEEK_V4_PRO_FP8_ROUTING
+
+    assert not hasattr(run_mod, "DEEPSEEK_V4_FLASH_FP8_ROUTING"), (
+        "the flash fp8 pin is retired; see TASK-FLASH-0731-SWAP"
+    )
+
+    # streamlake/fp8 removed 2026-07-14 — it regressed and now rejects strict
+    # json_schema (400), which dropped tp-2026-07-14-002. See the re-
+    # verification note in docs/DEEPSEEK-FP8-PIN-2026-07.md.
+    cfg = DEEPSEEK_V4_PRO_FP8_ROUTING
+    assert cfg["order"] == ["baidu/fp8", "wandb/fp8", "parasail/fp8"]
+    assert cfg["allow_fallbacks"] is False              # fail loud, never fp4/unverified
+    assert cfg["quantizations"] == ["fp8"]              # fp8 by construction
+    assert all(tag.endswith("/fp8") for tag in cfg["order"])
+
+
+def test_flash_0731_native_routing_has_no_quantization_filter():
+    """Channel A's pin must NOT carry a quantizations filter.
+
+    The DeepSeek endpoint reports quantization "unknown"; any filter excludes
+    it and the call 404s with "No endpoints found" (T2b §1.1). Every other pin
+    in scripts/run.py filters by construction, so this one reads like an
+    omission — it is not, and this guard says so.
+    """
+    from scripts.run import DEEPSEEK_NATIVE_ROUTING
+
+    assert DEEPSEEK_NATIVE_ROUTING["order"] == ["deepseek"]
+    assert DEEPSEEK_NATIVE_ROUTING["allow_fallbacks"] is False
+    assert "quantizations" not in DEEPSEEK_NATIVE_ROUTING

@@ -224,10 +224,21 @@ def test_reset_call_metrics_clears_markers_and_delegates():
 
 
 @pytest.mark.parametrize("variant", ["production", "hydrated"])
-def test_all_three_flash_stages_wired_with_gemini_fallback(variant):
-    """Wiring: researcher_assemble, curator_topic_discovery, resolve_actor_aliases
-    are each wrapped with a gemini-3-flash-preview fallback carrying the right
-    distinct marker key and NO fp8 pin — in both pipeline variants."""
+def test_all_three_flash_stages_wired_with_channel_fallback(variant, monkeypatch):
+    """Wiring: researcher_assemble, curator_topic_discovery,
+    resolve_actor_aliases are each wrapped with a CHANNEL fallback carrying
+    the right distinct marker key — in both pipeline variants.
+
+    Retargeted 2026-08-24 (TASK-FLASH-0731-SWAP). Until then the net was
+    ``google/gemini-3-flash-preview`` — a different model, which is what it
+    served into the pipeline whenever it fired. Now both channels carry
+    v4-flash-0731: channel C (api.deepseek.com) primary, channel A
+    (OpenRouter pinned to the vendor's own endpoint) fallback. The detailed
+    per-stage operating points live in tests/test_flash_0731_swap.py; this
+    test guards the wrapper topology.
+    """
+    monkeypatch.setenv("OPENROUTER_API_KEY", "fake-key-for-unit-test")
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "fake-key-for-unit-test")
     from scripts.run import create_agents, create_agents_hydrated
 
     ags = create_agents() if variant == "production" else create_agents_hydrated()
@@ -241,9 +252,18 @@ def test_all_three_flash_stages_wired_with_gemini_fallback(variant):
         assert isinstance(a, FlashStageWithFallback), (key, type(a))
         assert a.fallback_marker_key == marker
         assert a.name == key
-        assert a.primary.model == "deepseek/deepseek-v4-flash"
-        # streamlake removed from the pin (the 2026-07-14 fix)
-        assert "streamlake/fp8" not in a.primary._provider_routing["order"]
-        # fallback is gemini on a different ecosystem, with NO fp8 pin
-        assert a.fallback.model == "google/gemini-3-flash-preview"
-        assert not getattr(a.fallback, "_provider_routing", {}), (key, "fallback must not carry the fp8 pin")
+        # channel C primary: the vendor's single undated flash id
+        assert a.primary.provider == "deepseek_direct", key
+        assert a.primary.model == "deepseek-v4-flash", key
+        assert not getattr(a.primary, "_provider_routing", {}), (
+            key, "the direct API has no provider routing")
+        # channel A fallback: same weights, dated id, vendor endpoint pinned,
+        # and NO quantization filter (that would 404 the endpoint out)
+        assert a.fallback.provider == "openrouter", key
+        assert a.fallback.model == "deepseek/deepseek-v4-flash-0731", key
+        assert a.fallback._provider_routing["order"] == ["deepseek"], key
+        assert "quantizations" not in a.fallback._provider_routing, key
+        # the retired routes must not reappear
+        assert "google/gemini-3-flash-preview" not in (
+            a.primary.model, a.fallback.model), key
+        assert "fp8" not in str(a.fallback._provider_routing), key

@@ -635,6 +635,10 @@ async def _captured_kwargs(agent: Agent, output_schema=None) -> dict:
 
 def _composite(monkeypatch):
     monkeypatch.setenv("OPENROUTER_API_KEY", "fake-key-for-unit-test")
+    # create_agents() needs a DeepSeek key too since 2026-08-24: the three
+    # flash stages run channel C (api.deepseek.com) as primary
+    # (TASK-FLASH-0731-SWAP).
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "fake-key-for-unit-test")
     from scripts.run import create_agents
     return create_agents()["bias_language"]
 
@@ -669,6 +673,10 @@ async def test_judge_request_body_exact(monkeypatch):
 
 def test_create_agents_bias_is_composite_both_variants(monkeypatch):
     monkeypatch.setenv("OPENROUTER_API_KEY", "fake-key-for-unit-test")
+    # create_agents() needs a DeepSeek key too since 2026-08-24: the three
+    # flash stages run channel C (api.deepseek.com) as primary
+    # (TASK-FLASH-0731-SWAP).
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "fake-key-for-unit-test")
     from scripts.run import create_agents, create_agents_hydrated
     for d in (create_agents(), create_agents_hydrated()):
         bl = d["bias_language"]
