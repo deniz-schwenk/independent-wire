@@ -297,7 +297,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Privately owned Egyptian daily (2004), flagship of independent Egyptian journalism; centrist-establishment line, self-censors on red-line topics within Egypt's constrained press environment."
+    "bias_note": "Privately owned Egyptian daily (2004), flagship of independent Egyptian journalism; self-censors on red-line topics within Egypt's constrained press environment."
   },
   "alquds.co.uk": {
     "outlet": "Al-Quds Al-Arabi",
@@ -857,7 +857,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Mexican newspaper, centrist/business-oriented"
+    "bias_note": "Major Mexican newspaper; business-oriented coverage"
   },
   "elimparcial.com": {
     "outlet": "El Imparcial (Sonora)",
@@ -1650,7 +1650,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Thai daily (founded 1991) owned by the privately held Matichon Group; one of the country's best-selling papers. Independent domestic desk with a populist, mass-market register; generally more sympathetic to pro-democracy/opposition narratives than state-aligned press. Thai-language flagship (the separate khaosodenglish.com export edition deliberately not used)."
+    "bias_note": "Major Thai daily (founded 1991) owned by the privately held Matichon Group; one of the country's best-selling papers. Independent domestic desk with a mass-market register. Thai-language flagship (the separate khaosodenglish.com export edition deliberately not used)."
   },
   "kommersant.ru": {
     "outlet": "Kommersant",
@@ -1713,7 +1713,7 @@
     "type": "digital_native",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Ukrainian independent, pro-Ukraine perspective"
+    "bias_note": "Ukrainian English-language news outlet."
   },
   "kyivpost.com": {
     "outlet": "Kyiv Post",
@@ -1842,7 +1842,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Taiwan's largest-circulation daily, privately owned (Liberty Times Group). Strongly pro-DPP / pro-Taiwan-independence (pan-green) editorial line. Hard-news desk is professional and high-volume; feed spans news./ec./sports. subdomains under ltn.com.tw."
+    "bias_note": "Taiwan's largest-circulation daily, privately owned (Liberty Times Group). Hard-news desk is professional and high-volume; feed spans news./ec./sports. subdomains under ltn.com.tw."
   },
   "m24.ru": {
     "outlet": "Moscow 24",
@@ -1878,7 +1878,7 @@
     "type": "newspaper",
     "tier": 1,
     "editorial_independence": "independent",
-    "bias_note": "One of Japan's 'big three' national dailies. Mainstream, broadly centrist to slightly center-left editorial stance; serious general-news and investigative desk. Privately owned commercial paper."
+    "bias_note": "One of Japan's 'big three' national dailies; serious general-news and investigative desk. Privately owned commercial paper."
   },
   "mashreghnews.ir": {
     "outlet": "Mashregh News",
@@ -2376,7 +2376,7 @@
     "type": "investigative_nonprofit",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Independent Thai non-profit (2004) with a human-rights, free-speech and reform focus that mainstream Thai outlets avoid; reformist, pro-democracy; operates under real legal pressure."
+    "bias_note": "Independent Thai non-profit (2004) with a human-rights, free-speech and reform focus that mainstream Thai outlets avoid; operates under real legal pressure."
   },
   "pravda.com.ua": {
     "outlet": "Ukrainska Pravda",
@@ -2421,7 +2421,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Largest-circulation Bangladeshi daily (Mediastar). Independent, broadly centrist, periodically critical of the governing party; Bengali edition."
+    "bias_note": "Largest-circulation Bangladeshi daily (Mediastar). Independent; periodically critical of the governing party; Bengali edition."
   },
   "protocol.ua": {
     "outlet": "Protocol.ua",
@@ -3009,7 +3009,7 @@
     "type": "digital_native",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Independent Chinese-language digital outlet (founded 2015 in Hong Kong, now operating partly from Singapore/Taipei). Investigative, liberal, critical of Beijing; a leading independent zh voice outside mainland state control."
+    "bias_note": "Independent Chinese-language digital outlet (founded 2015 in Hong Kong, now operating partly from Singapore/Taipei). Investigative, critical of Beijing; a leading independent zh voice outside mainland state control."
   },
   "theins.ru": {
     "outlet": "The Insider",
@@ -3754,7 +3754,7 @@
     "type": "digital_native",
     "tier": 3,
     "editorial_independence": "state_influenced",
-    "bias_note": "Chinese news and commentary site; nationalist editorial; PRC regulations"
+    "bias_note": "Chinese news and commentary site; subject to PRC content regulations"
   },
   "infomigrants.net": {
     "outlet": "InfoMigrants",
@@ -3925,7 +3925,7 @@
     "type": "digital_native",
     "tier": 4,
     "editorial_independence": "independent",
-    "bias_note": "Ukrainian news portal; pro-European editorial stance"
+    "bias_note": "Ukrainian news portal."
   },
   "cna.com.tw": {
     "outlet": "Central News Agency (CNA)",
@@ -4285,7 +4285,7 @@
     "type": "think_tank",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Progressive policy think tank; founded by John Podesta"
+    "bias_note": "Self-described progressive policy think tank; founded by John Podesta"
   },
   "artemis.bm": {
     "outlet": "Artemis.bm",
@@ -5175,7 +5175,7 @@
     "type": "news_agency",
     "tier": 3,
     "editorial_independence": "state_influenced",
-    "bias_note": "Iranian news agency; close to IRGC and conservative factions"
+    "bias_note": "Iranian news agency; close to the IRGC."
   },
   "telex.hu": {
     "outlet": "Telex",
@@ -5427,7 +5427,7 @@
     "type": "think_tank",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "American Enterprise Institute; conservative policy think tank"
+    "bias_note": "American Enterprise Institute; self-described conservative policy think tank"
   },
   "afr.com": {
     "outlet": "Australian Financial Review",
@@ -5715,7 +5715,7 @@
     "type": "digital_native",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Progressive news and advocacy; nonprofit"
+    "bias_note": "Self-described progressive news and advocacy; nonprofit"
   },
   "computerworld.com": {
     "outlet": "Computerworld",
@@ -5787,7 +5787,7 @@
     "type": "news_agency",
     "tier": 4,
     "editorial_independence": "state_directed",
-    "bias_note": "Iranian pro-IRGC news agency"
+    "bias_note": "Iranian news agency; close to the Islamic Revolutionary Guard Corps (IRGC)."
   },
   "defence24.pl": {
     "outlet": "Defence24",

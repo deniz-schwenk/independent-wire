@@ -68,6 +68,12 @@ accumulated new material.
      focus — structural facts. Never "left-leaning", "right-wing", "pro-X". This
      is load-bearing for project credibility, not a style preference. The strict
      gate also surfaces historical violations set before it existed.
+     **This gate is code as of 2026-08-25**:
+     `tests/test_outlet_registry_schema.py::test_bias_note_carries_no_ideological_language`,
+     whose `IDEOLOGICAL_TERMS` tuple is the canonical term list. A directional
+     term is permitted only where the registry itself marks it as the
+     institution's own declared identity, with the phrase
+     `self-described <term>`; there is deliberately no allowlist in test code.
    - **Vocabulary discipline** — every `type` / `editorial_independence` /
      `tier` value sits inside the `_schema`-declared set.
    - **Full test suite green.**
