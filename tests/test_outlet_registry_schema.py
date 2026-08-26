@@ -57,6 +57,12 @@ DUPLICATE_NAME_ALLOWLIST = {
     "Xinhua": "news.cn, xinhuanet.com, english.news.cn — one state agency",
     "Al Jazeera": "aljazeera.com, aljazeera.net — same publisher, two TLDs",
     "Anadolu Agency": "aa.com.tr, anadoluagency.com — same agency, two TLDs",
+    # Added 2026-08-25 by the registry REST pass. The English edition has
+    # no entry of its own, so lookup_outlet's parent-domain fallback was
+    # handing 325 corpus URLs the Urdu parent's language=ur. Same masthead,
+    # same publisher, per-host language — MAINTENANCE.md step 3.
+    "Daily Pakistan": "dailypakistan.com.pk (ur), en.dailypakistan.com.pk (en)"
+                      " — one daily, two language editions",
     "Haaretz": "haaretz.co.il, haaretz.com — Hebrew and English editions",
     "PRC Ministry of Foreign Affairs": "fmprc.gov.cn, mfa.gov.cn — one ministry",
     "Press TV": "presstv.ir, presstv.co.uk — one broadcaster, two TLDs",

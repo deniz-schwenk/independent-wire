@@ -1,7 +1,7 @@
 {
   "_schema": {
     "version": "1.0",
-    "description": "Authoritative mapping from outlet hostname to canonical metadata. Single source of truth for outlet country/language/type plus tier/editorial_independence/bias_note (migrated from config/sources.json 2026-05-29). Country values match the canonical names in src/stages/_helpers.py:COUNTRY_ALIASES targets so they pass normalise_country() unchanged. Country is the outlet's operating headquarters — the seat of the legal publishing entity — not its editorial origin, founding location, or the region it covers. editorial_independence is decided by control, not by press-freedom climate: (a) the publisher is a state, a party, or a government body -> state_directed; (b) privately owned with cited evidence of state control, state funding, or an owner holding government office -> state_influenced; (c) privately owned with no such evidence that can be cited -> independent. A difficult national press environment is bias_note material, not an editorial_independence value.",
+    "description": "Authoritative mapping from outlet hostname to canonical metadata. Single source of truth for outlet country/language/type plus tier/editorial_independence/bias_note (migrated from config/sources.json 2026-05-29). Country values match the canonical names in src/stages/_helpers.py:COUNTRY_ALIASES targets so they pass normalise_country() unchanged. Country is the outlet's operating headquarters — the seat of the legal publishing entity — not its editorial origin, founding location, or the region it covers. editorial_independence is decided by control, not by press-freedom climate; the decision procedure and its documented exceptions live in editorial_independence_notes.",
     "key_format": "Top-level keys are normalised hostnames (lowercase, no leading 'www.'). Subdomain matches fall back to the parent domain when no exact entry is present (see src/outlet_registry.py:lookup_outlet).",
     "type_vocabulary": [
       "academic",
@@ -33,7 +33,8 @@
       "state_directed",
       "state_influenced"
     ],
-    "type_vocabulary_notes": "academic = universities, peer-reviewed journals, state public-health / scientific institutes. think_tank = policy advocacy / research institutions (member-funded, foundation-funded, or government-supervised) with explicit policy-output orientation (Atlantic Council, Brookings, ISW, SWP Berlin, OSW, Baker Institute, Arms Control Association). The distinction is the transparency layer the project surfaces. government = national or subnational government body: ministries, parliaments, central banks, official press offices. intergovernmental is reserved for IGOs with multiple member states (UN, WHO, IAEA, ASEAN, European Parliament); state_broadcaster is reserved for state-run broadcasters and news agencies. The public_broadcaster / state_broadcaster line is drawn DE FACTO, by documented control (RSF Media Ownership Monitor, State Media Monitor), not by founding statute: a broadcaster whose autonomy statute has been superseded in practice is state_broadcaster."
+    "type_vocabulary_notes": "academic = universities, peer-reviewed journals, state public-health / scientific institutes. think_tank = policy advocacy / research institutions (member-funded, foundation-funded, or government-supervised) with explicit policy-output orientation (Atlantic Council, Brookings, ISW, SWP Berlin, OSW, Baker Institute, Arms Control Association). The distinction is the transparency layer the project surfaces. government = national or subnational government body: ministries, parliaments, central banks, official press offices. intergovernmental is reserved for IGOs with multiple member states (UN, WHO, IAEA, ASEAN, European Parliament); state_broadcaster is reserved for state-run broadcasters and news agencies. The public_broadcaster / state_broadcaster line is drawn DE FACTO, by documented control (RSF Media Ownership Monitor, State Media Monitor), not by founding statute: a broadcaster whose autonomy statute has been superseded in practice is state_broadcaster. type describes the outlet's CURRENT published form, not its founding lineage: a title that no longer prints is not a newspaper or a magazine, and a title that began in print is not digital_native.",
+    "editorial_independence_notes": "Decision procedure, applied in order: (a) the publisher is a state, a party, or a government body -> state_directed; (b) privately owned with cited evidence of state control, state funding, or an owner holding government office -> state_influenced; (c) privately owned with no such evidence that can be cited -> independent. A difficult national press environment is bias_note material, not an editorial_independence value. DE-FACTO PRECEDENCE (2026-08-25): documented control governs editorial_independence exactly as it already governs the public_broadcaster / state_broadcaster line. Where a recognised classifier (RSF Media Ownership Monitor, State Media Monitor) has assessed the outlet, its finding wins over the mechanical reading of clause (a). A statutorily independent state-funded national agency or broadcaster that SMM records as Independent State-Funded and State-Managed is publicly_funded_autonomous, not state_directed (efe.com, bta.bg, cna.com.tw); one SMM records as State-Controlled or Captured Public is state_directed even where its founding statute promises autonomy (agerpres.ro, ukrinform.ua, rtve.es, rainews.it, canalsur.es, and the USAGM family). MULTI-DONOR RESEARCH BODIES (2026-08-23): a research institute funded predominantly by governments and multilateral bodies with no single controlling state is publicly_funded_autonomous. independent is not supportable because it is not privately owned; state_influenced implies a controlling state that does not exist; intergovernmental requires member states it does not have (ifpri.org and the CGIAR centers). NGOs WITH PARTIAL GOVERNMENT GRANTS (2026-08-23): clause (b) targets editorial leverage over an outlet, not competitively awarded aid or project grants to an operational NGO. A relief or humanitarian organisation with a large but competitively awarded government grant share stays independent, with the share named in bias_note (care.org at ~30% of total support, directrelief.org). GENERAL PRESS SUBSIDIES (2026-08-25): a general, criteria-based press-subsidy scheme open to every qualifying title does NOT trigger clause (b) — record it in bias_note instead. Applying (b) to these would reclassify the whole subsidised European press (ilfoglio.it, ilmanifesto.it, humanite.fr, adnkronos.com). Targeted support tied to named activities from a single payer is different and does trigger (b) (iiss.org, host-nation support for named conferences). GERMAN PARTY FOUNDATIONS (2026-08-25): a party-affiliated political foundation constituted as an e.V., legally independent of its party and predominantly financed from public funds, is publicly_funded_autonomous with the affiliation named in bias_note (kas.de). DISCRETIONARY STATE ADVERTISING (2026-08-25): the press-subsidy carve-out does NOT reach state advertising allocated outlet by outlet at official discretion — Turkey's BİK allocation and its analogues in Hungary, Serbia, Egypt and much of Latin America. It is neither a general criteria-based scheme nor support tied to named activities, and classifiers document it as a capture mechanism, so it DOES trigger clause (b) (turkiyetoday.com)."
   },
   "163.com": {
     "outlet": "NetEase",
@@ -476,12 +477,12 @@
   },
   "azattyqasia.org": {
     "outlet": "Azattyq Asia (RFE/RL)",
-    "country": "United States",
+    "country": "Czech Republic",
     "language": "ru",
     "type": "state_broadcaster",
     "tier": 3,
-    "editorial_independence": "state_influenced",
-    "bias_note": "US Agency for Global Media outlet (Radio Free Europe / Radio Liberty (Kazakh)); statutory editorial firewall under active litigation (2025–2026)"
+    "editorial_independence": "state_directed",
+    "bias_note": "Central Asia service of Radio Free Europe / Radio Liberty, funded by congressional appropriations through a USAGM grant; State Media Monitor reclassified USAGM to State-Controlled in August 2025 and preserved that in June 2026; the statutory editorial firewall is under active litigation (2025–2026)."
   },
   "bakerinstitute.org": {
     "outlet": "Baker Institute for Public Policy",
@@ -1220,8 +1221,8 @@
     "language": "ru",
     "type": "state_broadcaster",
     "tier": 3,
-    "editorial_independence": "state_influenced",
-    "bias_note": "US Agency for Global Media outlet (Voice of America (Russian-language service)); statutory editorial firewall under active litigation (2025–2026)"
+    "editorial_independence": "state_directed",
+    "bias_note": "Russian-language service of Voice of America, a federal entity operated directly by the US Agency for Global Media; State Media Monitor reclassified USAGM to State-Controlled in August 2025 and preserved that in June 2026; the statutory editorial firewall is under active litigation (2025–2026)."
   },
   "gov.uk": {
     "outlet": "UK Government",
@@ -2451,12 +2452,12 @@
   },
   "radiosvoboda.org": {
     "outlet": "Radio Svoboda (RFE/RL Ukrainian Service)",
-    "country": "United States",
+    "country": "Czech Republic",
     "language": "uk",
     "type": "state_broadcaster",
     "tier": 2,
-    "editorial_independence": "state_influenced",
-    "bias_note": "US Agency for Global Media outlet (Radio Free Europe / Radio Liberty (Ukrainian)); statutory editorial firewall under active litigation (2025–2026)"
+    "editorial_independence": "state_directed",
+    "bias_note": "Ukrainian-language service of Radio Free Europe / Radio Liberty, funded by congressional appropriations through a USAGM grant; State Media Monitor reclassified USAGM to State-Controlled in August 2025 and preserved that in June 2026; the statutory editorial firewall is under active litigation (2025–2026)."
   },
   "rbc.ru": {
     "outlet": "RBC",
@@ -2534,10 +2535,10 @@
     "outlet": "Radio Free Asia",
     "country": "United States",
     "language": "en",
-    "type": "broadcaster",
+    "type": "state_broadcaster",
     "tier": 2,
-    "editorial_independence": "state_influenced",
-    "bias_note": "US Agency for Global Media outlet (Radio Free Asia); statutory editorial firewall under active litigation (2025–2026)"
+    "editorial_independence": "state_directed",
+    "bias_note": "Radio Free Asia, a non-profit corporation funded by congressional appropriations through a USAGM grant; State Media Monitor reclassified USAGM to State-Controlled in August 2025 and preserved that in June 2026; the statutory editorial firewall is under active litigation (2025–2026)."
   },
   "rfi.fr": {
     "outlet": "RFI",
@@ -3149,10 +3150,10 @@
     "outlet": "Ukrinform",
     "country": "Ukraine",
     "language": "en",
-    "type": "news_agency",
+    "type": "state_broadcaster",
     "tier": 2,
-    "editorial_independence": "state_influenced",
-    "bias_note": "Ukrainian state news agency"
+    "editorial_independence": "state_directed",
+    "bias_note": "English-language service of Ukraine's national news agency; a state-owned enterprise under government decree, its General Director appointed by the government and more than 80% state-funded. State Media Monitor classifies it State-Controlled and records no dedicated statute establishing its editorial independence."
   },
   "un.org": {
     "outlet": "United Nations",
@@ -3286,8 +3287,8 @@
     "language": "en",
     "type": "state_broadcaster",
     "tier": 2,
-    "editorial_independence": "state_influenced",
-    "bias_note": "US Agency for Global Media outlet (Voice of America (VOA)); statutory editorial firewall under active litigation (2025–2026)"
+    "editorial_independence": "state_directed",
+    "bias_note": "Voice of America, a federal entity operated directly by the US Agency for Global Media; State Media Monitor reclassified USAGM to State-Controlled in August 2025 and preserved that in June 2026; the statutory editorial firewall is under active litigation (2025–2026)."
   },
   "washingtonpost.com": {
     "outlet": "The Washington Post",
@@ -3456,7 +3457,7 @@
     "type": "news_agency",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Private news agency founded 1957; Spain's largest wire service"
+    "bias_note": "Private Spanish news agency founded 1957; smaller than EFE by revenue (about €30m against €86.5m in 2024) and under new control since June 2025."
   },
   "straitstimes.com": {
     "outlet": "The Straits Times",
@@ -3489,10 +3490,10 @@
     "outlet": "RTVE",
     "country": "Spain",
     "language": "es",
-    "type": "public_broadcaster",
+    "type": "state_broadcaster",
     "tier": 1,
-    "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "Spain's public broadcasting corporation; funded by state grant and advertising"
+    "editorial_independence": "state_directed",
+    "bias_note": "Spain's public broadcasting corporation; commercial advertising has been prohibited since Ley 8/2009, and since the 2024 reform the board is appointed by Parliament at a simple absolute majority. State Media Monitor classifies RTVE State-Controlled."
   },
   "efe.com": {
     "outlet": "EFE",
@@ -3500,8 +3501,8 @@
     "language": "es",
     "type": "news_agency",
     "tier": 2,
-    "editorial_independence": "independent",
-    "bias_note": "Spain's largest news agency; founded 1939; privately held cooperative"
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Spain's largest news agency, founded 1939; Agencia EFE is held 100% by the state holding company SEPI. State Media Monitor classifies it Independent State-Funded and State-Managed, finding no evidence of government control over editorial content."
   },
   "gcaptain.com": {
     "outlet": "gCaptain",
@@ -3519,7 +3520,7 @@
     "type": "magazine",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Ukrainian news magazine; owned by Staffler family since 2014"
+    "bias_note": "Ukrainian news magazine published by TOV Media-DK; ultimate beneficial owner Tomáš Fiala."
   },
   "oglobo.globo.com": {
     "outlet": "O Globo",
@@ -3537,7 +3538,7 @@
     "type": "ngo",
     "tier": 1,
     "editorial_independence": "independent",
-    "bias_note": "Global human rights NGO; funded by individual donations; no government funding accepted"
+    "bias_note": "Global human rights NGO funded mainly by individual donations; its no-government-funding policy is scoped, and government funding is accepted for human rights education work."
   },
   "cumhuriyet.com.tr": {
     "outlet": "Cumhuriyet",
@@ -3546,7 +3547,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Turkey's oldest daily; privately owned; secular-republican editorial line"
+    "bias_note": "Daily founded 1924; owned by the Cumhuriyet Vakfı foundation and published by Yeni Gün Haber Ajansı Basın ve Yayıncılık A.Ş.; still prints a daily print edition."
   },
   "defensenews.com": {
     "outlet": "Defense News",
@@ -3573,7 +3574,7 @@
     "type": "newspaper",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Italian daily; independently owned; no advertising revenue model"
+    "bias_note": "Italian daily, independently owned; it carries advertising, and its own site states that its work is paid for by advertising."
   },
   "observador.pt": {
     "outlet": "Observador",
@@ -3591,7 +3592,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "France's largest regional daily; cooperative ownership"
+    "bias_note": "France's largest regional daily; controlled by the non-profit association ASPDH, not by a cooperative."
   },
   "time.com": {
     "outlet": "Time",
@@ -3603,7 +3604,7 @@
     "bias_note": "Weekly news magazine; owned by Time USA LLC (Marc Benioff since 2018)"
   },
   "ynetnews.com": {
-    "outlet": "Ynetnews",
+    "outlet": "Ynet Global",
     "country": "Israel",
     "language": "en",
     "type": "digital_native",
@@ -3618,7 +3619,7 @@
     "type": "digital_native",
     "tier": 4,
     "editorial_independence": "independent",
-    "bias_note": "Volunteer-run English site covering Ukraine; founded during 2014 Maidan"
+    "bias_note": "English-language site covering Ukraine, founded during the 2014 Maidan; run by named paid editorial staff with volunteers supplementary, and grant-funded."
   },
   "gulfnews.com": {
     "outlet": "Gulf News",
@@ -3636,7 +3637,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Korean business daily; publicly listed"
+    "bias_note": "Major Korean business daily; the publisher is unlisted (비상장) — the listed company in the group is its affiliate Korea Economic TV."
   },
   "internazionale.it": {
     "outlet": "Internazionale",
@@ -3654,13 +3655,13 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major French daily; owned by Groupe Les Echos (LVMH)"
+    "bias_note": "Major French daily; owned by LVMH."
   },
   "politico.com": {
     "outlet": "Politico",
     "country": "United States",
     "language": "en",
-    "type": "newspaper",
+    "type": "digital_native",
     "tier": 1,
     "editorial_independence": "independent",
     "bias_note": "Political journalism; owned by Axel Springer SE since 2021"
@@ -3669,10 +3670,10 @@
     "outlet": "Radio Farda",
     "country": "Czech Republic",
     "language": "fa",
-    "type": "broadcaster",
+    "type": "state_broadcaster",
     "tier": 2,
-    "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "US Congress-funded Persian broadcaster; RFE/RL subsidiary"
+    "editorial_independence": "state_directed",
+    "bias_note": "Persian-language service of Radio Free Europe / Radio Liberty, funded by congressional appropriations through a USAGM grant; State Media Monitor reclassified USAGM to State-Controlled in August 2025 and preserved that in June 2026; the statutory editorial firewall is under active litigation (2025–2026)."
   },
   "sankei.com": {
     "outlet": "Sankei Shimbun",
@@ -3681,7 +3682,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Japanese daily; conservative editorial; Fuji-Sankei group"
+    "bias_note": "Major Japanese daily published by The Sankei Shimbun Co., Ltd., an equity-method affiliate of Fuji Media Holdings."
   },
   "semana.com": {
     "outlet": "Semana",
@@ -3690,7 +3691,7 @@
     "type": "magazine",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Colombian news magazine; founded 1946; privately owned"
+    "bias_note": "Colombian news magazine founded 1946 and relaunched in 1982 by Felipe López Caballero; Grupo Gilinski took 50% in January 2019 and 100% in November 2020."
   },
   "tf1info.fr": {
     "outlet": "TF1 Info (LCI)",
@@ -3735,7 +3736,7 @@
     "type": "digital_native",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Norwegian online news; Amedia"
+    "bias_note": "Norwegian online news; sold by Telenor to Trygve Hegnar's Periscopus in 2017 — Amedia has never owned it."
   },
   "donya-e-eqtesad.com": {
     "outlet": "Donya-e-Eqtesad",
@@ -3761,8 +3762,8 @@
     "language": "en",
     "type": "digital_native",
     "tier": 3,
-    "editorial_independence": "independent",
-    "bias_note": "Migrant news site; jointly run by ANSA, CFI, and Deutsche Welle"
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Migration news service run jointly by France Médias Monde, Deutsche Welle and ANSA — two of the three publishers are state-owned broadcasters — and co-financed by the European Union."
   },
   "insurancejournal.com": {
     "outlet": "Insurance Journal",
@@ -3789,7 +3790,7 @@
     "type": "news_agency",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Japanese cooperative news agency; second-largest after Kyodo"
+    "bias_note": "Japan's second-largest news agency after Kyodo; a joint-stock company (株式会社) with ¥495m share capital — the cooperative of the pair is Kyodo, not Jiji."
   },
   "masrawy.com": {
     "outlet": "Masrawy",
@@ -3815,7 +3816,7 @@
     "language": "tr",
     "type": "broadcaster",
     "tier": 2,
-    "editorial_independence": "independent",
+    "editorial_independence": "state_influenced",
     "bias_note": "Turkish news channel; Doğuş Media Group"
   },
   "nzz.ch": {
@@ -3825,16 +3826,16 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Swiss daily; founded 1780; NZZ Foundation"
+    "bias_note": "Major Swiss daily founded 1780; published by an Aktiengesellschaft with several thousand registered shareholders — there is no NZZ foundation."
   },
   "rferl.org": {
     "outlet": "RFE/RL",
     "country": "Czech Republic",
     "language": "en",
-    "type": "broadcaster",
+    "type": "state_broadcaster",
     "tier": 1,
-    "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "US Congress-funded international broadcaster; editorial charter guarantees independence"
+    "editorial_independence": "state_directed",
+    "bias_note": "Radio Free Europe / Radio Liberty, a Prague-seated non-profit corporation funded by congressional appropriations through a USAGM grant; State Media Monitor reclassified USAGM to State-Controlled in August 2025 and preserved that in June 2026; the statutory editorial firewall is under active litigation (2025–2026)."
   },
   "seoul.co.kr": {
     "outlet": "Seoul Shinmun",
@@ -3842,8 +3843,8 @@
     "language": "ko",
     "type": "newspaper",
     "tier": 3,
-    "editorial_independence": "independent",
-    "bias_note": "Long-running Korean daily; independently owned"
+    "editorial_independence": "state_influenced",
+    "bias_note": "Long-running Korean daily; the Ministry of Economy and Finance holds 30.49% and KBS 8.08%, while Hoban Group has held 45.29% of shares and 53.4% of votes for operating control since October 2021."
   },
   "tuoitre.vn": {
     "outlet": "Tuổi Trẻ",
@@ -3860,7 +3861,7 @@
     "language": "en",
     "type": "digital_native",
     "tier": 4,
-    "editorial_independence": "independent",
+    "editorial_independence": "state_influenced",
     "bias_note": "English-language Turkish news site"
   },
   "vz.ru": {
@@ -3897,7 +3898,7 @@
     "type": "broadcaster",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "French 24-hour news channel; CMA CGM group since 2022"
+    "bias_note": "French 24-hour news channel; the CMA CGM group's acquisition completed on 2 July 2024 and the publisher was renamed RMC BFM."
   },
   "br.de": {
     "outlet": "BR (Bayerischer Rundfunk)",
@@ -3906,7 +3907,7 @@
     "type": "public_broadcaster",
     "tier": 2,
     "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "Bavarian public broadcaster; ARD member; licence fee funded"
+    "bias_note": "Bavarian public broadcaster and ARD member; funded by the Rundfunkbeitrag household levy, which replaced the licence fee in 2013."
   },
   "caracol.com.co": {
     "outlet": "Caracol Radio",
@@ -3932,8 +3933,8 @@
     "language": "zh",
     "type": "news_agency",
     "tier": 2,
-    "editorial_independence": "independent",
-    "bias_note": "Taiwan's national news agency; publicly listed on Taipei Exchange"
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "Taiwan's national news agency; a statutory foundation (財團法人) since the 1996 中央通訊社設置條例, with no shares and no stock-exchange listing. Funded first-line by a central-government budget subsidy; all directors are appointed by the Premier."
   },
   "cnnbrasil.com.br": {
     "outlet": "CNN Brasil",
@@ -3942,10 +3943,10 @@
     "type": "broadcaster",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Brazilian CNN franchise; Grupo J&F"
+    "bias_note": "Brazilian CNN franchise published by Novus Mídia; the Rubens Menin family has held 100% since March 2021."
   },
   "economictimes.indiatimes.com": {
-    "outlet": "Economic Times",
+    "outlet": "The Economic Times",
     "country": "India",
     "language": "en",
     "type": "newspaper",
@@ -3955,12 +3956,12 @@
   },
   "ejiltalk.org": {
     "outlet": "EJIL: Talk!",
-    "country": "Netherlands",
+    "country": "United Kingdom",
     "language": "en",
-    "type": "academic",
+    "type": "blog",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Blog of European Journal of International Law; Amsterdam Center for International Law"
+    "bias_note": "Blog of the European Journal of International Law, published by Oxford University Press on behalf of ESIL with its editorial office at the EUI in Florence; a different genre of writing from the journal, and not peer-reviewed."
   },
   "finance.yahoo.com": {
     "outlet": "Yahoo Finance",
@@ -3981,7 +3982,7 @@
     "bias_note": "US business magazine; owned by Fortune Media"
   },
   "g-enews.com": {
-    "outlet": "G-enews",
+    "outlet": "글로벌이코노믹 (Global Economic)",
     "country": "South Korea",
     "language": "ko",
     "type": "digital_native",
@@ -4008,7 +4009,7 @@
     "bias_note": "German technology news; Heise Verlag group"
   },
   "hindi.theprint.in": {
-    "outlet": "The Print (Hindi)",
+    "outlet": "ThePrint Hindi",
     "country": "India",
     "language": "hi",
     "type": "digital_native",
@@ -4031,7 +4032,7 @@
     "language": "en",
     "type": "think_tank",
     "tier": 2,
-    "editorial_independence": "independent",
+    "editorial_independence": "publicly_funded_autonomous",
     "bias_note": "International Food Policy Research Institute; CGIAR"
   },
   "ilsole24ore.com": {
@@ -4041,7 +4042,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Italy's main financial daily; Confindustria (business federation)"
+    "bias_note": "Italy's main financial daily, controlled by the Confindustria business federation; the publisher was delisted in August 2025 and merged in May 2026."
   },
   "itfglobal.org": {
     "outlet": "ITF",
@@ -4068,7 +4069,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Korean daily; progressive; employee-owned since 2006"
+    "bias_note": "Major Korean daily, employee-owned since March 1998; about 600 staff hold roughly 50% of the shares, and the editor-in-chief requires the consent of a majority of the journalists."
   },
   "lansinginstitute.org": {
     "outlet": "Robert Lansing Institute for Global Threats and Democracies Studies",
@@ -4101,7 +4102,7 @@
     "outlet": "Modern Ghana",
     "country": "Ghana",
     "language": "en",
-    "type": "digital_native",
+    "type": "aggregator",
     "tier": 4,
     "editorial_independence": "independent",
     "bias_note": "Ghanaian news portal"
@@ -4128,10 +4129,10 @@
     "outlet": "Rai News",
     "country": "Italy",
     "language": "it",
-    "type": "public_broadcaster",
+    "type": "state_broadcaster",
     "tier": 2,
-    "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "Italian public broadcaster news channel; RAI"
+    "editorial_independence": "state_directed",
+    "bias_note": "News channel of RAI, which is owned by the Italian Ministry of Economy and Finance; State Media Monitor classifies RAI Captured Public/State-Managed."
   },
   "rp.pl": {
     "outlet": "Rzeczpospolita",
@@ -4140,7 +4141,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Polish daily; Presspublica"
+    "bias_note": "Major Polish daily published by Gremi Media SA."
   },
   "suspilne.media": {
     "outlet": "Suspilne",
@@ -4155,10 +4156,10 @@
     "outlet": "Radio Svoboda",
     "country": "Czech Republic",
     "language": "ru",
-    "type": "broadcaster",
+    "type": "state_broadcaster",
     "tier": 2,
-    "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "RFE/RL Ukrainian service; US Congress-funded"
+    "editorial_independence": "state_directed",
+    "bias_note": "Russian-language service of Radio Free Europe / Radio Liberty, funded by congressional appropriations through a USAGM grant; State Media Monitor reclassified USAGM to State-Controlled in August 2025 and preserved that in June 2026; the statutory editorial firewall is under active litigation (2025–2026)."
   },
   "thehill.com": {
     "outlet": "The Hill",
@@ -4203,13 +4204,13 @@
     "type": "magazine",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Oil and gas trade publication; Endeavor Business Media"
+    "bias_note": "Oil and gas trade publication, monthly since 1916; published by Gulf Energy Information (formerly Gulf Publishing Company), Houston"
   },
   "wowtv.co.kr": {
-    "outlet": "WOW TV",
+    "outlet": "한국경제TV (Korea Economic TV)",
     "country": "South Korea",
     "language": "ko",
-    "type": "digital_native",
+    "type": "broadcaster",
     "tier": 4,
     "editorial_independence": "independent",
     "bias_note": "Korean economic broadcasting channel"
@@ -4218,10 +4219,10 @@
     "outlet": "Dzerkalo Tyzhnia",
     "country": "Ukraine",
     "language": "uk",
-    "type": "newspaper",
+    "type": "digital_native",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Ukrainian weekly analytical newspaper; independently owned"
+    "bias_note": "Ukrainian analytical outlet, independently owned and online-only since its last printed issue (no. 1,275) on 27 December 2019."
   },
   "36kr.com": {
     "outlet": "36Kr",
@@ -4253,7 +4254,7 @@
   "alima.ngo": {
     "outlet": "ALIMA",
     "country": "France",
-    "language": "en",
+    "language": "fr",
     "type": "ngo",
     "tier": 3,
     "editorial_independence": "independent",
@@ -4302,7 +4303,7 @@
     "type": "newspaper",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Thai business daily; Bangkok Post group"
+    "bias_note": "Thai business daily published by Krungthep Turakij Media Co Ltd, a media arm of Nation Group (Thailand) PCL."
   },
   "biz.heraldcorp.com": {
     "outlet": "Herald Business / 헤럴드경제",
@@ -4346,7 +4347,7 @@
     "language": "en",
     "type": "digital_native",
     "tier": 4,
-    "editorial_independence": "independent",
+    "editorial_independence": "state_influenced",
     "bias_note": "Brussels-based EU news site"
   },
   "bta.bg": {
@@ -4404,7 +4405,7 @@
     "bias_note": "Chinese MFA think-tank publication"
   },
   "cnbce.com": {
-    "outlet": "CNBCE",
+    "outlet": "CNBC-e",
     "country": "Turkey",
     "language": "tr",
     "type": "broadcaster",
@@ -4419,7 +4420,7 @@
     "type": "broadcaster",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "French 24-hour news channel; Canal+ (Vivendi/Bolloré)"
+    "bias_note": "French 24-hour news channel owned by Canal+, which was demerged from Vivendi and listed in London in December 2024."
   },
   "coindesk.com": {
     "outlet": "CoinDesk",
@@ -4443,10 +4444,10 @@
     "outlet": "Current Time TV",
     "country": "Czech Republic",
     "language": "ru",
-    "type": "broadcaster",
+    "type": "state_broadcaster",
     "tier": 2,
-    "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "RFE/RL and VOA Russian-language TV; US Congress-funded"
+    "editorial_independence": "state_directed",
+    "bias_note": "Russian-language television channel of Radio Free Europe / Radio Liberty and Voice of America, funded by congressional appropriations through USAGM; State Media Monitor reclassified USAGM to State-Controlled in August 2025 and preserved that in June 2026; the statutory editorial firewall is under active litigation (2025–2026)."
   },
   "dailysabah.com": {
     "outlet": "Daily Sabah",
@@ -4467,8 +4468,8 @@
     "bias_note": "Entertainment industry news; Penske Media Corporation"
   },
   "defence-industry.eu": {
-    "outlet": "Defence Industry EU",
-    "country": "Netherlands",
+    "outlet": "Defence Industry Europe",
+    "country": "Poland",
     "language": "en",
     "type": "digital_native",
     "tier": 4,
@@ -4491,7 +4492,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Colombian daily; one of oldest in the country"
+    "bias_note": "Colombian daily; print has circulated Sundays only since 2 August 2025. Published by Comunican S.A., controlled by Grupo Valorem (Santo Domingo family)."
   },
   "emaratalyoum.com": {
     "outlet": "Emarat Al Youm",
@@ -4509,7 +4510,7 @@
     "type": "news_agency",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Ukrainian news agency; Interfax group"
+    "bias_note": "Ukrainian news agency; it denies membership of the Interfax group, and its ultimate beneficial owner is Andriy Martynenko."
   },
   "energyintel.com": {
     "outlet": "Energy Intelligence",
@@ -4584,7 +4585,7 @@
     "bias_note": "Official Omani Ministry of Foreign Affairs"
   },
   "fnn.jp": {
-    "outlet": "Fuji News Network",
+    "outlet": "FNN Prime Online",
     "country": "Japan",
     "language": "ja",
     "type": "broadcaster",
@@ -4617,7 +4618,7 @@
     "type": "ngo",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "International environmental NGO; individual donations funded"
+    "bias_note": "International environmental NGO; Greenpeace International is about 94% funded by transfers from the national offices, and the funding policy also admits foundation grants."
   },
   "hankookilbo.com": {
     "outlet": "Hankook Ilbo",
@@ -4644,7 +4645,7 @@
     "type": "newspaper",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "French daily; historically tied to French Communist Party"
+    "bias_note": "French daily, historically tied to the French Communist Party; received €5.66m in 2024 as the seventh-largest beneficiary of France's general press subsidies."
   },
   "ilpost.it": {
     "outlet": "Il Post",
@@ -4698,7 +4699,7 @@
     "type": "news_agency",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Jewish News Syndicate; Jewish and Israel news"
+    "bias_note": "Jerusalem News Syndicate (renamed from Jewish News Syndicate, 2026); US-registered nonprofit news agency (Jewish News Service Inc., Newton MA) with a Jerusalem newsroom"
   },
   "jurist.org": {
     "outlet": "JURIST",
@@ -4799,7 +4800,7 @@
     "bias_note": "French weekly news magazine"
   },
   "link.springer.com": {
-    "outlet": "Springer Nature",
+    "outlet": "Springer Nature Link",
     "country": "Germany",
     "language": "en",
     "type": "academic",
@@ -4814,7 +4815,7 @@
     "type": "broadcaster",
     "tier": 4,
     "editorial_independence": "independent",
-    "bias_note": "ABC affiliate in Miami; E.W. Scripps Company"
+    "bias_note": "Independent Miami TV station (former ABC affiliate through Aug. 2025); owned by Berkshire Hathaway via WPLG, Inc."
   },
   "lowyinstitute.org": {
     "outlet": "Lowy Institute",
@@ -4835,22 +4836,22 @@
     "bias_note": "Lithuanian National Radio and Television; publicly funded"
   },
   "lrytas.lt": {
-    "outlet": "Lietuvos Rytas",
+    "outlet": "Lrytas",
     "country": "Lithuania",
     "language": "lt",
-    "type": "newspaper",
+    "type": "digital_native",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Major Lithuanian daily; privately owned"
+    "bias_note": "Lithuanian news portal, web-only since its launch in 2006; the print daily Lietuvos rytas is a separate outlet with a separate publisher."
   },
   "mc-doualiya.com": {
     "outlet": "Monte Carlo Doualiya",
     "country": "France",
     "language": "ar",
-    "type": "broadcaster",
+    "type": "public_broadcaster",
     "tier": 2,
     "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "Arabic service of RFI; France Médias Monde"
+    "bias_note": "Arabic-language station of France Médias Monde, separate from RFI since 2012; FMM is state-owned and state-funded and is classified Independent State-Funded and State-Managed by State Media Monitor."
   },
   "melliun.org": {
     "outlet": "Melliun",
@@ -4880,13 +4881,13 @@
     "bias_note": "Official Saudi Ministry of Foreign Affairs"
   },
   "money.udn.com": {
-    "outlet": "UDN Money",
+    "outlet": "經濟日報 (Economic Daily News)",
     "country": "Taiwan",
     "language": "zh",
     "type": "newspaper",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Financial section of United Daily News group"
+    "bias_note": "經濟日報 (Economic Daily News), a titled financial daily founded 1967 in the United Daily News group."
   },
   "nature.com": {
     "outlet": "Nature",
@@ -4904,7 +4905,7 @@
     "type": "broadcaster",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Hindi news channel; NDTV group"
+    "bias_note": "Hindi news channel of NDTV, controlled by the Adani Group through AMG Media Networks since December 2022."
   },
   "news.cctv.com": {
     "outlet": "CCTV News",
@@ -4940,7 +4941,7 @@
     "type": "magazine",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Weekly news magazine; owned by IBT Media"
+    "bias_note": "Weekly news magazine, print and digital; owned by NW Media Holdings Corp. (Dev Pragad and Johnathan Davis, 50/50) since the 2018 split from IBT Media"
   },
   "newsweekjapan.jp": {
     "outlet": "Newsweek Japan",
@@ -4953,7 +4954,7 @@
   },
   "nknews.org": {
     "outlet": "NK News",
-    "country": "United States",
+    "country": "South Korea",
     "language": "en",
     "type": "digital_native",
     "tier": 3,
@@ -5006,13 +5007,13 @@
     "bias_note": "AI research company blog and announcements"
   },
   "ostro.org": {
-    "outlet": "Ostro",
+    "outlet": "ОстроВ (OstroV)",
     "country": "Ukraine",
     "language": "uk",
     "type": "digital_native",
     "tier": 4,
     "editorial_independence": "independent",
-    "bias_note": "Ukrainian regional news site covering Donetsk/Luhansk"
+    "bias_note": "Ukrainian information agency covering Donetsk and Luhansk; funded by the National Endowment for Democracy and the European Union."
   },
   "plo.vn": {
     "outlet": "Pháp Luật TP.HCM",
@@ -5066,7 +5067,7 @@
     "type": "public_broadcaster",
     "tier": 2,
     "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "French-language Belgian public broadcaster; licence fee funded"
+    "bias_note": "French-language Belgian public broadcaster; the redevance was abolished and it is funded by a government dotation."
   },
   "rtp.pt": {
     "outlet": "RTP",
@@ -5075,7 +5076,7 @@
     "type": "public_broadcaster",
     "tier": 2,
     "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "Portuguese public broadcaster; licence fee funded"
+    "bias_note": "Portuguese public broadcaster; funded by a levy collected on electricity bills."
   },
   "russiaun.ru": {
     "outlet": "Permanent Mission of the Russian Federation to the UN",
@@ -5129,7 +5130,7 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Turkish opposition-aligned daily; Sözcü Gazetecilik"
+    "bias_note": "National daily published by Mega Ajans ve Rek. Tic. A.Ş.; ultimate ownership runs through Estetik Yayıncılık A.Ş. to Swiss-registered BEME Media A.G., with founder Burak Akbay the majority holder."
   },
   "sputniknews.cn": {
     "outlet": "Sputnik Chinese",
@@ -5147,16 +5148,16 @@
     "type": "public_broadcaster",
     "tier": 2,
     "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "Swiss German public broadcaster; SRG SSR member"
+    "bias_note": "Swiss German-language public broadcaster; a branch (Zweigniederlassung) of SRG SSR, whose members are the regional broadcasting societies."
   },
   "t-online.de": {
-    "outlet": "T-Online",
+    "outlet": "t-online",
     "country": "Germany",
     "language": "de",
     "type": "digital_native",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "German news portal; formerly Deutsche Telekom internet"
+    "bias_note": "German news portal; owned by Ströer — the T-Online spelling is Deutsche Telekom's, retired, and names a lineage rather than the owner."
   },
   "t24.com.tr": {
     "outlet": "T24",
@@ -5183,7 +5184,7 @@
     "type": "digital_native",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Hungarian independent news site; founded 2020; reader-funded"
+    "bias_note": "Hungarian news site founded 2020; its own transparency report puts reader donations at about 30% of revenue against 61.7% advertising and other commercial income."
   },
   "theepochtimes.com": {
     "outlet": "The Epoch Times",
@@ -5243,10 +5244,10 @@
     "outlet": "Ukrinform",
     "country": "Ukraine",
     "language": "uk",
-    "type": "news_agency",
+    "type": "state_broadcaster",
     "tier": 2,
-    "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "Ukrainian national news agency; editorially independent per law"
+    "editorial_independence": "state_directed",
+    "bias_note": "Ukraine's national news agency; a state-owned enterprise under government decree, its General Director appointed by the government and more than 80% state-funded. State Media Monitor classifies it State-Controlled and records no dedicated statute establishing its editorial independence."
   },
   "ummat.net": {
     "outlet": "Ummat",
@@ -5261,10 +5262,10 @@
     "outlet": "VOA Chinese",
     "country": "United States",
     "language": "zh",
-    "type": "broadcaster",
+    "type": "state_broadcaster",
     "tier": 2,
-    "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "US Congress-funded Chinese service of VOA"
+    "editorial_independence": "state_directed",
+    "bias_note": "Chinese service of Voice of America, a federal entity operated directly by the US Agency for Global Media; State Media Monitor reclassified USAGM to State-Controlled in August 2025 and preserved that in June 2026; the statutory editorial firewall is under active litigation (2025–2026)."
   },
   "washingtonblade.com": {
     "outlet": "Washington Blade",
@@ -5303,13 +5304,13 @@
     "bias_note": "Polish news portal; Wirtualna Polska group"
   },
   "yetkinreport.com": {
-    "outlet": "YetkinReport",
+    "outlet": "Yetkin Report",
     "country": "Turkey",
-    "language": "en",
+    "language": "tr",
     "type": "blog",
     "tier": 4,
     "editorial_independence": "independent",
-    "bias_note": "Turkish politics blog by journalist Serkan Demirtaş"
+    "bias_note": "Turkish politics site founded and run since autumn 2018 by Murat Yetkin, former editor-in-chief of Hürriyet Daily News."
   },
   "youtube.com": {
     "outlet": "YouTube",
@@ -5330,13 +5331,13 @@
     "bias_note": "Major Bulgarian daily tabloid"
   },
   "47news.jp": {
-    "outlet": "47 News",
+    "outlet": "47NEWS",
     "country": "Japan",
     "language": "ja",
-    "type": "news_agency",
+    "type": "aggregator",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Japanese regional newspaper consortium news wire"
+    "bias_note": "News portal of the Japanese regional-newspaper consortium, operated by 株式会社全国新聞ネット (PNJ); it does no newsgathering of its own and outsources editing to Kyodo News."
   },
   "7sur7.cd": {
     "outlet": "7sur7.cd",
@@ -5348,7 +5349,7 @@
     "bias_note": "DRC news portal"
   },
   "aaj.tv": {
-    "outlet": "Aaj TV",
+    "outlet": "Aaj News",
     "country": "Pakistan",
     "language": "ur",
     "type": "broadcaster",
@@ -5403,7 +5404,7 @@
   },
   "actufinance.fr": {
     "outlet": "Actu Finance",
-    "country": "France",
+    "country": "United Kingdom",
     "language": "fr",
     "type": "digital_native",
     "tier": 4,
@@ -5417,7 +5418,7 @@
     "type": "news_agency",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Italian news agency; privately owned"
+    "bias_note": "Italian news agency, privately owned; holds a state convention worth about €4.95m a year, as ANSA and AGI also do."
   },
   "aei.org": {
     "outlet": "AEI",
@@ -5450,9 +5451,9 @@
     "outlet": "Agerpres",
     "country": "Romania",
     "language": "ro",
-    "type": "news_agency",
+    "type": "state_broadcaster",
     "tier": 2,
-    "editorial_independence": "publicly_funded_autonomous",
+    "editorial_independence": "state_directed",
     "bias_note": "Romanian national news agency"
   },
   "alaraby.com": {
@@ -5465,13 +5466,13 @@
     "bias_note": "Arabic-language news website; London-based"
   },
   "alhurra.com": {
-    "outlet": "Al Hurra",
+    "outlet": "Alhurra",
     "country": "United States",
     "language": "ar",
-    "type": "broadcaster",
+    "type": "state_broadcaster",
     "tier": 3,
-    "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "US Congress-funded Arabic TV; BBG/USAGM oversight"
+    "editorial_independence": "state_directed",
+    "bias_note": "Arabic-language network of Middle East Broadcasting Networks, Inc. (Springfield, VA), a non-profit grantee funded entirely by congressional appropriations via USAGM; grant funding frozen/terminated in 2025 and contested in litigation"
   },
   "almodon.com": {
     "outlet": "Al Modon",
@@ -5507,7 +5508,7 @@
     "type": "magazine",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Contemporary art magazine; independently published since 1962"
+    "bias_note": "Contemporary art magazine founded 1962; owned by Penske Media Corporation since December 2022"
   },
   "asean.org": {
     "outlet": "ASEAN",
@@ -5525,7 +5526,7 @@
     "type": "aggregator",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Singapore-based Asian news aggregator; SPH Media"
+    "bias_note": "Singapore-based Asian news aggregator published by AsiaOne Online Pte Ltd (UEN 201815023K); SPH Media lists neither the brand nor the domain."
   },
   "band.com.br": {
     "outlet": "Band",
@@ -5543,13 +5544,13 @@
     "type": "newspaper",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Danish daily; founded 1749; independently owned"
+    "bias_note": "Major Danish daily founded 1749; owned by Amedia since December 2024."
   },
   "biobiochile.cl": {
     "outlet": "BioBioChile",
     "country": "Chile",
     "language": "es",
-    "type": "digital_native",
+    "type": "broadcaster",
     "tier": 3,
     "editorial_independence": "independent",
     "bias_note": "Major Chilean news site"
@@ -5570,7 +5571,7 @@
     "type": "newspaper",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Major Serbian daily; Ringier Axel Springer"
+    "bias_note": "Major Serbian daily published by Ringier Serbia d.o.o.; Axel Springer was bought out of the joint venture in 2022."
   },
   "blick.ch": {
     "outlet": "Blick",
@@ -5594,10 +5595,10 @@
     "outlet": "Breaking Defense",
     "country": "United States",
     "language": "en",
-    "type": "magazine",
+    "type": "digital_native",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Defense industry news; Metabiologics"
+    "bias_note": "Defense industry trade news; published by Breaking Media, Inc., a privately held B2B digital publisher in New York"
   },
   "brisbanetimes.com.au": {
     "outlet": "Brisbane Times",
@@ -5623,7 +5624,7 @@
     "language": "en",
     "type": "newspaper",
     "tier": 2,
-    "editorial_independence": "independent",
+    "editorial_independence": "state_influenced",
     "bias_note": "Singapore business daily; SPH Media Trust"
   },
   "bworldonline.com": {
@@ -5645,7 +5646,7 @@
     "bias_note": "Major Spanish radio network; PRISA Media"
   },
   "cambridge.org": {
-    "outlet": "Cambridge University Press",
+    "outlet": "Cambridge University Press & Assessment",
     "country": "United Kingdom",
     "language": "en",
     "type": "academic",
@@ -5657,9 +5658,9 @@
     "outlet": "Canal Sur",
     "country": "Spain",
     "language": "es",
-    "type": "public_broadcaster",
+    "type": "state_broadcaster",
     "tier": 3,
-    "editorial_independence": "publicly_funded_autonomous",
+    "editorial_independence": "state_directed",
     "bias_note": "Andalusian public broadcaster"
   },
   "care.org": {
@@ -5677,7 +5678,7 @@
     "language": "en",
     "type": "digital_native",
     "tier": 3,
-    "editorial_independence": "independent",
+    "editorial_independence": "state_directed",
     "bias_note": "English-language news about Catalonia"
   },
   "cato.org": {
@@ -5711,7 +5712,7 @@
     "outlet": "Common Dreams",
     "country": "United States",
     "language": "en",
-    "type": "ngo",
+    "type": "digital_native",
     "tier": 3,
     "editorial_independence": "independent",
     "bias_note": "Progressive news and advocacy; nonprofit"
@@ -5720,10 +5721,10 @@
     "outlet": "Computerworld",
     "country": "United States",
     "language": "en",
-    "type": "digital_native",
+    "type": "magazine",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "IT industry trade publication; Foundry (IDG)"
+    "bias_note": "IT industry trade publication; Foundry, owned by Regent LP since March 2025 (formerly IDG)"
   },
   "congress.gov": {
     "outlet": "Congress.gov",
@@ -5756,10 +5757,19 @@
     "outlet": "Daily Pakistan",
     "country": "Pakistan",
     "language": "ur",
-    "type": "digital_native",
+    "type": "newspaper",
     "tier": 4,
     "editorial_independence": "independent",
     "bias_note": "Pakistani Urdu news site"
+  },
+  "en.dailypakistan.com.pk": {
+    "outlet": "Daily Pakistan",
+    "country": "Pakistan",
+    "language": "en",
+    "type": "newspaper",
+    "tier": 4,
+    "editorial_independence": "independent",
+    "bias_note": "English-language edition of Daily Pakistan."
   },
   "de.marketscreener.com": {
     "outlet": "MarketScreener Germany",
@@ -5804,7 +5814,7 @@
     "type": "digital_native",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Major Estonian news portal; Delfi group"
+    "bias_note": "Major Estonian news portal."
   },
   "deseret.com": {
     "outlet": "Deseret News",
@@ -5813,7 +5823,7 @@
     "type": "newspaper",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Utah daily; Deseret Management (LDS Church subsidiary)"
+    "bias_note": "Weekly print plus daily digital since 2021; Deseret News Publishing Company, part of Deseret Management Corporation, affiliated with the Church of Jesus Christ of Latter-day Saints"
   },
   "devex.com": {
     "outlet": "Devex",
@@ -5840,7 +5850,7 @@
     "type": "broadcaster",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Romanian 24-hour news TV; RCS and DSD group"
+    "bias_note": "Romanian 24-hour news TV; owned by RCS & RDS, renamed Digi Romania S.A. in 2024."
   },
   "directrelief.org": {
     "outlet": "Direct Relief",
@@ -5876,16 +5886,16 @@
     "type": "public_broadcaster",
     "tier": 1,
     "editorial_independence": "publicly_funded_autonomous",
-    "bias_note": "Danish national broadcaster; licence fee funded"
+    "bias_note": "Danish national public broadcaster; funded through income tax since 2022, which replaced the former licence fee."
   },
   "elcomercio.com": {
     "outlet": "El Comercio",
-    "country": "Peru",
+    "country": "Ecuador",
     "language": "es",
-    "type": "newspaper",
+    "type": "digital_native",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Peruvian daily; El Comercio group"
+    "bias_note": "Quito daily, digital-only since 6 June 2023; 94% of shares acquired in 2015 by Ángel González via Telglovisión S.A. Distinct from El Comercio of Lima, which publishes at elcomercio.pe."
   },
   "elespanol.com": {
     "outlet": "El Espanol",
@@ -5915,19 +5925,19 @@
     "bias_note": "English edition of Al-Ahram; Egypt's state-owned flagship daily"
   },
   "english.kyodonews.net": {
-    "outlet": "Kyodo News (English)",
+    "outlet": "Japan Wire by Kyodo News",
     "country": "Japan",
     "language": "en",
     "type": "news_agency",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "English service of Japan's Kyodo News agency"
+    "bias_note": "Japan Wire by Kyodo News, the English-language service that took over Kyodo News Plus in the summer of 2025."
   },
   "eos.org": {
     "outlet": "Eos",
     "country": "United States",
     "language": "en",
-    "type": "academic",
+    "type": "magazine",
     "tier": 3,
     "editorial_independence": "independent",
     "bias_note": "Earth and space science news; published by AGU"
@@ -5939,7 +5949,7 @@
     "type": "broadcaster",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Sports media network; owned by Disney"
+    "bias_note": "Sports media network; Disney-controlled, Hearst minority, NFL holds 10% since February 2026"
   },
   "evangelisch.de": {
     "outlet": "Evangelisch.de",
@@ -5993,7 +6003,7 @@
     "type": "aggregator",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Japanese financial news aggregator; SoftBank/Z Holdings"
+    "bias_note": "Japanese financial news aggregator operated by LY Corporation, 62.3% held by A Holdings; Z Holdings no longer exists."
   },
   "foxrochester.com": {
     "outlet": "Fox Rochester",
@@ -6023,13 +6033,13 @@
     "bias_note": "UK news channel; launched 2021; privately funded"
   },
   "geo.tv": {
-    "outlet": "GEO TV",
+    "outlet": "Geo News",
     "country": "Pakistan",
-    "language": "ur",
+    "language": "en",
     "type": "broadcaster",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "Major Pakistani TV channel; Jang Media group"
+    "bias_note": "Major Pakistani TV news channel; the publishing entity is Independent Media Corporation (Pvt) Ltd, Mir Shakil-ur-Rahman 99.90% (RSF Media Ownership Monitor). Urdu output is on the separate host urdu.geo.tv."
   },
   "gp.se": {
     "outlet": "GP",
@@ -6056,7 +6066,7 @@
     "type": "broadcaster",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Turkish opposition-aligned TV channel"
+    "bias_note": "National news and current-affairs television channel operated by Halk Radyo ve Televizyon Yayıncılık A.Ş., Zeytinburnu/İstanbul."
   },
   "hromadske.ua": {
     "outlet": "Hromadske",
@@ -6065,7 +6075,7 @@
     "type": "digital_native",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Ukrainian public-oriented media; grant-funded"
+    "bias_note": "Ukrainian public-interest outlet; revenue UAH 51.2m, about 40% commercial, largest single grant 23.5% from the Prague Civil Society Centre."
   },
   "huffpost.com": {
     "outlet": "HuffPost",
@@ -6074,7 +6084,7 @@
     "type": "digital_native",
     "tier": 2,
     "editorial_independence": "independent",
-    "bias_note": "US news site; owned by BuzzFeed since 2020"
+    "bias_note": "US news site; owned by BuzzFeed, Inc., majority-controlled by Allen Family Digital since May 2026"
   },
   "icct.nl": {
     "outlet": "ICCT",
@@ -6083,7 +6093,7 @@
     "type": "think_tank",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "International Centre for Counter-Terrorism; The Hague"
+    "bias_note": "International Centre for Counter-Terrorism, The Hague; more than 75% of its funding comes from European public bodies, the largest single funder being the Dutch state."
   },
   "ieefa.org": {
     "outlet": "IEEFA",
@@ -6109,8 +6119,8 @@
     "language": "en",
     "type": "think_tank",
     "tier": 2,
-    "editorial_independence": "independent",
-    "bias_note": "International Institute for Strategic Studies; London-based defence think tank"
+    "editorial_independence": "state_influenced",
+    "bias_note": "International Institute for Strategic Studies, London; its own funding disclosure lists governments and host-nation support for named conferences among principal income."
   },
   "ilfoglio.it": {
     "outlet": "Il Foglio",
@@ -6119,7 +6129,7 @@
     "type": "newspaper",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Italian daily; founded by Giuliano Ferrara"
+    "bias_note": "Italian daily founded by Giuliano Ferrara; receives Italy's general criteria-based press subsidy under D.Lgs. 70/2017."
   },
   "ilgiornale.it": {
     "outlet": "Il Giornale",
@@ -6127,8 +6137,8 @@
     "language": "it",
     "type": "newspaper",
     "tier": 3,
-    "editorial_independence": "independent",
-    "bias_note": "Italian daily; owned by Paolo Berlusconi family"
+    "editorial_independence": "state_influenced",
+    "bias_note": "Italian daily; sold by the Paolo Berlusconi family to Antonio Angelucci in 2023. Angelucci is a sitting member of the Chamber of Deputies for Lega - Salvini Premier."
   },
   "ilmanifesto.it": {
     "outlet": "Il Manifesto",
@@ -6137,7 +6147,7 @@
     "type": "newspaper",
     "tier": 3,
     "editorial_independence": "independent",
-    "bias_note": "Italian daily; cooperative ownership; historically far-left"
+    "bias_note": "Italian daily published by a cooperative; its registered masthead is «il manifesto quotidiano comunista». Receives Italy's general criteria-based press subsidy under Art. 20 of its statute."
   },
   "imo.org": {
     "outlet": "IMO",
@@ -6172,7 +6182,7 @@
     "language": "en",
     "type": "think_tank",
     "tier": 2,
-    "editorial_independence": "independent",
+    "editorial_independence": "publicly_funded_autonomous",
     "bias_note": "Institute for Security Studies; African crime and conflict research"
   },
   "itmedia.co.jp": {
@@ -6203,13 +6213,13 @@
     "bias_note": "Jewish Telegraphic Agency; global Jewish news since 1917"
   },
   "kas.de": {
-    "outlet": "Konrad Adenauer Foundation",
+    "outlet": "Konrad-Adenauer-Stiftung",
     "country": "Germany",
     "language": "de",
     "type": "think_tank",
     "tier": 2,
-    "editorial_independence": "independent",
-    "bias_note": "German political foundation; affiliated with CDU"
+    "editorial_independence": "publicly_funded_autonomous",
+    "bias_note": "German political foundation affiliated with the CDU; a registered association (e.V.) that describes itself as financially and organisationally independent of the party and is predominantly financed from public funds."
   },
   "khaleejtimes.com": {
     "outlet": "Khaleej Times",
