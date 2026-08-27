@@ -18,6 +18,7 @@ re-verification workstream, not something a test can do.
 from __future__ import annotations
 
 import json
+import re
 from collections import defaultdict
 from pathlib import Path
 
@@ -255,3 +256,168 @@ def test_outlet_resolves_through_lookup_outlet(entries: dict[str, dict]):
         f"lookup_outlet — hydration would fall back to the feed name. "
         f"First 10: {unresolved[:10]}"
     )
+
+
+# --- (f) ideological-language gate -----------------------------------------
+#
+# ``docs/MAINTENANCE.md`` step 4 requires that "the ideological-language regex
+# returns zero hits across all ``bias_note`` values". Until 2026-08-25 that
+# gate existed only as prose. The auditor's own scan then found 19 violations
+# across 681 entries — sixteen of them in outlets no re-verification pass had
+# ever reached, and therefore invisible to every process the project had. This
+# module is where the prose becomes enforcement.
+#
+# ``bias_note`` states ownership, funding source, charter, publishing entity
+# and regional focus — structural facts a reader can check. It never places an
+# outlet on a political spectrum. That is load-bearing for the transparency
+# layer's credibility, not a style preference.
+#
+# The term list below is the CANONICAL one. It was seeded from the auditor's
+# throwaway scan script of 2026-08-25 and copied here deliberately: the script
+# lived in /tmp and is gone on the next reboot, so the list has to live with
+# the assertion that uses it. It was then extended with the siblings the seed
+# happened not to carry — US-spelled ``center-left`` / ``center-right``, which
+# is exactly what ``mainichi.jp`` was escaping on, plus ``anti-government``
+# beside the seed's ``pro-government``.
+IDEOLOGICAL_TERMS = (
+    "anti-government",
+    "center-left",
+    "center-right",
+    "centre-left",
+    "centre-right",
+    "centrist",
+    "conservative",
+    "far-left",
+    "far-right",
+    "left-leaning",
+    "left-wing",
+    "leftist",
+    "liberal",
+    "nationalist",
+    "opposition-aligned",
+    "populist",
+    "pro-government",
+    "progressive",
+    "right-leaning",
+    "right-wing",
+    "rightist",
+    "secular-republican",
+)
+
+_TERM_ALTERNATION = "|".join(
+    re.escape(t) for t in sorted(IDEOLOGICAL_TERMS, key=len, reverse=True)
+)
+
+# Matching is case-INSENSITIVE, with a proper-noun exemption (below), rather
+# than the case-sensitive-lowercase rule first proposed. The reason is in the
+# data: two of the sixteen violations found on 2026-08-25 opened their
+# ``bias_note`` with a sentence-initial "Progressive …", so a lowercase-only
+# gate would have scored the registry 14 and left two real violations
+# permanently invisible. The trap that motivated case-sensitivity — factual
+# party and institution names such as "the Conservative Party" — is handled
+# more precisely by ``_is_proper_noun_use`` instead.
+_TERMS = re.compile(rf"\b({_TERM_ALTERNATION})s?\b", re.IGNORECASE)
+
+# "pro-<actor>" (pro-DPP, pro-Ukraine, pro-democracy) is an alignment claim
+# whatever the actor's capitalisation, so it is matched separately and does
+# NOT receive the proper-noun exemption.
+_PRO_ACTOR = re.compile(r"\bpro-[A-Za-z]")
+
+# Owner decision 2026-08-25: a directional term is permitted ONLY when the
+# data itself marks it as the institution's own declared identity. No
+# type-based allowlist and no per-host allowlist in test code — the exception
+# has to be literally readable in the ``bias_note`` a user sees. The phrase
+# may introduce a run of terms ("self-described progressive and liberal …").
+_SELF_DESCRIBED = re.compile(
+    rf"self-described\s+(?:(?:{_TERM_ALTERNATION})s?[\s,]+(?:and\s+|or\s+)?)*$",
+    re.IGNORECASE,
+)
+
+
+def _is_proper_noun_use(note: str, match: re.Match) -> bool:
+    """A capitalised term followed by another capitalised word is a name.
+
+    "the Conservative Party", "Liberal Democratic Party", "Progressive
+    International" are institutions, not editorial orientations. A capitalised
+    term followed by anything else — a lowercase word, punctuation, the end of
+    the string — is the adjective, and is caught.
+
+    Known limitation, stated so it is not mistaken for coverage: a directional
+    adjective that happens to be followed by a proper noun ("progressive
+    Democrats") escapes. No hit in the current registry takes that shape, and
+    the alternative (lowercase-only matching) misses strictly more.
+    """
+    if not match.group(0)[:1].isupper():
+        return False
+    tail = note[match.end():].lstrip()
+    return bool(tail) and tail[0].isupper()
+
+
+def _is_self_described(note: str, match: re.Match) -> bool:
+    return bool(_SELF_DESCRIBED.search(note[: match.start()]))
+
+
+def ideological_gate_hits(entries: dict[str, dict]) -> list[tuple[str, str, str]]:
+    """(host, matched term, full bias_note) for every unexempted match."""
+    hits: list[tuple[str, str, str]] = []
+    for host in sorted(entries):
+        note = entries[host].get("bias_note") or ""
+        for pattern in (_TERMS, _PRO_ACTOR):
+            for match in pattern.finditer(note):
+                if pattern is _TERMS and _is_proper_noun_use(note, match):
+                    continue
+                if _is_self_described(note, match):
+                    continue
+                hits.append((host, match.group(0), note))
+    return hits
+
+
+def test_bias_note_carries_no_ideological_language(entries: dict[str, dict]):
+    """MAINTENANCE.md step 4, enforced."""
+    hits = ideological_gate_hits(entries)
+    report = "\n".join(
+        f"  [{term}] {host}\n      {note}" for host, term, note in hits
+    )
+    assert not hits, (
+        f"{len(hits)} ideological-language hit(s) in bias_note across "
+        f"{len(entries)} entries:\n{report}\n\n"
+        f"bias_note carries ownership, funding, charter, publishing entity and "
+        f"regional focus — never a placement on a political spectrum. If the "
+        f"term is the institution's OWN declared identity, write it as "
+        f"'self-described <term>' in the registry; there is deliberately no "
+        f"allowlist in this file."
+    )
+
+
+# The two exemptions above are load-bearing but, as of 2026-08-25, nothing in
+# the registry exercises the proper-noun one — it is a forward guard against a
+# factual party or institution name being rewritten as if it were an opinion.
+# Untested forward guards rot, so both are pinned here on synthetic strings.
+
+
+@pytest.mark.parametrize(
+    "note, expect_hit",
+    [
+        # Proper nouns — the case-sensitivity trap the gate must not fall into.
+        ("Daily owned by the Conservative Party since 1998", False),
+        ("Broadcaster of the Liberal Democratic Party", False),
+        ("Published by Progressive International", False),
+        # The adjective, however it is capitalised.
+        ("Progressive news and advocacy; nonprofit", True),
+        ("conservative policy think tank", True),
+        ("Editorial line is broadly centrist", True),
+        ("Strongly pro-DPP editorial line", True),
+        ("Reformist and pro-democracy", True),
+        # The only permitted exception, and only when visible in the data.
+        ("Self-described progressive policy think tank", False),
+        ("AEI; self-described conservative policy think tank", False),
+        ("self-described progressive and liberal outlet", False),
+        # "self-described" does not license a term further down the string.
+        ("Self-described progressive think tank; a populist register", True),
+        # Plurals do not slip past.
+        ("Close to conservatives in parliament", True),
+    ],
+)
+def test_ideological_gate_matching_rules(note: str, expect_hit: bool):
+    hits = ideological_gate_hits({"example.test": {"bias_note": note}})
+    assert bool(hits) is expect_hit, f"{note!r} -> {hits}"
