@@ -32,7 +32,11 @@ import pytest
 from src.agent import AgentAPIError, AgentResult
 from src.flash_stage_fallback import FlashStageWithFallback
 from src.runner.runner import _collect_agent_metrics
-from src.schemas import CONSOLIDATOR_SCHEMA, HYDRATION_PHASE1_SCHEMA
+from src.schemas import (
+    BIAS_CANDIDATES_SCHEMA,
+    CONSOLIDATOR_SCHEMA,
+    HYDRATION_PHASE1_SCHEMA,
+)
 
 
 # --------------------------------------------------------------------------- #
@@ -371,3 +375,200 @@ async def test_phase1_chunk_survives_a_channel_c_outage():
     assert primary.run_calls == 1 and fallback.run_calls == 1
     assert len(analyses) == 1
     assert wrapper.last_fallback_used is True
+
+
+# --------------------------------------------------------------------------- #
+# bias_candidate_extractor — TASK-BIAS-EXTRACTOR-COUPLED
+# --------------------------------------------------------------------------- #
+VALID_CANDIDATES = {
+    "candidates": [{"excerpt": "a devastating blow", "issue_hint": "evaluative_adjective"}]
+}
+
+
+@pytest.mark.parametrize("variant", ["production", "hydrated"])
+def test_bias_extractor_wired_to_flash_0731_at_minimal(variant, monkeypatch):
+    """The extractor is the composite's sub-agent, so the wrapper lives INSIDE
+    BiasComposite rather than in the agents dict. T3b's triage level, and the
+    temperature 0.8 that makes three passes a recall mechanism instead of three
+    identical calls."""
+    from src.bias_composite import BiasComposite
+
+    composite = load_agents(variant, monkeypatch)["bias_language"]
+    assert isinstance(composite, BiasComposite)
+    extractor = composite.extractor
+    assert isinstance(extractor, FlashStageWithFallback)
+    assert extractor.fallback_marker_key == "extractor_fallback_used"
+    assert_channel_c_primary(
+        extractor.primary, reasoning="minimal", temperature=0.8, max_tokens=32000,
+        label="extractor primary",
+    )
+    assert_channel_a_fallback(
+        extractor.fallback, temperature=0.8, max_tokens=32000,
+        label="extractor fallback",
+    )
+    assert "deepseek-v4-pro" not in (extractor.primary.model, extractor.fallback.model)
+
+
+def test_own_voice_prompt_fix_is_live(monkeypatch):
+    """Part 1 of the coupled landing: the prompt files the eval measured are
+    the ones production loads. Checked on CONTENT, not on a hash — a hash test
+    fails on any future edit; these three sentences are the fix itself."""
+    from pathlib import Path
+
+    system = Path("agents/bias_candidate_extractor/SYSTEM.md").read_text(encoding="utf-8")
+    instructions = Path(
+        "agents/bias_candidate_extractor/INSTRUCTIONS.md").read_text(encoding="utf-8")
+
+    assert "in the article's own editorial voice" in system
+    assert "## Whose voice" in instructions
+    # the rule that drives quote-harvest to zero
+    assert "never the speech itself" in instructions
+    # ... and the worked example that shows what IS extractable at a quote
+    assert '"excerpt": "admitted"' in instructions
+
+
+def test_prompt_fix_and_model_swap_landed_together(monkeypatch):
+    """The coupling, asserted. The own-voice prompt on the April v4-pro build
+    is the WORST cell the eval measured (2.60 against flash's 4.30) — landing
+    the prompt without the model would have made the stage worse. This guard
+    fails if a future change reverts one half and leaves the other."""
+    from pathlib import Path
+
+    instructions = Path(
+        "agents/bias_candidate_extractor/INSTRUCTIONS.md").read_text(encoding="utf-8")
+    extractor = load_agents("hydrated", monkeypatch)["bias_language"].extractor
+    own_voice_prompt = "## Whose voice" in instructions
+    flash_model = getattr(extractor, "primary", extractor).model == "deepseek-v4-flash"
+    assert own_voice_prompt == flash_model, (
+        "the own-voice prompt fix and the flash-0731 swap are coupled by eval "
+        "evidence; they land and revert together (TASK-BIAS-EXTRACTOR-COUPLED)"
+    )
+
+
+@pytest.mark.asyncio
+async def test_bias_extractor_forced_channel_c_failure_falls_back_loudly(caplog):
+    """Forced failure at the wrapper: channel C down -> channel A serves."""
+    wrapper, primary, fallback = forced_c_failure_wrapper(
+        schema=BIAS_CANDIDATES_SCHEMA,
+        structured=VALID_CANDIDATES,
+        name="bias_candidate_extractor",
+        marker="extractor_fallback_used",
+    )
+    with caplog.at_level(logging.WARNING):
+        result = await wrapper.run("msg", context={})
+    assert primary.run_calls == 1 and fallback.run_calls == 1
+    assert result.structured == VALID_CANDIDATES
+    assert wrapper.last_fallback_used is True
+    assert "bias_candidate_extractor FALLBACK" in " ".join(
+        r.getMessage() for r in caplog.records)
+
+
+@pytest.mark.asyncio
+async def test_composite_reports_the_fallback_even_though_passes_race(caplog):
+    """The composite runs its passes CONCURRENTLY against one wrapper, so the
+    wrapper's own last_fallback_used marker is last-writer-wins and cannot
+    answer "did any pass fall back?". The composite derives it from each
+    pass's served provider instead — this test is the reason that code exists.
+    """
+    from src.bias_composite import BiasComposite
+
+    body = "The council's decision dealt a devastating blow to bakeries."
+    calls = {"n": 0}
+
+    class _RacingExtractor:
+        """Pass 2 is served by channel A; passes 1 and 3 by channel C. The
+        pass that falls back is NOT the last to finish."""
+
+        model = "deepseek-v4-flash"
+        primary = type("P", (), {"provider": "deepseek_direct"})()
+
+        async def run(self, *a, **kw):
+            calls["n"] += 1
+            n = calls["n"]
+            provider = "DeepSeek" if n == 2 else "deepseek_direct"
+            model = ("deepseek/deepseek-v4-flash-0731" if n == 2
+                     else "deepseek-v4-flash")
+            return AgentResult(
+                content="{}",
+                structured={"candidates": [
+                    {"excerpt": "a devastating blow", "issue_hint": "x"}]},
+                cost_usd=0.0, tokens_used=1, model=model, provider=provider,
+            )
+
+        def reset_call_metrics(self):
+            pass
+
+    class _Judge:
+        model = "anthropic/claude-opus-4.6"
+        output_schema: dict = {}
+
+        async def run(self, *a, **kw):
+            return AgentResult(
+                content="{}",
+                structured={"judgments": [
+                    {"candidate_id": 1, "verdict": "cleared", "issue": "",
+                     "explanation": ""}], "reader_note": ""},
+                cost_usd=0.0, tokens_used=1, model=self.model, provider="Anthropic",
+            )
+
+        def reset_call_metrics(self):
+            pass
+
+    composite = BiasComposite(extractor=_RacingExtractor(), judge=_Judge())
+    with caplog.at_level(logging.WARNING):
+        await composite.run("msg", context={"article_body": body})
+
+    fields = composite.extra_log_fields
+    assert fields["extractor_fallback_used"] is True
+    assert fields["extractor_fallback_passes"] == [2]
+    assert "bias extractor FALLBACK" in " ".join(
+        r.getMessage() for r in caplog.records)
+
+
+@pytest.mark.asyncio
+async def test_composite_reports_no_fallback_on_the_healthy_path():
+    """Negative control: every pass on channel C means the marker is False and
+    the served model is the one the stage log should show."""
+    from src.bias_composite import BiasComposite
+
+    class _HealthyExtractor:
+        model = "deepseek-v4-flash"
+        primary = type("P", (), {"provider": "deepseek_direct"})()
+
+        async def run(self, *a, **kw):
+            return AgentResult(
+                content="{}", structured={"candidates": []},
+                cost_usd=0.0, tokens_used=1,
+                model="deepseek-v4-flash", provider="deepseek_direct",
+            )
+
+        def reset_call_metrics(self):
+            pass
+
+    class _Judge:
+        model = "anthropic/claude-opus-4.6"
+        output_schema: dict = {}
+
+        async def run(self, *a, **kw):  # pragma: no cover - never reached
+            raise AssertionError("judge must be skipped on an empty candidate list")
+
+        def reset_call_metrics(self):
+            pass
+
+    composite = BiasComposite(extractor=_HealthyExtractor(), judge=_Judge())
+    await composite.run("msg", context={"article_body": "clean text"})
+    fields = composite.extra_log_fields
+    assert fields["extractor_fallback_used"] is False
+    assert fields["extractor_fallback_passes"] == []
+    assert fields["extractor_model_served"] == "deepseek-v4-flash"
+    assert fields["extractor_provider"] == "deepseek_direct"
+
+
+def test_the_v4_pro_fp8_pin_is_gone_from_run_py():
+    """Part 2's last clause: with the extractor swapped, nothing references
+    DEEPSEEK_V4_PRO_FP8_ROUTING, so the constant is deleted rather than left to
+    rot. (tests/test_agent_provider_routing.py owns the full retirement guard;
+    this asserts the bundle's own precondition for deleting it.)"""
+    import scripts.run as run_mod
+
+    assert not hasattr(run_mod, "DEEPSEEK_V4_PRO_FP8_ROUTING")

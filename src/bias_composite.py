@@ -6,11 +6,12 @@ confirmed spans across identical cache-cold runs
 decision, not the model). This composite replaces it with three calls whose
 individual pieces are each more repeatable:
 
-  Phase A  three GENEROUS candidate-extraction calls (deepseek-v4-pro, reasoning
-           none, temperature 0.8 -> natural variance = coverage, fp8-pinned;
-           TASK-BIAS-THIRD-EXTRACTOR). Extractor instability is *harmless* — it
-           only widens recall; a third pass drops a p=0.8 candidate's miss
-           probability from ~4% to ~1%.
+  Phase A  three GENEROUS candidate-extraction calls (v4-flash-0731 @ minimal
+           since 2026-08-31 — TASK-DSV4-SWAPS-BUNDLE; deepseek-v4-pro fp8-pinned
+           before that — reasoning minimal, temperature 0.8 -> natural variance
+           = coverage; TASK-BIAS-THIRD-EXTRACTOR). Extractor instability is
+           *harmless* — it only widens recall; a third pass drops a p=0.8
+           candidate's miss probability from ~4% to ~1%.
   union    DETERMINISTIC Python: verbatim-substring validate, then
            POSITION-ANCHORED merge — resolve each span to its character
            interval(s) and merge only spans that overlap at the same location
@@ -411,6 +412,39 @@ class BiasComposite:
         self.last_cost_usd += result.cost_usd
         self.last_tokens += result.tokens_used
 
+    def _primary_channel(self) -> str:
+        """The provider the extractor's PRIMARY route is expected to report.
+
+        The extractor may be a plain :class:`~src.agent.Agent` or a channel
+        wrapper (``FlashStageWithFallback``); for the wrapper the primary is
+        the inner agent. Read generically so neither shape needs special
+        casing here."""
+        primary = getattr(self.extractor, "primary", self.extractor)
+        return getattr(primary, "provider", "") or ""
+
+    def _channel_report(
+        self, results: list[AgentResult | None]
+    ) -> tuple[str, str, list[int]]:
+        """``(provider, served_model, fallback_pass_indices)`` for the
+        extraction passes.
+
+        The composite runs its passes CONCURRENTLY against one wrapper
+        instance, so the wrapper's own ``last_fallback_used`` marker is
+        last-writer-wins across them and cannot answer "did any pass fall
+        back?". The per-result provider can: a pass served by anything other
+        than the primary channel took the fallback route. Indices are 1-based
+        to match the ``extraction_confidence`` run numbering."""
+        primary_channel = self._primary_channel()
+        providers = [r.provider for r in results if r is not None]
+        models = [r.model for r in results if r is not None and r.model]
+        fallback_passes = [
+            i for i, r in enumerate(results, start=1)
+            if r is not None and primary_channel and r.provider != primary_channel
+        ]
+        return (providers[0] if providers else "",
+                models[0] if models else "",
+                fallback_passes)
+
     async def run(
         self, message: str | None = None, context: dict | None = None, **kwargs: Any
     ) -> AgentResult:
@@ -431,15 +465,14 @@ class BiasComposite:
             *(_extract() for _ in range(EXTRACTION_PASSES)))
         if all(r is None for r in results):
             raise AgentError("bias extraction failed on all passes")
-        ext_provider = ""
         runs: list[list[dict]] = []
         for res in results:
             if res is None:
                 runs.append([])            # failed pass -> empty (denominator fixed)
                 continue
             self._account(res)
-            ext_provider = ext_provider or res.provider
             runs.append((res.structured or {}).get("candidates") or [])
+        ext_provider, ext_model, ext_fallback_passes = self._channel_report(results)
 
         candidates, stats = build_union(runs, article_body)
 
@@ -492,7 +525,10 @@ class BiasComposite:
         # --- loud metrics ----------------------------------------------------
         self.extra_log_fields = {
             "extractor_model": self.extractor.model,
+            "extractor_model_served": ext_model,
             "extractor_provider": ext_provider,
+            "extractor_fallback_used": bool(ext_fallback_passes),
+            "extractor_fallback_passes": ext_fallback_passes,
             "extraction_passes": EXTRACTION_PASSES,
             "judge_model": self.judge.model,
             "judge1_provider": judge1_provider,
@@ -508,6 +544,13 @@ class BiasComposite:
             "cleared_count": cleared_count,
             "judge_disagreements": disagreements,
         }
+        if ext_fallback_passes:
+            logger.warning(
+                "bias extractor FALLBACK: pass(es) %s were served by the "
+                "channel-A route, not %s. Loud by design — the marker is "
+                "extractor_fallback_used in run_stage_log.jsonl.",
+                ext_fallback_passes, self._primary_channel() or "the primary channel",
+            )
         logger.info(
             "bias composite: extracted %s (raw/pass), union=%d, invalid_drops=%d, "
             "confirmed=%d, borderline=%d, cleared=%d, judge_disagree=%d%s",

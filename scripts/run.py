@@ -47,31 +47,26 @@ from src.schemas import (
 from src.tools import web_search_tool
 
 
-# --- DeepSeek fp8 quantization pin (TASK-DEEPSEEK-FP8-PIN) --------------------
-# fp4 quantization causes fabrications in DeepSeek V4 (QA-stage eval;
-# docs/DEEPSEEK-FP8-PIN-2026-07.md). Unpinned, OpenRouter routes these 5 stages
-# freely — including to fp4 providers (DeepInfra, AtlasCloud). Each pin below
-# restricts routing to the providers empirically verified on 2026-07-02 to serve
-# fp8 WITH working strict structured outputs (forced single-provider test calls;
-# see the decision record). Routing is guaranteed fp8 by construction (both the
-# `/fp8` endpoint tags and the `quantizations` filter) and fails LOUD
-# (`allow_fallbacks=False` → stage error) rather than silently dropping to an
-# unknown/fp4 quantization. `order` is priority order; `require_parameters=True`
-# is added per-request by Agent for schema calls. Regenerate the verified lists
-# before adding providers — do not hand-edit toward unverified endpoints.
-DEEPSEEK_V4_PRO_FP8_ROUTING = {
-    "order": ["baidu/fp8", "wandb/fp8", "parasail/fp8"],
-    "allow_fallbacks": False,
-    "quantizations": ["fp8"],
-}
+# --- DeepSeek fp8 quantization pin — RETIRED 2026-08-31 -----------------------
+# DEEPSEEK_V4_PRO_FP8_ROUTING is GONE (TASK-DSV4-SWAPS-BUNDLE). It pinned the
+# deepseek-v4-pro stages to fp8-verified providers because fp4 quantization
+# causes fabrications in DeepSeek V4 (QA-stage eval;
+# docs/DEEPSEEK-FP8-PIN-2026-07.md). Its last three users —
+# `consolidator`, `hydration_aggregator_phase1` and the bias
+# `bias_candidate_extractor` — moved to v4-flash-0731 on 2026-08-31, which
+# runs full precision on the vendor's own endpoint and on OpenRouter's pin to
+# that endpoint. No stage runs deepseek-v4-pro any more, so the constant was
+# deleted rather than left to rot; the fp4 hazard it guarded is not reachable
+# from a route that never leaves DeepSeek. tests/test_agent_provider_routing.py
+# asserts it stays gone — a reintroduced pro fp8 pin would mean a swap was
+# partially reverted.
+#
 # --- v4-flash-0731 channel routing (TASK-FLASH-0731-SWAP) --------------------
-# DEEPSEEK_V4_FLASH_FP8_ROUTING is GONE. The three flash stages left fp8
-# entirely on 2026-08-24: they now run full precision on
+# DEEPSEEK_V4_FLASH_FP8_ROUTING is GONE for the same reason, since
+# 2026-08-24: the flash stages run full precision on
 # `deepseek-v4-flash-0731`, channel C (api.deepseek.com direct) primary with
 # channel A (OpenRouter, pinned to the vendor's own endpoint) as the one-shot
-# fallback. The pro stages keep their own fp8 pin above; nothing else
-# referenced the flash constant, so it was deleted rather than left to rot.
-# Evidence: docs/evals/dsv4-0731/{T2,T2B,T2D}-REPORT.md.
+# fallback. Evidence: docs/evals/dsv4-0731/{T2,T2B,T2D}-REPORT.md.
 #
 # Channel A pin. Two deliberate departures from every other pin in this file:
 #   * NO `quantizations` filter. The DeepSeek endpoint reports quantization
@@ -79,8 +74,12 @@ DEEPSEEK_V4_PRO_FP8_ROUTING = {
 #     "No endpoints found" (T2b §1.1).
 #   * The agents carry `structured_output_mode="json_object"`. This endpoint
 #     declares no `structured_outputs`, so Agent's default strict-schema path
-#     would add `require_parameters: true` — which filters this very endpoint
-#     out of the route. Schema conformance is enforced locally instead, by
+#     would send a `json_schema` response_format AND set
+#     `require_parameters: true` — and the combination filters this very
+#     endpoint out of the route (404, verified again 2026-08-31). It is the
+#     unsupported PARAMETER that excludes it, not the flag: with
+#     `json_object`, `require_parameters: true` routes and answers normally.
+#     Schema conformance is enforced locally instead, by
 #     FlashStageWithFallback.
 # `allow_fallbacks: false` keeps the fail-loud contract: this is the vendor's
 # own endpoint or nothing, never a third-party host of the same id.
@@ -703,26 +702,58 @@ def create_agents() -> dict[str, Agent]:
         # as a single agent (same output shape) so BiasLanguageStage + every
         # downstream consumer are untouched. ROLLBACK = revert this commit (the
         # single-call Agent above + agents/bias_detector/ prompts return together).
-        #   Phase A: deepseek-v4-pro, reasoning=none (the xhigh structured=None
-        #     pathology does not apply at none — 5 prod stages prove it daily),
-        #     temperature 0.8 both passes (natural variance = coverage), fp8 pin
-        #     [baidu, wandb, parasail], default max_tokens.
+        #   Phase A: v4-flash-0731 @ minimal since 2026-08-31
+        #     (TASK-DSV4-SWAPS-BUNDLE, component TASK-BIAS-EXTRACTOR-COUPLED),
+        #     temperature 0.8 on every pass (natural variance = coverage),
+        #     channel C primary + channel A one-shot fallback,
+        #     max_tokens 32 000 (caps.json bias_extractor@minimal).
         #   Phase B: opus-4.6, temp 0.1, reasoning=none, closed per-candidate
         #     judgment (BIAS_JUDGE_SCHEMA field order is load-bearing).
+        #
+        # The model swap and the own-voice prompt fix landed TOGETHER, and the
+        # coupling is not stylistic. The prompt fix drives quote-harvest to
+        # 0.000 and D3 1.42 -> 5.00 on the 0813/0731 builds, but on the April
+        # v4-pro build production was running it is the WORST cell measured
+        # (judged 2.60 against flash's 4.30 — spans inflate to whole
+        # sentences). Landing the prompt alone would have made the stage worse.
+        # Either both, or neither.
+        #
+        # The extractor is the only agent in the pipeline deliberately run at
+        # high temperature and repeated: three passes' disagreement IS the
+        # recall mechanism, unioned deterministically in src/bias_composite.py.
+        # A pass that comes back thin therefore costs coverage, which is what
+        # the adaptive 4th pass in that module addresses.
+        #
+        # Loud marker extractor_fallback_used, surfaced through the composite's
+        # extra_log_fields (BiasComposite is the stage's agent, so the runner
+        # reads the composite, not this wrapper). See
+        # src/flash_stage_fallback.py.
         "bias_language": BiasComposite(
-            extractor=Agent(
-                name="bias_candidate_extractor",
-                model="deepseek/deepseek-v4-pro",
-                system_prompt_path=str(
-                    agents_dir / "bias_candidate_extractor" / "SYSTEM.md"),
-                instructions_path=str(
-                    agents_dir / "bias_candidate_extractor" / "INSTRUCTIONS.md"),
-                tools=[],
-                temperature=0.8,
-                provider="openrouter",
-                reasoning="none",
-                provider_routing=DEEPSEEK_V4_PRO_FP8_ROUTING,
+            extractor=FlashStageWithFallback(
+                primary=_flash_0731_primary(
+                    name="bias_candidate_extractor",
+                    system_prompt_path=str(
+                        agents_dir / "bias_candidate_extractor" / "SYSTEM.md"),
+                    instructions_path=str(
+                        agents_dir / "bias_candidate_extractor" / "INSTRUCTIONS.md"),
+                    reasoning="minimal",
+                    temperature=0.8,
+                    max_tokens=32000,   # caps.json bias_extractor@minimal
+                    output_schema=BIAS_CANDIDATES_SCHEMA,
+                ),
+                fallback=_flash_0731_fallback(
+                    name="bias_candidate_extractor_fallback",
+                    system_prompt_path=str(
+                        agents_dir / "bias_candidate_extractor" / "SYSTEM.md"),
+                    instructions_path=str(
+                        agents_dir / "bias_candidate_extractor" / "INSTRUCTIONS.md"),
+                    temperature=0.8,
+                    max_tokens=32000,   # caps.json bias_extractor@medium
+                    output_schema=BIAS_CANDIDATES_SCHEMA,
+                ),
                 output_schema=BIAS_CANDIDATES_SCHEMA,
+                name="bias_candidate_extractor",
+                fallback_marker_key="extractor_fallback_used",
             ),
             judge=Agent(
                 name="bias_judge",

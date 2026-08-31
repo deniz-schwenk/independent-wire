@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from unittest.mock import AsyncMock, MagicMock
 
+from pathlib import Path
+
 import pytest
 
 from src.agent import Agent
@@ -125,31 +127,32 @@ async def test_non_openrouter_ignores_provider_routing(prompt_file):
     assert "provider" not in (extra_body or {})
 
 
-def test_production_pin_constants_are_fp8_and_fail_loud():
-    """The shipped fp8 routing constant pins fp8 by construction and fails loud.
+def test_both_deepseek_fp8_pins_are_retired():
+    """Neither DeepSeek fp8 routing constant exists any more.
 
-    Only the PRO constant remains. ``DEEPSEEK_V4_FLASH_FP8_ROUTING`` was
-    deleted on 2026-08-24 (TASK-FLASH-0731-SWAP): the three flash stages left
-    fp8 for full-precision v4-flash-0731 on two non-OpenRouter-pinned channels,
-    and nothing else referenced the constant. The assertion below that it is
-    gone is deliberate — a reintroduced flash fp8 pin would mean the swap was
-    partially reverted, which is exactly the state this guard exists to catch.
+    ``DEEPSEEK_V4_FLASH_FP8_ROUTING`` went on 2026-08-24 (TASK-FLASH-0731-SWAP)
+    and ``DEEPSEEK_V4_PRO_FP8_ROUTING`` on 2026-08-31 (TASK-DSV4-SWAPS-BUNDLE),
+    each when the last stage referencing it moved to full-precision
+    v4-flash-0731 on the two-channel wiring. The pins existed because fp4
+    quantization causes fabrications in DeepSeek V4
+    (docs/DEEPSEEK-FP8-PIN-2026-07.md); that hazard is unreachable from a route
+    that never leaves DeepSeek's own endpoint.
+
+    Asserting the ABSENCE is the point: a reintroduced pin means a swap was
+    partially reverted, and that is the state this guard exists to catch.
     """
     import scripts.run as run_mod
-    from scripts.run import DEEPSEEK_V4_PRO_FP8_ROUTING
 
-    assert not hasattr(run_mod, "DEEPSEEK_V4_FLASH_FP8_ROUTING"), (
-        "the flash fp8 pin is retired; see TASK-FLASH-0731-SWAP"
+    for retired in ("DEEPSEEK_V4_FLASH_FP8_ROUTING", "DEEPSEEK_V4_PRO_FP8_ROUTING"):
+        assert not hasattr(run_mod, retired), (
+            f"{retired} is retired; see TASK-FLASH-0731-SWAP / "
+            f"TASK-DSV4-SWAPS-BUNDLE"
+        )
+    # ... and no agent may quietly grow one back inline.
+    src = (Path(run_mod.__file__)).read_text(encoding="utf-8")
+    assert "deepseek/deepseek-v4-pro" not in src, (
+        "no stage runs deepseek-v4-pro any more (TASK-DSV4-SWAPS-BUNDLE)"
     )
-
-    # streamlake/fp8 removed 2026-07-14 — it regressed and now rejects strict
-    # json_schema (400), which dropped tp-2026-07-14-002. See the re-
-    # verification note in docs/DEEPSEEK-FP8-PIN-2026-07.md.
-    cfg = DEEPSEEK_V4_PRO_FP8_ROUTING
-    assert cfg["order"] == ["baidu/fp8", "wandb/fp8", "parasail/fp8"]
-    assert cfg["allow_fallbacks"] is False              # fail loud, never fp4/unverified
-    assert cfg["quantizations"] == ["fp8"]              # fp8 by construction
-    assert all(tag.endswith("/fp8") for tag in cfg["order"])
 
 
 def test_flash_0731_native_routing_has_no_quantization_filter():
