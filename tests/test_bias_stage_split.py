@@ -22,6 +22,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from src.agent import Agent, AgentError, AgentResult
+from src.flash_stage_fallback import FlashStageWithFallback
 from src.bias_composite import (
     BiasComposite,
     EXTRACT_MESSAGE,
@@ -493,11 +494,18 @@ async def test_composite_one_extractor_failure_still_proceeds():
         {"candidates": [{"excerpt": "prudent", "issue_hint": "loaded_term"}]})
     comp = BiasComposite(extractor, judge)
     res = await comp.run("m", context={"article_body": ARTICLE})
-    # two of three passes survived -> union built -> judge ran -> confirmed finding
-    assert len(extractor.calls) == 3
+    # Two of three passes survived -> union built -> judge ran -> confirmed
+    # finding. Since TASK-BIAS-EXTRACTOR-COUPLED the failed pass ALSO reads as
+    # an outlier-thin pass (0 against a sibling median of 1), so the adaptive
+    # 4th pass fires and recovers the lost coverage: 4 calls, denominator 4.
+    # That is the intended interaction — a pass that exhausted Agent's retries
+    # and the channel fallback is the thinnest pass there is.
+    assert len(extractor.calls) == 4
+    assert comp.extra_log_fields["extractor_extra_pass"] is True
+    assert comp.extra_log_fields["extractor_outlier_passes"] == [2]
     f = res.structured["language_bias"]["findings"][0]
     assert f["excerpt"] == "prudent"
-    assert f["extraction_confidence"] == "2/3"     # 2 of 3 passes flagged it
+    assert f["extraction_confidence"] == "3/4"     # 3 of 4 passes flagged it
 
 
 @pytest.mark.asyncio
@@ -645,18 +653,39 @@ def _composite(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_extractor_request_body_exact(monkeypatch):
+    """Channel C, the extractor's PRIMARY route since 2026-08-31
+    (TASK-DSV4-SWAPS-BUNDLE): the vendor's undated flash alias, a plain
+    ``reasoning_effort`` STRING (the OpenRouter object is accepted and silently
+    ignored by this API), no provider block at all, and ``json_object`` rather
+    than a strict schema — this endpoint declares no structured outputs, so the
+    schema is enforced by FlashStageWithFallback instead."""
     comp = _composite(monkeypatch)
-    kw = await _captured_kwargs(comp.extractor, output_schema=BIAS_CANDIDATES_SCHEMA)
-    assert kw["model"] == "deepseek/deepseek-v4-pro"
+    kw = await _captured_kwargs(
+        comp.extractor.primary, output_schema=BIAS_CANDIDATES_SCHEMA)
+    assert kw["model"] == "deepseek-v4-flash"
     assert kw["temperature"] == 0.8
-    assert kw["extra_body"]["reasoning"] == {"effort": "none"}
-    # fp8 pin present (+ require_parameters injected for schema calls)
+    assert kw["max_tokens"] == 32000
+    assert kw["extra_body"]["reasoning_effort"] == "minimal"
+    assert "reasoning" not in kw["extra_body"]
+    assert "provider" not in kw["extra_body"]
+    assert kw["response_format"] == {"type": "json_object"}
+
+
+@pytest.mark.asyncio
+async def test_extractor_fallback_request_body_exact(monkeypatch):
+    """Channel A, the one-shot fallback: the dated id, OpenRouter pinned to
+    DeepSeek's own endpoint, no quantization filter and no require_parameters
+    (either one 404s the endpoint out of its own route)."""
+    comp = _composite(monkeypatch)
+    kw = await _captured_kwargs(
+        comp.extractor.fallback, output_schema=BIAS_CANDIDATES_SCHEMA)
+    assert kw["model"] == "deepseek/deepseek-v4-flash-0731"
+    assert kw["temperature"] == 0.8
+    assert kw["max_tokens"] == 32000
+    assert kw["extra_body"]["reasoning"] == {"effort": "medium"}
     prov = kw["extra_body"]["provider"]
-    assert prov["order"] == ["baidu/fp8", "wandb/fp8", "parasail/fp8"]
-    assert prov["allow_fallbacks"] is False
-    assert prov["quantizations"] == ["fp8"]
-    assert prov["require_parameters"] is True
-    assert kw["response_format"]["json_schema"]["schema"] == BIAS_CANDIDATES_SCHEMA
+    assert prov == {"order": ["deepseek"], "allow_fallbacks": False}
+    assert kw["response_format"] == {"type": "json_object"}
 
 
 @pytest.mark.asyncio
@@ -681,9 +710,11 @@ def test_create_agents_bias_is_composite_both_variants(monkeypatch):
     for d in (create_agents(), create_agents_hydrated()):
         bl = d["bias_language"]
         assert isinstance(bl, BiasComposite)
-        assert bl.extractor.model == "deepseek/deepseek-v4-pro"
+        assert isinstance(bl.extractor, FlashStageWithFallback)
+        assert bl.extractor.model == "deepseek-v4-flash"
         assert bl.extractor.temperature == 0.8
-        assert bl.extractor.reasoning == "none"
+        assert bl.extractor.reasoning == "minimal"
+        assert bl.extractor.fallback_marker_key == "extractor_fallback_used"
         assert bl.judge.model == "anthropic/claude-opus-4.6"
         assert bl.judge.temperature == 0.1
 

@@ -6,11 +6,12 @@ confirmed spans across identical cache-cold runs
 decision, not the model). This composite replaces it with three calls whose
 individual pieces are each more repeatable:
 
-  Phase A  three GENEROUS candidate-extraction calls (deepseek-v4-pro, reasoning
-           none, temperature 0.8 -> natural variance = coverage, fp8-pinned;
-           TASK-BIAS-THIRD-EXTRACTOR). Extractor instability is *harmless* — it
-           only widens recall; a third pass drops a p=0.8 candidate's miss
-           probability from ~4% to ~1%.
+  Phase A  three GENEROUS candidate-extraction calls (v4-flash-0731 @ minimal
+           since 2026-08-31 — TASK-DSV4-SWAPS-BUNDLE; deepseek-v4-pro fp8-pinned
+           before that — reasoning minimal, temperature 0.8 -> natural variance
+           = coverage; TASK-BIAS-THIRD-EXTRACTOR). Extractor instability is
+           *harmless* — it only widens recall; a third pass drops a p=0.8
+           candidate's miss probability from ~4% to ~1%.
   union    DETERMINISTIC Python: verbatim-substring validate, then
            POSITION-ANCHORED merge — resolve each span to its character
            interval(s) and merge only spans that overlap at the same location
@@ -77,6 +78,64 @@ EXTRACTOR_CANDIDATE_CAP = 18
 # unobservable live and is hardened here. Also the ``extraction_confidence``
 # denominator ("K/3").
 EXTRACTION_PASSES = 3
+
+# Adaptive 4th pass (TASK-BIAS-EXTRACTOR-COUPLED part 3). A pass whose
+# candidate count collapses relative to its siblings is a THIN PASS: the model
+# emitted a fraction of what the same prompt on the same article produced twice
+# over, so the union loses coverage the article actually offered. Observed
+# live on 2026-08-30 topic 0 at raw counts [4, 10, 25].
+#
+# The rule is deliberately RELATIVE — a pass is an outlier only against the
+# median of the OTHER passes, never against an absolute floor. A short clean
+# article that legitimately yields [1, 1, 1] must not buy a fourth call, and
+# with the median of the others at 1 it does not. The zero-median guard makes
+# [0, 0, 0] explicit for the same reason.
+#
+# Cap: exactly ONE extra pass, ever, however many outliers there are. The extra
+# pass is an ordinary pass — `build_union` then runs over all four and the
+# confidence denominator follows `len(runs)` (K/4), which it already did.
+#
+# Ordering matters: this check runs AFTER the gather, so it sees the pass set
+# that survived Agent's transport retries and the channel fallback. It cannot
+# double-fire with the empty-body handling because that handling has already
+# finished by the time a count exists to compare.
+EXTRA_PASS_OUTLIER_RATIO = 0.5
+
+
+# --------------------------------------------------------------------------- #
+# Adaptive extra pass (pure function — no LLM, no I/O)
+# --------------------------------------------------------------------------- #
+def _median(values: list[int]) -> float:
+    """Median of a non-empty list; 0.0 for an empty one."""
+    if not values:
+        return 0.0
+    ordered = sorted(values)
+    mid = len(ordered) // 2
+    if len(ordered) % 2:
+        return float(ordered[mid])
+    return (ordered[mid - 1] + ordered[mid]) / 2.0
+
+
+def thin_outlier_passes(
+    counts: list[int], ratio: float = EXTRA_PASS_OUTLIER_RATIO
+) -> list[int]:
+    """1-based indices of passes whose candidate count is below ``ratio`` times
+    the median of the OTHER passes.
+
+    Relative by construction: each pass is compared against its siblings, never
+    against a fixed floor, so a uniformly thin article triggers nothing. A
+    median of zero (every other pass empty too) also triggers nothing — there
+    is no evidence of a richer article to recover.
+    """
+    outliers: list[int] = []
+    for i, count in enumerate(counts, start=1):
+        others = counts[:i - 1] + counts[i:]
+        if not others:
+            continue
+        median_others = _median(others)
+        if median_others > 0 and count < ratio * median_others:
+            outliers.append(i)
+    return outliers
 
 
 # --------------------------------------------------------------------------- #
@@ -411,6 +470,39 @@ class BiasComposite:
         self.last_cost_usd += result.cost_usd
         self.last_tokens += result.tokens_used
 
+    def _primary_channel(self) -> str:
+        """The provider the extractor's PRIMARY route is expected to report.
+
+        The extractor may be a plain :class:`~src.agent.Agent` or a channel
+        wrapper (``FlashStageWithFallback``); for the wrapper the primary is
+        the inner agent. Read generically so neither shape needs special
+        casing here."""
+        primary = getattr(self.extractor, "primary", self.extractor)
+        return getattr(primary, "provider", "") or ""
+
+    def _channel_report(
+        self, results: list[AgentResult | None]
+    ) -> tuple[str, str, list[int]]:
+        """``(provider, served_model, fallback_pass_indices)`` for the
+        extraction passes.
+
+        The composite runs its passes CONCURRENTLY against one wrapper
+        instance, so the wrapper's own ``last_fallback_used`` marker is
+        last-writer-wins across them and cannot answer "did any pass fall
+        back?". The per-result provider can: a pass served by anything other
+        than the primary channel took the fallback route. Indices are 1-based
+        to match the ``extraction_confidence`` run numbering."""
+        primary_channel = self._primary_channel()
+        providers = [r.provider for r in results if r is not None]
+        models = [r.model for r in results if r is not None and r.model]
+        fallback_passes = [
+            i for i, r in enumerate(results, start=1)
+            if r is not None and primary_channel and r.provider != primary_channel
+        ]
+        return (providers[0] if providers else "",
+                models[0] if models else "",
+                fallback_passes)
+
     async def run(
         self, message: str | None = None, context: dict | None = None, **kwargs: Any
     ) -> AgentResult:
@@ -431,15 +523,42 @@ class BiasComposite:
             *(_extract() for _ in range(EXTRACTION_PASSES)))
         if all(r is None for r in results):
             raise AgentError("bias extraction failed on all passes")
-        ext_provider = ""
         runs: list[list[dict]] = []
         for res in results:
             if res is None:
                 runs.append([])            # failed pass -> empty (denominator fixed)
                 continue
             self._account(res)
-            ext_provider = ext_provider or res.provider
             runs.append((res.structured or {}).get("candidates") or [])
+
+        # --- adaptive 4th pass on an outlier-thin pass -----------------------
+        outlier_passes = thin_outlier_passes([len(r) for r in runs])
+        extra_pass_run = False
+        if outlier_passes:
+            logger.warning(
+                "bias extractor THIN PASS: pass(es) %s of %s are below %.0f%% "
+                "of the median of the others — running exactly one extra "
+                "extraction pass (capped at one).",
+                outlier_passes, [len(r) for r in runs],
+                EXTRA_PASS_OUTLIER_RATIO * 100,
+            )
+            extra = await _extract()
+            extra_pass_run = True
+            if extra is None:
+                # The extra pass failed outright. Do NOT append an empty run:
+                # that would widen the confidence denominator to 4 with a
+                # guaranteed-empty pass and penalise every candidate for a
+                # transport failure.
+                logger.error(
+                    "bias extractor extra pass FAILED — union runs over the "
+                    "original %d passes, denominator unchanged.", len(runs),
+                )
+            else:
+                self._account(extra)
+                results = list(results) + [extra]
+                runs.append((extra.structured or {}).get("candidates") or [])
+
+        ext_provider, ext_model, ext_fallback_passes = self._channel_report(results)
 
         candidates, stats = build_union(runs, article_body)
 
@@ -492,8 +611,13 @@ class BiasComposite:
         # --- loud metrics ----------------------------------------------------
         self.extra_log_fields = {
             "extractor_model": self.extractor.model,
+            "extractor_model_served": ext_model,
             "extractor_provider": ext_provider,
-            "extraction_passes": EXTRACTION_PASSES,
+            "extractor_fallback_used": bool(ext_fallback_passes),
+            "extractor_fallback_passes": ext_fallback_passes,
+            "extraction_passes": len(runs),
+            "extractor_extra_pass": extra_pass_run,
+            "extractor_outlier_passes": outlier_passes,
             "judge_model": self.judge.model,
             "judge1_provider": judge1_provider,
             "judge2_provider": judge2_provider,
@@ -508,10 +632,19 @@ class BiasComposite:
             "cleared_count": cleared_count,
             "judge_disagreements": disagreements,
         }
+        if ext_fallback_passes:
+            logger.warning(
+                "bias extractor FALLBACK: pass(es) %s were served by the "
+                "channel-A route, not %s. Loud by design — the marker is "
+                "extractor_fallback_used in run_stage_log.jsonl.",
+                ext_fallback_passes, self._primary_channel() or "the primary channel",
+            )
         logger.info(
-            "bias composite: extracted %s (raw/pass), union=%d, invalid_drops=%d, "
-            "confirmed=%d, borderline=%d, cleared=%d, judge_disagree=%d%s",
-            stats["extract_raw"],
+            "bias composite: extracted %s (raw/pass over %d passes%s), union=%d, "
+            "invalid_drops=%d, confirmed=%d, borderline=%d, cleared=%d, "
+            "judge_disagree=%d%s",
+            stats["extract_raw"], len(runs),
+            f", extra pass on thin {outlier_passes}" if extra_pass_run else "",
             stats["union_size"], stats["invalid_span_drops"], len(findings),
             len(borderline), cleared_count, disagreements,
             " (judge skipped: empty candidates)" if judge_skipped else "",

@@ -47,31 +47,26 @@ from src.schemas import (
 from src.tools import web_search_tool
 
 
-# --- DeepSeek fp8 quantization pin (TASK-DEEPSEEK-FP8-PIN) --------------------
-# fp4 quantization causes fabrications in DeepSeek V4 (QA-stage eval;
-# docs/DEEPSEEK-FP8-PIN-2026-07.md). Unpinned, OpenRouter routes these 5 stages
-# freely — including to fp4 providers (DeepInfra, AtlasCloud). Each pin below
-# restricts routing to the providers empirically verified on 2026-07-02 to serve
-# fp8 WITH working strict structured outputs (forced single-provider test calls;
-# see the decision record). Routing is guaranteed fp8 by construction (both the
-# `/fp8` endpoint tags and the `quantizations` filter) and fails LOUD
-# (`allow_fallbacks=False` → stage error) rather than silently dropping to an
-# unknown/fp4 quantization. `order` is priority order; `require_parameters=True`
-# is added per-request by Agent for schema calls. Regenerate the verified lists
-# before adding providers — do not hand-edit toward unverified endpoints.
-DEEPSEEK_V4_PRO_FP8_ROUTING = {
-    "order": ["baidu/fp8", "wandb/fp8", "parasail/fp8"],
-    "allow_fallbacks": False,
-    "quantizations": ["fp8"],
-}
+# --- DeepSeek fp8 quantization pin — RETIRED 2026-08-31 -----------------------
+# DEEPSEEK_V4_PRO_FP8_ROUTING is GONE (TASK-DSV4-SWAPS-BUNDLE). It pinned the
+# deepseek-v4-pro stages to fp8-verified providers because fp4 quantization
+# causes fabrications in DeepSeek V4 (QA-stage eval;
+# docs/DEEPSEEK-FP8-PIN-2026-07.md). Its last three users —
+# `consolidator`, `hydration_aggregator_phase1` and the bias
+# `bias_candidate_extractor` — moved to v4-flash-0731 on 2026-08-31, which
+# runs full precision on the vendor's own endpoint and on OpenRouter's pin to
+# that endpoint. No stage runs deepseek-v4-pro any more, so the constant was
+# deleted rather than left to rot; the fp4 hazard it guarded is not reachable
+# from a route that never leaves DeepSeek. tests/test_agent_provider_routing.py
+# asserts it stays gone — a reintroduced pro fp8 pin would mean a swap was
+# partially reverted.
+#
 # --- v4-flash-0731 channel routing (TASK-FLASH-0731-SWAP) --------------------
-# DEEPSEEK_V4_FLASH_FP8_ROUTING is GONE. The three flash stages left fp8
-# entirely on 2026-08-24: they now run full precision on
+# DEEPSEEK_V4_FLASH_FP8_ROUTING is GONE for the same reason, since
+# 2026-08-24: the flash stages run full precision on
 # `deepseek-v4-flash-0731`, channel C (api.deepseek.com direct) primary with
 # channel A (OpenRouter, pinned to the vendor's own endpoint) as the one-shot
-# fallback. The pro stages keep their own fp8 pin above; nothing else
-# referenced the flash constant, so it was deleted rather than left to rot.
-# Evidence: docs/evals/dsv4-0731/{T2,T2B,T2D}-REPORT.md.
+# fallback. Evidence: docs/evals/dsv4-0731/{T2,T2B,T2D}-REPORT.md.
 #
 # Channel A pin. Two deliberate departures from every other pin in this file:
 #   * NO `quantizations` filter. The DeepSeek endpoint reports quantization
@@ -79,8 +74,12 @@ DEEPSEEK_V4_PRO_FP8_ROUTING = {
 #     "No endpoints found" (T2b §1.1).
 #   * The agents carry `structured_output_mode="json_object"`. This endpoint
 #     declares no `structured_outputs`, so Agent's default strict-schema path
-#     would add `require_parameters: true` — which filters this very endpoint
-#     out of the route. Schema conformance is enforced locally instead, by
+#     would send a `json_schema` response_format AND set
+#     `require_parameters: true` — and the combination filters this very
+#     endpoint out of the route (404, verified again 2026-08-31). It is the
+#     unsupported PARAMETER that excludes it, not the flag: with
+#     `json_object`, `require_parameters: true` routes and answers normally.
+#     Schema conformance is enforced locally instead, by
 #     FlashStageWithFallback.
 # `allow_fallbacks: false` keeps the fail-loud contract: this is the vendor's
 # own endpoint or nothing, never a third-party host of the same id.
@@ -199,6 +198,7 @@ def _flash_0731_primary(
     reasoning: str,
     max_tokens: int,
     output_schema: dict,
+    temperature: float = 0.5,
 ) -> Agent:
     """Channel C — the PRIMARY for a v4-flash-0731 stage: api.deepseek.com
     direct (TASK-FLASH-0731-SWAP, owner decision on the T2d matrix).
@@ -220,6 +220,14 @@ def _flash_0731_primary(
       Hence the fallbacks below all run `medium` while these primaries run
       lower — that is parity, not a downgrade.
 
+    ``temperature`` defaults to 0.5, the value the first three stages shipped
+    with. It is a parameter rather than a constant because the stages added by
+    TASK-DSV4-SWAPS-BUNDLE carry their own eval-validated decode temperature
+    (consolidator 0.3, phase1 0.3, bias extractor 0.8 — the extractor's
+    spread is deliberate: natural variance across the three passes IS the
+    recall mechanism). A swap must not silently re-tune the sampling of the
+    stage it swaps.
+
     ``structured_output_mode`` is coerced to json_object by Agent for this
     provider; schema conformance is enforced by FlashStageWithFallback."""
     return Agent(
@@ -228,7 +236,7 @@ def _flash_0731_primary(
         system_prompt_path=system_prompt_path,
         instructions_path=instructions_path,
         tools=[],
-        temperature=0.5,
+        temperature=temperature,
         max_tokens=max_tokens,
         provider="deepseek_direct",
         reasoning=reasoning,
@@ -244,6 +252,7 @@ def _flash_0731_fallback(
     instructions_path: str,
     max_tokens: int,
     output_schema: dict,
+    temperature: float = 0.5,
 ) -> Agent:
     """Channel A — the one-shot FALLBACK for a v4-flash-0731 stage: OpenRouter
     on the dated id, pinned to the vendor's own endpoint.
@@ -267,7 +276,7 @@ def _flash_0731_fallback(
         system_prompt_path=system_prompt_path,
         instructions_path=instructions_path,
         tools=[],
-        temperature=0.5,
+        temperature=temperature,
         max_tokens=max_tokens,
         provider="openrouter",
         reasoning="medium",
@@ -693,26 +702,58 @@ def create_agents() -> dict[str, Agent]:
         # as a single agent (same output shape) so BiasLanguageStage + every
         # downstream consumer are untouched. ROLLBACK = revert this commit (the
         # single-call Agent above + agents/bias_detector/ prompts return together).
-        #   Phase A: deepseek-v4-pro, reasoning=none (the xhigh structured=None
-        #     pathology does not apply at none — 5 prod stages prove it daily),
-        #     temperature 0.8 both passes (natural variance = coverage), fp8 pin
-        #     [baidu, wandb, parasail], default max_tokens.
+        #   Phase A: v4-flash-0731 @ minimal since 2026-08-31
+        #     (TASK-DSV4-SWAPS-BUNDLE, component TASK-BIAS-EXTRACTOR-COUPLED),
+        #     temperature 0.8 on every pass (natural variance = coverage),
+        #     channel C primary + channel A one-shot fallback,
+        #     max_tokens 32 000 (caps.json bias_extractor@minimal).
         #   Phase B: opus-4.6, temp 0.1, reasoning=none, closed per-candidate
         #     judgment (BIAS_JUDGE_SCHEMA field order is load-bearing).
+        #
+        # The model swap and the own-voice prompt fix landed TOGETHER, and the
+        # coupling is not stylistic. The prompt fix drives quote-harvest to
+        # 0.000 and D3 1.42 -> 5.00 on the 0813/0731 builds, but on the April
+        # v4-pro build production was running it is the WORST cell measured
+        # (judged 2.60 against flash's 4.30 — spans inflate to whole
+        # sentences). Landing the prompt alone would have made the stage worse.
+        # Either both, or neither.
+        #
+        # The extractor is the only agent in the pipeline deliberately run at
+        # high temperature and repeated: three passes' disagreement IS the
+        # recall mechanism, unioned deterministically in src/bias_composite.py.
+        # A pass that comes back thin therefore costs coverage, which is what
+        # the adaptive 4th pass in that module addresses.
+        #
+        # Loud marker extractor_fallback_used, surfaced through the composite's
+        # extra_log_fields (BiasComposite is the stage's agent, so the runner
+        # reads the composite, not this wrapper). See
+        # src/flash_stage_fallback.py.
         "bias_language": BiasComposite(
-            extractor=Agent(
-                name="bias_candidate_extractor",
-                model="deepseek/deepseek-v4-pro",
-                system_prompt_path=str(
-                    agents_dir / "bias_candidate_extractor" / "SYSTEM.md"),
-                instructions_path=str(
-                    agents_dir / "bias_candidate_extractor" / "INSTRUCTIONS.md"),
-                tools=[],
-                temperature=0.8,
-                provider="openrouter",
-                reasoning="none",
-                provider_routing=DEEPSEEK_V4_PRO_FP8_ROUTING,
+            extractor=FlashStageWithFallback(
+                primary=_flash_0731_primary(
+                    name="bias_candidate_extractor",
+                    system_prompt_path=str(
+                        agents_dir / "bias_candidate_extractor" / "SYSTEM.md"),
+                    instructions_path=str(
+                        agents_dir / "bias_candidate_extractor" / "INSTRUCTIONS.md"),
+                    reasoning="minimal",
+                    temperature=0.8,
+                    max_tokens=32000,   # caps.json bias_extractor@minimal
+                    output_schema=BIAS_CANDIDATES_SCHEMA,
+                ),
+                fallback=_flash_0731_fallback(
+                    name="bias_candidate_extractor_fallback",
+                    system_prompt_path=str(
+                        agents_dir / "bias_candidate_extractor" / "SYSTEM.md"),
+                    instructions_path=str(
+                        agents_dir / "bias_candidate_extractor" / "INSTRUCTIONS.md"),
+                    temperature=0.8,
+                    max_tokens=32000,   # caps.json bias_extractor@medium
+                    output_schema=BIAS_CANDIDATES_SCHEMA,
+                ),
                 output_schema=BIAS_CANDIDATES_SCHEMA,
+                name="bias_candidate_extractor",
+                fallback_marker_key="extractor_fallback_used",
             ),
             judge=Agent(
                 name="bias_judge",
@@ -733,21 +774,52 @@ def create_agents() -> dict[str, Agent]:
         # dossier's "what is missing" output. Inputs are small
         # (perspective_missing_positions ~5-15 entries +
         # merged_coverage_gaps ~3-10 entries); output is two arrays of
-        # short English strings. Temperature 0.3 + reasoning=none +
-        # max_tokens=32000 mirror the DeepSeek-V4-Pro default for
-        # small structured tasks — see commit rationale.
-        "consolidator": Agent(
-            name="consolidator",
-            model="deepseek/deepseek-v4-pro",
-            system_prompt_path=str(agents_dir / "consolidator" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "consolidator" / "INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.3,
-            max_tokens=32000,
-            provider="openrouter",
-            reasoning="none",
-            provider_routing=DEEPSEEK_V4_PRO_FP8_ROUTING,
+        # short English strings.
+        #
+        # v4-flash-0731 since 2026-08-31 (TASK-DSV4-SWAPS-BUNDLE, component
+        # TASK-CONSOLIDATOR-SWAP-FLASH0731); deepseek-v4-pro on the OpenRouter
+        # fp8 pin before that. Channel C primary, channel A fallback — the same
+        # two-route wiring as the three stages swapped on 2026-08-24, via
+        # _flash_0731_primary / _flash_0731_fallback.
+        #
+        # Effort `minimal`, the T3b operating point: T3B-REPORT §7.1 judged
+        # flash@minimal at 4.75 against the v4-pro baseline's 4.48, with
+        # candidate counts inside each other's noise, at the lowest cost of the
+        # arms measured. This is a classify-and-dedupe task over a handful of
+        # short strings — the reasoning budget buys nothing above triage level,
+        # and `minimal` is where the eval put it.
+        #
+        # temperature 0.3 and max_tokens 32000 are UNCHANGED across the swap
+        # (32000 is also scratch/eval/t3b/caps.json consolidator@minimal —
+        # >= 2x the worst observed completion for the cell). A model swap is
+        # not licence to re-tune decode parameters the eval held fixed.
+        #
+        # The empty-emission guard in ConsolidatorStage
+        # (_CONSOLIDATOR_EMPTY_MAX_ATTEMPTS, merged 2026-08-31) sits ABOVE this
+        # wrapper and is untouched: each of its retries is a fresh wrapper call,
+        # so a retry re-rolls the primary and can itself fall back. Loud marker
+        # consolidator_fallback_used. See src/flash_stage_fallback.py.
+        "consolidator": FlashStageWithFallback(
+            primary=_flash_0731_primary(
+                name="consolidator",
+                system_prompt_path=str(agents_dir / "consolidator" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "consolidator" / "INSTRUCTIONS.md"),
+                reasoning="minimal",
+                temperature=0.3,
+                max_tokens=32000,   # caps.json consolidator@minimal
+                output_schema=CONSOLIDATOR_SCHEMA,
+            ),
+            fallback=_flash_0731_fallback(
+                name="consolidator_fallback",
+                system_prompt_path=str(agents_dir / "consolidator" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "consolidator" / "INSTRUCTIONS.md"),
+                temperature=0.3,
+                max_tokens=32000,   # caps.json consolidator@medium
+                output_schema=CONSOLIDATOR_SCHEMA,
+            ),
             output_schema=CONSOLIDATOR_SCHEMA,
+            name="consolidator",
+            fallback_marker_key="consolidator_fallback_used",
         ),
     }
 
@@ -777,47 +849,57 @@ def create_agents_hydrated() -> dict[str, Agent]:
             output_schema=RESEARCHER_PLAN_SCHEMA,
         ),
         # Hydration-Phase-1 model: production default is Gemini-3-Flash.
-        # The DeepSeek-V4-Pro spec immediately below is a comment-toggleable
-        # alternative used for the evidence-type-classification quality
-        # smoke (see TASK-EVIDENCE-TYPE-MIGRATION). Swap by commenting out
-        # the active block and uncommenting the alternative. Restore Flash
-        # as the default after the smoke unless the eval result switches
-        # production model.
-        # Hydration-Phase-1 model: production default is DeepSeek-V4-Pro
-        # (switched from Gemini-3-Flash per the evidence-type-classification
-        # dual-model smoke — DeepSeek showed cleaner attributional fidelity
-        # and correctly honoured the recipient-exclusion rule). The Flash
-        # spec below is preserved as a fallback / comparison-only
-        # alternative — see TASK-EVIDENCE-TYPE-MIGRATION A3 for rationale.
-        "hydration_aggregator_phase1": Agent(
-            name="hydration_aggregator_phase1",
-            model="deepseek/deepseek-v4-pro",
-            system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
-            instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.3,
-            max_tokens=32000,
-            provider="openrouter",
-            reasoning="none",
-            provider_routing=DEEPSEEK_V4_PRO_FP8_ROUTING,
+        # Hydration-Phase-1 model: v4-flash-0731 @ medium since 2026-08-31
+        # (TASK-DSV4-SWAPS-BUNDLE, component TASK-P1-SWAP-FLASH0731);
+        # deepseek-v4-pro on the OpenRouter fp8 pin before that, and
+        # Gemini-3-Flash before THAT (the evidence-type-classification
+        # dual-model smoke, TASK-EVIDENCE-TYPE-MIGRATION A3 — the
+        # comment-toggleable Gemini alternative that lived here went with the
+        # swap: a third model behind a comment is not a fallback, it is a trap,
+        # and the stage now has a real one).
+        #
+        # Effort `medium`, not the consolidator's `minimal`: T3b §7.2 plus
+        # docs/evals/t3b-p1-confirm/REPORT.md measured 4.23 against the v4-pro
+        # baseline's 3.80 across all 27 chunks (t = 5.56, +0.435 paired, better
+        # on 24 of 27), driven by D2 actor recall 2.31 -> 3.60, with no
+        # dimension regressing. Phase 1 reads whole fetched articles and has to
+        # find the actors in them — this is the one stage in the bundle where
+        # the reasoning budget buys measured recall.
+        #
+        # max_tokens 160 000 is caps.json phase1@medium, and the reason phase1
+        # has its own row there: medium spends reasoning INSIDE the total
+        # budget and its spend explodes with effort (flash/minimal 20 727
+        # completion vs flash/medium 57 460 on the same chunk). Carrying the
+        # minimal cap would truncate. temperature 0.3 unchanged.
+        #
+        # Chunking is untouched by the swap: ceil(N/10) distribution,
+        # asyncio.gather parallelism, the missing-indices retry and the
+        # cache-cold empty-retry wrapper all still sit ABOVE this agent, so a
+        # per-chunk empty re-rolls the primary and can itself fall back. Loud
+        # marker hydration_phase1_fallback_used (the sibling naming of
+        # hydration_phase2_fallback_used). See src/flash_stage_fallback.py.
+        "hydration_aggregator_phase1": FlashStageWithFallback(
+            primary=_flash_0731_primary(
+                name="hydration_aggregator_phase1",
+                system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
+                instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
+                reasoning="medium",
+                temperature=0.3,
+                max_tokens=160000,   # caps.json phase1@medium
+                output_schema=HYDRATION_PHASE1_SCHEMA,
+            ),
+            fallback=_flash_0731_fallback(
+                name="hydration_aggregator_phase1_fallback",
+                system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
+                instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
+                temperature=0.3,
+                max_tokens=160000,   # caps.json phase1@medium
+                output_schema=HYDRATION_PHASE1_SCHEMA,
+            ),
             output_schema=HYDRATION_PHASE1_SCHEMA,
+            name="hydration_aggregator_phase1",
+            fallback_marker_key="hydration_phase1_fallback_used",
         ),
-        # --- Fallback / comparison only — see TASK-EVIDENCE-TYPE-MIGRATION
-        #     A3 for rationale. Swap by commenting out the active block
-        #     above and uncommenting the block below ---
-        # "hydration_aggregator_phase1": Agent(
-        #     name="hydration_aggregator_phase1",
-        #     model="google/gemini-3-flash-preview",
-        #     system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
-        #     instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
-        #     tools=[],
-        #     temperature=0.3,
-        #     max_tokens=32000,
-        #     provider="openrouter",
-        #     reasoning="none",
-        #     output_schema=HYDRATION_PHASE1_SCHEMA,
-        # ),
-        # --- END fallback alternative ---
         # hydration_aggregator_phase2 — swapped to GLM-5.2 @ xhigh
         # (TASK-HYDRATION-P2-GLM-SWAP). The phase-2 model eval made this operating
         # point binding (docs/HYDRATION-P2-MODEL-EVAL-2026-07.md): GLM-5.2 ties the
