@@ -494,11 +494,18 @@ async def test_composite_one_extractor_failure_still_proceeds():
         {"candidates": [{"excerpt": "prudent", "issue_hint": "loaded_term"}]})
     comp = BiasComposite(extractor, judge)
     res = await comp.run("m", context={"article_body": ARTICLE})
-    # two of three passes survived -> union built -> judge ran -> confirmed finding
-    assert len(extractor.calls) == 3
+    # Two of three passes survived -> union built -> judge ran -> confirmed
+    # finding. Since TASK-BIAS-EXTRACTOR-COUPLED the failed pass ALSO reads as
+    # an outlier-thin pass (0 against a sibling median of 1), so the adaptive
+    # 4th pass fires and recovers the lost coverage: 4 calls, denominator 4.
+    # That is the intended interaction — a pass that exhausted Agent's retries
+    # and the channel fallback is the thinnest pass there is.
+    assert len(extractor.calls) == 4
+    assert comp.extra_log_fields["extractor_extra_pass"] is True
+    assert comp.extra_log_fields["extractor_outlier_passes"] == [2]
     f = res.structured["language_bias"]["findings"][0]
     assert f["excerpt"] == "prudent"
-    assert f["extraction_confidence"] == "2/3"     # 2 of 3 passes flagged it
+    assert f["extraction_confidence"] == "3/4"     # 3 of 4 passes flagged it
 
 
 @pytest.mark.asyncio

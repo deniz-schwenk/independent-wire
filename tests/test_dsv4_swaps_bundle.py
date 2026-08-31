@@ -572,3 +572,181 @@ def test_the_v4_pro_fp8_pin_is_gone_from_run_py():
     import scripts.run as run_mod
 
     assert not hasattr(run_mod, "DEEPSEEK_V4_PRO_FP8_ROUTING")
+
+
+# --------------------------------------------------------------------------- #
+# Adaptive 4th extraction pass — TASK-BIAS-EXTRACTOR-COUPLED part 3
+# --------------------------------------------------------------------------- #
+# 25 distinct, non-overlapping spans so a scripted pass can emit any count up
+# to the extractor cap without colliding (build_union merges on POSITION, so
+# spans must not overlap or the union collapses them and the counts lie).
+_SPANS = [f"loaded phrase {i:02d}" for i in range(25)]
+ARTICLE_BODY = ". ".join(f"The report called it {span}" for span in _SPANS) + "."
+
+
+def _cands(n):
+    return [{"excerpt": _SPANS[i], "issue_hint": "loaded_term"} for i in range(n)]
+
+
+class ScriptedExtractor:
+    """Returns a scripted candidate count per call, in order. The last entry
+    repeats, so an unscripted extra pass is still answerable."""
+
+    model = "deepseek-v4-flash"
+    primary = type("P", (), {"provider": "deepseek_direct"})()
+
+    def __init__(self, counts):
+        self.counts = list(counts)
+        self.calls = 0
+
+    async def run(self, *a, **kw):
+        n = self.counts[min(self.calls, len(self.counts) - 1)]
+        self.calls += 1
+        return AgentResult(
+            content="{}", structured={"candidates": _cands(n)},
+            cost_usd=0.001, tokens_used=10,
+            model="deepseek-v4-flash", provider="deepseek_direct",
+        )
+
+    def reset_call_metrics(self):
+        pass
+
+
+class SilentJudge:
+    model = "anthropic/claude-opus-4.6"
+    output_schema: dict = {}
+
+    async def run(self, *a, **kw):
+        return AgentResult(
+            content="{}",
+            structured={"judgments": [], "reader_note": ""},
+            cost_usd=0.0, tokens_used=1, model=self.model, provider="Anthropic",
+        )
+
+    def reset_call_metrics(self):
+        pass
+
+
+async def _run_composite(counts):
+    from src.bias_composite import BiasComposite
+
+    extractor = ScriptedExtractor(counts)
+    composite = BiasComposite(extractor=extractor, judge=SilentJudge())
+    await composite.run("msg", context={"article_body": ARTICLE_BODY})
+    return extractor, composite
+
+
+# --- the detector, as a pure function ---------------------------------------
+@pytest.mark.parametrize(
+    "counts,expected",
+    [
+        ([2, 10, 11], [1]),        # one clear thin pass
+        ([4, 10, 25], [1]),        # the live 2026-08-30 topic-0 shape
+        ([1, 1, 10], [1, 2]),      # two outliers at once
+        ([1, 1, 1], []),           # uniformly thin: relative rule, no trigger
+        ([0, 0, 0], []),           # uniformly empty: zero-median guard
+        ([10, 11, 12], []),        # healthy
+        ([6, 10, 11], []),         # thin-ish but not below half the median
+        ([0, 10, 11], [1]),        # a pass that died counts as the thinnest
+    ],
+)
+def test_thin_outlier_detector(counts, expected):
+    from src.bias_composite import thin_outlier_passes
+
+    assert thin_outlier_passes(counts) == expected
+
+
+# --- (a) an outlier triggers one extra pass and the union covers all 4 -------
+@pytest.mark.asyncio
+async def test_outlier_triggers_exactly_one_extra_pass_and_union_covers_four():
+    extractor, composite = await _run_composite([2, 10, 11, 9])
+    assert extractor.calls == 4
+    fields = composite.extra_log_fields
+    assert fields["extractor_extra_pass"] is True
+    assert fields["extractor_outlier_passes"] == [1]
+    assert fields["extraction_passes"] == 4
+    assert len(fields["extract_raw"]) == 4          # the union saw all four
+    assert fields["extract_raw"] == [2, 10, 11, 9]
+
+
+# --- (b) three uniformly low passes -> no extra pass -------------------------
+@pytest.mark.asyncio
+async def test_uniformly_thin_article_does_not_buy_a_fourth_call():
+    """The rule is relative. A short clean article that legitimately yields one
+    candidate per pass must not pay for an extra call."""
+    extractor, composite = await _run_composite([1, 1, 1])
+    assert extractor.calls == 3
+    fields = composite.extra_log_fields
+    assert fields["extractor_extra_pass"] is False
+    assert fields["extractor_outlier_passes"] == []
+    assert fields["extraction_passes"] == 3
+
+
+# --- (c) two outliers -> still exactly one extra pass ------------------------
+@pytest.mark.asyncio
+async def test_two_outliers_still_buy_exactly_one_extra_pass():
+    extractor, composite = await _run_composite([1, 1, 10, 8])
+    assert extractor.calls == 4                     # capped at one extra, ever
+    fields = composite.extra_log_fields
+    assert fields["extractor_outlier_passes"] == [1, 2]
+    assert fields["extractor_extra_pass"] is True
+    assert fields["extraction_passes"] == 4
+
+
+# --- (d) confidence strings reflect the real denominator ---------------------
+@pytest.mark.asyncio
+async def test_confidence_denominator_follows_the_real_pass_count():
+    """K/4 after an extra pass, K/3 without one. The denominator is
+    ``len(runs)`` in build_union, so this is a consequence rather than a second
+    implementation — asserted because it is the visible contract."""
+    from src.bias_composite import build_union, thin_outlier_passes
+
+    # 2 candidates in the thin pass, 3 in the others, 3 in the extra: the two
+    # shared spans are flagged by all four passes, the third by three.
+    runs4 = [_cands(2), _cands(3), _cands(3), _cands(3)]
+    assert thin_outlier_passes([len(r) for r in runs4[:3]]) == []
+    cands4, _ = build_union(runs4, ARTICLE_BODY)
+    conf4 = {c["excerpt"]: c["extraction_confidence"] for c in cands4}
+    assert conf4[_SPANS[0]] == "4/4"
+    assert conf4[_SPANS[2]] == "3/4"
+
+    cands3, _ = build_union(runs4[:3], ARTICLE_BODY)
+    conf3 = {c["excerpt"]: c["extraction_confidence"] for c in cands3}
+    assert conf3[_SPANS[0]] == "3/3"
+    assert conf3[_SPANS[2]] == "2/3"
+
+
+@pytest.mark.asyncio
+async def test_extra_pass_never_recurses():
+    """The cap is absolute: even when the extra pass is itself thin, no fifth
+    call happens."""
+    extractor, composite = await _run_composite([2, 10, 11, 1])
+    assert extractor.calls == 4
+    assert composite.extra_log_fields["extract_raw"] == [2, 10, 11, 1]
+
+
+@pytest.mark.asyncio
+async def test_failed_extra_pass_does_not_widen_the_denominator(caplog):
+    """If the extra call itself fails, the union runs over the original three.
+    Appending an empty fourth run would penalise every candidate's confidence
+    for a transport failure."""
+    from src.agent import AgentError
+    from src.bias_composite import BiasComposite
+
+    class DyingOnFourth(ScriptedExtractor):
+        async def run(self, *a, **kw):
+            if self.calls == 3:
+                self.calls += 1
+                raise AgentError("extra pass down")
+            return await super().run(*a, **kw)
+
+    extractor = DyingOnFourth([2, 10, 11])
+    composite = BiasComposite(extractor=extractor, judge=SilentJudge())
+    with caplog.at_level(logging.ERROR):
+        await composite.run("msg", context={"article_body": ARTICLE_BODY})
+
+    assert extractor.calls == 4
+    fields = composite.extra_log_fields
+    assert fields["extractor_extra_pass"] is True   # it was attempted...
+    assert fields["extraction_passes"] == 3         # ...but contributed nothing
+    assert "extra pass FAILED" in " ".join(r.getMessage() for r in caplog.records)

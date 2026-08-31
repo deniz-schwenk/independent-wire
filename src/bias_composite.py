@@ -79,6 +79,64 @@ EXTRACTOR_CANDIDATE_CAP = 18
 # denominator ("K/3").
 EXTRACTION_PASSES = 3
 
+# Adaptive 4th pass (TASK-BIAS-EXTRACTOR-COUPLED part 3). A pass whose
+# candidate count collapses relative to its siblings is a THIN PASS: the model
+# emitted a fraction of what the same prompt on the same article produced twice
+# over, so the union loses coverage the article actually offered. Observed
+# live on 2026-08-30 topic 0 at raw counts [4, 10, 25].
+#
+# The rule is deliberately RELATIVE — a pass is an outlier only against the
+# median of the OTHER passes, never against an absolute floor. A short clean
+# article that legitimately yields [1, 1, 1] must not buy a fourth call, and
+# with the median of the others at 1 it does not. The zero-median guard makes
+# [0, 0, 0] explicit for the same reason.
+#
+# Cap: exactly ONE extra pass, ever, however many outliers there are. The extra
+# pass is an ordinary pass — `build_union` then runs over all four and the
+# confidence denominator follows `len(runs)` (K/4), which it already did.
+#
+# Ordering matters: this check runs AFTER the gather, so it sees the pass set
+# that survived Agent's transport retries and the channel fallback. It cannot
+# double-fire with the empty-body handling because that handling has already
+# finished by the time a count exists to compare.
+EXTRA_PASS_OUTLIER_RATIO = 0.5
+
+
+# --------------------------------------------------------------------------- #
+# Adaptive extra pass (pure function — no LLM, no I/O)
+# --------------------------------------------------------------------------- #
+def _median(values: list[int]) -> float:
+    """Median of a non-empty list; 0.0 for an empty one."""
+    if not values:
+        return 0.0
+    ordered = sorted(values)
+    mid = len(ordered) // 2
+    if len(ordered) % 2:
+        return float(ordered[mid])
+    return (ordered[mid - 1] + ordered[mid]) / 2.0
+
+
+def thin_outlier_passes(
+    counts: list[int], ratio: float = EXTRA_PASS_OUTLIER_RATIO
+) -> list[int]:
+    """1-based indices of passes whose candidate count is below ``ratio`` times
+    the median of the OTHER passes.
+
+    Relative by construction: each pass is compared against its siblings, never
+    against a fixed floor, so a uniformly thin article triggers nothing. A
+    median of zero (every other pass empty too) also triggers nothing — there
+    is no evidence of a richer article to recover.
+    """
+    outliers: list[int] = []
+    for i, count in enumerate(counts, start=1):
+        others = counts[:i - 1] + counts[i:]
+        if not others:
+            continue
+        median_others = _median(others)
+        if median_others > 0 and count < ratio * median_others:
+            outliers.append(i)
+    return outliers
+
 
 # --------------------------------------------------------------------------- #
 # Deterministic union (pure function — no LLM, no I/O)
@@ -472,6 +530,34 @@ class BiasComposite:
                 continue
             self._account(res)
             runs.append((res.structured or {}).get("candidates") or [])
+
+        # --- adaptive 4th pass on an outlier-thin pass -----------------------
+        outlier_passes = thin_outlier_passes([len(r) for r in runs])
+        extra_pass_run = False
+        if outlier_passes:
+            logger.warning(
+                "bias extractor THIN PASS: pass(es) %s of %s are below %.0f%% "
+                "of the median of the others — running exactly one extra "
+                "extraction pass (capped at one).",
+                outlier_passes, [len(r) for r in runs],
+                EXTRA_PASS_OUTLIER_RATIO * 100,
+            )
+            extra = await _extract()
+            extra_pass_run = True
+            if extra is None:
+                # The extra pass failed outright. Do NOT append an empty run:
+                # that would widen the confidence denominator to 4 with a
+                # guaranteed-empty pass and penalise every candidate for a
+                # transport failure.
+                logger.error(
+                    "bias extractor extra pass FAILED — union runs over the "
+                    "original %d passes, denominator unchanged.", len(runs),
+                )
+            else:
+                self._account(extra)
+                results = list(results) + [extra]
+                runs.append((extra.structured or {}).get("candidates") or [])
+
         ext_provider, ext_model, ext_fallback_passes = self._channel_report(results)
 
         candidates, stats = build_union(runs, article_body)
@@ -529,7 +615,9 @@ class BiasComposite:
             "extractor_provider": ext_provider,
             "extractor_fallback_used": bool(ext_fallback_passes),
             "extractor_fallback_passes": ext_fallback_passes,
-            "extraction_passes": EXTRACTION_PASSES,
+            "extraction_passes": len(runs),
+            "extractor_extra_pass": extra_pass_run,
+            "extractor_outlier_passes": outlier_passes,
             "judge_model": self.judge.model,
             "judge1_provider": judge1_provider,
             "judge2_provider": judge2_provider,
@@ -552,9 +640,11 @@ class BiasComposite:
                 ext_fallback_passes, self._primary_channel() or "the primary channel",
             )
         logger.info(
-            "bias composite: extracted %s (raw/pass), union=%d, invalid_drops=%d, "
-            "confirmed=%d, borderline=%d, cleared=%d, judge_disagree=%d%s",
-            stats["extract_raw"],
+            "bias composite: extracted %s (raw/pass over %d passes%s), union=%d, "
+            "invalid_drops=%d, confirmed=%d, borderline=%d, cleared=%d, "
+            "judge_disagree=%d%s",
+            stats["extract_raw"], len(runs),
+            f", extra pass on thin {outlier_passes}" if extra_pass_run else "",
             stats["union_size"], stats["invalid_span_drops"], len(findings),
             len(borderline), cleared_count, disagreements,
             " (judge skipped: empty candidates)" if judge_skipped else "",
