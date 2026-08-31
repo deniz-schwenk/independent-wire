@@ -818,47 +818,57 @@ def create_agents_hydrated() -> dict[str, Agent]:
             output_schema=RESEARCHER_PLAN_SCHEMA,
         ),
         # Hydration-Phase-1 model: production default is Gemini-3-Flash.
-        # The DeepSeek-V4-Pro spec immediately below is a comment-toggleable
-        # alternative used for the evidence-type-classification quality
-        # smoke (see TASK-EVIDENCE-TYPE-MIGRATION). Swap by commenting out
-        # the active block and uncommenting the alternative. Restore Flash
-        # as the default after the smoke unless the eval result switches
-        # production model.
-        # Hydration-Phase-1 model: production default is DeepSeek-V4-Pro
-        # (switched from Gemini-3-Flash per the evidence-type-classification
-        # dual-model smoke — DeepSeek showed cleaner attributional fidelity
-        # and correctly honoured the recipient-exclusion rule). The Flash
-        # spec below is preserved as a fallback / comparison-only
-        # alternative — see TASK-EVIDENCE-TYPE-MIGRATION A3 for rationale.
-        "hydration_aggregator_phase1": Agent(
-            name="hydration_aggregator_phase1",
-            model="deepseek/deepseek-v4-pro",
-            system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
-            instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.3,
-            max_tokens=32000,
-            provider="openrouter",
-            reasoning="none",
-            provider_routing=DEEPSEEK_V4_PRO_FP8_ROUTING,
+        # Hydration-Phase-1 model: v4-flash-0731 @ medium since 2026-08-31
+        # (TASK-DSV4-SWAPS-BUNDLE, component TASK-P1-SWAP-FLASH0731);
+        # deepseek-v4-pro on the OpenRouter fp8 pin before that, and
+        # Gemini-3-Flash before THAT (the evidence-type-classification
+        # dual-model smoke, TASK-EVIDENCE-TYPE-MIGRATION A3 — the
+        # comment-toggleable Gemini alternative that lived here went with the
+        # swap: a third model behind a comment is not a fallback, it is a trap,
+        # and the stage now has a real one).
+        #
+        # Effort `medium`, not the consolidator's `minimal`: T3b §7.2 plus
+        # docs/evals/t3b-p1-confirm/REPORT.md measured 4.23 against the v4-pro
+        # baseline's 3.80 across all 27 chunks (t = 5.56, +0.435 paired, better
+        # on 24 of 27), driven by D2 actor recall 2.31 -> 3.60, with no
+        # dimension regressing. Phase 1 reads whole fetched articles and has to
+        # find the actors in them — this is the one stage in the bundle where
+        # the reasoning budget buys measured recall.
+        #
+        # max_tokens 160 000 is caps.json phase1@medium, and the reason phase1
+        # has its own row there: medium spends reasoning INSIDE the total
+        # budget and its spend explodes with effort (flash/minimal 20 727
+        # completion vs flash/medium 57 460 on the same chunk). Carrying the
+        # minimal cap would truncate. temperature 0.3 unchanged.
+        #
+        # Chunking is untouched by the swap: ceil(N/10) distribution,
+        # asyncio.gather parallelism, the missing-indices retry and the
+        # cache-cold empty-retry wrapper all still sit ABOVE this agent, so a
+        # per-chunk empty re-rolls the primary and can itself fall back. Loud
+        # marker hydration_phase1_fallback_used (the sibling naming of
+        # hydration_phase2_fallback_used). See src/flash_stage_fallback.py.
+        "hydration_aggregator_phase1": FlashStageWithFallback(
+            primary=_flash_0731_primary(
+                name="hydration_aggregator_phase1",
+                system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
+                instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
+                reasoning="medium",
+                temperature=0.3,
+                max_tokens=160000,   # caps.json phase1@medium
+                output_schema=HYDRATION_PHASE1_SCHEMA,
+            ),
+            fallback=_flash_0731_fallback(
+                name="hydration_aggregator_phase1_fallback",
+                system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
+                instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
+                temperature=0.3,
+                max_tokens=160000,   # caps.json phase1@medium
+                output_schema=HYDRATION_PHASE1_SCHEMA,
+            ),
             output_schema=HYDRATION_PHASE1_SCHEMA,
+            name="hydration_aggregator_phase1",
+            fallback_marker_key="hydration_phase1_fallback_used",
         ),
-        # --- Fallback / comparison only — see TASK-EVIDENCE-TYPE-MIGRATION
-        #     A3 for rationale. Swap by commenting out the active block
-        #     above and uncommenting the block below ---
-        # "hydration_aggregator_phase1": Agent(
-        #     name="hydration_aggregator_phase1",
-        #     model="google/gemini-3-flash-preview",
-        #     system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
-        #     instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
-        #     tools=[],
-        #     temperature=0.3,
-        #     max_tokens=32000,
-        #     provider="openrouter",
-        #     reasoning="none",
-        #     output_schema=HYDRATION_PHASE1_SCHEMA,
-        # ),
-        # --- END fallback alternative ---
         # hydration_aggregator_phase2 — swapped to GLM-5.2 @ xhigh
         # (TASK-HYDRATION-P2-GLM-SWAP). The phase-2 model eval made this operating
         # point binding (docs/HYDRATION-P2-MODEL-EVAL-2026-07.md): GLM-5.2 ties the

@@ -32,7 +32,7 @@ import pytest
 from src.agent import AgentAPIError, AgentResult
 from src.flash_stage_fallback import FlashStageWithFallback
 from src.runner.runner import _collect_agent_metrics
-from src.schemas import CONSOLIDATOR_SCHEMA
+from src.schemas import CONSOLIDATOR_SCHEMA, HYDRATION_PHASE1_SCHEMA
 
 
 # --------------------------------------------------------------------------- #
@@ -256,4 +256,118 @@ async def test_consolidator_stage_survives_a_channel_c_outage(monkeypatch):
     assert out.what_is_missing.voices_missing == ["a voice"]
     # exactly one guard attempt: the fallback's answer is non-empty
     assert primary.run_calls == 1 and fallback.run_calls == 1
+    assert wrapper.last_fallback_used is True
+
+
+# --------------------------------------------------------------------------- #
+# hydration_aggregator_phase1 — TASK-P1-SWAP-FLASH0731 (T3b §7.2 + P1-CONFIRM)
+# --------------------------------------------------------------------------- #
+def _phase1_actor(name="A"):
+    return {
+        "name": name, "role": "spokesperson", "type": "government",
+        "position": "said the thing", "evidence_type": "stated",
+        "verbatim_quote": "the thing",
+    }
+
+
+VALID_PHASE1 = {
+    "article_analyses": [
+        {"article_index": 0, "summary": "s", "actors_quoted": []}
+    ]
+}
+
+
+def test_phase1_wired_to_flash_0731_at_medium(monkeypatch):
+    """P1-CONFIRM's operating point: flash-0731 @ MEDIUM (not the
+    consolidator's minimal) with the 160 000 cap medium's reasoning needs.
+
+    Hydrated-only stage, so only that variant registers it.
+    """
+    agents = load_agents("hydrated", monkeypatch)
+    agent = agents["hydration_aggregator_phase1"]
+    assert isinstance(agent, FlashStageWithFallback)
+    assert agent.name == "hydration_aggregator_phase1"
+    assert agent.fallback_marker_key == "hydration_phase1_fallback_used"
+    assert_channel_c_primary(
+        agent.primary, reasoning="medium", temperature=0.3, max_tokens=160000,
+        label="phase1 primary",
+    )
+    assert_channel_a_fallback(
+        agent.fallback, temperature=0.3, max_tokens=160000,
+        label="phase1 fallback",
+    )
+    assert "deepseek-v4-pro" not in (agent.primary.model, agent.fallback.model)
+    # the pre-2026-08-24 cross-model net must not reappear
+    assert "gemini" not in f"{agent.primary.model}{agent.fallback.model}".lower()
+
+
+def test_phase1_cap_is_not_the_minimal_cap(monkeypatch):
+    """The one cap in the bundle that is NOT 32000, guarded explicitly: medium
+    spends its reasoning inside the total budget (flash/minimal 20 727
+    completion vs flash/medium 57 460 on the same chunk — caps.json's own
+    note), so carrying the minimal cap here would truncate real chunks."""
+    agents = load_agents("hydrated", monkeypatch)
+    p1 = agents["hydration_aggregator_phase1"]
+    cons = agents["consolidator"]
+    assert p1.primary.max_tokens == 160000
+    assert cons.primary.max_tokens == 32000
+    assert p1.primary.reasoning == "medium"
+    assert cons.primary.reasoning == "minimal"
+
+
+def test_phase1_is_not_registered_in_the_production_variant(monkeypatch):
+    """Guard the variant boundary: phase1 is hydrated-only, and the swap must
+    not have leaked it into the production agent dict."""
+    assert "hydration_aggregator_phase1" not in load_agents("production", monkeypatch)
+
+
+@pytest.mark.asyncio
+async def test_phase1_forced_channel_c_failure_falls_back_loudly(caplog):
+    """Forced failure: channel C down -> channel A serves the chunk, loudly,
+    and hydration_phase1_fallback_used reaches the stage row."""
+    wrapper, primary, fallback = forced_c_failure_wrapper(
+        schema=HYDRATION_PHASE1_SCHEMA,
+        structured=VALID_PHASE1,
+        name="hydration_aggregator_phase1",
+        marker="hydration_phase1_fallback_used",
+    )
+    with caplog.at_level(logging.WARNING):
+        result = await wrapper.run("msg", context={})
+
+    assert primary.run_calls == 1 and fallback.run_calls == 1
+    assert result.structured == VALID_PHASE1
+    row = _collect_agent_metrics(_StageWith(wrapper))
+    assert row["hydration_phase1_fallback_used"] is True
+    assert row["model_used"] == "deepseek/deepseek-v4-flash-0731"
+    text = " ".join(r.getMessage() for r in caplog.records)
+    assert "hydration_aggregator_phase1 FALLBACK" in text
+
+
+@pytest.mark.asyncio
+async def test_phase1_chunk_survives_a_channel_c_outage():
+    """Stage level: the chunk orchestration is unchanged by the swap. A
+    channel-C outage costs the chunk ONE fallback call, and the empty-retry
+    wrapper above it sees a non-empty answer, so it does not re-roll."""
+    from src.agent_stages import _run_phase1_chunk_with_empty_retry
+
+    wrapper, primary, fallback = forced_c_failure_wrapper(
+        schema=HYDRATION_PHASE1_SCHEMA,
+        structured={
+            "article_analyses": [
+                {"article_index": 0, "summary": "s",
+                 "actors_quoted": [_phase1_actor()]}
+            ]
+        },
+        name="hydration_aggregator_phase1",
+        marker="hydration_phase1_fallback_used",
+    )
+    analyses, attempts = await _run_phase1_chunk_with_empty_retry(
+        {"title": "t", "selection_reason": "r"},
+        [{"url": "https://example.org/a", "text": "body"}],
+        chunk_idx=0,
+        agent=wrapper,
+    )
+    assert attempts == 1                      # the empty-retry loop did not fire
+    assert primary.run_calls == 1 and fallback.run_calls == 1
+    assert len(analyses) == 1
     assert wrapper.last_fallback_used is True
