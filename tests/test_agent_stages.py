@@ -1714,6 +1714,206 @@ def test_consolidator_empty_inputs_write_empty_output():
 
 
 # ===========================================================================
+# ConsolidatorStage — empty-emission guard (TASK-CONSOLIDATOR-EMPTY-GUARD)
+# ===========================================================================
+#
+# The pathology: finish_reason="stop", every completion token spent on
+# reasoning, empty body. It parses to WhatIsMissing([], []), which the
+# slot's legitimate-empty semantics make indistinguishable from a real
+# "nothing is missing" — so the dossier shipped without its
+# missing-voices analysis and nothing logged a failure.
+
+import logging  # noqa: E402
+
+from src.agent_stages import (  # noqa: E402
+    _CONSOLIDATOR_EMPTY_MAX_ATTEMPTS,
+    _consolidator_arrays,
+)
+from src.stage import StageError  # noqa: E402
+
+
+class SequencedFakeAgent:
+    """FakeAgent variant that returns successive pre-baked AgentResults
+    from a queue. Each ``run(...)`` call pops the head; running out is a
+    test failure, which is how "did not retry" gets asserted."""
+
+    def __init__(self, results: list[AgentResult], *, name: str = "fake") -> None:
+        self._results = list(results)
+        self.name = name
+        self.calls: list[dict] = []
+
+    async def run(
+        self, message: str = "", context: dict | None = None, **kwargs: Any
+    ) -> AgentResult:
+        self.calls.append({"message": message, "context": context, **kwargs})
+        if not self._results:
+            raise AssertionError("SequencedFakeAgent exhausted — too many calls")
+        return self._results.pop(0)
+
+
+def _empty_body_result(*, response_id: str = "resp-empty") -> AgentResult:
+    """The observed pathology verbatim — no structured parse, no content.
+    (T3b: vision-exp @ reasoning=medium, 4,423/4,423 tokens reasoning.)"""
+    return AgentResult(
+        content="",
+        structured=None,
+        cost_usd=0.002,
+        tokens_used=4423,
+        response_id=response_id,
+    )
+
+
+def _consolidation_result(*, response_id: str = "resp-ok") -> AgentResult:
+    return AgentResult(
+        content="",
+        structured={
+            "voices_missing": ["Iraqi government voices"],
+            "topics_missing": ["Humanitarian dimension of the blockade"],
+        },
+        cost_usd=0.002,
+        tokens_used=1800,
+        response_id=response_id,
+    )
+
+
+def _tb_with_inputs() -> TopicBus:
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.perspective_missing_positions = [
+        {"type": "government", "description": "Iraqi government"},
+    ]
+    tb.merged_coverage_gaps = ["No humanitarian-dimension coverage"]
+    return tb
+
+
+def test_consolidator_empty_body_retries_then_fails_loud(caplog):
+    """(a) Empty body on every attempt, inputs non-empty → the stage
+    exhausts its retries and raises rather than writing the silent
+    ``WhatIsMissing([], [])``."""
+    agent = SequencedFakeAgent([
+        _empty_body_result(response_id="resp-1"),
+        _empty_body_result(response_id="resp-2"),
+        _empty_body_result(response_id="resp-3"),
+    ])
+    tb = _tb_with_inputs()
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        with pytest.raises(StageError) as excinfo:
+            _run(ConsolidatorStage(agent), tb, _ro())
+
+    assert _CONSOLIDATOR_EMPTY_MAX_ATTEMPTS == 3
+    assert len(agent.calls) == 3
+
+    msg = str(excinfo.value)
+    assert "what_is_missing came back empty on all 3 attempts" in msg
+    # The input counts travel in the message — that is what makes the
+    # failure diagnosable from the stage log alone.
+    assert "1 perspective_missing_positions" in msg
+    assert "1 merged_coverage_gaps" in msg
+
+    # Nothing was written: the input bus still holds the typed default.
+    assert tb.what_is_missing == WhatIsMissing()
+
+    # Loud per-attempt logging, Phase-1 fields (attempt counter + id).
+    warns = [r for r in caplog.records if r.levelno == logging.WARNING]
+    errors = [r for r in caplog.records if r.levelno == logging.ERROR]
+    assert len(warns) == 2
+    assert len(errors) == 1
+    joined = " ".join(r.getMessage() for r in caplog.records)
+    assert "ConsolidatorStage" in joined
+    assert "attempt 1/3" in joined and "attempt 2/3" in joined
+    assert "resp-1" in joined and "resp-2" in joined
+
+
+def test_consolidator_retry_succeeds_on_attempt_two(caplog):
+    """(b) Empty then good → the second attempt's result is written and
+    the first attempt is logged. The retry is the SAME model/route:
+    identical message and context, no fallback substitution."""
+    agent = SequencedFakeAgent([
+        _empty_body_result(response_id="resp-1"),
+        _consolidation_result(response_id="resp-2"),
+    ])
+    tb = _tb_with_inputs()
+
+    with caplog.at_level(logging.WARNING, logger="src.agent_stages"):
+        tb_after = _run(ConsolidatorStage(agent), tb, _ro())
+
+    assert len(agent.calls) == 2
+    assert tb_after.what_is_missing.voices_missing == ["Iraqi government voices"]
+    assert tb_after.what_is_missing.topics_missing == [
+        "Humanitarian dimension of the blockade"
+    ]
+
+    # Same call, re-issued — a routing re-roll, not a different request.
+    assert agent.calls[0]["message"] == agent.calls[1]["message"]
+    assert agent.calls[0]["context"] == agent.calls[1]["context"]
+
+    warns = [r for r in caplog.records if r.levelno == logging.WARNING]
+    assert len(warns) == 1
+    assert "attempt 1/3" in warns[0].getMessage()
+    assert "resp-1" in warns[0].getMessage()
+    # A recovered call is not a stage failure — nothing at ERROR.
+    assert [r for r in caplog.records if r.levelno == logging.ERROR] == []
+
+
+@pytest.mark.parametrize(
+    "structured",
+    [
+        {"voices_missing": [], "topics_missing": []},  # honest empty answer
+        None,  # empty body, indistinguishable — accepted, by design
+    ],
+    ids=["explicit-empty-arrays", "empty-body"],
+)
+def test_consolidator_both_inputs_empty_passes_untouched(caplog, structured):
+    """(c) Both input streams empty → empty output is the correct answer.
+    Exactly one call, empty result written, zero retries, zero log noise.
+    This is the pre-guard behaviour, unchanged."""
+    agent = SequencedFakeAgent([
+        AgentResult(content="", structured=structured, response_id="resp-1"),
+    ])
+    # perspective_missing_positions and merged_coverage_gaps default to [].
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+
+    with caplog.at_level(logging.DEBUG, logger="src.agent_stages"):
+        tb_after = _run(ConsolidatorStage(agent), tb, _ro())
+
+    assert len(agent.calls) == 1
+    assert isinstance(tb_after.what_is_missing, WhatIsMissing)
+    assert tb_after.what_is_missing.voices_missing == []
+    assert tb_after.what_is_missing.topics_missing == []
+    assert caplog.records == []
+
+
+def test_consolidator_guard_fires_on_effectively_empty_output():
+    """Output that survives a raw length check but writes empty
+    (``[null]``, ``[""]``) is empty for the guard's purposes — predicate
+    and bus write share ``_consolidator_arrays`` so they cannot
+    disagree."""
+    agent = SequencedFakeAgent([
+        AgentResult(
+            content="",
+            structured={"voices_missing": [None, ""], "topics_missing": []},
+            response_id=f"resp-{i}",
+        )
+        for i in range(1, 4)
+    ])
+    with pytest.raises(StageError):
+        _run(ConsolidatorStage(agent), _tb_with_inputs(), _ro())
+    assert len(agent.calls) == 3
+
+
+def test_consolidator_arrays_preserves_pre_guard_filter():
+    """The extracted helper is the pre-guard filter verbatim: ``or []``
+    then keep truthy ``str``. Pinned so the guard cannot silently widen
+    what reaches the slot."""
+    assert _consolidator_arrays(None) == ([], [])
+    assert _consolidator_arrays(["not", "a", "dict"]) == ([], [])
+    assert _consolidator_arrays({}) == ([], [])
+    assert _consolidator_arrays(
+        {"voices_missing": ["a", "", None, 42, "b"], "topics_missing": [None, "c"]}
+    ) == (["a", "b"], ["c"])
+
+
+# ===========================================================================
 # V2-06: QaAnalyzeStage  +  schema change in src/schemas.py
 # ===========================================================================
 

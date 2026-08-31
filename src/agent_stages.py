@@ -57,7 +57,7 @@ from src.bus import (
     WriterArticle,
 )
 from src.outlet_registry import lookup_outlet
-from src.stage import StageMeta
+from src.stage import StageError, StageMeta
 from src.stages._helpers import normalise_country
 
 logger = logging.getLogger(__name__)
@@ -2335,6 +2335,33 @@ class HydrationPhase2Stage(_AgentStageBase):
 # ---------------------------------------------------------------------------
 
 
+_CONSOLIDATOR_EMPTY_MAX_ATTEMPTS = 3
+
+
+def _consolidator_arrays(parsed: Any) -> tuple[list[str], list[str]]:
+    """Extract the consolidator's two output arrays from a parsed agent
+    response, applying the defensive non-string filter.
+
+    Shared by the empty-emission predicate and the final bus write so
+    both judge the *same* thing: what would actually land in the slot.
+    A response like ``{"voices_missing": [null], "topics_missing": []}``
+    passes a raw length check but writes empty, so the raw arrays are
+    the wrong thing to test emptiness on.
+
+    Filtering is byte-for-byte the pre-guard logic (``or []`` then keep
+    truthy ``str``); malformed-shape handling is a different defect and
+    deliberately not widened here.
+    """
+    if not isinstance(parsed, dict):
+        return [], []
+    voices_raw = parsed.get("voices_missing") or []
+    topics_raw = parsed.get("topics_missing") or []
+    return (
+        [s for s in voices_raw if isinstance(s, str) and s],
+        [s for s in topics_raw if isinstance(s, str) and s],
+    )
+
+
 class ConsolidatorStage(_AgentStageBase):
     """Consolidator agent wrapper. Owns the dossier's
     ``what_is_missing`` output — the deduplicated, classified view of
@@ -2357,9 +2384,24 @@ class ConsolidatorStage(_AgentStageBase):
     the LLM owns dedup). See ``REPORT-DIAGNOSTIC-2026-05-23.md`` for
     the underlying failure cases.
 
-    Single LLM call, no chunking, no special retry logic — both inputs
-    are small (typically <20 entries combined), output is a small
-    two-array JSON object.
+    Single LLM call, no chunking — both inputs are small (typically
+    <20 entries combined), output is a small two-array JSON object.
+
+    **Empty-emission guard.** An empty model body (``finish_reason=
+    "stop"`` with every completion token spent on reasoning — the
+    DeepSeek pathology already mitigated in ``HydrationPhase1Stage``)
+    parses to ``WhatIsMissing([], [])``. The slot's legitimate-empty
+    semantics (``optional_write=True``, `src/bus.py` §4B.10) make that
+    indistinguishable from a real "nothing is missing" result, so the
+    dossier would ship without its missing-voices analysis and nothing
+    would log a failure. When at least one input stream carries
+    entries, an empty result is therefore treated as a transport
+    pathology: retried up to ``_CONSOLIDATOR_EMPTY_MAX_ATTEMPTS``
+    against the same model/route (`_call_with_empty_retry`, the
+    Phase-1 pattern), then raised as :class:`StageError` rather than
+    written. With **both** input streams empty an empty output is the
+    correct answer — no retry, no log noise, no raise, behaviour
+    identical to before the guard.
     """
 
     stage_kind = "topic"
@@ -2373,31 +2415,55 @@ class ConsolidatorStage(_AgentStageBase):
     async def __call__(
         self, topic_bus: TopicBus, run_bus: RunBusReadOnly
     ) -> TopicBus:
+        positions = list(topic_bus.perspective_missing_positions or [])
+        gaps = list(topic_bus.merged_coverage_gaps or [])
         message = (
             "Classify each gap entry as a missing voice or a missing "
             "topic, deduping semantic overlaps across the two inputs."
         )
-        result = await self.agent.run(
-            message,
-            context={
-                "perspective_missing_positions": list(
-                    topic_bus.perspective_missing_positions or []
-                ),
-                "merged_coverage_gaps": list(
-                    topic_bus.merged_coverage_gaps or []
-                ),
-            },
-        )
-        parsed = _parse_agent_output(result) or {}
-        if not isinstance(parsed, dict):
-            parsed = {}
+        context = {
+            "perspective_missing_positions": positions,
+            "merged_coverage_gaps": gaps,
+        }
 
-        voices_raw = parsed.get("voices_missing") or []
-        topics_raw = parsed.get("topics_missing") or []
-        what = WhatIsMissing(
-            voices_missing=[s for s in voices_raw if isinstance(s, str) and s],
-            topics_missing=[s for s in topics_raw if isinstance(s, str) and s],
+        # `has_input` gates the entire guard. Both streams empty → the
+        # predicate is constant-False, `_call_with_empty_retry` breaks
+        # after one call without logging, and the write below is the
+        # pre-guard write. That is the legitimate-empty path.
+        has_input = bool(positions) or bool(gaps)
+
+        def _is_empty_consolidation(parsed: Any) -> bool:
+            if not has_input:
+                return False
+            voices, topics = _consolidator_arrays(parsed)
+            return not voices and not topics
+
+        result, attempts_used, _cost, _tokens = (
+            await self._call_with_empty_retry(
+                message=message,
+                context=context,
+                is_empty=_is_empty_consolidation,
+                log_label="ConsolidatorStage",
+                max_attempts=_CONSOLIDATOR_EMPTY_MAX_ATTEMPTS,
+            )
         )
+
+        voices, topics = _consolidator_arrays(_parse_agent_output(result))
+
+        if has_input and not voices and not topics:
+            # Never write the silent `{}`. The runner marks this topic
+            # "failed" and records the message + traceback in the stage
+            # log; the other topics in the run continue.
+            raise StageError(
+                "ConsolidatorStage: what_is_missing came back empty on "
+                f"all {attempts_used} attempt"
+                f"{'' if attempts_used == 1 else 's'} despite "
+                f"{len(positions)} perspective_missing_positions and "
+                f"{len(gaps)} merged_coverage_gaps — refusing to write "
+                "an empty result (model empty-emission mode)"
+            )
+
+        what = WhatIsMissing(voices_missing=voices, topics_missing=topics)
         return topic_bus.model_copy(update={"what_is_missing": what})
 
 
