@@ -147,3 +147,10 @@ the stage's 0.8 instead of the published 1.0/0.95; the re-probe showed the
 error was not load-bearing (verdict unchanged), but the fairness gap was
 real. Also: Phase-0 groundwork must enumerate ALL thinking modes the
 endpoint exposes (Max was missed).
+
+### GLM reasoning ceiling: `high` (owner rule, 2026-08-31)
+For any GLM-family candidate, the highest reasoning/thinking mode we test
+or run is `high`. `max` is excluded on inference-time grounds
+(extractor-glm53 resample: ~4.4× wall time per pass vs `high`), regardless
+of marginal quality gains. Groundwork may record that `max` exists; no arm
+runs on it.
