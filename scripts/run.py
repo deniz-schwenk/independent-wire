@@ -199,6 +199,7 @@ def _flash_0731_primary(
     reasoning: str,
     max_tokens: int,
     output_schema: dict,
+    temperature: float = 0.5,
 ) -> Agent:
     """Channel C — the PRIMARY for a v4-flash-0731 stage: api.deepseek.com
     direct (TASK-FLASH-0731-SWAP, owner decision on the T2d matrix).
@@ -220,6 +221,14 @@ def _flash_0731_primary(
       Hence the fallbacks below all run `medium` while these primaries run
       lower — that is parity, not a downgrade.
 
+    ``temperature`` defaults to 0.5, the value the first three stages shipped
+    with. It is a parameter rather than a constant because the stages added by
+    TASK-DSV4-SWAPS-BUNDLE carry their own eval-validated decode temperature
+    (consolidator 0.3, phase1 0.3, bias extractor 0.8 — the extractor's
+    spread is deliberate: natural variance across the three passes IS the
+    recall mechanism). A swap must not silently re-tune the sampling of the
+    stage it swaps.
+
     ``structured_output_mode`` is coerced to json_object by Agent for this
     provider; schema conformance is enforced by FlashStageWithFallback."""
     return Agent(
@@ -228,7 +237,7 @@ def _flash_0731_primary(
         system_prompt_path=system_prompt_path,
         instructions_path=instructions_path,
         tools=[],
-        temperature=0.5,
+        temperature=temperature,
         max_tokens=max_tokens,
         provider="deepseek_direct",
         reasoning=reasoning,
@@ -244,6 +253,7 @@ def _flash_0731_fallback(
     instructions_path: str,
     max_tokens: int,
     output_schema: dict,
+    temperature: float = 0.5,
 ) -> Agent:
     """Channel A — the one-shot FALLBACK for a v4-flash-0731 stage: OpenRouter
     on the dated id, pinned to the vendor's own endpoint.
@@ -267,7 +277,7 @@ def _flash_0731_fallback(
         system_prompt_path=system_prompt_path,
         instructions_path=instructions_path,
         tools=[],
-        temperature=0.5,
+        temperature=temperature,
         max_tokens=max_tokens,
         provider="openrouter",
         reasoning="medium",
@@ -733,21 +743,52 @@ def create_agents() -> dict[str, Agent]:
         # dossier's "what is missing" output. Inputs are small
         # (perspective_missing_positions ~5-15 entries +
         # merged_coverage_gaps ~3-10 entries); output is two arrays of
-        # short English strings. Temperature 0.3 + reasoning=none +
-        # max_tokens=32000 mirror the DeepSeek-V4-Pro default for
-        # small structured tasks — see commit rationale.
-        "consolidator": Agent(
-            name="consolidator",
-            model="deepseek/deepseek-v4-pro",
-            system_prompt_path=str(agents_dir / "consolidator" / "SYSTEM.md"),
-            instructions_path=str(agents_dir / "consolidator" / "INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.3,
-            max_tokens=32000,
-            provider="openrouter",
-            reasoning="none",
-            provider_routing=DEEPSEEK_V4_PRO_FP8_ROUTING,
+        # short English strings.
+        #
+        # v4-flash-0731 since 2026-08-31 (TASK-DSV4-SWAPS-BUNDLE, component
+        # TASK-CONSOLIDATOR-SWAP-FLASH0731); deepseek-v4-pro on the OpenRouter
+        # fp8 pin before that. Channel C primary, channel A fallback — the same
+        # two-route wiring as the three stages swapped on 2026-08-24, via
+        # _flash_0731_primary / _flash_0731_fallback.
+        #
+        # Effort `minimal`, the T3b operating point: T3B-REPORT §7.1 judged
+        # flash@minimal at 4.75 against the v4-pro baseline's 4.48, with
+        # candidate counts inside each other's noise, at the lowest cost of the
+        # arms measured. This is a classify-and-dedupe task over a handful of
+        # short strings — the reasoning budget buys nothing above triage level,
+        # and `minimal` is where the eval put it.
+        #
+        # temperature 0.3 and max_tokens 32000 are UNCHANGED across the swap
+        # (32000 is also scratch/eval/t3b/caps.json consolidator@minimal —
+        # >= 2x the worst observed completion for the cell). A model swap is
+        # not licence to re-tune decode parameters the eval held fixed.
+        #
+        # The empty-emission guard in ConsolidatorStage
+        # (_CONSOLIDATOR_EMPTY_MAX_ATTEMPTS, merged 2026-08-31) sits ABOVE this
+        # wrapper and is untouched: each of its retries is a fresh wrapper call,
+        # so a retry re-rolls the primary and can itself fall back. Loud marker
+        # consolidator_fallback_used. See src/flash_stage_fallback.py.
+        "consolidator": FlashStageWithFallback(
+            primary=_flash_0731_primary(
+                name="consolidator",
+                system_prompt_path=str(agents_dir / "consolidator" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "consolidator" / "INSTRUCTIONS.md"),
+                reasoning="minimal",
+                temperature=0.3,
+                max_tokens=32000,   # caps.json consolidator@minimal
+                output_schema=CONSOLIDATOR_SCHEMA,
+            ),
+            fallback=_flash_0731_fallback(
+                name="consolidator_fallback",
+                system_prompt_path=str(agents_dir / "consolidator" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "consolidator" / "INSTRUCTIONS.md"),
+                temperature=0.3,
+                max_tokens=32000,   # caps.json consolidator@medium
+                output_schema=CONSOLIDATOR_SCHEMA,
+            ),
             output_schema=CONSOLIDATOR_SCHEMA,
+            name="consolidator",
+            fallback_marker_key="consolidator_fallback_used",
         ),
     }
 
