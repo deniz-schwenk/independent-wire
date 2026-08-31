@@ -136,3 +136,14 @@ eval strand runs as a sequential funnel:
 Each phase is its own CC gate with its own budget slice; later phases are
 briefed only after the earlier phase's report. Context: T3b's full matrix
 produced 648 generations where a funnel would have needed ~250.
+
+### Foreign model families run at vendor-recommended sampling (2026-08-31)
+A candidate from a family we do not run in production is tested at its
+vendor-recommended sampling (temperature / top_p / thinking mode from the
+official model card, verified at measurement time), NOT at the inherited
+stage temperature. The stage temperature is the incumbent's operating
+point, not the candidate's. Context: extractor-glm53 ran GLM-5.3-flash at
+the stage's 0.8 instead of the published 1.0/0.95; the re-probe showed the
+error was not load-bearing (verdict unchanged), but the fairness gap was
+real. Also: Phase-0 groundwork must enumerate ALL thinking modes the
+endpoint exposes (Max was missed).
