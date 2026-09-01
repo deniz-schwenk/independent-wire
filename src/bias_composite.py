@@ -44,6 +44,7 @@ surfaced via ``extra_log_fields``.
 from __future__ import annotations
 
 import asyncio
+import itertools
 import json
 import logging
 from collections import Counter
@@ -68,8 +69,16 @@ JUDGE_MESSAGE = (
 # Extractor cap: how many candidates from EACH extraction pass are carried into
 # the union (TASK-BIAS-DEDUP-FIX lowered this 25 -> 18 for the ≤ $0.06/article
 # cost target). The extractor prompt is authoritative and untouched — the cap is
-# enforced here deterministically, on the raw emission order (the prompt asks the
-# model to keep the most clearly loaded ones, so the head of the list is best).
+# enforced here deterministically.
+#
+# The cap value is unchanged; HOW it truncates is not. It used to keep the first
+# 18 items in raw emission order, which was right while the prompt asked the
+# model to "keep the 25 most clearly loaded ones" — the head of the list was the
+# best of the list. It is wrong for a sweep-structured prompt, which emits
+# candidates pattern by pattern: head-truncation then deletes whole trailing
+# pattern families (hedging and intensifier last), and the union loses a
+# category rather than its weakest members. `_cap_run` truncates round-robin
+# across `issue_hint` instead, so every pattern the pass found survives the cap.
 EXTRACTOR_CANDIDATE_CAP = 18
 
 # Number of independent extraction passes (TASK-BIAS-THIRD-EXTRACTOR). Three
@@ -153,6 +162,61 @@ def _occurrences(excerpt: str, body: str) -> list[tuple[int, int]]:
     return spans
 
 
+def _cap_run(run: list, cap: int) -> list:
+    """Truncate ONE extraction pass to ``cap`` items without losing a pattern.
+
+    Items are bucketed by ``issue_hint`` and taken round-robin: one from each
+    pattern in turn until the cap is reached. So a 30-item pass covering five
+    patterns contributes items from all five, where head-truncation would have
+    kept the first three patterns whole and dropped the last two entirely.
+
+    Ordering is fully deterministic and prompt-agnostic:
+
+    * **pattern order** is first appearance in the pass. The schema types
+      ``issue_hint`` as a free string with no enum, so the six pattern names are
+      a prompt contract rather than a code contract — hardcoding them here would
+      invent one. For a sweep-structured prompt, first-appearance order IS the
+      sweep order.
+    * **item order within a pattern** is the pass's own order, so the model's
+      own ranking still decides which of a pattern's items survive.
+    * items whose ``issue_hint`` is missing, empty, or not a string are taken
+      **last**, only once every named pattern has been served — an unlabelled
+      item is not a pattern family and must never displace one. A pass
+      consisting only of such items still truncates cleanly to the cap.
+
+    A pass at or under the cap is returned unchanged, in its original order —
+    no reordering happens when no truncation is needed.
+    """
+    if len(run) <= cap:
+        return list(run)
+
+    named: dict[str, list] = {}
+    unknown: list = []
+    for item in run:
+        hint = item.get("issue_hint") if isinstance(item, dict) else None
+        if isinstance(hint, str) and hint:
+            named.setdefault(hint, []).append(item)
+        else:
+            unknown.append(item)
+
+    kept: list = []
+    # dict preserves first-appearance order of the named patterns
+    for row in itertools.zip_longest(*named.values()):
+        for item in row:
+            if item is None:
+                continue
+            kept.append(item)
+            if len(kept) == cap:
+                return kept
+    # unknown/missing hint goes LAST: it is not a pattern family, so it must
+    # never displace one. It still gets whatever room the named patterns leave.
+    for item in unknown:
+        kept.append(item)
+        if len(kept) == cap:
+            break
+    return kept
+
+
 def build_union(
     runs: list[list[dict]],
     article_body: str,
@@ -166,7 +230,9 @@ def build_union(
     confidence denominator stays fixed at ``len(runs)``).
 
     Rules (all deterministic):
-    - each run is truncated to the first ``cap`` items (extractor cost cap);
+    - each run is truncated to ``cap`` items round-robin across ``issue_hint``
+      (extractor cost cap; see :func:`_cap_run` — a pass at or under the cap is
+      untouched, and no pattern the pass found is lost to truncation);
     - every ``excerpt`` must be an exact substring of ``article_body`` (invalid
       spans are dropped and counted);
     - **position-anchored merge** (TASK-BIAS-DEDUP-FIX): each validated excerpt
@@ -194,7 +260,7 @@ def build_union(
     # distinct excerpt -> {"runs": set[int], "hint": str}
     distinct: dict[str, dict] = {}
     for run_idx, run in enumerate(runs, start=1):
-        for item in (run or [])[:cap]:
+        for item in _cap_run(run or [], cap):
             if not isinstance(item, dict):
                 continue
             excerpt = item.get("excerpt")
