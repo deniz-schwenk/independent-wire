@@ -154,3 +154,23 @@ or run is `high`. `max` is excluded on inference-time grounds
 (extractor-glm53 resample: ~4.4× wall time per pass vs `high`), regardless
 of marginal quality gains. Groundwork may record that `max` exists; no arm
 runs on it.
+
+### Comparator must be the live champion (2026-09-01)
+Screens and follow-ups compare against the CURRENT production arm at the
+time of judging, never against stored outputs of a model that has since
+been replaced. GLM53-SCREEN judged four stages "PROMISING" against the
+retired April V4-Pro; the phase-1 follow-up against the live Flash-0731
+champion was NEGATIVE (Δ −0.61, CI clear of zero). A screen that predates
+a swap is void for the swapped stages.
+
+### Schedule champion-arm evals off-peak (2026-09-01)
+DeepSeek peak pricing is exactly 2× (Mon–Fri 01–04 and 06–10 UTC; same
+chunk $0.0495 peak vs $0.0299 off-peak). Evals that re-call the champion
+run off-peak or budget for 2×.
+
+### GLM-5.3-flash — closed for DeepSeek-served stages (2026-09-01)
+Phase-1: NEGATIVE (evidence typing D4 −1.10; three mechanical failure
+modes the champion lacks). Other screen verdicts were vs the retired
+comparator and are void. Fabrication worry did NOT survive a real judge
+(0 invented actors both arms, n=20) — the standing GLM-5 disqualification
+for synthesis roles rests on the older GLM-5 evidence, not on 5.3.
