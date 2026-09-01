@@ -137,7 +137,12 @@ trap 'echo "===== FAILED — $TODAY — $(date) — see log above =====" >> "$LO
   git pull --rebase origin main
 
   echo "[2/6] uv sync (match deps to pulled code)"
-  "$UV" sync --extra multilingual
+  # ALL canonical extras, every time. `uv sync` is an exact sync: naming only
+  # --extra multilingual PRUNES dev (pytest) and telegram from the venv on every
+  # 06:00 run, so tests silently stop being runnable until someone resyncs by
+  # hand (cost two test sessions, 2026-08-26 and 2026-08-27). Keep this list in
+  # step with the project convention "never bare `uv sync`".
+  "$UV" sync --extra dev --extra multilingual --extra telegram
 
   echo "[3/6] fetch feeds"
   "$UV" run python scripts/fetch_feeds.py
