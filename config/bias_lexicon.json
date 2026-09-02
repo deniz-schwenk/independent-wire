@@ -1,0 +1,56 @@
+{
+  "_purpose": "Canonical loaded terms scanned deterministically in the article's OWN VOICE and injected as bias-extractor candidates alongside the model's extraction passes. This closes the closed-vocabulary half of a coverage gap three prompt generations could not close (D1 held at ~3.3 across live/v2/v3; the `regime` canary was found 1 time in 5 by v3 while a string scan finds 5 of 5). The open-ended half — evaluative framing, emotionalizing, quote handling — stays with the LLM. Deterministic-before-LLM, applied to the half that is a vocabulary rather than a judgement.",
+  "_contract": "Every entry is EVIDENCE-SOURCED: `note` names where the term was already cited — the live extractor prompt, RUBRIC-bias_extractor.md, or a specific judge finding in one of the three breadth evals. No entry is invented. Matching is case-insensitive on word boundaries; multi-word terms are allowed. A hit is a CANDIDATE, not a finding: the downstream bias judge clears figure-backed descriptors, attributed language and defensible word choices, so this list may over-generate within that tolerance by design.",
+  "_language": "en",
+  "_language_note": "English only. Articles reaching this stage are English (the writer emits English); per-language lexicons are a separate task.",
+  "_not_covered": "`passive_obscuring` is a grammatical construction, not a vocabulary — a term list cannot find 'the fees were raised' in general. Only the one idiom the prompt and rubric both cite is listed. That pattern stays the model's job.",
+  "_sources": {
+    "prompt": "agents/bias_candidate_extractor/INSTRUCTIONS.md (live, in production)",
+    "prompt-v2v3": "scratch/pe-staging/bias_candidate_extractor-v2|v3/INSTRUCTIONS.md (staged, not shipped)",
+    "rubric": "scratch/eval/t3b/judging/RUBRIC-bias_extractor.md",
+    "breadth": "scratch/eval/extractor-breadth/ (live + v2 judged verdicts, 2026-09-01)",
+    "breadth-v3": "scratch/eval/extractor-breadth-v3/ (v3 judged verdicts, 2026-09-01)"
+  },
+  "terms": [
+    {"term": "regime", "issue_hint": "loaded_term", "note": "prompt + rubric name it as THE canonical example ('regime' for a government); breadth-v3 canary — 4 own-voice uses in one article, v3 found 0."},
+    {"term": "crackdown", "issue_hint": "loaded_term", "note": "prompt-v2v3 loaded_term example; classic implicit-judgment noun for an enforcement action."},
+    {"term": "admitted", "issue_hint": "loaded_term", "note": "prompt + rubric example ('admitted' for 'stated'); frames a statement as a concession."},
+    {"term": "conceded", "issue_hint": "loaded_term", "note": "same construction as 'admitted', which prompt + rubric name; a neutral 'said' reports the same act."},
+    {"term": "boasted", "issue_hint": "loaded_term", "note": "prompt names it in the attribution-verb list ('admitted', 'boasted', 'claimed' where 'said' would report the same act)."},
+    {"term": "claimed", "issue_hint": "loaded_term", "note": "prompt names it in the attribution-verb list; casts a statement as doubtful."},
+    {"term": "hailed", "issue_hint": "loaded_term", "note": "breadth: judge named it as own-voice narrative framing found on 2026-08-25/t0."},
+    {"term": "downplayed", "issue_hint": "loaded_term", "note": "breadth-v3: judge named it among the article's characterising attribution verbs."},
+    {"term": "touted", "issue_hint": "loaded_term", "note": "same construction as 'boasted', which the prompt names; promotional framing of a plain claim."},
+    {"term": "blockade", "issue_hint": "loaded_term", "note": "breadth: judge named it as an own-voice loaded noun the live prompt missed."},
+
+    {"term": "completely", "issue_hint": "intensifier", "note": "prompt-v2v3 intensifier example; breadth-v3 judge named 'completely isolated' as an uncovered intensifier."},
+    {"term": "effectively", "issue_hint": "intensifier", "note": "prompt-v2v3 intensifier example; breadth judge named 'effectively fallen to zero'."},
+    {"term": "increasingly", "issue_hint": "intensifier", "note": "prompt-v2v3 intensifier example; breadth-v3 judge named 'increasingly constrained' and 'increasingly targeting'."},
+    {"term": "extremely", "issue_hint": "intensifier", "note": "prompt + rubric intensifier example; breadth-v3 judge named 'extremely sensitive to risk'."},
+    {"term": "vastly", "issue_hint": "intensifier", "note": "prompt + rubric intensifier example."},
+    {"term": "overwhelmingly", "issue_hint": "intensifier", "note": "prompt + rubric intensifier example."},
+    {"term": "sharply", "issue_hint": "intensifier", "note": "prompt-v2v3 intensifier example; breadth judge named 'sharply reduce'."},
+    {"term": "significantly", "issue_hint": "intensifier", "note": "breadth-v3: judge named 'significantly boost recruitment' as an uncovered intensifier."},
+    {"term": "largely", "issue_hint": "intensifier", "note": "breadth-v3: judge named 'largely replace existing losses' as an uncovered intensifier."},
+    {"term": "dramatically", "issue_hint": "intensifier", "note": "same amplifier-without-a-figure class the prompt's intensifier list defines."},
+
+    {"term": "reportedly", "issue_hint": "hedging", "note": "prompt + rubric hedging example."},
+    {"term": "some say", "issue_hint": "hedging", "note": "prompt + rubric hedging example."},
+    {"term": "it is believed", "issue_hint": "hedging", "note": "prompt + rubric hedging example."},
+    {"term": "widely seen as", "issue_hint": "hedging", "note": "prompt-v2v3 hedging example."},
+    {"term": "analysts say", "issue_hint": "hedging", "note": "breadth: judge named unnamed-source attribution ('Western security analysts described…') as the article's strongest uncovered hedging."},
+    {"term": "critics say", "issue_hint": "hedging", "note": "same unnamed-source construction the breadth judges named; vague qualification standing in for a named source."},
+
+    {"term": "devastating", "issue_hint": "evaluative_adjective", "note": "prompt + rubric evaluative_adjective example."},
+    {"term": "alarming", "issue_hint": "evaluative_adjective", "note": "prompt + rubric evaluative_adjective example."},
+    {"term": "landmark", "issue_hint": "evaluative_adjective", "note": "prompt + rubric evaluative_adjective example."},
+    {"term": "sweeping", "issue_hint": "evaluative_adjective", "note": "prompt-v2v3 evaluative_adjective example ('sweeping crackdown')."},
+    {"term": "a blow", "issue_hint": "evaluative_adjective", "note": "prompt-v2v3 evaluative_adjective example; breadth judges cite 'a blow' as found own-voice colouring."},
+    {"term": "a setback", "issue_hint": "evaluative_adjective", "note": "prompt-v2v3 evaluative_adjective example."},
+
+    {"term": "heartbreaking", "issue_hint": "emotionalizing", "note": "prompt + rubric emotionalizing example ('heartbreaking scenes')."},
+    {"term": "a community in shock", "issue_hint": "emotionalizing", "note": "prompt + rubric emotionalizing example."},
+
+    {"term": "mistakes were made", "issue_hint": "passive_obscuring", "note": "prompt + rubric passive_obscuring example; the one entry of this pattern a term list can carry (see _not_covered)."}
+  ]
+}
