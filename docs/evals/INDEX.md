@@ -174,3 +174,22 @@ modes the champion lacks). Other screen verdicts were vs the retired
 comparator and are void. Fabrication worry did NOT survive a real judge
 (0 invented actors both arms, n=20) — the standing GLM-5 disqualification
 for synthesis roles rests on the older GLM-5 evidence, not on 5.3.
+
+### Judged comparisons gate within one run only (2026-09-02)
+Re-judging identical payloads across runs showed a D1-specific drift of
++0.667 (same rubric, judge model, payloads; overall mean stable, |Δ|
+0.067). Any gated comparison must judge both arms inside the same
+judging run; cross-run scores are reference only. Dimension-specific
+drift can exceed a gate bar.
+
+### Extractor coverage is a stage ceiling — closed-vocabulary goes to Python (2026-09-02)
+Three prompt generations (wide-net, six-sweep v2, sentence-exhaustive
+v3) hold D1 at 3.2–3.3; no article ever reached 5; v3's +33% raw
+candidates converted into a D5 plausibility DROP (−0.556, CI clear).
+The regime canary (mechanical): live 3/5, v2 1/5, v3 1/5 own-voice
+occurrences found. Closed-vocabulary canonical terms are a lexicon
+problem, not a prompting problem; prompting already maxes the
+open-ended half (D3 ≈ 5, quote-harvest 0). Prompt line closed at the
+LIVE prompt (v2/v3 not landed: v2 missed the gate, v3 regressed D5).
+Own-voice boundary for any deterministic scanner = quotation marks;
+attributed-but-paraphrased sentences are the article's own wording.
