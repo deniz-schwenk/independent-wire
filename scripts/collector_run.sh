@@ -35,6 +35,12 @@ CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo UNKNOWN)"
 if [[ "$CURRENT_BRANCH" != "main" ]]; then
   echo "$(date) SKIP collector: branch '$CURRENT_BRANCH' != main (no fetch)" \
     | tee -a "$LOG" >&2
+  # Best-effort ping (TASK-ABORT-NOTIFY). A skipped window is self-healing, but
+  # a branch left checked out skips EVERY window until someone notices — and
+  # the 06:00 run will refuse for the same reason. Exits 0 whatever happens.
+  zsh "$REPO/scripts/notify.sh" "collector_run.sh" \
+    "SKIP: branch '$CURRENT_BRANCH' != main — no fetch this window." \
+    2>>"$LOG" || true
   exit 0
 fi
 
