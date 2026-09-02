@@ -30,6 +30,7 @@ from src.bias_composite import (
     aggregate_family,
     aggregate_judgments,
     build_union,
+    scan_lexicon,
 )
 from src.runner.runner import _collect_agent_metrics
 from src.schemas import BIAS_CANDIDATES_SCHEMA, BIAS_JUDGE_SCHEMA
@@ -37,6 +38,12 @@ from src.schemas import BIAS_CANDIDATES_SCHEMA, BIAS_JUDGE_SCHEMA
 ARTICLE = (
     "The council's decision dealt a devastating blow to neighborhood bakeries, "
     "and inspection fees were quietly doubled. Officials called it prudent."
+)
+# Deliberately free of every term in config/bias_lexicon.json, so the union is
+# empty when the model returns nothing (TASK-BIAS-LEXICON).
+CLEAN_ARTICLE = (
+    "The council voted on Tuesday to raise inspection fees by four percent. "
+    "Three bakeries applied for permits in the same week."
 )
 
 
@@ -110,7 +117,7 @@ def test_union_no_internal_pos_key_leaks():
     # `variants` is deliberate merge-family metadata; `_pos` must never leak.
     assert set(cands[0].keys()) == {
         "candidate_id", "excerpt", "issue_hint", "extraction_confidence",
-        "variants"}
+        "source", "variants"}          # `source` added by TASK-BIAS-LEXICON
     assert cands[0]["variants"] == ["prudent"]
 
 
@@ -447,11 +454,15 @@ async def test_composite_runs_extract_then_judge_and_maps():
 
 @pytest.mark.asyncio
 async def test_composite_empty_candidates_skips_judge():
+    # The judge is skipped only when the union is EMPTY, and since
+    # TASK-BIAS-LEXICON that means the lexicon found nothing either — hence a
+    # body deliberately free of canonical terms. ARTICLE is not usable here any
+    # more: it contains "devastating", which the lexicon flags on its own.
     extractor = FakeAgent("deepseek/deepseek-v4-pro", {"candidates": []})
     judge = FakeAgent("anthropic/claude-opus-4.6", {"judgments": [], "reader_note": "x"})
     comp = BiasComposite(extractor, judge)
 
-    res = await comp.run("m", context={"article_body": ARTICLE})
+    res = await comp.run("m", context={"article_body": CLEAN_ARTICLE})
 
     assert len(extractor.calls) == 3
     assert judge.calls == []                       # judge skipped
@@ -503,9 +514,22 @@ async def test_composite_one_extractor_failure_still_proceeds():
     assert len(extractor.calls) == 4
     assert comp.extra_log_fields["extractor_extra_pass"] is True
     assert comp.extra_log_fields["extractor_outlier_passes"] == [2]
+    # candidate_id 1 is now "devastating" — the lexicon injects it and it sits
+    # earlier in the article than "prudent" (TASK-BIAS-LEXICON). The FakeAgent
+    # judge confirms candidate_id 1, so the confirmed finding moved with it.
+    # The model's own candidate is still there, with its unchanged K/N.
+    x = comp.extra_log_fields
+    assert x["union_size"] == 2                    # "devastating" + "prudent"
+    assert x["lexicon_candidates"] == 1 and x["lexicon_only_families"] == 1
     f = res.structured["language_bias"]["findings"][0]
-    assert f["excerpt"] == "prudent"
-    assert f["extraction_confidence"] == "3/4"     # 3 of 4 passes flagged it
+    assert f["excerpt"] == "devastating"
+    assert f["extraction_confidence"] == "lexicon"  # no model pass voted
+    # the model's own candidate is untouched by the lexicon: still 3 of 4 passes
+    cands, _ = build_union(
+        [[{"excerpt": "prudent", "issue_hint": "loaded_term"}]] * 3 + [[]],
+        ARTICLE, lexicon_candidates=scan_lexicon(ARTICLE))
+    prudent = [c for c in cands if c["excerpt"] == "prudent"][0]
+    assert prudent["extraction_confidence"] == "3/4" and prudent["source"] == "model"
 
 
 @pytest.mark.asyncio

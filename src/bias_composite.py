@@ -47,7 +47,10 @@ import asyncio
 import itertools
 import json
 import logging
+import re
 from collections import Counter
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 from src.agent import Agent, AgentError, AgentResult
@@ -162,6 +165,139 @@ def _occurrences(excerpt: str, body: str) -> list[tuple[int, int]]:
     return spans
 
 
+LEXICON_PATH = Path(__file__).resolve().parents[1] / "config" / "bias_lexicon.json"
+
+# Quotation marks that open or close reported speech in the corpus. Straight and
+# typographic doubles, typographic singles, and the guillemets that appear in
+# fetched French/Spanish/Russian copy. The straight APOSTROPHE is deliberately
+# absent: in English prose it is overwhelmingly a contraction or a possessive,
+# and treating it as a quotation mark would blank out most of the article.
+_QUOTE_PAIRS = [('"', '"'), ("\u201c", "\u201d"), ("\u2018", "\u2019"),
+                ("\u00ab", "\u00bb"), ("\u201e", "\u201c")]
+
+
+@lru_cache(maxsize=1)
+def load_lexicon(path: str | None = None) -> tuple[tuple[str, str], ...]:
+    """The curated canonical-term list as ``((term, issue_hint), ...)``.
+
+    Cached: the file is a tracked config read once per process, like
+    ``config/outlet_registry.json``. A missing or unreadable file is NOT fatal —
+    the stage degrades to model-only extraction and says so loudly, because a
+    lexicon outage must never take the bias card down.
+    """
+    p = Path(path) if path else LEXICON_PATH
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except Exception as exc:                                     # noqa: BLE001
+        logger.error("bias lexicon unreadable at %s (%s) — extraction continues "
+                     "MODEL-ONLY, lexicon candidates are absent this run", p, exc)
+        return ()
+    out = []
+    for row in data.get("terms") or []:
+        term, hint = row.get("term"), row.get("issue_hint")
+        if isinstance(term, str) and term and isinstance(hint, str) and hint:
+            out.append((term, hint))
+    if not out:
+        logger.warning("bias lexicon at %s has no usable entries — model-only", p)
+    return tuple(out)
+
+
+def quoted_spans(body: str) -> list[tuple[int, int]]:
+    """Character ranges of quoted speech, marks included, merged and sorted.
+
+    THE BOUNDARY IS QUOTATION MARKS ONLY — deliberately, and this is the one
+    design decision in this module that is easy to get backwards.
+
+    An earlier detector in this line of work treated an *attributed sentence*
+    as outside the article's own voice. Measured on the nine reference articles
+    (TASK-EXTRACTOR-BREADTH-V3 §3), that classifies **every** occurrence of
+    "regime" as not-own-voice and the scan finds nothing at all. That is the
+    wrong reading of the contract: when an article paraphrases a source and
+    chooses the word "regime" itself, the word is the article's own
+    characterisation. The extractor prompt says so ("the characterization the
+    article wraps around the quote"), and the judge rubric's own-voice anchor is
+    specifically about language *inside a quoted statement*. Only the marks
+    close the door.
+
+    Same-mark pairs (straight and typographic doubles) are paired left to right;
+    an unpaired trailing mark is ignored. Directional pairs (typographic single,
+    guillemets) are matched open-to-next-close. Overlapping results are merged.
+    """
+    spans: list[tuple[int, int]] = []
+    for open_ch, close_ch in _QUOTE_PAIRS:
+        if open_ch == close_ch:
+            marks = [i for i, ch in enumerate(body) if ch == open_ch]
+            spans += [(marks[i], marks[i + 1] + 1)
+                      for i in range(0, len(marks) - 1, 2)]
+        else:
+            i = body.find(open_ch)
+            while i != -1:
+                j = body.find(close_ch, i + 1)
+                if j == -1:
+                    break
+                spans.append((i, j + 1))
+                i = body.find(open_ch, j + 1)
+    merged: list[list[int]] = []
+    for a, b in sorted(spans):
+        if merged and a <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], b)
+        else:
+            merged.append([a, b])
+    return [(a, b) for a, b in merged]
+
+
+def scan_lexicon(article_body: str,
+                 lexicon: tuple[tuple[str, str], ...] | None = None) -> list[dict]:
+    """Deterministic canonical-term candidates from the article's own voice.
+
+    Why this exists: three prompt generations held judged coverage (D1) at ~3.3,
+    and the `regime` canary — four own-voice uses in one article — was found 0
+    times by the newest prompt while a string scan finds every one of them
+    (TASK-EXTRACTOR-BREADTH / -V3). Closed-vocabulary recall is Python's job;
+    the open-ended half (framing, emotionalizing, quote handling) stays the
+    model's, where it already scores at ceiling.
+
+    Matching is case-insensitive on word boundaries, longest term first so a
+    multi-word entry wins over a single-word one that sits inside it. The
+    excerpt is the **verbatim matched substring** of ``article_body``, not the
+    lexicon spelling, so it survives ``build_union``'s substring validation
+    with the article's own capitalisation.
+
+    ONE CANDIDATE PER DISTINCT WORDING: a term matched five times yields one
+    candidate. That is the same economy the prompts state, and ``build_union``
+    already expands a multi-occurrence excerpt into its occurrences.
+
+    A hit whose every occurrence lies inside quoted speech is not emitted.
+    """
+    lex = load_lexicon() if lexicon is None else lexicon
+    if not lex or not article_body:
+        return []
+    quotes = quoted_spans(article_body)
+
+    def in_quote(a: int, b: int) -> bool:
+        return any(s <= a and b <= e for s, e in quotes)
+
+    out: list[dict] = []
+    seen: set[str] = set()
+    for term, hint in sorted(lex, key=lambda t: (-len(t[0]), t[0])):
+        pattern = re.compile(r"\b" + re.escape(term).replace(r"\ ", r"\s+") + r"\b",
+                             re.IGNORECASE)
+        for m in pattern.finditer(article_body):
+            if in_quote(m.start(), m.end()):
+                continue
+            text = m.group(0)
+            key = text.casefold()
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append({"excerpt": text, "issue_hint": hint,
+                        "_at": m.start()})
+    out.sort(key=lambda c: c["_at"])
+    for c in out:
+        c.pop("_at")
+    return out
+
+
 def _cap_run(run: list, cap: int) -> list:
     """Truncate ONE extraction pass to ``cap`` items without losing a pattern.
 
@@ -221,6 +357,7 @@ def build_union(
     runs: list[list[dict]],
     article_body: str,
     cap: int = EXTRACTOR_CANDIDATE_CAP,
+    lexicon_candidates: list[dict] | None = None,
 ) -> tuple[list[dict], dict]:
     """Merge N extractor candidate lists into one ordered, position-merged,
     confidence-tagged candidate list.
@@ -249,18 +386,40 @@ def build_union(
     - a family's ``extraction_confidence`` is ``"K/N"`` where K is the number of
       passes (of ``N = len(runs)``) that flagged the location — the join over its
       variants' contributing runs (e.g. ``"3/3"``, ``"2/3"``, ``"1/3"``);
+    - ``lexicon_candidates`` (from :func:`scan_lexicon`) join as ONE additional
+      deterministic list. **They are not a vote**: the confidence denominator
+      stays ``len(runs)``, so a lexicon hit never inflates a model family's K/N.
+      A family the model also found keeps its ``K/N`` and ``source: "model"``;
+      a family that exists ONLY because of the lexicon carries
+      ``extraction_confidence: "lexicon"`` and ``source: "lexicon"``. Both are
+      additive values of existing free-string fields — no schema change. The
+      lexicon list is EXEMPT from ``cap``: it is already bounded by the size of
+      the curated file, and capping it would re-introduce the eviction the
+      round-robin cap exists to prevent;
     - order is by the representative's position in ``article_body`` (excerpt
       string as tiebreak); ``candidate_id`` is 1..N in that order.
 
     Returns ``(candidates, stats)`` where each candidate is ``{"candidate_id",
-    "excerpt", "issue_hint", "extraction_confidence", "variants"}``.
+    "excerpt", "issue_hint", "extraction_confidence", "variants", "source"}``.
+    The bias judge is shown only ``candidate_id`` / ``excerpt`` / ``issue_hint``
+    (see the ``judge_input`` projection below and agents/bias_judge), so
+    ``source`` and the ``"lexicon"`` confidence value are provenance for the
+    transparency surface and never reach a model.
     """
-    n_runs = len(runs)
+    n_runs = len(runs)                      # MODEL passes only — the lexicon
+                                            # is provenance, not a vote
     invalid_dropped = 0
+    lexicon_dropped = 0
+    # Run index 0 is the lexicon; model passes are 1..N. Index 0 is excluded
+    # from every confidence count, so the denominator is unchanged.
+    sources: list[tuple[int, list, bool]] = [
+        (0, list(lexicon_candidates or []), False)          # False = no cap
+    ] + [(i, run or [], True) for i, run in enumerate(runs, start=1)]
+
     # distinct excerpt -> {"runs": set[int], "hint": str}
     distinct: dict[str, dict] = {}
-    for run_idx, run in enumerate(runs, start=1):
-        for item in _cap_run(run or [], cap):
+    for run_idx, run, capped in sources:
+        for item in (_cap_run(run, cap) if capped else run):
             if not isinstance(item, dict):
                 continue
             excerpt = item.get("excerpt")
@@ -269,6 +428,8 @@ def build_union(
                 continue
             if excerpt not in article_body:  # verbatim-substring validation
                 invalid_dropped += 1
+                if run_idx == 0:
+                    lexicon_dropped += 1
                 continue
             hint = item.get("issue_hint")
             hint = hint if isinstance(hint, str) else ""
@@ -332,11 +493,21 @@ def build_union(
         family_runs: set[int] = set()
         for m in members:
             family_runs |= distinct[m]["runs"]
-        confidence = f"{len(family_runs)}/{n_runs}"
+        model_runs = family_runs - {0}
+        if model_runs:
+            confidence = f"{len(model_runs)}/{n_runs}"
+            source = "model"
+        else:
+            # only the lexicon put this family here. "lexicon" is an additive
+            # value of the existing free-string field, not a new field, and it
+            # is honest: no model pass voted, so no K/N would be true.
+            confidence = "lexicon"
+            source = "lexicon"
         candidates.append({
             "excerpt": rep,
             "issue_hint": distinct[rep]["hint"],
             "extraction_confidence": confidence,
+            "source": source,
             "variants": variants,
             "_pos": _pos_of(rep),
         })
@@ -352,6 +523,10 @@ def build_union(
         "invalid_span_drops": invalid_dropped,
         "distinct_excerpts": len(distinct),   # valid spans before position merge
         "union_size": len(candidates),        # families after position merge
+        "lexicon_candidates": len(lexicon_candidates or []),
+        "lexicon_span_drops": lexicon_dropped,
+        "lexicon_only_families": sum(1 for c in candidates
+                                     if c["source"] == "lexicon"),
     }
     return candidates, stats
 
@@ -626,7 +801,13 @@ class BiasComposite:
 
         ext_provider, ext_model, ext_fallback_passes = self._channel_report(results)
 
-        candidates, stats = build_union(runs, article_body)
+        # Deterministic canonical-term candidates, scanned from the article's
+        # own voice and merged in alongside the model passes. Runs on every
+        # article, costs nothing, and cannot fail the stage: an unreadable
+        # lexicon logs loudly and yields [] (see load_lexicon).
+        lexicon_candidates = scan_lexicon(article_body)
+        candidates, stats = build_union(runs, article_body,
+                                        lexicon_candidates=lexicon_candidates)
 
         # --- Phase B: TWO closed judgment votes, deterministic aggregation ----
         # (skip both on an empty candidate list). Identical input to both calls;
@@ -692,6 +873,9 @@ class BiasComposite:
             "invalid_span_drops": stats["invalid_span_drops"],
             "distinct_excerpts": stats["distinct_excerpts"],
             "union_size": stats["union_size"],
+            "lexicon_candidates": stats["lexicon_candidates"],
+            "lexicon_only_families": stats["lexicon_only_families"],
+            "lexicon_span_drops": stats["lexicon_span_drops"],
             "judge_skipped": judge_skipped,
             "confirmed_count": len(findings),
             "borderline_count": len(borderline),
