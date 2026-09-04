@@ -355,30 +355,67 @@ def test_perspective_output_schema_validity_gate():
 # --- shipped wiring -----------------------------------------------------------
 
 
-def test_create_agents_perspective_is_sonnet5_with_opus46_fallback(monkeypatch):
+def test_perspective_wrapper_is_retained_for_the_documented_rollback(monkeypatch):
+    """SUPERSEDED WIRING, deliberately kept.
+
+    TASK-PERSPECTIVE-SWAP moved the shipped perspective stage from this wrapper
+    to ``PerspectiveDraftVerifyChain`` (glm-5.3 draft -> glm-5.3-flash verify);
+    the live wiring is asserted in ``tests/test_perspective_swap_chain.py``.
+    Every OTHER test in this file still exercises PerspectiveWithFallback's own
+    behaviour and still passes unchanged, because the wrapper is the documented
+    single-edit rollback target on the perspective entry in ``scripts/run.py``.
+    This test guards that rollback: it rebuilds the pre-swap configuration and
+    checks it still constructs and still wires the same operating point, so the
+    revert path cannot rot silently while it is unused.
+    """
     monkeypatch.setenv("OPENROUTER_API_KEY", "fake-key-for-unit-test")
     # create_agents() needs a DeepSeek key too since 2026-08-24: the three
     # flash stages run channel C (api.deepseek.com) as primary
     # (TASK-FLASH-0731-SWAP).
     monkeypatch.setenv("DEEPSEEK_API_KEY", "fake-key-for-unit-test")
-    from scripts.run import create_agents, create_agents_hydrated
+    from pathlib import Path as _Path
 
+    from src.perspective_chain import PerspectiveDraftVerifyChain
+    from scripts.run import ROOT, create_agents, create_agents_hydrated
+
+    # The stage that actually ships is now the chain, in BOTH variants.
     for factory in (create_agents, create_agents_hydrated):
-        perspective = factory()["perspective"]
-        assert isinstance(perspective, PerspectiveWithFallback)
-        assert perspective.fallback_marker_key == "perspective_fallback_used"
-        # primary — the binding Sonnet-5 operating point
-        assert perspective.primary.model == "anthropic/claude-sonnet-5"
-        assert perspective.primary.temperature is None          # temperature omitted
-        assert perspective.primary.max_tokens == 64000
-        assert perspective.primary.reasoning == {"enabled": True, "effort": "high"}
-        assert not perspective.primary._provider_routing        # no provider pin
-        assert perspective.primary.output_schema == PERSPECTIVE_SCHEMA
-        # fallback — the PRE-SWAP incumbent VERBATIM (Opus 4.6, NOT Sonnet-5)
-        assert perspective.fallback.model == "anthropic/claude-opus-4.6"
-        assert perspective.fallback.temperature == 0.1
-        assert perspective.fallback.max_tokens == 32000         # Agent default (pre-swap value)
-        assert perspective.fallback.reasoning == "none"
-        assert not perspective.fallback._provider_routing        # no provider pin (pre-swap)
-        assert perspective.fallback.output_schema == PERSPECTIVE_SCHEMA
-        assert "sonnet" not in perspective.fallback.model.lower()  # last resort is the incumbent
+        assert isinstance(factory()["perspective"], PerspectiveDraftVerifyChain)
+
+    agents_dir = _Path(ROOT) / "agents"
+    perspective = PerspectiveWithFallback(
+        primary=Agent(
+            name="perspective",
+            model="anthropic/claude-sonnet-5",
+            system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
+            tools=[], temperature=None, max_tokens=64000, provider="openrouter",
+            reasoning={"enabled": True, "effort": "high"},
+            output_schema=PERSPECTIVE_SCHEMA,
+        ),
+        fallback=Agent(
+            name="perspective_fallback",
+            model="anthropic/claude-opus-4.6",
+            system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
+            instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
+            tools=[], temperature=0.1, provider="openrouter",
+            reasoning="none", output_schema=PERSPECTIVE_SCHEMA,
+        ),
+        output_schema=PERSPECTIVE_SCHEMA,
+    )
+    assert perspective.fallback_marker_key == "perspective_fallback_used"
+    # primary — the pre-swap Sonnet-5 operating point
+    assert perspective.primary.model == "anthropic/claude-sonnet-5"
+    assert perspective.primary.temperature is None          # temperature omitted
+    assert perspective.primary.max_tokens == 64000
+    assert perspective.primary.reasoning == {"enabled": True, "effort": "high"}
+    assert not perspective.primary._provider_routing        # no provider pin
+    assert perspective.primary.output_schema == PERSPECTIVE_SCHEMA
+    # fallback — the pre-Sonnet incumbent VERBATIM (Opus 4.6, NOT Sonnet-5)
+    assert perspective.fallback.model == "anthropic/claude-opus-4.6"
+    assert perspective.fallback.temperature == 0.1
+    assert perspective.fallback.max_tokens == 32000         # Agent default
+    assert perspective.fallback.reasoning == "none"
+    assert not perspective.fallback._provider_routing
+    assert perspective.fallback.output_schema == PERSPECTIVE_SCHEMA
+    assert "sonnet" not in perspective.fallback.model.lower()
