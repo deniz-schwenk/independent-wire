@@ -193,3 +193,20 @@ open-ended half (D3 ≈ 5, quote-harvest 0). Prompt line closed at the
 LIVE prompt (v2/v3 not landed: v2 missed the gate, v3 regressed D5).
 Own-voice boundary for any deterministic scanner = quotation marks;
 attributed-but-paraphrased sentences are the article's own wording.
+
+### T4 perspective series — CLOSED (2026-09-04)
+Verdict: perspective swapped to **glm-5.3 draft → glm-5.3-flash verify**
+(merge 97e4671), Sonnet-5 retained as transport fallback at its champion
+operating point. Evidence: Phase A (9 candidates sieved), Phase B rounds
+1–3 (incremental elimination; every n=6 edge shrank on fresh topics),
+T4C (glm-5.3 non-inferior at n=15, only zero-confirmed-fabrication arm),
+T4D (multipass: breadth is set by the draft, unrecoverable downstream —
+replicated 3×), T4E (verify buys D4 +0.389, fabs 2→1, at $0.017).
+Standing findings: under full double-judging EVERY arm incl. Sonnet-5
+confirms ~2 fabrications per 9 topics; missing_positions false-absence
+rate 60–78% on all arms — stage-level defects, no model swap fixes them
+(→ P2-Evidence-Anchoring; Vargo-class dossier defect, 3rd recurrence).
+n=6 rounds flipped sign twice: minimum bar for gated verdicts is ~9
+topics / ≥6 independent story-lines. Verify-pass removal counters are
+logged per run; a week of near-zero counters = the pass buys nothing in
+production and should be re-examined.
