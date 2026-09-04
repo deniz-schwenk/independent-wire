@@ -210,3 +210,20 @@ n=6 rounds flipped sign twice: minimum bar for gated verdicts is ~9
 topics / ≥6 independent story-lines. Verify-pass removal counters are
 logged per run; a week of near-zero counters = the pass buys nothing in
 production and should be re-examined.
+
+### AMENDMENT to the GLM reasoning ceiling (owner, 2026-09-05)
+For the Opus-tier roles (the T5 strand: `researcher_hydrated_plan`,
+`bias_judge` — the pipeline's most demanding judgment/planning stages),
+`max` is PERMITTED for both GLM and DeepSeek-Pro candidates: eval it,
+and production may ship it if measurement wins. The 2026-08-31 `high`
+ceiling remains in force for all lighter stages. Context: the ceiling's
+inference-time rationale carries little weight in a 06:00 batch
+pipeline; the owner narrows the rule rather than repealing it.
+
+### Documented level names only (2026-09-05)
+Production and eval operating points use only level names the vendor
+documents for the serving channel (DeepSeek: low/high/max). The
+minimal/medium names shipped in the T3 swaps are undocumented on
+channel C and map to unverified behavior — LEVEL-AUDIT task opened to
+characterize and migrate. Briefs enumerate levels FROM the recorded
+groundwork/Phase-R tables, never from house convention.
