@@ -18,7 +18,10 @@ from src.bias_composite import BiasComposite
 from src.editor_fallback import EditorWithFallback
 from src.hydration_phase2_fallback import HydrationPhase2WithFallback
 from src.flash_stage_fallback import FlashStageWithFallback
-from src.perspective_fallback import PerspectiveWithFallback
+from src.perspective_chain import PerspectiveDraftVerifyChain
+# Retained import: the rollback path documented on the perspective entry
+# reinstates the Sonnet-5 wrapper in a single edit, and its tests still run.
+from src.perspective_fallback import PerspectiveWithFallback  # noqa: F401
 from src.qa_fallback import QaAnalyzeWithFallback
 from src.writer_fallback import WriterWithFallback
 from src.runner.runner import PipelineRunner
@@ -179,6 +182,26 @@ GLM_5_2_HYDRATION_P2_FP8_ROUTING = {
     "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
+}
+
+# --- Z.AI pin for the perspective chain (TASK-PERSPECTIVE-SWAP) --------------
+# Both legs of the perspective chain (glm-5.3 draft, glm-5.3-flash verify) run
+# under this pin, which is the pin every T4 arm ran under from Phase A onward:
+# ``order: ["z-ai"]`` + ``allow_fallbacks: false``. Deliberately NO
+# ``quantizations`` filter and NO ``require_parameters`` — unlike the GLM-5.2
+# fp8 pins above, this is a first-party vendor route, and Phase A established
+# empirically that the Z.AI endpoint exposes no strict ``json_schema``
+# (`scratch/eval/t4-perspective/REPORT.md` Phase 0: "strict json_schema: no" for
+# both models). Both agents therefore run at ``structured_output_mode=
+# "json_object"``, which is also what keeps ``require_parameters: true`` off the
+# wire — that flag is exactly what would filter this schema-less endpoint out of
+# its own route. The schema is enforced locally instead, by the parser chain and
+# then by PerspectiveDraftVerifyChain's validity check on every leg.
+# ``allow_fallbacks: false`` fails LOUD into the chain's ladder rather than
+# silently serving glm-5.3 from an unverified third-party host.
+GLM_5_3_PERSPECTIVE_ZAI_ROUTING = {
+    "order": ["z-ai"],
+    "allow_fallbacks": False,
 }
 
 
@@ -531,67 +554,133 @@ def create_agents() -> dict[str, Agent]:
             name="resolve_actor_aliases",
             fallback_marker_key="resolve_actor_aliases_fallback_used",
         ),
-        # perspective — swapped to Sonnet-5 (TASK-PERSPECTIVE-SWAP-SONNET5). The
-        # blind 5-arm eval made this operating point binding
-        # (docs/PERSPECTIVE-STAGE-MODEL-EVAL-2026-07.md): Sonnet-5 beats the
-        # incumbent Opus-4.6 19–2, matches the golden ceiling on the
-        # product-core criteria (R1 0.98 / R5 0.84 / R9 0.95), emits the fewest
-        # confirmed invented positions (2 vs incumbent's 5), and is fully
-        # reliable 21/21. BOTH open-weight candidates (GLM-5.2, DeepSeek)
-        # regressed BELOW the incumbent on this stage — the opposite of the
-        # writer/QA evals — so this is a pure quality call.
+        # perspective — swapped to the glm-5.3 draft -> glm-5.3-flash verify
+        # CHAIN (TASK-PERSPECTIVE-SWAP). The T4 evaluation series made this
+        # operating point binding; the evidence chain is four reports, and each
+        # one settles a different question:
         #
-        # Operating point (the ONE documented config deviation): the Claude
-        # 5-family REJECTS non-default temperature/top_p (400), so the
-        # production temperature 0.1 cannot carry over — temperature is omitted
-        # (temperature=None) and reasoning is the explicit block
-        # {enabled, effort:"high"}, max_tokens 64000. Anthropic-served, so no
-        # provider pin (served provider still recorded per call). Prompts +
-        # PERSPECTIVE_SCHEMA unchanged; downstream deterministic enrichment
-        # (enrich_perspective_clusters) is untouched by the unchanged schema.
+        #   * Phase A (scratch/eval/t4-perspective/REPORT.md) — the endpoint
+        #     facts and both operating points. Neither Z.AI model exposes strict
+        #     `json_schema`, so both legs run `json_object`; glm-5.3 publishes no
+        #     sampling guidance (temp/top_p OMITTED) while glm-5.3-flash
+        #     publishes temp 1.0 / top_p 0.95; both at reasoning `high`, which is
+        #     the owner ceiling and the vendor max short of `max`.
+        #   * Phase B + T4C — glm-5.3 ALONE is non-inferior to Sonnet-5 at n=15.
+        #     This is what licenses rung (b) of the ladder: a broken verify pass
+        #     ships the draft rather than failing the run.
+        #   * T4E (scratch/eval/t4e-verify-variants/REPORT.md) — WHICH verify
+        #     architecture. Cheap verifier over strong draft (this chain) beat
+        #     strong verifier over cheap draft, and the reason generalises:
+        #     breadth is set by the draft (D1 -0.556 on the mirror arm) and
+        #     verification cannot put back a position the draft never had. On
+        #     this chain the verify pass bought D4 fidelity +0.389, cut confirmed
+        #     fabrications 2 -> 1, and cost 4.6% of the draft it checks.
         #
-        # Wrapped in PerspectiveWithFallback: primary Sonnet-5, and exactly ONE
-        # fallback attempt if Sonnet-5 finally fails (transport after retries,
-        # OR schema-invalid/truncated output). The fallback is the PRE-SWAP
-        # incumbent VERBATIM (Opus 4.6, temperature 0.1, reasoning=none, default
-        # max_tokens 32000) — a validated known-good safety net. Loud, never
-        # silent (model_used/provider_used/perspective_fallback_used in
-        # run_stage_log.jsonl).
+        # Cost: ~$0.38/run against the champion's ~$1.00 (measured, 15 dossiers).
         #
-        # ROLLBACK (single-edit revert to the pre-swap production perspective):
-        #   "perspective": Agent(
-        #       name="perspective", model="anthropic/claude-opus-4.6",
-        #       system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
-        #       instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
-        #       tools=[], temperature=0.1, provider="openrouter",
-        #       reasoning="none", output_schema=PERSPECTIVE_SCHEMA),
-        "perspective": PerspectiveWithFallback(
-            primary=Agent(
+        # max_tokens are explicit and measured, not inherited: worst observed
+        # completion over the 15 evaluated dossiers was 19 389 for the draft and
+        # 10 785 for the verify, so 40 000 (2.06x) and 24 000 (2.23x) hold the
+        # >=2x convention every other stage here uses. Both are well under the
+        # 64 000 the eval ran at — a cap only binds on a runaway, and a runaway
+        # produces no usable output at any ceiling. A truncated DRAFT costs a
+        # Sonnet-5 fallback; a truncated VERIFY costs only the repair attempt and
+        # then ships the draft.
+        #
+        # Wrapped in PerspectiveDraftVerifyChain, whose ladder is pre-registered:
+        #   (a) draft failure (transport after retries, OR schema-invalid) ->
+        #       ONE full single-call Sonnet-5 attempt at the champion operating
+        #       point, and the verify pass is SKIPPED (Sonnet-5 is the incumbent
+        #       as it shipped; the verify prompt exists to correct glm-5.3).
+        #       Marker perspective_fallback_used.
+        #   (b) verify failure -> one logged repair, then ship the UNVERIFIED
+        #       draft. Markers perspective_verify_skipped +
+        #       perspective_verify_skip_reason. Never fails the run for a filter.
+        # Both rungs are loud (WARNING + persisted markers in
+        # run_stage_log.jsonl); every successful verify additionally logs what it
+        # removed and how many misfilings it corrected, so a pass that decays
+        # into a no-op is visible in the run log.
+        #
+        # Prompts: the DRAFT prompts (agents/perspective/) are untouched by this
+        # swap. The verify prompts are new (agents/perspective_verify/), copied
+        # byte-identical from the Architect-approved staging pair the eval ran.
+        # PERSPECTIVE_SCHEMA and both bus slots are unchanged — the verify pass
+        # emits the same object shape — so downstream deterministic enrichment
+        # (enrich_perspective_clusters) is untouched.
+        #
+        # ROLLBACK (single-edit revert to the pre-swap Sonnet-5 perspective;
+        # PerspectiveWithFallback is still imported and tested for exactly this):
+        #   "perspective": PerspectiveWithFallback(
+        #       primary=Agent(
+        #           name="perspective", model="anthropic/claude-sonnet-5",
+        #           system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
+        #           instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
+        #           tools=[], temperature=None, max_tokens=64000,
+        #           provider="openrouter",
+        #           reasoning={"enabled": True, "effort": "high"},
+        #           output_schema=PERSPECTIVE_SCHEMA),
+        #       fallback=Agent(
+        #           name="perspective_fallback", model="anthropic/claude-opus-4.6",
+        #           system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
+        #           instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
+        #           tools=[], temperature=0.1, provider="openrouter",
+        #           reasoning="none", output_schema=PERSPECTIVE_SCHEMA),
+        #       output_schema=PERSPECTIVE_SCHEMA),
+        "perspective": PerspectiveDraftVerifyChain(
+            # Draft — glm-5.3 at the Phase-A operating point: reasoning `high`,
+            # temperature AND top_p omitted entirely (the vendor documents
+            # neither for this model, and Phase A ran it that way), json_object
+            # because the Z.AI endpoint has no strict json_schema.
+            draft=Agent(
                 name="perspective",
+                model="z-ai/glm-5.3",
+                system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=None,          # vendor publishes none -> omit
+                max_tokens=40000,          # 2.06x worst observed (19 389)
+                provider="openrouter",
+                provider_routing=GLM_5_3_PERSPECTIVE_ZAI_ROUTING,
+                reasoning="high",
+                output_schema=PERSPECTIVE_SCHEMA,
+                structured_output_mode="json_object",
+            ),
+            # Verify — glm-5.3-flash at ITS Phase-A operating point, which
+            # differs from the draft's: the vendor DOES publish "Recommended
+            # Settings" for this model (temp 1.0 / top_p 0.95) and the eval ran
+            # them. `top_p` has no Agent parameter, so it goes through
+            # extra_body_override, which reaches the request body verbatim.
+            verify=Agent(
+                name="perspective_verify",
+                model="z-ai/glm-5.3-flash",
+                system_prompt_path=str(agents_dir / "perspective_verify" / "SYSTEM.md"),
+                instructions_path=str(agents_dir / "perspective_verify" / "INSTRUCTIONS.md"),
+                tools=[],
+                temperature=1.0,           # docs.z.ai "Recommended Settings"
+                max_tokens=24000,          # 2.23x worst observed (10 785)
+                provider="openrouter",
+                provider_routing=GLM_5_3_PERSPECTIVE_ZAI_ROUTING,
+                reasoning="high",
+                extra_body_override={"top_p": 0.95},   # docs.z.ai; no Agent param
+                output_schema=PERSPECTIVE_SCHEMA,
+                structured_output_mode="json_object",
+            ),
+            # Safety net — the PRE-SWAP production perspective VERBATIM: the
+            # Sonnet-5 champion at its own operating point (temperature omitted,
+            # reasoning {enabled, effort:"high"}, max_tokens 64000, no provider
+            # pin, strict json_schema), on the UNCHANGED draft prompts. Its
+            # output is never verified. Only the name differs, for log clarity.
+            fallback=Agent(
+                name="perspective_fallback",
                 model="anthropic/claude-sonnet-5",
                 system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
                 instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
                 tools=[],
-                # 5-family rejects non-default temperature → omit it entirely.
+                # 5-family rejects non-default temperature -> omit it entirely.
                 temperature=None,
                 max_tokens=64000,
                 provider="openrouter",
                 reasoning={"enabled": True, "effort": "high"},
-                output_schema=PERSPECTIVE_SCHEMA,
-            ),
-            # Safety net — the PRE-SWAP production perspective VERBATIM: Opus 4.6,
-            # temperature 0.1, reasoning="none", the current default max_tokens
-            # (32000, unset on the pre-swap entry), same prompts +
-            # PERSPECTIVE_SCHEMA. Only the name differs (for log/metric clarity).
-            fallback=Agent(
-                name="perspective_fallback",
-                model="anthropic/claude-opus-4.6",
-                system_prompt_path=str(agents_dir / "perspective" / "SYSTEM.md"),
-                instructions_path=str(agents_dir / "perspective" / "INSTRUCTIONS.md"),
-                tools=[],
-                temperature=0.1,
-                provider="openrouter",
-                reasoning="none",
                 output_schema=PERSPECTIVE_SCHEMA,
             ),
             output_schema=PERSPECTIVE_SCHEMA,

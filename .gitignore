@@ -19,6 +19,10 @@ env/
 
 # Pipeline output (regenerated per run)
 output/
+# Shadow-run output root (TASK-PERSPECTIVE-SWAP verification step 3):
+# a full --hydrated run driven into a scratch tree so production output/ is
+# never written by a pre-merge verification run.
+test_hydration/
 state/
 raw/
 
