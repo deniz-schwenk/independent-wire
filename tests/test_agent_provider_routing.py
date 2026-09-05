@@ -148,11 +148,72 @@ def test_both_deepseek_fp8_pins_are_retired():
             f"{retired} is retired; see TASK-FLASH-0731-SWAP / "
             f"TASK-DSV4-SWAPS-BUNDLE"
         )
-    # ... and no agent may quietly grow one back inline.
-    src = (Path(run_mod.__file__)).read_text(encoding="utf-8")
-    assert "deepseek/deepseek-v4-pro" not in src, (
-        "no stage runs deepseek-v4-pro any more (TASK-DSV4-SWAPS-BUNDLE)"
+    # ... and no DeepSeek route may quietly grow a quantization filter back.
+    # (The GLM-5.2 stages legitimately pin fp8; this is about DeepSeek only,
+    # where a filter both reintroduces the fabrication hazard AND 404s the
+    # vendor endpoint out of its own route, T2b 1.1.)
+    from scripts.run import DEEPSEEK_NATIVE_ROUTING as _dsr
+
+    assert "quantizations" not in _dsr
+
+
+def test_every_deepseek_v4_pro_route_stays_on_the_vendors_own_endpoint():
+    """v4-pro is BACK, and this is the invariant that makes that safe.
+
+    Until 2026-09-05 this file asserted the literal string
+    ``deepseek/deepseek-v4-pro`` was absent from scripts/run.py, because
+    TASK-DSV4-SWAPS-BUNDLE had moved the last v4-pro stage off it.
+    TASK-PLANNER-SWAP (owner decision, T5a verdict) deliberately brings the
+    model back for ``researcher_hydrated_plan``, so that substring ban is
+    superseded — but the hazard it was protecting against is NOT, and deleting
+    the guard outright would have thrown away the protection along with the
+    stale premise.
+
+    What actually made the old pins dangerous was fp4/fp8 quantization causing
+    fabrications in DeepSeek V4 on THIRD-PARTY hosts. The retired test's own
+    docstring says the hazard "is unreachable from a route that never leaves
+    DeepSeek's own endpoint". So that is what is asserted here instead, which
+    is a stronger and more honest check than a substring ban: every v4-pro
+    route in production must terminate on DeepSeek's own endpoint, with
+    fallbacks off, so no third-party host can serve it.
+    """
+    from scripts.run import (
+        DEEPSEEK_NATIVE_ROUTING,
+        create_agents,
+        create_agents_hydrated,
     )
+
+    assert DEEPSEEK_NATIVE_ROUTING["allow_fallbacks"] is False
+
+    def _agents_of(entry):
+        for attr in ("primary", "fallback_dated", "fallback_incumbent",
+                     "fallback", "draft", "verify"):
+            sub = getattr(entry, attr, None)
+            if sub is not None:
+                yield from _agents_of(sub)
+        if getattr(entry, "model", None) and not hasattr(entry, "primary"):
+            yield entry
+
+    seen = 0
+    for factory in (create_agents, create_agents_hydrated):
+        for entry in factory().values():
+            for agent in _agents_of(entry):
+                if "v4-pro" not in (agent.model or ""):
+                    continue
+                seen += 1
+                if agent.provider == "deepseek_direct":
+                    continue        # api.deepseek.com — the vendor itself
+                assert agent.provider == "openrouter", agent.model
+                routing = agent._provider_routing or {}
+                assert routing.get("order") == ["deepseek"], (
+                    f"{agent.name}: v4-pro on OpenRouter must pin the vendor's "
+                    f"own endpoint, got {routing.get('order')}"
+                )
+                assert routing.get("allow_fallbacks") is False, (
+                    f"{agent.name}: a third-party host must never be able to "
+                    f"serve v4-pro"
+                )
+    assert seen, "expected at least one v4-pro route to exist to be checked"
 
 
 def test_flash_0731_native_routing_has_no_quantization_filter():

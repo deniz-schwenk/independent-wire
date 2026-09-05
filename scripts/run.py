@@ -18,6 +18,7 @@ from src.bias_composite import BiasComposite
 from src.editor_fallback import EditorWithFallback
 from src.hydration_phase2_fallback import HydrationPhase2WithFallback
 from src.flash_stage_fallback import FlashStageWithFallback
+from src.planner_fallback import PlannerWithFallbackLadder
 from src.perspective_chain import PerspectiveDraftVerifyChain
 # Retained import: the rollback path documented on the perspective entry
 # reinstates the Sonnet-5 wrapper in a single edit, and its tests still run.
@@ -925,17 +926,90 @@ def create_agents_hydrated() -> dict[str, Agent]:
     agents_dir = ROOT / "agents"
     base = create_agents()
     base.update({
-        "researcher_hydrated_plan": Agent(
-            name="researcher_hydrated_plan",
-            model="anthropic/claude-opus-4.6",
-            system_prompt_path=str(agents_dir / "researcher_hydrated" / "PLAN-SYSTEM.md"),
-            instructions_path=str(agents_dir / "researcher_hydrated" / "PLAN-INSTRUCTIONS.md"),
-            tools=[],
-            temperature=0.5,
-            max_tokens=16384,
-            provider="openrouter",
-            reasoning="none",
+        # researcher_hydrated_plan: DeepSeek V4-Pro-0813 @ reasoning_effort
+        # `low` since 2026-09-05 (TASK-PLANNER-SWAP, owner decision), replacing
+        # anthropic/claude-opus-4.6 at $0.22/run. Evidence: T5a Phase A +
+        # Round 1 — +0.232 paired against the incumbent (better on 6 of 9
+        # topics), the cleanest presupposition record in the field
+        # (0.11/output vs the incumbent's 0.56), zero confirmed fabrications
+        # under symmetric scrutiny, and $0.038/run (-83%).
+        #
+        # The non-hydrated `researcher_plan` is deliberately NOT swapped: that
+        # variant was never evaluated.
+        #
+        # ALIAS IDENTITY, re-verified 2026-09-05 (required by the task; T3a
+        # pinned alias->0813 on 2026-08-25 and 11 days is long enough for a
+        # vendor roll). api.deepseek.com exposes only the undated
+        # `deepseek-v4-pro`, so identity is established the T2d a4 way, by
+        # which OpenRouter endpoints carry the vendor's own `deepseek`
+        # provider: it is present on `deepseek/deepseek-v4-pro-0813` and
+        # ABSENT from the undated `deepseek/deepseek-v4-pro` (whose hosts are
+        # all third parties serving the older build, T3a). The vendor
+        # therefore serves 0813 by alias. A token-for-token check is NOT
+        # available on this model: V4-Pro's reasoning enum is low/high/max
+        # with no off switch and temperature is ignored while thinking is
+        # active — the alias diverges from ITSELF at temperature 0 (0-char
+        # common prefix over two calls), so a cross-route divergence proves
+        # nothing either way. The per-call log records the server-echoed
+        # model id so a future alias roll is visible.
+        "researcher_hydrated_plan": PlannerWithFallbackLadder(
+            primary=Agent(
+                name="researcher_hydrated_plan",
+                model="deepseek-v4-pro",
+                system_prompt_path=str(agents_dir / "researcher_hydrated" / "PLAN-SYSTEM.md"),
+                instructions_path=str(agents_dir / "researcher_hydrated" / "PLAN-INSTRUCTIONS.md"),
+                tools=[],
+                # T5a operating point: temperature and top_p OMITTED. The
+                # vendor documents both as accepted-but-ignored while thinking
+                # is active, and every T5a number was measured with them
+                # absent. Sending 0.5 here would be an unmeasured config.
+                temperature=None,
+                # >= 4x the worst observed. Across 15 T5a calls at this exact
+                # operating point the largest completion was 5 267 tokens
+                # (reasoning billed inside it) against a 40 000 harness cap
+                # with zero truncations.
+                max_tokens=24000,
+                provider="deepseek_direct",
+                reasoning="low",
+                output_schema=RESEARCHER_PLAN_SCHEMA,
+                structured_output_mode="json_object",
+            ),
+            # Rung 2 — same weights, different route. Survives a direct-API
+            # outage or rate-limit without changing the model.
+            fallback_dated=Agent(
+                name="researcher_hydrated_plan_dated",
+                model="deepseek/deepseek-v4-pro-0813",
+                system_prompt_path=str(agents_dir / "researcher_hydrated" / "PLAN-SYSTEM.md"),
+                instructions_path=str(agents_dir / "researcher_hydrated" / "PLAN-INSTRUCTIONS.md"),
+                tools=[],
+                temperature=None,
+                max_tokens=24000,
+                provider="openrouter",
+                reasoning="low",
+                provider_routing=DEEPSEEK_NATIVE_ROUTING,
+                output_schema=RESEARCHER_PLAN_SCHEMA,
+                # Mandatory, not stylistic: the strict-schema path injects
+                # `require_parameters: true`, which filters this very endpoint
+                # out of its own route (404).
+                structured_output_mode="json_object",
+            ),
+            # Rung 3 — the incumbent as safety net, at the operating point it
+            # ran in production up to this swap. Reached only when BOTH
+            # DeepSeek routes fail, and loud when it is.
+            fallback_incumbent=Agent(
+                name="researcher_hydrated_plan_incumbent",
+                model="anthropic/claude-opus-4.6",
+                system_prompt_path=str(agents_dir / "researcher_hydrated" / "PLAN-SYSTEM.md"),
+                instructions_path=str(agents_dir / "researcher_hydrated" / "PLAN-INSTRUCTIONS.md"),
+                tools=[],
+                temperature=0.5,
+                max_tokens=16384,
+                provider="openrouter",
+                reasoning="none",
+                output_schema=RESEARCHER_PLAN_SCHEMA,
+            ),
             output_schema=RESEARCHER_PLAN_SCHEMA,
+            name="researcher_hydrated_plan",
         ),
         # Hydration-Phase-1 model: production default is Gemini-3-Flash.
         # Hydration-Phase-1 model: v4-flash-0731 @ medium since 2026-08-31
