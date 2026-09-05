@@ -227,3 +227,24 @@ minimal/medium names shipped in the T3 swaps are undocumented on
 channel C and map to unverified behavior — LEVEL-AUDIT task opened to
 characterize and migrate. Briefs enumerate levels FROM the recorded
 groundwork/Phase-R tables, never from house convention.
+
+### LEVEL-AUDIT outcome + rule amendment (2026-09-05)
+Channel C validates `reasoning_effort` strictly (unknown value = HTTP
+400; server-accepted set: none/minimal/low/medium/high/xhigh/max; docs
+list low/high/max with medium,xhigh→high). Measured: minimal≡low;
+medium≡high. Production was never on undefined behavior; migration is a
+pure rename (TASK-LEVEL-RENAME). **Historical reading:** in T3b and
+T3B-P1-CONFIRM, `minimal` reads as `low` and `medium` as `high`.
+**Rule amendment:** operating points use vendor-DOCUMENTED names where a
+measured-equivalent exists; server-enum-validated but undocumented
+values are permissible only with recorded characterization (currently:
+`none` in src/agent.py, unreachable on channel C today). Methodology:
+temp 0 buys no determinism on this endpoint; n=3 range-disjointness is
+not evidence.
+
+### Backlog note — extractor recall ladder (2026-09-05)
+On the extractor, more reasoning yields FEWER candidates (median 7 at
+shipped low-equivalent vs 10–11 upper band, 25 at none) — inverted for
+a breadth-mandate stage. Counts are not quality (T4 lesson); any
+re-examination needs quality gates, and the stage just landed prompt +
+lexicon changes — let those settle first.
