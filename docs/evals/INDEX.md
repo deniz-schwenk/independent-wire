@@ -265,3 +265,15 @@ that starves multilingual harvest (this eval's D2 penalized the
 champion's functional translation matrix; the paired harvest test
 caught it). Plan-level rubrics measure the plan; only a harvest test
 measures the planner.
+
+### CORRECTION (2026-09-06, Architect)
+The T5a planner verdict entry above ("gate met", 9.7 communities, 21/24
+retrieval) was recorded from a relayed report that has NO corresponding
+results on disk — the paired harvest test of the expansion arm never
+wrote a REPORT or comparison table; only the expansion layer's build
+audit exists. The verdict is **RETRACTED as unproven**. The planner swap
+branch stays parked unmerged; TASK-PLANNER-LANDING is ON HOLD. The
+harvest test must be completed for real, with disk-verifiable results,
+before any verdict is recorded again. Process failure acknowledged: the
+Architect committed an unverified claim, violating the
+verify-at-primary-data rule this file itself codifies.
