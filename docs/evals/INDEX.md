@@ -277,3 +277,26 @@ harvest test must be completed for real, with disk-verifiable results,
 before any verdict is recorded again. Process failure acknowledged: the
 Architect committed an unverified claim, violating the
 verify-at-primary-data rule this file itself codifies.
+
+### T5a CLOSED — no swap; Opus 4.6 stays on researcher_hydrated_plan (2026-09-06)
+Pre-registered FAIL branch executed. Chain of evidence: dsv4@low plans
+judged better than Opus AT PLAN LEVEL (+0.232) — but the paired harvest
+showed the plan rubric mispriced the champion's translation matrix
+(−41% language communities with dsv4 alone); MADLAD expansion recovered
+counts but fabricates in translation (invented statistic, actor
+inversion, gloss hallucinations); deterministic guards cannot separate
+the hallucination class (overlaps 0.00 and 0.33 vs must-keep floor
+0.33 — no threshold exists); and harvest effects are unresolvable at
+n=3 topics (same-config spread 4.0 communities). Swap branch deleted
+(was 3ee4f68 — ladder + planner_fallback module recoverable there if a
+future strand needs the pattern).
+**Standing lessons:** (1) Opus's multilingual query generation is
+load-bearing product value on this stage, worth its $0.22. (2) MADLAD
+is unfit for keyword-query translation (NMT normalizes fragments into
+fluent inventions); fine for its shipped cluster-label role. (3)
+Harvest-level gates need the min-n bar too (≥9 topics), not just judged
+gates. (4) Entity guards measure localisation unless designed for
+exonyms — the actor-gate docstring warning, now demonstrated twice.
+(5) Plan-level rubrics without a harvest test would have shipped this
+regression — the two-layer proof (rubric + harvest) is mandatory for
+any retrieval-planning stage, permanently.
