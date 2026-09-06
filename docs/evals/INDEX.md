@@ -300,3 +300,19 @@ exonyms — the actor-gate docstring warning, now demonstrated twice.
 (5) Plan-level rubrics without a harvest test would have shipped this
 regression — the two-layer proof (rubric + harvest) is mandatory for
 any retrieval-planning stage, permanently.
+
+### OWNER OVERRIDE of the T5a close (2026-09-06, merge 45f5b90)
+The owner overrides the pre-registered FAIL branch: planner swaps to
+dsv4-pro-0813 @ low DESPITE the unresolved multilingual-harvest risk.
+Rationale (owner): cost priority, and the research arm is slated for
+retirement — under the RSS-only roadmap the pipeline will work from
+incoming feed material without active search expansion, making Opus's
+multilingual query generation a capability paid for but scheduled to
+die. The T5a findings above stand unmodified (this entry documents a
+decision, not new evidence). Interim conditions attached by the
+Architect: (a) Opus-4.6 remains the final fallback rung; (b) the MADLAD
+expansion layer stays retired (its unfitness verdict is untouched by
+this override); (c) WATCH ITEM for the first week — dossier language
+spread (distinct source languages, non-EN share) read from state in
+the morning checks; a sustained collapse is reported to the owner with
+numbers, and the override is his to re-affirm or reverse on that data.
