@@ -248,3 +248,20 @@ shipped low-equivalent vs 10–11 upper band, 25 at none) — inverted for
 a breadth-mandate stage. Counts are not quality (T4 lesson); any
 re-examination needs quality gates, and the stage just landed prompt +
 lexicon changes — let those settle first.
+
+### T5a planner verdict + rubric lesson (2026-09-06)
+Planner lands as **dsv4-pro-0813 @ low + deterministic MADLAD language
+expansion** (targets = dossier source languages minus plan coverage,
+cap 6 langs / +8 queries, round-robin across languages). Paired harvest
+proof on identical topics: dsv4 alone lost 41% of language communities;
+with expansion 9.7 vs production's 10.7 (gate met), non-EN share above
+baseline, volume held, 21/24 expanded queries retrieved. Cost $0.026 +
+$0.00 translation vs Opus $0.22.
+**Rubric lesson (standing):** for RETRIEVAL planners, a language variant
+of an angle is strategy, not padding — the same question in six
+languages reaches six communities. D2-style redundancy dimensions need
+an explicit retrieval exception, or they reward exactly the leanness
+that starves multilingual harvest (this eval's D2 penalized the
+champion's functional translation matrix; the paired harvest test
+caught it). Plan-level rubrics measure the plan; only a harvest test
+measures the planner.
