@@ -316,3 +316,55 @@ this override); (c) WATCH ITEM for the first week — dossier language
 spread (distinct source languages, non-EN share) read from state in
 the morning checks; a sustained collapse is reported to the owner with
 numbers, and the override is his to re-affirm or reverse on that data.
+
+### T5b CLOSED — bias_judge swaps to glm-5.3 @ high (2026-09-07 verdict, 09-08 D4 gate + landing)
+Four arms judged blind over 9 topics with a RAISED bar (incumbent wins
+ties). `glm-5.3 @ high` was the sole survivor: paired Δ **+0.1222**
+(CI95 low −0.0779 against a −0.10 floor — margin **0.022**), 6/9 wins,
+false-discard 9.3% against a 10.0% ceiling (margin **0.7pp**), flip rate
+0.025 vs 0.050, **−77% cost** ($0.075 vs $0.333/run). `dsv4-pro-0813 @
+high` (Δ +0.033) and `swarm-mono-9` (Δ −0.144) both failed condition 1.
+Zero false-accepts on any arm. Judge reliability was the strongest
+measured on this project: mean |j1−j2| = **0.025**, exact 8/8 on D1/D2/D3.
+
+**The Architect's framing question — are the champion's published items
+justified or noise? — is answered by the agreement column: the INCUMBENT
+has the LOWEST agreement with the meta-judges' own independent readings
+in the field (0.672), glm-5.3 the highest (0.836).** That is what made
+the publication-rate collapse below acceptable rather than disqualifying.
+
+**D4 gate (explanation faithfulness) — the bar failed the incumbent
+first.** The eval never measured D4 (null 44/44 by construction: swarm
+arms have no single explanation to show), yet this stage PUBLISHES its
+explanations, so a pre-merge gate was required. Round 1 scored glm
+12/15 against an absolute ≥9/10 bar → FAIL; the identical gate scored
+the incumbent **13/15**, failing it too. Recalibrated to a RELATIVE bar
+and rerun symmetrically — same 15 items per arm, one isolated subagent
+per item, arms blinded behind opaque OUT-ids, keymap written
+pre-dispatch. Result: glm **12/15**, incumbent **13/15**, **zero
+actively-wrong on either arm** → PASS (glm ≥ incumbent − 1, exactly at
+the bar). Round 2 reproduced Round 1's counts on both arms item-for-item,
+so the one-item gap is stable across independent judge draws.
+
+**The accepted trade, recorded so it is not rediscovered as a surprise.**
+Live, same-day against the incumbent's own production rows: glm publishes
+**15/123 = 12.2%** against the incumbent's **33/132 = 25.0%** (09-05
+17.8% vs 29.2%; 09-06 9.3% vs 25.0%; 09-07 8.6% vs 20.0%) — below the
+current-regime band of 25.0–36.8%. And the **confirmed tier is
+near-extinct**: zero confirmed findings across all nine smoke topics,
+where the incumbent produced 3. This is D2 (4.182 vs 4.818) made
+concrete and larger than the judged gap implied. Accepted at
+owner/architect level on the alignment evidence, which reads the delta
+as noise removal rather than blindness.
+
+**Standing lessons:** (1) A D4-style faithfulness gate must be RELATIVE
+from the start — an absolute bar written without an incumbent reading
+measures the screen, now demonstrated on T4 and again here. (2) When a
+composite calls one agent CONCURRENTLY, the wrapper's own
+`last_fallback_used` is last-writer-wins and cannot answer "did it fall
+back?" — infer per call from the served model/provider, as
+`_channel_report` already does for the extractor. (3) A brief that scopes
+the diff to `scripts/run.py` cannot also require a persisted stage marker
+for a composite stage: `extra_log_fields` is the composite's. (4) The
+incumbent's prior rows survive in `run_stage_log.jsonl` (append-only), so
+a `--reuse --from/--to` smoke yields a free same-day A/B before restore.
