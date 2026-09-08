@@ -205,6 +205,16 @@ GLM_5_3_PERSPECTIVE_ZAI_ROUTING = {
     "allow_fallbacks": False,
 }
 
+# Same pin, same reasoning, for the bias judge (TASK-BIASJUDGE-SWAP). Kept as a
+# SEPARATE constant rather than shared with the perspective chain: the two
+# stages were evaluated independently (T4 vs T5b) and either may be repinned
+# without dragging the other along. Contents are identical today by
+# coincidence of both landing on the same vendor endpoint, not by dependency.
+GLM_5_3_BIAS_JUDGE_ZAI_ROUTING = {
+    "order": ["z-ai"],
+    "allow_fallbacks": False,
+}
+
 
 def setup_logging():
     logging.basicConfig(
@@ -797,8 +807,11 @@ def create_agents() -> dict[str, Agent]:
         #     temperature 0.8 on every pass (natural variance = coverage),
         #     channel C primary + channel A one-shot fallback,
         #     max_tokens 32 000 (caps.json bias_extractor@minimal).
-        #   Phase B: opus-4.6, temp 0.1, reasoning=none, closed per-candidate
-        #     judgment (BIAS_JUDGE_SCHEMA field order is load-bearing).
+        #   Phase B: glm-5.3 @ high since 2026-09-08 (TASK-BIASJUDGE-SWAP),
+        #     temperature omitted, json_object, one-shot Opus-4.6 rung on
+        #     failure; opus-4.6 @ temp 0.1 / reasoning none before that. Closed
+        #     per-candidate judgment (BIAS_JUDGE_SCHEMA field order is
+        #     load-bearing).
         #
         # The model swap and the own-voice prompt fix landed TOGETHER, and the
         # coupling is not stylistic. The prompt fix drives quote-harvest to
@@ -845,16 +858,90 @@ def create_agents() -> dict[str, Agent]:
                 name="bias_candidate_extractor",
                 fallback_marker_key="extractor_fallback_used",
             ),
-            judge=Agent(
-                name="bias_judge",
-                model="anthropic/claude-opus-4.6",
-                system_prompt_path=str(agents_dir / "bias_judge" / "SYSTEM.md"),
-                instructions_path=str(agents_dir / "bias_judge" / "INSTRUCTIONS.md"),
-                tools=[],
-                temperature=0.1,
-                provider="openrouter",
-                reasoning="none",
+            # Phase B judge — swapped Opus-4.6 -> glm-5.3 @ high on
+            # 2026-09-08 (TASK-BIASJUDGE-SWAP; owner Go on the T5b verdict).
+            # $0.333/run -> $0.075/run, -77%.
+            #
+            # T5b Round 1 (scratch/eval/t5b-bias-judge/) measured this arm
+            # against the incumbent on 9 topics with blinded Opus-5 meta-judges
+            # and a RAISED bar (the incumbent wins ties). Every condition
+            # passed, two of them thinly, and both thin margins are on record
+            # here rather than in the eval only:
+            #   paired delta +0.1222, CI95 lower bound -0.0779 against a
+            #     -0.10 floor        -> margin 0.022
+            #   false-discard 9.3% against champion + 10pp = 10.0%
+            #                        -> margin 0.7pp
+            # What the swap buys, beyond cost: highest agreement with the
+            # meta-judges' own independent readings in the field (0.836, vs the
+            # incumbent's 0.672 — the LOWEST of the four arms), zero
+            # false-accepts, and half the incumbent's cross-run flip rate
+            # (0.025 vs 0.050). What it costs: D2 (false-discard) 4.182 vs the
+            # incumbent's 4.818 — this judge clears more genuine bias than Opus
+            # did. Fewer wrong publications, more misses. That trade is the
+            # swap, and it is deliberate.
+            #
+            # Operating point is the eval's, verbatim: reasoning `high` (a
+            # documented level for this family — low/high/max), temperature AND
+            # top_p omitted entirely (the vendor publishes neither for
+            # glm-5.3), `json_object` because the Z.AI endpoint has no strict
+            # json_schema and `require_parameters: true` would filter it off
+            # its own pin, max_tokens 32 000 as run in the eval (5.4x the worst
+            # completion observed over 30 calls, zero truncations) and equal to
+            # the incumbent's default ceiling.
+            #
+            # Judge PROMPTS (agents/bias_judge/) are untouched — the eval ran
+            # them byte-for-byte, so the swap is model-only. BIAS_JUDGE_SCHEMA
+            # field order stays load-bearing: the explanation precedes the
+            # verdict, and Phase 0-light re-verified declaration order on the
+            # wire for this model (0 violations).
+            #
+            # ROLLBACK (single-edit revert to the incumbent):
+            #   judge=Agent(
+            #       name="bias_judge", model="anthropic/claude-opus-4.6",
+            #       system_prompt_path=str(agents_dir / "bias_judge" / "SYSTEM.md"),
+            #       instructions_path=str(agents_dir / "bias_judge" / "INSTRUCTIONS.md"),
+            #       tools=[], temperature=0.1, provider="openrouter",
+            #       reasoning="none", output_schema=BIAS_JUDGE_SCHEMA),
+            judge=FlashStageWithFallback(
+                primary=Agent(
+                    name="bias_judge",
+                    model="z-ai/glm-5.3",
+                    system_prompt_path=str(
+                        agents_dir / "bias_judge" / "SYSTEM.md"),
+                    instructions_path=str(
+                        agents_dir / "bias_judge" / "INSTRUCTIONS.md"),
+                    tools=[],
+                    temperature=None,      # vendor publishes none -> omit
+                    max_tokens=32000,      # eval value; worst observed 5 922
+                    provider="openrouter",
+                    provider_routing=GLM_5_3_BIAS_JUDGE_ZAI_ROUTING,
+                    reasoning="high",
+                    output_schema=BIAS_JUDGE_SCHEMA,
+                    structured_output_mode="json_object",
+                ),
+                # Rung, never a shadow (owner directive: no parallel running).
+                # Fires only after the primary has finally failed — transport
+                # across the pin, or an output the local schema check rejects
+                # after Agent's own parse repair. The PRE-SWAP production judge
+                # VERBATIM: Opus 4.6, temperature 0.1, reasoning "none", the
+                # default max_tokens the pre-swap entry left unset, same
+                # prompts, same schema. Only the name differs, for log clarity.
+                fallback=Agent(
+                    name="bias_judge_fallback",
+                    model="anthropic/claude-opus-4.6",
+                    system_prompt_path=str(
+                        agents_dir / "bias_judge" / "SYSTEM.md"),
+                    instructions_path=str(
+                        agents_dir / "bias_judge" / "INSTRUCTIONS.md"),
+                    tools=[],
+                    temperature=0.1,
+                    provider="openrouter",
+                    reasoning="none",
+                    output_schema=BIAS_JUDGE_SCHEMA,
+                ),
                 output_schema=BIAS_JUDGE_SCHEMA,
+                name="bias_judge",
+                fallback_marker_key="bias_judge_fallback_used",
             ),
             name="bias_language",
         ),
