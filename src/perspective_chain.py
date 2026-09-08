@@ -22,6 +22,19 @@ D4 fidelity +0.389 and cut confirmed fabrications 2 -> 1 for 4.6% added cost.
 
 Cost: ~$0.38/run against the champion's ~$1.00.
 
+**Per-leg logging (TASK-CHAIN-LOG-FIX, 2026-09-08).** The runner writes one
+stage-log row per stage, and a two-model chain has a single ``model_used`` to
+spend. It used to go to whichever leg finished last, which is the VERIFY
+filter — so the 2026-09-05 rows named ``z-ai/glm-5.3-flash`` while the
+glm-5.3 draft, the dominant cost and the actual author of what shipped, did
+not appear anywhere. Two changes fix that without adding rows (nothing that
+reads ``run_stage_log.jsonl`` has to change): ``model_used`` /
+``provider_used`` now name the leg that AUTHORED the shipped output — the
+draft, or the fallback when the fallback ships, never the filter — and every
+leg the chain called is recorded under ``perspective_legs`` in
+``extra_log_fields``, each with its own model, provider, cost and tokens,
+failed attempts included. The legs' costs sum to the row's ``cost_usd``.
+
 **The chain is a wrapper, not a stage rewrite.** Like
 :class:`~src.perspective_fallback.PerspectiveWithFallback` before it, this class
 duck-types the handful of members
@@ -225,6 +238,16 @@ class PerspectiveDraftVerifyChain:
         self.last_provider_used: str = ""
         self.last_fallback_used: bool = False
         self.last_verify_skipped: bool = False
+        # Per-leg ledger (TASK-CHAIN-LOG-FIX). The runner writes ONE row per
+        # stage, so a chain that calls two different models on two different
+        # providers has one `model_used` to spend and used to spend it on
+        # whichever leg finished last — the VERIFY filter, which is the cheap
+        # leg. The dominant cost, the draft, was invisible in the 2026-09-05
+        # logs. Fixed by (a) pinning the chain-level model_used/provider_used
+        # to the leg that AUTHORED the shipped output, never the filter, and
+        # (b) recording every leg here, surfaced as `perspective_legs` in
+        # extra_log_fields. One row, no consumer breakage, nothing hidden.
+        self.last_legs: list[dict[str, Any]] = []
         self.extra_log_fields: dict[str, Any] = {}
 
     # -- runner surface ----------------------------------------------------
@@ -237,6 +260,7 @@ class PerspectiveDraftVerifyChain:
         self.last_provider_used = ""
         self.last_fallback_used = False
         self.last_verify_skipped = False
+        self.last_legs = []
         self.extra_log_fields = {}
         for agent in (self.draft, self.verify, self.fallback):
             agent.reset_call_metrics()
@@ -248,12 +272,45 @@ class PerspectiveDraftVerifyChain:
         self.last_tokens += result.tokens_used
 
     def _served(self, result: AgentResult, agent: Agent) -> None:
+        """Pin the chain-level markers to the leg that AUTHORED the output.
+
+        Called for the draft, and for the fallback when the fallback is what
+        ships — never for the verify pass, whose job is to filter a draft it
+        did not write. That is the whole point of TASK-CHAIN-LOG-FIX: the row
+        must name the model whose judgment the reader is getting."""
         self.last_model_used = result.model or agent.model
         self.last_provider_used = result.provider
 
+    def _record_leg(
+        self,
+        leg: str,
+        agent: Agent,
+        result: AgentResult | None,
+        *,
+        attempt: int,
+        failure: str | None = None,
+    ) -> None:
+        """Append one leg to the ledger.
+
+        A leg that raised has no result, so no usage was reported and its
+        cost is recorded as 0.0 with ``ok: false`` — honest rather than
+        guessed. A leg that returned but failed the schema check DID cost
+        money, and that cost is recorded: the sum over legs is what the stage
+        actually spent, which is the invariant the test pins."""
+        self.last_legs.append({
+            "leg": leg,
+            "attempt": attempt,
+            "model": (result.model if result is not None else "") or agent.model,
+            "provider": (result.provider if result is not None else "") or "unknown",
+            "cost_usd": round(result.cost_usd, 6) if result is not None else 0.0,
+            "tokens": result.tokens_used if result is not None else 0,
+            "ok": failure is None,
+            **({"failure": failure} if failure else {}),
+        })
+
     # -- the chain ---------------------------------------------------------
     async def _attempt(
-        self, agent: Agent, *args: Any, **kwargs: Any
+        self, agent: Agent, *args: Any, leg: str = "", attempt: int = 1, **kwargs: Any
     ) -> tuple[AgentResult | None, str | None, str | None]:
         """One call. Returns ``(result, failure_reason, failure_kind)``.
 
@@ -271,14 +328,15 @@ class PerspectiveDraftVerifyChain:
         try:
             result = await agent.run(*args, **kwargs)
         except AgentError as exc:
-            return None, f"transport failure after retries ({exc})", "transport"
+            reason = f"transport failure after retries ({exc})"
+            self._record_leg(leg, agent, None, attempt=attempt, failure=reason)
+            return None, reason, "transport"
         self._account(result)
         if not output_is_schema_valid(result.structured, self.output_schema):
-            return (
-                None,
-                "output not schema-valid (empty body, truncation or malformed)",
-                "schema",
-            )
+            reason = "output not schema-valid (empty body, truncation or malformed)"
+            self._record_leg(leg, agent, result, attempt=attempt, failure=reason)
+            return None, reason, "schema"
+        self._record_leg(leg, agent, result, attempt=attempt)
         return result, None, None
 
     async def run(
@@ -289,7 +347,7 @@ class PerspectiveDraftVerifyChain:
 
         # --- rung (a): the draft ------------------------------------------
         draft_result, draft_failure, draft_kind = await self._attempt(
-            self.draft, message, context=context, **kwargs
+            self.draft, message, context=context, leg="draft", attempt=1, **kwargs
         )
         draft_attempts = 1
 
@@ -314,7 +372,7 @@ class PerspectiveDraftVerifyChain:
                 self.fallback.model,
             )
             draft_result, draft_failure, draft_kind = await self._attempt(
-                self.draft, message, context=context, **kwargs
+                self.draft, message, context=context, leg="draft", attempt=2, **kwargs
             )
             draft_attempts = 2
 
@@ -330,6 +388,9 @@ class PerspectiveDraftVerifyChain:
             )
             fb = await self.fallback.run(message, context=context, **kwargs)
             self._account(fb)
+            self._record_leg("fallback", self.fallback, fb, attempt=1)
+            # The fallback AUTHORED what ships here, so it is the leg the row
+            # names — the draft produced nothing the reader receives.
             self._served(fb, self.fallback)
             self.last_fallback_used = True
             self.last_verify_skipped = True
@@ -339,6 +400,7 @@ class PerspectiveDraftVerifyChain:
                 "perspective_draft_failure_reason": draft_failure,
                 "perspective_draft_failure_kind": draft_kind,
                 "perspective_draft_attempts": draft_attempts,
+                "perspective_legs": list(self.last_legs),
             }
             logger.warning(
                 "perspective FALLBACK complete: served by %s (provider=%s), "
@@ -363,11 +425,19 @@ class PerspectiveDraftVerifyChain:
         verify_failure: str | None = None
         for attempt in (1, 2):        # one call + exactly one logged repair
             verify_result, verify_failure, _ = await self._attempt(
-                self.verify, VERIFY_MESSAGE, context=verify_context, **kwargs
+                self.verify, VERIFY_MESSAGE, context=verify_context,
+                leg="verify", attempt=attempt, **kwargs
             )
             if verify_failure is None:
                 assert verify_result is not None
-                self._served(verify_result, self.verify)
+                # NOT `self._served(verify_result, self.verify)`. The verify
+                # leg is a filter over a draft it did not write, and naming it
+                # in the row is precisely the 2026-09-05 defect this task
+                # fixes: `model_used: z-ai/glm-5.3-flash` while the glm-5.3
+                # draft that produced the analysis was nowhere in the log. The
+                # chain-level markers stay on the draft, set above; the verify
+                # leg is fully visible in `perspective_legs` and in
+                # `perspective_verify_model`.
                 self.last_fallback_used = False
                 self.last_verify_skipped = False
                 self.extra_log_fields = {
@@ -382,6 +452,7 @@ class PerspectiveDraftVerifyChain:
                     ),
                     "perspective_verify_skipped": False,
                     "perspective_verify_attempts": attempt,
+                    "perspective_legs": list(self.last_legs),
                     **verify_work_report(draft_obj, verify_result.structured, context),
                 }
                 return verify_result
@@ -413,5 +484,6 @@ class PerspectiveDraftVerifyChain:
             "perspective_verify_skipped": True,
             "perspective_verify_skip_reason": verify_failure,
             "perspective_verify_attempts": 2,
+            "perspective_legs": list(self.last_legs),
         }
         return draft_result

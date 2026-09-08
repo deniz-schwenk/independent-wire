@@ -280,7 +280,11 @@ async def test_chain_runs_draft_then_verify_and_returns_verified():
     # report only its last leg.
     assert chain.last_cost_usd == pytest.approx(0.105)
     assert chain.last_tokens == 150
-    assert chain.last_model_used == "z-ai/glm-5.3-flash"
+    # The row names the DRAFT, not the verify filter (TASK-CHAIN-LOG-FIX).
+    # This assertion used to read "z-ai/glm-5.3-flash" and that WAS the bug:
+    # the cheap filter finished last and took the single model_used slot,
+    # hiding the model whose analysis actually ships.
+    assert chain.last_model_used == "z-ai/glm-5.3"
 
 
 @pytest.mark.asyncio
@@ -564,7 +568,8 @@ async def test_runner_surfaces_chain_markers():
 
     metrics = _collect_agent_metrics(MagicMock(agent=chain))
     assert metrics["perspective_fallback_used"] is False
-    assert metrics["model_used"] == "z-ai/glm-5.3-flash"
+    # was "z-ai/glm-5.3-flash" — the 2026-09-05 defect (TASK-CHAIN-LOG-FIX).
+    assert metrics["model_used"] == "z-ai/glm-5.3"
     assert metrics["provider_used"] == "Z.AI"
     assert metrics["cost_usd"] == pytest.approx(0.105)
     assert metrics["perspective_verify_skipped"] is False
@@ -599,11 +604,15 @@ def test_reset_call_metrics_clears_markers_between_topics():
     chain.last_fallback_used = True
     chain.last_verify_skipped = True
     chain.extra_log_fields = {"stale": True}
+    chain.last_legs = [{"leg": "draft"}]
     chain.reset_call_metrics()
     assert chain.last_cost_usd == 0.0
     assert chain.last_fallback_used is False
     assert chain.last_verify_skipped is False
     assert chain.extra_log_fields == {}
+    # A stale leg ledger would attribute the previous topic's spend to this
+    # one; the runner resets between topics and the ledger must follow.
+    assert chain.last_legs == []
 
 
 # --- wiring -------------------------------------------------------------------
@@ -685,3 +694,152 @@ def test_verify_prompts_are_byte_identical_to_the_evaluated_staging_pair():
     for name, digest in expected.items():
         landed = (REPO_ROOT / "agents" / "perspective_verify" / name).read_bytes()
         assert hashlib.sha256(landed).hexdigest() == digest, name
+
+
+# --- per-leg logging (TASK-CHAIN-LOG-FIX) -------------------------------------
+#
+# The runner writes ONE row per stage. A chain that calls two models on two
+# providers therefore has one `model_used` to spend, and before this fix it
+# spent it on whichever leg finished last — the verify filter. The 2026-09-05
+# production rows read `model_used: z-ai/glm-5.3-flash` while the glm-5.3
+# draft, the dominant cost and the author of the shipped analysis, appeared
+# nowhere. The fix keeps the single row (nothing that reads
+# run_stage_log.jsonl has to change) and makes it complete instead.
+
+
+@pytest.mark.asyncio
+async def test_happy_path_logs_both_legs_with_their_own_models():
+    draft = _FakeAgent("z-ai/glm-5.3", _result(DRAFT_OUTPUT, cost=0.10, tokens=100))
+    verify = _FakeAgent(
+        "z-ai/glm-5.3-flash",
+        _result(VERIFIED_OUTPUT, model="z-ai/glm-5.3-flash",
+                provider="Z.AI", cost=0.005, tokens=50),
+    )
+    chain = _chain(draft, verify, _FakeAgent("anthropic/claude-sonnet-5"))
+    await chain.run("draft this", context=CONTEXT)
+
+    legs = _collect_agent_metrics(MagicMock(agent=chain))["perspective_legs"]
+    assert [l["leg"] for l in legs] == ["draft", "verify"]
+    assert legs[0]["model"] == "z-ai/glm-5.3"
+    assert legs[0]["cost_usd"] == pytest.approx(0.10)
+    assert legs[0]["tokens"] == 100 and legs[0]["ok"] is True
+    assert legs[1]["model"] == "z-ai/glm-5.3-flash"
+    assert legs[1]["cost_usd"] == pytest.approx(0.005)
+    assert legs[1]["tokens"] == 50 and legs[1]["ok"] is True
+    assert all(l["provider"] == "Z.AI" for l in legs)
+
+
+@pytest.mark.asyncio
+async def test_leg_costs_sum_to_the_row_cost():
+    """The invariant that makes the ledger trustworthy: whatever the row says
+    the stage spent, the legs account for all of it. A leg that is billed but
+    not listed would silently reappear as unattributed cost."""
+    draft = _FakeAgent("z-ai/glm-5.3", _result(DRAFT_OUTPUT, cost=0.10, tokens=100))
+    verify = _FakeAgent(
+        "z-ai/glm-5.3-flash",
+        _result(VERIFIED_OUTPUT, model="z-ai/glm-5.3-flash", cost=0.005, tokens=50),
+    )
+    chain = _chain(draft, verify, _FakeAgent("anthropic/claude-sonnet-5"))
+    await chain.run("draft this", context=CONTEXT)
+
+    metrics = _collect_agent_metrics(MagicMock(agent=chain))
+    legs = metrics["perspective_legs"]
+    assert sum(l["cost_usd"] for l in legs) == pytest.approx(metrics["cost_usd"])
+    assert sum(l["tokens"] for l in legs) == metrics["tokens"]
+
+
+@pytest.mark.asyncio
+async def test_fallback_leg_is_logged_with_its_own_model_and_cost():
+    """The rung gets its own entry, and the row NAMES it — on this path the
+    fallback authored what ships, so it is not the filter case."""
+    draft = _FakeAgent("z-ai/glm-5.3", AgentAPIError("boom", status_code=500))
+    fallback = _FakeAgent(
+        "anthropic/claude-sonnet-5",
+        _result(DRAFT_OUTPUT, model="anthropic/claude-sonnet-5",
+                provider="Anthropic", cost=1.0, tokens=900),
+    )
+    chain = _chain(draft, _FakeAgent("z-ai/glm-5.3-flash"), fallback)
+    await chain.run("draft this", context=CONTEXT)
+
+    metrics = _collect_agent_metrics(MagicMock(agent=chain))
+    legs = metrics["perspective_legs"]
+    assert [l["leg"] for l in legs] == ["draft", "fallback"]
+    # The failed draft raised, so nothing was billed and nothing is guessed.
+    assert legs[0]["ok"] is False and legs[0]["cost_usd"] == 0.0
+    assert "transport failure" in legs[0]["failure"]
+    assert legs[1]["model"] == "anthropic/claude-sonnet-5"
+    assert legs[1]["provider"] == "Anthropic"
+    assert legs[1]["cost_usd"] == pytest.approx(1.0)
+    assert metrics["model_used"] == "anthropic/claude-sonnet-5"
+    assert sum(l["cost_usd"] for l in legs) == pytest.approx(metrics["cost_usd"])
+
+
+@pytest.mark.asyncio
+async def test_a_billed_but_schema_invalid_leg_still_appears_and_still_sums():
+    """A draft that returns a malformed body COSTS money. It gets a repair
+    attempt, and both attempts must be in the ledger — otherwise the row's
+    cost exceeds the legs that explain it."""
+    draft = _FakeAgent(
+        "z-ai/glm-5.3",
+        _result({"nope": True}, cost=0.09, tokens=90),        # schema-invalid
+        _result(DRAFT_OUTPUT, cost=0.10, tokens=100),         # repair succeeds
+    )
+    verify = _FakeAgent(
+        "z-ai/glm-5.3-flash",
+        _result(VERIFIED_OUTPUT, model="z-ai/glm-5.3-flash", cost=0.005, tokens=50),
+    )
+    chain = _chain(draft, verify, _FakeAgent("anthropic/claude-sonnet-5"))
+    await chain.run("draft this", context=CONTEXT)
+
+    metrics = _collect_agent_metrics(MagicMock(agent=chain))
+    legs = metrics["perspective_legs"]
+    assert [(l["leg"], l["attempt"], l["ok"]) for l in legs] == [
+        ("draft", 1, False), ("draft", 2, True), ("verify", 1, True)]
+    assert legs[0]["cost_usd"] == pytest.approx(0.09)      # the wasted attempt
+    assert sum(l["cost_usd"] for l in legs) == pytest.approx(metrics["cost_usd"])
+    assert metrics["cost_usd"] == pytest.approx(0.195)
+
+
+@pytest.mark.asyncio
+async def test_verify_skipped_path_logs_all_three_calls():
+    """Verify fails twice and the unverified draft ships. Both failed verify
+    attempts are billed, so both are in the ledger, and the row still names
+    the draft."""
+    draft = _FakeAgent("z-ai/glm-5.3", _result(DRAFT_OUTPUT, cost=0.10, tokens=100))
+    verify = _FakeAgent(
+        "z-ai/glm-5.3-flash",
+        _result({"nope": True}, model="z-ai/glm-5.3-flash", cost=0.004, tokens=40),
+        _result({"nope": True}, model="z-ai/glm-5.3-flash", cost=0.004, tokens=40),
+    )
+    chain = _chain(draft, verify, _FakeAgent("anthropic/claude-sonnet-5"))
+    await chain.run("draft this", context=CONTEXT)
+
+    metrics = _collect_agent_metrics(MagicMock(agent=chain))
+    legs = metrics["perspective_legs"]
+    assert [(l["leg"], l["attempt"]) for l in legs] == [
+        ("draft", 1), ("verify", 1), ("verify", 2)]
+    assert metrics["model_used"] == "z-ai/glm-5.3"
+    assert metrics["perspective_verify_skipped"] is True
+    assert sum(l["cost_usd"] for l in legs) == pytest.approx(metrics["cost_usd"])
+
+
+@pytest.mark.asyncio
+async def test_the_row_shape_is_unchanged_for_existing_consumers():
+    """One row per stage, still. `perspective_legs` is ADDITIVE — every key an
+    existing reader of run_stage_log.jsonl relies on is still present and
+    still scalar."""
+    draft = _FakeAgent("z-ai/glm-5.3", _result(DRAFT_OUTPUT, cost=0.10, tokens=100))
+    verify = _FakeAgent(
+        "z-ai/glm-5.3-flash",
+        _result(VERIFIED_OUTPUT, model="z-ai/glm-5.3-flash", cost=0.005, tokens=50),
+    )
+    chain = _chain(draft, verify, _FakeAgent("anthropic/claude-sonnet-5"))
+    await chain.run("draft this", context=CONTEXT)
+
+    metrics = _collect_agent_metrics(MagicMock(agent=chain))
+    for key in ("cost_usd", "tokens", "model_used", "provider_used",
+                "perspective_fallback_used", "perspective_verify_skipped",
+                "perspective_draft_model", "perspective_verify_model"):
+        assert key in metrics, key
+        assert not isinstance(metrics[key], list), key
+    assert json.dumps(metrics)      # the row still serialises to the log
