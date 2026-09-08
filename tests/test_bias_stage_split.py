@@ -714,8 +714,34 @@ async def test_extractor_fallback_request_body_exact(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_judge_request_body_exact(monkeypatch):
+    """The PRIMARY judge since 2026-09-08 (TASK-BIASJUDGE-SWAP): glm-5.3 at the
+    T5b operating point. Temperature is OMITTED, not defaulted — the vendor
+    publishes none for this model and the eval ran it that way; a temperature
+    here would be a different arm from the one that was measured. `json_object`
+    rather than a strict schema, and consequently NO ``require_parameters``:
+    that flag is exactly what filters the schema-less Z.AI endpoint off its own
+    pin."""
     comp = _composite(monkeypatch)
-    kw = await _captured_kwargs(comp.judge, output_schema=BIAS_JUDGE_SCHEMA)
+    kw = await _captured_kwargs(comp.judge.primary, output_schema=BIAS_JUDGE_SCHEMA)
+    assert kw["model"] == "z-ai/glm-5.3"
+    assert "temperature" not in kw
+    assert kw["max_tokens"] == 32000
+    assert kw["extra_body"]["reasoning"] == {"effort": "high"}
+    assert kw["extra_body"]["provider"] == {
+        "order": ["z-ai"], "allow_fallbacks": False}
+    assert "require_parameters" not in kw["extra_body"]["provider"]
+    assert kw["response_format"] == {"type": "json_object"}
+
+
+@pytest.mark.asyncio
+async def test_judge_fallback_request_body_is_the_preswap_judge_verbatim(
+        monkeypatch):
+    """The rung is the PRE-SWAP production judge, unchanged: Opus 4.6,
+    temperature 0.1, reasoning none, the Agent-default max_tokens the pre-swap
+    entry left unset, strict json_schema, no provider pin. If this body ever
+    drifts from the incumbent's, the fallback stops being a rollback path."""
+    comp = _composite(monkeypatch)
+    kw = await _captured_kwargs(comp.judge.fallback, output_schema=BIAS_JUDGE_SCHEMA)
     assert kw["model"] == "anthropic/claude-opus-4.6"
     assert kw["temperature"] == 0.1
     assert kw["max_tokens"] == 32000                       # Agent default
@@ -739,8 +765,15 @@ def test_create_agents_bias_is_composite_both_variants(monkeypatch):
         assert bl.extractor.temperature == 0.8
         assert bl.extractor.reasoning == "minimal"
         assert bl.extractor.fallback_marker_key == "extractor_fallback_used"
-        assert bl.judge.model == "anthropic/claude-opus-4.6"
-        assert bl.judge.temperature == 0.1
+        # Judge is a fallback wrapper since 2026-09-08, not a bare Agent.
+        assert isinstance(bl.judge, FlashStageWithFallback)
+        assert bl.judge.model == "z-ai/glm-5.3"          # display = primary
+        assert bl.judge.temperature is None              # mirrors the primary
+        assert bl.judge.reasoning == "high"
+        assert bl.judge.fallback_marker_key == "bias_judge_fallback_used"
+        assert bl.judge.fallback.model == "anthropic/claude-opus-4.6"
+        # The composite's advertised schema still comes from the judge leg.
+        assert bl.output_schema is bl.judge.output_schema
 
 
 # --------------------------------------------------------------------------- #

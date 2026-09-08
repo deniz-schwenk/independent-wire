@@ -19,7 +19,9 @@ individual pieces are each more repeatable:
            and never merge (a negation stays distinct from an affirmation).
            Present the shortest variant, keep the variant list, stable order by
            article position, candidate_id 1..N, 2/2-vs-1/2 agreement confidence.
-  Phase B  TWO CLOSED per-candidate judgment votes (Opus 4.6, reasoning none):
+  Phase B  TWO CLOSED per-candidate judgment votes (glm-5.3 @ high since
+           2026-09-08 — TASK-BIASJUDGE-SWAP; Opus 4.6 @ reasoning none before
+           that, and still the one-shot fallback rung):
            identical input to both calls, each a TERNARY verdict (confirmed /
            borderline / cleared), explanation-before-verdict. Python assigns the
            tier from the two votes — both-confirmed => confirmed, both-cleared =>
@@ -721,6 +723,30 @@ class BiasComposite:
         primary = getattr(self.extractor, "primary", self.extractor)
         return getattr(primary, "provider", "") or ""
 
+    def _judge_primary_model(self) -> str:
+        """The model the judge's PRIMARY route is expected to report.
+
+        The judge may be a plain :class:`~src.agent.Agent` or a fallback
+        wrapper (``FlashStageWithFallback``); for the wrapper the primary is
+        the inner agent. Same generic read as ``_primary_channel``."""
+        primary = getattr(self.judge, "primary", self.judge)
+        return getattr(primary, "model", "") or ""
+
+    def _judge_fallback_votes(self, models: list[str]) -> list[int]:
+        """1-based indices of the judgment votes NOT served by the primary.
+
+        Identical problem to ``_channel_report``, and solved the same way: the
+        composite issues both votes CONCURRENTLY against one wrapper instance,
+        so the wrapper's own ``last_fallback_used`` marker is last-writer-wins
+        across them and cannot answer "did either vote fall back?". The served
+        model per result can. Both judge legs run on the same provider
+        (``openrouter``), so the discriminator here is the MODEL, not the
+        channel."""
+        primary_model = self._judge_primary_model()
+        if not primary_model:
+            return []
+        return [i for i, m in enumerate(models, start=1) if m and m != primary_model]
+
     def _channel_report(
         self, results: list[AgentResult | None]
     ) -> tuple[str, str, list[int]]:
@@ -814,6 +840,7 @@ class BiasComposite:
         # Python assigns the tier from the two votes (TASK-BIAS-DUAL-JUDGE).
         judge_skipped = not candidates
         judge1_provider = judge2_provider = ""
+        judge_models_served: list[str] = []
         judgments1: list[dict] = []
         judgments2: list[dict] = []
         reader_note = ""
@@ -833,6 +860,7 @@ class BiasComposite:
             )
             for jres, which in ((jres1, 1), (jres2, 2)):
                 self._account(jres)
+                judge_models_served.append(jres.model or "")
                 parsed = jres.structured or {}
                 if which == 1:
                     judgments1 = parsed.get("judgments") or []
@@ -855,6 +883,8 @@ class BiasComposite:
         self.last_judgments_debug = family_debug
         disagreements = sum(1 for d in family_debug if d["v1"] != d["v2"])
 
+        judge_fallback_votes = self._judge_fallback_votes(judge_models_served)
+
         # --- loud metrics ----------------------------------------------------
         self.extra_log_fields = {
             "extractor_model": self.extractor.model,
@@ -866,8 +896,11 @@ class BiasComposite:
             "extractor_extra_pass": extra_pass_run,
             "extractor_outlier_passes": outlier_passes,
             "judge_model": self.judge.model,
+            "judge_model_served": judge_models_served,
             "judge1_provider": judge1_provider,
             "judge2_provider": judge2_provider,
+            "bias_judge_fallback_used": bool(judge_fallback_votes),
+            "bias_judge_fallback_votes": judge_fallback_votes,
             "extract_raw": stats["extract_raw"],
             "extractor_cap": stats["extractor_cap"],
             "invalid_span_drops": stats["invalid_span_drops"],
@@ -882,6 +915,15 @@ class BiasComposite:
             "cleared_count": cleared_count,
             "judge_disagreements": disagreements,
         }
+        if judge_fallback_votes:
+            logger.warning(
+                "bias judge FALLBACK: judgment vote(s) %s were served by %s, "
+                "not the primary %s. Loud by design — the marker is "
+                "bias_judge_fallback_used in run_stage_log.jsonl.",
+                judge_fallback_votes,
+                [judge_models_served[i - 1] for i in judge_fallback_votes],
+                self._judge_primary_model() or "the primary model",
+            )
         if ext_fallback_passes:
             logger.warning(
                 "bias extractor FALLBACK: pass(es) %s were served by the "
