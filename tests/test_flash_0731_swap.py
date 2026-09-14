@@ -163,7 +163,7 @@ async def test_channel_a_json_object_mode_omits_require_parameters(prompt_file):
     json_object mode it must not appear, while the pin itself still does."""
     routing = {"order": ["deepseek"], "allow_fallbacks": False}
     agent = _mk(
-        prompt_file, model="deepseek/deepseek-v4-flash-0731",
+        prompt_file, model="deepseek/deepseek-v4.1-flash",
         provider="openrouter", reasoning="medium",
         provider_routing=routing, structured_output_mode="json_object",
     )
@@ -234,9 +234,9 @@ def test_cost_for_prefers_the_reported_value(prompt_file):
     """OpenRouter reports cost directly; the computed path must not override
     it, or a channel-A call would be priced with a DeepSeek table."""
     agent = _mk(prompt_file, provider="openrouter",
-                model="deepseek/deepseek-v4-flash-0731")
+                model="deepseek/deepseek-v4.1-flash")
     resp = SimpleNamespace(
-        model="deepseek/deepseek-v4-flash-0731",
+        model="deepseek/deepseek-v4.1-flash",
         usage=SimpleNamespace(cost=0.0123, prompt_tokens=10, completion_tokens=10),
     )
     assert agent._cost_for(resp) == pytest.approx(0.0123)
@@ -324,8 +324,8 @@ async def test_channel_c_invalid_json_falls_back_to_channel_a_loudly(
                        provider="deepseek_direct", content="not json at all"),
     )
     fallback = _FakeAgent(
-        "deepseek/deepseek-v4-flash-0731", "openrouter",
-        result=_result("deepseek/deepseek-v4-flash-0731", {"answer": 7},
+        "deepseek/deepseek-v4.1-flash", "openrouter",
+        result=_result("deepseek/deepseek-v4.1-flash", {"answer": 7},
                        provider="DeepSeek"),
     )
     wrapper = _wrap(primary, fallback)
@@ -336,16 +336,20 @@ async def test_channel_c_invalid_json_falls_back_to_channel_a_loudly(
     assert res is fallback._result, label
     assert fallback.run_calls == 1
     assert wrapper.last_fallback_used is True
-    assert wrapper.last_model_used == "deepseek/deepseek-v4-flash-0731"
+    assert wrapper.last_model_used == "deepseek/deepseek-v4.1-flash"
     assert wrapper.last_provider_used == "DeepSeek"
     # cost/tokens are summed across BOTH attempts, not just the winner
     assert wrapper.last_cost_usd == pytest.approx(0.02)
     assert wrapper.last_tokens == 200
-    # loud: names both channels and says it is not a silent substitution
+    # loud: names both channels, names the substituted build, and says the
+    # substitution is not silent. Since TASK-RUNG2-REPAIR the rung serves a
+    # DIFFERENT build to the primary's, so naming the served model in the log
+    # line is the contract, not a nicety.
     assert "FALLBACK" in caplog.text
     assert "deepseek_direct" in caplog.text
     assert "openrouter" in caplog.text
-    assert "not a silent substitution" in caplog.text
+    assert "deepseek/deepseek-v4.1-flash" in caplog.text
+    assert "silent substitution" in caplog.text
 
 
 @pytest.mark.asyncio
@@ -355,7 +359,7 @@ async def test_valid_channel_c_output_never_touches_the_fallback(caplog):
         result=_result("deepseek-v4-flash", {"answer": 7},
                        provider="deepseek_direct"),
     )
-    fallback = _FakeAgent("deepseek/deepseek-v4-flash-0731", "openrouter")
+    fallback = _FakeAgent("deepseek/deepseek-v4.1-flash", "openrouter")
     wrapper = _wrap(primary, fallback)
 
     with caplog.at_level(logging.WARNING, logger="src.flash_stage_fallback"):
@@ -396,7 +400,7 @@ def test_production_wiring_is_channel_c_primary_channel_a_fallback(monkeypatch):
 
         f = w.fallback
         assert f.provider == "openrouter", stage
-        assert f.model == "deepseek/deepseek-v4-flash-0731", stage
+        assert f.model == "deepseek/deepseek-v4.1-flash", stage
         assert f.reasoning == "medium", stage      # A's calibrated equivalent
         assert f.max_tokens == fallback_mt, stage
         assert f.structured_output_mode == "json_object", stage

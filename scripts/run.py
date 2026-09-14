@@ -65,14 +65,26 @@ from src.tools import web_search_tool
 # asserts it stays gone — a reintroduced pro fp8 pin would mean a swap was
 # partially reverted.
 #
-# --- v4-flash-0731 channel routing (TASK-FLASH-0731-SWAP) --------------------
+# --- DeepSeek-flash channel routing (TASK-FLASH-0731-SWAP) -------------------
 # DEEPSEEK_V4_FLASH_FP8_ROUTING is GONE for the same reason, since
-# 2026-08-24: the flash stages run full precision on
-# `deepseek-v4-flash-0731`, channel C (api.deepseek.com direct) primary with
-# channel A (OpenRouter, pinned to the vendor's own endpoint) as the one-shot
-# fallback. Evidence: docs/evals/dsv4-0731/{T2,T2B,T2D}-REPORT.md.
+# 2026-08-24: the flash stages run full precision on the vendor's own flash
+# line, channel C (api.deepseek.com direct) primary with channel A
+# (OpenRouter, pinned to the vendor's own endpoint) as the one-shot fallback.
+# Evidence: docs/evals/dsv4-0731/{T2,T2B,T2D}-REPORT.md.
 #
-# Channel A pin. Two deliberate departures from every other pin in this file:
+# The two rungs no longer run identical weights. Channel C serves the vendor's
+# single undated flash alias, which the vendor ROLLED between the 2026-09-09
+# and 2026-09-10 production runs (server echo `deepseek-v4-flash` ->
+# `deepseek-flash`); channel A names `deepseek/deepseek-v4.1-flash` explicitly
+# since TASK-RUNG2-REPAIR, because the dated 0731 id the rung used to carry was
+# retired from the vendor's OpenRouter endpoint and the pin below 404'd on it.
+# Both are "the vendor's current flash", reached two ways — see
+# `_flash_0731_fallback` for what that does and does not guarantee, and
+# scratch/audit/bias-telemetry-forensics.md for the full timeline.
+#
+# Channel A pin. Shared with the planner ladder's rung 2
+# (`deepseek/deepseek-v4-pro-0813`, whose vendor endpoint is still listed).
+# Two deliberate departures from every other pin in this file:
 #   * NO `quantizations` filter. The DeepSeek endpoint reports quantization
 #     "unknown"; an fp8 (or any) filter excludes it and the call 404s with
 #     "No endpoints found" (T2b §1.1).
@@ -86,13 +98,19 @@ from src.tools import web_search_tool
 #     Schema conformance is enforced locally instead, by
 #     FlashStageWithFallback.
 # `allow_fallbacks: false` keeps the fail-loud contract: this is the vendor's
-# own endpoint or nothing, never a third-party host of the same id.
+# own endpoint or nothing, never a third-party host of the same id. Note what
+# that contract cost on 2026-09-10 and why it is still right: when the vendor
+# retired its 0731 endpoint the pin resolved to the empty set and 404'd rather
+# than quietly dropping to one of the 28 surviving third-party hosts. The fix
+# for that is naming the live id here — not loosening the pin.
 DEEPSEEK_NATIVE_ROUTING = {
     "order": ["deepseek"],
     "allow_fallbacks": False,
 }
 
-# max_tokens for the three v4-flash-0731 stages (TASK-FLASH-0731-SWAP,
+# max_tokens for the three stages TASK-FLASH-0731-SWAP moved (the sibling
+# stages added later by TASK-DSV4-SWAPS-BUNDLE carry their own values at their
+# registrations; all six share the helpers below) (TASK-FLASH-0731-SWAP,
 # superseding the fp8-era table from TASK-FLASH-PIN-REPAIR). The old ceiling
 # arithmetic is gone with the pin: channel C's ceiling is 393 216 and channel
 # A's is 384 000, so no pinned provider constrains these values any more. What
@@ -288,16 +306,34 @@ def _flash_0731_fallback(
     output_schema: dict,
     temperature: float = 0.5,
 ) -> Agent:
-    """Channel A — the one-shot FALLBACK for a v4-flash-0731 stage: OpenRouter
-    on the dated id, pinned to the vendor's own endpoint.
+    """Channel A — the one-shot AVAILABILITY FALLBACK for a flash stage:
+    OpenRouter pinned to the vendor's own endpoint, on the vendor's current
+    first-party flash build.
 
-    Same weights as the primary reached by a different route, which is the
-    point: a direct-API outage or rate-limit does not take this down with it,
-    and OpenRouter's dated id is the only *pinnable* handle on the 0731 build
-    that exists anywhere. It replaces the pre-2026-08-24
-    ``google/gemini-3-flash-preview`` net — a different model on a different
-    ecosystem, which bought ecosystem independence at the price of serving a
-    different model's output into the pipeline.
+    **This is no longer a same-weights mirror of the primary, and the name of
+    this function is historic** (TASK-RUNG2-REPAIR, 2026-09-14). Until
+    2026-09-06 the rung ran ``deepseek/deepseek-v4-flash-0731`` and genuinely
+    was a second route to the primary's weights. The vendor retired that
+    endpoint on OpenRouter between 2026-09-06 and 2026-09-10 — 28 third-party
+    endpoints for the dated id survive, none of them carrying the ``deepseek``
+    tag — so the native pin below resolved to the EMPTY SET and 404'd. On
+    2026-09-10 that took ``resolve_actor_aliases`` down on topic 0 and cost a
+    published Topic Package (forensics A4:
+    ``scratch/audit/bias-telemetry-forensics.md``).
+
+    Repointing to ``deepseek/deepseek-v4.1-flash`` is not a champion choice —
+    no eval backs it for these stages. It is the only id on which the vendor
+    still serves flash first-party, verified twice: the planner eval measured
+    ``provider_used: DeepSeek`` on all 9 of its calls
+    (``scratch/eval/dsv41-flash-planner/reports/METHOD.md``), and by 2026-09-13
+    OpenRouter had begun silently redirecting the retired 0731 id to this very
+    model under this very pin. So the substitution was already happening in the
+    router; this states it in the config, where ``model_used`` will name it.
+
+    What that costs: a fallback now changes the served build, not just the
+    route. The wrapper's schema check still gates the output, but the operating
+    point behind a fired fallback is unmeasured — read
+    ``<stage>_fallback_used`` as a signal, not merely a recovery.
 
     Runs at ``reasoning="medium"``, the T2b-calibrated operating point, which
     is the channel-A equivalent of the primaries' lower settings (see
@@ -306,7 +342,7 @@ def _flash_0731_fallback(
     ``require_parameters: true`` and 404 this endpoint out of its own route."""
     return Agent(
         name=name,
-        model="deepseek/deepseek-v4-flash-0731",
+        model="deepseek/deepseek-v4.1-flash",
         system_prompt_path=system_prompt_path,
         instructions_path=instructions_path,
         tools=[],

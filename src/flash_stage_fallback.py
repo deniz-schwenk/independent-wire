@@ -1,36 +1,58 @@
-"""One-shot channel fallback for the three v4-flash-0731 schema-bearing stages
+"""One-shot availability fallback for the DeepSeek-flash schema-bearing stages
 (TASK-RESEARCHER-ASSEMBLE-FALLBACK, extended to the siblings; retargeted from
-a model fallback to a CHANNEL fallback by TASK-FLASH-0731-SWAP, 2026-08-24).
+a model fallback to a CHANNEL fallback by TASK-FLASH-0731-SWAP, 2026-08-24;
+rung 2 repointed off the retired 0731 id by TASK-RUNG2-REPAIR, 2026-09-14).
 
-Three production stages run on ``deepseek-v4-flash-0731``, full precision, with
-two independent routes to the same weights (``scripts/run.py``,
-``_flash_0731_primary`` / ``_flash_0731_fallback``):
+Six production stages run on the vendor's flash line with two rungs
+(``scripts/run.py``, ``_flash_0731_primary`` / ``_flash_0731_fallback``):
 
-* **Primary — channel C**, ``api.deepseek.com`` direct. The vendor's own API.
+* **Primary — channel C**, ``api.deepseek.com`` direct, on the vendor's single
+  undated flash alias.
 * **Fallback — channel A**, OpenRouter pinned to ``{"order": ["deepseek"],
-  "allow_fallbacks": false}`` on the dated id ``deepseek/deepseek-v4-flash-0731``.
+  "allow_fallbacks": false}`` on ``deepseek/deepseek-v4.1-flash`` — the
+  vendor's CURRENT first-party flash build.
+
+**Rung 2 is an availability net, not a same-weights mirror.** Until 2026-09-06
+it was ``deepseek/deepseek-v4-flash-0731`` and the two rungs genuinely were two
+routes to one set of weights. The vendor retired that endpoint on OpenRouter
+between 2026-09-06 and 2026-09-10; the pin then resolved to the empty set and
+404'd, and on 2026-09-10 that cost a Topic Package
+(``scratch/audit/bias-telemetry-forensics.md``, A4). By 2026-09-13 OpenRouter
+had begun silently redirecting the retired id to ``v4.1-flash`` anyway, so the
+choice was never "keep the same weights" — it was "name the substitution or let
+the router make it for us". This names it. What rung 2 now guarantees is a
+schema-valid answer from the vendor's own endpoint when channel C fails; it
+does NOT guarantee the primary's weights or its measured operating point, and
+no eval backs v4.1-flash for these stages. A fallback that fires is therefore a
+signal worth reading, not just a recovery — ``<stage>_fallback_used`` and
+``model_used`` in ``run_stage_log.jsonl`` name what served.
 
 The stages themselves:
 
 * ``researcher_assemble`` — per-topic; failure drops that topic.
 * ``curator_topic_discovery`` — RUN-LEVEL; failure kills the whole day's run.
 * ``resolve_actor_aliases`` — per-topic; failure drops that topic.
+* ``consolidator`` — per-topic; failure drops that topic.
+* ``hydration_aggregator_phase1`` — per-chunk, ~10-12 calls/run.
+* ``bias_candidate_extractor`` — 3-4 calls/topic, inside ``BiasComposite``.
 
 Agent's built-in transport retries are lines 1-2 of defence. This wrapper is
 line 3: if the primary *finally* fails — a transport/API error after those
 retries, OR a final output that is not schema-valid — it makes **exactly one**
 attempt on the fallback channel and returns that instead.
 
-Why a same-model channel fallback replaced the old cross-model one. Until
-2026-08-24 the net was ``google/gemini-3-flash-preview``, chosen for ecosystem
-independence: a DeepSeek-wide rate-limit event could not take it down with the
-primary. That independence was real, and it was bought by serving a *different
-model's* output into the pipeline whenever it fired — on 2026-07-14 it did, for
-three Topic Packages. Since 0731 is reachable by two unrelated routes, the
-fallback can now preserve both the model and the operating point. What it gives
-up is vendor independence: if DeepSeek is down at the account level rather than
-at one endpoint, both channels are down. That is a deliberate trade, recorded
-here so it is not rediscovered as a surprise. (Channel B, Ollama Cloud, is the
+Why a channel fallback replaced the old cross-model one. Until 2026-08-24 the
+net was ``google/gemini-3-flash-preview``, chosen for ecosystem independence: a
+DeepSeek-wide rate-limit event could not take it down with the primary. That
+independence was real, and it was bought by serving a *different model's*
+output into the pipeline whenever it fired — on 2026-07-14 it did, for three
+Topic Packages. The channel swap gave that up for vendor independence: if
+DeepSeek is down at the account level rather than at one endpoint, both rungs
+are down. That trade was made when both rungs still ran identical weights; the
+0731 retirement has since removed the "identical weights" half of it without
+restoring the ecosystem independence, which is the weakest the chain has been
+and is recorded here so it is not rediscovered as a surprise. (Channel B,
+Ollama Cloud, is the
 documented last resort and is NOT in the chain — T2b/T2c found a 65 536 output
 ceiling with 6 % margin on the largest real assemble call, no server-side JSON
 enforcement at all, and a 6.2 % empty-body rate at medium.)
@@ -74,10 +96,10 @@ logger = logging.getLogger(__name__)
 
 
 class FlashStageWithFallback:
-    """Primary channel-C agent with a one-shot channel-A fallback on the same
-    model, parameterized by stage ``name`` + ``fallback_marker_key``.
+    """Primary channel-C agent with a one-shot channel-A availability fallback,
+    parameterized by stage ``name`` + ``fallback_marker_key``.
 
-    Drop-in for the ``agents[...]`` entry of any v4-flash-0731 schema-bearing
+    Drop-in for the ``agents[...]`` entry of any DeepSeek-flash schema-bearing
     stage: the agent-wrapper stages only call ``.run(...)`` and read the
     duck-typed introspection members (``name`` / ``model`` / ``temperature`` /
     ``max_tokens`` / ``reasoning``); the runner's metric collector reads
@@ -168,8 +190,10 @@ class FlashStageWithFallback:
 
         logger.warning(
             "%s FALLBACK: primary %s (channel %s) failed — %s. Making exactly "
-            "one fallback attempt on %s (channel %s). (This is the channel "
-            "fallback, not a silent substitution.)",
+            "one fallback attempt on %s (channel %s). (Availability fallback: "
+            "since the 0731 retirement this is a DIFFERENT build to the "
+            "primary's — declared here and in model_used, never a silent "
+            "substitution.)",
             self.name,
             self.primary.model,
             getattr(self.primary, "provider", "?"),

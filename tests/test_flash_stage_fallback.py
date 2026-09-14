@@ -11,9 +11,11 @@ Covers the generic wrapper behaviour (mirrors tests/test_writer_swap_glm.py):
   * a fallback transport failure propagates (loud terminal failure);
   * cost/tokens accounting (fallback-only when primary raised; summed when the
     primary returned an invalid output then the fallback ran);
-Plus a wiring assertion: all three deepseek-v4-flash stages are wrapped with a
-gemini-3-flash-preview fallback, the correct distinct marker keys, and NO fp8
-pin on the fallback — in both pipeline variants.
+Plus wiring assertions: the deepseek-flash stages are wrapped with the channel-A
+fallback, the correct distinct marker keys, and NO fp8 pin on the fallback — in
+both pipeline variants; and a forced-failure test that drives each wrapped
+stage's primary into final failure and inspects the request the ladder actually
+puts on the wire for rung 2 (TASK-RUNG2-REPAIR).
 """
 
 from __future__ import annotations
@@ -231,9 +233,11 @@ def test_all_three_flash_stages_wired_with_channel_fallback(variant, monkeypatch
 
     Retargeted 2026-08-24 (TASK-FLASH-0731-SWAP). Until then the net was
     ``google/gemini-3-flash-preview`` — a different model, which is what it
-    served into the pipeline whenever it fired. Now both channels carry
-    v4-flash-0731: channel C (api.deepseek.com) primary, channel A
-    (OpenRouter pinned to the vendor's own endpoint) fallback. The detailed
+    served into the pipeline whenever it fired. Both channels then carried
+    v4-flash-0731; since TASK-RUNG2-REPAIR (2026-09-14) they carry the vendor's
+    current flash build on each side rather than one shared dated id: channel C
+    (api.deepseek.com) primary, channel A (OpenRouter pinned to the vendor's
+    own endpoint) fallback. The detailed
     per-stage operating points live in tests/test_flash_0731_swap.py; this
     test guards the wrapper topology.
     """
@@ -257,13 +261,103 @@ def test_all_three_flash_stages_wired_with_channel_fallback(variant, monkeypatch
         assert a.primary.model == "deepseek-v4-flash", key
         assert not getattr(a.primary, "_provider_routing", {}), (
             key, "the direct API has no provider routing")
-        # channel A fallback: same weights, dated id, vendor endpoint pinned,
+        # channel A fallback: the vendor's CURRENT first-party flash build
+        # (the dated 0731 id it used to carry was retired from the vendor's
+        # OpenRouter endpoint — TASK-RUNG2-REPAIR), vendor endpoint pinned,
         # and NO quantization filter (that would 404 the endpoint out)
         assert a.fallback.provider == "openrouter", key
-        assert a.fallback.model == "deepseek/deepseek-v4-flash-0731", key
+        assert a.fallback.model == "deepseek/deepseek-v4.1-flash", key
         assert a.fallback._provider_routing["order"] == ["deepseek"], key
         assert "quantizations" not in a.fallback._provider_routing, key
         # the retired routes must not reappear
         assert "google/gemini-3-flash-preview" not in (
             a.primary.model, a.fallback.model), key
         assert "fp8" not in str(a.fallback._provider_routing), key
+
+
+# --- rung-2 repair: forced failure, inspected on the wire ---------------------
+# TASK-RUNG2-REPAIR (2026-09-14). The vendor retired
+# `deepseek/deepseek-v4-flash-0731` from its own OpenRouter endpoint between
+# 2026-09-06 and 2026-09-10; the native pin then resolved to the empty set and
+# the rung 404'd, losing a Topic Package on 09-10
+# (scratch/audit/bias-telemetry-forensics.md, A4).
+#
+# The wiring test above reads the configured attributes. This one is stronger
+# and is the acceptance check: it drives a REAL production wrapper's primary
+# into final failure and asserts on the request body the fallback Agent puts on
+# the wire — model id AND the native pin together, since either one alone is
+# what broke (a live id with a dead pin 404s exactly like a dead id).
+
+ALL_FLASH_STAGES = (
+    "curator_topic_discovery",
+    "researcher_assemble",
+    "resolve_actor_aliases",
+    "consolidator",
+    "hydration_aggregator_phase1",
+)
+
+
+def _flash_wrappers(monkeypatch):
+    """Every FlashStageWithFallback in the hydrated production wiring.
+
+    Six, not the three TASK-FLASH-0731-SWAP shipped: TASK-DSV4-SWAPS-BUNDLE
+    added consolidator, hydration_aggregator_phase1 and the bias extractor to
+    the same helpers, and the bias one is nested inside the BiasComposite where
+    a top-level `agents[...]` scan does not see it.
+    """
+    monkeypatch.setenv("OPENROUTER_API_KEY", "fake-key-for-unit-test")
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "fake-key-for-unit-test")
+    from scripts.run import create_agents_hydrated
+
+    ags = create_agents_hydrated()
+    out = {k: ags[k] for k in ALL_FLASH_STAGES}
+    out["bias_candidate_extractor"] = ags["bias_language"].extractor
+    return out
+
+
+@pytest.mark.asyncio
+async def test_forced_primary_failure_puts_v41_flash_on_the_wire(monkeypatch):
+    from unittest.mock import AsyncMock, MagicMock
+
+    from src.agent import AgentError
+
+    wrappers = _flash_wrappers(monkeypatch)
+    assert len(wrappers) == 6, "all six flash stages share the repaired rung"
+
+    for stage, w in wrappers.items():
+        async def _boom(*a, **k):
+            raise AgentError("channel C down (simulated final failure)")
+
+        monkeypatch.setattr(w.primary, "run", _boom)
+        create = AsyncMock(return_value=MagicMock())
+        monkeypatch.setattr(w.fallback._client.chat.completions, "create", create)
+
+        try:
+            await w.run("go")
+        except Exception:
+            # The stubbed response is not parseable; irrelevant here — the
+            # assertion is about what was SENT, which is already recorded.
+            pass
+
+        assert create.call_args_list, f"{stage}: rung 2 never attempted"
+        # The FIRST request is the rung-2 attempt. Later ones are Agent's own
+        # parse-retries against the stubbed (unparseable) MagicMock response
+        # and carry a different body; asserting on call_args would test the
+        # retry, not the rung.
+        kw = create.call_args_list[0].kwargs
+        assert kw["model"] == "deepseek/deepseek-v4.1-flash", stage
+        prov = kw["extra_body"]["provider"]
+        assert prov == {"order": ["deepseek"], "allow_fallbacks": False}, stage
+        # the two things that individually 404 this endpoint out of its own
+        # route, and so must stay absent (T2b §1.1 / verified 2026-08-31)
+        assert "quantizations" not in prov, stage
+        assert "require_parameters" not in kw["extra_body"], stage
+        assert kw["response_format"] == {"type": "json_object"}, stage
+
+
+def test_no_stage_still_points_rung_2_at_the_retired_dated_id(monkeypatch):
+    """The retirement is silent from the repo's side — nothing raises if this
+    regresses, the rung simply 404s in production at 06:00. Pin it."""
+    for stage, w in _flash_wrappers(monkeypatch).items():
+        assert w.fallback.model == "deepseek/deepseek-v4.1-flash", stage
+        assert "0731" not in w.fallback.model, stage

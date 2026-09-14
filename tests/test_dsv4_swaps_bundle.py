@@ -6,6 +6,11 @@ Three stages leave the OpenRouter ``deepseek-v4-pro`` fp8 pin for
 (api.deepseek.com direct) primary, channel A (OpenRouter pinned to the vendor's
 own endpoint) as the one-shot fallback.
 
+Rung 2 no longer names 0731: the vendor retired that id from its own OpenRouter
+endpoint and the rung 404'd (TASK-RUNG2-REPAIR, 2026-09-14). The fallback
+assertions below therefore expect ``deepseek/deepseek-v4.1-flash``; the primary
+and every operating point this file guards are unchanged.
+
 What this file guards, per stage:
 
 * **Wiring** — the operating point the eval validated actually reaches the
@@ -85,7 +90,7 @@ def forced_c_failure_wrapper(*, schema, structured, name, marker):
         exc=AgentAPIError("channel C transport failure (simulated)", status_code=503),
     )
     fallback = FakeChannel(
-        "deepseek/deepseek-v4-flash-0731",
+        "deepseek/deepseek-v4.1-flash",
         structured=structured,
         provider="DeepSeek",
         cost=0.0011,
@@ -122,7 +127,7 @@ def assert_channel_c_primary(agent, *, reasoning, temperature, max_tokens, label
 
 def assert_channel_a_fallback(agent, *, temperature, max_tokens, label):
     assert agent.provider == "openrouter", label
-    assert agent.model == "deepseek/deepseek-v4-flash-0731", label
+    assert agent.model == "deepseek/deepseek-v4.1-flash", label
     assert agent.reasoning == "medium", label
     assert agent.temperature == temperature, label
     assert agent.max_tokens == max_tokens, label
@@ -188,7 +193,7 @@ async def test_consolidator_forced_channel_c_failure_falls_back_loudly(caplog):
     assert primary.run_calls == 1 and fallback.run_calls == 1
     assert result.structured == VALID_CONSOLIDATION
     assert wrapper.last_fallback_used is True
-    assert wrapper.last_model_used == "deepseek/deepseek-v4-flash-0731"
+    assert wrapper.last_model_used == "deepseek/deepseek-v4.1-flash"
     assert wrapper.last_provider_used == "DeepSeek"
     text = " ".join(r.getMessage() for r in caplog.records)
     assert "consolidator FALLBACK" in text
@@ -210,7 +215,7 @@ async def test_consolidator_fallback_marker_reaches_the_stage_log(caplog):
 
     row = _collect_agent_metrics(_StageWith(wrapper))
     assert row["consolidator_fallback_used"] is True
-    assert row["model_used"] == "deepseek/deepseek-v4-flash-0731"
+    assert row["model_used"] == "deepseek/deepseek-v4.1-flash"
     assert row["provider_used"] == "DeepSeek"
     assert row["cost_usd"] == pytest.approx(0.0011)
     assert row["tokens"] == 1234
@@ -224,7 +229,7 @@ async def test_consolidator_no_fallback_when_channel_c_answers():
         "deepseek-v4-flash", structured=VALID_CONSOLIDATION,
         provider="deepseek_direct", cost=0.0004, tokens=900,
     )
-    fallback = FakeChannel("deepseek/deepseek-v4-flash-0731",
+    fallback = FakeChannel("deepseek/deepseek-v4.1-flash",
                            structured=VALID_CONSOLIDATION)
     wrapper = FlashStageWithFallback(
         primary=primary, fallback=fallback, output_schema=CONSOLIDATOR_SCHEMA,
@@ -342,7 +347,7 @@ async def test_phase1_forced_channel_c_failure_falls_back_loudly(caplog):
     assert result.structured == VALID_PHASE1
     row = _collect_agent_metrics(_StageWith(wrapper))
     assert row["hydration_phase1_fallback_used"] is True
-    assert row["model_used"] == "deepseek/deepseek-v4-flash-0731"
+    assert row["model_used"] == "deepseek/deepseek-v4.1-flash"
     text = " ".join(r.getMessage() for r in caplog.records)
     assert "hydration_aggregator_phase1 FALLBACK" in text
 
@@ -486,7 +491,7 @@ async def test_composite_reports_the_fallback_even_though_passes_race(caplog):
             calls["n"] += 1
             n = calls["n"]
             provider = "DeepSeek" if n == 2 else "deepseek_direct"
-            model = ("deepseek/deepseek-v4-flash-0731" if n == 2
+            model = ("deepseek/deepseek-v4.1-flash" if n == 2
                      else "deepseek-v4-flash")
             return AgentResult(
                 content="{}",

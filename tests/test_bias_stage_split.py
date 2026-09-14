@@ -697,13 +697,15 @@ async def test_extractor_request_body_exact(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_extractor_fallback_request_body_exact(monkeypatch):
-    """Channel A, the one-shot fallback: the dated id, OpenRouter pinned to
-    DeepSeek's own endpoint, no quantization filter and no require_parameters
-    (either one 404s the endpoint out of its own route)."""
+    """Channel A, the one-shot availability fallback: the vendor's current
+    first-party flash build (the dated 0731 id this rung used to carry was
+    retired from the vendor's OpenRouter endpoint — TASK-RUNG2-REPAIR),
+    OpenRouter pinned to DeepSeek's own endpoint, no quantization filter and no
+    require_parameters (either one 404s the endpoint out of its own route)."""
     comp = _composite(monkeypatch)
     kw = await _captured_kwargs(
         comp.extractor.fallback, output_schema=BIAS_CANDIDATES_SCHEMA)
-    assert kw["model"] == "deepseek/deepseek-v4-flash-0731"
+    assert kw["model"] == "deepseek/deepseek-v4.1-flash"
     assert kw["temperature"] == 0.8
     assert kw["max_tokens"] == 32000
     assert kw["extra_body"]["reasoning"] == {"effort": "medium"}
