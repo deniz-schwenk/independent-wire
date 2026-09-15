@@ -17,6 +17,7 @@ Covers:
 """
 from __future__ import annotations
 
+import types
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -846,3 +847,170 @@ def test_card_findings_unaffected_by_borderline_absence():
     html = build_bias_card(tp)
     assert "devastating" in html and "own voice" in html
     assert "Borderline formulations" not in html
+
+
+# --------------------------------------------------------------------------- #
+# Canonical loud logging for the composite (TASK-BIAS-TELEMETRY-FORENSICS)
+#
+# The regression these guard went unnoticed for 110 run-days: the runner's
+# model/provider seam is attribute-gated on `last_model_used`, the composite
+# did not define it, so BiasLanguageStage was the one LLM stage whose row
+# carried no canonical model field at all.
+# --------------------------------------------------------------------------- #
+class NamedFakeAgent(FakeAgent):
+    """FakeAgent that also carries the wrapper's registered `name`, and can
+    serve a different model/provider per call (the alias-roll shape)."""
+
+    def __init__(self, model, structured, name, served=None, providers=None):
+        super().__init__(model, structured)
+        self.name = name
+        self._served = list(served or [])
+        self._providers = list(providers or [])
+
+    async def run(self, message=None, context=None, **kw):
+        i = len(self.calls)
+        self.calls.append({"message": message, "context": context})
+        return AgentResult(
+            content="", structured=self._structured, cost_usd=0.02,
+            tokens_used=500,
+            model=self._served[i] if i < len(self._served) else self.model,
+            provider=self._providers[i] if i < len(self._providers) else "FakeProv")
+
+
+def _judging_pair(**extractor_kw):
+    extractor = NamedFakeAgent(
+        "deepseek-v4-flash",
+        {"candidates": [{"excerpt": "devastating",
+                         "issue_hint": "evaluative_adjective"}]},
+        name="bias_candidate_extractor", **extractor_kw)
+    judge = NamedFakeAgent(
+        "z-ai/glm-5.3",
+        {"judgments": [{"candidate_id": 1, "explanation": "own voice",
+                        "issue": "evaluative_adjective", "verdict": "confirmed"}],
+         "reader_note": "note"},
+        name="bias_judge")
+    return extractor, judge
+
+
+@pytest.mark.asyncio
+async def test_composite_exposes_canonical_model_and_provider_markers():
+    extractor, judge = _judging_pair()
+    comp = BiasComposite(extractor, judge)
+
+    await comp.run("m", context={"article_body": ARTICLE})
+
+    # The runner's seam is `hasattr(agent, "last_model_used")` — the attribute
+    # existing is the whole contract, so assert that explicitly.
+    assert hasattr(comp, "last_model_used")
+    assert comp.last_model_used == "deepseek-v4-flash x3 -> z-ai/glm-5.3 x2"
+    assert comp.last_provider_used == "FakeProv x3 -> FakeProv x2"
+
+
+@pytest.mark.asyncio
+async def test_markers_name_the_served_model_not_the_configured_one():
+    # The failure this catches is the one that actually happened in production:
+    # the vendor rolled `deepseek-v4-flash` to `deepseek-flash` on 2026-09-10
+    # and nothing in the canonical field moved.
+    extractor, judge = _judging_pair(served=["deepseek-flash"] * 3)
+    comp = BiasComposite(extractor, judge)
+
+    await comp.run("m", context={"article_body": ARTICLE})
+
+    assert comp.last_model_used.startswith("deepseek-flash x3")
+    assert "deepseek-v4-flash" not in comp.last_model_used
+    # the configured id stays available under its own key
+    assert comp.extra_log_fields["extractor_model"] == "deepseek-v4-flash"
+
+
+@pytest.mark.asyncio
+async def test_mixed_leg_keeps_every_served_model_visible():
+    # One pass served by the fallback must not be collapsed away by the other
+    # two — a silent substitution on a single pass is exactly what the rule is
+    # about.
+    extractor, judge = _judging_pair(
+        served=["deepseek-flash", "deepseek/deepseek-v4-flash-0731",
+                "deepseek-flash"],
+        providers=["deepseek_direct", "DeepSeek", "deepseek_direct"])
+    comp = BiasComposite(extractor, judge)
+
+    await comp.run("m", context={"article_body": ARTICLE})
+
+    assert comp.last_model_used == (
+        "deepseek-flash|deepseek/deepseek-v4-flash-0731 x3 -> z-ai/glm-5.3 x2")
+    assert comp.last_provider_used.startswith("deepseek_direct|DeepSeek x3")
+
+
+@pytest.mark.asyncio
+async def test_per_sub_agent_keys_are_named_after_the_sub_agent():
+    extractor, judge = _judging_pair(served=["deepseek-flash"] * 3)
+    comp = BiasComposite(extractor, judge)
+
+    await comp.run("m", context={"article_body": ARTICLE})
+    x = comp.extra_log_fields
+
+    assert x["bias_candidate_extractor_model_used"] == ["deepseek-flash"] * 3
+    assert x["bias_candidate_extractor_provider_used"] == ["FakeProv"] * 3
+    assert x["bias_candidate_extractor_fallback_used"] is False
+    assert x["bias_judge_model_used"] == ["z-ai/glm-5.3", "z-ai/glm-5.3"]
+    assert x["bias_judge_provider_used"] == ["FakeProv", "FakeProv"]
+    assert x["bias_judge_fallback_used"] is False
+    # the historic keys are load-bearing for existing tooling — still there
+    assert x["extractor_fallback_used"] is False
+    assert x["judge_model_served"] == ["z-ai/glm-5.3", "z-ai/glm-5.3"]
+
+
+@pytest.mark.asyncio
+async def test_failed_pass_keeps_positions_and_is_counted_in_the_multiplier():
+    extractor = RaisingAgent("deepseek-v4-flash", {"candidates": []})
+    extractor.name = "bias_candidate_extractor"
+    judge = NamedFakeAgent("z-ai/glm-5.3",
+                           {"judgments": [], "reader_note": ""},
+                           name="bias_judge")
+    comp = BiasComposite(extractor, judge)
+
+    with pytest.raises(AgentError):
+        await comp.run("m", context={"article_body": ARTICLE})
+
+
+@pytest.mark.asyncio
+async def test_skipped_judge_is_named_not_blank():
+    extractor = NamedFakeAgent("deepseek-v4-flash", {"candidates": []},
+                               name="bias_candidate_extractor")
+    judge = NamedFakeAgent("z-ai/glm-5.3", {"judgments": [], "reader_note": "x"},
+                           name="bias_judge")
+    comp = BiasComposite(extractor, judge)
+
+    await comp.run("m", context={"article_body": CLEAN_ARTICLE})
+
+    assert comp.last_model_used == "deepseek-v4-flash x3 -> judge skipped"
+    assert comp.extra_log_fields["bias_judge_model_used"] == []
+    assert comp.extra_log_fields["bias_judge_fallback_used"] is False
+
+
+@pytest.mark.asyncio
+async def test_reset_clears_the_markers():
+    extractor, judge = _judging_pair()
+    comp = BiasComposite(extractor, judge)
+    await comp.run("m", context={"article_body": ARTICLE})
+    assert comp.last_model_used
+
+    comp.reset_call_metrics()
+
+    assert comp.last_model_used == ""
+    assert comp.last_provider_used == ""
+
+
+def test_runner_seam_emits_canonical_keys_for_the_composite():
+    """End-to-end on the actual runner helper, not a re-implementation."""
+    extractor, judge = _judging_pair()
+    comp = BiasComposite(extractor, judge)
+    comp.last_cost_usd, comp.last_tokens = 0.05, 1234
+    comp.last_model_used = "deepseek-flash x3 -> z-ai/glm-5.3 x2"
+    comp.last_provider_used = "deepseek_direct x3 -> Z.AI x2"
+    comp.extra_log_fields = {"bias_judge_fallback_used": True}
+
+    row = _collect_agent_metrics(types.SimpleNamespace(agent=comp))
+
+    assert row["model_used"] == "deepseek-flash x3 -> z-ai/glm-5.3 x2"
+    assert row["provider_used"] == "deepseek_direct x3 -> Z.AI x2"
+    assert row["bias_judge_fallback_used"] is True

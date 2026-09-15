@@ -41,7 +41,10 @@ into ``agents["bias_language"]`` with the stage code unchanged, and returns an
 the ``bias_language_findings`` slot + every downstream consumer stay untouched),
 and ``borderline`` feeds the additive ``bias_borderline_candidates`` slot.
 ``cleared`` verdicts are dropped (counted in metrics). Loud per-stage metrics are
-surfaced via ``extra_log_fields``.
+surfaced via ``extra_log_fields``, and the canonical ``model_used`` /
+``provider_used`` row keys via compound ``last_model_used`` /
+``last_provider_used`` markers — every sub-agent call's served model and
+provider reaches ``run_stage_log.jsonl``, none of them silently.
 """
 from __future__ import annotations
 
@@ -667,6 +670,28 @@ def aggregate_judgments(
     return findings, borderline, cleared_count, family_debug
 
 
+def _compound_marker(
+    extract_values: list[str], judge_values: list[str], judge_skipped: bool
+) -> str:
+    """One field naming what served a multi-call stage, e.g.
+
+        ``deepseek-flash x3 -> z-ai/glm-5.3 x2``
+
+    Distinct values are preserved and joined with ``|`` so a mixed leg
+    (one pass on the fallback, two on the primary) stays visible rather than
+    being collapsed to whichever came first. Order of first appearance is kept;
+    empty entries (a pass that failed outright) are dropped from the label but
+    still counted, so the multiplier matches the number of calls issued."""
+
+    def _leg(values: list[str]) -> str:
+        seen = [v for i, v in enumerate(values) if v and v not in values[:i]]
+        return f"{'|'.join(seen) or 'unknown'} x{len(values)}"
+
+    left = _leg(extract_values)
+    right = "judge skipped" if judge_skipped else _leg(judge_values)
+    return f"{left} -> {right}"
+
+
 class BiasComposite:
     """extract(x2) -> union -> judge, presented as a single bias_language agent.
 
@@ -696,6 +721,22 @@ class BiasComposite:
         self.last_tokens: int = 0
         # Loud, per-call metrics surfaced into run_stage_log.jsonl.
         self.extra_log_fields: dict = {}
+        # Canonical loud-logging markers, read by the runner's
+        # `_collect_agent_metrics` seam (src/runner/runner.py) to emit
+        # `model_used` / `provider_used` on the stage row. Before
+        # TASK-BIAS-TELEMETRY-FORENSICS the composite exposed neither, and the
+        # seam is attribute-gated (`if hasattr(agent, "last_model_used")`) — so
+        # BiasLanguageStage was the one LLM stage in the pipeline whose row
+        # carried no canonical model field at all, on every run-day from
+        # 2026-05-27 to 2026-09-13 (330 rows, 0 populated). The per-sub-agent
+        # fields below were always richer than `model_used`, but "richer" does
+        # not help a query that keys on the canonical name.
+        #
+        # A composite has no single served model, so these are COMPOUND values
+        # assembled from what each sub-agent actually returned — never from the
+        # configured ids. `self.model` stays the static display label.
+        self.last_model_used: str = ""
+        self.last_provider_used: str = ""
         # Measurement-only per-candidate verdict breakdown (excerpt/verdict/
         # position) for the stability grid — NOT logged, NOT rendered, NOT part
         # of the outer contract. The flip-distance gate reads it.
@@ -705,6 +746,8 @@ class BiasComposite:
         self.last_cost_usd = 0.0
         self.last_tokens = 0
         self.extra_log_fields = {}
+        self.last_model_used = ""
+        self.last_provider_used = ""
         self.last_judgments_debug = []
         self.extractor.reset_call_metrics()
         self.judge.reset_call_metrics()
@@ -746,6 +789,20 @@ class BiasComposite:
         if not primary_model:
             return []
         return [i for i, m in enumerate(models, start=1) if m and m != primary_model]
+
+    @staticmethod
+    def _per_call(results: list[AgentResult | None]) -> tuple[list[str], list[str]]:
+        """``(served_models, served_providers)``, one entry per extraction pass.
+
+        Positionally aligned with ``results``, so entry *i* corresponds to the
+        same 1-based pass number that ``extractor_fallback_passes`` and
+        ``extraction_confidence`` use. A pass that failed outright contributes
+        ``""`` rather than being dropped — collapsing the list would silently
+        renumber every pass after the failure."""
+        return (
+            [((r.model or "") if r is not None else "") for r in results],
+            [((r.provider or "") if r is not None else "") for r in results],
+        )
 
     def _channel_report(
         self, results: list[AgentResult | None]
@@ -841,6 +898,7 @@ class BiasComposite:
         judge_skipped = not candidates
         judge1_provider = judge2_provider = ""
         judge_models_served: list[str] = []
+        judge_providers_served: list[str] = []
         judgments1: list[dict] = []
         judgments2: list[dict] = []
         reader_note = ""
@@ -861,6 +919,7 @@ class BiasComposite:
             for jres, which in ((jres1, 1), (jres2, 2)):
                 self._account(jres)
                 judge_models_served.append(jres.model or "")
+                judge_providers_served.append(jres.provider or "")
                 parsed = jres.structured or {}
                 if which == 1:
                     judgments1 = parsed.get("judgments") or []
@@ -885,8 +944,40 @@ class BiasComposite:
 
         judge_fallback_votes = self._judge_fallback_votes(judge_models_served)
 
+        # --- canonical loud-logging markers (TASK-BIAS-TELEMETRY-FORENSICS) --
+        # The runner's seam emits exactly one `model_used` / `provider_used`
+        # per stage row, and a composite runs 5-6 calls across two models. Rather
+        # than pick one and lie about the rest, both markers are compound and
+        # built from SERVED ids: whatever actually answered, in the shape
+        # `extractor x N -> judge x M`. A vendor alias roll or a silent
+        # provider-side substitution therefore shows up in the canonical field,
+        # which is the whole point of the rule ("keine stillen Fallbacks").
+        ext_models, ext_providers = self._per_call(results)
+        self.last_model_used = _compound_marker(
+            ext_models, judge_models_served, judge_skipped)
+        self.last_provider_used = _compound_marker(
+            ext_providers, judge_providers_served, judge_skipped)
+
         # --- loud metrics ----------------------------------------------------
+        # Two naming schemes live here on purpose. The `extractor_*` / `judge_*`
+        # keys are the historic ones and are load-bearing for existing eval and
+        # audit tooling, so they are kept byte-identical. The `{agent}_*` keys
+        # below name each sub-agent by its OWN registered agent name, so a
+        # per-agent query works the same on this row as on any single-agent
+        # stage's row. `_fallback_used` under the sub-agent's own name is the
+        # marker the hard rule asks for; `extractor_fallback_used` remains its
+        # alias (the extractor wrapper's `fallback_marker_key` still reads that
+        # way in scripts/run.py, and renaming it would be a behaviour change in
+        # a telemetry-only task).
+        ext_name = getattr(self.extractor, "name", "") or "bias_candidate_extractor"
+        judge_name = getattr(self.judge, "name", "") or "bias_judge"
         self.extra_log_fields = {
+            f"{ext_name}_model_used": ext_models,
+            f"{ext_name}_provider_used": ext_providers,
+            f"{ext_name}_fallback_used": bool(ext_fallback_passes),
+            f"{judge_name}_model_used": judge_models_served,
+            f"{judge_name}_provider_used": judge_providers_served,
+            f"{judge_name}_fallback_used": bool(judge_fallback_votes),
             "extractor_model": self.extractor.model,
             "extractor_model_served": ext_model,
             "extractor_provider": ext_provider,

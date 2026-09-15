@@ -90,9 +90,12 @@ def _collect_agent_metrics(stage: Any) -> dict:
     # single seam — plain agents no longer need per-stage wrapping to be
     # observable. `model_used` falls back to the requested `model`; `provider_used`
     # is logged as the literal "unknown" when a response omits provider metadata,
-    # never dropped. The BiasComposite deliberately reports per-sub-agent
-    # `extractor_model`/`judge_model` via `extra_log_fields` and exposes no
-    # `last_model_used`, so it is left untouched here.
+    # never dropped. Multi-call wrappers report here too: the BiasComposite
+    # additionally reports per-sub-agent detail via `extra_log_fields`, but it
+    # now also exposes `last_model_used`/`last_provider_used` as COMPOUND
+    # values so this row is never the one row in the log without a canonical
+    # model field (TASK-BIAS-TELEMETRY-FORENSICS — it had been missing on all
+    # 330 BiasLanguageStage rows ever written).
     if hasattr(agent, "last_model_used"):
         out["model_used"] = (
             getattr(agent, "last_model_used", "")
