@@ -866,11 +866,19 @@ def test_researcher_assemble_retry_all_three_empty_fires_postcondition(caplog):
     warns = [r for r in caplog.records if r.levelno == logging.WARNING]
     errs = [r for r in caplog.records if r.levelno == logging.ERROR]
     assert len(warns) == 2
-    assert len(errs) == 1
+    # Since TASK-ALIAS-EMPTY-GATE: exhaustion + the degradation marker. This
+    # fake agent has no fallback rung, so there is nothing to escalate to.
+    assert len(errs) == 2
     assert "all 3 attempts" in errs[0].getMessage()
+    assert "no fallback rung" in errs[0].getMessage()
+    assert stage.last_degraded is True
+    assert "no sources assembled" in stage.last_degraded_reason
 
     # Downstream gate: the writes-postcondition on the empty dossier slot
-    # raises StagePostconditionError.
+    # raises StagePostconditionError. Note this one is REAL and predates the
+    # empty-gate work — it is a slot postcondition, not the "downstream gate"
+    # the empty-retry helper used to promise, and it does not exist for
+    # ResolveActorAliasesStage (which writes a non-empty-but-useless slot).
     import pytest
     with pytest.raises(StagePostconditionError) as exc:
         validate_postconditions(

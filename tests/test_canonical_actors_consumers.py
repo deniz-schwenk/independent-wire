@@ -557,13 +557,21 @@ def test_resolver_retry_empty_empty_nonempty(caplog):
 
 
 def test_resolver_retry_all_three_empty_logs_error_passthrough_canonical(caplog):
-    """All 3 attempts empty (with input ≥ 3) → ERROR logged; wrapper
-    falls through with the no-merge / no-flag canonical_actors (trivially
-    derived from final_actors). Both write slots carry
-    `optional_write=True`, so there is no postcondition gate to assert
-    raising for this stage — the loud signal is the ERROR log plus the
-    new ``resolve_actor_aliases_n_attempts = 3`` on the bus, both
-    observable by post-hoc audit."""
+    """All 3 attempts empty (with input >= 3), on a BARE agent with no
+    fallback rung → the stage degrades loudly instead of reporting success.
+
+    This test used to assert the defect. Its old contract was "the loud signal
+    is the ERROR log plus resolve_actor_aliases_n_attempts on the bus, both
+    observable by post-hoc audit" — and on 2026-09-14 topic 3 exactly that
+    happened: ERROR logged, n_attempts=3 on the bus, `status: "success"` in
+    run_stage_log.jsonl, and a dossier published with 0 of 63 actors merged.
+    Nobody audits post-hoc. Since TASK-ALIAS-EMPTY-GATE the stage carries a
+    machine-readable degradation report that the runner turns into
+    `status: "degraded"` and the publish-time gate fires on.
+
+    The pass-through behaviour itself is unchanged and deliberate: the
+    unmerged canonical_actors set is a worse dossier, not a broken one, so the
+    stage still writes it rather than raising."""
     import logging
 
     agent = _SequencedResolverAgent([
@@ -589,9 +597,19 @@ def test_resolver_retry_all_three_empty_logs_error_passthrough_canonical(caplog)
     warns = [r for r in caplog.records if r.levelno == logging.WARNING]
     errs = [r for r in caplog.records if r.levelno == logging.ERROR]
     assert len(warns) == 2
-    assert len(errs) == 1
+    assert len(errs) == 2          # exhaustion, then the degradation marker
     assert "all 3 attempts" in errs[0].getMessage()
     assert "ResolveActorAliasesStage" in errs[0].getMessage()
+    # This fake agent is a bare Agent, so the escalation step has no rung to
+    # reach for and says so rather than failing silently.
+    assert "no fallback rung" in errs[0].getMessage()
+
+    # The part that was missing on 2026-09-14: a machine-readable report.
+    assert stage.last_degraded is True
+    assert "no aliases resolved across 5 actors" in stage.last_degraded_reason
+    # And the announcement is no longer a dead promise.
+    joined = " ".join(r.getMessage() for r in caplog.records)
+    assert "downstream gate will fire loud" not in joined
 
 
 def test_resolver_retry_non_empty_first_call_no_retry(caplog):

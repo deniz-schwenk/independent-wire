@@ -43,7 +43,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Optional
 
-from src.agent import Agent
+from src.agent import Agent, AgentError
 from src.bus import (
     Correction,
     EditorAssignment,
@@ -94,6 +94,42 @@ class _AgentStageBase:
     writes: tuple[str, ...] = ()
     agent_role: str = ""
 
+    # Per-call degradation report (TASK-ALIAS-EMPTY-GATE). A stage that
+    # completed without raising but produced NO usable output sets these; the
+    # runner reads them (`_stage_status`) and writes `status: "degraded"` plus
+    # `degraded_reason` into the stage row instead of `status: "success"`, and
+    # the publish-time gate fires on exactly those rows.
+    #
+    # Class-level defaults so every stage is readable before its first call.
+    # Stage instances are REUSED across topics, so the runner clears them per
+    # call via `_reset_agent_metrics` — without that, one degraded topic would
+    # mark every later topic degraded too.
+    last_degraded: bool = False
+    last_degraded_reason: str = ""
+
+    def reset_stage_markers(self) -> None:
+        """Clear the per-call degradation report. Called by the runner before
+        each stage execution, alongside the agent's metric reset."""
+        self.last_degraded = False
+        self.last_degraded_reason = ""
+
+    def _mark_degraded(self, reason: str) -> None:
+        """Record that this call produced no usable output after every rung.
+
+        Deliberately NOT an exception: on 2026-09-14 the degraded topic still
+        had a publishable dossier (63 canonical actors, none merged), and
+        raising would have thrown that away. The contract is "publish it, but
+        never call it success and never let it pass quietly".
+        """
+        self.last_degraded = True
+        self.last_degraded_reason = reason
+        logger.error(
+            "%s: DEGRADED — %s. The stage row will say status=degraded and the "
+            "publish-time gate will fire.",
+            type(self).__name__,
+            reason,
+        )
+
     def __init_subclass__(cls, **kwargs: Any) -> None:
         super().__init_subclass__(**kwargs)
         cls._stage_meta = StageMeta(
@@ -122,10 +158,17 @@ class _AgentStageBase:
         cache-cold-correlated and the mitigation we want is
         provider-routing re-roll, not cache warm-up.
 
-        Returns ``(last_result, attempts_used, total_cost_usd, total_tokens_used)``.
-        The caller parses ``last_result`` and decides the downstream
-        action (write to bus, fall through with empty payload so a
-        postcondition downstream fires loud, etc.).
+        Returns ``(last_result, attempts_used, total_cost_usd,
+        total_tokens_used, degraded)``.
+
+        ``degraded`` is True when every rung produced empty output. Until
+        2026-09-15 this helper had no fifth element and merely logged
+        "downstream gate will fire loud" — there was no such gate, the ladder
+        was never engaged, and the caller wrote the empty payload to the Bus
+        under ``status: success`` (2026-09-14 topic 3: 0 of 63 actors merged,
+        published silently). Callers MUST propagate ``degraded`` via
+        :func:`_mark_stage_degraded` so the runner can tell the truth in the
+        stage row and the publish-time gate can fire.
         """
         return await _call_agent_with_empty_retry(
             agent=self.agent,
@@ -152,6 +195,13 @@ async def _call_agent_with_empty_retry(
     non-method callers (e.g. the parallel per-chunk helpers in
     `HydrationPhase1Stage`) can use it without binding to a stage
     instance.
+
+    Escalation: when the retries are exhausted and ``agent`` exposes
+    ``escalate_to_fallback`` (i.e. it is a :class:`FlashStageWithFallback`),
+    empty output counts as a PRIMARY FINAL FAILURE and the fallback rung is
+    engaged exactly once — the same rung, contract and markers the wrapper
+    uses for a schema-invalid primary. The wrapper cannot detect this case
+    itself: an empty-but-well-formed payload is schema-valid.
     """
     total_cost = 0.0
     total_tokens = 0
@@ -179,14 +229,62 @@ async def _call_agent_with_empty_retry(
                 int(getattr(result, "tokens_used", 0) or 0),
             )
         else:
-            logger.error(
-                "%s: empty output on all %d attempts "
-                "(last response_id=%s) — downstream gate will fire loud",
-                log_label,
-                max_attempts,
-                getattr(result, "response_id", None) or "?",
-            )
-    return last_result, attempts_used, total_cost, total_tokens
+            escalate = getattr(agent, "escalate_to_fallback", None)
+            if callable(escalate):
+                logger.error(
+                    "%s: empty output on all %d attempts on the primary "
+                    "(last response_id=%s) — treating as PRIMARY FINAL "
+                    "FAILURE and escalating to the fallback rung",
+                    log_label,
+                    max_attempts,
+                    getattr(result, "response_id", None) or "?",
+                )
+                try:
+                    fb = await escalate(
+                        f"empty output on all {max_attempts} attempts",
+                        message,
+                        context=context,
+                    )
+                except AgentError as exc:
+                    # A transport failure on the rung is terminal for the
+                    # ladder but NOT for the run: the caller still gets the
+                    # last primary result and the degraded flag below, so the
+                    # topic degrades loudly instead of dying. The rung's own
+                    # WARNING has already named the failure.
+                    logger.error(
+                        "%s: fallback rung ALSO failed (%s) — stage is "
+                        "degraded", log_label, exc,
+                    )
+                else:
+                    total_cost += float(getattr(fb, "cost_usd", 0.0) or 0.0)
+                    total_tokens += int(getattr(fb, "tokens_used", 0) or 0)
+                    attempts_used += 1
+                    last_result = fb
+                    if not is_empty(_parse_agent_output(fb)):
+                        logger.warning(
+                            "%s: fallback rung RECOVERED the empty primary "
+                            "(served by %s) — the stage row records the "
+                            "fallback, not a clean primary.",
+                            log_label,
+                            getattr(fb, "model", "") or "?",
+                        )
+                        return last_result, attempts_used, total_cost, total_tokens, False
+                    logger.error(
+                        "%s: fallback rung ALSO returned empty output — "
+                        "stage is degraded", log_label,
+                    )
+            else:
+                # No ladder behind this agent: nothing left to escalate to.
+                logger.error(
+                    "%s: empty output on all %d attempts "
+                    "(last response_id=%s) and this agent has no fallback "
+                    "rung — stage is degraded",
+                    log_label,
+                    max_attempts,
+                    getattr(result, "response_id", None) or "?",
+                )
+            return last_result, attempts_used, total_cost, total_tokens, True
+    return last_result, attempts_used, total_cost, total_tokens, False
 
 
 # ---------------------------------------------------------------------------
@@ -812,7 +910,7 @@ class CuratorTopicDiscoveryStage(_AgentStageBase):
                     return False
             return True
 
-        result, attempts_used, total_cost, total_tokens = (
+        result, attempts_used, total_cost, total_tokens, degraded = (
             await self._call_with_empty_retry(
                 message=message,
                 context=context,
@@ -820,6 +918,11 @@ class CuratorTopicDiscoveryStage(_AgentStageBase):
                 log_label="CuratorTopicDiscoveryStage",
             )
         )
+        if degraded:
+            self._mark_degraded(
+                f"no topics discovered after {attempts_used} attempts across "
+                f"every rung — this is RUN-LEVEL, the whole day has no topics"
+            )
 
         parsed = _parse_agent_output(result)
         if isinstance(parsed, dict):
@@ -1311,7 +1414,7 @@ class ResearcherAssembleStage(_AgentStageBase):
                 return True
             return len(parsed.get("sources") or []) == 0
 
-        result, attempts_used, _cost, _tokens = (
+        result, attempts_used, _cost, _tokens, degraded = (
             await self._call_with_empty_retry(
                 message=message,
                 context=context,
@@ -1319,6 +1422,11 @@ class ResearcherAssembleStage(_AgentStageBase):
                 log_label="ResearcherAssembleStage",
             )
         )
+        if degraded:
+            self._mark_degraded(
+                f"no sources assembled after {attempts_used} attempts across "
+                f"every rung — the dossier for this topic has no source trail"
+            )
 
         parsed = _parse_agent_output(result) or {}
         if not isinstance(parsed, dict):
@@ -2438,7 +2546,16 @@ class ConsolidatorStage(_AgentStageBase):
             voices, topics = _consolidator_arrays(parsed)
             return not voices and not topics
 
-        result, attempts_used, _cost, _tokens = (
+        # `degraded` is deliberately IGNORED here — the consolidator is the one
+        # stage of the four that already had the stronger outcome, from
+        # TASK-CONSOLIDATOR-EMPTY-GUARD: it RAISES on empty-with-input rather
+        # than writing the silent `WhatIsMissing([], [])`, and the runner marks
+        # the topic failed. Marking it degraded as well would double-report a
+        # hard failure as a soft one. What TASK-ALIAS-EMPTY-GATE adds here is
+        # upstream of the raise: the fallback rung is now engaged before the
+        # stage gives up, so the raise below fires only when EVERY rung came
+        # back empty.
+        result, attempts_used, _cost, _tokens, _degraded = (
             await self._call_with_empty_retry(
                 message=message,
                 context=context,
@@ -2617,7 +2734,7 @@ class ResolveActorAliasesStage(_AgentStageBase):
             anon = parsed.get("anonymous_flags") or []
             return len(aliases) == 0 and len(anon) == 0
 
-        result, attempts_used, _cost, _tokens = (
+        result, attempts_used, _cost, _tokens, degraded = (
             await self._call_with_empty_retry(
                 message=message,
                 context=context,
@@ -2625,6 +2742,30 @@ class ResolveActorAliasesStage(_AgentStageBase):
                 log_label="ResolveActorAliasesStage",
             )
         )
+        if degraded:
+            # The 2026-09-14 case. The stage still writes canonical_actors —
+            # one per input actor, nothing merged — which is a publishable but
+            # materially worse dossier, so it degrades rather than raises.
+            #
+            # The reason string names the ambiguity rather than asserting a
+            # model failure, because `_is_empty_resolver` is a HEURISTIC and
+            # this stage is the one place it can be legitimately wrong: "no
+            # aliases" is the correct answer for a topic whose actors are all
+            # distinct. Replaying 2026-09-14 topic 3 on frozen input found
+            # exactly that — 63 uniquely-named people, and the repaired rung
+            # (a different vendor build) independently returned empty too,
+            # while the same day's other topics merged 19 and 8 transliteration
+            # variants. Triage reads this line first; it must not send someone
+            # hunting a model bug that may not exist.
+            self._mark_degraded(
+                f"no aliases resolved across {input_actor_count} actors after "
+                f"{attempts_used} attempts across every rung — "
+                f"canonical_actors is the unmerged input. NOTE: for a topic "
+                f"whose actors are genuinely all distinct this is the CORRECT "
+                f"answer and this flag is a false positive — check the actor "
+                f"names for cross-language variants before treating it as a "
+                f"model failure"
+            )
 
         parsed = _parse_agent_output(result) or {}
         if not isinstance(parsed, dict):

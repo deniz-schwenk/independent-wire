@@ -60,6 +60,86 @@ def _reset_agent_metrics(stage: Any) -> None:
     reset = getattr(agent, "reset_call_metrics", None)
     if callable(reset):
         reset()
+    # Stage instances are REUSED across topics, so the per-call degradation
+    # report must be cleared here too — otherwise one degraded topic would
+    # mark every later topic degraded (TASK-ALIAS-EMPTY-GATE).
+    reset_stage = getattr(stage, "reset_stage_markers", None)
+    if callable(reset_stage):
+        reset_stage()
+
+
+def _stage_status(stage: Any) -> tuple[str, dict]:
+    """``("success", {})`` or ``("degraded", {...})`` for a stage that returned.
+
+    A stage that raises is logged "failed" by the caller; this decides between
+    the two non-raising outcomes. Before TASK-ALIAS-EMPTY-GATE there was only
+    one: a stage that produced nothing usable still wrote `status: "success"`,
+    which is how 2026-09-14 topic 3 published a dossier with 0 of 63 actors
+    merged without anything flagging it.
+    """
+    if not getattr(stage, "last_degraded", False):
+        return "success", {}
+    return "degraded", {
+        "degraded": True,
+        "degraded_reason": getattr(stage, "last_degraded_reason", "") or "unspecified",
+    }
+
+
+def degraded_stage_rows(run_bus: Optional[RunBus]) -> list[dict]:
+    """Every degraded stage row of this run, in order.
+
+    Reads the existing ``run_stage_log`` Bus slot rather than introducing a
+    slot of its own — the runner is already that slot's single writer, and a
+    new slot would be a Bus-schema decision (ARCH-V2 §6.2.1), not a bug fix.
+    Public so ``scripts/run.py`` can surface the same list in the run summary
+    without re-deriving it.
+    """
+    if run_bus is None:
+        return []
+    return [
+        r for r in (run_bus.run_stage_log or [])
+        if isinstance(r, dict) and r.get("status") == "degraded"
+    ]
+
+
+def fire_degradation_gate(run_bus: Optional[RunBus]) -> list[dict]:
+    """The gate the empty-retry helper used to merely *announce*.
+
+    Until 2026-09-15 `_call_agent_with_empty_retry` logged "downstream gate
+    will fire loud" and no such gate existed anywhere in the codebase — a dead
+    promise in a log line, which is worse than no promise at all because it
+    reads like a guarantee during triage. This is it: it runs at publish
+    decision time, immediately before render, and it is LOUD (ERROR) and
+    per-row so the triage question "which topic, which stage, why" is answered
+    in the log without opening the state directory.
+
+    It does not block publishing. A degraded topic is still a publishable one
+    (2026-09-14 shipped 63 unmerged actors, not a broken package), and silently
+    dropping it would trade one invisible failure for another. Returns the rows
+    so callers can surface them again in the run summary.
+    """
+    rows = degraded_stage_rows(run_bus)
+    if not rows:
+        return []
+    logger.error(
+        "DEGRADATION GATE: %d stage(s) completed WITHOUT usable output in this "
+        "run. Publishing proceeds — these Topic Packages are degraded, not "
+        "broken — but they are NOT clean runs and must not be read as such.",
+        len(rows),
+    )
+    for r in rows:
+        where = (
+            f"topic {r['topic_index']} ({r.get('topic_slug', '?')})"
+            if r.get("topic_index") is not None else "RUN-LEVEL"
+        )
+        logger.error(
+            "  DEGRADED: %s at %s — %s [model_used=%s, fallback fields in the "
+            "stage row]",
+            r.get("stage", "?"), where,
+            r.get("degraded_reason", "unspecified"),
+            r.get("model_used", "unrecorded"),
+        )
+    return rows
 
 
 def _collect_agent_metrics(stage: Any) -> dict:
@@ -381,8 +461,10 @@ class PipelineRunner:
         )
         self._current_run_id = run_bus.run_id or self._current_run_id
         self._current_run_date = run_bus.run_date or self._current_run_date
+        status, degraded_fields = _stage_status(stage)
         run_bus = self._log_stage(
-            run_bus, name, "run", "success",
+            run_bus, name, "run", status,
+            **degraded_fields,
             **_collect_agent_metrics(stage),
         )
         save_run_bus_snapshot(run_bus, self.output_dir, name)
@@ -500,13 +582,15 @@ class PipelineRunner:
                 run_bus.run_date,
                 run_bus.run_id,
             )
+            status, degraded_fields = _stage_status(stage)
             run_bus = self._log_stage(
                 run_bus,
                 name,
                 "topic",
-                "success",
+                status,
                 topic_index=topic_index,
                 topic_slug=topic_bus.editor_selected_topic.topic_slug,
+                **degraded_fields,
                 **_collect_agent_metrics(stage),
             )
             if self.to_stage and self.to_stage == name:
@@ -535,6 +619,10 @@ class PipelineRunner:
                     self.to_stage,
                 )
                 return run_bus
+
+        # Publish decision time: the last point before anything reaches disk
+        # as a Topic Package.
+        fire_degradation_gate(run_bus)
 
         if not self.skip_render:
             render_stage = RenderStage(self.output_dir)

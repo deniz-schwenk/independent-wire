@@ -188,6 +188,23 @@ class FlashStageWithFallback:
             self.last_fallback_used = False
             return result
 
+        return await self.escalate_to_fallback(failure_reason, *args, **kwargs)
+
+    async def escalate_to_fallback(
+        self, failure_reason: str, *args: Any, **kwargs: Any
+    ) -> AgentResult:
+        """Make the one fallback attempt, for a failure named by the caller.
+
+        ``run()`` calls this for the failures it can see for itself. It is also
+        PUBLIC because some final failures are only visible to the stage: the
+        wrapper judges output against ``output_schema``, and a response can be
+        perfectly schema-valid and still be useless — ``{"aliases": [],
+        "anonymous_flags": []}`` for 63 actors is the case that motivated this
+        (2026-09-14 topic 3). Emptiness is a per-stage semantic predicate, so
+        the stage owns the judgement and the wrapper owns the rung; this method
+        is the seam between them, and it is the same rung, the same
+        exactly-once contract and the same markers either way.
+        """
         logger.warning(
             "%s FALLBACK: primary %s (channel %s) failed — %s. Making exactly "
             "one fallback attempt on %s (channel %s). (Availability fallback: "

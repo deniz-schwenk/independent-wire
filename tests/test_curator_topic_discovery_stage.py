@@ -632,9 +632,18 @@ def test_retry_all_three_empty_writes_empty_and_logs_error(caplog):
     warn_records = [r for r in caplog.records if r.levelno == logging.WARNING]
     err_records = [r for r in caplog.records if r.levelno == logging.ERROR]
     assert len(warn_records) == 2  # attempts 1 and 2
-    assert len(err_records) == 1   # attempt 3 (final)
+    # Two ERRORs since TASK-ALIAS-EMPTY-GATE: exhaustion, then the degradation
+    # marker. This SequencedAgent is a bare agent with no fallback rung, so
+    # there is nothing to escalate to and the exhaustion line says so.
+    assert len(err_records) == 2
     assert "all 3 attempts" in err_records[0].getMessage()
     assert "resp-3" in err_records[0].getMessage()
+    assert "no fallback rung" in err_records[0].getMessage()
+    assert "DEGRADED" in err_records[1].getMessage()
+
+    # ...and the stage now SAYS so, rather than returning a clean success.
+    assert stage.last_degraded is True
+    assert "no topics discovered" in stage.last_degraded_reason
 
 
 def test_retry_non_empty_first_call_makes_no_retry(caplog):
