@@ -108,17 +108,54 @@ def _wrapped(primary_results, fallback_results, *, fallback_raises=None):
     )
 
 
-def _tb(n_actors: int = 63) -> TopicBus:
-    """63 actors — the 2026-09-14 topic-3 size, and comfortably over the
-    `< 3` legitimate-empty threshold the resolver's predicate carves out."""
-    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
-    tb.final_actors = [
-        {"id": f"actor-{i:03d}", "name": f"Actor {i}", "role": "official",
-         "type": "individual", "source_ids": [f"src-{i:03d}"],
+# Two actor lists, and the difference between them is the whole of
+# TASK-ALIAS-GATE-TRIGGER:
+#
+#   MERGEABLE   — carries a transliteration variant pair (Zelenskyy/Zelensky),
+#                 so an empty result IS suspicious and must escalate.
+#   ALL_DISTINCT — 2026-09-14 topic 3's actual shape: uniquely-named people
+#                 with nothing to merge, where empty is the CORRECT answer.
+#
+# ALL_DISTINCT deliberately includes the two traps that made the first,
+# naive discriminator fire on that topic: repeated GIVEN names across unrelated
+# people (Michael/Josh/Mike), and one self-glossed non-Latin name.
+_MERGEABLE = ["Volodymyr Zelenskyy", "Volodymyr Zelensky", "Andrii Sybiha",
+              "Radoslaw Sikorski", "Kaja Kallas", "Emmanuel Macron"]
+_ALL_DISTINCT = [
+    "Donald Trump", "Dario Amodei", "Sam Altman", "Elon Musk", "Jacob Coxon",
+    "Josh Gottheimer", "Mike Lawler", "Demis Hassabis", "Sarah Heck",
+    "Michael Kratsios", "Josh Engles", "Mike Johnson", "Jakub Pachocki",
+    "Evan Hubinger", "Emil Michael", "Greg Casar", "Greg Brockman",
+    "Marc Andreessen", "Marc Warner", "Wendy Hall", "Jensen Huang",
+    "Simsim \u2013 \u0645\u0634\u0627\u0631\u0643\u0629 "
+    "\u0645\u0648\u0627\u0637\u0646\u0629 (Simsim \u2013 Citizen "
+    "Participation Association)",
+]
+
+
+def _actors(names):
+    return [
+        {"id": f"actor-{i:03d}", "name": n, "role": "", "type": "individual",
+         "source_ids": [f"src-{i:03d}"],
          "quotes": [{"source_id": f"src-{i:03d}", "position": "p",
                      "verbatim": None}]}
-        for i in range(1, n_actors + 1)
+        for i, n in enumerate(names, 1)
     ]
+
+
+def _tb(n_actors: int = 63) -> TopicBus:
+    """An actor list WITH merge candidates, at the 2026-09-14 topic-3 size."""
+    names = [_MERGEABLE[i % len(_MERGEABLE)] if i < len(_MERGEABLE)
+             else f"Unrelated Person {i}" for i in range(n_actors)]
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.final_actors = _actors(names[:n_actors])
+    return tb
+
+
+def _tb_no_candidates() -> TopicBus:
+    """2026-09-14 topic 3's shape: nothing to merge, empty is correct."""
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.final_actors = _actors(_ALL_DISTINCT)
     return tb
 
 
@@ -347,31 +384,154 @@ def test_the_gate_runs_before_anything_is_rendered():
 # report because it changes how the gate's output must be READ: the flag means
 # "no merges happened", not "the model failed".
 
-def test_empty_is_the_correct_answer_for_all_distinct_actors_and_still_flags():
-    """63 uniquely-named actors have nothing to merge, so `{"aliases": [],
-    "anonymous_flags": []}` is right — and the heuristic still calls it empty.
+def test_all_distinct_actors_empty_is_accepted_as_a_true_negative(caplog):
+    """The 2026-09-14 topic-3 shape: empty is CORRECT, so nothing fires.
 
-    `_is_empty_resolver` fires on (>= 3 input actors) AND (both arrays empty).
-    It cannot tell "the model emitted nothing" from "there was nothing to
-    emit". On 2026-09-14 topic 3 the second reading is the likely one: the
-    repaired rung, a different vendor build, independently returned empty on
-    the same frozen input, while the same run's other topics merged 19 and 8
-    cross-language name variants.
-
-    This test does not assert the heuristic is wrong — it pins the fact that a
-    correct answer produces a degraded flag, so nobody reads the gate as proof
-    of a model fault. Tightening the predicate is an owner decision with its
-    own evidence bar; see the task report.
+    This test replaces the one the plumbing commit left here, which pinned the
+    opposite — that a correct empty answer still produced a degraded flag —
+    and said in its own docstring that tightening the trigger was an owner
+    decision. TASK-ALIAS-GATE-TRIGGER is that decision, so the assertion
+    inverts. What must NOT change is the reason it mattered: a gate that fires
+    on correct output gets ignored, which recreates the defect it was built for.
     """
+    w = _wrapped([_empty()], [])
+    stage = ResolveActorAliasesStage(w)
+
+    with caplog.at_level(logging.INFO, logger="src.agent_stages"):
+        tb_after = _run(stage, _tb_no_candidates(), _ro())
+
+    assert len(w.primary.calls) == 1, "no retries on a correct empty answer"
+    assert len(w.fallback.calls) == 0, "and no rung-2 spend"
+    assert stage.last_degraded is False
+    assert _stage_status(stage) == ("success", {})
+    assert "no merge or anonymous-flag candidate" in caplog.text
+    # the dossier is written exactly as before — this is about the verdict on
+    # the output, not the output itself
+    assert len(tb_after.canonical_actors) == len(_ALL_DISTINCT)
+    assert tb_after.actor_alias_mapping == []
+
+
+def test_the_traps_that_broke_the_naive_discriminator_stay_fixed():
+    """Both false signals that made a bare token/script rule fire on
+    2026-09-14 topic 3, pinned individually so neither can creep back.
+
+    Measured, not asserted: replaying a bare "any shared token" rule over that
+    topic fires on six shared GIVEN names (Michael, Josh, Mike, Evan, Greg,
+    Marc) across unrelated people, and a bare "two scripts present" rule fires
+    on one self-glossed Arabic name. Evidence:
+    scratch/audit/alias-trigger/REPORT.md.
+    """
+    from src.agent_stages import merge_candidates_present
+
+    # given-name collisions across unrelated people are not merge candidates
+    present, why = merge_candidates_present(_actors(
+        ["Emil Michael", "Michael Kratsios", "Josh Gottheimer", "Josh Engles"]))
+    assert present is False, why
+
+    # a non-Latin name carrying its OWN Latin gloss is already disambiguated
+    present, why = merge_candidates_present(_actors(
+        ["Donald Trump", "Sam Altman",
+         "Simsim \u2013 \u0645\u0634\u0627\u0631\u0643\u0629 "
+         "\u0645\u0648\u0627\u0637\u0646\u0629 (Simsim \u2013 Citizen "
+         "Participation Association)"]))
+    assert present is False, why
+
+
+def test_cross_script_variants_without_a_latin_handle_do_count():
+    """The hazard the brief names: \u0421\u0438\u0431\u0456\u0433\u0430 -> Sybiha is invisible to any
+    Latin-side normalisation, so a bare non-Latin name among Latin ones has to
+    count as a candidate on the possibility alone."""
+    from src.agent_stages import merge_candidates_present
+
+    present, why = merge_candidates_present(_actors(
+        ["Andrii Sybiha", "Radoslaw Sikorski",
+         "\u0421\u0438\u0431\u0456\u0433\u0430"]))
+    assert present is True
+    assert "multi_script" in why
+
+
+@pytest.mark.parametrize("names,expect,signal", [
+    (["Volodymyr Zelenskyy", "Volodymyr Zelensky", "Kaja Kallas"],
+     True, "variant_pair"),
+    (["World Health Organization", "WHO Director-General", "Kaja Kallas"],
+     True, "acronym"),
+    (["Israeli military", "\u0627\u0644\u062c\u064a\u0634 "
+      "\u0627\u0644\u0625\u0633\u0631\u0627\u0626\u064a\u0644\u064a "
+      "(Israeli military)", "Kaja Kallas"], True, "paren_gloss"),
+    (["Kaja Kallas", "US officials", "Emmanuel Macron"], True, "generic_label"),
+    (["Kaja Kallas", "Trump adviser", "Emmanuel Macron"], True, "role_as_name"),
+    (["Donald Trump", "Sam Altman", "Elon Musk"], False, None),
+])
+def test_each_signal_fires_on_its_own_shape(names, expect, signal):
+    from src.agent_stages import merge_candidates_present
+
+    present, why = merge_candidates_present(_actors(names))
+    assert present is expect, why
+    if signal:
+        assert signal in why
+
+
+def test_role_text_naming_another_actor_counts():
+    """How the corpus's legitimate person<->organisation merges present
+    themselves — the name pair alone shares nothing."""
+    from src.agent_stages import merge_candidates_present
+
+    actors = _actors(["Matthew Diller", "New York City Bar Association"])
+    actors[0]["role"] = "President, New York City Bar Association"
+    present, why = merge_candidates_present(actors)
+    assert present is True
+    assert "role_names_actor" in why
+
+    # It requires the other actor's FULL multi-token name, but that still
+    # matches a geographic phrase embedded in a role: "Marco Rubio", role
+    # "Secretary of State of the United States", beside an actor "United
+    # States", fires. That is a FALSE POSITIVE and it is accepted knowingly —
+    # it costs at most the retries the stage already made, whereas the opposite
+    # error accepts a real degradation in silence. Pinned so the asymmetry is a
+    # recorded decision rather than an accident.
+    actors = _actors(["Marco Rubio", "United States"])
+    actors[0]["role"] = "Secretary of State of the United States"
+    present, why = merge_candidates_present(actors)
+    assert present is True and "role_names_actor" in why
+
+
+def test_a_malformed_response_is_still_empty_emission(caplog):
+    """The discriminator relaxes the verdict on a WELL-FORMED empty answer
+    only. A response that does not parse is a transport failure whatever the
+    input looks like, and must still retry and escalate."""
+    bad = AgentResult(content="", structured=None, cost_usd=0.001,
+                      tokens_used=10, response_id="r", model="m", provider="p")
+    w = _wrapped([bad, bad, bad], [_merged("deepseek/deepseek-v4.1-flash",
+                                           "DeepSeek")])
+    stage = ResolveActorAliasesStage(w)
+
+    with caplog.at_level(logging.ERROR, logger="src.agent_stages"):
+        _run(stage, _tb_no_candidates(), _ro())
+
+    # The wrapper's own schema check catches structured=None before the stage's
+    # empty predicate is ever consulted, so the ladder engages on the FIRST
+    # attempt rather than after three. The point stands either way, and is the
+    # one that matters: an unparseable response on a nothing-to-merge input is
+    # still escalated, never waved through as a true negative.
+    assert len(w.primary.calls) == 1
+    assert len(w.fallback.calls) == 1
+    assert w.last_fallback_used is True
+
+
+def test_candidate_present_empty_still_escalates_and_degrades(caplog):
+    """The other direction, unchanged: candidates present + every rung empty
+    still engages the ladder and still degrades."""
     w = _wrapped([_empty(), _empty(), _empty()], [_empty()])
     stage = ResolveActorAliasesStage(w)
 
-    _run(stage, _tb(63), _ro())
+    with caplog.at_level(logging.ERROR, logger="src.agent_stages"):
+        _run(stage, _tb(), _ro())
 
+    assert len(w.fallback.calls) == 1
     assert stage.last_degraded is True
-    # ...and the reason says so, so triage is not sent hunting a phantom bug
-    assert "false positive" in stage.last_degraded_reason
-    assert "cross-language variants" in stage.last_degraded_reason
+    assert _stage_status(stage)[0] == "degraded"
+    # the reason now names WHICH signals fired, so triage starts from evidence
+    assert "variant_pair" in stage.last_degraded_reason
 
 
 def test_two_actors_is_the_legitimate_empty_path_and_never_degrades():

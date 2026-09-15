@@ -509,13 +509,29 @@ def _resolver_nonempty_result(*, response_id: str = "resp-ok") -> AgentResult:
     )
 
 
+# Names with a MERGE CANDIDATE in them. Since TASK-ALIAS-GATE-TRIGGER the
+# resolver's empty-retry path only engages when the input plausibly has
+# something to merge, so a fixture of "Actor 1".."Actor N" — which genuinely has
+# nothing to merge — would correctly skip every retry and make these tests
+# vacuous. The first two entries are a transliteration variant pair, the shape
+# this stage exists to resolve.
+_RESOLVER_NAMES = [
+    "Volodymyr Zelenskyy",
+    "Volodymyr Zelensky",
+    "Andrii Sybiha",
+    "Radoslaw Sikorski",
+    "Kaja Kallas",
+    "Emmanuel Macron",
+]
+
+
 def _make_resolver_tb(n_actors: int = 4) -> TopicBus:
     tb = TopicBus()
     actors = []
     for i in range(1, n_actors + 1):
         actors.append({
             "id": f"actor-{i:03d}",
-            "name": f"Actor {i}",
+            "name": _RESOLVER_NAMES[(i - 1) % len(_RESOLVER_NAMES)],
             "role": "official",
             "type": "individual",
             "source_ids": [f"src-{i:03d}"],
