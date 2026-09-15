@@ -2803,6 +2803,127 @@ def merge_candidates_present(final_actors: list) -> tuple[bool, list[str]]:
     return bool(hits), hits
 
 
+# --- merge validation (TASK-MERGE-VALIDATION) -------------------------------
+#
+# `merge_candidates_present` above asks a LIST-level question: could anything
+# in this actor list merge at all? This asks the PAIR-level one the resolver's
+# own output raises: given that it proposed A -> C, is there any tangible
+# signal linking those two actors?
+#
+# The failure this exists for is not emptiness but its opposite. The resolver
+# hallucinates merges: `Marco Rubio -> Donald Trump`, `Kevin Warsh -> Jerome
+# Powell`, and on 2026-07-27 forty-six distinct German politicians collapsed
+# into one actor in a PUBLISHED dossier (tp-2026-07-27-003). A reader cannot
+# detect that — the dossier simply asserts fewer, wronger actors — which makes
+# it a direct hit on the product's core promise.
+#
+# READ scratch/audit/merge-validation/REPORT.md BEFORE ENABLING THIS AS A HARD
+# REJECT. Replayed over all 3087 historical merges it flags 248 (8.0%), and a
+# 40-pair hand-classified sample says roughly 25 of those are LEGITIMATE —
+# overwhelmingly cross-language institution merges (`Ejército de Israel` ->
+# `IDF`, `die ukrainische Staatsbahn` -> `Ukrzaliznytsia`), which is precisely
+# what an 18-language pipeline exists to do. Clean separation was not
+# achievable; the trade-off is the owner's.
+
+_MERGE_SIGNALS = (
+    "name_shared", "name_subset", "name_variant", "acronym", "gloss",
+    "role_link", "cross_script",
+)
+
+
+def merge_signals(alias: dict, canonical: dict) -> list[str]:
+    """Tangible links between a proposed alias and its canonical, or ``[]``.
+
+    ``cross_script`` is an ABSTENTION rather than evidence: a Cyrillic name and
+    a Latin one share no characters by construction, so a transliteration merge
+    is indistinguishable from an invented one without transliterating. Counting
+    it as tangible means the guard never rejects a merge it cannot check.
+    """
+    na = (alias.get("name", "") or "") if isinstance(alias, dict) else ""
+    nc = (canonical.get("name", "") or "") if isinstance(canonical, dict) else ""
+    ta, tc = set(_alias_toks(na)), set(_alias_toks(nc))
+    out: list[str] = []
+    if ta & tc:
+        out.append("name_shared")
+    if ta and tc and (ta <= tc or tc <= ta):
+        out.append("name_subset")
+    if any(_alias_near(x, y) for x in ta for y in tc):
+        out.append("name_variant")
+
+    def _acros(n: str) -> set[str]:
+        acc = {m.upper() for m in re.findall(r"\b[A-Z]{2,6}\b", n)}
+        for g in _alias_parens(n):
+            k = re.sub(r"[^A-Za-z]", "", g).upper()
+            if 2 <= len(k) <= 6:
+                acc.add(k)
+        return acc
+
+    ia = "".join(t[0] for t in _alias_toks(na)).upper()
+    ic = "".join(t[0] for t in _alias_toks(nc)).upper()
+    if (_acros(na) & {ic}) or (_acros(nc) & {ia}):
+        out.append("acronym")
+    for src, dst in ((na, tc), (nc, ta)):
+        for g in _alias_parens(src):
+            if set(_alias_toks(g)) & dst:
+                out.append("gloss")
+                break
+
+    def _bare(text: str) -> set:
+        return set(_alias_toks(re.sub(r"[（(][^）)]*[）)]", " ", text or "")))
+
+    ra = _bare(alias.get("role", "") if isinstance(alias, dict) else "")
+    rc = _bare(canonical.get("role", "") if isinstance(canonical, dict) else "")
+    tas, tcs = _bare(na), _bare(nc)
+    # Subset covers one-token names ("Qatar" inside "Prime Minister of Qatar");
+    # the >=2 overlap covers cross-language pairs ("UK Foreign Office" vs
+    # "British Foreign Office"). Glosses are stripped first: requiring the
+    # parenthetical acronym to appear in the role is what made v1 miss most of
+    # the corpus's legitimate person<->institution merges.
+    if ((tcs and (tcs <= ra or len(tcs & ra) >= 2))
+            or (tas and (tas <= rc or len(tas & rc) >= 2))):
+        out.append("role_link")
+
+    da, dc = _alias_dominant_script(na), _alias_dominant_script(nc)
+    if da and dc and da != dc:
+        out.append("cross_script")
+    return sorted(set(out))
+
+
+def validate_merges(
+    alias_pairs: list, actors_by_id: dict
+) -> tuple[list, list[dict]]:
+    """``(kept, rejected)`` for the resolver's proposed alias pairs.
+
+    Python owns this verdict end to end: a rejected merge is DROPPED, loudly
+    and permanently, never handed back to the model to try again. A retry would
+    be asking the thing that hallucinated to grade its own work, and would cost
+    a call to do it.
+
+    A pair whose alias or canonical id is not in ``actors_by_id`` is left to the
+    caller's existing id-validation rather than judged here.
+    """
+    kept, rejected = [], []
+    for pair in alias_pairs or []:
+        if not isinstance(pair, dict):
+            continue
+        a = actors_by_id.get(pair.get("alias_id"))
+        c = actors_by_id.get(pair.get("canonical_id"))
+        if not isinstance(a, dict) or not isinstance(c, dict):
+            kept.append(pair)
+            continue
+        sig = merge_signals(a, c)
+        if sig:
+            kept.append(pair)
+        else:
+            rejected.append({
+                "alias_id": pair.get("alias_id"),
+                "canonical_id": pair.get("canonical_id"),
+                "alias_name": a.get("name", ""),
+                "canonical_name": c.get("name", ""),
+            })
+    return kept, rejected
+
+
 def _actor_id_numeric_order(actor_id: str) -> int:
     """Return the numeric suffix of an `actor-NNN` ID, or a large
     sentinel for malformed IDs so they sort last and never beat a
@@ -2909,8 +3030,33 @@ class ResolveActorAliasesStage(_AgentStageBase):
     writes = ("canonical_actors", "actor_alias_mapping")
     agent_role = "resolve_actor_aliases"
 
+    # Per-call merge-validation report (TASK-MERGE-VALIDATION), surfaced into
+    # the stage row through the runner's existing extra-fields seam. No new Bus
+    # slot and no schema change (ARCH-V2 6.2.1): a rejected merge is an
+    # operational fact about the run, not part of the Topic Package.
+    last_rejected_merges: list = []
+
     def __init__(self, agent: Agent) -> None:
         self.agent = agent
+        self.last_rejected_merges = []
+
+    def reset_stage_markers(self) -> None:
+        super().reset_stage_markers()
+        self.last_rejected_merges = []
+
+    @property
+    def extra_log_fields(self) -> dict:
+        """Read by the runner's `_collect_agent_metrics`. Emitted only when
+        something was rejected, so a clean row keeps its current shape."""
+        if not self.last_rejected_merges:
+            return {}
+        return {
+            "merges_rejected": len(self.last_rejected_merges),
+            "merges_rejected_detail": [
+                f"{r['alias_name']} -> {r['canonical_name']}"
+                for r in self.last_rejected_merges
+            ],
+        }
 
     async def __call__(
         self, topic_bus: TopicBus, run_bus: RunBusReadOnly
@@ -3019,6 +3165,30 @@ class ResolveActorAliasesStage(_AgentStageBase):
         anonymous_raw = parsed.get("anonymous_flags") or []
         if not isinstance(anonymous_raw, list):
             anonymous_raw = []
+
+        # Merge validation (TASK-MERGE-VALIDATION): every proposed merge must
+        # carry a tangible link between the two actors or it is dropped here.
+        # Deliberately BEFORE the union-find: one un-anchored pair inside a
+        # transitive group drags every member of that group together, which is
+        # how 2026-07-27 t2 turned into a 46-into-1 collapse.
+        actors_by_id_full = {
+            a.get("id"): a for a in final_actors
+            if isinstance(a, dict) and isinstance(a.get("id"), str)
+        }
+        aliases_raw, rejected_merges = validate_merges(
+            aliases_raw, actors_by_id_full)
+        if rejected_merges:
+            logger.error(
+                "ResolveActorAliasesStage: REJECTED %d of %d proposed merge(s) "
+                "with no tangible link between the two actors — dropped, not "
+                "retried (asking the model to re-grade its own hallucination "
+                "costs a call and settles nothing): %s",
+                len(rejected_merges), len(rejected_merges) + len(aliases_raw),
+                "; ".join(f"{r['alias_name']!r} -> {r['canonical_name']!r}"
+                          for r in rejected_merges[:8])
+                + (" ..." if len(rejected_merges) > 8 else ""),
+            )
+        self.last_rejected_merges = rejected_merges
 
         # Normalise alias pairs into {alias_id -> canonical_id} via
         # union-find, applying first-source-wins (smaller numeric ID).
