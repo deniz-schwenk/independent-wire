@@ -24,7 +24,7 @@ from src.agent import Agent, AgentAPIError, AgentResult
 from src.qa_fallback import QaAnalyzeWithFallback, qa_output_is_schema_valid
 from src.runner.runner import _collect_agent_metrics
 from src.schemas import QA_ANALYZE_SCHEMA
-from scripts.run import GLM_5_2_QA_FP8_ROUTING
+from scripts.run import GLM_5_3_FLASH_QA_ZAI_ROUTING
 
 VALID_OUTPUT = {"problems_found": [], "qa_corrections": [], "divergences": []}
 
@@ -62,30 +62,38 @@ async def _captured_kwargs(agent: Agent, output_schema=None) -> dict:
 
 
 @pytest.mark.asyncio
-async def test_primary_glm_request_body_exact(prompt_file):
-    """Primary = GLM-5.2 @ xhigh, temp 0.1, max_tokens 120000, fp8 pin."""
+async def test_primary_glm53_flash_request_body_exact(prompt_file):
+    """Primary since TASK-SWAP-FM-BUNDLE: glm-5.3-flash @ max, temp 1.0 /
+    top_p 0.95, max_tokens 120000, first-party Z.AI pin, json_object.
+
+    The two absences are the load-bearing part. ``quantizations`` and
+    ``require_parameters`` must BOTH stay off the wire: this is the vendor's
+    own endpoint, it declares no strict ``json_schema``, and either flag
+    filters it out of its own route. Conformance is enforced locally by
+    QaAnalyzeWithFallback against the live schema instead.
+    """
     agent = _mk_agent(
         prompt_file,
-        model="z-ai/glm-5.2",
-        temperature=0.1,
+        model="z-ai/glm-5.3-flash",
+        temperature=1.0,
         max_tokens=120000,
-        reasoning="xhigh",
-        provider_routing=GLM_5_2_QA_FP8_ROUTING,
+        reasoning="max",
+        provider_routing=GLM_5_3_FLASH_QA_ZAI_ROUTING,
+        extra_body_override={"top_p": 0.95},
+        structured_output_mode="json_object",
     )
     kw = await _captured_kwargs(agent, output_schema=QA_ANALYZE_SCHEMA)
-    assert kw["model"] == "z-ai/glm-5.2"
-    assert kw["temperature"] == 0.1
+    assert kw["model"] == "z-ai/glm-5.3-flash"
+    assert kw["temperature"] == 1.0
     assert kw["max_tokens"] == 120000
-    assert kw["extra_body"]["reasoning"] == {"effort": "xhigh"}
+    assert kw["extra_body"]["top_p"] == 0.95
+    assert kw["extra_body"]["reasoning"] == {"effort": "max"}
     assert kw["extra_body"]["provider"] == {
-        "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
-        "allow_fallbacks": False,
-        "quantizations": ["fp8"],
-        "require_parameters": True,  # added by Agent for schema calls
+        "order": ["z-ai"], "allow_fallbacks": False,
     }
-    rf = kw["response_format"]["json_schema"]
-    assert rf["strict"] is True
-    assert rf["schema"] == QA_ANALYZE_SCHEMA
+    assert "quantizations" not in kw["extra_body"]["provider"]
+    assert "require_parameters" not in kw["extra_body"]
+    assert kw["response_format"] == {"type": "json_object"}
 
 
 @pytest.mark.asyncio
@@ -341,11 +349,14 @@ def test_qa_output_schema_validity_gate():
 # --- shipped constant + wiring ------------------------------------------------
 
 
-def test_glm_qa_routing_constant_is_fp8_and_fail_loud():
-    assert GLM_5_2_QA_FP8_ROUTING["order"] == ["baidu/fp8", "ambient/fp8", "venice/fp8"]
-    assert GLM_5_2_QA_FP8_ROUTING["allow_fallbacks"] is False
-    assert GLM_5_2_QA_FP8_ROUTING["quantizations"] == ["fp8"]
-    assert all(t.endswith("/fp8") for t in GLM_5_2_QA_FP8_ROUTING["order"])
+def test_glm_qa_routing_constant_is_the_vendor_endpoint_and_fail_loud():
+    """The fp8 pin this replaced (baidu/ambient/venice + quantizations) is gone
+    with the glm-5.2 primary; TASK-SWAP-FM-BUNDLE moved the stage to the
+    vendor's own endpoint, where a quantizations filter would 404 the route."""
+    assert GLM_5_3_FLASH_QA_ZAI_ROUTING == {
+        "order": ["z-ai"], "allow_fallbacks": False,
+    }
+    assert "quantizations" not in GLM_5_3_FLASH_QA_ZAI_ROUTING
 
 
 def test_create_agents_qa_is_glm_with_sonnet5_fallback(monkeypatch):
@@ -360,12 +371,14 @@ def test_create_agents_qa_is_glm_with_sonnet5_fallback(monkeypatch):
         qa = factory()["qa_analyze"]
         assert isinstance(qa, QaAnalyzeWithFallback)
         # primary
-        assert qa.primary.model == "z-ai/glm-5.2"
-        assert qa.primary.temperature == 0.1
+        assert qa.primary.model == "z-ai/glm-5.3-flash"
+        assert qa.primary.temperature == 1.0
         assert qa.primary.max_tokens == 120000
-        assert qa.primary.reasoning == "xhigh"
-        assert qa.primary._provider_routing == GLM_5_2_QA_FP8_ROUTING
+        assert qa.primary.reasoning == "max"
+        assert qa.primary._provider_routing == GLM_5_3_FLASH_QA_ZAI_ROUTING
         assert qa.primary.output_schema == QA_ANALYZE_SCHEMA
+        assert qa.primary.structured_output_mode == "json_object"
+        # the Sonnet-5 rung below is UNCHANGED by the swap
         # fallback
         assert qa.fallback.model == "anthropic/claude-sonnet-5"
         assert qa.fallback.temperature is None
