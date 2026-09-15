@@ -109,20 +109,58 @@ def test_cross_script_is_an_abstention_not_evidence():
 
 # --- validate_merges bookkeeping ---------------------------------------------
 
-def test_validate_splits_kept_from_rejected():
+def _rubio_case():
     actors = {a["id"]: a for a in [
         A(1, "Volodymyr Zelenskyy"), A(2, "Volodymyr Zelensky"),
         A(3, "Marco Rubio", "Secretary of State of the United States"),
         A(4, "Donald Trump", "President of the United States")]}
     pairs = [{"alias_id": "actor-001", "canonical_id": "actor-002"},
              {"alias_id": "actor-003", "canonical_id": "actor-004"}]
+    return actors, pairs
 
-    kept, rejected = validate_merges(pairs, actors)
 
-    assert kept == [pairs[0]]
-    assert len(rejected) == 1
-    assert rejected[0]["alias_name"] == "Marco Rubio"
-    assert rejected[0]["canonical_name"] == "Donald Trump"
+def test_detector_mode_is_the_default():
+    from src.agent_stages import MERGE_VALIDATION_MODE
+    assert MERGE_VALIDATION_MODE == "detector"
+
+
+def test_detector_mode_keeps_every_merge_and_still_counts():
+    """The shipped mode. Zero behaviour change on the product: `kept` is the
+    input, unchanged and in order, while `rejected` still names what reject
+    mode would have removed."""
+    actors, pairs = _rubio_case()
+
+    kept, flagged = validate_merges(pairs, actors, mode="detector")
+
+    assert kept == pairs, "detector mode must not alter merge output at all"
+    assert len(flagged) == 1
+    assert flagged[0]["alias_name"] == "Marco Rubio"
+    assert flagged[0]["canonical_name"] == "Donald Trump"
+
+
+def test_reject_mode_drops_what_detector_mode_counts():
+    """Detection is identical in both modes; only the drop differs. Asserted
+    against each other rather than separately, so the two cannot drift."""
+    actors, pairs = _rubio_case()
+
+    kept_d, flagged_d = validate_merges(pairs, actors, mode="detector")
+    kept_r, flagged_r = validate_merges(pairs, actors, mode="reject")
+
+    assert flagged_d == flagged_r, "the COUNT is the same in both modes"
+    assert kept_r == [p for p in kept_d if p not in flagged_ids(flagged_r, kept_d)]
+    assert kept_r == [pairs[0]]
+    assert len(kept_d) - len(kept_r) == len(flagged_r)
+
+
+def flagged_ids(flagged, pairs):
+    keys = {(f["alias_id"], f["canonical_id"]) for f in flagged}
+    return [p for p in pairs if (p["alias_id"], p["canonical_id"]) in keys]
+
+
+def test_an_unknown_mode_is_refused_rather_than_guessed():
+    actors, pairs = _rubio_case()
+    with pytest.raises(ValueError, match="unknown mode"):
+        validate_merges(pairs, actors, mode="drop-everything")
 
 
 def test_unknown_ids_are_left_to_the_existing_id_validation():
@@ -164,7 +202,9 @@ def _bus(actors):
     return tb, RunBus().as_readonly()
 
 
-def test_stage_drops_the_hallucination_and_keeps_the_real_merge(caplog):
+def test_stage_in_detector_mode_flags_but_still_merges(caplog):
+    """The shipped behaviour. Rubio is still merged into Trump — the product is
+    exactly as it was — and the run log now says so out loud."""
     actors = [A(1, "Volodymyr Zelenskyy"), A(2, "Volodymyr Zelensky"),
               A(3, "Marco Rubio", "Secretary of State of the United States"),
               A(4, "Donald Trump", "President of the United States")]
@@ -178,16 +218,40 @@ def test_stage_drops_the_hallucination_and_keeps_the_real_merge(caplog):
     with caplog.at_level(logging.ERROR, logger="src.agent_stages"):
         out = _run(stage, tb, rb)
 
-    # first-source-wins picks the SMALLER numeric id as canonical, so the
-    # surviving pair is recorded 002 -> 001; compare unordered.
+    # first-source-wins picks the SMALLER numeric id as canonical, so pairs are
+    # recorded 002 -> 001; compare unordered.
     merged = {frozenset((m["alias_id"], m["canonical_id"]))
               for m in out.actor_alias_mapping}
     assert frozenset(("actor-001", "actor-002")) in merged
-    assert frozenset(("actor-003", "actor-004")) not in merged
-    # Rubio survives as his own canonical entry rather than vanishing into Trump
-    assert "actor-003" in {a["id"] for a in out.canonical_actors}
-    assert "REJECTED 1 of 2" in caplog.text
+    assert frozenset(("actor-003", "actor-004")) in merged, (
+        "detector mode must not change the merge result")
+    assert "FLAGGED 1 of 2" in caplog.text
+    assert "DETECTOR MODE" in caplog.text
     assert "'Marco Rubio' -> 'Donald Trump'" in caplog.text
+    assert stage.last_rejected_merges[0]["alias_name"] == "Marco Rubio"
+
+
+def test_reject_mode_would_have_kept_rubio_separate(monkeypatch):
+    """The capability that stays wired behind the mode: with the drop enabled,
+    Rubio survives as his own canonical entry instead of vanishing into Trump.
+    Nothing in the tree sets this today."""
+    import src.agent_stages as ags
+    monkeypatch.setattr(ags, "MERGE_VALIDATION_MODE", "reject")
+
+    actors = [A(1, "Volodymyr Zelenskyy"), A(2, "Volodymyr Zelensky"),
+              A(3, "Marco Rubio", "Secretary of State of the United States"),
+              A(4, "Donald Trump", "President of the United States")]
+    agent = _Agent({"aliases": [
+        {"alias_id": "actor-001", "canonical_id": "actor-002"},
+        {"alias_id": "actor-003", "canonical_id": "actor-004"}],
+        "anonymous_flags": []})
+    stage = ResolveActorAliasesStage(agent)
+    out = _run(stage, *_bus(actors))
+
+    merged = {frozenset((m["alias_id"], m["canonical_id"]))
+              for m in out.actor_alias_mapping}
+    assert frozenset(("actor-003", "actor-004")) not in merged
+    assert "actor-003" in {a["id"] for a in out.canonical_actors}
 
 
 def test_rejection_is_a_drop_not_a_retry():
@@ -226,6 +290,9 @@ def test_the_stage_row_counts_the_rejections():
     row = _collect_agent_metrics(stage)
     assert row["merges_rejected"] == 1
     assert row["merges_rejected_detail"] == ["Marco Rubio -> Donald Trump"]
+    # the row says which mode produced the count, so a future flip is legible
+    # in the series rather than an unexplained step change
+    assert row["merge_validation_mode"] == "detector"
 
 
 def test_a_clean_run_leaves_the_row_shape_untouched():
@@ -244,19 +311,34 @@ def test_a_clean_run_leaves_the_row_shape_untouched():
     assert stage.last_rejected_merges == []
 
 
-def test_validation_runs_before_the_union_find():
+def test_validation_runs_before_the_union_find(monkeypatch):
     """The 46-into-1 shape. Union-find is transitive, so ONE un-anchored pair
-    inside a chain drags every member together; validating afterwards would
-    already have lost them."""
+    inside a chain drags every member together.
+
+    Position matters even in detector mode, which drops nothing: validating
+    AFTER the union-find would inspect the collapsed result rather than the
+    pair that caused it, so the COUNT would be wrong too — the un-anchored pair
+    would have acquired a shared canonical by then. Asserted on the count here,
+    and on the drop under reject mode below.
+    """
     actors = [A(1, "Volodymyr Zelenskyy"), A(2, "Volodymyr Zelensky"),
               A(3, "Friedrich Merz", "German Chancellor")]
-    agent = _Agent({"aliases": [
-        {"alias_id": "actor-001", "canonical_id": "actor-002"},
-        {"alias_id": "actor-003", "canonical_id": "actor-002"}],
-        "anonymous_flags": []})
-    stage = ResolveActorAliasesStage(agent)
-    out = _run(stage, *_bus(actors))
+    aliases = [{"alias_id": "actor-001", "canonical_id": "actor-002"},
+               {"alias_id": "actor-003", "canonical_id": "actor-002"}]
 
-    ids = {a["id"] for a in out.canonical_actors}
-    assert "actor-003" in ids, "Merz must not be dragged in transitively"
+    stage = ResolveActorAliasesStage(_Agent(
+        {"aliases": aliases, "anonymous_flags": []}))
+    out = _run(stage, *_bus(actors))
+    # detector: the collapse still happens, and is counted exactly once
+    assert len(stage.last_rejected_merges) == 1
+    assert stage.last_rejected_merges[0]["alias_name"] == "Friedrich Merz"
+    assert len(out.actor_alias_mapping) == 2
+
+    import src.agent_stages as ags
+    monkeypatch.setattr(ags, "MERGE_VALIDATION_MODE", "reject")
+    stage = ResolveActorAliasesStage(_Agent(
+        {"aliases": aliases, "anonymous_flags": []}))
+    out = _run(stage, *_bus(actors))
+    assert "actor-003" in {a["id"] for a in out.canonical_actors}, (
+        "Merz must not be dragged in transitively")
     assert len(out.actor_alias_mapping) == 1

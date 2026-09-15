@@ -2830,6 +2830,26 @@ _MERGE_SIGNALS = (
     "role_link", "cross_script",
 )
 
+# Owner decision, 2026-09-15 (TASK-VALIDATION-DETECTOR-MODE): this ships as a
+# DETECTOR. It counts what it would have dropped and drops nothing, so the
+# product behaves exactly as it does today while the blind spot becomes a daily
+# number on the stage row.
+#
+# The reason is measured, not cautious-by-default. At the setting that catches
+# all five known hallucinations the detector flags 248 of 3087 historical merges
+# (8.0%), and a 40-pair hand classification puts roughly 25 of those in the
+# LEGITIMATE column — almost entirely the same institution named in two
+# languages (`Ejército de Israel` -> `IDF`, `die ukrainische Staatsbahn` ->
+# `Ukrzaliznytsia`). Rejecting those would fragment actor lists in exactly the
+# dimension eighteen language streams exist to serve: roughly 2.3 real merges
+# lost per hallucination stopped. See scratch/audit/merge-validation/REPORT.md.
+#
+# "reject" is kept wired and tested so enabling it later is a switch rather
+# than a rewrite. Nothing in the tree sets it today.
+MERGE_VALIDATION_DETECTOR = "detector"
+MERGE_VALIDATION_REJECT = "reject"
+MERGE_VALIDATION_MODE = MERGE_VALIDATION_DETECTOR
+
 
 def merge_signals(alias: dict, canonical: dict) -> list[str]:
     """Tangible links between a proposed alias and its canonical, or ``[]``.
@@ -2890,18 +2910,30 @@ def merge_signals(alias: dict, canonical: dict) -> list[str]:
 
 
 def validate_merges(
-    alias_pairs: list, actors_by_id: dict
+    alias_pairs: list, actors_by_id: dict, mode: str | None = None
 ) -> tuple[list, list[dict]]:
-    """``(kept, rejected)`` for the resolver's proposed alias pairs.
+    """``(kept, flagged)`` for the resolver's proposed alias pairs.
 
-    Python owns this verdict end to end: a rejected merge is DROPPED, loudly
-    and permanently, never handed back to the model to try again. A retry would
-    be asking the thing that hallucinated to grade its own work, and would cost
-    a call to do it.
+    Detection is identical in both modes; only the drop differs.
+
+    * ``detector`` (the default, and what production runs): ``kept`` is EVERY
+      pair, unchanged, and ``flagged`` is what ``reject`` would have removed.
+      The caller logs and counts it. Zero behaviour change on the product.
+    * ``reject``: flagged pairs are removed from ``kept``.
+
+    Python owns the verdict either way — a dropped merge is dropped loudly and
+    permanently, never handed back to the model. A retry would ask the thing
+    that hallucinated to grade its own work, and cost a call to do it.
 
     A pair whose alias or canonical id is not in ``actors_by_id`` is left to the
     caller's existing id-validation rather than judged here.
     """
+    mode = mode or MERGE_VALIDATION_MODE
+    if mode not in (MERGE_VALIDATION_DETECTOR, MERGE_VALIDATION_REJECT):
+        raise ValueError(
+            f"validate_merges: unknown mode {mode!r} — expected "
+            f"{MERGE_VALIDATION_DETECTOR!r} or {MERGE_VALIDATION_REJECT!r}"
+        )
     kept, rejected = [], []
     for pair in alias_pairs or []:
         if not isinstance(pair, dict):
@@ -2914,13 +2946,15 @@ def validate_merges(
         sig = merge_signals(a, c)
         if sig:
             kept.append(pair)
-        else:
-            rejected.append({
-                "alias_id": pair.get("alias_id"),
-                "canonical_id": pair.get("canonical_id"),
-                "alias_name": a.get("name", ""),
-                "canonical_name": c.get("name", ""),
-            })
+            continue
+        rejected.append({
+            "alias_id": pair.get("alias_id"),
+            "canonical_id": pair.get("canonical_id"),
+            "alias_name": a.get("name", ""),
+            "canonical_name": c.get("name", ""),
+        })
+        if mode == MERGE_VALIDATION_DETECTOR:
+            kept.append(pair)      # counted, NOT dropped
     return kept, rejected
 
 
@@ -3051,11 +3085,15 @@ class ResolveActorAliasesStage(_AgentStageBase):
         if not self.last_rejected_merges:
             return {}
         return {
+            # Field names kept from the reject-mode design so enabling the drop
+            # later does not rename a column mid-series. In detector mode they
+            # mean "would have been rejected".
             "merges_rejected": len(self.last_rejected_merges),
             "merges_rejected_detail": [
                 f"{r['alias_name']} -> {r['canonical_name']}"
                 for r in self.last_rejected_merges
             ],
+            "merge_validation_mode": MERGE_VALIDATION_MODE,
         }
 
     async def __call__(
@@ -3166,24 +3204,37 @@ class ResolveActorAliasesStage(_AgentStageBase):
         if not isinstance(anonymous_raw, list):
             anonymous_raw = []
 
-        # Merge validation (TASK-MERGE-VALIDATION): every proposed merge must
-        # carry a tangible link between the two actors or it is dropped here.
-        # Deliberately BEFORE the union-find: one un-anchored pair inside a
-        # transitive group drags every member of that group together, which is
-        # how 2026-07-27 t2 turned into a 46-into-1 collapse.
+        # Merge validation (TASK-MERGE-VALIDATION). In the shipped DETECTOR
+        # mode this counts and changes nothing; in reject mode an un-anchored
+        # merge is dropped here.
+        #
+        # Still deliberately BEFORE the union-find, even though today it drops
+        # nothing: union-find is transitive, so one un-anchored pair inside a
+        # chain drags every member of that chain together — the mechanism
+        # behind the 46-into-1 collapse of 2026-07-27 t2. Validating afterwards
+        # would see the collapsed result rather than the pair that caused it,
+        # so the COUNT would be wrong too, not just a future drop.
         actors_by_id_full = {
             a.get("id"): a for a in final_actors
             if isinstance(a, dict) and isinstance(a.get("id"), str)
         }
+        proposed_count = len(aliases_raw)
         aliases_raw, rejected_merges = validate_merges(
             aliases_raw, actors_by_id_full)
         if rejected_merges:
+            dropping = MERGE_VALIDATION_MODE == MERGE_VALIDATION_REJECT
             logger.error(
-                "ResolveActorAliasesStage: REJECTED %d of %d proposed merge(s) "
-                "with no tangible link between the two actors — dropped, not "
-                "retried (asking the model to re-grade its own hallucination "
-                "costs a call and settles nothing): %s",
-                len(rejected_merges), len(rejected_merges) + len(aliases_raw),
+                "ResolveActorAliasesStage: %s %d of %d proposed merge(s) with "
+                "no tangible link between the two actors%s: %s",
+                "REJECTED" if dropping else "FLAGGED",
+                len(rejected_merges), proposed_count,
+                (" — dropped, not retried (asking the model to re-grade its "
+                 "own hallucination costs a call and settles nothing)")
+                if dropping else
+                (" — DETECTOR MODE: counted only, every merge proceeds. Some "
+                 "of these are legitimate cross-language institution merges; "
+                 "see scratch/audit/merge-validation/REPORT.md before reading "
+                 "a count as a hallucination count"),
                 "; ".join(f"{r['alias_name']!r} -> {r['canonical_name']!r}"
                           for r in rejected_merges[:8])
                 + (" ..." if len(rejected_merges) > 8 else ""),
