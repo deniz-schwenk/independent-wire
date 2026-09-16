@@ -147,31 +147,15 @@ DEEPSEEK_NATIVE_ROUTING = {
 #
 # The values are set inline at each of the three registrations below.
 
-# --- GLM-5.2 fp8 pin for qa_analyze (TASK-QA-SWAP-GLM) ------------------------
-# The QA shadow eval (docs/QA-STAGE-MODEL-EVAL-SHADOW-BACKFILL.md v2) made
-# GLM-5.2 @ xhigh the qa_analyze model; the provider verification
-# (docs/GLM-PROVIDER-VERIFICATION-2026-07.md) established which fp8 providers
-# serve it with working strict structured outputs and enough completion-budget
-# headroom for xhigh reasoning (>= the 120000 floor). Order is priority:
-# Baidu (primary), Ambient (leanest), Venice (lean; transient upstream 429s).
-# StreamLake was capability-verified but excluded operationally (~89k xhigh
-# reasoning tokens on a trivial input → truncates real inputs); GMICloud and
-# Novita failed strict-schema. ``allow_fallbacks:false`` + ``quantizations:
-# ["fp8"]`` fail LOUD rather than dropping to an unverified/fp4 provider.
-# All three pins accept max_tokens=120000 (verified caps: Baidu 131072,
-# Ambient 202752, Venice 131072).
-GLM_5_2_QA_FP8_ROUTING = {
-    "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
-    "allow_fallbacks": False,
-    "quantizations": ["fp8"],
-}
-
 # --- GLM-5.2 fp8 pin for writer (TASK-WRITER-SWAP-GLM) -----------------------
 # The writer eval (docs/WRITER-STAGE-MODEL-EVAL-2026-07.md, FINAL section) ran
 # GLM-5.2 @ xhigh under exactly this pin — the same three fp8 providers verified
 # for GLM strict structured outputs with >= the 120000 completion-budget floor
-# (docs/GLM-PROVIDER-VERIFICATION-2026-07.md). Same value as the qa pin today;
-# kept as a separate named constant so the two stages can diverge independently.
+# (docs/GLM-PROVIDER-VERIFICATION-2026-07.md). Kept as a separate named constant
+# so stages can diverge independently — which is exactly what happened: the qa
+# and hydration-phase-2 pins that used to sit beside this one are gone with
+# their glm-5.2 primaries (TASK-SWAP-FM-BUNDLE). Writer and editor stay on
+# glm-5.2 and keep theirs.
 # ``allow_fallbacks:false`` + ``quantizations:["fp8"]`` fail LOUD rather than
 # dropping to an unverified/fp4 provider.
 GLM_5_2_WRITER_FP8_ROUTING = {
@@ -181,23 +165,10 @@ GLM_5_2_WRITER_FP8_ROUTING = {
 }
 
 # Editor GLM-5.2 fp8 pin (TASK-EDITOR-SWAP-GLM). Same three providers as the
-# writer/QA pins — all re-probed under EDITOR_SCHEMA in the eval — but named
+# writer pin — all re-probed under EDITOR_SCHEMA in the eval — but named
 # separately so a per-stage divergence never requires editing another stage's
 # routing.
 GLM_5_2_EDITOR_FP8_ROUTING = {
-    "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
-    "allow_fallbacks": False,
-    "quantizations": ["fp8"],
-}
-
-# Hydration-Phase-2 GLM-5.2 fp8 pin (TASK-HYDRATION-P2-GLM-SWAP). Same three fp8
-# providers verified for the editor/qa/writer swaps
-# (docs/GLM-PROVIDER-VERIFICATION-2026-07.md) and the exact pin the phase-2 eval
-# arm ran under (docs/HYDRATION-P2-MODEL-EVAL-2026-07.md). Named separately so a
-# per-stage divergence never requires editing another stage's routing.
-# ``allow_fallbacks:false`` + ``quantizations:["fp8"]`` fail LOUD rather than
-# dropping to an unverified/fp4 provider.
-GLM_5_2_HYDRATION_P2_FP8_ROUTING = {
     "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
@@ -229,6 +200,33 @@ GLM_5_3_PERSPECTIVE_ZAI_ROUTING = {
 # without dragging the other along. Contents are identical today by
 # coincidence of both landing on the same vendor endpoint, not by dependency.
 GLM_5_3_BIAS_JUDGE_ZAI_ROUTING = {
+    "order": ["z-ai"],
+    "allow_fallbacks": False,
+}
+
+# --- Z.AI pins for the glm-5.3-flash stages (TASK-SWAP-FM-BUNDLE) ------------
+# Same first-party vendor route as the perspective and bias-judge pins above,
+# and for the same reasons: no ``quantizations`` filter and no
+# ``require_parameters`` (both agents run ``structured_output_mode=
+# "json_object"``, which is what keeps that flag off the wire — it is exactly
+# what would filter this schema-less endpoint out of its own route).
+#
+# This replaces an fp8 pin across THIRD-PARTY hosts (Baidu/Ambient/Venice for
+# qa, Baidu/Venice/StreamLake for phase2) with the vendor's own endpoint, so the
+# strict-json_schema decoding those hosts provided is gone. That is safe here
+# and not an oversight: QaAnalyzeWithFallback and HydrationPhase2WithFallback
+# both validate every response against the LIVE output_schema
+# (src/qa_fallback.py::qa_output_is_schema_valid) and fall back on a miss, and
+# every eval arm behind this swap ran at exactly this operating point.
+#
+# Separate constants per stage, following the convention above: the two were
+# evaluated separately and either may be repinned without dragging the other.
+GLM_5_3_FLASH_QA_ZAI_ROUTING = {
+    "order": ["z-ai"],
+    "allow_fallbacks": False,
+}
+
+GLM_5_3_FLASH_HYDRATION_P2_ZAI_ROUTING = {
     "order": ["z-ai"],
     "allow_fallbacks": False,
 }
@@ -801,18 +799,40 @@ def create_agents() -> dict[str, Agent]:
         #       temperature=0.1, max_tokens=64000, provider="openrouter",
         #       reasoning="none", output_schema=QA_ANALYZE_SCHEMA),
         "qa_analyze": QaAnalyzeWithFallback(
+            # glm-5.3-flash @ max since TASK-SWAP-FM-BUNDLE (2026-09-16).
+            #
+            # This swap is COST-LED and the record says so. Two pre-registered
+            # confirmations FAILED: 09-09/10/11 gave D +0.656 CI [-0.093,
+            # +1.405] at n=8, and 09-13/14/15 gave D +0.444 CI [-0.146, +1.035]
+            # at n=9 — positive both times, interval crossing zero both times,
+            # and the point estimate drifting DOWN across three batches
+            # (+0.667 -> +0.656 -> +0.444). The pooled secondary reading over
+            # all three, n=26, is D +0.587 CI [+0.300, +0.874].
+            #
+            # So: quality at least level, probably modestly better, at -88%
+            # stage cost ($1.5372 -> $0.1889 over nine cases). NOT "confirmed
+            # better" — that claim was tested twice and did not survive.
+            # Fabrications were level 1-1 on the last batch, and R4/R5 were 9/9
+            # on both arms. Evidence:
+            # scratch/eval/glm53-prose/{flashm,confirm,confirm-qa2}/reports/.
+            #
+            # temperature 1.0 / top_p 0.95 is the vendor's published pair for
+            # this model and the pair every eval arm ran; top_p has no Agent
+            # parameter, hence extra_body_override.
             primary=Agent(
                 name="qa_analyze",
-                model="z-ai/glm-5.2",
+                model="z-ai/glm-5.3-flash",
                 system_prompt_path=str(agents_dir / "qa_analyze" / "SYSTEM.md"),
                 instructions_path=str(agents_dir / "qa_analyze" / "INSTRUCTIONS.md"),
                 tools=[],
-                temperature=0.1,
+                temperature=1.0,
+                extra_body_override={"top_p": 0.95},
                 max_tokens=120000,
                 provider="openrouter",
-                reasoning="xhigh",
-                provider_routing=GLM_5_2_QA_FP8_ROUTING,
+                reasoning="max",
+                provider_routing=GLM_5_3_FLASH_QA_ZAI_ROUTING,
                 output_schema=QA_ANALYZE_SCHEMA,
+                structured_output_mode="json_object",
             ),
             # 4th line of defence. Sonnet-5 (Claude 5 family): adaptive thinking
             # via reasoning.enabled=true (effort:none would be a no-op), and NO
@@ -1211,18 +1231,33 @@ def create_agents_hydrated() -> dict[str, Agent]:
         #       tools=[], temperature=0.1, max_tokens=32000, provider="openrouter",
         #       reasoning="none", output_schema=HYDRATION_PHASE2_SCHEMA),
         "hydration_aggregator_phase2": HydrationPhase2WithFallback(
+            # glm-5.3-flash @ max since TASK-SWAP-FM-BUNDLE (2026-09-16).
+            #
+            # Unlike qa_analyze below^above, this one IS confirmed. The addendum
+            # batch (09-06/07/08) measured D +1.056 CI [+0.607, +1.504]; the
+            # pre-registered fresh confirmation (09-09/10/11) measured D +0.889
+            # CI [+0.633, +1.145] — a TIGHTER interval at the same n — with
+            # W/T/L 8/1/0, 17 of 18 judge firsts, and confirmed fabrications 8
+            # vs the champion's 15. Across both batches, 18 instances, the
+            # champion never won a single case. Evidence:
+            # scratch/eval/glm53-prose/{flashm,confirm}/reports/.
+            #
+            # Same operating point as qa_analyze by design (T3-bundle
+            # precedent): one model, one point, one bundled change.
             primary=Agent(
                 name="hydration_aggregator_phase2",
-                model="z-ai/glm-5.2",
+                model="z-ai/glm-5.3-flash",
                 system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE2-SYSTEM.md"),
                 instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE2-INSTRUCTIONS.md"),
                 tools=[],
-                temperature=0.1,
+                temperature=1.0,
+                extra_body_override={"top_p": 0.95},
                 max_tokens=120000,
                 provider="openrouter",
-                reasoning="xhigh",
-                provider_routing=GLM_5_2_HYDRATION_P2_FP8_ROUTING,
+                reasoning="max",
+                provider_routing=GLM_5_3_FLASH_HYDRATION_P2_ZAI_ROUTING,
                 output_schema=HYDRATION_PHASE2_SCHEMA,
+                structured_output_mode="json_object",
             ),
             # 4th line of defence — the PRE-SWAP production reducer VERBATIM:
             # Opus 4.6, temperature 0.1, reasoning="none", max_tokens 32000, same
