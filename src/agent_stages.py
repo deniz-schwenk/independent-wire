@@ -43,7 +43,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Optional
 
-from src.agent import Agent
+from src.agent import Agent, AgentError
 from src.bus import (
     Correction,
     EditorAssignment,
@@ -94,6 +94,42 @@ class _AgentStageBase:
     writes: tuple[str, ...] = ()
     agent_role: str = ""
 
+    # Per-call degradation report (TASK-ALIAS-EMPTY-GATE). A stage that
+    # completed without raising but produced NO usable output sets these; the
+    # runner reads them (`_stage_status`) and writes `status: "degraded"` plus
+    # `degraded_reason` into the stage row instead of `status: "success"`, and
+    # the publish-time gate fires on exactly those rows.
+    #
+    # Class-level defaults so every stage is readable before its first call.
+    # Stage instances are REUSED across topics, so the runner clears them per
+    # call via `_reset_agent_metrics` — without that, one degraded topic would
+    # mark every later topic degraded too.
+    last_degraded: bool = False
+    last_degraded_reason: str = ""
+
+    def reset_stage_markers(self) -> None:
+        """Clear the per-call degradation report. Called by the runner before
+        each stage execution, alongside the agent's metric reset."""
+        self.last_degraded = False
+        self.last_degraded_reason = ""
+
+    def _mark_degraded(self, reason: str) -> None:
+        """Record that this call produced no usable output after every rung.
+
+        Deliberately NOT an exception: on 2026-09-14 the degraded topic still
+        had a publishable dossier (63 canonical actors, none merged), and
+        raising would have thrown that away. The contract is "publish it, but
+        never call it success and never let it pass quietly".
+        """
+        self.last_degraded = True
+        self.last_degraded_reason = reason
+        logger.error(
+            "%s: DEGRADED — %s. The stage row will say status=degraded and the "
+            "publish-time gate will fire.",
+            type(self).__name__,
+            reason,
+        )
+
     def __init_subclass__(cls, **kwargs: Any) -> None:
         super().__init_subclass__(**kwargs)
         cls._stage_meta = StageMeta(
@@ -122,10 +158,17 @@ class _AgentStageBase:
         cache-cold-correlated and the mitigation we want is
         provider-routing re-roll, not cache warm-up.
 
-        Returns ``(last_result, attempts_used, total_cost_usd, total_tokens_used)``.
-        The caller parses ``last_result`` and decides the downstream
-        action (write to bus, fall through with empty payload so a
-        postcondition downstream fires loud, etc.).
+        Returns ``(last_result, attempts_used, total_cost_usd,
+        total_tokens_used, degraded)``.
+
+        ``degraded`` is True when every rung produced empty output. Until
+        2026-09-15 this helper had no fifth element and merely logged
+        "downstream gate will fire loud" — there was no such gate, the ladder
+        was never engaged, and the caller wrote the empty payload to the Bus
+        under ``status: success`` (2026-09-14 topic 3: 0 of 63 actors merged,
+        published silently). Callers MUST propagate ``degraded`` via
+        :func:`_mark_stage_degraded` so the runner can tell the truth in the
+        stage row and the publish-time gate can fire.
         """
         return await _call_agent_with_empty_retry(
             agent=self.agent,
@@ -152,6 +195,13 @@ async def _call_agent_with_empty_retry(
     non-method callers (e.g. the parallel per-chunk helpers in
     `HydrationPhase1Stage`) can use it without binding to a stage
     instance.
+
+    Escalation: when the retries are exhausted and ``agent`` exposes
+    ``escalate_to_fallback`` (i.e. it is a :class:`FlashStageWithFallback`),
+    empty output counts as a PRIMARY FINAL FAILURE and the fallback rung is
+    engaged exactly once — the same rung, contract and markers the wrapper
+    uses for a schema-invalid primary. The wrapper cannot detect this case
+    itself: an empty-but-well-formed payload is schema-valid.
     """
     total_cost = 0.0
     total_tokens = 0
@@ -179,14 +229,62 @@ async def _call_agent_with_empty_retry(
                 int(getattr(result, "tokens_used", 0) or 0),
             )
         else:
-            logger.error(
-                "%s: empty output on all %d attempts "
-                "(last response_id=%s) — downstream gate will fire loud",
-                log_label,
-                max_attempts,
-                getattr(result, "response_id", None) or "?",
-            )
-    return last_result, attempts_used, total_cost, total_tokens
+            escalate = getattr(agent, "escalate_to_fallback", None)
+            if callable(escalate):
+                logger.error(
+                    "%s: empty output on all %d attempts on the primary "
+                    "(last response_id=%s) — treating as PRIMARY FINAL "
+                    "FAILURE and escalating to the fallback rung",
+                    log_label,
+                    max_attempts,
+                    getattr(result, "response_id", None) or "?",
+                )
+                try:
+                    fb = await escalate(
+                        f"empty output on all {max_attempts} attempts",
+                        message,
+                        context=context,
+                    )
+                except AgentError as exc:
+                    # A transport failure on the rung is terminal for the
+                    # ladder but NOT for the run: the caller still gets the
+                    # last primary result and the degraded flag below, so the
+                    # topic degrades loudly instead of dying. The rung's own
+                    # WARNING has already named the failure.
+                    logger.error(
+                        "%s: fallback rung ALSO failed (%s) — stage is "
+                        "degraded", log_label, exc,
+                    )
+                else:
+                    total_cost += float(getattr(fb, "cost_usd", 0.0) or 0.0)
+                    total_tokens += int(getattr(fb, "tokens_used", 0) or 0)
+                    attempts_used += 1
+                    last_result = fb
+                    if not is_empty(_parse_agent_output(fb)):
+                        logger.warning(
+                            "%s: fallback rung RECOVERED the empty primary "
+                            "(served by %s) — the stage row records the "
+                            "fallback, not a clean primary.",
+                            log_label,
+                            getattr(fb, "model", "") or "?",
+                        )
+                        return last_result, attempts_used, total_cost, total_tokens, False
+                    logger.error(
+                        "%s: fallback rung ALSO returned empty output — "
+                        "stage is degraded", log_label,
+                    )
+            else:
+                # No ladder behind this agent: nothing left to escalate to.
+                logger.error(
+                    "%s: empty output on all %d attempts "
+                    "(last response_id=%s) and this agent has no fallback "
+                    "rung — stage is degraded",
+                    log_label,
+                    max_attempts,
+                    getattr(result, "response_id", None) or "?",
+                )
+            return last_result, attempts_used, total_cost, total_tokens, True
+    return last_result, attempts_used, total_cost, total_tokens, False
 
 
 # ---------------------------------------------------------------------------
@@ -812,7 +910,7 @@ class CuratorTopicDiscoveryStage(_AgentStageBase):
                     return False
             return True
 
-        result, attempts_used, total_cost, total_tokens = (
+        result, attempts_used, total_cost, total_tokens, degraded = (
             await self._call_with_empty_retry(
                 message=message,
                 context=context,
@@ -820,6 +918,11 @@ class CuratorTopicDiscoveryStage(_AgentStageBase):
                 log_label="CuratorTopicDiscoveryStage",
             )
         )
+        if degraded:
+            self._mark_degraded(
+                f"no topics discovered after {attempts_used} attempts across "
+                f"every rung — this is RUN-LEVEL, the whole day has no topics"
+            )
 
         parsed = _parse_agent_output(result)
         if isinstance(parsed, dict):
@@ -1311,7 +1414,7 @@ class ResearcherAssembleStage(_AgentStageBase):
                 return True
             return len(parsed.get("sources") or []) == 0
 
-        result, attempts_used, _cost, _tokens = (
+        result, attempts_used, _cost, _tokens, degraded = (
             await self._call_with_empty_retry(
                 message=message,
                 context=context,
@@ -1319,6 +1422,11 @@ class ResearcherAssembleStage(_AgentStageBase):
                 log_label="ResearcherAssembleStage",
             )
         )
+        if degraded:
+            self._mark_degraded(
+                f"no sources assembled after {attempts_used} attempts across "
+                f"every rung — the dossier for this topic has no source trail"
+            )
 
         parsed = _parse_agent_output(result) or {}
         if not isinstance(parsed, dict):
@@ -2438,7 +2546,16 @@ class ConsolidatorStage(_AgentStageBase):
             voices, topics = _consolidator_arrays(parsed)
             return not voices and not topics
 
-        result, attempts_used, _cost, _tokens = (
+        # `degraded` is deliberately IGNORED here — the consolidator is the one
+        # stage of the four that already had the stronger outcome, from
+        # TASK-CONSOLIDATOR-EMPTY-GUARD: it RAISES on empty-with-input rather
+        # than writing the silent `WhatIsMissing([], [])`, and the runner marks
+        # the topic failed. Marking it degraded as well would double-report a
+        # hard failure as a soft one. What TASK-ALIAS-EMPTY-GATE adds here is
+        # upstream of the raise: the fallback rung is now engaged before the
+        # stage gives up, so the raise below fires only when EVERY rung came
+        # back empty.
+        result, attempts_used, _cost, _tokens, _degraded = (
             await self._call_with_empty_retry(
                 message=message,
                 context=context,
@@ -2470,6 +2587,220 @@ class ConsolidatorStage(_AgentStageBase):
 # ---------------------------------------------------------------------------
 # Wrapper: ResolveActorAliasesStage  (topic, production + hydrated)
 # ---------------------------------------------------------------------------
+
+
+# --- merge-candidate discriminator (TASK-ALIAS-GATE-TRIGGER) ----------------
+#
+# `_is_empty_resolver` below asks "did the model emit nothing?" but can only
+# observe "the output is empty", and those are different questions: for a topic
+# whose actors are genuinely all distinct, an empty result is the CORRECT
+# answer. On 2026-09-14 topic 3 the heuristic could not tell the difference,
+# burned three retries and (once the ladder landed) would have burned a rung-2
+# call and raised a false degradation on a correct output. A gate that cries
+# wolf recreates the defect it was built for.
+#
+# This discriminator answers the prior question deterministically, from the
+# stage INPUT alone: is there at least one PLAUSIBLE reason this actor list
+# could merge or flag anything? The signals are OR-ed and deliberately
+# generous, because the two errors are not symmetric:
+#
+#   * saying "candidates present" when there are none  -> today's behaviour,
+#     costs at most some retries;
+#   * saying "no candidates" when there are some       -> a real degradation is
+#     accepted silently, which is the failure this whole work exists to remove.
+#
+# Replayed over all 336 historical resolver input/outcome pairs on disk
+# (2026-05-27 .. 2026-09-15); confusion matrix and residual risk in
+# scratch/audit/alias-trigger/REPORT.md.
+
+_ALIAS_STOP = {
+    "the", "of", "and", "a", "an", "for", "in", "on", "to", "de", "la", "le",
+    "el", "du", "des", "der", "die", "das", "van", "von", "al", "bin", "ibn",
+    "s",
+}
+
+# Source-class labels -> the anonymous_flags arm has something to do, so an
+# empty BOTH-arrays output is not a true negative. Institution words
+# (ministry/agency) are deliberately absent: a named ministry is an entity, not
+# an anonymous source.
+_ALIAS_GENERIC = re.compile(
+    r"\b(officials?|authorities|sources?|spokespersons?|spokesman|spokeswoman|"
+    r"spokespeople|witnesses?|residents?|insiders?|eyewitness(es)?|"
+    r"observers?|correspondents?|analysts?|experts?|diplomats?|"
+    r"commanders?|lawmakers?|investigators?|prosecutors?|activists?|"
+    r"campaigners?|economists?|researchers?|scientists?|doctors?|medics?|"
+    r"aid\s+workers?|rescuers?|survivors?)\b", re.I)
+
+# A NAME that is a role/title rather than a proper name ("Trump adviser",
+# "WHO Africa emergency response lead", "Stadtsprecher Stade"). These are
+# anonymous-flag candidates carrying no source-class noun, so the pattern above
+# misses them.
+_ALIAS_ROLE_NAME = re.compile(
+    r"\b(advis[eo]rs?|aides?|leads?|chiefs?|heads?|deput(y|ies)|envoys?|"
+    r"negotiators?|attorneys?|defen[cs]e|sprecher|stadtsprecher|"
+    r"porte-parole|portavoz|director[- ]general)\b", re.I)
+
+_ALIAS_SCRIPTS = (
+    ("latin", re.compile(r"[A-Za-z]")),
+    ("cyrillic", re.compile(r"[\u0400-\u04ff\u0500-\u052f]")),
+    ("arabic", re.compile(r"[\u0600-\u06ff\u0750-\u077f]")),
+    ("hebrew", re.compile(r"[\u0590-\u05ff]")),
+    ("greek", re.compile(r"[\u0370-\u03ff]")),
+    ("cjk", re.compile(r"[\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af]")),
+    ("devanagari", re.compile(r"[\u0900-\u097f]")),
+)
+
+
+def _alias_toks(text: str) -> list[str]:
+    """Accent-stripped, punctuation-free, casefolded content tokens."""
+    s = "".join(c for c in unicodedata.normalize("NFD", text or "")
+                if not unicodedata.combining(c))
+    s = re.sub(r"[^\w\s]+", " ", s.casefold(), flags=re.UNICODE)
+    return [t for t in s.split() if t and t not in _ALIAS_STOP]
+
+
+def _alias_parens(name: str) -> list[str]:
+    return re.findall(r"[\uff08(]([^\uff09)]{2,})[\uff09)]", name or "")
+
+
+def _alias_dominant_script(name: str) -> str | None:
+    """Script of the majority of a name's letters, IGNORING parenthetical
+    glosses. A Latin name carrying a non-Latin rendering in brackets is still a
+    Latin name."""
+    body = re.sub(r"[\uff08(][^\uff09)]*[\uff09)]", " ", name or "")
+    best, best_n = None, 0
+    for label, rx in _ALIAS_SCRIPTS:
+        n = len(rx.findall(body))
+        if n > best_n:
+            best, best_n = label, n
+    return best
+
+
+def _alias_near(a: str, b: str) -> bool:
+    """True when two tokens differ by at most two edits, or one is a prefix of
+    the other with a short tail. Catches the spelling drift this corpus is full
+    of: Zelenskyy/Zelensky, Sybiga/Sybiha, Baghai/Baqaei."""
+    if a == b:
+        return True
+    if abs(len(a) - len(b)) > 3:
+        return False
+    if len(a) >= 5 and len(b) >= 5 and (a.startswith(b) or b.startswith(a)):
+        return True
+    if len(a) < 4 or len(b) < 4:
+        return False
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+        prev = cur
+        if min(prev) > 2:
+            return False
+    return prev[-1] <= 2
+
+
+def merge_candidates_present(final_actors: list) -> tuple[bool, list[str]]:
+    """``(present, reasons)`` for one topic's resolver input.
+
+    ``present`` False means "no plausible merge or anonymous-flag candidate in
+    this actor list", i.e. an empty resolver output is a TRUE NEGATIVE and must
+    not be retried, escalated or flagged. ``reasons`` names the signals that
+    fired, so a stage log line can say WHY rather than just yes/no.
+    """
+    actors = [a for a in (final_actors or []) if isinstance(a, dict)]
+    names = [a.get("name", "") or "" for a in actors]
+    T = [_alias_toks(n) for n in names]
+    hits: list[str] = []
+
+    # S1 - two actors normalise to the same token multiset.
+    keys = [" ".join(sorted(t)) for t in T]
+    if len(keys) != len(set(keys)):
+        hits.append("norm_collision")
+
+    # S2 - a PAIR that looks like a variant of one entity. Not bare token
+    # sharing: two people sharing only a given name (Emil Michael / Michael
+    # Kratsios) satisfy none of these three tests, and that false signal is
+    # exactly what made the naive version fire on 2026-09-14 topic 3.
+    for i in range(len(T)):
+        if "variant_pair" in hits:
+            break
+        for j in range(i + 1, len(T)):
+            A, B = set(T[i]), set(T[j])
+            if not A or not B:
+                continue
+            shared = A & B
+            if not shared:
+                continue
+            if A <= B or B <= A or len(shared) >= 2 or any(
+                    _alias_near(x, y) for x in A - shared for y in B - shared):
+                hits.append("variant_pair")
+                break
+
+    # S3 - an acronym anywhere in a name matching another name's initials
+    # (WHO <-> World Health Organization, IRGC <-> Islamic Revolutionary Guard
+    # Corps).
+    acro: set[str] = set()
+    for n in names:
+        acro |= {m.upper() for m in re.findall(r"\b[A-Z]{2,6}\b", n)}
+        for g in _alias_parens(n):
+            c = re.sub(r"[^A-Za-z]", "", g).upper()
+            if 2 <= len(c) <= 6:
+                acro.add(c)
+    if acro & {"".join(t[0] for t in tk).upper() for tk in T if len(tk) >= 2}:
+        hits.append("acronym")
+
+    # S4 - a parenthetical gloss overlapping another actor. The cheap
+    # cross-script handle: non-Latin names in this corpus routinely carry a
+    # Latin gloss, e.g. "<arabic> (Israeli military)".
+    for i, n in enumerate(names):
+        if "paren_gloss" in hits:
+            break
+        for g in _alias_parens(n):
+            gt = set(_alias_toks(g))
+            if gt and any(i != j and gt & set(t) for j, t in enumerate(T)):
+                hits.append("paren_gloss")
+                break
+
+    # S5 / S8 - anonymous-flag candidates.
+    if any(_ALIAS_GENERIC.search(n) for n in names):
+        hits.append("generic_label")
+    if any(_ALIAS_ROLE_NAME.search(n) for n in names):
+        hits.append("role_as_name")
+
+    # S6 - two or more DOMINANT scripts. Cross-script transliteration variants
+    # are invisible to S1/S2 by construction, so their mere possibility counts.
+    # A non-Latin name carrying its own Latin gloss is excluded: it is already
+    # disambiguated and S4 compares that gloss directly.
+    doms: set[str] = set()
+    for n in names:
+        d = _alias_dominant_script(n)
+        if not d:
+            continue
+        if d != "latin" and any(re.search(r"[A-Za-z]{3,}", g)
+                                for g in _alias_parens(n)):
+            continue
+        doms.add(d)
+    if len(doms) >= 2:
+        hits.append("multi_script")
+
+    # S7 - an actor's ROLE text names another actor. This is how the corpus's
+    # legitimate person<->organisation merges present themselves: "Matthew
+    # Diller", role "President, New York City Bar Association", beside an actor
+    # called "New York City Bar Association". The other actor's FULL
+    # multi-token name must appear, so "President of the United States" does
+    # not match an actor called "United States".
+    for i, a in enumerate(actors):
+        if "role_names_actor" in hits:
+            break
+        rs = set(_alias_toks(a.get("role", "") or ""))
+        if not rs:
+            continue
+        for j, nt in enumerate(T):
+            if i != j and len(nt) >= 2 and set(nt) <= rs:
+                hits.append("role_names_actor")
+                break
+
+    return bool(hits), hits
 
 
 def _actor_id_numeric_order(actor_id: str) -> int:
@@ -2608,8 +2939,31 @@ class ResolveActorAliasesStage(_AgentStageBase):
         # correct answer (nothing to merge) and we must not retry.
         input_actor_count = len(final_actors)
 
+        # Is an empty answer even plausible for THIS actor list
+        # (TASK-ALIAS-GATE-TRIGGER)? Computed once, deterministically, from the
+        # input alone — see merge_candidates_present above for why the two
+        # errors are treated asymmetrically.
+        candidates_present, candidate_reasons = merge_candidates_present(
+            final_actors)
+        if not candidates_present and input_actor_count >= 3:
+            logger.info(
+                "ResolveActorAliasesStage: %d actors, no merge or "
+                "anonymous-flag candidate found by any signal — an empty "
+                "result is the expected answer here and will be accepted as "
+                "such (no retries, no fallback rung, no degradation).",
+                input_actor_count,
+            )
+
         def _is_empty_resolver(parsed: Any) -> bool:
             if input_actor_count < 3:
+                return False
+            # A well-formed empty answer on a list with nothing to merge is
+            # CORRECT, not an empty emission. Retrying it burns calls, and
+            # since the ladder landed it would also spend a fallback rung and
+            # raise a false degradation on a correct output. A MALFORMED
+            # response is still empty-emission regardless: that is a transport
+            # failure, and the check below still catches it.
+            if isinstance(parsed, dict) and not candidates_present:
                 return False
             if not isinstance(parsed, dict):
                 return True
@@ -2617,7 +2971,7 @@ class ResolveActorAliasesStage(_AgentStageBase):
             anon = parsed.get("anonymous_flags") or []
             return len(aliases) == 0 and len(anon) == 0
 
-        result, attempts_used, _cost, _tokens = (
+        result, attempts_used, _cost, _tokens, degraded = (
             await self._call_with_empty_retry(
                 message=message,
                 context=context,
@@ -2625,6 +2979,29 @@ class ResolveActorAliasesStage(_AgentStageBase):
                 log_label="ResolveActorAliasesStage",
             )
         )
+        if degraded:
+            # Reached only when candidates WERE present and every rung still
+            # came back empty. The 2026-09-14 case. The stage still writes
+            # canonical_actors —
+            # one per input actor, nothing merged — which is a publishable but
+            # materially worse dossier, so it degrades rather than raises.
+            #
+            # The reason string names the ambiguity rather than asserting a
+            # model failure, because `_is_empty_resolver` is a HEURISTIC and
+            # this stage is the one place it can be legitimately wrong: "no
+            # aliases" is the correct answer for a topic whose actors are all
+            # distinct. Replaying 2026-09-14 topic 3 on frozen input found
+            # exactly that — 63 uniquely-named people, and the repaired rung
+            # (a different vendor build) independently returned empty too,
+            # while the same day's other topics merged 19 and 8 transliteration
+            # variants. Triage reads this line first; it must not send someone
+            # hunting a model bug that may not exist.
+            self._mark_degraded(
+                f"no aliases resolved across {input_actor_count} actors after "
+                f"{attempts_used} attempts across every rung, despite "
+                f"merge-candidate signals {candidate_reasons} on the input — "
+                f"canonical_actors is the unmerged input"
+            )
 
         parsed = _parse_agent_output(result) or {}
         if not isinstance(parsed, dict):

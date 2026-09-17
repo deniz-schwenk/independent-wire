@@ -25,7 +25,7 @@ from src.perspective_chain import PerspectiveDraftVerifyChain
 from src.perspective_fallback import PerspectiveWithFallback  # noqa: F401
 from src.qa_fallback import QaAnalyzeWithFallback
 from src.writer_fallback import WriterWithFallback
-from src.runner.runner import PipelineRunner
+from src.runner.runner import PipelineRunner, degraded_stage_rows
 from src.runner.stage_lists import (
     build_hydrated_stages,
     build_production_stages,
@@ -1550,6 +1550,28 @@ async def main():
             logger.info("  skipped %s: %s", m["topic_id"], m.get("topic_slug", ""))
         for m in failed:
             logger.info("  failed %s: %s", m["topic_id"], m.get("topic_slug", ""))
+
+        # Degraded stages are invisible in the manifest: the topic status is
+        # still "success" because the topic produced a package, and that is
+        # exactly how 2026-09-14 topic 3 shipped 0 of 63 actors merged without
+        # anyone noticing until the dossier was read. Surface them next to the
+        # topic tallies, at ERROR, so a glance at the tail of the runner log
+        # answers "was this a clean run?" (TASK-ALIAS-EMPTY-GATE).
+        degraded_rows = degraded_stage_rows(run_bus)
+        if degraded_rows:
+            logger.error(
+                "  Degraded stages: %d — this run is NOT clean", len(degraded_rows)
+            )
+            for r in degraded_rows:
+                where = (
+                    f"topic {r['topic_index']}"
+                    if r.get("topic_index") is not None else "run-level"
+                )
+                logger.error(
+                    "    %s (%s): %s",
+                    r.get("stage", "?"), where,
+                    r.get("degraded_reason", "unspecified"),
+                )
 
         # Post-pipeline: publish if requested and at least 1 topic succeeded
         if args.publish and completed:
