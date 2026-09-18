@@ -18,7 +18,8 @@ import logging
 import pytest
 
 from src.agent_stages import (
-    ResolveActorAliasesStage, merge_signals, validate_merges,
+    COLLAPSE_SHAPE_MIN_ALIASES, ResolveActorAliasesStage, collapse_shape_groups,
+    merge_signals, validate_merges,
 )
 
 
@@ -342,3 +343,87 @@ def test_validation_runs_before_the_union_find(monkeypatch):
     assert "actor-003" in {a["id"] for a in out.canonical_actors}, (
         "Merz must not be dragged in transitively")
     assert len(out.actor_alias_mapping) == 1
+
+
+# --- collapse shapes get their own line (VALIDATION-DETECTOR-MODE amendment) --
+# Same detection, same counts, same fields — a louder prefix for the one shape
+# that has ever destroyed a published dossier. Precision is on record (50%
+# pair-level, 74% alias-weighted, 9 firings in 4 months), so the line is an
+# eye-catcher, not a verdict.
+
+def test_a_collapse_shape_gets_the_tagged_prefix(caplog):
+    """Four signal-less aliases onto one canonical: the 2026-07-27 shape in
+    miniature. It must announce itself as a collapse shape — and still merge,
+    because detector mode rejects nothing."""
+    canonical = A(9, "Iris Spranger", "Berlin Senator for the Interior")
+    aliases = [A(1, "Friedrich Merz", "German Chancellor"),
+               A(2, "Kai Wegner", "Governing Mayor of Berlin"),
+               A(3, "Nancy Faeser", "Federal Interior Minister"),
+               A(4, "Bettina Jarasch", "Berlin politician")]
+    agent = _Agent({"aliases": [
+        {"alias_id": a["id"], "canonical_id": canonical["id"]} for a in aliases],
+        "anonymous_flags": []})
+    stage = ResolveActorAliasesStage(agent)
+    tb, rb = _bus(aliases + [canonical])
+
+    with caplog.at_level(logging.ERROR, logger="src.agent_stages"):
+        out = _run(stage, tb, rb)
+
+    assert "COLLAPSE-SHAPE FLAGGED 4 signal-less alias(es)" in caplog.text
+    assert "'Iris Spranger'" in caplog.text
+    assert "DETECTOR MODE: counted only" in caplog.text
+    # nothing rejected: every proposed merge still lands
+    assert len(out.actor_alias_mapping) == 4
+    assert stage.last_rejected_merges and len(stage.last_rejected_merges) == 4
+
+
+def test_ordinary_flags_keep_the_plain_prefix(caplog):
+    """Two unrelated one-off hallucinations. Neither reaches the collapse
+    threshold, so neither may borrow the louder line."""
+    actors = [A(1, "Marco Rubio", "Secretary of State of the United States"),
+              A(2, "Donald Trump", "President of the United States"),
+              A(3, "Kevin Warsh", "Federal Reserve Chair"),
+              A(4, "Jerome Powell", "Former Fed chair")]
+    agent = _Agent({"aliases": [
+        {"alias_id": "actor-001", "canonical_id": "actor-002"},
+        {"alias_id": "actor-003", "canonical_id": "actor-004"}],
+        "anonymous_flags": []})
+    stage = ResolveActorAliasesStage(agent)
+    tb, rb = _bus(actors)
+
+    with caplog.at_level(logging.ERROR, logger="src.agent_stages"):
+        _run(stage, tb, rb)
+
+    assert "FLAGGED 2 of 2 proposed merge(s)" in caplog.text
+    assert "COLLAPSE-SHAPE" not in caplog.text
+
+
+def test_the_threshold_is_three_aliases_onto_one_canonical():
+    """Below the threshold is not a shape; at it, it is. Grouping is by
+    canonical, so two pairs onto two different canonicals never combine."""
+    def rows(n, canonical="actor-100"):
+        return [{"alias_id": f"actor-{i:03d}", "canonical_id": canonical,
+                 "alias_name": f"A{i}", "canonical_name": "C"}
+                for i in range(n)]
+
+    assert COLLAPSE_SHAPE_MIN_ALIASES == 3
+    assert collapse_shape_groups(rows(2)) == []
+    g = collapse_shape_groups(rows(3))
+    assert len(g) == 1 and g[0]["count"] == 3
+    split = rows(2) + rows(2, canonical="actor-200")
+    assert collapse_shape_groups(split) == []
+
+
+def test_collapse_grouping_does_not_change_what_is_counted():
+    """The tagged line is a read over the flagged list, not a second judgement:
+    every flagged pair appears in exactly one of the two lines."""
+    flagged = [{"alias_id": f"actor-{i:03d}",
+                "canonical_id": "actor-100" if i < 3 else f"actor-{200 + i}",
+                "alias_name": f"A{i}", "canonical_name": "C"}
+               for i in range(5)]
+    groups = collapse_shape_groups(flagged)
+    collapsed = {g["canonical_id"] for g in groups}
+    tagged = sum(g["count"] for g in groups)
+    ordinary = [r for r in flagged if r["canonical_id"] not in collapsed]
+    assert tagged == 3 and len(ordinary) == 2
+    assert tagged + len(ordinary) == len(flagged)

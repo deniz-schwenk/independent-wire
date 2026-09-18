@@ -2958,6 +2958,50 @@ def validate_merges(
     return kept, rejected
 
 
+# A flagged pair on its own is usually unremarkable — most of them are the same
+# institution named in two languages. A flagged CLUSTER is not: >=3 signal-less
+# aliases landing on one canonical is the shape the 2026-07-27 collapse had,
+# where forty-six distinct German politicians became one actor. The shape is
+# worth its own line in the daily report; it is not worth a different verdict.
+#
+# Measured, so the line is read as an eye-catcher and not a conviction: 9
+# firings in 4 months, 50% precision pair-level, 74% alias-weighted, and the
+# false half is one recognisable class (one institution in 4-6 languages).
+# Full hand classification: scratch/audit/merge-validation/collapse_precision.json.
+COLLAPSE_SHAPE_MIN_ALIASES = 3
+
+
+def collapse_shape_groups(
+    flagged: list[dict], min_aliases: int = COLLAPSE_SHAPE_MIN_ALIASES
+) -> list[dict]:
+    """Group flagged pairs by canonical, keeping only collapse-shaped ones.
+
+    Purely a read over what ``validate_merges`` already found: no pair is
+    judged again, nothing is dropped, and a flagged pair that is not part of a
+    collapse shape is simply absent from the result.
+    """
+    by_canonical: dict[str, list[dict]] = {}
+    for row in flagged or []:
+        if not isinstance(row, dict):
+            continue
+        cid = row.get("canonical_id")
+        if not isinstance(cid, str):
+            continue
+        by_canonical.setdefault(cid, []).append(row)
+    groups = [
+        {
+            "canonical_id": cid,
+            "canonical_name": rows[0].get("canonical_name", ""),
+            "alias_names": [r.get("alias_name", "") for r in rows],
+            "count": len(rows),
+        }
+        for cid, rows in by_canonical.items()
+        if len(rows) >= min_aliases
+    ]
+    groups.sort(key=lambda g: (-g["count"], g["canonical_name"], g["canonical_id"]))
+    return groups
+
+
 def _actor_id_numeric_order(actor_id: str) -> int:
     """Return the numeric suffix of an `actor-NNN` ID, or a large
     sentinel for malformed IDs so they sort last and never beat a
@@ -3223,22 +3267,41 @@ class ResolveActorAliasesStage(_AgentStageBase):
             aliases_raw, actors_by_id_full)
         if rejected_merges:
             dropping = MERGE_VALIDATION_MODE == MERGE_VALIDATION_REJECT
-            logger.error(
-                "ResolveActorAliasesStage: %s %d of %d proposed merge(s) with "
-                "no tangible link between the two actors%s: %s",
-                "REJECTED" if dropping else "FLAGGED",
-                len(rejected_merges), proposed_count,
+            verb = "REJECTED" if dropping else "FLAGGED"
+            tail = (
                 (" — dropped, not retried (asking the model to re-grade its "
                  "own hallucination costs a call and settles nothing)")
                 if dropping else
                 (" — DETECTOR MODE: counted only, every merge proceeds. Some "
                  "of these are legitimate cross-language institution merges; "
                  "see scratch/audit/merge-validation/REPORT.md before reading "
-                 "a count as a hallucination count"),
-                "; ".join(f"{r['alias_name']!r} -> {r['canonical_name']!r}"
-                          for r in rejected_merges[:8])
-                + (" ..." if len(rejected_merges) > 8 else ""),
+                 "a count as a hallucination count")
             )
+            # Collapse shapes get their own line so the daily report shows them
+            # apart from the ordinary one-off flags they would otherwise be
+            # buried in. Same detection, same counts, same fields — only the
+            # log prefix differs (TASK-VALIDATION-DETECTOR-MODE amendment).
+            collapse_groups = collapse_shape_groups(rejected_merges)
+            collapsed_canonicals = {g["canonical_id"] for g in collapse_groups}
+            ordinary = [r for r in rejected_merges
+                        if r.get("canonical_id") not in collapsed_canonicals]
+            for g in collapse_groups:
+                logger.error(
+                    "ResolveActorAliasesStage: COLLAPSE-SHAPE %s %d signal-less "
+                    "alias(es) onto a single canonical %r%s: %s",
+                    verb, g["count"], g["canonical_name"], tail,
+                    "; ".join(repr(n) for n in g["alias_names"][:8])
+                    + (" ..." if g["count"] > 8 else ""),
+                )
+            if ordinary:
+                logger.error(
+                    "ResolveActorAliasesStage: %s %d of %d proposed merge(s) "
+                    "with no tangible link between the two actors%s: %s",
+                    verb, len(ordinary), proposed_count, tail,
+                    "; ".join(f"{r['alias_name']!r} -> {r['canonical_name']!r}"
+                              for r in ordinary[:8])
+                    + (" ..." if len(ordinary) > 8 else ""),
+                )
         self.last_rejected_merges = rejected_merges
 
         # Normalise alias pairs into {alias_id -> canonical_id} via
