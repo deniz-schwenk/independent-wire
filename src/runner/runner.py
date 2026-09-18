@@ -212,6 +212,16 @@ def _collect_agent_metrics(stage: Any) -> dict:
     if isinstance(extra, dict):
         for k, v in extra.items():
             out.setdefault(k, v)
+    # Same hook one level up: a STAGE can hold per-call operational facts its
+    # agent cannot know about, because they are the stage's own deterministic
+    # verdict on the agent's output rather than anything the model reported.
+    # ResolveActorAliasesStage's rejected-merge count is the first
+    # (TASK-MERGE-VALIDATION). Agent fields win on a key collision — the agent
+    # is closer to the call.
+    stage_extra = getattr(stage, "extra_log_fields", None)
+    if isinstance(stage_extra, dict):
+        for k, v in stage_extra.items():
+            out.setdefault(k, v)
     return out
 
 
