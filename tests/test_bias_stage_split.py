@@ -668,9 +668,9 @@ async def _captured_kwargs(agent: Agent, output_schema=None) -> dict:
 
 def _composite(monkeypatch):
     monkeypatch.setenv("OPENROUTER_API_KEY", "fake-key-for-unit-test")
-    # create_agents() needs a DeepSeek key too since 2026-08-24: the three
-    # flash stages run channel C (api.deepseek.com) as primary
-    # (TASK-FLASH-0731-SWAP).
+    # create_agents() needs a DeepSeek key too since 2026-08-24: the flash
+    # stages reach api.deepseek.com — as the primary until 2026-09-18, as the
+    # transport rung since (TASK-FLASH-CHANNEL-PIN).
     monkeypatch.setenv("DEEPSEEK_API_KEY", "fake-key-for-unit-test")
     from scripts.run import create_agents
     return create_agents()["bias_language"]
@@ -678,40 +678,45 @@ def _composite(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_extractor_request_body_exact(monkeypatch):
-    """Channel C, the extractor's PRIMARY route since 2026-08-31
-    (TASK-DSV4-SWAPS-BUNDLE): the vendor's undated flash alias, a plain
-    ``reasoning_effort`` STRING (the OpenRouter object is accepted and silently
-    ignored by this API), no provider block at all, and ``json_object`` rather
-    than a strict schema — this endpoint declares no structured outputs, so the
-    schema is enforced by FlashStageWithFallback instead."""
+    """Channel A, the extractor's PRIMARY route since TASK-FLASH-CHANNEL-PIN
+    (2026-09-18): the vendor's first-party flash build NAMED rather than reached
+    through channel C's undated alias, OpenRouter pinned to DeepSeek's own
+    endpoint, and ``json_object`` rather than a strict schema — that endpoint
+    declares no structured outputs, and the strict path's ``require_parameters``
+    would 404 it out of its own route, so the schema is enforced by
+    FlashStageWithFallback instead. Level and temperature are unchanged by the
+    move."""
     comp = _composite(monkeypatch)
     kw = await _captured_kwargs(
         comp.extractor.primary, output_schema=BIAS_CANDIDATES_SCHEMA)
+    assert kw["model"] == "deepseek/deepseek-v4.1-flash"
+    assert kw["temperature"] == 0.8
+    assert kw["max_tokens"] == 32000
+    assert kw["extra_body"]["reasoning"] == {"effort": "minimal"}
+    prov = kw["extra_body"]["provider"]
+    assert prov == {"order": ["deepseek"], "allow_fallbacks": False}
+    assert "quantizations" not in prov
+    assert "require_parameters" not in prov
+    assert kw["response_format"] == {"type": "json_object"}
+
+
+@pytest.mark.asyncio
+async def test_extractor_fallback_request_body_exact(monkeypatch):
+    """Channel C, the one-shot TRANSPORT fallback since TASK-FLASH-CHANNEL-PIN:
+    the vendor's own API on its undated flash alias, reached with a plain
+    ``reasoning_effort`` STRING (the OpenRouter ``{"effort": ...}`` object is
+    accepted and silently ignored by this API, so the wrong shape would run at
+    the default), no provider block at all, and the same level the primary
+    runs."""
+    comp = _composite(monkeypatch)
+    kw = await _captured_kwargs(
+        comp.extractor.fallback, output_schema=BIAS_CANDIDATES_SCHEMA)
     assert kw["model"] == "deepseek-v4-flash"
     assert kw["temperature"] == 0.8
     assert kw["max_tokens"] == 32000
     assert kw["extra_body"]["reasoning_effort"] == "minimal"
     assert "reasoning" not in kw["extra_body"]
     assert "provider" not in kw["extra_body"]
-    assert kw["response_format"] == {"type": "json_object"}
-
-
-@pytest.mark.asyncio
-async def test_extractor_fallback_request_body_exact(monkeypatch):
-    """Channel A, the one-shot availability fallback: the vendor's current
-    first-party flash build (the dated 0731 id this rung used to carry was
-    retired from the vendor's OpenRouter endpoint — TASK-RUNG2-REPAIR),
-    OpenRouter pinned to DeepSeek's own endpoint, no quantization filter and no
-    require_parameters (either one 404s the endpoint out of its own route)."""
-    comp = _composite(monkeypatch)
-    kw = await _captured_kwargs(
-        comp.extractor.fallback, output_schema=BIAS_CANDIDATES_SCHEMA)
-    assert kw["model"] == "deepseek/deepseek-v4.1-flash"
-    assert kw["temperature"] == 0.8
-    assert kw["max_tokens"] == 32000
-    assert kw["extra_body"]["reasoning"] == {"effort": "medium"}
-    prov = kw["extra_body"]["provider"]
-    assert prov == {"order": ["deepseek"], "allow_fallbacks": False}
     assert kw["response_format"] == {"type": "json_object"}
 
 
@@ -755,16 +760,16 @@ async def test_judge_fallback_request_body_is_the_preswap_judge_verbatim(
 
 def test_create_agents_bias_is_composite_both_variants(monkeypatch):
     monkeypatch.setenv("OPENROUTER_API_KEY", "fake-key-for-unit-test")
-    # create_agents() needs a DeepSeek key too since 2026-08-24: the three
-    # flash stages run channel C (api.deepseek.com) as primary
-    # (TASK-FLASH-0731-SWAP).
+    # create_agents() needs a DeepSeek key too since 2026-08-24: the flash
+    # stages reach api.deepseek.com — as the primary until 2026-09-18, as the
+    # transport rung since (TASK-FLASH-CHANNEL-PIN).
     monkeypatch.setenv("DEEPSEEK_API_KEY", "fake-key-for-unit-test")
     from scripts.run import create_agents, create_agents_hydrated
     for d in (create_agents(), create_agents_hydrated()):
         bl = d["bias_language"]
         assert isinstance(bl, BiasComposite)
         assert isinstance(bl.extractor, FlashStageWithFallback)
-        assert bl.extractor.model == "deepseek-v4-flash"
+        assert bl.extractor.model == "deepseek/deepseek-v4.1-flash"
         assert bl.extractor.temperature == 0.8
         assert bl.extractor.reasoning == "minimal"
         assert bl.extractor.fallback_marker_key == "extractor_fallback_used"

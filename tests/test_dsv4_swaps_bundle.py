@@ -113,7 +113,31 @@ class _StageWith:
         self.agent = agent
 
 
-def assert_channel_c_primary(agent, *, reasoning, temperature, max_tokens, label):
+def assert_channel_a_primary(agent, *, reasoning, temperature, max_tokens, label):
+    """The primary since TASK-FLASH-CHANNEL-PIN: OpenRouter, vendor-pinned, on
+    the NAMED first-party flash id. The per-stage level, temperature and cap are
+    the ones this stage has always run — the swap re-routes, it does not
+    re-tune."""
+    assert agent.provider == "openrouter", label
+    assert agent.model == "deepseek/deepseek-v4.1-flash", label
+    assert agent.reasoning == reasoning, label
+    assert agent.temperature == temperature, label
+    assert agent.max_tokens == max_tokens, label
+    assert agent.structured_output_mode == "json_object", label
+    routing = agent._provider_routing
+    assert routing["order"] == ["deepseek"], label
+    assert routing["allow_fallbacks"] is False, label
+    # A quantization filter (or the strict-schema path's require_parameters)
+    # removes the DeepSeek endpoint from its own route and the call 404s
+    # (T2b §1.1) — the reason this route carries neither. It guards the PRIMARY
+    # path now, which is where a 404 costs the stage rather than the net.
+    assert "quantizations" not in routing, label
+    assert "require_parameters" not in routing, label
+
+
+def assert_channel_c_fallback(agent, *, reasoning, temperature, max_tokens, label):
+    """Rung 2 since TASK-FLASH-CHANNEL-PIN: the vendor's own API — a different
+    transport, at the same per-stage operating point the primary runs."""
     assert agent.provider == "deepseek_direct", label
     # The vendor exposes exactly one flash id and 400s on every dated form.
     assert agent.model == "deepseek-v4-flash", label
@@ -123,23 +147,6 @@ def assert_channel_c_primary(agent, *, reasoning, temperature, max_tokens, label
     assert agent.structured_output_mode == "json_object", label
     assert not getattr(agent, "_provider_routing", {}), (
         label, "the direct API has no provider routing")
-
-
-def assert_channel_a_fallback(agent, *, temperature, max_tokens, label):
-    assert agent.provider == "openrouter", label
-    assert agent.model == "deepseek/deepseek-v4.1-flash", label
-    assert agent.reasoning == "medium", label
-    assert agent.temperature == temperature, label
-    assert agent.max_tokens == max_tokens, label
-    assert agent.structured_output_mode == "json_object", label
-    routing = agent._provider_routing
-    assert routing["order"] == ["deepseek"], label
-    assert routing["allow_fallbacks"] is False, label
-    # A quantization filter (or the strict-schema path's require_parameters)
-    # removes the DeepSeek endpoint from its own route and the call 404s
-    # (T2b §1.1) — the reason this route carries neither.
-    assert "quantizations" not in routing, label
-    assert "require_parameters" not in routing, label
 
 
 def load_agents(variant, monkeypatch):
@@ -164,17 +171,17 @@ def test_consolidator_wired_to_flash_0731_at_minimal(variant, monkeypatch):
     assert isinstance(agent, FlashStageWithFallback)
     assert agent.name == "consolidator"
     assert agent.fallback_marker_key == "consolidator_fallback_used"
-    assert_channel_c_primary(
+    assert_channel_a_primary(
         agent.primary, reasoning="minimal", temperature=0.3, max_tokens=32000,
         label="consolidator primary",
     )
-    assert_channel_a_fallback(
-        agent.fallback, temperature=0.3, max_tokens=32000,
+    assert_channel_c_fallback(
+        agent.fallback, reasoning="minimal", temperature=0.3, max_tokens=32000,
         label="consolidator fallback",
     )
     # the retired route must not reappear anywhere on this stage
     assert "deepseek-v4-pro" not in (agent.primary.model, agent.fallback.model)
-    assert "fp8" not in str(agent.fallback._provider_routing)
+    assert "fp8" not in str(agent.primary._provider_routing)
 
 
 @pytest.mark.asyncio
@@ -297,12 +304,12 @@ def test_phase1_wired_to_flash_0731_at_medium(monkeypatch):
     assert isinstance(agent, FlashStageWithFallback)
     assert agent.name == "hydration_aggregator_phase1"
     assert agent.fallback_marker_key == "hydration_phase1_fallback_used"
-    assert_channel_c_primary(
+    assert_channel_a_primary(
         agent.primary, reasoning="medium", temperature=0.3, max_tokens=160000,
         label="phase1 primary",
     )
-    assert_channel_a_fallback(
-        agent.fallback, temperature=0.3, max_tokens=160000,
+    assert_channel_c_fallback(
+        agent.fallback, reasoning="medium", temperature=0.3, max_tokens=160000,
         label="phase1 fallback",
     )
     assert "deepseek-v4-pro" not in (agent.primary.model, agent.fallback.model)
@@ -403,12 +410,12 @@ def test_bias_extractor_wired_to_flash_0731_at_minimal(variant, monkeypatch):
     extractor = composite.extractor
     assert isinstance(extractor, FlashStageWithFallback)
     assert extractor.fallback_marker_key == "extractor_fallback_used"
-    assert_channel_c_primary(
+    assert_channel_a_primary(
         extractor.primary, reasoning="minimal", temperature=0.8, max_tokens=32000,
         label="extractor primary",
     )
-    assert_channel_a_fallback(
-        extractor.fallback, temperature=0.8, max_tokens=32000,
+    assert_channel_c_fallback(
+        extractor.fallback, reasoning="minimal", temperature=0.8, max_tokens=32000,
         label="extractor fallback",
     )
     assert "deepseek-v4-pro" not in (extractor.primary.model, extractor.fallback.model)
@@ -443,7 +450,7 @@ def test_prompt_fix_and_model_swap_landed_together(monkeypatch):
         "agents/bias_candidate_extractor/INSTRUCTIONS.md").read_text(encoding="utf-8")
     extractor = load_agents("hydrated", monkeypatch)["bias_language"].extractor
     own_voice_prompt = "## Whose voice" in instructions
-    flash_model = getattr(extractor, "primary", extractor).model == "deepseek-v4-flash"
+    flash_model = getattr(extractor, "primary", extractor).model == "deepseek/deepseek-v4.1-flash"
     assert own_voice_prompt == flash_model, (
         "the own-voice prompt fix and the flash-0731 swap are coupled by eval "
         "evidence; they land and revert together (TASK-BIAS-EXTRACTOR-COUPLED)"

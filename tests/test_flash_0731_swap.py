@@ -374,7 +374,13 @@ async def test_valid_channel_c_output_never_touches_the_fallback(caplog):
 
 # --- 5. the wiring itself ----------------------------------------------------
 
-def test_production_wiring_is_channel_c_primary_channel_a_fallback(monkeypatch):
+def test_production_wiring_is_channel_a_primary_channel_c_transport(monkeypatch):
+    """Roles swapped by TASK-FLASH-CHANNEL-PIN (2026-09-18): channel A, on the
+    NAMED first-party v4.1-flash id, is the primary; channel C, on the undated
+    alias, is the transport rung. The per-stage level string is the same on
+    both rungs and the same as before the swap — measured, not assumed: the
+    T2d-era A/C level mismatch was a 0731-build property and does not reproduce
+    on v4.1 (scratch/audit/flash-channel-pin/probe/probe.jsonl)."""
     monkeypatch.setenv("DEEPSEEK_API_KEY", "unit-test-key")
     monkeypatch.setenv("OPENROUTER_API_KEY", "unit-test-key")
     from scripts.run import create_agents
@@ -391,22 +397,23 @@ def test_production_wiring_is_channel_c_primary_channel_a_fallback(monkeypatch):
         assert isinstance(w, FlashStageWithFallback), stage
 
         p = w.primary
-        assert p.provider == "deepseek_direct", stage
-        # the vendor exposes ONE flash id and 400s on every dated form
-        assert p.model == "deepseek-v4-flash", stage
+        assert p.provider == "openrouter", stage
+        assert p.model == "deepseek/deepseek-v4.1-flash", stage
         assert p.reasoning == effort, stage
         assert p.max_tokens == primary_mt, stage
         assert p.structured_output_mode == "json_object", stage
+        assert p._provider_routing == {"order": ["deepseek"],
+                                       "allow_fallbacks": False}, stage
+        assert "quantizations" not in p._provider_routing, stage
 
         f = w.fallback
-        assert f.provider == "openrouter", stage
-        assert f.model == "deepseek/deepseek-v4.1-flash", stage
-        assert f.reasoning == "medium", stage      # A's calibrated equivalent
+        assert f.provider == "deepseek_direct", stage
+        # the vendor exposes ONE flash id and 400s on every dated form
+        assert f.model == "deepseek-v4-flash", stage
+        assert f.reasoning == effort, stage   # the level this stage always ran on C
         assert f.max_tokens == fallback_mt, stage
         assert f.structured_output_mode == "json_object", stage
-        assert f._provider_routing == {"order": ["deepseek"],
-                                       "allow_fallbacks": False}, stage
-        assert "quantizations" not in f._provider_routing, stage
+        assert not f._provider_routing, stage
 
         assert w.fallback_marker_key == f"{stage}_fallback_used", stage
 
