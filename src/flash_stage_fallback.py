@@ -1,31 +1,37 @@
 """One-shot availability fallback for the DeepSeek-flash schema-bearing stages
 (TASK-RESEARCHER-ASSEMBLE-FALLBACK, extended to the siblings; retargeted from
 a model fallback to a CHANNEL fallback by TASK-FLASH-0731-SWAP, 2026-08-24;
-rung 2 repointed off the retired 0731 id by TASK-RUNG2-REPAIR, 2026-09-14).
+rung 2 repointed off the retired 0731 id by TASK-RUNG2-REPAIR, 2026-09-14; the
+two rungs SWAPPED ROLES by TASK-FLASH-CHANNEL-PIN, 2026-09-18).
 
 Six production stages run on the vendor's flash line with two rungs
-(``scripts/run.py``, ``_flash_0731_primary`` / ``_flash_0731_fallback``):
+(``scripts/run.py``, ``_flash_primary`` / ``_flash_transport_fallback``):
 
-* **Primary — channel C**, ``api.deepseek.com`` direct, on the vendor's single
-  undated flash alias.
-* **Fallback — channel A**, OpenRouter pinned to ``{"order": ["deepseek"],
+* **Primary — channel A**, OpenRouter pinned to ``{"order": ["deepseek"],
   "allow_fallbacks": false}`` on ``deepseek/deepseek-v4.1-flash`` — the
-  vendor's CURRENT first-party flash build.
+  vendor's CURRENT first-party flash build, named explicitly so ``model_used``
+  can be checked against it and every call reports a measured cost.
+* **Fallback — channel C**, ``api.deepseek.com`` direct, on the vendor's single
+  undated flash alias: a different transport to the same vendor, unpriced.
 
-**Rung 2 is an availability net, not a same-weights mirror.** Until 2026-09-06
-it was ``deepseek/deepseek-v4-flash-0731`` and the two rungs genuinely were two
-routes to one set of weights. The vendor retired that endpoint on OpenRouter
-between 2026-09-06 and 2026-09-10; the pin then resolved to the empty set and
-404'd, and on 2026-09-10 that cost a Topic Package
-(``scratch/audit/bias-telemetry-forensics.md``, A4). By 2026-09-13 OpenRouter
-had begun silently redirecting the retired id to ``v4.1-flash`` anyway, so the
-choice was never "keep the same weights" — it was "name the substitution or let
-the router make it for us". This names it. What rung 2 now guarantees is a
-schema-valid answer from the vendor's own endpoint when channel C fails; it
-does NOT guarantee the primary's weights or its measured operating point, and
-no eval backs v4.1-flash for these stages. A fallback that fires is therefore a
-signal worth reading, not just a recovery — ``<stage>_fallback_used`` and
-``model_used`` in ``run_stage_log.jsonl`` name what served.
+**Rung 2 is a TRANSPORT net, not a same-weights mirror.** It is what the
+primary was until 2026-09-18, demoted unchanged: the vendor's own API, its own
+auth, its own failure surface, at the same per-stage level. Probably the same
+weights the primary reaches — probably, because the alias it serves is
+unverifiable by construction, which is exactly why it stopped being the
+primary. The history is worth keeping: until 2026-09-06 rung 2 was
+``deepseek/deepseek-v4-flash-0731`` on OpenRouter and the two rungs genuinely
+were two routes to one set of weights; the vendor retired that endpoint between
+2026-09-06 and 2026-09-10, the pin resolved to the empty set and 404'd, and on
+2026-09-10 that cost a Topic Package
+(``scratch/audit/bias-telemetry-forensics.md``, A4). What rung 2 guarantees now
+is a schema-valid answer from the vendor's own API when the OpenRouter route
+fails; it does NOT guarantee the primary's identity, its measured cost (channel
+C's alias is unpriced — a fired fallback is the explanation for any $0.00 flash
+call in a stage row), or an eval-backed operating point. A fallback that fires
+is therefore a signal worth reading, not just a recovery —
+``<stage>_fallback_used`` and ``model_used`` in ``run_stage_log.jsonl`` name
+what served.
 
 The stages themselves:
 

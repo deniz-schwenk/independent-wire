@@ -65,29 +65,38 @@ from src.tools import web_search_tool
 # asserts it stays gone — a reintroduced pro fp8 pin would mean a swap was
 # partially reverted.
 #
-# --- DeepSeek-flash channel routing (TASK-FLASH-0731-SWAP) -------------------
-# DEEPSEEK_V4_FLASH_FP8_ROUTING is GONE for the same reason, since
-# 2026-08-24: the flash stages run full precision on the vendor's own flash
-# line, channel C (api.deepseek.com direct) primary with channel A
-# (OpenRouter, pinned to the vendor's own endpoint) as the one-shot fallback.
-# Evidence: docs/evals/dsv4-0731/{T2,T2B,T2D}-REPORT.md.
+# --- DeepSeek-flash channel routing (TASK-FLASH-CHANNEL-PIN) -----------------
+# DEEPSEEK_V4_FLASH_FP8_ROUTING is GONE since 2026-08-24: the six flash stages
+# run full precision on the vendor's own flash line, reached two ways.
+# Evidence for the channel work: docs/evals/dsv4-0731/{T2,T2B,T2D}-REPORT.md.
 #
-# The two rungs no longer run identical weights. Channel C serves the vendor's
-# single undated flash alias, which the vendor ROLLED between the 2026-09-09
-# and 2026-09-10 production runs (server echo `deepseek-v4-flash` ->
-# `deepseek-flash`); channel A names `deepseek/deepseek-v4.1-flash` explicitly
-# since TASK-RUNG2-REPAIR, because the dated 0731 id the rung used to carry was
-# retired from the vendor's OpenRouter endpoint and the pin below 404'd on it.
-# Both are "the vendor's current flash", reached two ways — see
-# `_flash_0731_fallback` for what that does and does not guarantee, and
-# scratch/audit/bias-telemetry-forensics.md for the full timeline.
+# The two rungs SWAPPED ROLES on 2026-09-18 (TASK-FLASH-CHANNEL-PIN):
+#
+#   primary  channel A — OpenRouter pinned to the vendor's own endpoint, on
+#            `deepseek/deepseek-v4.1-flash`. Pinned identity, measured cost.
+#   rung 2   channel C — api.deepseek.com direct, on the vendor's single
+#            undated flash alias. Different transport, unpriced.
+#
+# Why. Channel C's flash id is an ALIAS, and the vendor rolled it between the
+# 2026-09-09 and 2026-09-10 production runs (server echo `deepseek-v4-flash` ->
+# `deepseek-flash`). From then until 2026-09-18 every one of the ~27-30 flash
+# calls a run makes ran an unverified build — probably v4.1 — and booked $0.00,
+# because the served alias is absent from DEEPSEEK_DIRECT_PRICES; the price
+# tripwire in src/agent.py fired on every call. Moving the primary to the
+# first-party OpenRouter endpoint names the build the vendor already rolled and
+# restores both pinned identity and per-call cost. It is a named substitution,
+# not a model choice — see `_flash_primary`.
+#
+# Keeping channel C as rung 2 is the other half of the change: with the primary
+# on channel A, the OLD rung 2 (also channel A, same id, same pin) would have
+# made the ladder two rungs on one route, which protects against nothing.
 #
 # Channel A pin. Shared with the planner ladder's rung 2
 # (`deepseek/deepseek-v4-pro-0813`, whose vendor endpoint is still listed).
 # Two deliberate departures from every other pin in this file:
 #   * NO `quantizations` filter. The DeepSeek endpoint reports quantization
 #     "unknown"; an fp8 (or any) filter excludes it and the call 404s with
-#     "No endpoints found" (T2b §1.1).
+#     "No endpoints found" (T2b 1.1).
 #   * The agents carry `structured_output_mode="json_object"`. This endpoint
 #     declares no `structured_outputs`, so Agent's default strict-schema path
 #     would send a `json_schema` response_format AND set
@@ -102,7 +111,8 @@ from src.tools import web_search_tool
 # that contract cost on 2026-09-10 and why it is still right: when the vendor
 # retired its 0731 endpoint the pin resolved to the empty set and 404'd rather
 # than quietly dropping to one of the 28 surviving third-party hosts. The fix
-# for that is naming the live id here — not loosening the pin.
+# for that is naming the live id here — not loosening the pin. That contract
+# now guards the PRIMARY path, where it matters most.
 DEEPSEEK_NATIVE_ROUTING = {
     "order": ["deepseek"],
     "allow_fallbacks": False,
@@ -240,7 +250,7 @@ def setup_logging():
     )
 
 
-def _flash_0731_primary(
+def _flash_primary(
     *,
     name: str,
     system_prompt_path: str,
@@ -250,33 +260,91 @@ def _flash_0731_primary(
     output_schema: dict,
     temperature: float = 0.5,
 ) -> Agent:
-    """Channel C — the PRIMARY for a v4-flash-0731 stage: api.deepseek.com
-    direct (TASK-FLASH-0731-SWAP, owner decision on the T2d matrix).
+    """Channel A — the PRIMARY for a flash stage: OpenRouter pinned to the
+    vendor's own endpoint, on ``deepseek/deepseek-v4.1-flash``
+    (TASK-FLASH-CHANNEL-PIN, 2026-09-18).
 
-    Three things here are load-bearing and none of them are obvious:
+    **This is a named substitution, not a model choice.** Until now these six
+    stages ran channel C (``api.deepseek.com`` direct) on the vendor's single
+    undated flash alias. The vendor ROLLED that alias between the 2026-09-09
+    and 2026-09-10 runs (server echo ``deepseek-v4-flash`` -> ``deepseek-flash``)
+    and has served an unverified build behind it ever since — probably v4.1,
+    unpinnable by construction, and absent from the direct-API price table, so
+    every one of the ~27-30 flash calls a run makes booked $0.00 and tripped the
+    price tripwire. Naming ``deepseek/deepseek-v4.1-flash`` here does not change
+    what serves the pipeline; it states in the config what the vendor already
+    rolled, and restores two things the alias took away: a PINNED IDENTITY that
+    ``model_used`` can be checked against, and a MEASURED cost on every call.
 
-    * ``model="deepseek-v4-flash"`` is not a typo for the dated id. The vendor
-      exposes exactly one flash id and 400s on every dated form; it serves the
-      0731 build by alias. That alias is unpinnable, which is why Agent logs
-      the SERVER-ECHOED model id on every call (T2d §1.1).
-    * ``reasoning`` is a plain string and reaches the wire as
-      ``reasoning_effort``. The OpenRouter ``{"effort": ...}`` object is
-      *accepted and ignored* by this API, so the wrong shape fails silently
-      into the default; Agent raises on a dict for this provider rather than
-      let that happen (T2d §1.3).
-    * The effort levels are NOT interchangeable with channel A's. Measured
-      paired at an identical cap, C·medium spends 2.64x the reasoning of
-      A·medium on resolve, and **A·medium corresponds to C·low** (T2d §1.3).
-      Hence the fallbacks below all run `medium` while these primaries run
-      lower — that is parity, not a downgrade.
+    What this does not do: it is not backed by a quality eval for these six
+    stages. The five-stage probe on frozen 2026-09-18 inputs
+    (``scratch/audit/flash-channel-pin/probe/probe.jsonl``) shows same-shaped,
+    schema-valid output at each stage's own level, which establishes parity of
+    plumbing, not of judgement.
 
-    ``temperature`` defaults to 0.5, the value the first three stages shipped
-    with. It is a parameter rather than a constant because the stages added by
-    TASK-DSV4-SWAPS-BUNDLE carry their own eval-validated decode temperature
-    (consolidator 0.3, phase1 0.3, bias extractor 0.8 — the extractor's
-    spread is deliberate: natural variance across the three passes IS the
-    recall mechanism). A swap must not silently re-tune the sampling of the
-    stage it swaps.
+    ``reasoning`` stays each stage's CURRENT level string, unchanged, and is
+    passed per stage. The T2d-era note that channel A and channel C levels are
+    not interchangeable (``A-medium`` == ``C-low``) was measured on the 0731
+    build and does NOT reproduce on v4.1: paired on identical frozen inputs the
+    literal level tracks today's channel-C spend at every stage measured, while
+    the "equivalent" level moves it (curator 103.5k -> 91.2k at ``high``,
+    phase1 58.3k -> 96.6k at ``high``). Same string, same operating point, so
+    the swap re-tunes nothing.
+
+    ``structured_output_mode="json_object"`` is mandatory, not stylistic: this
+    endpoint declares no ``structured_outputs``, so the strict-schema path would
+    inject ``require_parameters: true`` and 404 the endpoint out of its own
+    route. Schema conformance is enforced locally by FlashStageWithFallback."""
+    return Agent(
+        name=name,
+        model="deepseek/deepseek-v4.1-flash",
+        system_prompt_path=system_prompt_path,
+        instructions_path=instructions_path,
+        tools=[],
+        temperature=temperature,
+        max_tokens=max_tokens,
+        provider="openrouter",
+        reasoning=reasoning,
+        provider_routing=DEEPSEEK_NATIVE_ROUTING,
+        output_schema=output_schema,
+        structured_output_mode="json_object",
+    )
+
+
+def _flash_transport_fallback(
+    *,
+    name: str,
+    system_prompt_path: str,
+    instructions_path: str,
+    reasoning: str,
+    max_tokens: int,
+    output_schema: dict,
+    temperature: float = 0.5,
+) -> Agent:
+    """Channel C — the one-shot TRANSPORT fallback: ``api.deepseek.com`` direct
+    on the vendor's undated flash alias (TASK-FLASH-CHANNEL-PIN).
+
+    This rung is literally what the primary was until 2026-09-18, demoted
+    unchanged — same channel, same alias, same per-stage level. That is the
+    whole point of the swap's ladder half: with the primary moved to channel A,
+    leaving the OLD rung 2 in place would have pointed both rungs at the same id
+    on the same route, and a ladder whose two rungs share a route protects
+    against nothing. Rung 2 is now a DIFFERENT TRANSPORT to the vendor: probably
+    the same weights the primary reaches (the alias is unverifiable by
+    construction — that is why it stopped being the primary), but a separate
+    endpoint, separate auth and separate failure surface. It answers the failure
+    this ladder has actually seen twice: one endpoint 404ing or erroring while
+    the vendor itself was up.
+
+    Cost on this rung stays UNPRICED — the served alias is absent from
+    ``DEEPSEEK_DIRECT_PRICES``, so its calls book $0.00 and log the price
+    tripwire. That is now a rare-event property rather than a daily one: the
+    primary path reports measured cost, and this rung is reached only when the
+    primary finally fails. A ``<stage>_fallback_used`` marker is therefore also
+    the explanation for any $0.00 flash call in a stage row.
+
+    ``reasoning`` is passed per stage rather than fixed, so the rung runs the
+    level that stage has always run on this channel.
 
     ``structured_output_mode`` is coerced to json_object by Agent for this
     provider; schema conformance is enforced by FlashStageWithFallback."""
@@ -290,65 +358,6 @@ def _flash_0731_primary(
         max_tokens=max_tokens,
         provider="deepseek_direct",
         reasoning=reasoning,
-        output_schema=output_schema,
-        structured_output_mode="json_object",
-    )
-
-
-def _flash_0731_fallback(
-    *,
-    name: str,
-    system_prompt_path: str,
-    instructions_path: str,
-    max_tokens: int,
-    output_schema: dict,
-    temperature: float = 0.5,
-) -> Agent:
-    """Channel A — the one-shot AVAILABILITY FALLBACK for a flash stage:
-    OpenRouter pinned to the vendor's own endpoint, on the vendor's current
-    first-party flash build.
-
-    **This is no longer a same-weights mirror of the primary, and the name of
-    this function is historic** (TASK-RUNG2-REPAIR, 2026-09-14). Until
-    2026-09-06 the rung ran ``deepseek/deepseek-v4-flash-0731`` and genuinely
-    was a second route to the primary's weights. The vendor retired that
-    endpoint on OpenRouter between 2026-09-06 and 2026-09-10 — 28 third-party
-    endpoints for the dated id survive, none of them carrying the ``deepseek``
-    tag — so the native pin below resolved to the EMPTY SET and 404'd. On
-    2026-09-10 that took ``resolve_actor_aliases`` down on topic 0 and cost a
-    published Topic Package (forensics A4:
-    ``scratch/audit/bias-telemetry-forensics.md``).
-
-    Repointing to ``deepseek/deepseek-v4.1-flash`` is not a champion choice —
-    no eval backs it for these stages. It is the only id on which the vendor
-    still serves flash first-party, verified twice: the planner eval measured
-    ``provider_used: DeepSeek`` on all 9 of its calls
-    (``scratch/eval/dsv41-flash-planner/reports/METHOD.md``), and by 2026-09-13
-    OpenRouter had begun silently redirecting the retired 0731 id to this very
-    model under this very pin. So the substitution was already happening in the
-    router; this states it in the config, where ``model_used`` will name it.
-
-    What that costs: a fallback now changes the served build, not just the
-    route. The wrapper's schema check still gates the output, but the operating
-    point behind a fired fallback is unmeasured — read
-    ``<stage>_fallback_used`` as a signal, not merely a recovery.
-
-    Runs at ``reasoning="medium"``, the T2b-calibrated operating point, which
-    is the channel-A equivalent of the primaries' lower settings (see
-    ``_flash_0731_primary``). ``structured_output_mode="json_object"`` is
-    mandatory, not stylistic: the strict-schema path would inject
-    ``require_parameters: true`` and 404 this endpoint out of its own route."""
-    return Agent(
-        name=name,
-        model="deepseek/deepseek-v4.1-flash",
-        system_prompt_path=system_prompt_path,
-        instructions_path=instructions_path,
-        tools=[],
-        temperature=temperature,
-        max_tokens=max_tokens,
-        provider="openrouter",
-        reasoning="medium",
-        provider_routing=DEEPSEEK_NATIVE_ROUTING,
         output_schema=output_schema,
         structured_output_mode="json_object",
     )
@@ -397,8 +406,9 @@ def create_agents() -> dict[str, Agent]:
         # Python and need no agent.
         # v4-flash-0731 since 2026-08-24 (TASK-FLASH-0731-SWAP); before that,
         # deepseek-v4-flash fp8-pinned since the Wave-2 curator-variance smoke
-        # (docs/curator-variance-2026-05-19/). Channel C primary, channel A
-        # fallback — see _flash_0731_primary / _flash_0731_fallback.
+        # (docs/curator-variance-2026-05-19/). Channel A (OpenRouter,
+        # first-party v4.1-flash) primary since 2026-09-18, channel C transport
+        # rung 2 — see _flash_primary / _flash_transport_fallback.
         #
         # `medium` on BOTH channels here, unlike the other two stages: T2d §1.3
         # found the effort mismatch is stage-dependent and the curator's two
@@ -412,19 +422,20 @@ def create_agents() -> dict[str, Agent]:
         # marker curator_topic_discovery_fallback_used. See
         # src/flash_stage_fallback.py.
         "curator_topic_discovery": FlashStageWithFallback(
-            primary=_flash_0731_primary(
+            primary=_flash_primary(
                 name="curator_topic_discovery",
                 system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
                 instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
                 reasoning="medium",
-                max_tokens=128000,   # 4.65x worst observed; see the note above
+                max_tokens=128000,   # 3.29x worst observed on channel A (now primary)
                 output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
             ),
-            fallback=_flash_0731_fallback(
+            fallback=_flash_transport_fallback(
                 name="curator_topic_discovery_fallback",
+                reasoning="medium",   # the level this stage has always run on channel C
                 system_prompt_path=str(agents_dir / "curator" / "SYSTEM.md"),
                 instructions_path=str(agents_dir / "curator" / "INSTRUCTIONS.md"),
-                max_tokens=128000,   # 3.29x worst observed on channel A
+                max_tokens=128000,   # 4.65x worst observed on channel C (now rung 2)
                 output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
             ),
             output_schema=CURATOR_TOPIC_DISCOVERY_SCHEMA,
@@ -540,19 +551,20 @@ def create_agents() -> dict[str, Agent]:
         # never silent (researcher_assemble_fallback_used in
         # run_stage_log.jsonl). See src/flash_stage_fallback.py.
         "researcher_assemble": FlashStageWithFallback(
-            primary=_flash_0731_primary(
+            primary=_flash_primary(
                 name="researcher_assemble",
                 system_prompt_path=str(agents_dir / "researcher" / "ASSEMBLE-SYSTEM.md"),
                 instructions_path=str(agents_dir / "researcher" / "ASSEMBLE-INSTRUCTIONS.md"),
                 reasoning="low",
-                max_tokens=128000,   # 2.08x worst observed; see the note above
+                max_tokens=128000,   # 3.33x worst observed on channel A (now primary)
                 output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
             ),
-            fallback=_flash_0731_fallback(
+            fallback=_flash_transport_fallback(
                 name="researcher_assemble_fallback",
+                reasoning="low",   # the level this stage has always run on channel C
                 system_prompt_path=str(agents_dir / "researcher" / "ASSEMBLE-SYSTEM.md"),
                 instructions_path=str(agents_dir / "researcher" / "ASSEMBLE-INSTRUCTIONS.md"),
-                max_tokens=128000,   # 3.33x worst observed on channel A
+                max_tokens=128000,   # 2.08x worst observed on channel C (now rung 2)
                 output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
             ),
             output_schema=RESEARCHER_ASSEMBLE_SCHEMA,
@@ -580,19 +592,20 @@ def create_agents() -> dict[str, Agent]:
         # Per-topic; loud marker resolve_actor_aliases_fallback_used. See
         # src/flash_stage_fallback.py.
         "resolve_actor_aliases": FlashStageWithFallback(
-            primary=_flash_0731_primary(
+            primary=_flash_primary(
                 name="resolve_actor_aliases",
                 system_prompt_path=str(agents_dir / "resolve_actor_aliases" / "SYSTEM.md"),
                 instructions_path=str(agents_dir / "resolve_actor_aliases" / "INSTRUCTIONS.md"),
                 reasoning="low",
-                max_tokens=16000,    # 2.38x worst observed; see the note above
+                max_tokens=16000,    # 2.39x worst observed on channel A (now primary)
                 output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
             ),
-            fallback=_flash_0731_fallback(
+            fallback=_flash_transport_fallback(
                 name="resolve_actor_aliases_fallback",
+                reasoning="low",   # the level this stage has always run on channel C
                 system_prompt_path=str(agents_dir / "resolve_actor_aliases" / "SYSTEM.md"),
                 instructions_path=str(agents_dir / "resolve_actor_aliases" / "INSTRUCTIONS.md"),
-                max_tokens=16000,    # 2.39x worst observed on channel A
+                max_tokens=16000,    # 2.38x worst observed on channel C (now rung 2)
                 output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
             ),
             output_schema=RESOLVE_ACTOR_ALIASES_SCHEMA,
@@ -889,7 +902,7 @@ def create_agents() -> dict[str, Agent]:
         # src/flash_stage_fallback.py.
         "bias_language": BiasComposite(
             extractor=FlashStageWithFallback(
-                primary=_flash_0731_primary(
+                primary=_flash_primary(
                     name="bias_candidate_extractor",
                     system_prompt_path=str(
                         agents_dir / "bias_candidate_extractor" / "SYSTEM.md"),
@@ -900,14 +913,15 @@ def create_agents() -> dict[str, Agent]:
                     max_tokens=32000,   # caps.json bias_extractor@minimal
                     output_schema=BIAS_CANDIDATES_SCHEMA,
                 ),
-                fallback=_flash_0731_fallback(
+                fallback=_flash_transport_fallback(
                     name="bias_candidate_extractor_fallback",
+                    reasoning="minimal",   # the level this stage has always run on channel C
                     system_prompt_path=str(
                         agents_dir / "bias_candidate_extractor" / "SYSTEM.md"),
                     instructions_path=str(
                         agents_dir / "bias_candidate_extractor" / "INSTRUCTIONS.md"),
                     temperature=0.8,
-                    max_tokens=32000,   # caps.json bias_extractor@medium
+                    max_tokens=32000,   # caps.json bias_extractor@minimal (rung 2 = channel C)
                     output_schema=BIAS_CANDIDATES_SCHEMA,
                 ),
                 output_schema=BIAS_CANDIDATES_SCHEMA,
@@ -1011,9 +1025,10 @@ def create_agents() -> dict[str, Agent]:
         #
         # v4-flash-0731 since 2026-08-31 (TASK-DSV4-SWAPS-BUNDLE, component
         # TASK-CONSOLIDATOR-SWAP-FLASH0731); deepseek-v4-pro on the OpenRouter
-        # fp8 pin before that. Channel C primary, channel A fallback — the same
-        # two-route wiring as the three stages swapped on 2026-08-24, via
-        # _flash_0731_primary / _flash_0731_fallback.
+        # fp8 pin before that. Channel A primary, channel C transport rung 2
+        # since TASK-FLASH-CHANNEL-PIN — the same two-route wiring as the three
+        # stages swapped on 2026-08-24, via _flash_primary /
+        # _flash_transport_fallback.
         #
         # Effort `minimal`, the T3b operating point: T3B-REPORT §7.1 judged
         # flash@minimal at 4.75 against the v4-pro baseline's 4.48, with
@@ -1033,7 +1048,7 @@ def create_agents() -> dict[str, Agent]:
         # so a retry re-rolls the primary and can itself fall back. Loud marker
         # consolidator_fallback_used. See src/flash_stage_fallback.py.
         "consolidator": FlashStageWithFallback(
-            primary=_flash_0731_primary(
+            primary=_flash_primary(
                 name="consolidator",
                 system_prompt_path=str(agents_dir / "consolidator" / "SYSTEM.md"),
                 instructions_path=str(agents_dir / "consolidator" / "INSTRUCTIONS.md"),
@@ -1042,12 +1057,13 @@ def create_agents() -> dict[str, Agent]:
                 max_tokens=32000,   # caps.json consolidator@minimal
                 output_schema=CONSOLIDATOR_SCHEMA,
             ),
-            fallback=_flash_0731_fallback(
+            fallback=_flash_transport_fallback(
                 name="consolidator_fallback",
+                reasoning="minimal",   # the level this stage has always run on channel C
                 system_prompt_path=str(agents_dir / "consolidator" / "SYSTEM.md"),
                 instructions_path=str(agents_dir / "consolidator" / "INSTRUCTIONS.md"),
                 temperature=0.3,
-                max_tokens=32000,   # caps.json consolidator@medium
+                max_tokens=32000,   # caps.json consolidator@minimal (rung 2 = channel C)
                 output_schema=CONSOLIDATOR_SCHEMA,
             ),
             output_schema=CONSOLIDATOR_SCHEMA,
@@ -1185,7 +1201,7 @@ def create_agents_hydrated() -> dict[str, Agent]:
         # marker hydration_phase1_fallback_used (the sibling naming of
         # hydration_phase2_fallback_used). See src/flash_stage_fallback.py.
         "hydration_aggregator_phase1": FlashStageWithFallback(
-            primary=_flash_0731_primary(
+            primary=_flash_primary(
                 name="hydration_aggregator_phase1",
                 system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
                 instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
@@ -1194,8 +1210,9 @@ def create_agents_hydrated() -> dict[str, Agent]:
                 max_tokens=160000,   # caps.json phase1@medium
                 output_schema=HYDRATION_PHASE1_SCHEMA,
             ),
-            fallback=_flash_0731_fallback(
+            fallback=_flash_transport_fallback(
                 name="hydration_aggregator_phase1_fallback",
+                reasoning="medium",   # the level this stage has always run on channel C
                 system_prompt_path=str(agents_dir / "hydration_aggregator" / "PHASE1-SYSTEM.md"),
                 instructions_path=str(agents_dir / "hydration_aggregator" / "PHASE1-INSTRUCTIONS.md"),
                 temperature=0.3,

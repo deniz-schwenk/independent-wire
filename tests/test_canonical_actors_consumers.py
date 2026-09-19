@@ -698,7 +698,7 @@ def test_resolver_does_not_mutate_final_actors():
 
 def test_resolver_agent_registration_carries_y_config():
     """Production registration ships the post-swap config on the PRIMARY:
-    channel C via ``_flash_0731_primary``, ``reasoning="low"``,
+    channel A via ``_flash_primary``, ``reasoning="low"``,
     ``max_tokens=16000`` (TASK-FLASH-0731-SWAP, 2026-08-24; 16000 replaced a
     first-draft 8000 on review — that value was 1.19x this stage's observed
     worst completion and the only row under the repo's 2x convention).
@@ -707,7 +707,13 @@ def test_resolver_agent_registration_carries_y_config():
     (``temperature=1.0`` + ``reasoning="medium"``) → Wave-2 Sweep #2's
     ``deepseek/deepseek-v4-flash`` + ``reasoning="none"`` (a7130dd) →
     ``max_tokens`` 160000 → 4000 (TASK-FLASH-PIN-REPAIR) → today's
-    v4-flash-0731 on api.deepseek.com at ``low``.
+    v4-flash-0731 on api.deepseek.com at ``low`` → the first-party
+    ``deepseek/deepseek-v4.1-flash`` on OpenRouter at ``low``, with
+    api.deepseek.com demoted to the transport rung (TASK-FLASH-CHANNEL-PIN,
+    2026-09-18). The level string did not move with the channel: measured
+    paired on frozen inputs, the literal level tracks the old channel-C spend
+    on v4.1 while the T2d-era "equivalent" level does not
+    (scratch/audit/flash-channel-pin/probe/probe.jsonl).
 
     ``reasoning`` moved "none" → "low" deliberately and against Wave-2's
     finding that this extraction-class role gains nothing from reasoning:
@@ -730,11 +736,11 @@ def test_resolver_agent_registration_carries_y_config():
     assert after > start
     block = run_py[start:after]
 
-    # The primary sub-block carries the post-swap channel-C config. The model
-    # id and temperature now live in the _flash_0731_primary helper, so the
-    # per-stage assertions are the ones the call site actually sets.
-    primary = block[block.find("primary=_flash_0731_primary("):block.find("fallback=")]
-    assert "_flash_0731_primary(" in block
+    # The primary sub-block carries the post-swap channel-A config. The model
+    # id and the pin now live in the _flash_primary helper, so the per-stage
+    # assertions are the ones the call site actually sets.
+    primary = block[block.find("primary=_flash_primary("):block.find("fallback=")]
+    assert "_flash_primary(" in block
     assert 'reasoning="low"' in primary
     assert "max_tokens=16000," in primary
     # ... and must NOT have reverted to the deprecated Gemini Y-config, nor to
@@ -744,9 +750,11 @@ def test_resolver_agent_registration_carries_y_config():
     assert 'reasoning="medium"' not in primary
     assert "DEEPSEEK_V4_FLASH_FP8_ROUTING" not in primary
 
-    # The fallback is the shared channel-A net (built by _flash_0731_fallback —
-    # the dated model id and the DeepSeek-endpoint pin live there).
+    # The fallback is the shared channel-C transport rung (built by
+    # _flash_transport_fallback — the undated alias and the direct-API provider
+    # live there), at this stage's own level.
     fallback = block[block.find("fallback="):]
-    assert "_flash_0731_fallback(" in fallback
+    assert "_flash_transport_fallback(" in fallback
+    assert 'reasoning="low"' in fallback
     assert "max_tokens=16000," in fallback
     assert 'fallback_marker_key="resolve_actor_aliases_fallback_used"' in block

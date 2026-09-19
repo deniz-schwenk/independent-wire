@@ -235,9 +235,12 @@ def test_all_three_flash_stages_wired_with_channel_fallback(variant, monkeypatch
     ``google/gemini-3-flash-preview`` — a different model, which is what it
     served into the pipeline whenever it fired. Both channels then carried
     v4-flash-0731; since TASK-RUNG2-REPAIR (2026-09-14) they carry the vendor's
-    current flash build on each side rather than one shared dated id: channel C
-    (api.deepseek.com) primary, channel A (OpenRouter pinned to the vendor's
-    own endpoint) fallback. The detailed
+    current flash build on each side rather than one shared dated id, and
+    TASK-FLASH-CHANNEL-PIN (2026-09-18) swapped the rungs' roles: channel A
+    (OpenRouter pinned to the vendor's own endpoint, on the named
+    ``deepseek/deepseek-v4.1-flash``) is now the PRIMARY, and channel C
+    (api.deepseek.com, on the unpinnable undated alias) is the transport
+    fallback. The detailed
     per-stage operating points live in tests/test_flash_0731_swap.py; this
     test guards the wrapper topology.
     """
@@ -256,19 +259,24 @@ def test_all_three_flash_stages_wired_with_channel_fallback(variant, monkeypatch
         assert isinstance(a, FlashStageWithFallback), (key, type(a))
         assert a.fallback_marker_key == marker
         assert a.name == key
-        # channel C primary: the vendor's single undated flash id
-        assert a.primary.provider == "deepseek_direct", key
-        assert a.primary.model == "deepseek-v4-flash", key
-        assert not getattr(a.primary, "_provider_routing", {}), (
+        # channel A primary: the vendor's CURRENT first-party flash build,
+        # NAMED (the point of the swap — the undated alias it replaced could
+        # not be checked against model_used), vendor endpoint pinned, and NO
+        # quantization filter (that would 404 the endpoint out of its own route)
+        assert a.primary.provider == "openrouter", key
+        assert a.primary.model == "deepseek/deepseek-v4.1-flash", key
+        assert a.primary._provider_routing["order"] == ["deepseek"], key
+        assert a.primary._provider_routing["allow_fallbacks"] is False, key
+        assert "quantizations" not in a.primary._provider_routing, key
+        # channel C transport fallback: the vendor's single undated flash id,
+        # a different route to the same vendor
+        assert a.fallback.provider == "deepseek_direct", key
+        assert a.fallback.model == "deepseek-v4-flash", key
+        assert not getattr(a.fallback, "_provider_routing", {}), (
             key, "the direct API has no provider routing")
-        # channel A fallback: the vendor's CURRENT first-party flash build
-        # (the dated 0731 id it used to carry was retired from the vendor's
-        # OpenRouter endpoint — TASK-RUNG2-REPAIR), vendor endpoint pinned,
-        # and NO quantization filter (that would 404 the endpoint out)
-        assert a.fallback.provider == "openrouter", key
-        assert a.fallback.model == "deepseek/deepseek-v4.1-flash", key
-        assert a.fallback._provider_routing["order"] == ["deepseek"], key
-        assert "quantizations" not in a.fallback._provider_routing, key
+        # the two rungs must not share a route — that was the whole ladder
+        # defect TASK-FLASH-CHANNEL-PIN existed to avoid creating
+        assert a.primary.provider != a.fallback.provider, key
         # the retired routes must not reappear
         assert "google/gemini-3-flash-preview" not in (
             a.primary.model, a.fallback.model), key
@@ -316,17 +324,21 @@ def _flash_wrappers(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_forced_primary_failure_puts_v41_flash_on_the_wire(monkeypatch):
+async def test_forced_primary_failure_puts_channel_c_on_the_wire(monkeypatch):
+    """TASK-FLASH-CHANNEL-PIN acceptance: with the primary driven into final
+    failure, the ladder's second attempt goes out on channel C — a different
+    transport to the same vendor, not a second request to the route that just
+    failed."""
     from unittest.mock import AsyncMock, MagicMock
 
     from src.agent import AgentError
 
     wrappers = _flash_wrappers(monkeypatch)
-    assert len(wrappers) == 6, "all six flash stages share the repaired rung"
+    assert len(wrappers) == 6, "all six flash stages share the ladder"
 
     for stage, w in wrappers.items():
         async def _boom(*a, **k):
-            raise AgentError("channel C down (simulated final failure)")
+            raise AgentError("channel A down (simulated final failure)")
 
         monkeypatch.setattr(w.primary, "run", _boom)
         create = AsyncMock(return_value=MagicMock())
@@ -345,19 +357,31 @@ async def test_forced_primary_failure_puts_v41_flash_on_the_wire(monkeypatch):
         # and carry a different body; asserting on call_args would test the
         # retry, not the rung.
         kw = create.call_args_list[0].kwargs
-        assert kw["model"] == "deepseek/deepseek-v4.1-flash", stage
-        prov = kw["extra_body"]["provider"]
-        assert prov == {"order": ["deepseek"], "allow_fallbacks": False}, stage
-        # the two things that individually 404 this endpoint out of its own
-        # route, and so must stay absent (T2b §1.1 / verified 2026-08-31)
-        assert "quantizations" not in prov, stage
-        assert "require_parameters" not in kw["extra_body"], stage
+        assert kw["model"] == "deepseek-v4-flash", stage
+        # channel C is the vendor's own API: no OpenRouter provider block at
+        # all, and the direct-API reasoning shape (a bare reasoning_effort
+        # string, never the OpenRouter {"effort": ...} object, which this API
+        # accepts and silently ignores — T2d 1.3)
+        extra = kw.get("extra_body") or {}
+        assert "provider" not in extra, stage
+        assert "reasoning" not in extra, stage
+        assert isinstance(extra.get("reasoning_effort"), str), stage
         assert kw["response_format"] == {"type": "json_object"}, stage
 
 
-def test_no_stage_still_points_rung_2_at_the_retired_dated_id(monkeypatch):
-    """The retirement is silent from the repo's side — nothing raises if this
-    regresses, the rung simply 404s in production at 06:00. Pin it."""
+def test_the_two_rungs_do_not_share_a_route(monkeypatch):
+    """The ladder's whole point. Before TASK-FLASH-CHANNEL-PIN the primary was
+    channel C and rung 2 was channel A; after it they are the other way round.
+    What must never happen is both rungs on ONE route — that is a ladder that
+    protects against nothing, and it is the state the swap would have created
+    if the old rung 2 had been left in place. Nothing raises if this regresses;
+    the ladder just silently stops being one."""
     for stage, w in _flash_wrappers(monkeypatch).items():
-        assert w.fallback.model == "deepseek/deepseek-v4.1-flash", stage
+        assert w.primary.model == "deepseek/deepseek-v4.1-flash", stage
+        assert w.primary.provider == "openrouter", stage
+        assert w.fallback.model == "deepseek-v4-flash", stage
+        assert w.fallback.provider == "deepseek_direct", stage
+        assert w.primary.provider != w.fallback.provider, stage
+        # the retired dated id is gone from both rungs
+        assert "0731" not in w.primary.model, stage
         assert "0731" not in w.fallback.model, stage
