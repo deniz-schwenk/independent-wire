@@ -164,15 +164,40 @@ class FlashStageWithFallback:
 
     async def run(self, *args: Any, **kwargs: Any) -> AgentResult:
         """Run the primary; fall back to the other channel exactly once on
-        final failure.
+        final failure. See :meth:`run_reporting` for the per-call rung fact."""
+        result, _ = await self.run_reporting(*args, **kwargs)
+        return result
+
+    async def run_reporting(
+        self, *args: Any, **kwargs: Any
+    ) -> tuple[AgentResult, bool]:
+        """``(result, fallback_used)`` for THIS call.
+
+        Same ladder as :meth:`run`; the difference is that the rung is a RETURN
+        VALUE rather than only an instance marker. Two callers need that:
+
+        * anything issuing CONCURRENT calls against one wrapper instance — the
+          bias composite runs 3-4 extraction passes and 2 judge votes at once,
+          and ``last_fallback_used`` is last-writer-wins across them, so it
+          cannot say WHICH pass fell back (or, if the last pass was healthy,
+          that any did);
+        * anything that must not infer the rung from what the response looks
+          like. Inference was the 2026-09-20 defect: the composite compared the
+          served provider against the primary's configured provider, which
+          silently became a topology assumption when TASK-FLASH-CHANNEL-PIN
+          swapped the rungs, and every healthy pass was then marked as a
+          fallback. A false fallback marker poisons the watch ledger exactly as
+          badly as a missed one. The wrapper knows which agent it called; that
+          fact travels here instead of being reconstructed downstream.
 
         Final failure = the primary raised after its built-in retries (a
-        transport failure or a non-retryable 4xx from api.deepseek.com) OR
-        returned an output that is not schema-valid — which, with no strict
-        decoding on either channel, covers malformed JSON, a truncated body at
-        the stage's ``max_tokens``, and an empty completion from a reasoning
-        runaway. A transport failure on the *fallback* is allowed to propagate
-        — that is the loud terminal failure, not a silent success.
+        transport failure or a non-retryable 4xx) OR returned an output that is
+        not schema-valid — which, with no strict decoding on either channel,
+        covers malformed JSON, a truncated body at the stage's ``max_tokens``,
+        and an empty completion from a reasoning runaway. A transport failure
+        on the *fallback* is allowed to propagate — that is the loud terminal
+        failure, not a silent success.
+
         """
         failure_reason: str | None = None
         result: AgentResult | None = None
@@ -192,14 +217,25 @@ class FlashStageWithFallback:
             self.last_model_used = result.model or self.primary.model
             self.last_provider_used = result.provider
             self.last_fallback_used = False
-            return result
+            return result, False
 
-        return await self.escalate_to_fallback(failure_reason, *args, **kwargs)
+        return await self.escalate_to_fallback_reporting(
+            failure_reason, *args, **kwargs)
 
     async def escalate_to_fallback(
         self, failure_reason: str, *args: Any, **kwargs: Any
     ) -> AgentResult:
         """Make the one fallback attempt, for a failure named by the caller.
+        See :meth:`escalate_to_fallback_reporting` for the per-call rung fact."""
+        result, _ = await self.escalate_to_fallback_reporting(
+            failure_reason, *args, **kwargs)
+        return result
+
+    async def escalate_to_fallback_reporting(
+        self, failure_reason: str, *args: Any, **kwargs: Any
+    ) -> tuple[AgentResult, bool]:
+        """``(result, True)`` — the one fallback attempt, for a failure named
+        by the caller.
 
         ``run()`` calls this for the failures it can see for itself. It is also
         PUBLIC because some final failures are only visible to the stage: the
@@ -237,4 +273,4 @@ class FlashStageWithFallback:
             fb.provider or "unknown",
             output_is_schema_valid(fb.structured, self.output_schema),
         )
-        return fb
+        return fb, True

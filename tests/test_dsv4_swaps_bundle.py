@@ -479,36 +479,61 @@ async def test_bias_extractor_forced_channel_c_failure_falls_back_loudly(caplog)
 async def test_composite_reports_the_fallback_even_though_passes_race(caplog):
     """The composite runs its passes CONCURRENTLY against one wrapper, so the
     wrapper's own last_fallback_used marker is last-writer-wins and cannot
-    answer "did any pass fall back?". The composite derives it from each
-    pass's served provider instead — this test is the reason that code exists.
+    answer "did any pass fall back?". Each pass therefore reports its own rung
+    back through ``run_reporting`` — this test is the reason that exists.
+
+    Rewritten 2026-09-21 (TASK-EXTRACTOR-FALLBACK-DETECTION-FIX). It used to
+    fake the rung with provider STRINGS, because the composite used to infer
+    the rung from them; that inference is gone, so the fake now does what
+    production does — a real wrapper whose primary fails on one of the passes.
+    The pass that falls back is deliberately NOT the last to finish.
     """
+    from src.agent import AgentError
     from src.bias_composite import BiasComposite
+    from src.flash_stage_fallback import FlashStageWithFallback
 
     body = "The council's decision dealt a devastating blow to bakeries."
+    CANDS = {"candidates": [{"excerpt": "a devastating blow", "issue_hint": "x"}]}
     calls = {"n": 0}
 
-    class _RacingExtractor:
-        """Pass 2 is served by channel A; passes 1 and 3 by channel C. The
-        pass that falls back is NOT the last to finish."""
+    class _Primary:
+        """Fails on its SECOND invocation only."""
 
-        model = "deepseek-v4-flash"
-        primary = type("P", (), {"provider": "deepseek_direct"})()
+        model = "deepseek/deepseek-v4.1-flash"
+        provider = "openrouter"
 
         async def run(self, *a, **kw):
             calls["n"] += 1
-            n = calls["n"]
-            provider = "DeepSeek" if n == 2 else "deepseek_direct"
-            model = ("deepseek/deepseek-v4.1-flash" if n == 2
-                     else "deepseek-v4-flash")
-            return AgentResult(
-                content="{}",
-                structured={"candidates": [
-                    {"excerpt": "a devastating blow", "issue_hint": "x"}]},
-                cost_usd=0.0, tokens_used=1, model=model, provider=provider,
-            )
+            if calls["n"] == 2:
+                raise AgentError("simulated final failure on pass 2")
+            # the healthy passes report the UPSTREAM vendor, which is not the
+            # configured provider key — the exact shape that used to be read
+            # as a fallback
+            return AgentResult(content="{}", structured=CANDS, cost_usd=0.0,
+                               tokens_used=1, model=self.model, provider="DeepSeek")
 
         def reset_call_metrics(self):
             pass
+
+    class _Rung:
+        model = "deepseek-v4-flash"
+        provider = "deepseek_direct"
+
+        async def run(self, *a, **kw):
+            return AgentResult(content="{}", structured=CANDS, cost_usd=0.0,
+                               tokens_used=1, model="deepseek-flash",
+                               provider="deepseek_direct")
+
+        def reset_call_metrics(self):
+            pass
+
+    extractor = FlashStageWithFallback(
+        _Primary(), _Rung(),
+        {"type": "object", "properties": {"candidates": {"type": "array"}},
+         "required": ["candidates"], "additionalProperties": False},
+        name="bias_candidate_extractor",
+        fallback_marker_key="extractor_fallback_used",
+    )
 
     class _Judge:
         model = "anthropic/claude-opus-4.6"
@@ -526,7 +551,7 @@ async def test_composite_reports_the_fallback_even_though_passes_race(caplog):
         def reset_call_metrics(self):
             pass
 
-    composite = BiasComposite(extractor=_RacingExtractor(), judge=_Judge())
+    composite = BiasComposite(extractor=extractor, judge=_Judge())
     with caplog.at_level(logging.WARNING):
         await composite.run("msg", context={"article_body": body})
 
@@ -539,8 +564,9 @@ async def test_composite_reports_the_fallback_even_though_passes_race(caplog):
 
 @pytest.mark.asyncio
 async def test_composite_reports_no_fallback_on_the_healthy_path():
-    """Negative control: every pass on channel C means the marker is False and
-    the served model is the one the stage log should show."""
+    """Negative control on the simplest shape: a bare extractor with no second
+    rung at all. It cannot fall back, so the marker must be False and the
+    served model is the one the stage log should show."""
     from src.bias_composite import BiasComposite
 
     class _HealthyExtractor:

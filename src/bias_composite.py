@@ -756,39 +756,56 @@ class BiasComposite:
         self.last_cost_usd += result.cost_usd
         self.last_tokens += result.tokens_used
 
-    def _primary_channel(self) -> str:
-        """The provider the extractor's PRIMARY route is expected to report.
+    @staticmethod
+    async def _run_leg(agent: Any, *args: Any, **kwargs: Any):
+        """``(result, fallback_used)`` for one call on ``agent``.
 
-        The extractor may be a plain :class:`~src.agent.Agent` or a channel
-        wrapper (``FlashStageWithFallback``); for the wrapper the primary is
-        the inner agent. Read generically so neither shape needs special
-        casing here."""
-        primary = getattr(self.extractor, "primary", self.extractor)
-        return getattr(primary, "provider", "") or ""
+        The rung comes from the WRAPPER THAT MADE THE CALL — never from
+        inspecting what came back. That distinction is the whole of the
+        2026-09-20 defect: this class used to decide "did this pass fall back?"
+        by comparing the served provider against the primary's CONFIGURED
+        provider, which is a topology assumption wearing an identity's clothes.
+        It happened to hold while the primary was ``deepseek_direct`` (that
+        channel echoes its own name) and inverted the moment
+        TASK-FLASH-CHANNEL-PIN moved the primary to OpenRouter, whose responses
+        report the upstream vendor (``DeepSeek``) and so could never equal the
+        configured key ``openrouter``. Every healthy pass was then marked as a
+        fallback: 9/9 passes on 2026-09-20 and again on 2026-09-21, with no
+        call having failed. A false fallback marker is the same severity class
+        as a silent one, pointed the other way — it makes the watch ledger
+        unreadable in the direction where nobody looks twice.
+
+        A bare :class:`~src.agent.Agent` has no second rung, so ``False`` is
+        not a guess there; it is the only possible answer."""
+        reporting = getattr(agent, "run_reporting", None)
+        if reporting is not None:
+            return await reporting(*args, **kwargs)
+        return await agent.run(*args, **kwargs), False
 
     def _judge_primary_model(self) -> str:
         """The model the judge's PRIMARY route is expected to report.
 
         The judge may be a plain :class:`~src.agent.Agent` or a fallback
         wrapper (``FlashStageWithFallback``); for the wrapper the primary is
-        the inner agent. Same generic read as ``_primary_channel``."""
+        the inner agent.
+
+        DISPLAY ONLY — it names the primary in a warning line. Nothing decides
+        whether a fallback fired by comparing against it; that fact comes from
+        the wrapper (see :meth:`_run_leg`)."""
         primary = getattr(self.judge, "primary", self.judge)
         return getattr(primary, "model", "") or ""
 
-    def _judge_fallback_votes(self, models: list[str]) -> list[int]:
-        """1-based indices of the judgment votes NOT served by the primary.
+    @staticmethod
+    def _fallback_indices(rungs: list[bool]) -> list[int]:
+        """1-based indices of the calls that were served by the fallback rung.
 
-        Identical problem to ``_channel_report``, and solved the same way: the
-        composite issues both votes CONCURRENTLY against one wrapper instance,
-        so the wrapper's own ``last_fallback_used`` marker is last-writer-wins
-        across them and cannot answer "did either vote fall back?". The served
-        model per result can. Both judge legs run on the same provider
-        (``openrouter``), so the discriminator here is the MODEL, not the
-        channel."""
-        primary_model = self._judge_primary_model()
-        if not primary_model:
-            return []
-        return [i for i, m in enumerate(models, start=1) if m and m != primary_model]
+        1-based to match the ``extraction_confidence`` run numbering and the
+        judge-vote numbering. ``rungs`` is positional truth reported by the
+        wrapper per call, so this is a filter, not an inference — it answers
+        equally well for concurrent calls, where the wrapper's own
+        ``last_fallback_used`` marker is last-writer-wins and can only describe
+        whichever call happened to finish last."""
+        return [i for i, used in enumerate(rungs, start=1) if used]
 
     @staticmethod
     def _per_call(results: list[AgentResult | None]) -> tuple[list[str], list[str]]:
@@ -805,27 +822,23 @@ class BiasComposite:
         )
 
     def _channel_report(
-        self, results: list[AgentResult | None]
+        self, results: list[AgentResult | None], rungs: list[bool]
     ) -> tuple[str, str, list[int]]:
         """``(provider, served_model, fallback_pass_indices)`` for the
         extraction passes.
 
-        The composite runs its passes CONCURRENTLY against one wrapper
-        instance, so the wrapper's own ``last_fallback_used`` marker is
-        last-writer-wins across them and cannot answer "did any pass fall
-        back?". The per-result provider can: a pass served by anything other
-        than the primary channel took the fallback route. Indices are 1-based
-        to match the ``extraction_confidence`` run numbering."""
-        primary_channel = self._primary_channel()
+        ``results`` supplies the SERVED labels (what answered) and ``rungs``
+        the rung facts (which agent asked), positionally aligned with each
+        other and with the pass numbering. Keeping those two apart is the
+        point: what a response says about itself describes the vendor's
+        routing, not the ladder's, and conflating them is what made every
+        healthy pass read as a fallback after the channel pin (see
+        :meth:`_run_leg`)."""
         providers = [r.provider for r in results if r is not None]
         models = [r.model for r in results if r is not None and r.model]
-        fallback_passes = [
-            i for i, r in enumerate(results, start=1)
-            if r is not None and primary_channel and r.provider != primary_channel
-        ]
         return (providers[0] if providers else "",
                 models[0] if models else "",
-                fallback_passes)
+                self._fallback_indices(rungs))
 
     async def run(
         self, message: str | None = None, context: dict | None = None, **kwargs: Any
@@ -834,17 +847,20 @@ class BiasComposite:
         article_body = context.get("article_body", "") or ""
 
         # --- Phase A: two generous extraction passes (concurrent) ------------
-        async def _extract() -> AgentResult | None:
+        async def _extract() -> tuple[AgentResult | None, bool]:
             try:
-                return await self.extractor.run(
-                    EXTRACT_MESSAGE, context={"article_body": article_body}
+                return await self._run_leg(
+                    self.extractor, EXTRACT_MESSAGE,
+                    context={"article_body": article_body},
                 )
             except AgentError as exc:
                 logger.warning("bias extractor pass failed: %s", exc)
-                return None
+                return None, False
 
-        results = await asyncio.gather(
+        pass_results = await asyncio.gather(
             *(_extract() for _ in range(EXTRACTION_PASSES)))
+        results = [r for r, _ in pass_results]
+        ext_rungs = [used for _, used in pass_results]
         if all(r is None for r in results):
             raise AgentError("bias extraction failed on all passes")
         runs: list[list[dict]] = []
@@ -866,7 +882,7 @@ class BiasComposite:
                 outlier_passes, [len(r) for r in runs],
                 EXTRA_PASS_OUTLIER_RATIO * 100,
             )
-            extra = await _extract()
+            extra, extra_rung = await _extract()
             extra_pass_run = True
             if extra is None:
                 # The extra pass failed outright. Do NOT append an empty run:
@@ -880,9 +896,11 @@ class BiasComposite:
             else:
                 self._account(extra)
                 results = list(results) + [extra]
+                ext_rungs = list(ext_rungs) + [extra_rung]
                 runs.append((extra.structured or {}).get("candidates") or [])
 
-        ext_provider, ext_model, ext_fallback_passes = self._channel_report(results)
+        ext_provider, ext_model, ext_fallback_passes = self._channel_report(
+            results, ext_rungs)
 
         # Deterministic canonical-term candidates, scanned from the article's
         # own voice and merged in alongside the model passes. Runs on every
@@ -897,6 +915,7 @@ class BiasComposite:
         # Python assigns the tier from the two votes (TASK-BIAS-DUAL-JUDGE).
         judge_skipped = not candidates
         judge1_provider = judge2_provider = ""
+        judge_rungs: list[bool] = []
         judge_models_served: list[str] = []
         judge_providers_served: list[str] = []
         judgments1: list[dict] = []
@@ -912,10 +931,11 @@ class BiasComposite:
                 for c in candidates
             ]
             judge_ctx = {"article_body": article_body, "candidates": judge_input}
-            jres1, jres2 = await asyncio.gather(
-                self.judge.run(JUDGE_MESSAGE, context=judge_ctx),
-                self.judge.run(JUDGE_MESSAGE, context=judge_ctx),
+            (jres1, rung1), (jres2, rung2) = await asyncio.gather(
+                self._run_leg(self.judge, JUDGE_MESSAGE, context=judge_ctx),
+                self._run_leg(self.judge, JUDGE_MESSAGE, context=judge_ctx),
             )
+            judge_rungs = [rung1, rung2]
             for jres, which in ((jres1, 1), (jres2, 2)):
                 self._account(jres)
                 judge_models_served.append(jres.model or "")
@@ -942,7 +962,7 @@ class BiasComposite:
         self.last_judgments_debug = family_debug
         disagreements = sum(1 for d in family_debug if d["v1"] != d["v2"])
 
-        judge_fallback_votes = self._judge_fallback_votes(judge_models_served)
+        judge_fallback_votes = self._fallback_indices(judge_rungs)
 
         # --- canonical loud-logging markers (TASK-BIAS-TELEMETRY-FORENSICS) --
         # The runner's seam emits exactly one `model_used` / `provider_used`
@@ -1008,19 +1028,27 @@ class BiasComposite:
         }
         if judge_fallback_votes:
             logger.warning(
-                "bias judge FALLBACK: judgment vote(s) %s were served by %s, "
-                "not the primary %s. Loud by design — the marker is "
-                "bias_judge_fallback_used in run_stage_log.jsonl.",
+                "bias judge FALLBACK: judgment vote(s) %s fell through to the "
+                "rung-2 agent after the primary %s failed; served by %s. Loud "
+                "by design — the marker is bias_judge_fallback_used in "
+                "run_stage_log.jsonl.",
                 judge_fallback_votes,
-                [judge_models_served[i - 1] for i in judge_fallback_votes],
                 self._judge_primary_model() or "the primary model",
+                [judge_models_served[i - 1] or "unknown"
+                 for i in judge_fallback_votes],
             )
         if ext_fallback_passes:
+            primary = getattr(self.extractor, "primary", self.extractor)
+            fallback = getattr(self.extractor, "fallback", None)
             logger.warning(
-                "bias extractor FALLBACK: pass(es) %s were served by the "
-                "channel-A route, not %s. Loud by design — the marker is "
-                "extractor_fallback_used in run_stage_log.jsonl.",
-                ext_fallback_passes, self._primary_channel() or "the primary channel",
+                "bias extractor FALLBACK: pass(es) %s of %d fell through to the "
+                "rung-2 agent %s after the primary %s failed; served by %s. "
+                "Loud by design — the marker is extractor_fallback_used in "
+                "run_stage_log.jsonl.",
+                ext_fallback_passes, len(results),
+                getattr(fallback, "model", "?"),
+                getattr(primary, "model", "?"),
+                [ext_models[i - 1] or "unknown" for i in ext_fallback_passes],
             )
         logger.info(
             "bias composite: extracted %s (raw/pass over %d passes%s), union=%d, "
