@@ -109,7 +109,7 @@ def test_writer_and_editor_stay_on_glm_5_2(agents):
         # still on the third-party fp8 route, not the vendor endpoint
         assert p._provider_routing["quantizations"] == ["fp8"], stage
         assert p._provider_routing["order"] == [
-            "baidu/fp8", "ambient/fp8", "venice/fp8"], stage
+            "baidu/fp8", "venice/fp8"], stage
 
 
 def test_no_other_stage_moved_to_glm_5_3_flash(agents):

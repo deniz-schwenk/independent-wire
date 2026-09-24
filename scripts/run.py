@@ -169,7 +169,7 @@ DEEPSEEK_NATIVE_ROUTING = {
 # ``allow_fallbacks:false`` + ``quantizations:["fp8"]`` fail LOUD rather than
 # dropping to an unverified/fp4 provider.
 GLM_5_2_WRITER_FP8_ROUTING = {
-    "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
+    "order": ["baidu/fp8", "venice/fp8"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
 }
@@ -179,7 +179,7 @@ GLM_5_2_WRITER_FP8_ROUTING = {
 # separately so a per-stage divergence never requires editing another stage's
 # routing.
 GLM_5_2_EDITOR_FP8_ROUTING = {
-    "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
+    "order": ["baidu/fp8", "venice/fp8"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
 }
