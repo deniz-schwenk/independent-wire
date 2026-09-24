@@ -170,7 +170,11 @@ def _occurrences(excerpt: str, body: str) -> list[tuple[int, int]]:
     return spans
 
 
-LEXICON_PATH = Path(__file__).resolve().parents[1] / "config" / "bias_lexicon.json"
+# Anchored to the module's location, never the CWD: a harness run from another
+# directory must still find the lexicon. A RELATIVE ``path`` handed to
+# load_lexicon resolves against this root too, for the same reason.
+REPO_ROOT = Path(__file__).resolve().parents[1]
+LEXICON_PATH = REPO_ROOT / "config" / "bias_lexicon.json"
 
 # Quotation marks that open or close reported speech in the corpus. Straight and
 # typographic doubles, typographic singles, and the guillemets that appear in
@@ -191,6 +195,8 @@ def load_lexicon(path: str | None = None) -> tuple[tuple[str, str], ...]:
     lexicon outage must never take the bias card down.
     """
     p = Path(path) if path else LEXICON_PATH
+    if not p.is_absolute():
+        p = REPO_ROOT / p
     try:
         data = json.loads(p.read_text(encoding="utf-8"))
     except Exception as exc:                                     # noqa: BLE001

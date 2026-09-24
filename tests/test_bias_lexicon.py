@@ -41,6 +41,19 @@ def test_shipped_lexicon_is_wellformed_and_every_entry_is_sourced():
         assert t.get("note"), f"{t['term']} carries no source note"
 
 
+def test_lexicon_loads_from_a_foreign_cwd(monkeypatch, tmp_path):
+    """A harness run from another directory keeps the lexicon — the default
+    path and a relative one both resolve against the repo root, not the CWD."""
+    monkeypatch.chdir(tmp_path)
+    load_lexicon.cache_clear()
+    try:
+        assert len(load_lexicon()) >= 25
+        load_lexicon.cache_clear()
+        assert len(load_lexicon("config/bias_lexicon.json")) >= 25
+    finally:
+        load_lexicon.cache_clear()
+
+
 def test_missing_lexicon_file_is_not_fatal(caplog, tmp_path):
     load_lexicon.cache_clear()
     try:
