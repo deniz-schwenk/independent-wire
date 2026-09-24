@@ -1,0 +1,14 @@
+{
+ "stage": "ResolveActorAliasesStage",
+ "kind": "topic",
+ "status": "degraded",
+ "topic_index": 2,
+ "topic_slug": "ai-executives-call-for-slowing-advanced-development-as",
+ "degraded": true,
+ "degraded_reason": "no aliases resolved across 63 actors after 3 attempts across every rung — canonical_actors is the unmerged input",
+ "cost_usd": 0.0,
+ "tokens": 63264,
+ "model_used": "deepseek-flash",
+ "provider_used": "deepseek_direct",
+ "resolve_actor_aliases_fallback_used": false
+}

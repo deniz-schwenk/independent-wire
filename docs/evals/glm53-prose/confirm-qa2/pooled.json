@@ -1,0 +1,77 @@
+{
+ "note": "SECONDARY. The pre-registered verdict is decided on confirm-2 alone; see reports/aggregate.json.",
+ "pooled": {
+  "n": 26,
+  "delta": 0.5865,
+  "ci95": [
+   0.2995,
+   0.8736
+  ],
+  "wins": 18,
+  "ties": 5,
+  "losses": 3,
+  "deltas": [
+   1.0,
+   0.0,
+   1.0,
+   1.0,
+   0.0,
+   1.0,
+   0.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   2.0,
+   1.0,
+   -1.0,
+   0.25,
+   0.0,
+   1.0,
+   -0.5,
+   0.5,
+   1.0,
+   1.0,
+   -1.0,
+   1.0,
+   1.0,
+   0.0
+  ]
+ },
+ "batches": {
+  "addendum  (09-06/07/08)": {
+   "n": 9,
+   "delta_absolute": 0.6667,
+   "ci95_absolute": [
+    0.2823,
+    1.051
+   ],
+   "wins": 6,
+   "ties": 3,
+   "losses": 0
+  },
+  "confirm-1 (09-09/10/11)": {
+   "n": 8,
+   "delta_absolute": 0.6562,
+   "ci95_absolute": [
+    -0.0928,
+    1.4053
+   ],
+   "wins": 6,
+   "ties": 1,
+   "losses": 1
+  },
+  "confirm-2 (09-13/14/15)": {
+   "n": 9,
+   "delta_absolute": 0.4444,
+   "ci95_absolute": [
+    -0.1461,
+    1.035
+   ],
+   "wins": 6,
+   "ties": 1,
+   "losses": 2
+  }
+ }
+}

@@ -1,0 +1,225 @@
+{
+ "per_case": {
+  "C": {
+   "planner__2026-09-06__t0": 4,
+   "planner__2026-09-06__t1": 3.6666666666666665,
+   "planner__2026-09-06__t2": 3.8333333333333335,
+   "planner__2026-09-07__t0": 4,
+   "planner__2026-09-07__t1": 3.8333333333333335,
+   "planner__2026-09-07__t2": 4.166666666666667,
+   "planner__2026-09-08__t0": 3.1666666666666665,
+   "planner__2026-09-08__t1": 3.3333333333333335,
+   "planner__2026-09-08__t2": 4.166666666666667
+  },
+  "F": {
+   "planner__2026-09-06__t0": 3.1666666666666665,
+   "planner__2026-09-06__t1": 2.6666666666666665,
+   "planner__2026-09-06__t2": 3.3333333333333335,
+   "planner__2026-09-07__t0": 3.3333333333333335,
+   "planner__2026-09-07__t1": 2.6666666666666665,
+   "planner__2026-09-07__t2": 3.5,
+   "planner__2026-09-08__t0": 4,
+   "planner__2026-09-08__t1": 4,
+   "planner__2026-09-08__t2": 3.1666666666666665
+  }
+ },
+ "charges": {
+  "C": [
+   {
+    "case": "planner__2026-09-06__t1",
+    "judge": 1,
+    "query_index": 15,
+    "text": "sa tanker na inatake ng US sa Hormuz",
+    "why": "Phrased as a search for Filipino seafarers who were on the struck tankers, it presupposes Filipino crew aboard those specific vessels. The dossier records crew evacuations but establishes no crew nationality, so the query seeks confirmation of a crew composition rather than testing it. Mild \u2014 a real and plausibly involved community, no invented entity."
+   },
+   {
+    "case": "planner__2026-09-06__t1",
+    "judge": 2,
+    "query_index": 6,
+    "text": "\u0646\u0641\u062a\u06a9\u0634\u200c\u0647\u0627\u06cc \u0633\u067e\u0627\u0647 \u067e\u0627\u0633\u062f\u0627\u0631\u0627\u0646",
+    "why": "States as fact that the struck tankers belong to the IRGC. The dossier carries this only as a US military characterisation ('IRGC-linked'), and coverage_gaps names the absence of any independent verification of it as a gap. The query therefore seeks confirmation of the contested attribution rather than testing it."
+   },
+   {
+    "case": "planner__2026-09-06__t2",
+    "judge": 1,
+    "query_index": 0,
+    "text": "Israeli Gaza displacement plan September 2026",
+    "why": "The dossier establishes no Israeli displacement plan. What it carries is Katz saying Israel awaits US decisions on where Gazans would go and, in two separate items, the US ambassador stating that Israel does not plan to forcibly displace Gazans \u2014 the existence of a plan is precisely the contested question. The query presupposes it, so a search would be gathering confirmation rather than testing the claim."
+   },
+   {
+    "case": "planner__2026-09-06__t2",
+    "judge": 2,
+    "query_index": 0,
+    "text": "Israeli Gaza displacement plan",
+    "why": "The dossier does not establish that a displacement plan exists; it carries Katz awaiting US decisions on where Gazans would go and, in the Clarin item, the US ambassador saying explicitly that Israel does not plan to forcibly displace Gazans. The query treats the contested thing as settled and would seek confirmation of it rather than test it. Mild \u2014 no invented entity, and the underlying subject is squarely in the dossier."
+   },
+   {
+    "case": "planner__2026-09-07__t1",
+    "judge": 1,
+    "query_index": 8,
+    "text": "\u062c\u0627\u0645\u0639\u0629 \u0627\u0644\u062f\u0648\u0644 \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u062a\u062f\u064a\u0646",
+    "why": "Presupposes that the Arab League has condemned the Lebanon strikes. The dossier establishes the opposite \u2014 coverage_gaps records that no Arab League or regional multilateral body is quoted on the Lebanon strikes at all, and the only joint statement in the corpus (eight Muslim states) addresses Gaza displacement. The query seeks confirmation of a condemnation rather than testing whether one exists."
+   },
+   {
+    "case": "planner__2026-09-07__t1",
+    "judge": 2,
+    "query_index": 8,
+    "text": "\u062c\u0627\u0645\u0639\u0629 \u0627\u0644\u062f\u0648\u0644 \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u062a\u062f\u064a\u0646 \u0627\u0644\u063a\u0627\u0631\u0627\u062a \u0627\u0644\u0625\u0633\u0631\u0627\u0626\u064a\u0644\u064a\u0629 \u0639\u0644\u0649 \u0644\u0628\u0646\u0627\u0646",
+    "why": "The verb '\u062a\u062f\u064a\u0646' ('condemns') presupposes that the Arab League has issued a condemnation of the Lebanon strikes. The dossier establishes the opposite state of knowledge: coverage_gaps records that no Arab League or regional multilateral body is quoted on the Lebanon strikes specifically, and the only joint statement in the corpus (eight Muslim states) addresses Gaza displacement. The query therefore seeks confirmation of a position rather than testing whether one was taken. Mild: the body is real and plausibly connected, and nothing is invented."
+   },
+   {
+    "case": "planner__2026-09-08__t1",
+    "judge": 1,
+    "query_index": 14,
+    "text": "O'zbekiston vositachilik",
+    "why": "Presupposes an Uzbek mediating role in the Russia-Ukraine track. The dossier names China, Turkey, India, Brazil and South Africa as would-be mediators and gives Central Asia no role, position or presence of any kind."
+   },
+   {
+    "case": "planner__2026-09-08__t1",
+    "judge": 2,
+    "query_index": 14,
+    "text": "O'zbekiston vositachilik",
+    "why": "Presupposes that Uzbekistan holds a mediation role in this conflict. Nothing in the topic assignment or coverage_summary establishes any Uzbek involvement; the coverage_gaps entry on Global South mediators names India, Brazil and South Africa. The query would be seeking confirmation of the role rather than testing whether one exists."
+   }
+  ],
+  "F": [
+   {
+    "case": "planner__2026-09-06__t1",
+    "judge": 1,
+    "query_index": 8,
+    "text": "Kaspiy mintaqasi Xorazm",
+    "why": "The dossier places the strikes near Kharg Island and the Strait of Hormuz. Nothing in it establishes a Caspian dimension, and Khorezm, an Uzbek province, has no plausible connection to the story. The query embeds a geographic link the inputs do not support."
+   },
+   {
+    "case": "planner__2026-09-06__t1",
+    "judge": 1,
+    "query_index": 7,
+    "text": "\u041a\u0430\u0441\u043f\u0438\u0439 \u0426\u0435\u043d\u0442\u0440\u0430\u043b\u044c\u043d\u0430\u044f \u0410\u0437\u0438\u044f \u0440\u0435\u0430\u043a\u0446\u0438\u044f",
+    "why": "Same unsupported frame in Russian: it presupposes a Caspian/Central Asian dimension to strikes the dossier locates entirely in the Persian Gulf and Strait of Hormuz, so it seeks confirmation of that link rather than testing it \u2014 and it spends the plan's only Russian query on it instead of on Moscow's position."
+   },
+   {
+    "case": "planner__2026-09-06__t1",
+    "judge": 2,
+    "query_index": 6,
+    "text": "\u0646\u0641\u062a\u06a9\u0634\u200c\u0647\u0627\u06cc \u0633\u067e\u0627\u0647 \u067e\u0627\u0633\u062f\u0627\u0631\u0627\u0646",
+    "why": "Treats IRGC ownership of the struck tankers as established. The dossier carries it only as a CENTCOM characterisation, and coverage_gaps names the absence of independent verification of exactly this claim."
+   },
+   {
+    "case": "planner__2026-09-06__t1",
+    "judge": 2,
+    "query_index": 8,
+    "text": "Kaspiy mintaqasi Xorazm",
+    "why": "Locates the story in the Caspian region and in Khorezm, a landlocked province of Uzbekistan. Nothing in the topic assignment or the hydration coverage connects the strikes near Kharg Island, or the Strait of Hormuz disruption, to the Caspian basin or to Uzbekistan."
+   },
+   {
+    "case": "planner__2026-09-06__t1",
+    "judge": 2,
+    "query_index": 7,
+    "text": "\u041a\u0430\u0441\u043f\u0438\u0439 \u0426\u0435\u043d\u0442\u0440\u0430\u043b\u044c\u043d\u0430\u044f \u0410\u0437\u0438\u044f",
+    "why": "Same unsupported geographic link in the Russian query: the dossier places the strikes in the Persian Gulf near Kharg Island and gives no Caspian or Central Asian dimension for a search to confirm."
+   },
+   {
+    "case": "planner__2026-09-06__t2",
+    "judge": 1,
+    "query_index": 4,
+    "text": "Egypt Jordan rejection Palestinian displacement Gaza US Katz plan",
+    "why": "The dossier records Defence Minister Katz's statements about awaiting US decisions on where Gazans would go; it establishes neither a 'Katz plan' as a document or programme nor any Egyptian or Jordanian rejection of one. The string asks a search engine to confirm both rather than test them, and the dossier in fact carries the US ambassador saying Israel does not plan to forcibly displace Gazans."
+   },
+   {
+    "case": "planner__2026-09-06__t2",
+    "judge": 2,
+    "query_index": 4,
+    "text": "Egypt Jordan rejection Palestinian displacement",
+    "why": "The dossier establishes only that Egypt and Jordan would be directly affected by displacement; it nowhere shows either state taking a rejection position. The query presupposes the stance and so seeks confirmation of it rather than testing it. Mild \u2014 the same presupposition recurs in q7 ('\u0631\u0641\u0636 \u062a\u0647\u062c\u064a\u0631', 'refusal of displacement'), which is the same assertion in Arabic and is counted as one instance, not two."
+   },
+   {
+    "case": "planner__2026-09-07__t1",
+    "judge": 1,
+    "query_index": 17,
+    "text": "Borrell",
+    "why": "The query makes a named individual the EU's responder on this escalation. The dossier names no EU official at all \u2014 coverage_gaps records precisely that no EU or European government official comments on the Lebanon escalation \u2014 and nothing in the inputs shows this person holding that role or taking any position on this story. Naming an absent institution is the plan's job; binding it to a specific named actor the inputs never establish is not."
+   },
+   {
+    "case": "planner__2026-09-07__t1",
+    "judge": 1,
+    "query_index": 8,
+    "text": "\u05e0\u05e4\u05d9\u05dc\u05d5\u05ea \u05e8\u05e7\u05d8\u05d5\u05ea",
+    "why": "Presupposes rocket impacts on the named Israeli border towns. The dossier carries only an alleged Hezbollah drone launch against IDF soldiers and IDF statements citing threats to 'Israeli civilians and soldiers'; it records no rocket fire onto Israeli civilian communities. The query would seek confirmation of the civilian-harm premise underlying the contested justification rather than test it."
+   },
+   {
+    "case": "planner__2026-09-07__t1",
+    "judge": 1,
+    "query_index": 6,
+    "text": "\u0628\u064a\u0627\u0646 \u0637\u0627\u0631\u0626",
+    "why": "Presupposes that the Arab League has issued an emergency statement on the Lebanon strikes. The dossier states that no Arab League or regional multilateral body is quoted on these strikes, and the only collective statement in the corpus concerns Gaza displacement."
+   },
+   {
+    "case": "planner__2026-09-07__t1",
+    "judge": 2,
+    "query_index": 8,
+    "text": "\u05e0\u05e4\u05d9\u05dc\u05d5\u05ea \u05e8\u05e7\u05d8\u05d5\u05ea 2026",
+    "why": "Presupposes rocket impacts on northern Israeli communities in 2026. The dossier's account of the triggering incident is an alleged Hezbollah drone launch against IDF soldiers, and IDF statements about threats to 'Israeli civilians and soldiers'; nothing in the corpus records rockets falling on Metula, Kiryat Shmona or anywhere in northern Israel. The query would be seeking confirmation of an event the inputs do not establish rather than testing it. The town names themselves are real and plausibly connected \u2014 the charge is the presupposed event, not the geography."
+   },
+   {
+    "case": "planner__2026-09-07__t1",
+    "judge": 2,
+    "query_index": 17,
+    "text": "EU Reaktion Borrell",
+    "why": "Attributes the EU's response on this escalation to one named individual who appears nowhere in the dossier and whom the inputs never place in that role or show speaking. He is a real EU foreign-policy figure plausibly connected to the subject, so this is not an invented entity; the charge is that the query carries an attribution the dossier does not support, and would return results shaped by that name rather than by whoever actually speaks for the EU here. Milder than an invention, but it narrows a named coverage gap onto an unsupported premise."
+   },
+   {
+    "case": "planner__2026-09-08__t0",
+    "judge": 1,
+    "query_index": 5,
+    "text": "\u0625\u063a\u0644\u0627\u0642 \u0645\u0636\u064a\u0642 \u0647\u0631\u0645\u0632",
+    "why": "Presupposes the Strait of Hormuz has been closed. The dossier establishes only that traffic fell to its lowest level since May and that Iran announced a planned restricted zone outside the Strait; no closure is asserted anywhere in the input, so the query seeks confirmation of a state of affairs rather than testing it."
+   },
+   {
+    "case": "planner__2026-09-08__t1",
+    "judge": 1,
+    "query_index": 13,
+    "text": "\ubd81\ud55c\uad70 \ud30c\ubcd1 \uc804\ud669 \uc601\ud5a5",
+    "why": "Presupposes a North Korean troop deployment and its effect on the battlefield as established fact. North Korea appears nowhere in the topic, the source titles, the stakeholder inventory or the coverage_gaps list, so the dossier supports neither the deployment nor its relevance to this story."
+   },
+   {
+    "case": "planner__2026-09-08__t1",
+    "judge": 2,
+    "query_index": 13,
+    "text": "\ubd81\ud55c\uad70 \ud30c\ubcd1",
+    "why": "Presupposes a North Korean troop deployment to the war as established fact. Nothing in the topic assignment, the summary, the source titles or the coverage_gaps mentions North Korea or any DPRK involvement; the query would seek confirmation of the deployment rather than test whether it bears on this story."
+   }
+  ]
+ },
+ "paired_F_vs_C": {
+  "n": 9,
+  "delta": -0.4815,
+  "ci95": [
+   -1.0415,
+   0.0786
+  ],
+  "wins": 2,
+  "ties": 0,
+  "losses": 7,
+  "per_case": {
+   "planner__2026-09-06__t0": -0.8333,
+   "planner__2026-09-06__t1": -1.0,
+   "planner__2026-09-06__t2": -0.5,
+   "planner__2026-09-07__t0": -0.6667,
+   "planner__2026-09-07__t1": -1.1667,
+   "planner__2026-09-07__t2": -0.6667,
+   "planner__2026-09-08__t0": 0.8333,
+   "planner__2026-09-08__t1": 0.6667,
+   "planner__2026-09-08__t2": -1.0
+  }
+ },
+ "paired_F_vs_C_prod_only": {
+  "n": 6,
+  "delta": -0.3333,
+  "ci95": [
+   -1.2389,
+   0.5723
+  ],
+  "wins": 2,
+  "losses": 4
+ }
+}

@@ -1,0 +1,286 @@
+{
+ "editor": {
+  "stage": "editor",
+  "arms": {
+   "C": {
+    "n_cases": 3,
+    "absolute_mean": 4.167,
+    "pass_rate_mean": 0.862,
+    "mean_rank": 1.667,
+    "firsts": 2,
+    "verdicts": 6,
+    "fabrication_charges_raised": 5
+   },
+   "F_M": {
+    "n_cases": 3,
+    "absolute_mean": 4.0,
+    "pass_rate_mean": 0.887,
+    "mean_rank": 1.333,
+    "firsts": 4,
+    "verdicts": 6,
+    "fabrication_charges_raised": 7
+   }
+  },
+  "paired_FM_vs_C": {
+   "n": 3,
+   "delta_absolute": -0.1667,
+   "ci95_absolute": [
+    -2.0641,
+    1.7308
+   ],
+   "wins": 1,
+   "ties": 1,
+   "losses": 1,
+   "delta_pass_rate": 0.025,
+   "ci95_pass_rate": [
+    -0.3326,
+    0.3826
+   ],
+   "per_case": {
+    "editor__2026-09-06__trun": 0.0,
+    "editor__2026-09-07__trun": -1.0,
+    "editor__2026-09-08__trun": 0.5
+   }
+  },
+  "C_rejudge_drift": {
+   "n": 3,
+   "batch1_mean": 3.833,
+   "rejudge_mean": 4.167,
+   "delta": 0.3333,
+   "ci95": [
+    -1.5641,
+    2.2308
+   ],
+   "mean_abs_drift": 0.667,
+   "exact_same": 0,
+   "within_1": 3,
+   "per_case": {
+    "editor__2026-09-06__trun": 0.5,
+    "editor__2026-09-07__trun": 1.0,
+    "editor__2026-09-08__trun": -0.5
+   }
+  }
+ },
+ "hydration_phase2": {
+  "stage": "hydration_phase2",
+  "arms": {
+   "C": {
+    "n_cases": 9,
+    "absolute_mean": 2.944,
+    "pass_rate_mean": 0.704,
+    "mean_rank": 2,
+    "firsts": 0,
+    "verdicts": 16,
+    "fabrication_charges_raised": 35
+   },
+   "F_M": {
+    "n_cases": 9,
+    "absolute_mean": 4.0,
+    "pass_rate_mean": 0.879,
+    "mean_rank": 1,
+    "firsts": 16,
+    "verdicts": 16,
+    "fabrication_charges_raised": 21
+   }
+  },
+  "paired_FM_vs_C": {
+   "n": 9,
+   "delta_absolute": 1.0556,
+   "ci95_absolute": [
+    0.6072,
+    1.5039
+   ],
+   "wins": 9,
+   "ties": 0,
+   "losses": 0,
+   "delta_pass_rate": 0.1754,
+   "ci95_pass_rate": [
+    0.1006,
+    0.2503
+   ],
+   "per_case": {
+    "hydration_phase2__2026-09-06__t0": 1.0,
+    "hydration_phase2__2026-09-06__t1": 1.0,
+    "hydration_phase2__2026-09-06__t2": 2.0,
+    "hydration_phase2__2026-09-07__t0": 0.5,
+    "hydration_phase2__2026-09-07__t1": 2.0,
+    "hydration_phase2__2026-09-07__t2": 0.5,
+    "hydration_phase2__2026-09-08__t0": 1.0,
+    "hydration_phase2__2026-09-08__t1": 1.0,
+    "hydration_phase2__2026-09-08__t2": 0.5
+   }
+  },
+  "C_rejudge_drift": {
+   "n": 9,
+   "batch1_mean": 3.056,
+   "rejudge_mean": 2.944,
+   "delta": -0.1111,
+   "ci95": [
+    -0.5312,
+    0.3089
+   ],
+   "mean_abs_drift": 0.333,
+   "exact_same": 5,
+   "within_1": 9,
+   "per_case": {
+    "hydration_phase2__2026-09-06__t0": 0.0,
+    "hydration_phase2__2026-09-06__t1": 0.0,
+    "hydration_phase2__2026-09-06__t2": -1.0,
+    "hydration_phase2__2026-09-07__t0": 0.5,
+    "hydration_phase2__2026-09-07__t1": -1.0,
+    "hydration_phase2__2026-09-07__t2": 0.0,
+    "hydration_phase2__2026-09-08__t0": 0.0,
+    "hydration_phase2__2026-09-08__t1": 0.0,
+    "hydration_phase2__2026-09-08__t2": 0.5
+   }
+  }
+ },
+ "qa_analyze": {
+  "stage": "qa_analyze",
+  "arms": {
+   "C": {
+    "n_cases": 9,
+    "absolute_mean": 3.556,
+    "pass_rate_mean": 0.861,
+    "mean_rank": 1.833,
+    "firsts": 2,
+    "verdicts": 12,
+    "fabrication_charges_raised": 2
+   },
+   "F_M": {
+    "n_cases": 9,
+    "absolute_mean": 4.222,
+    "pass_rate_mean": 0.927,
+    "mean_rank": 1.167,
+    "firsts": 10,
+    "verdicts": 12,
+    "fabrication_charges_raised": 3
+   }
+  },
+  "paired_FM_vs_C": {
+   "n": 9,
+   "delta_absolute": 0.6667,
+   "ci95_absolute": [
+    0.2823,
+    1.051
+   ],
+   "wins": 6,
+   "ties": 3,
+   "losses": 0,
+   "delta_pass_rate": 0.0667,
+   "ci95_pass_rate": [
+    -0.0062,
+    0.1395
+   ],
+   "per_case": {
+    "qa_analyze__2026-09-06__t0": 1.0,
+    "qa_analyze__2026-09-06__t1": 0.0,
+    "qa_analyze__2026-09-06__t2": 1.0,
+    "qa_analyze__2026-09-07__t0": 1.0,
+    "qa_analyze__2026-09-07__t1": 0.0,
+    "qa_analyze__2026-09-07__t2": 1.0,
+    "qa_analyze__2026-09-08__t0": 0.0,
+    "qa_analyze__2026-09-08__t1": 1.0,
+    "qa_analyze__2026-09-08__t2": 1.0
+   }
+  },
+  "C_rejudge_drift": {
+   "n": 9,
+   "batch1_mean": 3.222,
+   "rejudge_mean": 3.556,
+   "delta": 0.3333,
+   "ci95": [
+    -0.2102,
+    0.8769
+   ],
+   "mean_abs_drift": 0.556,
+   "exact_same": 4,
+   "within_1": 9,
+   "per_case": {
+    "qa_analyze__2026-09-06__t0": 0.0,
+    "qa_analyze__2026-09-06__t1": 1.0,
+    "qa_analyze__2026-09-06__t2": 0.0,
+    "qa_analyze__2026-09-07__t0": -1.0,
+    "qa_analyze__2026-09-07__t1": 1.0,
+    "qa_analyze__2026-09-07__t2": 1.0,
+    "qa_analyze__2026-09-08__t0": 0.0,
+    "qa_analyze__2026-09-08__t1": 1.0,
+    "qa_analyze__2026-09-08__t2": 0.0
+   }
+  }
+ },
+ "writer": {
+  "stage": "writer",
+  "arms": {
+   "C": {
+    "n_cases": 9,
+    "absolute_mean": 3.889,
+    "pass_rate_mean": 0.844,
+    "mean_rank": 1.733,
+    "firsts": 4,
+    "verdicts": 15,
+    "fabrication_charges_raised": 12
+   },
+   "F_M": {
+    "n_cases": 9,
+    "absolute_mean": 4.056,
+    "pass_rate_mean": 0.887,
+    "mean_rank": 1.267,
+    "firsts": 11,
+    "verdicts": 15,
+    "fabrication_charges_raised": 4
+   }
+  },
+  "paired_FM_vs_C": {
+   "n": 9,
+   "delta_absolute": 0.1667,
+   "ci95_absolute": [
+    -0.1662,
+    0.4995
+   ],
+   "wins": 3,
+   "ties": 5,
+   "losses": 1,
+   "delta_pass_rate": 0.0433,
+   "ci95_pass_rate": [
+    -0.0145,
+    0.1011
+   ],
+   "per_case": {
+    "writer__2026-09-06__t0": -0.5,
+    "writer__2026-09-06__t1": 0.0,
+    "writer__2026-09-06__t2": 0.0,
+    "writer__2026-09-07__t0": 0.0,
+    "writer__2026-09-07__t1": 0.0,
+    "writer__2026-09-07__t2": 1.0,
+    "writer__2026-09-08__t0": 0.0,
+    "writer__2026-09-08__t1": 0.5,
+    "writer__2026-09-08__t2": 0.5
+   }
+  },
+  "C_rejudge_drift": {
+   "n": 9,
+   "batch1_mean": 3.667,
+   "rejudge_mean": 3.889,
+   "delta": 0.2222,
+   "ci95": [
+    -0.057,
+    0.5014
+   ],
+   "mean_abs_drift": 0.222,
+   "exact_same": 6,
+   "within_1": 9,
+   "per_case": {
+    "writer__2026-09-06__t0": 0.0,
+    "writer__2026-09-06__t1": 0.0,
+    "writer__2026-09-06__t2": 0.0,
+    "writer__2026-09-07__t0": 0.5,
+    "writer__2026-09-07__t1": 0.0,
+    "writer__2026-09-07__t2": 1.0,
+    "writer__2026-09-08__t0": 0.0,
+    "writer__2026-09-08__t1": 0.0,
+    "writer__2026-09-08__t2": 0.5
+   }
+  }
+ }
+}

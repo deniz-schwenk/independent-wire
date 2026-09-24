@@ -102,6 +102,58 @@ Each artifact line: *filename — role · original path*.
 - `labels/architect_review_sample.json` + `labels/architect_blind_review.json` — 79-pair 10 % stratified blind re-review by the Architect subagent → 79/79 agreement, κ=1.0, PASS
 - `labels/_meta.json` — per-language counts, seed 20260707, method
 
+> **September mirror (TASK-EVALS-MIRROR, 2026-09-24).** The six groups below are copy-only mirrors of gitignored `scratch/eval/` and `scratch/audit/` evidence, curated under the same content policy (no keys; longest embedded string 692 chars, a judge fabrication charge). Relative paths *inside* the copied reports (`reports/…`, `logs/…`) name the original scratch layout; the copied file sits flat in its group folder. Per-group unarchived material is noted on the lead line and listed under "Excluded".
+
+## glm53-prose — glm-5.2 prose stages (editor / writer / qa_analyze / hydration_phase2) vs glm-5.3 @ high (H), glm-5.3 @ max (M), glm-5.3-flash @ max (F_M); batch 1 + F_M addendum on 09-06/07/08, then two pre-registered cold confirmations on fresh days → **hydration_phase2 → glm-5.3-flash @ max: CONFIRMED** (18 instances, 2 batches, no case lost); **qa_analyze → glm-5.3-flash @ max: COST-LED, NOT "confirmed better" — two pre-registered confirmations FAILED (confirm-1 n=8 Δ +0.656 CI [−0.093, +1.405]; confirm-2 n=9 Δ +0.444 CI [−0.146, +1.035]); pooled n=26 Δ +0.587 CI [+0.300, +0.874] is SECONDARY, not the verdict; −88% stage cost**; writer/editor unchanged (landed `04fd010`) (2026-09-09 → 09-15)
+> Unarchived (stay in `scratch/eval/glm53-prose/`): `candidates/` + `*/candidates/` (raw arm outputs), `inputs/`, `frozen/` (478 MB production-state copy), `judging/` packets + keymaps + verdict files (~6.5 MB), `confirm/` + `confirm-qa2/` frozen/input copies (~510 MB), prod-state hash manifests (`*.PRE/POST.txt`, 49–52 KB each), batch logs, all harness scripts.
+- `batch1/REPORT.md` — batch 1 three-arm report (C/H/M × 4 stages, n=9; editor n=3 no discrimination) · orig `scratch/eval/glm53-prose/reports/REPORT.md`
+- `batch1/METHOD.md` — method, blinding, rubric provenance · orig `scratch/eval/glm53-prose/reports/METHOD.md`
+- `batch1/aggregate.json` — per-stage paired deltas, CIs, ranks, agreement · orig `scratch/eval/glm53-prose/reports/aggregate.json`
+- `batch1/charges.json` — Honest-Detector fabrication charges + 2-of-2 confirmations · orig `scratch/eval/glm53-prose/reports/charges.json`
+- `batch1/calls.jsonl` — per-call ledger (served model/provider, cost, tokens, latency; 60 calls) · orig `scratch/eval/glm53-prose/logs/calls.jsonl`
+- `rubrics/{editor,writer,qa_analyze,hydration_phase2}.md` — per-stage scoring rubrics (shared by all four batches) · orig `scratch/eval/glm53-prose/rubrics/`
+- `flashm/REPORT.md` — F_M addendum: combined 4-arm table, judge-drift control on re-judged C · orig `scratch/eval/glm53-prose/flashm/reports/REPORT.md`
+- `flashm/METHOD.md` — F_M operating point, `max`-acceptance evidence, drift-control design · orig `scratch/eval/glm53-prose/flashm/reports/METHOD.md`
+- `flashm/aggregate.json` · `flashm/charges.json` · `flashm/calls.jsonl` — addendum scores / charges / ledger (30 calls) · orig `scratch/eval/glm53-prose/flashm/{reports,logs}/`
+- `confirm/REPORT.md` — confirm-1 on 09-09/10/11: phase2 **CONFIRMED** (Δ +0.889 CI [+0.633, +1.145]); qa **NOT CONFIRMED** (n=8 — 09-10 t0 lost to the rung-2 404, see `bias-telemetry-forensics` A4) · orig `scratch/eval/glm53-prose/confirm/reports/REPORT.md`
+- `confirm/METHOD.md` — premise check, arm config, pre-registered criterion · orig `scratch/eval/glm53-prose/confirm/reports/METHOD.md`
+- `confirm/aggregate.json` · `confirm/charges.json` · `confirm/calls.jsonl` — confirm-1 scores / charges / ledger (17 calls) · orig `scratch/eval/glm53-prose/confirm/{reports,logs}/`
+- `confirm-qa2/REPORT.md` — confirm-2, qa_analyze only, 09-13/14/15: **NOT CONFIRMED** (2nd consecutive failure); pooled n=26 reported as secondary only · orig `scratch/eval/glm53-prose/confirm-qa2/reports/REPORT.md`
+- `confirm-qa2/METHOD.md` — method, arms, blinding, premise evidence · orig `scratch/eval/glm53-prose/confirm-qa2/reports/METHOD.md`
+- `confirm-qa2/aggregate.json` · `confirm-qa2/charges.json` — confirm-2 scores / charges · orig `scratch/eval/glm53-prose/confirm-qa2/reports/`
+- `confirm-qa2/pooled.json` — pooled n=26 per-case-delta reading (secondary) · orig `scratch/eval/glm53-prose/confirm-qa2/reports/pooled.json`
+- `confirm-qa2/invariants.json` — deterministic R4/R5 correspondence invariants, both arms · orig `scratch/eval/glm53-prose/confirm-qa2/reports/invariants.json`
+- `confirm-qa2/premise-check.jsonl` — 9/9 champion premise rows read from frozen stage logs · orig `scratch/eval/glm53-prose/confirm-qa2/reports/premise-check.jsonl`
+- `confirm-qa2/calls.jsonl` — per-call ledger (9 calls) · orig `scratch/eval/glm53-prose/confirm-qa2/logs/calls.jsonl`
+
+## dsv41-flash-planner — `researcher_hydrated_plan`: champion deepseek-v4-pro @ low (C) vs deepseek-v4.1-flash @ low (F, OpenRouter vendor pin), n=9 → **KEEP deepseek-v4-pro** (F fails non-inferiority: Δ −0.481 CI [−1.042, +0.079], 2/0/7, behind on all six dimensions, 2× confirmed presuppositions; plan-level rubric only, no harvest test). **Deviation on record:** the 09-06 champion was RECONSTRUCTED (arm `Cstar`, 3 calls, $0.0455) because that day's production shipped Opus-4.6; the n=6 untouched-production subset is reported alongside (2026-09-12)
+> Unarchived (stay in `scratch/eval/dsv41-flash-planner/`): `candidates/`, `inputs/`, `frozen/` (478 MB), `judging/` packets + keymap, prod-state manifests, batch logs, harness scripts.
+- `REPORT.md` — verdict, per-dimension table, volume-not-angles mechanism, cost/latency · orig `scratch/eval/dsv41-flash-planner/reports/REPORT.md`
+- `METHOD.md` — model-identity evidence (channel C checked and not used), arms, deviations incl. 09-06 reconstruction · orig `scratch/eval/dsv41-flash-planner/reports/METHOD.md`
+- `RUBRIC.md` — planner rubric (D1–D6, mandatory `angle_groups` partition) · orig `scratch/eval/dsv41-flash-planner/rubrics/planner.md`
+- `aggregate.json` — paired deltas, per-dimension means, agreement · orig `scratch/eval/dsv41-flash-planner/reports/aggregate.json`
+- `charges.json` — Honest-Detector charges + 2-of-2 confirmations · orig `scratch/eval/dsv41-flash-planner/reports/charges.json`
+- `calls.jsonl` — per-call ledger (9 F + 3 `Cstar` calls) · orig `scratch/eval/dsv41-flash-planner/logs/calls.jsonl`
+
+## bias-telemetry-forensics — read-only forensics A1–A4: BiasLanguageStage never logged `model_used` (A1); 09-12 both-vote bias_judge fallback reconciled to the penny (A2); channel-C flash **alias roll** 2026-09-10 (`deepseek-flash`), 116 calls booked $0 → **ledger understatement ≈ $1.70 / ≈ $0.42 per run — ESTIMATE, not measured** (A3); alias identity = v4.1-flash **PROBABLE, NOT ESTABLISHED** (no price written); shared flash rung 2 (0731 pin) dead 09-06→09-10 then silently substituting v4.1-flash (A4) → **telemetry fix (`4084cea`); rung 2 → v4.1-flash (`0aad193`)** (2026-09-13)
+- `REPORT.md` — A1–A4 forensics with every claim path-cited · orig `scratch/audit/bias-telemetry-forensics.md`
+
+## alias-empty-trigger — empty-resolver trigger: deterministic merge-candidate discriminator replayed over 336 topics (2026-05-27 … 09-15) → **owner-accepted residual: 1 genuine miss in 311** (2026-06-29 t0, shared surname only; raw label 6/318, 5 of which are resolver hallucinations); **5.7% of topics (19/336) take the new non-escalation path** (~1 per 6 days; expected missed degradation ~1 per 1.6 years); landed `1b18409` via `0c8a478` (2026-09-15)
+> Unarchived (stay in `scratch/audit/alias-trigger/`): `dataset.json` (336 rows of state-path pointers; same keys as `replay.json` plus paths), prototype signal dumps `signals{,2,3,4}.json` (97–118 KB each, superseded by the shipped function), `replay.py`/`signals*.py`.
+- `REPORT.md` — confusion matrix (raw + resolver-error-cleaned), contaminated-ground-truth table, cross-script hazard, signal firing rates, residual risk · orig `scratch/audit/alias-trigger/REPORT.md`
+- `replay.json` — authoritative per-topic replay of the SHIPPED `merge_candidates_present` (336 rows: present + firing signals) · orig `scratch/audit/alias-trigger/replay.json`
+- `repro/row-norung.json` · `repro/row-repaired.json` — alias-empty-gate repro of the 2026-09-14 t2 case on frozen input (no-rung arm vs repaired path, rung 2 live); pre-fix row is the production log itself · orig `scratch/audit/alias-empty-repro/`
+
+## merge-validation — resolver merge hallucination inventory over 3087 merge pairs → **8.03% flagged suspect (248), 104 of 308 topics; clean separation NOT achievable (hand-classified 40-pair sample ~25 legit : ~11 hallucination) → owner decision: ship as DETECTOR (counts, never rejects)**; collapse rule (≥3 signal-less aliases → one canonical) **precision 50% by count / 74% alias-weighted**, not enabled; landed `2d68d35` (2026-09-15)
+> Unarchived: `scratch/audit/merge-validation/pairs.json` (956 KB, every merge pair with signals — bulk; `inventory.json` carries all 104 affected topics with their suspect pairs), `detect.py`, `collapse_precision.py`.
+- `REPORT.md` — inventory, required-case catches, failed role-similarity signal, guard design, recommendation + detector-mode addendum with collapse-rule precision · orig `scratch/audit/merge-validation/REPORT.md`
+- `inventory.json` — per-dossier suspect-merge inventory (104 topics, severity, largest collapse, pairs) · orig `scratch/audit/merge-validation/inventory.json`
+- `collapse_precision.json` — hand-classification of all 9 collapse-rule firings (4 true / 4 false / 1 ambiguous, with reasons) · orig `scratch/audit/merge-validation/collapse_precision.json`
+
+## extractor-fallback-detection — false `extractor_fallback_used` markers after the flash channel pin (18 in two days, every pass served by the primary) → **root cause: `_channel_report` compared a CONFIGURED channel key to a SERVED provider label; fix reports the rung from the wrapper that made the call** (repro BEFORE `[1, 2, 3]` / AFTER `[]`, rung calls 0 in both); landed `297d6e8` (2026-09-21)
+> Unarchived (stay in `scratch/audit/extractor-fallback-detection/`): `frozen/` (1.4 MB bus snapshot + 30 KB production stage log, the repro input), `repro.py`, vendored code prefixes.
+- `REPORT.md` — repro BEFORE/AFTER, root cause, fix, sibling audit, tests, two out-of-scope observations · orig `scratch/audit/extractor-fallback-detection/REPORT.md`
+
 ---
 
 ## Excluded (with reason)
