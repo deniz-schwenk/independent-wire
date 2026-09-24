@@ -1,0 +1,74 @@
+{
+ "date": "2026-06-30",
+ "topic": 2,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Spanish-language (El País) and German-language (Tagesschau) coverage include institutional history of the facility (established 2012, 11 residential places) that is absent from UK, Pakistani, and Turkish coverage.",
+      "why_unsupported": "The '2012 / 11 residential places' institutional detail appears only in El País (article 4). None of the Tagesschau analyses (articles 8, 11, 12) mention the facility's founding year or number of residential places, so attributing this detail to German-language coverage is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 3,
+    "specificity": 3,
+    "cross_group_validity": 3,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language reporting emphasizes police use of force, including details such as the number of shots fired during the car chase, whereas German-language coverage downplays these operational specifics, focusing instead on the suspect's prior police record and the formal investigative process.",
+      "why_unsupported": "German-language Tagesschau (article 8) explicitly reports a woman and young man fleeing in a car that was 'then shot at by police,' so German coverage does not downplay police use of force. The specific shot count ('15 shots') appears in a single Guardian article (5), not as an English-group-wide pattern, so the claimed cross-group contrast is not borne out."
+     }
+    ]
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 3,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language UK sources (BBC) identify the suspect as a 'Turkish national born in Germany,' while German-language (Tagesschau) and Spanish-language (El País) sources frame him as a 'German-born man of Turkish roots,' reflecting different emphases on nationality versus heritage.",
+      "why_unsupported": "This is presented as an English-UK vs German/Spanish cross-group divergence, but the other UK English source, The Guardian (article 5), describes the suspect as a 'German citizen with Turkish roots' — matching the German/Spanish framing rather than the BBC's. The distinction is therefore between individual articles, not a genuine cross-group pattern, so the claimed UK-English position is contradicted within its own group."
+     }
+    ]
+   }
+  ]
+ },
+ "cost_usd": 0.325305,
+ "tokens": 24509,
+ "duration_s": 124.6,
+ "provider": "Anthropic"
+}

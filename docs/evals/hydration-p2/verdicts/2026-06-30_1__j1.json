@@ -1,0 +1,73 @@
+{
+ "date": "2026-06-30",
+ "topic": 1,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "B",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "German-language coverage (Tagesschau, DW) foregrounds government officials' statements and structural/economic analysis (police costs, youth unemployment, historical parallels to Ghana and Uganda expulsions), while French-language coverage (RFI, France 24) foregrounds affected migrants' visceral fear and testimony, such as a pastor saying refugees no longer fear death and a taxi driver describing constant unease.",
+      "why_unsupported": "The historical parallels to Ghana and Uganda expulsions appear only in article 8 (AllAfrica, US, en), not in any German coverage; DW (article 3) is English-language, and the structural/unemployment analysis comes from DW, not Tagesschau (article 6), which quotes only officials and the movement founder. France 24 (article 4) is English-language, not French, and contains no substantive migrant testimony."
+     }
+    ]
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 5,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 2,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "German-language sources (Tagesschau) give prominent voice to March and March founder Jacinta Ngobese-Zuma rejecting xenophobia labels and demanding government solutions to illegal immigration, whereas English-language sources from the UK (BBC) and the US (AllAfrica) frame the movement more critically, emphasizing its association with violence, mob killings, and lawlessness.",
+      "why_unsupported": "The framing emphasizing mob killings and lawlessness is present only in article 1 (AllAfrica, US); BBC (article 2) does not emphasize violence or mob killings — its analysis reports Ramaphosa's constitutional-protection warning and individual migrant departure accounts."
+     },
+     {
+      "quote": "European outlets (DW, Tagesschau, RFI) quote or feature civil society and academic analysts (Tessa Dooms, Fredson Guilengue, Vanya Gastrow) who contextualize the crisis within governance failures, whereas Qatar-based Al Jazeera centers ground-level reporting from informal settlements and markets, prioritizing affected-community testimony over expert analysis.",
+      "why_unsupported": "Vanya Gastrow is quoted in article 8 (AllAfrica, US), not in any European outlet; and Al Jazeera (article 7) quotes academic Luke Sinwell of the University of Johannesburg, directly contradicting the claim that Al Jazeera prioritizes affected-community testimony over expert analysis."
+     }
+    ]
+   }
+  ]
+ },
+ "cost_usd": 0.33154,
+ "tokens": 24336,
+ "duration_s": 127.8,
+ "provider": "Anthropic"
+}

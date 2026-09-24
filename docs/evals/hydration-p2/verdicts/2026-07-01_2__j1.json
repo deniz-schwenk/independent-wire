@@ -1,0 +1,95 @@
+{
+ "date": "2026-07-01",
+ "topic": 2,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "East Asian outlets (CGTN, Japan Today) present the talks as a fragile but necessary diplomatic process, emphasizing the value of dialogue over confrontation and potential impacts on energy-importing economies, while some American- and European-sourced English-language reports highlight Iranian 'tactics' and US military readiness.",
+      "why_unsupported": "The 'dialogue over confrontation' / 'fragile but necessary' framing appears only in the Spanish Infobae article (Wang Yi, article 8), not in CGTN (articles 3, 11), which the analyses describe as terse and procedural. Japan Today (article 9) reports Iran's refusal to meet and Trump pressing US gasoline retailers, not 'value of dialogue' or energy-importing-economy impacts. There are also no American outlets in the corpus, so 'American-sourced English-language reports' is unfounded."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language sources prominently foreground the rhetorical conflict between Washington and Tehran over whether direct talks are occurring, featuring US VP Vance's characterization of Iran's denial as a 'Persian negotiating tactic,' while Turkish and Spanish sources do not frame the dispute in these cultural or rhetorical terms.",
+      "why_unsupported": "The Turkish-language Hurriyet article (article 7) explicitly reports Vance calling Iran's denial a frustrating 'Persian negotiating tactic,' and the Turkey-based Anadolu article (1) also carries it. So Turkish sources do frame the dispute in exactly these rhetorical terms, contradicting the claimed contrast."
+     },
+     {
+      "quote": "Turkish-language sources uniquely cover the positions of Oman and France regarding the Strait of Hormuz, including Oman's opposition to passage fees and Iran's rejection of French involvement in de-mining, while English-language sources mention the Strait dispute but omit these specific diplomatic positions.",
+      "why_unsupported": "The English-language Guardian article (article 6) explicitly reports Oman's alternative proposal for navigational service fees and Baghaei warning European powers not to become involved in de-mining the Strait. English coverage therefore does not omit these specific diplomatic positions, so 'uniquely' is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "C",
+    "grounding": 2,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 5,
+    "overall": 2,
+    "fabricated_divergences": [
+     {
+      "quote": "UK (BBC, Guardian), Turkish (Anadolu, Hurriyet), and German (DW) outlets prominently quote US VP JD Vance's characterization of Iran's denial of talks as a 'Persian negotiating tactic,' while Qatari (Al Jazeera) and Chinese (CGTN) coverage omits this framing entirely, producing a markedly more adversarial tone in the Western/Turkish cluster versus a neutral procedural tone in the Qatari and Chinese cluster.",
+      "why_unsupported": "Only Anadolu (article 1) and Hurriyet (article 7) contain Vance's 'Persian negotiating tactic' quote. The BBC analysis (article 2), Guardian analysis (article 6), and DW analysis (article 4) do not mention Vance at all, so attributing this framing to UK and German outlets is fabricated."
+     },
+     {
+      "quote": "Chinese-outlet reporting (CGTN) is limited to brief, unembellished confirmation of facts and Iranian conditions with minimal characterization, whereas UK and Turkish-language coverage extensively editorializes Iranian rhetoric as evasive, tactical, or contradictory.",
+      "why_unsupported": "The analyses show UK outlets (BBC article 2, Guardian article 6) reporting factually, with Guardian even relaying Baghaei's 'relatively optimistic' account. The 'tactic'/'contradictory' characterization comes from a quoted actor (Vance) in the Turkey-based sources, not from UK outlets editorializing. There is no evidence UK coverage 'extensively editorializes Iranian rhetoric as evasive.'"
+     },
+     {
+      "quote": "Qatari outlet Al Jazeera frames the Doha meetings primarily as evidence of successful mediation and diplomatic momentum, while UK outlets (BBC, Guardian, Middle East Eye) foreground Qatari officials' explicit denials that any direct talks are occurring, producing a more skeptical framing of the same meeting.",
+      "why_unsupported": "The Al Jazeera analysis (article 0) itself states 'no face-to-face talks are planned' and lists Tehran's conditions; it does not frame the meetings as 'successful mediation and diplomatic momentum.' The claimed positive-vs-skeptical contrast is not supported by the summary."
+     }
+    ]
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language sources from the US-allied orbit (BBC, DW, France 24) prominently feature JD Vance's characterization of Iran's denials as a 'Persian negotiating tactic,' while Gulf-based English-language outlets (Al Jazeera, Middle East Eye) and Chinese outlets (CGTN) omit or downplay this framing and instead center Iran's and Qatar's stated positions on MoU implementation.",
+      "why_unsupported": "The Vance 'Persian negotiating tactic' quote appears only in Anadolu (article 1) and Hurriyet (article 7). The BBC (article 2), DW (article 4), and France 24 (articles 5, 12) analyses do not mention Vance, so attributing this feature to those outlets is fabricated."
+     },
+     {
+      "quote": "Japanese outlet Japan Today and UK-based outlets frame the story primarily around the contradiction between US and Iranian characterizations of the talks, while Gulf-based outlets (Al Jazeera) and Chinese outlets (CGTN) frame it more as a procedural update on mediation mechanics and MoU implementation steps.",
+      "why_unsupported": "The CGTN analysis (article 3) explicitly 'notes conflicting accounts from Washington and Tehran over the nature of the Doha contacts,' i.e., it foregrounds the contradiction. So CGTN does not merely frame it as a procedural update, contradicting the claimed contrast."
+     }
+    ]
+   }
+  ]
+ },
+ "cost_usd": 0.52112,
+ "tokens": 43096,
+ "duration_s": 167.9,
+ "provider": "Anthropic"
+}

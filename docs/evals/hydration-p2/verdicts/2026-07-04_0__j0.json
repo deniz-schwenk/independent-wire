@@ -1,0 +1,64 @@
+{
+ "date": "2026-07-04",
+ "topic": 0,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "German-language sources explicitly note the absence of Ukrainian confirmation of the Konstantinovka capture claim, while Vietnamese-language sources present the capture as confirmed with extensive quotes from President Putin and Russian military commanders and no Ukrainian government response.",
+      "why_unsupported": "Article 9 (Vietnamese, VnExpress) is described as 'also noting unconfirmed Ukrainian military accounts describing a severe crisis and the city becoming a \"gray zone\".' The Vietnamese source therefore does NOT present the capture as confirmed without any Ukrainian counter-narrative; it explicitly flags the claim as unconfirmed and includes Ukrainian accounts of crisis, undermining the claimed contrast with German coverage."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 4,
+    "specificity": 3,
+    "cross_group_validity": 4,
+    "gap_quality": 3,
+    "overall": 3,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 5,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.326995,
+ "tokens": 28791,
+ "duration_s": 104.2,
+ "provider": "Anthropic"
+}

@@ -1,0 +1,83 @@
+{
+ "date": "2026-07-04",
+ "topic": 1,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Spanish (El País, index 2) and Belgian (Politico, index 6) coverage foreground Baltic states' escalatory posture — Lithuania's nuclear constitutional amendment and Nauseda's warning of alliance fracture — while German and Turkish outlets emphasize reassurance and unity framings instead.",
+      "why_unsupported": "The Baltic-escalation half is grounded (articles 2 and 6), but the analyses do not show German or Turkish outlets emphasizing 'reassurance and unity' framings. German article 1 covers Merz's pushback on spending criticism and article 7 the aid architecture; no reassurance/unity framing is attributed to German or Turkish coverage, so the claimed contrast is invented."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 4,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Ukrainian regional sources foreground the Poland-Ukraine diplomatic crisis over the Ukrainian Insurgent Army renaming and its impact on summit aid discussions, while no other regional cluster covers this bilateral dispute at all.",
+      "why_unsupported": "The Belgian outlet Politico (article 11) covers the Poland-Ukraine dispute directly (Tusk demanding Ukraine take the next step; Nawrocki stripping Zelensky's Order of the White Eagle over the UPA unit renaming). Therefore 'no other regional cluster covers this bilateral dispute at all' is false."
+     }
+    ]
+   },
+   {
+    "label": "D",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "German-language coverage (Tagesschau) presents the €140 billion aid pledge as a straightforward factual commitment replacing US funding, while English-language UK and US-oriented sources (The Guardian, Anadolu Agency) frame the same pledge as largely symbolic and primarily aimed at managing Trump's dissatisfaction with the alliance.",
+      "why_unsupported": "The 'largely symbolic / aimed at signaling to Trump' framing appears in the Japanese outlet (article 4), not the Guardian (article 3, which covers Trump's Iran grievance) or Anadolu (articles 0/9/12, which mention the aid commitment without a symbolic framing). Attributing the symbolic framing to UK and Turkish sources is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "Ukrainian-outlet coverage (Kyiv Independent) frames the Poland-Ukraine relationship through the lens of Warsaw's grievances and the Volyn/Order of the White Eagle dispute as a bilateral diplomatic crisis requiring Ukrainian concessions, while Turkish-outlet (Anadolu) and Belgian-outlet (Politico) coverage of the same summit largely omit this friction and instead emphasize burden-sharing and unity themes.",
+      "why_unsupported": "The Belgian outlet Politico (article 11) is entirely devoted to the Poland-Ukraine friction (Tusk demanding Ukraine take the next step; Nawrocki stripping the Order of the White Eagle). Claiming Belgian Politico coverage 'largely omit this friction' is false."
+     },
+     {
+      "quote": "German-language coverage (Tagesschau) characterizes the €70/140 billion Ukraine aid pledge as effectively replacing halted US funding, whereas English-language coverage from Turkey (Anadolu) and the UK (Guardian) frames the same pledge primarily as a symbolic gesture meant to reassure Trump that Europe has taken over financing.",
+      "why_unsupported": "The symbolic-gesture framing is found in the Japanese outlet (article 4), not in Anadolu or the Guardian. Article 3 (Guardian) covers Trump's Iran grievance and the Anadolu articles do not frame the aid as symbolic, so the attributed contrast is unsupported."
+     }
+    ]
+   }
+  ]
+ },
+ "cost_usd": 0.384755,
+ "tokens": 27779,
+ "duration_s": 140.1,
+ "provider": "Anthropic"
+}

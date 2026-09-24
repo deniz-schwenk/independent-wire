@@ -1,0 +1,245 @@
+{
+ "probed_at_utc": "2026-09-24T10:01:05Z",
+ "endpoint_catalog": [
+  {
+   "provider": "DeepSeek",
+   "tag": "deepseek",
+   "supported_parameters": [
+    "reasoning",
+    "include_reasoning",
+    "max_tokens",
+    "temperature",
+    "top_p",
+    "stop",
+    "frequency_penalty",
+    "presence_penalty",
+    "logprobs",
+    "top_logprobs",
+    "tools",
+    "tool_choice",
+    "response_format",
+    "reasoning_effort"
+   ],
+   "pricing": {
+    "prompt": "0.0000003",
+    "completion": "0.0000012",
+    "input_cache_read": "0.000000006",
+    "discount": 0,
+    "overrides": [
+     {
+      "utc_days": [
+       "saturday",
+       "sunday"
+      ],
+      "prompt": "0.00000015",
+      "completion": "0.0000006",
+      "input_cache_read": "0.000000003"
+     },
+     {
+      "utc_start": 0,
+      "utc_end": 100,
+      "utc_days": [
+       "monday",
+       "tuesday",
+       "wednesday",
+       "thursday",
+       "friday"
+      ],
+      "prompt": "0.00000015",
+      "completion": "0.0000006",
+      "input_cache_read": "0.000000003"
+     },
+     {
+      "utc_start": 100,
+      "utc_end": 400,
+      "utc_days": [
+       "monday",
+       "tuesday",
+       "wednesday",
+       "thursday",
+       "friday"
+      ],
+      "prompt": "0.0000003",
+      "completion": "0.0000012",
+      "input_cache_read": "0.000000006"
+     },
+     {
+      "utc_start": 400,
+      "utc_end": 600,
+      "utc_days": [
+       "monday",
+       "tuesday",
+       "wednesday",
+       "thursday",
+       "friday"
+      ],
+      "prompt": "0.00000015",
+      "completion": "0.0000006",
+      "input_cache_read": "0.000000003"
+     },
+     {
+      "utc_start": 600,
+      "utc_end": 1000,
+      "utc_days": [
+       "monday",
+       "tuesday",
+       "wednesday",
+       "thursday",
+       "friday"
+      ],
+      "prompt": "0.0000003",
+      "completion": "0.0000012",
+      "input_cache_read": "0.000000006"
+     },
+     {
+      "utc_start": 1000,
+      "utc_end": 0,
+      "utc_days": [
+       "monday",
+       "tuesday",
+       "wednesday",
+       "thursday",
+       "friday"
+      ],
+      "prompt": "0.00000015",
+      "completion": "0.0000006",
+      "input_cache_read": "0.000000003"
+     }
+    ]
+   }
+  }
+ ],
+ "levels": {
+  "low": {
+   "rows": [
+    {
+     "status": 200,
+     "elapsed_s": 4.2,
+     "provider": "DeepSeek",
+     "model": "deepseek/deepseek-v4.1-flash",
+     "reasoning_tokens": 715,
+     "completion_tokens": 735,
+     "cost": 0.0004539,
+     "answer": "They meet at 11:31:03, about 197.47 km from A."
+    },
+    {
+     "status": 200,
+     "elapsed_s": 4.0,
+     "provider": "DeepSeek",
+     "model": "deepseek/deepseek-v4.1-flash",
+     "reasoning_tokens": 752,
+     "completion_tokens": 772,
+     "cost": 0.0004761,
+     "answer": "They meet at 11:31:03, about 197.47 km from A."
+    },
+    {
+     "status": 200,
+     "elapsed_s": 2.9,
+     "provider": "DeepSeek",
+     "model": "deepseek/deepseek-v4.1-flash",
+     "reasoning_tokens": 462,
+     "completion_tokens": 481,
+     "cost": 0.0003015,
+     "answer": "They meet at 10:31:03, 197.47 km from A."
+    }
+   ],
+   "reasoning_tokens": [
+    715,
+    752,
+    462
+   ],
+   "median_reasoning_tokens": 715
+  },
+  "medium": {
+   "rows": [
+    {
+     "status": 200,
+     "elapsed_s": 3.7,
+     "provider": "DeepSeek",
+     "model": "deepseek/deepseek-v4.1-flash",
+     "reasoning_tokens": 566,
+     "completion_tokens": 587,
+     "cost": 0.0003651,
+     "answer": "They meet at about **11:31:03**, approximately **197.47 km from A**."
+    },
+    {
+     "status": 200,
+     "elapsed_s": 3.9,
+     "provider": "DeepSeek",
+     "model": "deepseek/deepseek-v4.1-flash",
+     "reasoning_tokens": 653,
+     "completion_tokens": 675,
+     "cost": 0.0004179,
+     "answer": "They meet at **11:31:03** (approx), **197.47 km from A**."
+    },
+    {
+     "status": 200,
+     "elapsed_s": 3.8,
+     "provider": "DeepSeek",
+     "model": "deepseek/deepseek-v4.1-flash",
+     "reasoning_tokens": 725,
+     "completion_tokens": 745,
+     "cost": 0.0004599,
+     "answer": "They meet at 11:31:03, about 197.47 km from A."
+    }
+   ],
+   "reasoning_tokens": [
+    566,
+    653,
+    725
+   ],
+   "median_reasoning_tokens": 653
+  },
+  "high": {
+   "rows": [
+    {
+     "status": 200,
+     "elapsed_s": 5.2,
+     "provider": "DeepSeek",
+     "model": "deepseek/deepseek-v4.1-flash",
+     "reasoning_tokens": 883,
+     "completion_tokens": 903,
+     "cost": 0.0005547,
+     "answer": "They meet at approximately 11:31:03, 197.47 km from A."
+    },
+    {
+     "status": 200,
+     "elapsed_s": 3.8,
+     "provider": "DeepSeek",
+     "model": "deepseek/deepseek-v4.1-flash",
+     "reasoning_tokens": 595,
+     "completion_tokens": 616,
+     "cost": 0.0003825,
+     "answer": "They meet at about 11:31:03, approximately 197.47 km from A."
+    },
+    {
+     "status": 200,
+     "elapsed_s": 2.7,
+     "provider": "DeepSeek",
+     "model": "deepseek/deepseek-v4.1-flash",
+     "reasoning_tokens": 380,
+     "completion_tokens": 401,
+     "cost": 0.0002535,
+     "answer": "They meet at about 10:31:03, approximately 197.47 km from A."
+    }
+   ],
+   "reasoning_tokens": [
+    883,
+    595,
+    380
+   ],
+   "median_reasoning_tokens": 595
+  },
+  "bogus_level": {
+   "rows": [
+    {
+     "status": 400,
+     "elapsed_s": 0.0,
+     "error": "{\"message\": \"reasoning.effort: Invalid option: expected one of \\\"max\\\"|\\\"xhigh\\\"|\\\"high\\\"|\\\"medium\\\"|\\\"low\\\"|\\\"minimal\\\"|\\\"none\\\"\", \"code\": 400}"
+    }
+   ],
+   "reasoning_tokens": [],
+   "median_reasoning_tokens": null
+  }
+ }
+}

@@ -1,0 +1,91 @@
+{
+ "date": "2026-07-04",
+ "topic": 1,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 2,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "Turkish outlets (Anadolu, index 0, 9, 12) foreground Turkey's defense-industrial role — US interest in Turkish shipbuilding and drones, the F-35 and KAAN engine deals, and Turkey as a capability model — a commercial/host angle absent from German, Spanish, and Belgian coverage.",
+      "why_unsupported": "Index 0 is a briefing on France's push for strategic autonomy and index 12 covers the Swedish PM's unity/5%-by-2030 remarks; neither foregrounds Turkey's defense industry. Only index 9 actually carries the shipbuilding/drones/F-35/KAAN angle, so attributing this to indices 0 and 12 is unsupported."
+     },
+     {
+      "quote": "Spanish (El País, index 2) and Belgian (Politico, index 6) coverage foreground Baltic states' escalatory posture — Lithuania's nuclear constitutional amendment and Nauseda's warning of alliance fracture — while German and Turkish outlets emphasize reassurance and unity framings instead.",
+      "why_unsupported": "The analyses do not show German or Turkish outlets emphasizing 'reassurance and unity.' German coverage (index 1, 7) centers Merz's spending pushback and funding architecture; and index 2's Baltic content itself features German Chancellor Merz stressing a 'very concrete' threat rather than reassurance. The claimed German/Turkish reassurance framing is invented."
+     },
+     {
+      "quote": "German outlets (index 1, 2) center Chancellor Merz's defensive pushback against Trump's 'ridiculous' spending criticism, while the Turkish Anadolu piece (index 9) presents the US demand for 5% GDP spending through Ambassador Whitaker's framing that ranks Germany among the leaders rather than laggards.",
+      "why_unsupported": "Index 2 is a Spanish outlet (El País, Spain), not a German outlet; grouping it as a German outlet misattributes the regional cluster underlying the contrast."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 4,
+    "specificity": 4,
+    "cross_group_validity": 5,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Ukrainian regional sources foreground the Poland-Ukraine diplomatic crisis over the Ukrainian Insurgent Army renaming and its impact on summit aid discussions, while no other regional cluster covers this bilateral dispute at all.",
+      "why_unsupported": "Index 11 (Belgium, Politico Europe) covers the Poland-Ukraine dispute directly (Tusk demanding Ukraine take the next step following the Order of the White Eagle revocation), so the claim that no other regional cluster covers the dispute is false."
+     }
+    ]
+   },
+   {
+    "label": "D",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "German-language coverage (Tagesschau) presents the €140 billion aid pledge as a straightforward factual commitment replacing US funding, while English-language UK and US-oriented sources (The Guardian, Anadolu Agency) frame the same pledge as largely symbolic and primarily aimed at managing Trump's dissatisfaction with the alliance.",
+      "why_unsupported": "The 'largely symbolic' framing appears only in index 4 (Japan Today). The Guardian (index 3) covers Trump's Iran grievance and 'ridiculous/one-sided' complaint, not the aid pledge as symbolic, and Anadolu (indices 0/9/12) does not frame the pledge as symbolic. Attributing the symbolic framing to the Guardian and Anadolu is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "Ukrainian-outlet coverage (Kyiv Independent) frames the Poland-Ukraine relationship through the lens of Warsaw's grievances and the Volyn/Order of the White Eagle dispute as a bilateral diplomatic crisis requiring Ukrainian concessions, while Turkish-outlet (Anadolu) and Belgian-outlet (Politico) coverage of the same summit largely omit this friction and instead emphasize burden-sharing and unity themes.",
+      "why_unsupported": "Index 11 (Belgium, Politico Europe) covers the Poland-Ukraine friction directly (Tusk stating Ukraine must take the next step to repair relations), contradicting the claim that Belgian/Politico coverage largely omits this friction."
+     },
+     {
+      "quote": "German-language coverage (Tagesschau) characterizes the €70/140 billion Ukraine aid pledge as effectively replacing halted US funding, whereas English-language coverage from Turkey (Anadolu) and the UK (Guardian) frames the same pledge primarily as a symbolic gesture meant to reassure Trump that Europe has taken over financing.",
+      "why_unsupported": "The 'symbolic gesture to reassure Trump' framing is found in index 4 (Japan Today), not in Anadolu (indices 0/9/12) or the Guardian (index 3, which concerns Trump's Iran grievance). The attribution of the symbolic framing to Turkish and UK outlets is unsupported."
+     }
+    ]
+   }
+  ]
+ },
+ "cost_usd": 0.39413,
+ "tokens": 28154,
+ "duration_s": 141.5,
+ "provider": "Anthropic"
+}

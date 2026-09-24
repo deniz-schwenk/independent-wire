@@ -1,0 +1,74 @@
+{
+ "date": "2026-07-02",
+ "topic": 1,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 2,
+    "specificity": 3,
+    "cross_group_validity": 3,
+    "gap_quality": 4,
+    "overall": 2,
+    "fabricated_divergences": [
+     {
+      "quote": "UK-based outlets (BBC, Guardian, Middle East Eye) incorporate official RSF denials and Sudanese government calls for action, whereas the single US-based outlet covering the report (AllAfrica) and German outlet (DW) omit such direct rebukes, focusing respectively on straightforward reporting and commander‑level accountability.",
+      "why_unsupported": "The analyses show DW (article 2) DOES include an RSF denial ('Denies claims that commander Abu Lulu has been released'), so DW does not omit RSF rebukes. Also, among the UK outlets only BBC (article 1) carries the RSF acknowledgment; Guardian (article 3) and MEE (article 4) analyses contain no RSF denial, and only MEE carries a Sudanese government call (the ambassador). The grouping is factually inaccurate."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "AllAfrica (US) and The Guardian (UK) frame the conflict primarily through the ethnic persecution and ceasefire/arms-embargo policy lens without commander-level detail, while DW News (Germany) foregrounds visual/video evidence and command accountability, indicating a divergence in evidentiary emphasis between outlets covering the same Amnesty report.",
+      "why_unsupported": "The Guardian analysis (article 3) explicitly names three RSF commanders (Maj Gen Gedo Hamdan Ahmed Mohamed 'Abu Shok', Lt Col Abbas Khater Bakhit, and Al-Fateh Abdullah Idris 'Abu Lulu') as responsible for violations, so the Guardian DOES contain commander-level detail. This also contradicts the same candidate's own divergence #3, which correctly places the Guardian among the commander-naming outlets."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "UK-based English-language outlets (BBC, Guardian, Middle East Eye) name specific RSF commanders (Abu Lulu, Abu Shok, Abbas Khater Bakhit) and discuss individual command responsibility, whereas the US-based English-language outlet (AllAfrica) and the French-language outlet (RFI) do not name any commanders, framing accountability in more institutional rather than individual terms.",
+      "why_unsupported": "Only the Guardian analysis (article 3) among the UK outlets names those specific commanders. BBC (article 1) and Middle East Eye (article 4) analyses do not name individual commanders. Moreover, DW News (Germany, article 2) does name the same commanders but is excluded from the grouping, so the claimed UK-vs-US/French cross-group pattern is not supported by the analyses."
+     }
+    ]
+   }
+  ]
+ },
+ "cost_usd": 0.33255,
+ "tokens": 26978,
+ "duration_s": 116.5,
+ "provider": "Anthropic"
+}

@@ -1,0 +1,69 @@
+{
+ "date": "2026-06-28",
+ "topic": 2,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language sources from the Middle East and Asia-Pacific (Al Jazeera, Japan Today) include opposition and civil-society voices — notably Savo Manojlovic framing the resignation as a preemptive move against Vucic's inevitable fall — while European-language sources (El País, Tagesschau, Politico Europe) and the Ukrainian outlet quote only Vucic himself.",
+      "why_unsupported": "The analysis of article 0 (Al Jazeera) lists only Vucic among actors_quoted; Savo Manojlovic appears solely in article 2 (Japan Today). Al Jazeera does not include any opposition or civil-society voice, so grouping it with Japan Today as sources that 'include opposition and civil-society voices' is not supported by the analyses."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "German- and Spanish-language sources provide detailed reporting on Vucic's policy pledges, electoral tactics history, and symbolic strategies such as the use of Vidovdan and the 'United Serbia' name echoing Putin's party, while English-language sources collectively omit these details and instead emphasize protest dynamics and foreign interference allegations.",
+      "why_unsupported": "The analyses attribute the detailed policy pledges (wages, pensions, healthcare, education, EU accession) only to the Spanish source (article 1), while the electoral-tactics history (fourth early election), the Vidovdan timing, and the 'United Serbia'/Putin parallel appear only in the German source (article 5). The analyses do not show the German source detailing policy pledges nor the Spanish source addressing Vidovdan/electoral tactics/'United Serbia', so the combined attribution of all these details to both groups is unsupported."
+     }
+    ]
+   }
+  ]
+ },
+ "cost_usd": 0.261555,
+ "tokens": 18219,
+ "duration_s": 100.3,
+ "provider": "Anthropic"
+}

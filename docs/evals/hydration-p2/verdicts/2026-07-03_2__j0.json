@@ -1,0 +1,77 @@
+{
+ "date": "2026-07-03",
+ "topic": 2,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "B",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "Spanish-language sources (El País, El Financiero) foreground institutional decay, corruption, and underinvestment in building codes under the previous Maduro government as amplifiers of the disaster, while Chinese-language outlets (CGTN) and Italian-language outlets (ANSA) present the government response neutrally, emphasizing Rodriguez's calls for unity and international financial assistance without critical framing.",
+      "why_unsupported": "Only El Financiero (article 7) advances the institutional-decay/corruption framing. El País (article 8) is a minute-by-minute rescue narrative with no governance critique, so naming it as foregrounding institutional decay misattributes a framing the analysis does not show. Also CGTN is coded as English-language ('en'), not 'Chinese-language.'"
+     },
+     {
+      "quote": "English-language sources from the UK (BBC, The Guardian) and Singapore (CNA) include explicit criticism of the Venezuelan government's slow response and note the civilian-led nature of rescue efforts with a lack of heavy machinery, whereas French-language (RFI) and Chinese-language (CGTN) coverage largely omits or downplays government accountability questions.",
+      "why_unsupported": "The BBC analysis (article 2) is limited to the Gil rescue and the death toll, with no criticism of a slow government response and no mention of civilian-led efforts or lack of heavy machinery; that content appears in CNA (4) and Japan Today (10). CGTN is also an English-language outlet, not 'Chinese-language,' so the language grouping is inaccurate."
+     },
+     {
+      "quote": "English-language sources from multiple regions (Dawn/Pakistan, The Guardian/UK, Japan Today/Japan) report on looting and the detention of police officers for stealing from rubble, while Spanish-, French-, Italian-, and German-language sources do not address post-disaster criminality.",
+      "why_unsupported": "Looting and police detentions appear in Dawn (article 6) and Japan Today (article 10). The Guardian analysis (article 9) covers dwindling survivor hopes, the UK rescue coordinator, a WFP appeal and satellite building-damage data, but does not mention looting or police detentions, so crediting The Guardian is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "D",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Spanish-language outlets (El Financiero, El País) foreground governance accountability, with El Financiero explicitly attributing the scale of destruction to decades of institutional decay and corruption under the previous Maduro government, while English-language outlets like CNA and CGTN largely relay the interim president's denial of a slow response without independently probing underlying institutional causes.",
+      "why_unsupported": "Only El Financiero (article 7) foregrounds governance accountability/institutional decay. El País (article 8) is a rescue-effort narrative with no accountability framing, so grouping El País as foregrounding governance accountability is not supported by its analysis."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 4,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.466535,
+ "tokens": 37047,
+ "duration_s": 167.8,
+ "provider": "Anthropic"
+}

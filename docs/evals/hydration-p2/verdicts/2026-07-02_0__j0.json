@@ -1,0 +1,78 @@
+{
+ "date": "2026-07-02",
+ "topic": 0,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "B",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "The separate vehicle-strike incident in Baja California / Cabo San Lucas, in which a driver was killed by fans after his car struck a supporter, is reported by Turkish (Anadolu) and Argentine/Mexican Spanish sources (El Financiero, Infobae) but is absent from the UK and German English coverage (BBC, DW, Guardian).",
+      "why_unsupported": "The Infobae articles (indices 5 and 7) contain no mention of the Baja California/Cabo San Lucas driver incident; only Anadolu (index 0) and El Financiero (index 3) cover it. Attributing it to Argentine Infobae is unsupported."
+     },
+     {
+      "quote": "DW News (German, English) reports only three suffocation deaths and frames the event as a crowd crush, while all other language and regional sources report four deaths including a fourth from cardiorespiratory arrest linked to an epileptic seizure.",
+      "why_unsupported": "El Financiero (index 6, a Mexican Spanish source) also reports only three deaths from asphyxiation, so DW is not unique and 'all other language and regional sources report four deaths' is false; the difference is also a single-outlet variation, not a genuine cross-group pattern."
+     }
+    ]
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 5,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Spanish-language sources embed the celebration deaths within Mexico's broader security context — including drug trafficking, organized crime, and the UK government's updated travel advisory — while English-language sources treat the deaths as an isolated crowd-safety incident without connecting them to wider security concerns.",
+      "why_unsupported": "Only Infobae (Argentine, index 7) frames the deaths within drug trafficking/organized crime and the UK travel advisory; the Mexican Spanish sources (El Financiero, indices 3, 6, 8) do not. Attributing this framing to 'Spanish-language sources' as a group overgeneralizes a single Argentine outlet. Anadolu (English) also reports the separate Baja fatality, so English coverage is not uniformly an 'isolated crowd-safety incident.'"
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Western English-language outlets (BBC, DW News, The Guardian) omit the separate driver-related death in Baja California/Cabo San Lucas, while the Turkish outlet Anadolu Agency and the Mexican/Argentine Spanish-language outlets (El Financiero, Infobae) include this second fatal incident.",
+      "why_unsupported": "The Infobae articles (indices 5 and 7) do not report the Baja California/Cabo San Lucas driver incident; only Anadolu (index 0) and El Financiero (index 3) cover it. Including Argentine Infobae among the outlets reporting the second fatality is unsupported."
+     }
+    ]
+   }
+  ]
+ },
+ "cost_usd": 0.251895,
+ "tokens": 19199,
+ "duration_s": 87.8,
+ "provider": "Anthropic"
+}

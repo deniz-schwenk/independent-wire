@@ -126,7 +126,7 @@ Each artifact line: *filename — role · original path*.
 - `confirm-qa2/premise-check.jsonl` — 9/9 champion premise rows read from frozen stage logs · orig `scratch/eval/glm53-prose/confirm-qa2/reports/premise-check.jsonl`
 - `confirm-qa2/calls.jsonl` — per-call ledger (9 calls) · orig `scratch/eval/glm53-prose/confirm-qa2/logs/calls.jsonl`
 
-## dsv41-flash-planner — `researcher_hydrated_plan`: champion deepseek-v4-pro @ low (C) vs deepseek-v4.1-flash @ low (F, OpenRouter vendor pin), n=9 → **KEEP deepseek-v4-pro** (F fails non-inferiority: Δ −0.481 CI [−1.042, +0.079], 2/0/7, behind on all six dimensions, 2× confirmed presuppositions; plan-level rubric only, no harvest test). **Deviation on record:** the 09-06 champion was RECONSTRUCTED (arm `Cstar`, 3 calls, $0.0455) because that day's production shipped Opus-4.6; the n=6 untouched-production subset is reported alongside (2026-09-12)
+## dsv41-flash-planner — `researcher_hydrated_plan`: champion deepseek-v4-pro @ low (C) vs deepseek-v4.1-flash @ low (F, OpenRouter vendor pin), n=9 → **KEEP deepseek-v4-pro** (F fails non-inferiority: Δ −0.491 CI [−1.017, +0.036], 2/0/7, behind on all six dimensions, 2× confirmed presuppositions; plan-level rubric only, no harvest test). **Deviation on record:** the 09-06 champion was RECONSTRUCTED (arm `Cstar`, 3 calls, $0.0455) because that day's production shipped Opus-4.6; the n=6 untouched-production subset is reported alongside (2026-09-12)
 > Unarchived (stay in `scratch/eval/dsv41-flash-planner/`): `candidates/`, `inputs/`, `frozen/` (478 MB), `judging/` packets + keymap, prod-state manifests, batch logs, harness scripts.
 - `REPORT.md` — verdict, per-dimension table, volume-not-angles mechanism, cost/latency · orig `scratch/eval/dsv41-flash-planner/reports/REPORT.md`
 - `METHOD.md` — model-identity evidence (channel C checked and not used), arms, deviations incl. 09-06 reconstruction · orig `scratch/eval/dsv41-flash-planner/reports/METHOD.md`
@@ -134,6 +134,24 @@ Each artifact line: *filename — role · original path*.
 - `aggregate.json` — paired deltas, per-dimension means, agreement · orig `scratch/eval/dsv41-flash-planner/reports/aggregate.json`
 - `charges.json` — Honest-Detector charges + 2-of-2 confirmations · orig `scratch/eval/dsv41-flash-planner/reports/charges.json`
 - `calls.jsonl` — per-call ledger (9 F + 3 `Cstar` calls) · orig `scratch/eval/dsv41-flash-planner/logs/calls.jsonl`
+> **Correction (2026-09-24):** Batch 1's headline "all cases, both judges" Δ −0.481 CI [−1.042, +0.079] was a last-writer reading (judge 2 overwrites judge 1 on double-judged cases), not a mean over judges; the true mean-of-judges value is **−0.491 CI [−1.017, +0.036]** (reproduced in the med/high addendum's `METHOD.md`); the copied `REPORT.md`/`aggregate.json` above are left verbatim, and the verdict is unchanged.
+
+## dsv41-flash-planner/medhigh — addendum: deepseek-v4.1-flash planner @ medium (F_med) and @ high (F_high) vs champion deepseek-v4-pro (C), same frozen 09-06/07/08 inputs, n=9 → **KEEP deepseek-v4-pro** (both fail non-inferiority at −0.10: F_med Δ −0.380 CI [−0.752, −0.007] — **significantly worse**, CI excludes 0; F_high Δ −0.287 CI [−0.791, +0.216]); **mechanism: more reasoning buys volume, not prioritisation** — queries/plan 13.9 (C) → 17.9 (med) → 19.7 (high), languages 9.7 → 13.3/13.4, while D4 prioritisation stays behind (C 3.53 vs 2.47/2.87); the OpenRouter vendor route validates `reasoning.effort` and serves medium ≠ high (median reasoning tok 1 862 vs 2 758) (2026-09-24)
+> Unarchived (stay in `scratch/eval/dsv41-flash-planner/medhigh/`): `candidates/`, `judging/` packets + verdicts, prod-state manifests, batch/smoke logs, harness + aggregation scripts.
+- `REPORT.md` — verdict table (four readings per arm), C/F_low/F_med/F_high planner table, cost/latency · orig `scratch/eval/dsv41-flash-planner/medhigh/reports/REPORT.md`
+- `METHOD.md` — arms, level evidence, and the Batch-1 last-writer correction · orig `scratch/eval/dsv41-flash-planner/medhigh/reports/METHOD.md`
+- `aggregate.json` · `charges.json` — paired deltas / Honest-Detector charges · orig `scratch/eval/dsv41-flash-planner/medhigh/reports/`
+- `judge_rationales.md` — digest of both judges' rationales · orig `scratch/eval/dsv41-flash-planner/medhigh/reports/judge_rationales.md`
+- `calls.jsonl` — per-call ledger (18 calls) · orig `scratch/eval/dsv41-flash-planner/medhigh/logs/calls.jsonl`
+- `level_probe.json` — effort-enum probe (bogus → 400, medium/high → 200) · orig `scratch/eval/dsv41-flash-planner/medhigh/level_probe.json`
+
+## hydration-p2 — `hydration_aggregator_phase2` 5-arm eval (incumbent Opus-4.6, GLM-5.2 @ xhigh, DeepSeek, Sonnet-5, Opus-4.8 golden), 21 topics, 3 Opus-4.8 judges/topic → **GLM-5.2 @ xhigh ties the golden (4.46), beats the incumbent (4.19) with half the fabrications (8 vs 14) at 2.7× lower cost**; drove the 2026-07-05 swap (2026-07-05; carried from branch `eval/hydration-p2-model-eval` `d1f265d`, where the evidence sat as force-added `scratch/` files)
+> The digest is tracked at the path the code cites: `docs/HYDRATION-P2-MODEL-EVAL-2026-07.md` (referenced by `scripts/run.py`, `src/hydration_phase2_fallback.py`, `docs/ARCHITECTURE.md`). Not mirrored: `packets/` (embed source summaries) and the harness/judge/aggregate scripts — restored to local `scratch/p2-eval/`.
+- `aggregate.json` — per-arm scores, fabrication counts, cost · orig `scratch/p2-eval/aggregate.json`
+- `deterministic.json` — deterministic per-output checks (schema, index refs, cross-group validity) · orig `scratch/p2-eval/deterministic.json`
+- `JUDGE-SYSTEM.md` · `JUDGE-INSTRUCTIONS.md` — judge prompt pair · orig `scratch/p2-eval/`
+- `verdicts/*.json` — 63 judge verdicts (21 topics × 3) · orig `scratch/p2-eval/verdicts/`
+- `anon_keys/*.json` — label → arm map per topic (21) · orig `scratch/p2-eval/anon_keys/`
 
 ## bias-telemetry-forensics — read-only forensics A1–A4: BiasLanguageStage never logged `model_used` (A1); 09-12 both-vote bias_judge fallback reconciled to the penny (A2); channel-C flash **alias roll** 2026-09-10 (`deepseek-flash`), 116 calls booked $0 → **ledger understatement ≈ $1.70 / ≈ $0.42 per run — ESTIMATE, not measured** (A3); alias identity = v4.1-flash **PROBABLE, NOT ESTABLISHED** (no price written); shared flash rung 2 (0731 pin) dead 09-06→09-10 then silently substituting v4.1-flash (A4) → **telemetry fix (`4084cea`); rung 2 → v4.1-flash (`0aad193`)** (2026-09-13)
 - `REPORT.md` — A1–A4 forensics with every claim path-cited · orig `scratch/audit/bias-telemetry-forensics.md`
@@ -159,7 +177,7 @@ Each artifact line: *filename — role · original path*.
 ## Excluded (with reason)
 - **Per-topic raw model I/O** across every eval dir (`scratch/*/YYYY-MM-DD/**` — `input.json`, `incumbent.json`, `golden.json`, `glm_output.json`, `PROMPT.md`, judge `packet.json`): raw eval inputs/outputs, not reports or scores; embed source-derived content (curator topics, dossiers, generated articles). Out of scope + copyright-adjacent.
 - **`scratch/fetch-diag/raw.json`**: embeds full fetched article text (trafilatura + ollama extractions of live news) — copyright. The aggregated `REPORT.md` (metrics only) was copied instead.
-- **`scratch/p2-eval/raw/*.json`** (hydration Phase-2 eval): raw per-run candidate outputs, embed source summaries. No standalone report/aggregate exists in scratch; the Phase-2 eval digest lives on the unpushed branch `eval/hydration-p2-model-eval` (`d1f265d`) and is referenced by `scripts/run.py` as `docs/HYDRATION-P2-MODEL-EVAL-2026-07.md` — track that separately when the branch lands.
+- **`scratch/p2-eval/raw/*.json`** (hydration Phase-2 eval): raw per-run candidate outputs, embed source summaries. No standalone report/aggregate exists in scratch; the Phase-2 eval digest is now tracked at `docs/HYDRATION-P2-MODEL-EVAL-2026-07.md` and its scored evidence under `hydration-p2/` above (carried 2026-09-24 from `eval/hydration-p2-model-eval` `d1f265d`).
 - **`scratch/registry-seed/`** (`_mined.json` 520 KB, `candidates.json`, `long_tail.json`, `REPORT.md`): feed-mining data acquisition, not a model evaluation; large files embed scraped feed content + URLs.
 - **`scratch/MADLAD-INTEGRATION-REQUIREMENTS.md`**: a requirements spec, not evaluation evidence.
 - **Eval tooling scripts** (`score.py`, `report.py`, `backtest.py`, `backtest_3arm.py`, `score_phase0.py`, …): the generators, not the evidence; they remain in `scratch/`.

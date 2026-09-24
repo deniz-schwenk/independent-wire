@@ -1,0 +1,73 @@
+{
+ "date": "2026-07-03",
+ "topic": 0,
+ "judge": 2,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Turkish-language coverage (Hurriyet) foregrounds Iranian military commanders' explicit threats of retaliation against the US and Israel and quotes multiple Iranian security officials, while English-language Western outlets (DW News, France 24, Japan Today) focus more on succession uncertainty, public dissent, and the regime's legitimacy crisis.",
+      "why_unsupported": "The 'succession uncertainty' attribution to the Western trio is unsupported and inverted: it is the Turkish article (5) that reports uncertainty over whether Mojtaba will appear, while DW (2) covers legacy/dissent and France 24 (4) covers warnings, vengeance and the NYT report on targeting negotiators — not succession. France 24 does not foreground public dissent or a legitimacy crisis either."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 2,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 3,
+    "overall": 2,
+    "fabricated_divergences": [
+     {
+      "quote": "Iranian state-linked outlets and their amplification via Turkish (Hurriyet) coverage emphasize official warnings against US/Israeli attack, calls for vengeance, and framing the funeral as a display of national unity and resilience, whereas UK-based Middle East Eye and Japan Today foreground internal dissent, private celebrations after Khamenei's death, and residents fleeing the mobilization.",
+      "why_unsupported": "Middle East Eye articles (7, 9, 10) cover body arrival, Guterres/Iravani, and the Hormuz UNSC warning — none foreground internal dissent, private celebrations, or residents fleeing. Those themes appear only in Japan Today (article 6). Attributing the dissent framing to MEE is unsupported."
+     },
+     {
+      "quote": "English-language Gulf and Western outlets (Al Jazeera, France 24, DW) foreground succession uncertainty around Mojtaba Khamenei and the funeral's leverage over nuclear diplomacy, while Turkish-language coverage (Hurriyet) focuses narrowly on military threats and retaliation rhetoric without addressing succession politics.",
+      "why_unsupported": "This is inverted: the Mojtaba succession uncertainty appears in the Turkish article (5), not in Al Jazeera (1, 8), DW (2), or France 24 (4). None of the named Gulf/Western analyses foreground Mojtaba succession or nuclear-diplomacy leverage, so the claimed contrast is fabricated and reversed."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.31132,
+ "tokens": 23312,
+ "duration_s": 114.0,
+ "provider": "Anthropic"
+}

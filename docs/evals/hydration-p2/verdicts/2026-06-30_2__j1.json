@@ -1,0 +1,64 @@
+{
+ "date": "2026-06-30",
+ "topic": 2,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "Spanish-language (El País) and German-language (Tagesschau) coverage include institutional history of the facility (established 2012, 11 residential places) that is absent from UK, Pakistani, and Turkish coverage.",
+      "why_unsupported": "Only the El País analysis (article 4) mentions the facility being specialised in care since 2012 with 11 residential places. None of the Tagesschau analyses (articles 8, 11, 12) contain this institutional history; article 12 only notes the child and mother lived at the facility. Attributing the 2012/11-places detail to German-language Tagesschau is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 3,
+    "specificity": 3,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.28178,
+ "tokens": 22768,
+ "duration_s": 99.8,
+ "provider": "Anthropic"
+}

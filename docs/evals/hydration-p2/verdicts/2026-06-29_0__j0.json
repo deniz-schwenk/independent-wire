@@ -1,0 +1,64 @@
+{
+ "date": "2026-06-29",
+ "topic": 0,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 3,
+    "specificity": 3,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "German media (DW) concentrates on the French central government's logistical and security response, whereas French media (France 24, RFI) foreground the local political outcome and quote New Caledonian actors directly.",
+      "why_unsupported": "The analyses show France 24 (article 1) has an empty actors_quoted list — it quotes no one. Only RFI quotes a New Caledonian actor (Sonia Backes). Grouping France 24 with RFI as sources that 'quote New Caledonian actors directly' is contradicted by the analysis, which shows France 24 quotes no local actors."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 4,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.120425,
+ "tokens": 9645,
+ "duration_s": 43.3,
+ "provider": "Anthropic"
+}
