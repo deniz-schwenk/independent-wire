@@ -16,6 +16,11 @@ mkdir -p "$LOGDIR"
 TODAY="$(date +%F)"
 LOG="$LOGDIR/run-$TODAY.log"
 
+# Best-effort abort ping (TASK-ABORT-NOTIFY). Always exits 0 and never blocks:
+# a notifier that can break the runner is worse than a silent morning. Its own
+# stderr is captured so a skipped ping is visible in the log.
+notify() { zsh "$REPO/scripts/notify.sh" "daily_run.sh" "$1" 2>>"$LOG" || true; }
+
 # launchd runs with a minimal environment: set a sane PATH, cd into the repo.
 export PATH="$HOME/.local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 cd "$REPO"
@@ -38,6 +43,7 @@ if [[ "$CURRENT_BRANCH" != "main" ]]; then
     echo "Fix: cd '$REPO' && git checkout main  (the runner will NOT move your tree)."
     echo "===================================================="
   } | tee -a "$LOG" >&2
+  notify "ABORT: checked-out branch is '$CURRENT_BRANCH', not 'main' — nothing ran."
   exit 1
 fi
 
@@ -100,6 +106,7 @@ if [[ -e "$LOCK" ]]; then
         echo "Fix: check ownership/permissions on '$LOCK', then rerun."
         echo "===================================================="
       } | tee -a "$LOG" >&2
+      notify "ABORT: stale git index.lock removable by policy but rm FAILED — nothing ran."
       exit 1
     fi
   else
@@ -116,6 +123,7 @@ if [[ -e "$LOCK" ]]; then
       echo "     running: rm '$LOCK'  (the runner will retry on the next trigger)."
       echo "===================================================="
     } | tee -a "$LOG" >&2
+    notify "ABORT: git index.lock present and not provably stale — nothing ran."
     exit 1
   fi
 else
@@ -123,7 +131,9 @@ else
 fi
 # --- end stale git index.lock guard -----------------------------------------
 
-trap 'echo "===== FAILED — $TODAY — $(date) — see log above =====" >> "$LOG"' ERR
+# A crash is as silent as a refusal, so the ERR trap pings too. It covers the
+# pipeline step, the zero-Topic-Package guard, publish, and the git push.
+trap 'echo "===== FAILED — $TODAY — $(date) — see log above =====" >> "$LOG"; notify "FAILED: the run exited non-zero — see the log."' ERR
 
 {
   echo "===================================================="
