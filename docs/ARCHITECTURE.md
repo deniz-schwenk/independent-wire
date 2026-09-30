@@ -51,10 +51,14 @@ class Agent:
         instructions_path: str,       # path to INSTRUCTIONS.md (per-run task spec)
         tools: list[Tool] = None,     # e.g. [web_search_tool] — None = no tools
         memory_path: str = None,      # optional persistent memory file
-        temperature: float = 0.3,     # model temperature
+        temperature: float | None = 0.3,  # None = parameter not sent (e.g. sonnet-5, glm-5.3)
         max_tokens: int = 32000,      # max response tokens
-        provider: str = "openrouter", # API provider
-        reasoning: str | None = None, # 'none', 'minimal', 'high' (provider-specific)
+        provider: str = "openrouter", # "openrouter" | "deepseek_direct" | "ollama" | "ollama_cloud"
+        reasoning: str | bool | dict | None = None,  # level string, or a reasoning dict (e.g. {"enabled": True, "effort": "high"})
+        extra_body_override: dict | None = None,     # merged into the request body verbatim (e.g. {"top_p": 0.95})
+        provider_routing: dict | None = None,        # OpenRouter provider pin (order / allow_fallbacks / quantizations)
+        output_schema: dict | None = None,           # constructor default schema; run() may override
+        structured_output_mode: str = "strict_schema",  # or "json_object" (see below)
     ):
         ...
 
@@ -62,7 +66,7 @@ class Agent:
         self,
         message: str = "",
         context: dict = None,                   # JSON-encoded into the User-turn <context> block
-        output_schema: dict = None,             # JSON Schema enforced as decoder constraint via OpenRouter response_format (strict mode). See src/schemas.py.
+        output_schema: dict = None,             # overrides the constructor's schema for this call. See src/schemas.py.
         instructions_addendum: str | None = None,  # appended inside the <instructions> block
     ) -> AgentResult:
         """
@@ -92,7 +96,10 @@ class AgentResult:
 - Agents are **async** (`async def run`) — enables future parallelization via `asyncio.gather()`
 - Each agent has its **own model** — no global default
 - **Tool calls handled inside the agent loop** — same pattern as Nanobot's `loop.py`
-- **Structured output** via `output_schema`. The schema is wired as `response_format: {type: "json_schema", strict: true, schema: ...}` on the OpenRouter API call. For Anthropic models, OpenRouter applies the `anthropic-beta: structured-outputs-2025-11-13` header automatically. Decoder masks tokens that would violate the schema before sampling — agents are mechanically incapable of emitting fields outside their schema. All production agent schemas live in `src/schemas.py` as a single source of truth. Defense-in-depth (`_extract_dict`, `_extract_list`, `_parse_json`, `json_repair`, `_parse_or_retry_structured`) preserved as fallback when the schema fails to compile or a provider falls back.
+- **Structured output** via `output_schema`, in one of two modes (`structured_output_mode`):
+  - **`strict_schema`** (the default): the schema is wired as `response_format: {type: "json_schema", strict: true, schema: ...}` on the OpenRouter API call. For Anthropic models, OpenRouter applies the `anthropic-beta: structured-outputs-2025-11-13` header automatically. The decoder masks tokens that would violate the schema before sampling, so an agent in this mode cannot emit fields outside its schema.
+  - **`json_object`**: only `{type: "json_object"}` is sent, and `deepseek_direct` is always coerced to it. It is used where the route offers no strict decoding: every DeepSeek rung and every GLM-5.3 Z.AI route. There, conformance is enforced by the stage's fallback wrapper, which validates against the live schema, so a schema-invalid final answer engages the next rung (see *Error Handling and Retries*).
+  - In both modes, all production agent schemas live in `src/schemas.py` as a single source of truth. Defense-in-depth (`_extract_dict`, `_extract_list`, `_parse_json`, the in-Agent truncated-JSON repair, `_parse_or_retry_structured`) preserved as fallback when the schema fails to compile or a provider falls back.
 - **Memory is a file path**, not a framework feature; loaded into the User-turn `<memory>` block when set
 - **Two-file prompt convention** (S13): every agent has `agents/{name}/SYSTEM.md` (identity) + `agents/{name}/INSTRUCTIONS.md` (per-run task spec). Researcher and Hydration Aggregator use phase-named pairs (`PLAN-*`, `ASSEMBLE-*`, `PHASE1-*`, `PHASE2-*`).
 - **User-turn three-block layout**: `<context>` (JSON-encoded input + optional message), `<memory>` (when present), `<instructions>` (always present; addendum like Writer FOLLOWUP.md appended inside the closing tag). System message contains only `<system_prompt>{SYSTEM.md}</system_prompt>`.
@@ -179,7 +186,7 @@ The full slot catalogue with owners, visibility, mirrors-from, and initial / fin
 
 All other Bus slots — RunBus init metadata, EditorAssignments, the full TopicBus slot family — are unchanged from the V2 cutover and documented in `docs/ARCH-V2-BUS-SCHEMA.md` §4A / §4B. The Curator-side additions above are the only new slots introduced across Briefs 1–5b.
 
-Post-V2 TopicBus addition (2026-05-27): `what_is_missing` is written by the new `ConsolidatorStage` (LLM, DeepSeek V4 Pro). Visibility `tp+mcp`, `optional_write=True`, carrying `{voices_missing: [...], topics_missing: [...]}` — LLM-consolidated and deduped view over `perspective_missing_positions[]` (structured) and `merged_coverage_gaps[]` (free-text), classified per entry as a missing voice or a missing topic. The Consolidator replaced three earlier post-QA stages (`validate_coverage_gaps_stage`, `consolidate_missing_coverage`, `PerspectiveSyncStage`) collapsed into one. Canonical slot spec lives in `docs/ARCH-V2-BUS-SCHEMA.md` §4B.10.
+Post-V2 TopicBus addition (2026-05-27): `what_is_missing` is written by the new `ConsolidatorStage` (LLM, DeepSeek v4.1-flash). Visibility `tp+mcp`, `optional_write=True`, carrying `{voices_missing: [...], topics_missing: [...]}` — LLM-consolidated and deduped view over `perspective_missing_positions[]` (structured) and `merged_coverage_gaps[]` (free-text), classified per entry as a missing voice or a missing topic. The Consolidator replaced three earlier post-QA stages (`validate_coverage_gaps_stage`, `consolidate_missing_coverage`, `PerspectiveSyncStage`) collapsed into one. Canonical slot spec lives in `docs/ARCH-V2-BUS-SCHEMA.md` §4B.10.
 
 Post-V2 TopicBus addition (2026-05-21, renamed from `single_voices` in commit `7726fac`): `mentioned_actors` is written by the deterministic `derive_mentioned_actors` topic-stage. Visibility `tp+mcp`, `optional_write=True`, carrying `{position_label, summary, actors_stated, actors_reported, actors_mentioned, actor_ids, source_ids, counts}` — a deterministic bracket of every canonical actor absent from every cluster's `actor_ids[]`. Sits next to `perspective_clusters_synced[]` so consumers can distinguish the bracket from a real shared-position cluster; the bracket's DOM anchor is `id="mentioned-actors"`, explicitly separate from any `pc-NNN`. The original 2-source threshold was dropped at rename time. Canonical slot spec lives in `docs/ARCH-V2-BUS-SCHEMA.md` §4B.8b.
 
@@ -194,7 +201,7 @@ Production variant:
   init_run
   → fetch_findings
   → pre_cluster_findings               (B1, deterministic — agglomerative)
-  → CuratorTopicDiscoveryStage         (LLM — DeepSeek V4 Flash)
+  → CuratorTopicDiscoveryStage         (LLM — DeepSeek v4.1-flash)
   → gravitational_assign               (B2, deterministic — cosine T=0.55)
   → assemble_curator_topics            (B5, deterministic — composition)
   → EditorStage
@@ -228,7 +235,7 @@ Curator pipeline references:
 The Curator's job — turn ~1,200 daily findings into a small set of thematic topic candidates — is now done by three stages, not one LLM pass. Each stage has the task it is structurally suited for, and two of the three are deterministic.
 
 1. **`pre_cluster_findings`** — Embed every finding via the shared fastembed singleton (multilingual MiniLM-L12-v2), cluster into ~250 micro-clusters via Agglomerative clustering (`distance_threshold=0.7`, `linkage='average'`, `metric='cosine'`). Pure Python. Deterministic.
-2. **`CuratorTopicDiscoveryStage`** — A small-input, small-output LLM call (DeepSeek V4 Flash, temp 0.5). Receives the ~250 micro-clusters in compressed representation (top-K-by-centroid titles, K=8) and identifies the 10–20 superordinate topics of the day. Emits **only** `{topics: [{title, summary}]}` — no per-finding assignments, no relevance scores. Removing the per-finding output pressure eliminated the over-clustering pathology that broke the V1 single-pass Curator.
+2. **`CuratorTopicDiscoveryStage`** — A small-input, small-output LLM call (DeepSeek v4.1-flash, temp 0.5). Receives the ~250 micro-clusters in compressed representation (top-K-by-centroid titles, K=8) and identifies the 10–20 superordinate topics of the day. Emits **only** `{topics: [{title, summary}]}` — no per-finding assignments, no relevance scores. Removing the per-finding output pressure eliminated the over-clustering pathology that broke the V1 single-pass Curator.
 3. **`gravitational_assign`** — Embed each topic's title + summary into a topic-centre vector. Embed each finding. Compute cosine similarity. A finding is assigned to every topic centre it scores above the **`GRAVITATIONAL_THRESHOLD`** of 0.55 — capped at `PER_FINDING_CAP=3` topics per finding. Below threshold for every topic → orphan. Pure Python. Deterministic.
 
 The rationale — what V1 broke, what the empirical evidence was, what got resolved — lives in **`docs/ADR-CURATOR-TRIPLE-STAGE.md`**. The empirical validation: the cluster-quality audit at HEAD `6d8ffc4` measured a 69.59 % aggregate off-topic rate at the provisional T=0.30 calibration; the recalibration to T=0.55 (Brief 5b, HEAD `310a55d`) brings that to 8.23 % with no audited top-10 topic above 50 % off-topic. See `docs/AUDIT-TIMELINE.md` for the chronology.
@@ -266,7 +273,7 @@ Applied in the current V2 pipeline:
 - **Curator pre-clustering and gravitational assignment** are entirely deterministic Python (`pre_cluster_findings`, `gravitational_assign`); only the topic-naming step (`CuratorTopicDiscoveryStage`) is an LLM call. The V1 single-pass Curator that asked one model to simultaneously cluster + assign + score is gone.
 - **Source merge + renumber** (`merge_sources` → `renumber_sources`) lift the hydration and research dossiers into a single sequential `src-NNN` keyspace deterministically; downstream agents never see `rsrc-` IDs.
 - **Outlet-metadata propagation** (`propagate_outlet_metadata`): every source's descriptive (`country` / `language` / `type`) and editorial (`tier` / `editorial_independence` / `bias_note`) fields are attached by deterministic hostname lookup (`lookup_outlet(url)`) against `config/outlet_registry.json` — the single source of truth. `config/sources.json` carries feed mechanics only. This replaced a fragile name-match against `sources.json` ("BBC World" matched "BBC" only by coincidence); hydration-origin sources whose hostname is in the registry now pick up the same fields, with sibling propagation across multi-host outlets (Al Jazeera EN/AR, BBC variants) applied deterministically.
-- **What-is-missing consolidation** (`ConsolidatorStage`, LLM, DeepSeek V4 Pro) consumes the structured `perspective_missing_positions[]` from the Perspective agent and the free-text `merged_coverage_gaps[]` from HydrationPhase2, deduplicates them, and classifies each entry as a missing voice or a missing topic. The earlier deterministic `validate_coverage_gaps_stage` was removed in commit `3f59ab9` after measurement showed it false-falsifying legitimate gaps via keyword-substring matching (Cuba 2026-05-23 dossier: 4 of 7 gaps wrongly dropped). The judgment is semantic; LLM with surgical scope is the right primitive.
+- **What-is-missing consolidation** (`ConsolidatorStage`, LLM, DeepSeek v4.1-flash) consumes the structured `perspective_missing_positions[]` from the Perspective agent and the free-text `merged_coverage_gaps[]` from HydrationPhase2, deduplicates them, and classifies each entry as a missing voice or a missing topic. The earlier deterministic `validate_coverage_gaps_stage` was removed in commit `3f59ab9` after measurement showed it false-falsifying legitimate gaps via keyword-substring matching (Cuba 2026-05-23 dossier: 4 of 7 gaps wrongly dropped). The judgment is semantic; LLM with surgical scope is the right primitive.
 - **Bias-Card aggregation** (`compose_bias_card`): the public bias card is a derived render view over five Bus slots (`bias_language_findings`, `final_sources`, `source_balance`, `what_is_missing`, `transparency_card`). The bias detector emits only originary linguistic findings; the geographic / source / selection / framing dimensions are computed in Python.
 - **Counting is never delegated to LLM.** The Hydration aggregator does not self-verify its array length; the chunk validator in Python catches missing `article_index` values and retries with the missing indices only.
 
@@ -303,6 +310,13 @@ A pipeline-wide audit was catalogued as an open work item in V1; in V2 the struc
 
 Agent-level exponential backoff with jitter for transient API errors (429, 5xx). Auth errors (401/403) and invalid requests (400) are raised immediately. Pipeline continues after individual topic failures — failed topics are logged and reported. Per-stage Bus snapshots are persisted to `output/{date}/_state/run-{run_id}/` after each stage for crash recovery.
 
+Above the Agent's own retries, every LLM stage in the production runner sits behind a **one-shot fallback wrapper**. The wrapper makes exactly one attempt per further rung when the primary finally fails, meaning a transport error after retries or a schema-invalid final answer. It records what served in the stage row (`model_used`, `provider_used`, a `*_fallback_used` marker).
+
+Three run-level mechanisms sit on top of that, at overview level (details: `docs/AGENT-IO-MAP.md` §1.1):
+- **Empty-output escalation + degradation.** Curator, ResearcherAssemble, Consolidator and ResolveActorAliases retry an empty answer (up to 3 attempts, each through the ladder). If every rung stays empty, the stage row is recorded as `status: "degraded"` with a reason instead of `success`. For the resolver, an empty answer is accepted as correct when a deterministic check finds no merge candidates in the input.
+- **Publish-time degradation gate.** `fire_degradation_gate` (`src/runner/runner.py`) runs immediately before render and logs every degraded row at ERROR. It does not block publishing: degraded Topic Packages ship flagged, not dropped.
+- **Merge-validation detector.** Inside ResolveActorAliases, before the union-find, `validate_merges` flags proposed alias merges with no tangible link between the two actors. In the shipped `detector` mode it counts and logs (collapse shapes get their own prefix) and every merge still proceeds.
+
 ## Configuration
 
 File-based, environment-overridable, path-agnostic. API keys are **never** in the config file — config references env var names; the loader reads actual values from the environment. Profile system for model overrides (develop / demo).
@@ -330,7 +344,10 @@ dependencies = [
 
 API keys live in the environment, never in config (see Configuration above).
 
-- **OpenRouter** (`OPENROUTER_API_KEY`) — all LLM agent calls; per-stage cost metered into `run_stage_log.jsonl`.
+- **OpenRouter** (`OPENROUTER_API_KEY`) — every LLM agent call except the DeepSeek-direct ones below; per-stage cost metered into `run_stage_log.jsonl`.
+- **DeepSeek direct API** (`DEEPSEEK_API_KEY`, `api.deepseek.com`, provider `deepseek_direct`):
+  - the `researcher_hydrated_plan` primary (`deepseek-v4-pro`);
+  - the channel-C transport rung of the six flash stages. Calls on the undated flash alias are unpriced and book $0.00.
 - **Ollama subscription** (`OLLAMA_API_KEY`, flat-rate, $0 marginal) — two production consumers:
   - **`web_search` default** since **2026-07-06** (`IW_SEARCH_PROVIDER=ollama`, `src/tools/web_search.py`), replacing Perplexity/Sonar as a cost-driven interim bridge ahead of the registry endgame. Basis: `scratch/registry-shadow/BACKTEST-3ARM-REPORT.md` (QUALIFIED GO). One-line revert: `IW_SEARCH_PROVIDER=perplexity` (the Sonar path is retained). The parked `feat/registry-a2` registry backend is the eventual $0 replacement. If `OLLAMA_API_KEY` is absent the search path degrades to DuckDuckGo, logged loudly as `provider_used=duckduckgo` — never silent.
   - **German translation** primary provider (`ollama-cloud`, step 1 of the `translate_de.py` fallback chain).
@@ -351,27 +368,36 @@ API keys live in the environment, never in config (see Configuration above).
 | **Structured output** | Agent's `output_schema` parameter; schema enforced at decode time via OpenRouter `response_format` |
 | **Error recovery** | `PipelineRunner` resumes from last per-stage snapshot in `output/{date}/_state/run-{run_id}/` |
 
-## Current Model Assignments (V2, post Brief 5b)
+## Current Model Assignments (V2, September 2026)
 
-Authoritative table in `docs/AGENT-IO-MAP.md` §1; snapshot here. All via OpenRouter; reasoning none unless noted; synthesis agents at temperature 0.1; extraction agents at 0.2–0.3.
+The authoritative table, with max_tokens, routing constants and every fallback rung, is in `docs/AGENT-IO-MAP.md` §1; this is a snapshot of `scripts/run.py` at HEAD `1039383` (2026-09-24). Rows follow the hydrated pipeline, which is the production runner's variant. "Level" is the literal `reasoning` string shipped; "omitted" means the parameter is not sent.
 
-| Agent | Model | Temp | Reasoning | Notes |
-|-------|-------|---:|---|---|
-| curator_topic_discovery | deepseek/deepseek-v4-flash | 0.5 | medium | Migrated from `google/gemini-3-flash-preview` 2026-05-19 per Wave-2 + variance smoke (variant `dskflash-t05-rmedium`, 25.0 ± 0.0 topics, 0 duplicates across 3 reps). Only Curator-side LLM in V2 |
-| editor | z-ai/glm-5.2 (→ sonnet-5 fallback) | 0.3 | xhigh | Swapped Opus-4.6 → GLM-5.2 @ xhigh (fp8-pinned) per TASK-EDITOR-SWAP-GLM; one-shot Sonnet-5 fallback on structured=None/transport failure (loud, `editor_fallback_used`) |
-| researcher_plan | anthropic/claude-opus-4.6 | 0.5 | none | Opus 4.6 since Researcher-Polish iter 1 (commit `b2bec02`) |
-| researcher_assemble | deepseek/deepseek-v4-flash | 0.5 | none | Migrated from `google/gemini-3-flash-preview` 2026-05-18 per Wave-1 Sweep #3 (~4.3× cheaper at $0.006/topic; 15/15/15 sources vs prior 15/12/10) |
-| resolve_actor_aliases | deepseek/deepseek-v4-flash | 0.5 | none | Migrated from `google/gemini-3-flash-preview` 2026-05-19 per Wave-2 Sweep #2 (variant `dskflash-t05-rnone`, 0 uncovered input IDs across 3 topics, ~10-15× cheaper); F2 alias-merge (Y-config) |
-| perspective | anthropic/claude-sonnet-5 (→ opus-4.6 fallback) | — | high (enabled) | Swapped Opus-4.6 → Sonnet-5 per TASK-PERSPECTIVE-SWAP-SONNET5 (docs/PERSPECTIVE-STAGE-MODEL-EVAL-2026-07.md); one-shot pre-swap Opus-4.6 fallback (loud, `perspective_fallback_used`). (formerly "perspektiv" — anglicised in V2-07) |
-| writer | z-ai/glm-5.2 (→ opus-4.6 fallback) | 0.3 | xhigh | Swapped Opus-4.6 → GLM-5.2 @ xhigh (fp8-pinned) per TASK-WRITER-SWAP-GLM (docs/WRITER-STAGE-MODEL-EVAL-2026-07.md); one-shot pre-swap Opus-4.6 fallback (loud, `writer_fallback_used`). No web_search tool in V2 (since V2-09c2) |
-| qa_analyze | z-ai/glm-5.2 (→ sonnet-5 fallback) | 0.1 | xhigh | Swapped Sonnet-4.6 → GLM-5.2 @ xhigh (fp8-pinned) per TASK-QA-SWAP-GLM (docs/QA-STAGE-MODEL-EVAL-SHADOW-BACKFILL.md); one-shot Sonnet-5 fallback (loud, `qa_fallback_used`). Incumbent Sonnet-4.6 never used `r-medium` (crashed 2/4 in eval) |
-| bias_language | bias-composite: deepseek-v4-pro ×3 (extract) → opus-4.6 ×2 (judge) | 0.8 / 0.1 | none | Composite per TASK-BIAS-STAGE-SPLIT (docs/BIAS-STAGE-MODEL-EVAL-2026-07.md): 3× DeepSeek-V4-Pro candidate extraction → Python union (K/N confidence) → 2× Opus-4.6 ternary judge → Python tier aggregation. Judge reaffirmed as Opus (all swap candidates failed the stability gate) |
-| researcher_hydrated_plan | anthropic/claude-opus-4.6 | 0.5 | none | Hydrated variant of researcher_plan |
-| hydration_aggregator_phase1 | deepseek/deepseek-v4-pro | 0.3 | none | Per-chunk extraction (parallel, chunked) |
-| hydration_aggregator_phase2 | z-ai/glm-5.2 (→ opus-4.6 fallback) | 0.1 | xhigh | Cross-corpus reducer (single call). Swapped Opus-4.6 → GLM-5.2 @ xhigh (fp8-pinned) 2026-07-05 per docs/HYDRATION-P2-MODEL-EVAL-2026-07.md (TASK-HYDRATION-P2-GLM-SWAP): ties Opus-4.8 golden, ½ fabrications, 2.7× cheaper; one-shot Opus-4.6 fallback (loud, `hydration_phase2_fallback_used`) |
-| consolidator | deepseek/deepseek-v4-pro | 0.3 | none | Post-QA: consolidates perspective_missing_positions + merged_coverage_gaps into voices_missing + topics_missing (replaces removed `perspective_sync` agent and two deterministic gap-handling stages, commit `3f59ab9`) |
+| Agent | Model (route) | Temp | Level | Fallback | Notes |
+|-------|-------|---:|---|---|---|
+| curator_topic_discovery | deepseek/deepseek-v4.1-flash (channel A) | 0.5 | medium | channel C (transport) | Only Curator-side LLM. RUN-LEVEL: final failure kills the run |
+| editor | z-ai/glm-5.2 (OpenRouter fp8 pin, strict schema) | 0.3 | xhigh | sonnet-5 | TASK-EDITOR-SWAP-GLM; marker `editor_fallback_used` |
+| researcher_hydrated_plan | deepseek-v4-pro (channel C, `deepseek_direct`) | omitted | low | ① deepseek/deepseek-v4-pro-0813 (OpenRouter, pinned `deepseek`) ② opus-4.6 | `PlannerWithFallbackLadder`; marker `planner_fallback_used` |
+| researcher_plan *(non-hydrated only)* | anthropic/claude-opus-4.6 | 0.5 | none | — | Not used by the production runner |
+| researcher_assemble | deepseek/deepseek-v4.1-flash (channel A) | 0.5 | low | channel C (transport) | |
+| resolve_actor_aliases | deepseek/deepseek-v4.1-flash (channel A) | 0.5 | low | channel C (transport) | Empty-answer gate + merge-validation detector (below) |
+| hydration_aggregator_phase1 | deepseek/deepseek-v4.1-flash (channel A) | 0.3 | medium | channel C (transport) | Per-chunk extraction (parallel, chunked) |
+| hydration_aggregator_phase2 | z-ai/glm-5.3-flash (Z.AI pin) | 1.0, top_p 0.95 | max | opus-4.6 | Cross-corpus reducer (single call). TASK-SWAP-FM-BUNDLE; confirmed swap |
+| perspective | draft z-ai/glm-5.3 → verify z-ai/glm-5.3-flash (Z.AI pin) | omitted / 1.0, top_p 0.95 | high / high | sonnet-5 | `PerspectiveDraftVerifyChain`, TASK-PERSPECTIVE-SWAP; one logged repair of a schema-invalid draft; `model_used` names the authoring leg |
+| writer | z-ai/glm-5.2 (OpenRouter fp8 pin, strict schema) | 0.3 | xhigh | opus-4.6 | TASK-WRITER-SWAP-GLM; marker `writer_fallback_used` |
+| qa_analyze | z-ai/glm-5.3-flash (Z.AI pin) | 1.0, top_p 0.95 | max | sonnet-5 | TASK-SWAP-FM-BUNDLE; cost-led swap (two failed pre-registered confirmations on record) |
+| consolidator | deepseek/deepseek-v4.1-flash (channel A) | 0.3 | minimal | channel C (transport) | Post-QA: voices_missing + topics_missing |
+| bias_language | composite: extractor deepseek/deepseek-v4.1-flash ×3 (+1 adaptive) → judge z-ai/glm-5.3 ×2 | 0.8 / omitted | minimal / high | extractor: channel C; judge: opus-4.6 | `BiasComposite`: Python union (+ lexicon) and Python tier assignment. Judge on glm-5.3 since TASK-BIASJUDGE-SWAP |
 
-**Migration pending:** All `anthropic/claude-opus-4.6` agents above are staged for simultaneous migration to `anthropic/claude-opus-4.7` as a single workstream (`WP-OPUS-4.7-MIGRATION`). Opus 4.7 removes `temperature`, `top_p`, `top_k` as supported parameters (returns 400 on any non-default value) and replaces discrete reasoning levels with `output_config.effort` (low / medium / high / xhigh / max, always active). This requires `src/agent.py` refactor plus per-agent effort-level evaluation before cutover — not a drop-in swap.
+**Routes.**
+- **Channel A** is OpenRouter pinned to the vendor's own endpoint (`{"order": ["deepseek"], "allow_fallbacks": false}`).
+- **Channel C** is `api.deepseek.com` direct on the vendor's undated alias `deepseek-v4-flash`.
+- **Z.AI pin** is `{"order": ["z-ai"], "allow_fallbacks": false}`.
+
+**The six flash stages.** They run primary = channel A on `deepseek/deepseek-v4.1-flash`, rung 2 = channel C, since TASK-FLASH-CHANNEL-PIN (2026-09-18), which swapped the two rungs' roles.
+- **Named substitution:** the primary is a named substitution. It states the vendor's current first-party build so `model_used` is checkable and cost is measured on every call; it is not backed by a per-stage quality eval.
+- **Transport fallback:** rung 2 is a transport fallback to the same vendor. Its alias is unverifiable, so no identity with the primary is claimed, and its calls are unpriced.
+
+**Migration pending:** All `anthropic/claude-opus-4.6` agents and rungs above are staged for simultaneous migration to `anthropic/claude-opus-4.7` as a single workstream (`WP-OPUS-4.7-MIGRATION`). Opus 4.7 removes `temperature`, `top_p`, `top_k` as supported parameters (returns 400 on any non-default value) and replaces discrete reasoning levels with `output_config.effort` (low / medium / high / xhigh / max, always active). This requires `src/agent.py` refactor plus per-agent effort-level evaluation before cutover — not a drop-in swap.
 
 ---
 

@@ -1,30 +1,62 @@
 # Agent I/O Map
 
-Pipeline-stage inventory mapping every V2 stage to its LLM configuration (for agent stages) and Bus I/O contract (for all stages). Authoritative against HEAD `e2d917f` on 2026-05-28 (post Consolidator refactor `3f59ab9` + public-surface cleanup).
+Pipeline-stage inventory mapping every V2 stage to its LLM configuration (for agent stages) and Bus I/O contract (for all stages). Bus I/O content authoritative against HEAD `e2d917f` on 2026-05-28 (post Consolidator refactor `3f59ab9` + public-surface cleanup). **§1 and every per-stage Model / Params / Prompt line reconciled against `scripts/run.py`, `src/flash_stage_fallback.py`, `src/planner_fallback.py` and `src/bias_composite.py` at HEAD `1039383` on 2026-09-24**; Bus I/O lines were not re-audited in that pass.
 
 Sources of truth: `src/runner/stage_lists.py` (stage order), `scripts/run.py` (agent registrations), `src/agent_stages.py` (wrapper reads/writes), `src/stages/run_stages.py` + `src/stages/topic_stages.py` (deterministic stages), `src/bus.py` (slot definitions), `src/schemas.py` (LLM output schemas).
 
 ## §1 Quick-Reference: LLM Configuration
 
-> The model assignments table below reflects the hydrated pipeline (canonical as of 2026-05-19). The non-hydrated pipeline inherits the same base configs via `create_agents()` but is legacy — preserved for backwards compatibility, not maintained going forward.
+> The table reflects the **hydrated** pipeline (`create_agents_hydrated()`, the production runner's variant) plus `researcher_plan`, which only the non-hydrated variant uses. Every row is what `scripts/run.py` constructs at HEAD. "Level" is the literal `reasoning` string shipped; "omitted" means the parameter is not sent. The DeepSeek and GLM-5.3 rungs run `structured_output_mode="json_object"` (no strict decoding on those routes), so schema conformance is checked locally by the wrapper, and a schema-invalid final answer counts as a failure that engages the next rung.
 
-| Agent | Model | Temp | Reasoning | max_tokens |
-|---|---|---|---|---|
-| curator_topic_discovery | `deepseek/deepseek-v4-flash` | 0.5 | medium | 160000 |
-| editor | `anthropic/claude-opus-4.6` | 0.3 | none | default |
-| researcher_plan | `anthropic/claude-opus-4.6` | 0.5 | none | default |
-| researcher_assemble | `deepseek/deepseek-v4-flash` | 0.5 | none | 16000 |
-| resolve_actor_aliases | `deepseek/deepseek-v4-flash` | 0.5 | none | 160000 |
-| perspective | `anthropic/claude-opus-4.6` | 0.1 | none | default |
-| writer | `anthropic/claude-opus-4.6` | 0.3 | none | default |
-| qa_analyze | `anthropic/claude-sonnet-4.6` | 0.1 | none | 64000 |
-| bias_language | `anthropic/claude-opus-4.6` | 0.1 | none | default |
-| researcher_hydrated_plan | `anthropic/claude-opus-4.6` | 0.5 | none | 16384 |
-| hydration_aggregator_phase1 | `deepseek/deepseek-v4-pro` | 0.3 | none | 32000 |
-| hydration_aggregator_phase2 | `anthropic/claude-opus-4.6` | 0.1 | none | 32000 |
-| consolidator | `deepseek/deepseek-v4-pro` | 0.3 | none | 32000 |
+| Agent | Primary (model · route) | Temp | Level | max_tokens | Fallback rung(s) |
+|---|---|---|---|---|---|
+| curator_topic_discovery | `deepseek/deepseek-v4.1-flash` · channel A | 0.5 | medium | 128000 | channel C @ medium |
+| editor | `z-ai/glm-5.2` · OpenRouter fp8 pin, strict schema | 0.3 | xhigh | 120000 | `anthropic/claude-sonnet-5` (temp omitted, `{enabled, effort: high}`, 64000) |
+| researcher_hydrated_plan | `deepseek-v4-pro` · channel C (`deepseek_direct`) | omitted | low | 24000 | ① `deepseek/deepseek-v4-pro-0813` · OpenRouter pinned `deepseek` @ low, 24000 → ② `anthropic/claude-opus-4.6` (0.5, none, 16384) |
+| researcher_plan *(non-hydrated only)* | `anthropic/claude-opus-4.6` · OpenRouter, strict schema | 0.5 | none | 32000 (Agent default) | — |
+| researcher_assemble | `deepseek/deepseek-v4.1-flash` · channel A | 0.5 | low | 128000 | channel C @ low |
+| resolve_actor_aliases | `deepseek/deepseek-v4.1-flash` · channel A | 0.5 | low | 16000 | channel C @ low |
+| hydration_aggregator_phase1 | `deepseek/deepseek-v4.1-flash` · channel A | 0.3 | medium | 160000 | channel C @ medium |
+| hydration_aggregator_phase2 | `z-ai/glm-5.3-flash` · Z.AI pin | 1.0 (top_p 0.95) | max | 120000 | `anthropic/claude-opus-4.6` (0.1, none, 32000) |
+| perspective | draft `z-ai/glm-5.3` (temp omitted, high, 40000) → verify `z-ai/glm-5.3-flash` (1.0 / top_p 0.95, high, 24000) · both Z.AI pin | see cell | high | see cell | `anthropic/claude-sonnet-5` (temp omitted, `{enabled, effort: high}`, 64000); verify is skipped when the fallback serves |
+| writer | `z-ai/glm-5.2` · OpenRouter fp8 pin, strict schema | 0.3 | xhigh | 120000 | `anthropic/claude-opus-4.6` (0.3, none, 32000) |
+| qa_analyze | `z-ai/glm-5.3-flash` · Z.AI pin | 1.0 (top_p 0.95) | max | 120000 | `anthropic/claude-sonnet-5` (temp omitted, `{enabled: true}`, 64000) |
+| consolidator | `deepseek/deepseek-v4.1-flash` · channel A | 0.3 | minimal | 32000 | channel C @ minimal |
+| bias_language | composite, see below | — | — | — | per sub-agent |
+| ↳ bias_candidate_extractor | `deepseek/deepseek-v4.1-flash` · channel A, ×3 passes (+1 adaptive) | 0.8 | minimal | 32000 | channel C @ minimal |
+| ↳ bias_judge | `z-ai/glm-5.3` · Z.AI pin, ×2 votes | omitted | high | 32000 | `anthropic/claude-opus-4.6` (0.1, none, 32000) |
 
-13 agents are wired across the production and hydrated pipelines (table above). `scripts/run.py::create_agents` also registers `assign_clusters` for the experimental LLM-assignment stage list (`build_production_stages_llm_assignment`), which is not part of either canonical pipeline; `create_agents_hydrated` supplies the two hydration-aggregator agents. `hydration_aggregator_phase1` has a Flash fallback block commented out in `scripts/run.py` per TASK-EVIDENCE-TYPE-MIGRATION A3 — DeepSeek is the active production model. Two-file prompt convention: every agent has `agents/{name}/SYSTEM.md` + `INSTRUCTIONS.md`; researcher uses `PLAN-*.md` + `ASSEMBLE-*.md` and hydration uses `PHASE1-*.md` + `PHASE2-*.md`.
+**Routes.**
+- **Channel A** is OpenRouter pinned to the vendor's own endpoint: `DEEPSEEK_NATIVE_ROUTING = {"order": ["deepseek"], "allow_fallbacks": false}`.
+- **Channel C** is `api.deepseek.com` direct (`provider="deepseek_direct"`) on the vendor's undated alias `deepseek-v4-flash`.
+- **Z.AI pin** is `{"order": ["z-ai"], "allow_fallbacks": false}`.
+- **GLM-5.2 fp8 pins** (editor and writer, each its own constant) are `order ["baidu/fp8", "ambient/fp8", "venice/fp8"]`, `allow_fallbacks: false`, `quantizations: ["fp8"]`.
+- `top_p` has no Agent parameter; it is sent via `extra_body_override={"top_p": 0.95}`.
+
+**The six flash stages** (curator_topic_discovery, researcher_assemble, resolve_actor_aliases, hydration_aggregator_phase1, consolidator, bias_candidate_extractor) run `FlashStageWithFallback` over `_flash_primary` / `_flash_transport_fallback` (TASK-FLASH-CHANNEL-PIN, 2026-09-18). That swapped the two rungs' roles:
+- **Primary:** channel A on `deepseek/deepseek-v4.1-flash`. This is a **named substitution**: the config states the vendor's current first-party flash build so `model_used` can be checked against it and every call carries a measured cost. It is not backed by a per-stage quality eval.
+- **Rung 2:** channel C is a **transport** fallback — a different endpoint, auth and failure surface to the same vendor. Its undated alias is unverifiable, so no identity with the primary is claimed. Its calls are unpriced, so a fired rung 2 explains a $0.00 flash call in a stage row.
+- **Levels:** each stage's level string is passed unchanged to both rungs.
+
+`scripts/run.py::create_agents` also registers `assign_clusters` (`google/gemini-3-flash-preview`) for the experimental `build_production_stages_llm_assignment` list, which is in neither canonical pipeline. Two-file prompt convention: every agent has `agents/{name}/SYSTEM.md` + `INSTRUCTIONS.md`; researcher variants use `PLAN-*.md` / `ASSEMBLE-*.md`, and hydration uses `PHASE1-*.md` / `PHASE2-*.md`.
+
+### §1.1 Failure handling, degradation and validation (overview)
+
+- **One-shot ladders, loud.** Every wrapper (`FlashStageWithFallback`, `EditorWithFallback`, `WriterWithFallback`, `QaAnalyzeWithFallback`, `HydrationPhase2WithFallback`, `PerspectiveDraftVerifyChain`, `PlannerWithFallbackLadder`) makes exactly one attempt per further rung after the primary finally fails. The planner's order is channel C → dated OpenRouter id → Opus 4.6, and a transport failure on that last rung propagates. A primary counts as finally failed on a transport error after Agent's own retries, or on a schema-invalid final answer. What served is written into the stage row of `run_stage_log.jsonl` as `model_used` / `provider_used` plus a `*_fallback_used` marker (e.g. `planner_fallback_used`, `qa_fallback_used`, `hydration_phase2_fallback_used`, `curator_topic_discovery_fallback_used`).
+- **Perspective chain.** A schema-invalid draft gets exactly one logged repair attempt on the draft model before escalating to the fallback. A transport failure escalates immediately. When the fallback serves, the verify pass is skipped.
+- **Empty-output escalation.** Four stages call through `_call_with_empty_retry`: CuratorTopicDiscovery, ResearcherAssemble, Consolidator and ResolveActorAliases. Each retries an empty answer for up to 3 attempts, and each attempt goes through the stage's ladder.
+  - If every rung is still empty, the stage is **degraded**: its row is recorded as `status: "degraded"` + `degraded_reason` instead of `success` (2026-09-15). For the resolver, `canonical_actors` is then the unmerged input.
+  - For `resolve_actor_aliases`, whether an empty answer is plausible is decided deterministically from the input (`merge_candidates_present`). With no merge candidates, an empty result is accepted as correct and never retried (TASK-ALIAS-GATE-TRIGGER).
+- **Publish-time degradation gate.** `src/runner/runner.py::fire_degradation_gate` runs at publish decision time, immediately before render. It logs every degraded row at ERROR ("DEGRADATION GATE …", then one "DEGRADED: stage at topic — reason" line each). It does **not** block publishing: a degraded Topic Package is published and flagged, not dropped.
+- **Merge-validation detector.** `validate_merges` runs inside `ResolveActorAliasesStage` **before** the union-find.
+  - It flags proposed alias pairs with no tangible link between the two actors (`merge_signals`).
+  - Shipped mode is `MERGE_VALIDATION_MODE = "detector"`: flagged pairs are counted and logged (collapse shapes of ≥3 aliases onto one canonical get their own `COLLAPSE-SHAPE` prefix), and **every merge still proceeds**.
+  - The stage row gains `merges_rejected` / `merges_rejected_detail` / `merge_validation_mode` only when something is flagged.
+  - `"reject"` mode (drop flagged pairs) exists but is not enabled.
+- **Bias telemetry (compound, per sub-agent).**
+  - The `bias_language` row's `model_used` is a compound label naming every call, e.g. `deepseek/deepseek-v4.1-flash x3 -> z-ai/glm-5.3 x2`; a mixed leg keeps every distinct value, joined with `|`.
+  - `extra_log_fields` carry `<agent>_model_used`, `<agent>_provider_used` and `<agent>_fallback_used` under each sub-agent's own registered name (`bias_candidate_extractor`, `bias_judge`).
+  - Also recorded: `extractor_fallback_passes`, `bias_judge_fallback_votes`, `extraction_passes`, `extractor_extra_pass`, the union/lexicon counts and confirmed/borderline/cleared counts.
 
 ## §2 Pipeline I/O Map
 
@@ -86,10 +118,10 @@ Hydrated is treated as canonical. Stages that run in only one variant are flagge
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::CuratorTopicDiscoveryStage`
 - **Agent:** `curator_topic_discovery` (registered in `scripts/run.py`)
-- **Model:** `deepseek/deepseek-v4-flash` (migrated from `google/gemini-3-flash-preview` 2026-05-19 per Wave-2 Sweep #1 + the 9 × 3 = 27-rep variance smoke — see `docs/curator-variance-2026-05-19/curator-variance-report.md`. The variance smoke ranked `dskflash-t05-rmedium` as the only zero-emission-variance variant (25.0 ± 0.0 topics, 0 duplicates, 100 % schema-valid across 3 reps); Wave-2's single-rep observation of "41 emissions + corruption" was confirmed as a stochastic outlier — 0 `repeated_quoted` matches and 3 `repeated_word` matches total across all 27 reps.)
-- **Params:** temp=0.5, reasoning=`medium`, max_tokens=160000
+- **Model:** `deepseek/deepseek-v4.1-flash` via channel A (OpenRouter pinned `deepseek`, since 2026-09-18, TASK-FLASH-CHANNEL-PIN); one-shot transport fallback on channel C (`deepseek_direct`, undated alias `deepseek-v4-flash`) via `FlashStageWithFallback`, marker `curator_topic_discovery_fallback_used`. RUN-LEVEL: a final failure kills the day's run. (History: `google/gemini-3-flash-preview` → `deepseek/deepseek-v4-flash` 2026-05-19, `docs/curator-variance-2026-05-19/curator-variance-report.md`.)
+- **Params:** temp=0.5, reasoning=`medium`, max_tokens=128000, `structured_output_mode=json_object` (schema checked locally by the wrapper)
 - **Prompt:** `agents/curator/SYSTEM.md` + `INSTRUCTIONS.md` (new prompts committed in the PE round preceding Brief 4)
-- **Output schema (strict):** `CURATOR_TOPIC_DISCOVERY_SCHEMA` in `src/schemas.py` — `{topics: [{title, summary}]}`. `additionalProperties: false` at every level so the LLM cannot silently invent legacy fields (`cluster_assignments`, `relevance_score`, `source_ids`).
+- **Output schema (checked locally, `json_object` route):** `CURATOR_TOPIC_DISCOVERY_SCHEMA` in `src/schemas.py` — `{topics: [{title, summary}]}`. `additionalProperties: false` at every level so the LLM cannot silently invent legacy fields (`cluster_assignments`, `relevance_score`, `source_ids`).
 - **Compression (deterministic, K-pinned):** `SAMPLE_TITLES_PER_CLUSTER = 8`. For each pre-cluster: embed members via the shared fastembed singleton (one ONNX session, shared with §2.2b, §2.2c, §2.3b), compute the cluster centroid, pick the top-K findings by cosine similarity to centroid (sim desc, finding-index asc tie-break), extract titles. Clusters with size ≤ K pass through complete; clusters with empty titles get a placeholder marker.
 - **Reads (Bus):** `curator_findings`, `curator_pre_clusters` — RunBus
 - **Writes (Bus):** `curator_discovered_topics` — RunBus
@@ -124,8 +156,8 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::EditorStage`
-- **Model:** `anthropic/claude-opus-4.6`
-- **Params:** temp=0.3, reasoning=none, max_tokens=default
+- **Model:** `z-ai/glm-5.2` @ xhigh, OpenRouter fp8 pin `GLM_5_2_EDITOR_FP8_ROUTING`, strict schema; one-shot fallback `anthropic/claude-sonnet-5` (temp omitted, reasoning `{enabled: true, effort: high}`, max_tokens 64000) via `EditorWithFallback`, marker `editor_fallback_used`
+- **Params:** temp=0.3, reasoning=`xhigh`, max_tokens=120000
 - **Prompt:** `agents/editor/SYSTEM.md` + `INSTRUCTIONS.md`
 - **Reads (Bus):** `curator_topics`, `previous_coverage` — RunBus
 - **Writes (Bus):** `editor_assignments` — RunBus
@@ -168,8 +200,8 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::HydrationPhase1Stage`
-- **Model:** `deepseek/deepseek-v4-pro`
-- **Params:** temp=0.3, reasoning=none, max_tokens=32000
+- **Model:** `deepseek/deepseek-v4.1-flash` via channel A; one-shot transport fallback on channel C via `FlashStageWithFallback`, marker `hydration_phase1_fallback_used`
+- **Params:** temp=0.3, reasoning=`medium`, max_tokens=160000, `structured_output_mode=json_object`
 - **Prompt:** `agents/hydration_aggregator/PHASE1-SYSTEM.md` + `PHASE1-INSTRUCTIONS.md`
 - **Reads (Bus):** `editor_selected_topic`, `hydration_fetch_results` (success-only) — TopicBus
 - **Writes (Bus):** `hydration_phase1_analyses` — TopicBus, per-article extraction sorted by global `article_index` 0..N-1.
@@ -181,8 +213,8 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::HydrationPhase2Stage`
-- **Model:** `anthropic/claude-opus-4.6`
-- **Params:** temp=0.1, reasoning=none, max_tokens=32000
+- **Model:** `z-ai/glm-5.3-flash` @ max, Z.AI pin `GLM_5_3_FLASH_HYDRATION_P2_ZAI_ROUTING` (since 2026-09-17, TASK-SWAP-FM-BUNDLE); one-shot fallback `anthropic/claude-opus-4.6` (temp 0.1, reasoning none, max_tokens 32000) via `HydrationPhase2WithFallback`, marker `hydration_phase2_fallback_used`
+- **Params:** temp=1.0, top_p=0.95 (via `extra_body_override`), reasoning=`max`, max_tokens=120000, `structured_output_mode=json_object`
 - **Prompt:** `agents/hydration_aggregator/PHASE2-SYSTEM.md` + `PHASE2-INSTRUCTIONS.md`
 - **Reads (Bus):** `editor_selected_topic`, `hydration_phase1_analyses`, `hydration_fetch_results` — TopicBus
 - **Writes (Bus):** `hydration_phase2_corpus` — TopicBus (`preliminary_divergences[]` + `coverage_gaps[]`).
@@ -201,8 +233,8 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::ResearcherHydratedPlanStage`
-- **Model:** `anthropic/claude-opus-4.6`
-- **Params:** temp=0.5, reasoning=none, max_tokens=16384
+- **Model:** `deepseek-v4-pro` on channel C (`deepseek_direct`) primary → `deepseek/deepseek-v4-pro-0813` on OpenRouter pinned `deepseek` → `anthropic/claude-opus-4.6` (temp 0.5, none, 16384), via `PlannerWithFallbackLadder` (`src/planner_fallback.py`), marker `planner_fallback_used`
+- **Params:** DeepSeek rungs: temp omitted, reasoning=`low`, max_tokens=24000, `structured_output_mode=json_object`
 - **Prompt:** `agents/researcher_hydrated/PLAN-SYSTEM.md` + `PLAN-INSTRUCTIONS.md`
 - **Reads (Bus):** `editor_selected_topic`, `hydration_pre_dossier` — TopicBus
 - **Writes (Bus):** `researcher_plan_queries` — TopicBus, gap-aware multilingual queries.
@@ -214,8 +246,8 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::ResearcherPlanStage`
-- **Model:** `anthropic/claude-opus-4.6`
-- **Params:** temp=0.5, reasoning=none, max_tokens=default
+- **Model:** `anthropic/claude-opus-4.6` (no fallback)
+- **Params:** temp=0.5, reasoning=none, max_tokens=32000 (Agent default)
 - **Prompt:** `agents/researcher/PLAN-SYSTEM.md` + `PLAN-INSTRUCTIONS.md`
 - **Reads (Bus):** `editor_selected_topic` — TopicBus
 - **Writes (Bus):** `researcher_plan_queries` — TopicBus
@@ -234,8 +266,8 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::ResearcherAssembleStage`
-- **Model:** `deepseek/deepseek-v4-flash` (migrated from `google/gemini-3-flash-preview` 2026-05-18 per Wave-1 Sweep #3 — see `docs/cost-efficiency-sweep-2026-05-18/researcher_assemble-report.md`)
-- **Params:** temp=0.5, reasoning=none, max_tokens=16000
+- **Model:** `deepseek/deepseek-v4.1-flash` via channel A; one-shot transport fallback on channel C via `FlashStageWithFallback`, marker `researcher_assemble_fallback_used`. (History: migrated from `google/gemini-3-flash-preview` 2026-05-18, `docs/cost-efficiency-sweep-2026-05-18/researcher_assemble-report.md`.)
+- **Params:** temp=0.5, reasoning=`low`, max_tokens=128000, `structured_output_mode=json_object`
 - **Prompt:** `agents/researcher/ASSEMBLE-SYSTEM.md` + `ASSEMBLE-INSTRUCTIONS.md`
 - **Reads (Bus):** `editor_selected_topic`, `researcher_search_results` — TopicBus
 - **Writes (Bus):** `researcher_assemble_dossier` — TopicBus
@@ -283,8 +315,8 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::ResolveActorAliasesStage`
-- **Model:** `deepseek/deepseek-v4-flash` (migrated from `google/gemini-3-flash-preview` 2026-05-19 per Wave-2 Sweep #2 — see `docs/cost-efficiency-sweep-wave-2-2026-05-18/resolve_actor_aliases-report.md`. Variant `dskflash-t05-rnone` reproduces every baseline alias pair, populates anonymous-flag entries the baseline left empty, and leaves 0 uncovered input `final_actor.id` across the 3 audited topics at ~10-15× lower cost. `reasoning` lowered from `medium` → `none` based on Wave-2 finding that extraction-class roles don't benefit from reasoning on this stage.)
-- **Params:** temp=0.5, reasoning=none, max_tokens=160000
+- **Model:** `deepseek/deepseek-v4.1-flash` via channel A; one-shot transport fallback on channel C via `FlashStageWithFallback`, marker `resolve_actor_aliases_fallback_used`. Empty-answer escalation, degradation and the merge-validation detector: §1.1. (History: migrated from `google/gemini-3-flash-preview` 2026-05-19, `docs/cost-efficiency-sweep-wave-2-2026-05-18/resolve_actor_aliases-report.md`.)
+- **Params:** temp=0.5, reasoning=`low`, max_tokens=16000, `structured_output_mode=json_object`
 - **Prompt:** `agents/resolve_actor_aliases/SYSTEM.md` + `INSTRUCTIONS.md`
 - **Reads (Bus):** `final_actors` — TopicBus
 - **Writes (Bus):** `canonical_actors`, `actor_alias_mapping` — TopicBus
@@ -311,9 +343,9 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::PerspectiveStage`
-- **Model:** `anthropic/claude-opus-4.6`
-- **Params:** temp=0.1, reasoning=none, max_tokens=default
-- **Prompt:** `agents/perspective/SYSTEM.md` + `INSTRUCTIONS.md`
+- **Model:** draft → verify chain `PerspectiveDraftVerifyChain` (`src/perspective_chain.py`, TASK-PERSPECTIVE-SWAP): draft `z-ai/glm-5.3` → verify `z-ai/glm-5.3-flash`, both on Z.AI pin `GLM_5_3_PERSPECTIVE_ZAI_ROUTING`; fallback `anthropic/claude-sonnet-5` (temp omitted, `{enabled: true, effort: high}`, 64000), marker `perspective_fallback_used`. `model_used` names the leg that authored the output.
+- **Params:** draft temp omitted, reasoning=`high`, max_tokens=40000; verify temp=1.0 + top_p=0.95, reasoning=`high`, max_tokens=24000; both `structured_output_mode=json_object`
+- **Prompt:** draft + fallback `agents/perspective/SYSTEM.md` + `INSTRUCTIONS.md`; verify `agents/perspective_verify/SYSTEM.md` + `INSTRUCTIONS.md`
 - **Reads (Bus):** `editor_selected_topic`, `final_sources`, `canonical_actors_stated`, `canonical_actors_reported`, `canonical_actors_mentioned`, `merged_preliminary_divergences`, `merged_coverage_gaps` — TopicBus
 - **Writes (Bus):** `perspective_clusters` (raw), `perspective_missing_positions` — TopicBus
 - **Originarity check:**
@@ -339,8 +371,8 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::WriterStage`
-- **Model:** `anthropic/claude-opus-4.6`
-- **Params:** temp=0.3, reasoning=none, max_tokens=default
+- **Model:** `z-ai/glm-5.2` @ xhigh, OpenRouter fp8 pin `GLM_5_2_WRITER_FP8_ROUTING`, strict schema; one-shot fallback `anthropic/claude-opus-4.6` (temp 0.3, none, 32000) via `WriterWithFallback`, marker `writer_fallback_used`
+- **Params:** temp=0.3, reasoning=`xhigh`, max_tokens=120000
 - **Prompt:** `agents/writer/SYSTEM.md` + `INSTRUCTIONS.md` (plus optional `FOLLOWUP.md` addendum when `editor_selected_topic.follow_up_to` is set)
 - **Reads (Bus):** `editor_selected_topic`, `final_sources`, `canonical_actors`, `perspective_clusters_synced`, `perspective_missing_positions`, `merged_coverage_gaps` — TopicBus
 - **Writes (Bus):** `writer_article` — TopicBus (`headline`, `subheadline`, `body`, `summary`)
@@ -353,8 +385,8 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::QaAnalyzeStage`
-- **Model:** `anthropic/claude-sonnet-4.6`
-- **Params:** temp=0.1, reasoning=none, max_tokens=64000
+- **Model:** `z-ai/glm-5.3-flash` @ max, Z.AI pin `GLM_5_3_FLASH_QA_ZAI_ROUTING` (since 2026-09-17, TASK-SWAP-FM-BUNDLE); one-shot fallback `anthropic/claude-sonnet-5` (temp omitted, `{enabled: true}`, 64000) via `QaAnalyzeWithFallback`, marker `qa_fallback_used`
+- **Params:** temp=1.0, top_p=0.95 (via `extra_body_override`), reasoning=`max`, max_tokens=120000, `structured_output_mode=json_object`
 - **Prompt:** `agents/qa_analyze/SYSTEM.md` + `INSTRUCTIONS.md`
 - **Reads (Bus):** `writer_article`, `final_sources`, `perspective_clusters_synced`, `merged_preliminary_divergences` — TopicBus
 - **Writes (Bus):** `qa_problems_found`, `qa_corrections`, `qa_corrected_article` (optional, mirror-pattern), `qa_divergences` — TopicBus
@@ -374,8 +406,8 @@ The single-pass V1 Curator was removed in the Brief 5 cutover (`docs/ADR-CURATOR
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::ConsolidatorStage`
-- **Model:** `deepseek/deepseek-v4-pro`
-- **Params:** temp=0.3, reasoning=none, max_tokens=32000
+- **Model:** `deepseek/deepseek-v4.1-flash` via channel A; one-shot transport fallback on channel C via `FlashStageWithFallback`, marker `consolidator_fallback_used`
+- **Params:** temp=0.3, reasoning=`minimal`, max_tokens=32000, `structured_output_mode=json_object`
 - **Prompt:** `agents/consolidator/SYSTEM.md` + `INSTRUCTIONS.md`
 - **Reads (Bus):** `perspective_missing_positions`, `merged_coverage_gaps` — TopicBus
 - **Writes (Bus):** `what_is_missing` — TopicBus (a `WhatIsMissing` carrying two compact-English string arrays, `voices_missing[]` + `topics_missing[]`)
@@ -416,9 +448,9 @@ Removed in the Consolidator refactor. Its responsibility (falsifying coverage ga
 
 - **Kind:** agent (LLM)
 - **Source:** `src/agent_stages.py::BiasLanguageStage`
-- **Model:** `anthropic/claude-opus-4.6`
-- **Params:** temp=0.1, reasoning=none, max_tokens=default
-- **Prompt:** `agents/bias_detector/SYSTEM.md` + `INSTRUCTIONS.md`
+- **Model:** `BiasComposite` (`src/bias_composite.py`): extractor `deepseek/deepseek-v4.1-flash` ×3 passes (+1 adaptive pass when one pass is an outlier-thin pass) on channel A with channel C transport fallback (marker `extractor_fallback_used`) → Python union + lexicon → judge `z-ai/glm-5.3` ×2 votes on Z.AI pin `GLM_5_3_BIAS_JUDGE_ZAI_ROUTING` with one-shot `anthropic/claude-opus-4.6` fallback (temp 0.1, none; marker `bias_judge_fallback_used`) → Python tier assignment. Compound `model_used` + per-sub-agent telemetry: §1.1.
+- **Params:** extractor temp=0.8, reasoning=`minimal`, max_tokens=32000; judge temp omitted, reasoning=`high`, max_tokens=32000; both `structured_output_mode=json_object`
+- **Prompt:** `agents/bias_candidate_extractor/SYSTEM.md` + `INSTRUCTIONS.md`; `agents/bias_judge/SYSTEM.md` + `INSTRUCTIONS.md`
 - **Reads (Bus):** `qa_corrected_article`, `final_sources`, `canonical_actors`, `perspective_clusters_synced`, `qa_problems_found`, `qa_corrections`, `qa_divergences` — TopicBus. (`perspective_missing_positions` and `coverage_gaps_validated` were dropped in the Consolidator refactor + reader_note scope-narrowing, `3f59ab9`: the reader_note no longer comments on coverage gaps.) All inputs are post-prune + post-cleanup, so the `reader_note` source/country counts match what the rendered TP carries.
 - **Writes (Bus):** `bias_language_findings`, `bias_reader_note` — TopicBus
 - **Originarity check:**
@@ -439,4 +471,4 @@ Removed in the Consolidator refactor. Its responsibility (falsifying coverage ga
 
 ## §4 Methodology
 
-Code is the source of truth for this map. Document last reconciled against HEAD `e2d917f` on 2026-05-28 (post Consolidator refactor `3f59ab9`: removed `PerspectiveSyncStage` + `validate_coverage_gaps_stage`, added `ConsolidatorStage`, corrected `mirror_perspective_synced` to single-dispatch, refreshed BiasLanguage reads). When models, parameters, or Bus slots change, this document is updated in the same commit as the code change. The two-file prompt convention for every agent under `agents/` (`SYSTEM.md` + `INSTRUCTIONS.md`, with researcher and hydration using phase-named pairs `PLAN-*.md` / `ASSEMBLE-*.md` / `PHASE1-*.md` / `PHASE2-*.md`) was previously documented in `docs/AGENT-INVENTORY.md`, since archived.
+Code is the source of truth for this map. Model / parameter / fallback content (§1, §1.1 and every per-stage Model / Params / Prompt line) last reconciled against HEAD `1039383` on 2026-09-24. Bus I/O content last reconciled against HEAD `e2d917f` on 2026-05-28 (post Consolidator refactor `3f59ab9`: removed `PerspectiveSyncStage` + `validate_coverage_gaps_stage`, added `ConsolidatorStage`, corrected `mirror_perspective_synced` to single-dispatch, refreshed BiasLanguage reads). When models, parameters, or Bus slots change, this document is updated in the same commit as the code change. The two-file prompt convention for every agent under `agents/` (`SYSTEM.md` + `INSTRUCTIONS.md`, with researcher and hydration using phase-named pairs `PLAN-*.md` / `ASSEMBLE-*.md` / `PHASE1-*.md` / `PHASE2-*.md`) was previously documented in `docs/AGENT-INVENTORY.md`, since archived.
