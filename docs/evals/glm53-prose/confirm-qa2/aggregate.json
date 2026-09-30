@@ -1,0 +1,74 @@
+{
+ "qa_analyze": {
+  "stage": "qa_analyze",
+  "arms": {
+   "C": {
+    "n_cases": 9,
+    "absolute_mean": 3.556,
+    "pass_rate_mean": 0.882,
+    "mean_rank": 1.722,
+    "firsts": 5,
+    "verdicts": 18,
+    "fabrication_charges_raised": 5
+   },
+   "F_M": {
+    "n_cases": 9,
+    "absolute_mean": 4.0,
+    "pass_rate_mean": 0.922,
+    "mean_rank": 1.278,
+    "firsts": 13,
+    "verdicts": 18,
+    "fabrication_charges_raised": 4
+   }
+  },
+  "paired_FM_vs_C": {
+   "n": 9,
+   "delta_absolute": 0.4444,
+   "ci95_absolute": [
+    -0.1461,
+    1.035
+   ],
+   "wins": 6,
+   "ties": 1,
+   "losses": 2,
+   "delta_pass_rate": 0.0404,
+   "ci95_pass_rate": [
+    -0.039,
+    0.1197
+   ],
+   "per_case": {
+    "qa_analyze__2026-09-13__t0": 1.0,
+    "qa_analyze__2026-09-13__t1": -0.5,
+    "qa_analyze__2026-09-13__t2": 0.5,
+    "qa_analyze__2026-09-14__t0": 1.0,
+    "qa_analyze__2026-09-14__t1": 1.0,
+    "qa_analyze__2026-09-14__t2": -1.0,
+    "qa_analyze__2026-09-15__t0": 1.0,
+    "qa_analyze__2026-09-15__t1": 1.0,
+    "qa_analyze__2026-09-15__t2": 0.0
+   },
+   "CONFIRMED": false,
+   "criterion": "delta > 0 AND ci95 lower bound > 0"
+  },
+  "prior_batches": {
+   "addendum": {
+    "delta": 0.6667,
+    "ci": [
+     0.2823,
+     1.051
+    ],
+    "n": 9,
+    "wtl": "6/3/0"
+   },
+   "confirm1": {
+    "delta": 0.6562,
+    "ci": [
+     -0.0928,
+     1.4053
+    ],
+    "n": 8,
+    "wtl": "6/1/1"
+   }
+  }
+ }
+}

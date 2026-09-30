@@ -1,0 +1,105 @@
+{
+ "hydration_phase2": {
+  "stage": "hydration_phase2",
+  "arms": {
+   "C": {
+    "n_cases": 9,
+    "absolute_mean": 3.167,
+    "pass_rate_mean": 0.727,
+    "mean_rank": 1.944,
+    "firsts": 1,
+    "verdicts": 18,
+    "fabrication_charges_raised": 37
+   },
+   "F_M": {
+    "n_cases": 9,
+    "absolute_mean": 4.056,
+    "pass_rate_mean": 0.904,
+    "mean_rank": 1.056,
+    "firsts": 17,
+    "verdicts": 18,
+    "fabrication_charges_raised": 21
+   }
+  },
+  "paired_FM_vs_C": {
+   "n": 9,
+   "delta_absolute": 0.8889,
+   "ci95_absolute": [
+    0.6327,
+    1.1451
+   ],
+   "wins": 8,
+   "ties": 1,
+   "losses": 0,
+   "delta_pass_rate": 0.1767,
+   "ci95_pass_rate": [
+    0.1097,
+    0.2437
+   ],
+   "per_case": {
+    "hydration_phase2__2026-09-09__t0": 1.0,
+    "hydration_phase2__2026-09-09__t1": 1.0,
+    "hydration_phase2__2026-09-09__t2": 1.0,
+    "hydration_phase2__2026-09-10__t0": 1.0,
+    "hydration_phase2__2026-09-10__t1": 1.0,
+    "hydration_phase2__2026-09-10__t2": 1.0,
+    "hydration_phase2__2026-09-11__t0": 1.0,
+    "hydration_phase2__2026-09-11__t1": 1.0,
+    "hydration_phase2__2026-09-11__t2": 0.0
+   },
+   "CONFIRMED": true,
+   "criterion": "delta > 0 AND ci95 lower bound > 0"
+  }
+ },
+ "qa_analyze": {
+  "stage": "qa_analyze",
+  "arms": {
+   "C": {
+    "n_cases": 8,
+    "absolute_mean": 3.531,
+    "pass_rate_mean": 0.842,
+    "mean_rank": 1.7,
+    "firsts": 3,
+    "verdicts": 10,
+    "fabrication_charges_raised": 2
+   },
+   "F_M": {
+    "n_cases": 8,
+    "absolute_mean": 4.188,
+    "pass_rate_mean": 0.953,
+    "mean_rank": 1.3,
+    "firsts": 7,
+    "verdicts": 10,
+    "fabrication_charges_raised": 1
+   }
+  },
+  "paired_FM_vs_C": {
+   "n": 8,
+   "delta_absolute": 0.6562,
+   "ci95_absolute": [
+    -0.0928,
+    1.4053
+   ],
+   "wins": 6,
+   "ties": 1,
+   "losses": 1,
+   "delta_pass_rate": 0.1109,
+   "ci95_pass_rate": [
+    -0.0167,
+    0.2385
+   ],
+   "per_case": {
+    "qa_analyze__2026-09-09__t0": 1.0,
+    "qa_analyze__2026-09-09__t1": 1.0,
+    "qa_analyze__2026-09-09__t2": 1.0,
+    "qa_analyze__2026-09-10__t1": 2.0,
+    "qa_analyze__2026-09-10__t2": 1.0,
+    "qa_analyze__2026-09-11__t0": -1.0,
+    "qa_analyze__2026-09-11__t1": 0.25,
+    "qa_analyze__2026-09-11__t2": 0.0
+   },
+   "CONFIRMED": false,
+   "criterion": "delta > 0 AND ci95 lower bound > 0"
+  }
+ }
+}

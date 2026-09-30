@@ -1,0 +1,64 @@
+{
+ "date": "2026-06-28",
+ "topic": 1,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "B",
+    "grounding": 3,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "German-language coverage (Tagesschau) and English-language coverage (DW News, France 24) both address Budapest but diverge in framing Péter Magyar's position: DW and Tagesschau report he pledged not to continue the ban, whereas France 24's correspondent emphasizes his ambiguity, absence from the march, and avoidance of the issue during the campaign.",
+      "why_unsupported": "The DW analysis characterizes Magyar's stance as 'cautious, non-committal' and notes he is 'not yet reversing Orban-era restrictions' — i.e., DW's framing aligns with France 24's emphasis on ambiguity, not with a clear pledge. Only Tagesschau's analysis reports Magyar 'pledged not to continue the ban.' Grouping DW alongside Tagesschau against France 24 misattributes DW's framing and manufactures a contrast the analyses do not support. It is also not a clean cross-language-group divergence since DW and France 24 are both English-language."
+     }
+    ]
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 5,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.183225,
+ "tokens": 14253,
+ "duration_s": 66.0,
+ "provider": "Anthropic"
+}

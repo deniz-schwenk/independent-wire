@@ -1,0 +1,69 @@
+{
+ "date": "2026-07-04",
+ "topic": 0,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "German-language sources explicitly note the absence of Ukrainian confirmation of the Konstantinovka capture claim, while Vietnamese-language sources present the capture as confirmed with extensive quotes from President Putin and Russian military commanders and no Ukrainian government response.",
+      "why_unsupported": "Analysis 9 (Vietnamese, VnExpress) explicitly states the article notes 'unconfirmed Ukrainian military accounts describing a severe crisis and the city becoming a gray zone.' The Vietnamese source therefore does NOT present the capture strictly as confirmed; it also flags the unconfirmed/contested status. The contrast that German uniquely notes absence of confirmation while Vietnamese presents it as settled is contradicted by the ground truth."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 4,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 3,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language sources (BBC, Kyiv Independent) describe Russian airstrikes on Kyiv as acts of terror and cite civilian testimonies rejecting Moscow's justification, while German sources (Tagesschau, Der Spiegel) report the same events without moral or emotional attribution.",
+      "why_unsupported": "Der Spiegel (analysis 1) does not cover the Russian airstrikes on Kyiv at all; its subject is Ukrainian drone attacks on Crimea and Russian glide-bomb strikes on Zaporizhzhia/Dnipro. Attributing to Der Spiegel a neutral reporting of 'the same events' (the Kyiv strikes) is unsupported, since that outlet does not report those events. Only Tagesschau (13) partially supports the German side of the contrast."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.32892,
+ "tokens": 28868,
+ "duration_s": 109.0,
+ "provider": "Anthropic"
+}

@@ -1,0 +1,64 @@
+{
+ "date": "2026-06-29",
+ "topic": 1,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 5,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "B",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "CGTN (China) frames the Ebola response through an institutional-success narrative, quoting Africa CDC's language of a 'one team, one plan, one budget' coordination milestone, while the Swiss ReliefWeb reports and the French RFI report emphasize operational shortfalls such as PPE and disinfectant shortages, community resistance, and unmonitored displacement sites.",
+      "why_unsupported": "The specific shortfalls attributed jointly to ReliefWeb and RFI (PPE/disinfectant shortages, community resistance) come only from the ReliefWeb analyses (article 2); the RFI analysis (article 1) covers conflict, displacement and unmonitored sites but does not mention PPE shortages or community resistance, so the shared attribution to RFI is partly unsupported."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.139815,
+ "tokens": 12627,
+ "duration_s": 54.6,
+ "provider": "Anthropic"
+}

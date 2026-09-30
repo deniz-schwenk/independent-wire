@@ -1,0 +1,83 @@
+{
+ "date": "2026-07-03",
+ "topic": 1,
+ "judge": 2,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Russian-language exile outlets (Novaya Gazeta Europe, based in Latvia) emphasize cultural and scientific destruction such as the loss of 800,000 books and damage to a biochemistry institute, and separately cover Ukraine's reported ballistic-missile interception over Moscow, angles largely absent from other language groups.",
+      "why_unsupported": "The 800,000-book loss is covered by the English-language Kyiv Independent (analyses 7 and 15), not just Novaya Gazeta (16), and the biochemistry-institute damage appears in Japan Today (6, English) and Kyiv Independent (7, English) — NOT in any Novaya Gazeta summary. Attributing this cultural/scientific emphasis distinctively to Russian-language outlets and calling it 'largely absent from other language groups' is contradicted by the English-language coverage. Only the Moscow-interception angle (18) is genuinely unique to Novaya."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 3,
+    "specificity": 1,
+    "cross_group_validity": 1,
+    "gap_quality": 1,
+    "overall": 1,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "German-language reporting (Tagesschau) uniquely includes the Russian military command chain with Gerasimov briefing Putin on the results of the attack and reports on concurrent attacks in Zaporizhzhia and Nizhny Novgorod, providing a broader geographic scope than English-language sources which focus narrowly on Kyiv.",
+      "why_unsupported": "The Gerasimov-briefing-Putin command chain is not unique to Tagesschau: the English-language Guardian (analysis 14) reports Gerasimov relaying results of the 'massive retaliatory strike' to Putin, and Kyiv Independent (7) reports Peskov saying Putin was briefed. The 'uniquely' claim for the command-chain element is therefore false."
+     }
+    ]
+   },
+   {
+    "label": "D",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "The Japan Today article uniquely reports the destruction of a National Institute of Biochemistry laboratory and quotes a biologist calling it a 'catastrophe for medical and biological science,' a cultural-scientific damage dimension not covered by any other regional cluster.",
+      "why_unsupported": "The biochemistry-institute damage dimension is also covered by the Ukrainian-cluster Kyiv Independent (analysis 7 explicitly notes 'damage to a biochemistry institute'), so it is not 'a cultural-scientific damage dimension not covered by any other regional cluster.' Only the specific biologist quote is unique to Japan Today; the claimed cross-group uniqueness of the dimension is contradicted by analysis 7."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "Netherlands-published Moscow Times reports the lowest death toll (at least 18) while UK (BBC, Guardian), German (DW News, Tagesschau), and Ukrainian (Kyiv Independent) sources converge on 27, creating a casualty-count discrepancy tied to which outlets amplify Russian-adjacent reporting versus Kyiv military administration figures.",
+      "why_unsupported": "The analyses attribute the varying tolls to an evolving, time-stamped casualty count (18, 20, 21, 25, 27 across outlets as rescue work continued), not to editorial 'amplification of Russian-adjacent reporting.' Moscow Times' summary (8) cites Kyiv military-administration figures and Zelenskyy directly; nothing in the analyses supports the causal claim that its lower number reflects amplifying Russian-adjacent sources versus Kyiv figures."
+     },
+     {
+      "quote": "English-language Western and Ukrainian outlets (BBC, Guardian, DW News, Kyiv Independent) foreground Zelensky's allied-culpability rhetoric and demands for Patriot missile deliveries, while Chinese (CGTN) and Dutch-published (Moscow Times) coverage give comparatively more neutral space to Russian Defense Ministry claims without matching emphasis on the air-defense-shortfall narrative.",
+      "why_unsupported": "Moscow Times (analysis 8) does foreground the air-defense-shortfall narrative, quoting Zelenskyy that 'air defense supplies for Ukraine are an absolute and critical priority,' and CGTN (analysis 1) prominently reports Zelenskyy's direct criticism of allies for failing to deliver promised air defenses. The claim that these outlets lack 'matching emphasis on the air-defense-shortfall narrative' is contradicted by their summaries."
+     }
+    ]
+   }
+  ]
+ },
+ "cost_usd": 0.41891,
+ "tokens": 36362,
+ "duration_s": 132.6,
+ "provider": "Anthropic"
+}

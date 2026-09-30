@@ -1,0 +1,186 @@
+{
+ "C": {
+  "n_cases": 9,
+  "r4_pass": 9,
+  "r5_pass": 9,
+  "mean_problems": 2.889,
+  "mean_corrections_needed": 2.556,
+  "mean_divergences": 4.111,
+  "article_present_count": 9,
+  "per_case": {
+   "2026-09-13__t0": {
+    "n_problems": 2,
+    "n_corrections": 2,
+    "n_needed": 2,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 4
+   },
+   "2026-09-13__t1": {
+    "n_problems": 3,
+    "n_corrections": 3,
+    "n_needed": 3,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 4
+   },
+   "2026-09-13__t2": {
+    "n_problems": 1,
+    "n_corrections": 1,
+    "n_needed": 1,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 3
+   },
+   "2026-09-14__t0": {
+    "n_problems": 5,
+    "n_corrections": 5,
+    "n_needed": 4,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 6
+   },
+   "2026-09-14__t1": {
+    "n_problems": 1,
+    "n_corrections": 1,
+    "n_needed": 1,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 3
+   },
+   "2026-09-14__t2": {
+    "n_problems": 4,
+    "n_corrections": 4,
+    "n_needed": 4,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 3
+   },
+   "2026-09-15__t0": {
+    "n_problems": 3,
+    "n_corrections": 3,
+    "n_needed": 3,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 5
+   },
+   "2026-09-15__t1": {
+    "n_problems": 4,
+    "n_corrections": 4,
+    "n_needed": 3,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 5
+   },
+   "2026-09-15__t2": {
+    "n_problems": 3,
+    "n_corrections": 3,
+    "n_needed": 2,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 4
+   }
+  }
+ },
+ "F_M": {
+  "n_cases": 9,
+  "r4_pass": 9,
+  "r5_pass": 9,
+  "mean_problems": 4.444,
+  "mean_corrections_needed": 4.333,
+  "mean_divergences": 6.111,
+  "article_present_count": 9,
+  "per_case": {
+   "2026-09-13__t0": {
+    "n_problems": 7,
+    "n_corrections": 7,
+    "n_needed": 6,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 8
+   },
+   "2026-09-13__t1": {
+    "n_problems": 2,
+    "n_corrections": 2,
+    "n_needed": 2,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 8
+   },
+   "2026-09-13__t2": {
+    "n_problems": 2,
+    "n_corrections": 2,
+    "n_needed": 2,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 4
+   },
+   "2026-09-14__t0": {
+    "n_problems": 9,
+    "n_corrections": 9,
+    "n_needed": 9,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 5
+   },
+   "2026-09-14__t1": {
+    "n_problems": 4,
+    "n_corrections": 4,
+    "n_needed": 4,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 7
+   },
+   "2026-09-14__t2": {
+    "n_problems": 3,
+    "n_corrections": 3,
+    "n_needed": 3,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 5
+   },
+   "2026-09-15__t0": {
+    "n_problems": 4,
+    "n_corrections": 4,
+    "n_needed": 4,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 5
+   },
+   "2026-09-15__t1": {
+    "n_problems": 7,
+    "n_corrections": 7,
+    "n_needed": 7,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 9
+   },
+   "2026-09-15__t2": {
+    "n_problems": 2,
+    "n_corrections": 2,
+    "n_needed": 2,
+    "r4_equal_length": true,
+    "article_present": true,
+    "r5_ok": true,
+    "n_divergences": 4
+   }
+  }
+ }
+}

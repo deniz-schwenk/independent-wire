@@ -1,0 +1,64 @@
+{
+ "date": "2026-07-02",
+ "topic": 2,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "B",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "The Spanish-language El País article uniquely foregrounds the UAE-linked investment in World Liberty Financial and international licensing deals in Saudi Arabia and Qatar as a foreign-policy conflict-of-interest angle, a dimension absent from the German and French coverage.",
+      "why_unsupported": "The El País analysis (article 3) does not mention any UAE-linked investment or Saudi Arabia/Qatar licensing deals; it details WLF income, meme coin royalties, the White House denial, and Don Fox's post-Watergate comparison. The UAE 49% stake and Gulf licensing angle appears only in the Uzbek Kun.uz analysis (article 4). The claim misattributes the Uzbek source's unique framing to the Spanish source."
+     }
+    ]
+   },
+   {
+    "label": "C",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 4,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.23682,
+ "tokens": 19724,
+ "duration_s": 85.6,
+ "provider": "Anthropic"
+}

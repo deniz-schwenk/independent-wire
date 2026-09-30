@@ -1,0 +1,4582 @@
+[
+ {
+  "day": "2026-05-27",
+  "idx": 0,
+  "n_actors": 52,
+  "n_merges": 8,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-05-27",
+  "idx": 1,
+  "n_actors": 55,
+  "n_merges": 8,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-05-27",
+  "idx": 2,
+  "n_actors": 52,
+  "n_merges": 9,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-05-28",
+  "idx": 0,
+  "n_actors": 61,
+  "n_merges": 16,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-05-28",
+  "idx": 1,
+  "n_actors": 40,
+  "n_merges": 4,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-05-28",
+  "idx": 2,
+  "n_actors": 23,
+  "n_merges": 1,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "multi_script"
+  ]
+ },
+ {
+  "day": "2026-05-29",
+  "idx": 0,
+  "n_actors": 73,
+  "n_merges": 18,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-05-29",
+  "idx": 1,
+  "n_actors": 66,
+  "n_merges": 7,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-05-29",
+  "idx": 2,
+  "n_actors": 46,
+  "n_merges": 4,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-05-30",
+  "idx": 0,
+  "n_actors": 25,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-05-30",
+  "idx": 1,
+  "n_actors": 8,
+  "n_merges": 0,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-05-30",
+  "idx": 2,
+  "n_actors": 14,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-05-31",
+  "idx": 0,
+  "n_actors": 33,
+  "n_merges": 6,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-05-31",
+  "idx": 1,
+  "n_actors": 32,
+  "n_merges": 11,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-05-31",
+  "idx": 2,
+  "n_actors": 26,
+  "n_merges": 6,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-01",
+  "idx": 0,
+  "n_actors": 8,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "multi_script"
+  ]
+ },
+ {
+  "day": "2026-06-01",
+  "idx": 1,
+  "n_actors": 75,
+  "n_merges": 36,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-01",
+  "idx": 2,
+  "n_actors": 34,
+  "n_merges": 3,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-02",
+  "idx": 0,
+  "n_actors": 19,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-02",
+  "idx": 1,
+  "n_actors": 22,
+  "n_merges": 1,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-02",
+  "idx": 2,
+  "n_actors": 12,
+  "n_merges": 0,
+  "n_anon": 1,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-03",
+  "idx": 0,
+  "n_actors": 46,
+  "n_merges": 11,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-03",
+  "idx": 1,
+  "n_actors": 58,
+  "n_merges": 12,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-03",
+  "idx": 2,
+  "n_actors": 44,
+  "n_merges": 7,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-04",
+  "idx": 0,
+  "n_actors": 6,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-04",
+  "idx": 1,
+  "n_actors": 32,
+  "n_merges": 6,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_as_name"
+  ]
+ },
+ {
+  "day": "2026-06-04",
+  "idx": 2,
+  "n_actors": 29,
+  "n_merges": 4,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-06-05",
+  "idx": 0,
+  "n_actors": 10,
+  "n_merges": 3,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-05",
+  "idx": 1,
+  "n_actors": 16,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-05",
+  "idx": 2,
+  "n_actors": 5,
+  "n_merges": 1,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "multi_script"
+  ]
+ },
+ {
+  "day": "2026-06-06",
+  "idx": 0,
+  "n_actors": 43,
+  "n_merges": 12,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-06",
+  "idx": 1,
+  "n_actors": 29,
+  "n_merges": 5,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-06",
+  "idx": 2,
+  "n_actors": 15,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-07",
+  "idx": 0,
+  "n_actors": 90,
+  "n_merges": 45,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-07",
+  "idx": 1,
+  "n_actors": 12,
+  "n_merges": 1,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name"
+  ]
+ },
+ {
+  "day": "2026-06-07",
+  "idx": 2,
+  "n_actors": 54,
+  "n_merges": 9,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-08",
+  "idx": 0,
+  "n_actors": 9,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-08",
+  "idx": 1,
+  "n_actors": 18,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-08",
+  "idx": 2,
+  "n_actors": 13,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-09",
+  "idx": 0,
+  "n_actors": 13,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-09",
+  "idx": 1,
+  "n_actors": 14,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-09",
+  "idx": 2,
+  "n_actors": 26,
+  "n_merges": 4,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-10",
+  "idx": 0,
+  "n_actors": 15,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-10",
+  "idx": 1,
+  "n_actors": 11,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-10",
+  "idx": 2,
+  "n_actors": 11,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-06-11",
+  "idx": 0,
+  "n_actors": 12,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-11",
+  "idx": 1,
+  "n_actors": 12,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "acronym",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-11",
+  "idx": 2,
+  "n_actors": 25,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-12",
+  "idx": 0,
+  "n_actors": 64,
+  "n_merges": 12,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-12",
+  "idx": 1,
+  "n_actors": 21,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-12",
+  "idx": 2,
+  "n_actors": 37,
+  "n_merges": 4,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-06-13",
+  "idx": 0,
+  "n_actors": 20,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-06-13",
+  "idx": 1,
+  "n_actors": 25,
+  "n_merges": 4,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-13",
+  "idx": 2,
+  "n_actors": 22,
+  "n_merges": 3,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-06-14",
+  "idx": 0,
+  "n_actors": 23,
+  "n_merges": 2,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-14",
+  "idx": 1,
+  "n_actors": 38,
+  "n_merges": 8,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-06-14",
+  "idx": 2,
+  "n_actors": 29,
+  "n_merges": 6,
+  "n_anon": 8,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-15",
+  "idx": 0,
+  "n_actors": 19,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-15",
+  "idx": 1,
+  "n_actors": 17,
+  "n_merges": 2,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss"
+  ]
+ },
+ {
+  "day": "2026-06-15",
+  "idx": 2,
+  "n_actors": 18,
+  "n_merges": 1,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-16",
+  "idx": 0,
+  "n_actors": 22,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-06-16",
+  "idx": 1,
+  "n_actors": 16,
+  "n_merges": 2,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-16",
+  "idx": 2,
+  "n_actors": 7,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-17",
+  "idx": 0,
+  "n_actors": 20,
+  "n_merges": 2,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-17",
+  "idx": 1,
+  "n_actors": 8,
+  "n_merges": 0,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-17",
+  "idx": 2,
+  "n_actors": 30,
+  "n_merges": 3,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-06-18",
+  "idx": 0,
+  "n_actors": 4,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-18",
+  "idx": 1,
+  "n_actors": 59,
+  "n_merges": 2,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-18",
+  "idx": 2,
+  "n_actors": 13,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-18",
+  "idx": 3,
+  "n_actors": 2,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-19",
+  "idx": 0,
+  "n_actors": 16,
+  "n_merges": 0,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-06-19",
+  "idx": 1,
+  "n_actors": 15,
+  "n_merges": 2,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name"
+  ]
+ },
+ {
+  "day": "2026-06-19",
+  "idx": 2,
+  "n_actors": 14,
+  "n_merges": 0,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-20",
+  "idx": 0,
+  "n_actors": 78,
+  "n_merges": 9,
+  "n_anon": 6,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-20",
+  "idx": 1,
+  "n_actors": 25,
+  "n_merges": 3,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-20",
+  "idx": 2,
+  "n_actors": 28,
+  "n_merges": 7,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-21",
+  "idx": 0,
+  "n_actors": 27,
+  "n_merges": 7,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-21",
+  "idx": 1,
+  "n_actors": 7,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-21",
+  "idx": 2,
+  "n_actors": 26,
+  "n_merges": 2,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-22",
+  "idx": 0,
+  "n_actors": 30,
+  "n_merges": 3,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-06-22",
+  "idx": 1,
+  "n_actors": 17,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-06-22",
+  "idx": 2,
+  "n_actors": 12,
+  "n_merges": 0,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "role_as_name"
+  ]
+ },
+ {
+  "day": "2026-06-23",
+  "idx": 0,
+  "n_actors": 30,
+  "n_merges": 5,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-06-23",
+  "idx": 1,
+  "n_actors": 14,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-23",
+  "idx": 2,
+  "n_actors": 57,
+  "n_merges": 5,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-24",
+  "idx": 0,
+  "n_actors": 32,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym"
+  ]
+ },
+ {
+  "day": "2026-06-24",
+  "idx": 1,
+  "n_actors": 26,
+  "n_merges": 3,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-24",
+  "idx": 2,
+  "n_actors": 18,
+  "n_merges": 0,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-06-25",
+  "idx": 0,
+  "n_actors": 14,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-25",
+  "idx": 1,
+  "n_actors": 48,
+  "n_merges": 1,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-25",
+  "idx": 2,
+  "n_actors": 43,
+  "n_merges": 10,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-26",
+  "idx": 0,
+  "n_actors": 6,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "role_as_name"
+  ]
+ },
+ {
+  "day": "2026-06-26",
+  "idx": 1,
+  "n_actors": 68,
+  "n_merges": 9,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-26",
+  "idx": 2,
+  "n_actors": 18,
+  "n_merges": 1,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-27",
+  "idx": 0,
+  "n_actors": 11,
+  "n_merges": 2,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-27",
+  "idx": 1,
+  "n_actors": 13,
+  "n_merges": 0,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-06-27",
+  "idx": 2,
+  "n_actors": 10,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-28",
+  "idx": 0,
+  "n_actors": 8,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-28",
+  "idx": 1,
+  "n_actors": 16,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss"
+  ]
+ },
+ {
+  "day": "2026-06-28",
+  "idx": 2,
+  "n_actors": 7,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-06-29",
+  "idx": 0,
+  "n_actors": 6,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-06-29",
+  "idx": 1,
+  "n_actors": 14,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-06-29",
+  "idx": 2,
+  "n_actors": 21,
+  "n_merges": 7,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-06-30",
+  "idx": 0,
+  "n_actors": 10,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-06-30",
+  "idx": 1,
+  "n_actors": 21,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-06-30",
+  "idx": 2,
+  "n_actors": 11,
+  "n_merges": 2,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "role_as_name"
+  ]
+ },
+ {
+  "day": "2026-07-01",
+  "idx": 0,
+  "n_actors": 15,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-01",
+  "idx": 1,
+  "n_actors": 24,
+  "n_merges": 3,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-07-01",
+  "idx": 2,
+  "n_actors": 46,
+  "n_merges": 13,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-02",
+  "idx": 0,
+  "n_actors": 7,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-07-02",
+  "idx": 1,
+  "n_actors": 24,
+  "n_merges": 4,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-02",
+  "idx": 2,
+  "n_actors": 13,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-07-03",
+  "idx": 0,
+  "n_actors": 21,
+  "n_merges": 0,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-07-03",
+  "idx": 1,
+  "n_actors": 47,
+  "n_merges": 7,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-03",
+  "idx": 2,
+  "n_actors": 59,
+  "n_merges": 3,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-04",
+  "idx": 0,
+  "n_actors": 46,
+  "n_merges": 7,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_as_name"
+  ]
+ },
+ {
+  "day": "2026-07-04",
+  "idx": 1,
+  "n_actors": 27,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-04",
+  "idx": 2,
+  "n_actors": 28,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-05",
+  "idx": 0,
+  "n_actors": 24,
+  "n_merges": 4,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-05",
+  "idx": 1,
+  "n_actors": 50,
+  "n_merges": 2,
+  "n_anon": 8,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-05",
+  "idx": 2,
+  "n_actors": 38,
+  "n_merges": 3,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-06",
+  "idx": 0,
+  "n_actors": 23,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_as_name"
+  ]
+ },
+ {
+  "day": "2026-07-06",
+  "idx": 1,
+  "n_actors": 35,
+  "n_merges": 5,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-06",
+  "idx": 2,
+  "n_actors": 22,
+  "n_merges": 3,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-07-07",
+  "idx": 0,
+  "n_actors": 50,
+  "n_merges": 11,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-07",
+  "idx": 1,
+  "n_actors": 42,
+  "n_merges": 4,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-07",
+  "idx": 2,
+  "n_actors": 39,
+  "n_merges": 2,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-07-08",
+  "idx": 0,
+  "n_actors": 102,
+  "n_merges": 45,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-08",
+  "idx": 1,
+  "n_actors": 42,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-07-08",
+  "idx": 2,
+  "n_actors": 17,
+  "n_merges": 1,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-09",
+  "idx": 0,
+  "n_actors": 80,
+  "n_merges": 31,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-09",
+  "idx": 1,
+  "n_actors": 46,
+  "n_merges": 1,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name"
+  ]
+ },
+ {
+  "day": "2026-07-09",
+  "idx": 2,
+  "n_actors": 19,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-07-10",
+  "idx": 0,
+  "n_actors": 134,
+  "n_merges": 50,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-10",
+  "idx": 1,
+  "n_actors": 32,
+  "n_merges": 10,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-10",
+  "idx": 2,
+  "n_actors": 52,
+  "n_merges": 3,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-11",
+  "idx": 0,
+  "n_actors": 53,
+  "n_merges": 5,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-11",
+  "idx": 1,
+  "n_actors": 28,
+  "n_merges": 1,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-07-11",
+  "idx": 2,
+  "n_actors": 30,
+  "n_merges": 3,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-12",
+  "idx": 0,
+  "n_actors": 108,
+  "n_merges": 35,
+  "n_anon": 11,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-12",
+  "idx": 1,
+  "n_actors": 37,
+  "n_merges": 2,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-12",
+  "idx": 2,
+  "n_actors": 41,
+  "n_merges": 4,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-07-13",
+  "idx": 0,
+  "n_actors": 121,
+  "n_merges": 45,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-13",
+  "idx": 1,
+  "n_actors": 41,
+  "n_merges": 5,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-07-13",
+  "idx": 2,
+  "n_actors": 14,
+  "n_merges": 5,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-07-14",
+  "idx": 0,
+  "n_actors": 111,
+  "n_merges": 34,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-14",
+  "idx": 1,
+  "n_actors": 77,
+  "n_merges": 9,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-14",
+  "idx": 2,
+  "n_actors": 72,
+  "n_merges": 22,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-15",
+  "idx": 0,
+  "n_actors": 111,
+  "n_merges": 31,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-15",
+  "idx": 1,
+  "n_actors": 103,
+  "n_merges": 13,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-15",
+  "idx": 2,
+  "n_actors": 53,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-07-16",
+  "idx": 0,
+  "n_actors": 109,
+  "n_merges": 30,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-16",
+  "idx": 1,
+  "n_actors": 75,
+  "n_merges": 12,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-16",
+  "idx": 2,
+  "n_actors": 61,
+  "n_merges": 7,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-17",
+  "idx": 0,
+  "n_actors": 96,
+  "n_merges": 20,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-17",
+  "idx": 1,
+  "n_actors": 78,
+  "n_merges": 5,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-07-17",
+  "idx": 2,
+  "n_actors": 49,
+  "n_merges": 5,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-18",
+  "idx": 0,
+  "n_actors": 131,
+  "n_merges": 40,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-18",
+  "idx": 1,
+  "n_actors": 43,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-18",
+  "idx": 2,
+  "n_actors": 50,
+  "n_merges": 4,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-19",
+  "idx": 0,
+  "n_actors": 107,
+  "n_merges": 36,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-19",
+  "idx": 1,
+  "n_actors": 40,
+  "n_merges": 6,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-19",
+  "idx": 2,
+  "n_actors": 79,
+  "n_merges": 18,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-20",
+  "idx": 0,
+  "n_actors": 91,
+  "n_merges": 30,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-20",
+  "idx": 1,
+  "n_actors": 81,
+  "n_merges": 27,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-20",
+  "idx": 2,
+  "n_actors": 43,
+  "n_merges": 5,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-21",
+  "idx": 0,
+  "n_actors": 110,
+  "n_merges": 14,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-21",
+  "idx": 1,
+  "n_actors": 100,
+  "n_merges": 28,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-21",
+  "idx": 2,
+  "n_actors": 25,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-07-22",
+  "idx": 0,
+  "n_actors": 116,
+  "n_merges": 21,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-22",
+  "idx": 1,
+  "n_actors": 91,
+  "n_merges": 12,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-22",
+  "idx": 2,
+  "n_actors": 57,
+  "n_merges": 4,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-23",
+  "idx": 0,
+  "n_actors": 89,
+  "n_merges": 14,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name"
+  ]
+ },
+ {
+  "day": "2026-07-23",
+  "idx": 1,
+  "n_actors": 59,
+  "n_merges": 5,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-23",
+  "idx": 2,
+  "n_actors": 38,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-24",
+  "idx": 0,
+  "n_actors": 101,
+  "n_merges": 11,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-24",
+  "idx": 1,
+  "n_actors": 54,
+  "n_merges": 6,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-24",
+  "idx": 2,
+  "n_actors": 49,
+  "n_merges": 2,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-25",
+  "idx": 0,
+  "n_actors": 128,
+  "n_merges": 17,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-25",
+  "idx": 1,
+  "n_actors": 70,
+  "n_merges": 12,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-25",
+  "idx": 2,
+  "n_actors": 70,
+  "n_merges": 15,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "multi_script"
+  ]
+ },
+ {
+  "day": "2026-07-26",
+  "idx": 0,
+  "n_actors": 91,
+  "n_merges": 15,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-26",
+  "idx": 1,
+  "n_actors": 59,
+  "n_merges": 5,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-07-26",
+  "idx": 2,
+  "n_actors": 23,
+  "n_merges": 8,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-27",
+  "idx": 0,
+  "n_actors": 53,
+  "n_merges": 9,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-27",
+  "idx": 1,
+  "n_actors": 63,
+  "n_merges": 13,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-27",
+  "idx": 2,
+  "n_actors": 47,
+  "n_merges": 46,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-07-28",
+  "idx": 0,
+  "n_actors": 91,
+  "n_merges": 9,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-28",
+  "idx": 1,
+  "n_actors": 39,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-28",
+  "idx": 2,
+  "n_actors": 43,
+  "n_merges": 5,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "multi_script"
+  ]
+ },
+ {
+  "day": "2026-07-29",
+  "idx": 0,
+  "n_actors": 51,
+  "n_merges": 9,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-29",
+  "idx": 1,
+  "n_actors": 74,
+  "n_merges": 11,
+  "n_anon": 10,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-29",
+  "idx": 2,
+  "n_actors": 52,
+  "n_merges": 6,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-30",
+  "idx": 0,
+  "n_actors": 120,
+  "n_merges": 39,
+  "n_anon": 6,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-30",
+  "idx": 1,
+  "n_actors": 48,
+  "n_merges": 2,
+  "n_anon": 10,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-30",
+  "idx": 2,
+  "n_actors": 82,
+  "n_merges": 12,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-31",
+  "idx": 0,
+  "n_actors": 114,
+  "n_merges": 27,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-31",
+  "idx": 1,
+  "n_actors": 68,
+  "n_merges": 14,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-07-31",
+  "idx": 2,
+  "n_actors": 52,
+  "n_merges": 14,
+  "n_anon": 10,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-01",
+  "idx": 0,
+  "n_actors": 98,
+  "n_merges": 22,
+  "n_anon": 6,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-01",
+  "idx": 1,
+  "n_actors": 67,
+  "n_merges": 13,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-01",
+  "idx": 2,
+  "n_actors": 53,
+  "n_merges": 6,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-02",
+  "idx": 0,
+  "n_actors": 66,
+  "n_merges": 10,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-02",
+  "idx": 1,
+  "n_actors": 76,
+  "n_merges": 12,
+  "n_anon": 11,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-02",
+  "idx": 2,
+  "n_actors": 95,
+  "n_merges": 10,
+  "n_anon": 14,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-03",
+  "idx": 0,
+  "n_actors": 73,
+  "n_merges": 11,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-03",
+  "idx": 1,
+  "n_actors": 53,
+  "n_merges": 14,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-03",
+  "idx": 2,
+  "n_actors": 21,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-04",
+  "idx": 0,
+  "n_actors": 54,
+  "n_merges": 9,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-04",
+  "idx": 1,
+  "n_actors": 44,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-04",
+  "idx": 2,
+  "n_actors": 71,
+  "n_merges": 8,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-05",
+  "idx": 0,
+  "n_actors": 55,
+  "n_merges": 6,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-05",
+  "idx": 1,
+  "n_actors": 94,
+  "n_merges": 24,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-05",
+  "idx": 2,
+  "n_actors": 84,
+  "n_merges": 5,
+  "n_anon": 8,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-06",
+  "idx": 0,
+  "n_actors": 76,
+  "n_merges": 16,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-06",
+  "idx": 1,
+  "n_actors": 77,
+  "n_merges": 18,
+  "n_anon": 14,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-06",
+  "idx": 2,
+  "n_actors": 73,
+  "n_merges": 7,
+  "n_anon": 9,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-07",
+  "idx": 0,
+  "n_actors": 43,
+  "n_merges": 5,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-07",
+  "idx": 1,
+  "n_actors": 76,
+  "n_merges": 10,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-07",
+  "idx": 2,
+  "n_actors": 58,
+  "n_merges": 9,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_as_name"
+  ]
+ },
+ {
+  "day": "2026-08-08",
+  "idx": 0,
+  "n_actors": 44,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-08",
+  "idx": 1,
+  "n_actors": 78,
+  "n_merges": 10,
+  "n_anon": 15,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-08",
+  "idx": 2,
+  "n_actors": 89,
+  "n_merges": 9,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-09",
+  "idx": 0,
+  "n_actors": 28,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-09",
+  "idx": 1,
+  "n_actors": 53,
+  "n_merges": 9,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-09",
+  "idx": 2,
+  "n_actors": 64,
+  "n_merges": 16,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-10",
+  "idx": 0,
+  "n_actors": 61,
+  "n_merges": 11,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-10",
+  "idx": 1,
+  "n_actors": 47,
+  "n_merges": 7,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-10",
+  "idx": 2,
+  "n_actors": 55,
+  "n_merges": 20,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-11",
+  "idx": 0,
+  "n_actors": 56,
+  "n_merges": 7,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-11",
+  "idx": 1,
+  "n_actors": 80,
+  "n_merges": 14,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-08-11",
+  "idx": 2,
+  "n_actors": 36,
+  "n_merges": 3,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name"
+  ]
+ },
+ {
+  "day": "2026-08-12",
+  "idx": 0,
+  "n_actors": 76,
+  "n_merges": 8,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-12",
+  "idx": 1,
+  "n_actors": 28,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-08-12",
+  "idx": 2,
+  "n_actors": 94,
+  "n_merges": 7,
+  "n_anon": 12,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-13",
+  "idx": 0,
+  "n_actors": 87,
+  "n_merges": 20,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-13",
+  "idx": 1,
+  "n_actors": 77,
+  "n_merges": 3,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-08-13",
+  "idx": 2,
+  "n_actors": 50,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-14",
+  "idx": 0,
+  "n_actors": 37,
+  "n_merges": 3,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-14",
+  "idx": 1,
+  "n_actors": 84,
+  "n_merges": 16,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-14",
+  "idx": 2,
+  "n_actors": 61,
+  "n_merges": 19,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-15",
+  "idx": 0,
+  "n_actors": 40,
+  "n_merges": 4,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-15",
+  "idx": 1,
+  "n_actors": 37,
+  "n_merges": 3,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "multi_script"
+  ]
+ },
+ {
+  "day": "2026-08-15",
+  "idx": 2,
+  "n_actors": 25,
+  "n_merges": 0,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-08-16",
+  "idx": 0,
+  "n_actors": 58,
+  "n_merges": 5,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-16",
+  "idx": 1,
+  "n_actors": 36,
+  "n_merges": 11,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-16",
+  "idx": 2,
+  "n_actors": 15,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-17",
+  "idx": 0,
+  "n_actors": 70,
+  "n_merges": 20,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-17",
+  "idx": 1,
+  "n_actors": 31,
+  "n_merges": 2,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-08-17",
+  "idx": 2,
+  "n_actors": 55,
+  "n_merges": 15,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-18",
+  "idx": 0,
+  "n_actors": 45,
+  "n_merges": 4,
+  "n_anon": 6,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-18",
+  "idx": 1,
+  "n_actors": 52,
+  "n_merges": 9,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-18",
+  "idx": 2,
+  "n_actors": 76,
+  "n_merges": 29,
+  "n_anon": 11,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-19",
+  "idx": 0,
+  "n_actors": 73,
+  "n_merges": 7,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-19",
+  "idx": 1,
+  "n_actors": 35,
+  "n_merges": 3,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-19",
+  "idx": 2,
+  "n_actors": 21,
+  "n_merges": 2,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-20",
+  "idx": 0,
+  "n_actors": 41,
+  "n_merges": 5,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-20",
+  "idx": 1,
+  "n_actors": 74,
+  "n_merges": 6,
+  "n_anon": 13,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-20",
+  "idx": 2,
+  "n_actors": 62,
+  "n_merges": 9,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-21",
+  "idx": 0,
+  "n_actors": 69,
+  "n_merges": 15,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-21",
+  "idx": 1,
+  "n_actors": 84,
+  "n_merges": 29,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-21",
+  "idx": 2,
+  "n_actors": 51,
+  "n_merges": 5,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-08-22",
+  "idx": 0,
+  "n_actors": 55,
+  "n_merges": 7,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "multi_script"
+  ]
+ },
+ {
+  "day": "2026-08-22",
+  "idx": 1,
+  "n_actors": 68,
+  "n_merges": 18,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-22",
+  "idx": 2,
+  "n_actors": 42,
+  "n_merges": 3,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-23",
+  "idx": 0,
+  "n_actors": 52,
+  "n_merges": 3,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-08-23",
+  "idx": 1,
+  "n_actors": 51,
+  "n_merges": 4,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair"
+  ]
+ },
+ {
+  "day": "2026-08-23",
+  "idx": 2,
+  "n_actors": 21,
+  "n_merges": 5,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-24",
+  "idx": 0,
+  "n_actors": 51,
+  "n_merges": 3,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_as_name",
+   "multi_script"
+  ]
+ },
+ {
+  "day": "2026-08-24",
+  "idx": 1,
+  "n_actors": 57,
+  "n_merges": 10,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-08-24",
+  "idx": 2,
+  "n_actors": 45,
+  "n_merges": 10,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-25",
+  "idx": 0,
+  "n_actors": 33,
+  "n_merges": 10,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-25",
+  "idx": 1,
+  "n_actors": 86,
+  "n_merges": 22,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-25",
+  "idx": 2,
+  "n_actors": 48,
+  "n_merges": 9,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-08-26",
+  "idx": 0,
+  "n_actors": 34,
+  "n_merges": 7,
+  "n_anon": 10,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-26",
+  "idx": 1,
+  "n_actors": 89,
+  "n_merges": 10,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-26",
+  "idx": 2,
+  "n_actors": 42,
+  "n_merges": 4,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-27",
+  "idx": 0,
+  "n_actors": 129,
+  "n_merges": 16,
+  "n_anon": 11,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-27",
+  "idx": 1,
+  "n_actors": 68,
+  "n_merges": 2,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-27",
+  "idx": 2,
+  "n_actors": 18,
+  "n_merges": 1,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-08-28",
+  "idx": 0,
+  "n_actors": 83,
+  "n_merges": 13,
+  "n_anon": 6,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-28",
+  "idx": 1,
+  "n_actors": 97,
+  "n_merges": 7,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-28",
+  "idx": 2,
+  "n_actors": 60,
+  "n_merges": 8,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-29",
+  "idx": 0,
+  "n_actors": 101,
+  "n_merges": 10,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-29",
+  "idx": 1,
+  "n_actors": 29,
+  "n_merges": 1,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-08-29",
+  "idx": 2,
+  "n_actors": 57,
+  "n_merges": 1,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-30",
+  "idx": 0,
+  "n_actors": 112,
+  "n_merges": 10,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-30",
+  "idx": 1,
+  "n_actors": 38,
+  "n_merges": 12,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-30",
+  "idx": 2,
+  "n_actors": 70,
+  "n_merges": 30,
+  "n_anon": 4,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-31",
+  "idx": 0,
+  "n_actors": 62,
+  "n_merges": 15,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-31",
+  "idx": 1,
+  "n_actors": 82,
+  "n_merges": 15,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-08-31",
+  "idx": 2,
+  "n_actors": 58,
+  "n_merges": 9,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-01",
+  "idx": 0,
+  "n_actors": 115,
+  "n_merges": 16,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-01",
+  "idx": 1,
+  "n_actors": 105,
+  "n_merges": 39,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-01",
+  "idx": 2,
+  "n_actors": 80,
+  "n_merges": 12,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-02",
+  "idx": 0,
+  "n_actors": 123,
+  "n_merges": 34,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-02",
+  "idx": 1,
+  "n_actors": 107,
+  "n_merges": 33,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-02",
+  "idx": 2,
+  "n_actors": 41,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-03",
+  "idx": 0,
+  "n_actors": 144,
+  "n_merges": 52,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-03",
+  "idx": 1,
+  "n_actors": 38,
+  "n_merges": 5,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-03",
+  "idx": 2,
+  "n_actors": 111,
+  "n_merges": 26,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-04",
+  "idx": 0,
+  "n_actors": 90,
+  "n_merges": 18,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-04",
+  "idx": 1,
+  "n_actors": 110,
+  "n_merges": 24,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-04",
+  "idx": 2,
+  "n_actors": 35,
+  "n_merges": 3,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-05",
+  "idx": 0,
+  "n_actors": 84,
+  "n_merges": 20,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-05",
+  "idx": 1,
+  "n_actors": 56,
+  "n_merges": 11,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-05",
+  "idx": 2,
+  "n_actors": 43,
+  "n_merges": 7,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "generic_label",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-06",
+  "idx": 0,
+  "n_actors": 38,
+  "n_merges": 18,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss"
+  ]
+ },
+ {
+  "day": "2026-09-06",
+  "idx": 1,
+  "n_actors": 57,
+  "n_merges": 13,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-06",
+  "idx": 2,
+  "n_actors": 51,
+  "n_merges": 11,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-07",
+  "idx": 0,
+  "n_actors": 102,
+  "n_merges": 33,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-07",
+  "idx": 1,
+  "n_actors": 61,
+  "n_merges": 22,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-07",
+  "idx": 2,
+  "n_actors": 68,
+  "n_merges": 2,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-08",
+  "idx": 0,
+  "n_actors": 51,
+  "n_merges": 5,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-08",
+  "idx": 1,
+  "n_actors": 79,
+  "n_merges": 22,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-08",
+  "idx": 2,
+  "n_actors": 59,
+  "n_merges": 14,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-09",
+  "idx": 0,
+  "n_actors": 59,
+  "n_merges": 11,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-09",
+  "idx": 1,
+  "n_actors": 78,
+  "n_merges": 9,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-09",
+  "idx": 2,
+  "n_actors": 96,
+  "n_merges": 39,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-10",
+  "idx": 1,
+  "n_actors": 58,
+  "n_merges": 8,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-10",
+  "idx": 2,
+  "n_actors": 116,
+  "n_merges": 10,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-11",
+  "idx": 0,
+  "n_actors": 84,
+  "n_merges": 6,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-11",
+  "idx": 1,
+  "n_actors": 84,
+  "n_merges": 22,
+  "n_anon": 8,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-11",
+  "idx": 2,
+  "n_actors": 62,
+  "n_merges": 1,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-12",
+  "idx": 0,
+  "n_actors": 107,
+  "n_merges": 28,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-12",
+  "idx": 1,
+  "n_actors": 60,
+  "n_merges": 5,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "paren_gloss",
+   "generic_label"
+  ]
+ },
+ {
+  "day": "2026-09-12",
+  "idx": 2,
+  "n_actors": 95,
+  "n_merges": 5,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-13",
+  "idx": 0,
+  "n_actors": 138,
+  "n_merges": 31,
+  "n_anon": 7,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-13",
+  "idx": 1,
+  "n_actors": 90,
+  "n_merges": 15,
+  "n_anon": 3,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-13",
+  "idx": 2,
+  "n_actors": 83,
+  "n_merges": 3,
+  "n_anon": 0,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-14",
+  "idx": 0,
+  "n_actors": 104,
+  "n_merges": 19,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_as_name",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-14",
+  "idx": 1,
+  "n_actors": 45,
+  "n_merges": 8,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "paren_gloss",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-14",
+  "idx": 2,
+  "n_actors": 63,
+  "n_merges": 0,
+  "n_anon": 0,
+  "present": false,
+  "why": []
+ },
+ {
+  "day": "2026-09-15",
+  "idx": 0,
+  "n_actors": 104,
+  "n_merges": 22,
+  "n_anon": 2,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-15",
+  "idx": 1,
+  "n_actors": 74,
+  "n_merges": 22,
+  "n_anon": 5,
+  "present": true,
+  "why": [
+   "variant_pair",
+   "acronym",
+   "paren_gloss",
+   "generic_label",
+   "role_as_name",
+   "multi_script",
+   "role_names_actor"
+  ]
+ },
+ {
+  "day": "2026-09-15",
+  "idx": 2,
+  "n_actors": 93,
+  "n_merges": 1,
+  "n_anon": 1,
+  "present": true,
+  "why": [
+   "norm_collision",
+   "variant_pair",
+   "role_names_actor"
+  ]
+ }
+]

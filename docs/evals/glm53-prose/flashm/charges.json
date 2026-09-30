@@ -1,0 +1,287 @@
+{
+ "editor": {
+  "raised_j1": {
+   "C": 3,
+   "F_M": 4
+  },
+  "confirmed_2of2": {
+   "C": 1,
+   "F_M": 1
+  },
+  "raised_on_single_judged_cases": {},
+  "confirmed_detail": [
+   {
+    "stage": "editor",
+    "case": "editor__2026-09-06__trun",
+    "arm": "C",
+    "quote": "Double explosions at a Bolivian military barracks killing at least three, injuring dozens, and leaving fourteen missing \u2014 with a homicide investigation opened \u2014 raise immediate questions about whether the event was an accident, sabotage, or something else, in a country with a history of political instability.",
+    "j1_why": "absent from INPUT \u2014 the topic summary reports only pyrotechnic explosions, casualties, 14 missing and an opened homicide investigation; nothing in the topic list or previous_coverage describes Bolivian political instability, and this imported background is used to support the accept.",
+    "j2_why": "The INPUT's Bolivia topic states only that pyrotechnic material exploded in a barracks, killing at least three, injuring dozens, leaving 14 missing, and that a homicide investigation was opened. Nothing in the topics or previous_coverage describes Bolivia as having a history of political instability; that characterization is absent from INPUT and is load-bearing for the accept."
+   },
+   {
+    "stage": "editor",
+    "case": "editor__2026-09-07__trun",
+    "arm": "F_M",
+    "quote": "The mission has advanced from the reported Putin meeting to direct engagement in Kyiv with compromise proposals on the table \u2014 a material progression in the diplomatic track beyond the previously covered Moscow session and merely expected onward travel.",
+    "j1_why": "The INPUT topic summary for ct-2026-09-07-00 says the envoys 'met Putin in Moscow and were expected in Kyiv' \u2014 still expected, not arrived. No 'direct engagement in Kyiv' is reported anywhere in the INPUT; the prior package tp-2026-09-06-001 already carries both the Moscow meeting and the expectation of onward travel, so the sole stated new development does not exist in the INPUT.",
+    "j2_why": "The INPUT topic ct-2026-09-07-00 says the envoys 'met Putin in Moscow and were expected in Kyiv' \u2014 the Kyiv leg is still only expected, exactly as in prior package tp-2026-09-06-001 ('the envoys expected to travel on to Kyiv'). No 'direct engagement in Kyiv' appears anywhere in the INPUT; the asserted progression is the sole basis given for the follow-up."
+   }
+  ]
+ },
+ "hydration_phase2": {
+  "raised_j1": {
+   "C": 18,
+   "F_M": 11
+  },
+  "confirmed_2of2": {
+   "C": 14,
+   "F_M": 6
+  },
+  "raised_on_single_judged_cases": {
+   "F_M": 0,
+   "C": 0
+  },
+  "confirmed_detail": [
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-06__t0",
+    "arm": "C",
+    "quote": "German-language sources uniquely attribute the prior diplomatic stall to the US war with Iran and Russia's support for Iran, a geopolitical framing entirely absent from all other language groups.",
+    "j1_why": "The Iran-stall framing is not absent from other language groups: article 9 (en, Dawn) 'Notes that peace efforts have stalled while the US is focused on its war with Iran', article 26 (en, Responsible Statecraft) says diplomacy 'stalled when the US war with Iran began', and article 28 (en, Ukrinform) says the Geneva round 'was postponed after the US-Iran war began'.",
+    "j2_why": "The stall-because-of-the-Iran-war framing is present in three English-language analyses: article_index 9 (Dawn, en) 'Notes that peace efforts have stalled while the US is focused on its war with Iran'; article_index 26 (Responsible Statecraft, en) 'after diplomacy stalled when the US war with Iran began'; article_index 28 (Ukrinform, en) 'the previous Geneva trilateral round was postponed after the US-Iran war began'. Only the 'Russia supporting Iran' detail is German-only."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-06__t0",
+    "arm": "C",
+    "quote": "The Russian-language source uniquely reports that Washington specifically asked Kyiv to refrain from drone strikes on Russian energy infrastructure and cites Ukrainian intelligence chief Budanov's prediction of resumed trilateral talks in September, details not surfaced in any other language group.",
+    "j1_why": "Article 21 gives Kirill Budanov the role 'Head of the Ukrainian Presidential Office', not intelligence chief; the title is imported from outside the input. (The drone/energy-infrastructure half of the sentence is correctly grounded in article 21.)",
+    "j2_why": "article_index 21 identifies Kirill Budanov's role as 'Head of the Ukrainian Presidential Office'; the title 'Ukrainian intelligence chief' appears nowhere in the INPUT, and the analysis records him as not ruling out resumed trilateral talks rather than predicting them."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-06__t0",
+    "arm": "F_M",
+    "quote": "Within English-language coverage the regional cluster split is stark: China's CGTN relays the visit only through unnamed TASS sourcing and Kremlin non-confirmation, quoting no Ukrainian officials and no casualties, while UK-, US-, Ukraine-, and Qatar-based outlets quote Zelensky directly and report deaths in Kamianske, Bucha, and Kyiv.",
+    "j1_why": "The corpus has two CGTN items. Article 6 (en, China, CGTN) is a substantive report on the talks that quotes Volodymyr Zelenskyy announcing Ukraine's readiness to refrain from strikes on Moscow, alongside Ushakov and Peskov; only article 32 is the TASS-relay non-confirmation.",
+    "j2_why": "CGTN appears twice in article_metadata (article_index 6 and 32). article_index 6 is substantive coverage of the three-hour Moscow talks quoting Ushakov, Peskov and Volodymyr Zelenskyy directly, so CGTN neither covers the visit 'only' via TASS relay nor quotes 'no Ukrainian officials'."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-06__t0",
+    "arm": "F_M",
+    "quote": "South Asian language briefs (Nepali and Bengali) uniquely carry the report of a follow-up Trump phone call to both Putin and Zelensky and name regional Ukrainian officials' casualty counts, details absent from European- and Middle East-based coverage.",
+    "j1_why": "Neither detail belongs to both briefs, and the second is not absent from European coverage: article 14 (en, United Kingdom, The Guardian) quotes Oleksandr Hanzha, head of the Dnipropetrovsk Regional Military Administration, with casualty and damage details, and article 25 (fr, France, RFI) reports the Kamianske toll; the phone-call report appears only in article 22 (Nepali), and the regional-official casualty count only in article 24 (Bengali, Tkachenko).",
+    "j2_why": "The Trump phone-call detail is in article_index 22 (Nepali) only, not in article_index 24 (Bengali); and named regional-official casualty counts are present in European coverage \u2014 article_index 14 (The Guardian, UK) quotes Oleksandr Hanzha of the Dnipropetrovsk Regional Military Administration on deaths and damage, and article_index 27 (Tagesschau, de) reports five killed in the Dnipro steelworks strike."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-07__t0",
+    "arm": "F_M",
+    "quote": "German- and French-language outlets (Der Spiegel, Tagesschau, RFI) alone report the war's Iranian domestic-economic dimension \u2014 the doubling of subsidized gasoline prices to 10,000 tomans, the lifting of the ban on government agencies using non-national messaging apps, and arrests over MEK flags \u2014 which no English-, Arabic-, Spanish-, Italian-, or Thai-language item mentions.",
+    "j1_why": "The three named items appear only in RFI (article_index 15) and, for the fuel price alone, Der Spiegel (article_index 22). The three Tagesschau entries (article_index 16, 25, 28) cover IRGC/CENTCOM tanker claims, the maritime blockade tally and Tasnim's Kharg report, and contain none of the domestic-policy items attributed to them.",
+    "j2_why": "None of the Tagesschau analyses (indices 16, 26 and 28) mentions gasoline prices, the messaging-platform ban or MEK arrests; the messaging-ban lifting and the MEK-flag arrests appear only in RFI (index 15) and the gasoline doubling only in RFI (15) and Der Spiegel (22)."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-07__t0",
+    "arm": "C",
+    "quote": "French-language coverage (RFI) uniquely reports Iranian domestic policy responses to the conflict \u2014 gasoline price doubling, lifting of social media bans for government agencies, and arrests of MEK sympathizers \u2014 dimensions entirely absent from all other language groups.",
+    "j1_why": "article_index 22 (de, Germany, Der Spiegel) reports exactly the gasoline measure: government spokeswoman Fatemeh Mohadscherani announcing the third-tier fuel price will double to 10,000 Toman from 8 September. The German language group therefore does report this dimension, so 'uniquely' and 'entirely absent from all other language groups' misrepresent the corpus.",
+    "j2_why": "Der Spiegel (index 22, language de) reports the same doubling of the third-tier fuel price to 10,000 Toman from 8 September, quoting government spokeswoman Fatemeh Mohadscherani, so the dimension is not absent from all other language groups."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-07__t1",
+    "arm": "F_M",
+    "quote": "Arabic-language coverage (Al-Sumaria, Iraq) is the only reporting that carries the Iran-led 'resistance axis' counter-narrative \u2014 Quds Force commander Ismail Qaani declaring Hezbollah will remove Israel from the region and that Israel stands at the verge of collapse \u2014 while English, French, Spanish, German, and Italian coverage contain no Iranian official voice at all.",
+    "j1_why": "article_index 9 (language 'en', France 24, France) quotes Mohsen Rezaei, 'Head of Iran's Supreme National Security Council', with a verbatim statement on the Strait of Hormuz exclusion zone, so English-language coverage does contain an Iranian official voice.",
+    "j2_why": "article_index 9 (en, France 24) quotes Mohsen Rezaei, Head of Iran's Supreme National Security Council, announcing an Iranian exclusion zone outside the Strait of Hormuz \u2014 an Iranian official voice in English-language coverage."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-07__t1",
+    "arm": "C",
+    "quote": "German-language sources uniquely cover the joint condemnation of Israeli Gaza displacement plans by eight Muslim and Arab states and a German government minister's criticism, connecting the Lebanon escalation to broader regional Israeli territorial ambitions in a way no other language group does.",
+    "j1_why": "article_index 28 (language 'fr', RFI, France) reports the same joint declaration by Saudi Arabia, Egypt, Jordan, the UAE, Qatar, Pakistan, Indonesia and Turkey condemning forced expulsion of Palestinians, so the coverage is not unique to German.",
+    "j2_why": "article_index 28 (fr, RFI) reports the same joint declaration by Saudi Arabia, Egypt, Jordan, the UAE, Qatar, Pakistan, Indonesia and Turkey condemning Katz's statement, so the coverage is not unique to German."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-07__t1",
+    "arm": "C",
+    "quote": "Middle East-based regional sources (Al Jazeera, Al-Sumaria, Anadolu) provide more detailed Lebanese civilian casualty figures and hospital destruction reporting, while South American sources (Infobae) emphasize IDF military framing and the 'conquest' of strategic ridge positions.",
+    "j1_why": "No Al Jazeera, Al-Sumaria or Anadolu analysis (article_index 1, 2, 3, 18, 19, 20, 25) mentions the destruction of the Ghandour hospital; that reporting appears only in article_index 4 (CNA), 5 (DW), 12 (Japan Today), 16 (Tagesschau), 21 (France 24) and 23 (Middle East Eye).",
+    "j2_why": "None of the Al Jazeera (1, 18), Al-Sumaria (2, 19) or Anadolu (3, 20, 25) analyses mention the Ghandour hospital; the hospital destruction is reported by CNA (4), DW (5), Japan Today (12), Tagesschau (16), France 24 (21) and Middle East Eye (23)."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-07__t1",
+    "arm": "C",
+    "quote": "No direct Hezbollah statements or quotes appear anywhere in the corpus \u2014 Hezbollah's positions are conveyed only through Israeli military accusations or third-party reporting, leaving the group's own characterization of the ceasefire violations and strikes absent.",
+    "j1_why": "article_index 18 quotes Hezbollah leader Naim Qassem directly (evidence_type 'stated', verbatim_quote 'null and void') rejecting the June 26 framework agreement and demanding Israel end its occupation.",
+    "j2_why": "article_index 18 quotes Hezbollah leader Naim Qassem rejecting the June 26 framework agreement as 'null and void' and demanding Israel first end its occupation \u2014 a direct Hezbollah statement with a verbatim quote."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-07__t1",
+    "arm": "C",
+    "quote": "No voices from displaced southern Lebanese civilians are included despite UNHCR reporting 360,000 displaced people \u2014 the only affected-community quotes in the corpus come from West Bank Palestinian-Americans.",
+    "j1_why": "article_index 4 and 12 quote Haidar Haidar, typed 'affected_community', as the brother of the owner of a destroyed building in Arab Salim, southern Lebanon.",
+    "j2_why": "article_index 4 and 12 quote Haidar Haidar, brother of the owner of the destroyed building in Arab Salim, typed affected_community \u2014 a Lebanese affected-community voice."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-07__t2",
+    "arm": "F_M",
+    "quote": "Only France among EU member states is heard from, and no EU institutional actors (Commission or Parliament) are quoted at all, despite the topic's stated implications for EU policy direction.",
+    "j1_why": "The INPUT has Polish PM Donald Tusk quoted in article_analyses[4] and Czech lower-chamber president Tomio Okamura quoted in article_analyses[6] and [26]; article_metadata also lists outlets based in Belgium (Politico Europe), Spain (El Pais), Italy (ANSA) and Germany (Tagesschau, Der Spiegel, DW). The same output's next gap concedes the Tusk and Okamura reactions.",
+    "j2_why": "article_analyses quotes Polish Prime Minister Donald Tusk (article_index 4) and Czech lower-chamber president Tomio Okamura (article_index 6 and 26), so France is not the only EU member state whose voices are heard; the output's own later entry acknowledges both."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-07__t2",
+    "arm": "C",
+    "quote": "No coverage from Nordic or Baltic media outlets, despite their direct security interest in a pro-Russian party gaining state power in Germany and the AfD's stated aim of ending Russia sanctions.",
+    "j1_why": "article_metadata lists Novaya Gazeta Europe with country 'Latvia' at article_index 18 and 33, so a Baltic-based outlet is in the corpus twice \u2014 and the same output's third divergence relies on that outlet.",
+    "j2_why": "article_metadata lists Novaya Gazeta Europe with country 'Latvia' for article_index 18 and 33, so Baltic-based coverage is present in the corpus; the same output elsewhere calls that outlet 'Latvian-based'."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-08__t0",
+    "arm": "C",
+    "quote": "South Asian English-language sources (Dawn, Prothom Alo) foreground civilian casualties and editorially call for negotiated peace based on the Islamabad MoU, while UK and East Asian English-language sources present official statements more neutrally without addressing civilian impact or peace proposals.",
+    "j1_why": "article_metadata[7] gives Prothom Alo language 'bn', not English, and article_analyses[7] is about South Korea's deliberations and energy dependence - it contains no civilian casualties and no Islamabad MoU appeal; both of those come only from article_analyses[11] (Dawn).",
+    "j2_why": "article_metadata gives article_index 7 (Prothom Alo, Bangladesh) language 'bn', not English; and its analysis contains no civilian casualties and no Islamabad MoU \u2014 it covers Marandi's warning to South Korea, Seoul's deliberations and its 61 percent crude / 54 percent naphtha dependence. The civilian-casualty and Islamabad-MoU material appears only in article_index 11 (Dawn)."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-08__t0",
+    "arm": "C",
+    "quote": "Spanish-language coverage uniquely details the Iran-Oman provisional corridor agreement and frames US actions as economic warfare against 'all world commerce' via Foreign Ministry spokesman Baghaei, a framing not foregrounded in other language groups.",
+    "j1_why": "article_analyses[9] (Al Jazeera, English) also details the Iran-Oman provisional corridor, quoting Kazem Gharibabadi on the temporary maritime route through Iranian territorial waters, so the corridor is not unique to Spanish coverage.",
+    "j2_why": "article_index 9 (Al Jazeera, language 'en') also details the Iran-Oman arrangement, quoting Kazem Gharibabadi that the temporary maritime route's entry and part of the exit pass through Iranian territorial waters, and reporting the IRGC's objection to the Oman-backed corridor, so the corridor detail is not unique to the Spanish group."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-08__t1",
+    "arm": "F_M",
+    "quote": "British-based coverage (BBC Verify, The Guardian) is the only cluster quoting ordinary Kyiv residents on daily life under round-the-clock air-raid alerts; continental European, Middle Eastern and Latin American coverage quotes almost exclusively officials, envoys and analysts.",
+    "j1_why": "article_index 10 (metadata: en, Japan, Japan Today) quotes Stepan Yermak, an 'affected_community' actor described as a 'Military veteran and Kyiv resident', and its summary says it 'includes caution and hope from Kyiv residents' \u2014 so the British cluster is not the only one quoting ordinary Kyiv residents.",
+    "j2_why": "article_index 10 (en, Japan, Japan Today) quotes Stepan Yermak, 'Military veteran and Kyiv resident', type affected_community, and its summary says it 'includes caution and hope from Kyiv residents' \u2014 so the British cluster is not the only one quoting ordinary Kyiv residents."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-08__t1",
+    "arm": "C",
+    "quote": "Russian-language sources provide deep analytical skepticism citing Kremlin-linked sources that Putin will not compromise and detailing Russia's maximalist demands across multiple dimensions \u2014 neutrality, territory, army size, language rights, and elections \u2014 whereas English-language wire reports emphasize Witkoff's optimistic 'progress' language without equivalent independent verification.",
+    "j1_why": "That exact demand list (neutrality, retained territory, a cap on the Ukrainian army, cancellation of Russian-language restrictions, elections) is the content of article_index 20, whose metadata is en / Qatar / Al Jazeera. The Russian-language entries are article_index 13 (hardening demands, Zaporizhzhia plant and Donbas as the two unresolved points) and 27 (a strike tally); neither enumerates language rights, elections or an army cap. The same English-language group is also the source of the skeptical analysis the sentence says English wires lack.",
+    "j2_why": "The enumerated maximalist demands (neutrality, keeping occupied territory, a cap on the Ukrainian army, Russian language rights, elections open to Russia-friendly parties) appear in article_index 20, whose metadata is language 'en', country 'Qatar', outlet 'Al Jazeera' \u2014 an English-language source, which is also the article that most strongly disputes the optimistic framing. The Russian-language articles (13, 27) describe hardening demands and the Kremlin-linked source but do not carry that five-dimension enumeration."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-08__t1",
+    "arm": "C",
+    "quote": "No Turkish perspective despite Turkey's documented history as a mediator in Russia-Ukraine negotiations, including hosting the Istanbul talks and brokering the Black Sea grain deal.",
+    "j1_why": "Absent from INPUT \u2014 no article analysis or metadata entry mentions Turkey, Istanbul talks or a Black Sea grain deal; the negotiation history the corpus records is the Abu Dhabi and Geneva rounds (article_index 13).",
+    "j2_why": "Absent from INPUT \u2014 Turkey, Istanbul talks and the Black Sea grain deal appear nowhere in article_analyses or article_metadata; the corpus's named negotiation venues are Abu Dhabi and Geneva (article_index 13). The same defect recurs in the Global South gap, whose justification that 'India, Brazil, and South Africa' have 'engaged with both parties and positioned themselves as potential mediators' is likewise absent from INPUT."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-08__t2",
+    "arm": "C",
+    "quote": "English-language sources are the only language group covering the parallel Gaza and West Bank fronts of the Israeli military campaign, while Spanish, Arabic, French, German, Italian, Thai, and Nepali sources focus exclusively on the Lebanon strikes.",
+    "j1_why": "article_index 22 is French-language (RFI, France, 'fr' in article_metadata) and its analysis is entirely about the occupied West Bank - settler violence, indefensible outposts, 26 battalions - so French coverage is not confined to the Lebanon strikes; the output's own later entry concedes this.",
+    "j2_why": "article_index 22 is language 'fr' (RFI, France) and its analysis is entirely about the occupied West Bank - settler violence, indefensible outposts, 26 battalions, Haaretz on senior officers' fears - so French coverage of the West Bank front exists in the corpus."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-08__t2",
+    "arm": "C",
+    "quote": "Thai and Nepali wire reports emphasise Israel's 'strategic control' of the Ali al-Taher ridge and the ceasefire framework's failure to progress on withdrawal and disarmament, an analytical angle largely absent from English and Spanish coverage which focuses on the immediate human toll.",
+    "j1_why": "Only article_index 10 (Thai, Khaosod) mentions strategic control of the Ali al-Taher ridge; the Nepali analysis (article_index 12, Online Khabar) contains no reference to the ridge or to strategic control. Additionally article_index 18 (Spanish, El Pais) explicitly covers 'Israel's capture of the Ali Taher ridge' and Katz's refusal to withdraw until Hezbollah is disarmed, so the angle is not absent from Spanish coverage.",
+    "j2_why": "The Nepali analysis (article_index 12) contains no mention of the Ali al-Taher ridge or of stalled withdrawal/disarmament progress - only the Israeli Foreign Ministry's rebuilding accusation, the army statement and a resident quote. The Spanish El Pais analysis (article_index 18) explicitly covers Israel's capture of the Ali Taher ridge and Katz's refusal to withdraw until Hezbollah is disarmed, so the angle is not absent from Spanish coverage."
+   }
+  ]
+ },
+ "qa_analyze": {
+  "raised_j1": {
+   "F_M": 2,
+   "C": 1
+  },
+  "confirmed_2of2": {
+   "C": 1,
+   "F_M": 1
+  },
+  "raised_on_single_judged_cases": {
+   "F_M": 0,
+   "C": 0
+  },
+  "confirmed_detail": [
+   {
+    "stage": "qa_analyze",
+    "case": "qa_analyze__2026-09-06__t2",
+    "arm": "C",
+    "quote": "The single quotes around 'by any means' present it as a verbatim quote, but no cited source provides this exact phrase. The closest verbatim is 'get them out \u2014 by sea, by air, by every way possible' from src-011, which is not cited for this sentence.",
+    "j1_why": "src-018 is one of the three sources cited on that sentence and its title reads \"Katz: Israel will facilitate emigration from Gaza 'by any means' as soon as Trump allows\", with the actor record stating Katz \"is prepared to facilitate departure by any means once Trump gives approval\" \u2014 the phrase is present in a cited source, so the assertion that none provides it misdescribes the INPUT.",
+    "j2_why": "src-018, one of the three sources cited on that sentence, carries the phrase verbatim and in quotation marks in its own title \u2014 \"Katz: Israel will facilitate emigration from Gaza 'by any means' as soon as Trump allows\" \u2014 and its actor entry repeats 'prepared to facilitate departure by any means once Trump gives approval'."
+   },
+   {
+    "stage": "qa_analyze",
+    "case": "qa_analyze__2026-09-07__t2",
+    "arm": "F_M",
+    "quote": "Historians cited by src-010 (R\u00f6dder, Rother) and Katja Hoyer in src-027 argue the cordon sanitaire has failed and strengthened the AfD, while CDU figures in src-024 and src-033 insist cooperation remains impossible and Ann-Kristin K\u00f6lln in src-050 argues the firewall still holds.",
+    "j1_why": "src-027 attributes to Katja Hoyer only the argument that the AfD's breakthrough was driven by an upbeat campaign around Siegmund and by mainstream parties' failure to offer a positive vision of change, so migration alone no longer explains the party's rise; no claim about the cordon sanitaire having failed or strengthened the AfD appears in src-027. The R\u00f6dder/Rother half of the sentence is correctly supported by src-010.",
+    "j2_why": "src-027 records Katja Hoyer as arguing that the AfD's breakthrough was driven by an upbeat campaign around Ulrich Siegmund and by mainstream parties' failure to offer a positive vision of change, so that migration alone no longer explains the party's rise. Nothing in src-027 attributes to her any claim about the cordon sanitaire or firewall having failed or strengthened the AfD; that argument belongs to R\u00f6dder in src-010."
+   }
+  ]
+ },
+ "writer": {
+  "raised_j1": {
+   "C": 8,
+   "F_M": 2
+  },
+  "confirmed_2of2": {
+   "C": 3,
+   "F_M": 1
+  },
+  "raised_on_single_judged_cases": {
+   "F_M": 0,
+   "C": 0
+  },
+  "confirmed_detail": [
+   {
+    "stage": "writer",
+    "case": "writer__2026-09-06__t0",
+    "arm": "C",
+    "quote": "Ukrainian military intelligence chief Kirill Budanov did not rule out that trilateral talks could resume in September [src-022], but told an Italian outlet that \"I droni stanno volando, lo avete visto tutti\" (The drones are still flying, you have all seen it) [src-049].",
+    "j1_why": "The canonical actors[] entry actor-023 gives Kirill Budanov the role 'Head of the Ukrainian Presidential Office'; no source in the INPUT describes him as head of military intelligence.",
+    "j2_why": "The INPUT actor list gives actor-023 Kirill Budanov the role 'Head of the Ukrainian Presidential Office'; no source in the dossier describes him as head of military intelligence."
+   },
+   {
+    "stage": "writer",
+    "case": "writer__2026-09-06__t2",
+    "arm": "F_M",
+    "quote": "He told Anadolu Agency that when people are disturbed in their homes and children prevented from playing in their gardens, it is terrorism under any definition [src-025].",
+    "j1_why": "src-025 is Anadolu Agency's Turkish-language report of Huckabee's remarks during a West Bank visit; the INPUT nowhere states he spoke to Anadolu Agency.",
+    "j2_why": "src-025 is Anadolu Agency reporting Huckabee's remarks made during a West Bank visit; nothing in the INPUT states he gave these remarks to Anadolu Agency. The same construction is used for src-009 ('telling Radio France Internationale'), where RFI likewise only reports the remarks."
+   },
+   {
+    "stage": "writer",
+    "case": "writer__2026-09-06__t2",
+    "arm": "C",
+    "quote": "The IDF's World Central Kitchen investigation found that the seven aid workers were killed under a practice of \"incrimination\" establishing guilt by association, with Reserve Colonel Nochi Mendel saying the aid workers \"were not innocent because they were connected to Hamas\" and that he would do the same again [src-005].",
+    "j1_why": "src-005 states that a Guardian investigation found the workers were targeted under an IDF practice of 'incrimination'; the IDF's own account in src-005 is that the strikes resulted from an erroneous assessment and failures to comply with orders, with no criminal offence warranting prosecution. The finding is attributed to the wrong party.",
+    "j2_why": "src-005 states that a Guardian investigation found the aid workers were targeted under an IDF practice of 'incrimination'; the IDF's own position in the INPUT is that the strikes resulted from an erroneous assessment and failures to comply with orders, and that no criminal offence warranted prosecution. The INPUT contains no IDF investigation making the guilt-by-association finding."
+   },
+   {
+    "stage": "writer",
+    "case": "writer__2026-09-07__t0",
+    "arm": "C",
+    "quote": "Iran States Missiles Struck US Aircraft Carrier as Hormuz Transits Fall to Record Lows",
+    "j1_why": "The INPUT's traffic reporting says transits are at their lowest level since May (src-027) and gives Kpler figures of an average of ten cargo ships a day, two on Saturday and six on Sunday (src-023, src-027) and five to thirteen daily transits (src-002); no source in the INPUT describes the level as a record low.",
+    "j2_why": "The INPUT's only characterisation of the transit level is src-027, which says mutual attacks 'have cut Strait of Hormuz shipping to its lowest level since May' with an average of ten cargo ships a day; no source in the INPUT describes transits as a record low. The same overstatement is repeated in the summary: 'Shipping data show Hormuz transits falling to record lows'."
+   }
+  ]
+ }
+}

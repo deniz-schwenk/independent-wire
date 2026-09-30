@@ -1,0 +1,89 @@
+{
+ "raised_j1": {
+  "Fmed": 3,
+  "Fhigh": 3,
+  "C": 3
+ },
+ "raised_j2": {
+  "Fmed": 3,
+  "Fhigh": 3,
+  "C": 3
+ },
+ "confirmed_2of2": {
+  "Fmed": 3,
+  "Fhigh": 2,
+  "C": 3
+ },
+ "raised_on_single_judged": {
+  "C": 0,
+  "Fhigh": 0,
+  "Fmed": 0
+ },
+ "needs_second_judge": [],
+ "confirmed_detail": [
+  {
+   "case": "planner__2026-09-06__t0",
+   "arm": "Fmed",
+   "query_index": 7,
+   "text": "مصر الوساطة الأوكرانية",
+   "j1_why": "Presupposes Egypt is mediating in the Ukraine war/Moscow talks; the dossier carries no Egyptian mediation role (Al-Masry Al-Youm only reports the envoys' trip).",
+   "j2_why": "Presupposes an Egyptian mediation role in the Ukraine talks; the dossier shows no Egyptian involvement beyond an Al-Masry Al-Youm news report."
+  },
+  {
+   "case": "planner__2026-09-06__t0",
+   "arm": "Fhigh",
+   "query_index": 16,
+   "text": "북한군 우크라이나 파병",
+   "j1_why": "Presupposes a North Korean troop deployment connected to this war; nothing in the dossier mentions North Korea, so the query seeks confirmation of an unestablished fact.",
+   "j2_why": "Presupposes a North Korean troop deployment to Ukraine; nothing in the dossier establishes it or ties it to this story."
+  },
+  {
+   "case": "planner__2026-09-06__t1",
+   "arm": "C",
+   "query_index": 15,
+   "text": "mga marinong Pilipino sa tanker na inatake ng US",
+   "j1_why": "Presupposes that Filipino seafarers were aboard the attacked tanker; the dossier gives no crew nationalities for the three tankers.",
+   "j2_why": "Presupposes Filipino seafarers were aboard the tanker the US struck; the dossier mentions crew evacuations but says nothing about crew nationality, so the query seeks confirmation of an unsupported premise."
+  },
+  {
+   "case": "planner__2026-09-06__t2",
+   "arm": "Fhigh",
+   "query_index": 19,
+   "text": "اقوام متحدہ نسل کشی",
+   "j1_why": "Pairs 'United Nations' with 'genocide'; the dossier has UN officials warning of crimes against humanity and ethnic cleansing, not genocide, so the query leans on a UN genocide characterisation the inputs do not carry (mild presupposition).",
+   "j2_why": "Presupposes a UN genocide finding/warning; the dossier's UN statements concern crimes against humanity and ethnic cleansing in the West Bank, not genocide."
+  },
+  {
+   "case": "planner__2026-09-07__t1",
+   "arm": "C",
+   "query_index": 8,
+   "text": "جامعة الدول العربية تدين الغارات الإسرائيلية على لبنان",
+   "j1_why": "Presupposes the Arab League condemned the Lebanon strikes; the dossier explicitly states no regional body is quoted on the Lebanon strikes.",
+   "j2_why": "Presupposes an Arab League condemnation of the Lebanon strikes. The dossier states that no regional body is quoted on Lebanon, so the query seeks confirmation instead of testing."
+  },
+  {
+   "case": "planner__2026-09-07__t1",
+   "arm": "Fmed",
+   "query_index": 2,
+   "text": "ירי רקטות",
+   "j1_why": "Presupposes Hezbollah rocket fire; the dossier only carries an alleged drone launch against soldiers.",
+   "j2_why": "Presupposes Hezbollah rocket fire at northern Israel and an evacuation of frontline Israeli communities. The dossier reports only an alleged drone launch at soldiers and IDF-stated threats, so the query seeks confirmation instead of testing."
+  },
+  {
+   "case": "planner__2026-09-08__t1",
+   "arm": "C",
+   "query_index": 14,
+   "text": "O'zbekiston vositachilik",
+   "j1_why": "Presupposes that Uzbekistan acts as a mediator in the Russia-Ukraine talks. The dossier names China, Turkey, India, Brazil and South Africa as mediators or potential mediators, never Uzbekistan.",
+   "j2_why": "Presupposes an Uzbek mediation role in Russia-Ukraine talks; nothing in the dossier or coverage_gaps names Uzbekistan as a mediator (gaps name Turkey, China, India, Brazil, South Africa)."
+  },
+  {
+   "case": "planner__2026-09-08__t2",
+   "arm": "Fmed",
+   "query_index": 11,
+   "text": "اقوام متحدہ امن فوج پاکستانی دستے",
+   "j1_why": "Presupposes a Pakistani contingent in the UN peace force in Lebanon. Nothing in the dossier supports one, and Pakistan is not known to contribute to UNIFIL, so the query seeks confirmation of a probably non-existent body.",
+   "j2_why": "Presupposes a Pakistani contingent in the UN peacekeeping force in Lebanon; the dossier contains nothing on troop contributors and this contingent is doubtful - an unsupported presupposition rather than a missing-voice target."
+  }
+ ]
+}

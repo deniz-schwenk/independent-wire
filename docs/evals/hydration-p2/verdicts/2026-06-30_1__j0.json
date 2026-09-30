@@ -1,0 +1,73 @@
+{
+ "date": "2026-06-30",
+ "topic": 1,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "B",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 3,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "German-language coverage (Tagesschau, DW) foregrounds government officials' statements and structural/economic analysis (police costs, youth unemployment, historical parallels to Ghana and Uganda expulsions), while French-language coverage (RFI, France 24) foregrounds affected migrants' visceral fear and testimony, such as a pastor saying refugees no longer fear death and a taxi driver describing constant unease.",
+      "why_unsupported": "DW (article 3) is English-language (language: en), not German-language, and the historical parallels to Ghana and Uganda expulsions come solely from AllAfrica (article 8, US), not from any German-language coverage; Tagesschau (article 6) contains no such historical framing. France 24 (article 4) is English-language and is only a brief TV segment with no migrant testimony, so labeling it French-language coverage foregrounding migrant fear is unsupported. The pastor and taxi-driver quotes are from RFI (article 5) alone."
+     }
+    ]
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 5,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 2,
+    "specificity": 4,
+    "cross_group_validity": 2,
+    "gap_quality": 5,
+    "overall": 2,
+    "fabricated_divergences": [
+     {
+      "quote": "German-language coverage (DW News, Tagesschau) emphasizes structural causes such as 61% youth unemployment and government failure, quoting political commentators and civil society analysts, while English-language coverage from the UK (BBC) and Qatar (Al Jazeera) foregrounds the immediate human impact on migrants and the security response.",
+      "why_unsupported": "The 61% youth unemployment figure and the commentator/analyst quotes (Tessa Dooms, Fredson Guilengue) come from DW (article 3), which is English-language (language: en), not German-language. Tagesschau (article 6), the only German-language article, contains none of this structural content — it quotes ministers and the March and March founder. Grouping DW as German-language is a language-group misattribution."
+     },
+     {
+      "quote": "European outlets (DW, Tagesschau, RFI) quote or feature civil society and academic analysts (Tessa Dooms, Fredson Guilengue, Vanya Gastrow) who contextualize the crisis within governance failures, whereas Qatar-based Al Jazeera centers ground-level reporting from informal settlements and markets, prioritizing affected-community testimony over expert analysis.",
+      "why_unsupported": "Vanya Gastrow appears only in AllAfrica (article 8), a US outlet, not in any European outlet. RFI (article 5) quotes no academic or civil-society analysts contextualizing governance failure — only a pastor, a Senegalese businessman, and a Congolese taxi driver. Tagesschau (article 6) also quotes none of these analysts. Only DW (article 3) contains Dooms and Guilengue, so attributing all three analysts to a set of European outlets is unsupported."
+     }
+    ]
+   }
+  ]
+ },
+ "cost_usd": 0.339365,
+ "tokens": 24649,
+ "duration_s": 127.3,
+ "provider": "Anthropic"
+}

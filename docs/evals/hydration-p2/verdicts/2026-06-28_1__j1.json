@@ -1,0 +1,64 @@
+{
+ "date": "2026-06-28",
+ "topic": 1,
+ "judge": 1,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "B",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 3,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 3,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "The German-language outlet Tagesschau foregrounds the legal-institutional dimension in Hungary (the dropped court case against Mayor Karácsony and the restrictive law still remaining on the books), whereas English- and French-language coverage emphasizes turnout and the ambiguity of PM Magyar's personal stance.",
+      "why_unsupported": "The corpus contains no French-language coverage. Both France 24 items (articles 2 and 5) are tagged language 'en' in the metadata; there is no 'French-language' group to contrast, so attributing a framing to French-language coverage invents a group not present in the corpus."
+     }
+    ]
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 5,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.223725,
+ "tokens": 15873,
+ "duration_s": 91.0,
+ "provider": "Anthropic"
+}

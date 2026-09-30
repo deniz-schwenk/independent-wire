@@ -1,0 +1,182 @@
+{
+ "firings": [
+  {
+   "day": "2026-07-27",
+   "topic_index": 2,
+   "canonical": "Iris Spranger",
+   "n_aliases": 46,
+   "verdict": "true",
+   "why": "46 unrelated people — Macron, Meloni, von der Leyen, a bishop, a drag artist, the suspect's father, the defence lawyer — into one Berlin senator. The catastrophic case; published as tp-2026-07-27-003 with a single actor entry.",
+   "aliases": [
+    "Alexander Dobrindt",
+    "Friedrich Merz",
+    "Kai Wegner",
+    "Martin Hess",
+    "Florian Nath",
+    "Armin Duenhoelter",
+    "Frank-Walter Steinmeier",
+    "Günter Krings",
+    "Alexander Throm",
+    "Lars Klingbeil",
+    "Thorsten Weiss",
+    "Stefanie Hubig",
+    "Julia Klöckner",
+    "Ashley Jump",
+    "Andre Lehmann",
+    "Ursula von der Leyen",
+    "Alfonso Pantisano",
+    "Tawfik Ballout",
+    "Julian Methig",
+    "Giorgia Meloni",
+    "Emmanuel Macron",
+    "Ed Miliband",
+    "Tino Chrupalla",
+    "Jordan Bardella",
+    "Omid Nouripour",
+    "Daniel Peters",
+    "Dominik Pretz",
+    "Spanish Government",
+    "Sacha",
+    "Félix Plasencia",
+    "Observatorio Venezolano de Violencias LGBTIQ+",
+    "Thomas Mücke",
+    "Hans-Jakob Schindler",
+    "Serkan Alkan",
+    "Niklas Schrader",
+    "Meike Kamp",
+    "Hızır Oymak",
+    "Cem Yalçınkaya",
+    "Seyran Ates",
+    "Christian Stäblein",
+    "Marc Henrichmann",
+    "Dirk Peglow",
+    "Kristin Brinker",
+    "Alva Träbert",
+    "Rob Jetten",
+    "René Powilleit"
+   ]
+  },
+  {
+   "day": "2026-09-06",
+   "topic_index": 2,
+   "canonical": "IDF",
+   "n_aliases": 6,
+   "verdict": "false",
+   "why": "the Israeli military in six languages (es/en/bn/fr). Exactly the cross-language institution merge the pipeline exists to make.",
+   "aliases": [
+    "Ejército de Israel",
+    "Israeli army",
+    "ইসরায়েলের সেনাবাহিনী",
+    "The Israeli army",
+    "l’armée israélienne",
+    "Israeli military"
+   ]
+  },
+  {
+   "day": "2026-09-07",
+   "topic_index": 1,
+   "canonical": "Idf",
+   "n_aliases": 6,
+   "verdict": "false",
+   "why": "same shape: Israeli military in six languages (en/es/fr/de).",
+   "aliases": [
+    "Israeli army",
+    "El ejército israelí",
+    "Israel's army",
+    "Israeli military",
+    "l'armée israélienne",
+    "israelische Armee"
+   ]
+  },
+  {
+   "day": "2026-06-29",
+   "topic_index": 2,
+   "canonical": "Hamdulá Fitrat",
+   "n_aliases": 5,
+   "verdict": "ambiguous",
+   "why": "four collective Taliban entities ('Afghan Taliban', 'Taliban authorities', 'Taliban officials', 'Taliban provincial officials') into the Deputy Spokesman. Institution<->spokesperson is the pipeline's own convention, but a government is not its spokesman and 'provincial officials' is a different scope again. Counted neither way below.",
+   "aliases": [
+    "Taliban authorities",
+    "Taliban provincial officials",
+    "Taliban officials",
+    "Afghan Taliban",
+    "Taliban representatives"
+   ]
+  },
+  {
+   "day": "2026-05-29",
+   "topic_index": 0,
+   "canonical": "Radu Miruță",
+   "n_aliases": 4,
+   "verdict": "false",
+   "why": "four spellings of the Romanian Ministry of Defence merged into the Defence Minister — the institution<->office-holder merge the corpus makes routinely and which the detector accepts elsewhere via role_link.",
+   "aliases": [
+    "Romania's defense ministry",
+    "Romanian Ministry of Defence",
+    "Romanian Defense Ministry",
+    "Romanian Ministry of National Defense"
+   ]
+  },
+  {
+   "day": "2026-07-25",
+   "topic_index": 2,
+   "canonical": "Authorities",
+   "n_aliases": 4,
+   "verdict": "true",
+   "why": "'Greece' (Greek government) merged with the Spanish government, AEMET (Spanish met agency) and Spain's Guardia Civil into a generic 'Authorities'. Two different countries in one actor.",
+   "aliases": [
+    "The government in Spain",
+    "Greece",
+    "AEMET",
+    "Spain's Guardia Civil"
+   ]
+  },
+  {
+   "day": "2026-08-03",
+   "topic_index": 1,
+   "canonical": "Iranian military officials",
+   "n_aliases": 4,
+   "verdict": "true",
+   "why": "four transliterations of Abbas Araghchi, Iran's FOREIGN minister, merged into 'Iranian military officials'. The four spellings are one person and merging them is right; the TARGET is wrong.",
+   "aliases": [
+    "Abbas Araqchi",
+    "Abbas Araghchi",
+    "Abbas Arakçi",
+    "Abbas Araghtschi"
+   ]
+  },
+  {
+   "day": "2026-09-07",
+   "topic_index": 0,
+   "canonical": "Guardie Rivoluzionarie iraniane",
+   "n_aliases": 4,
+   "verdict": "false",
+   "why": "IRGC in four languages, one of them carrying the Persian name as a gloss. Legitimate.",
+   "aliases": [
+    "The IRGC",
+    "Les Gardiens de la Révolution",
+    "die iranische Revolutionsgarde (IRGC)",
+    "IRGC (سپاه پاسداران)"
+   ]
+  },
+  {
+   "day": "2026-08-10",
+   "topic_index": 2,
+   "canonical": "Yahya Saree",
+   "n_aliases": 3,
+   "verdict": "true",
+   "why": "'Port Director of al-Makha' is a different person from the Houthi military spokesperson. The two Houthi-group aliases alongside it are defensible; the port director is not.",
+   "aliases": [
+    "Port Director of al-Makha",
+    "Houthis",
+    "Houthi rebels"
+   ]
+  }
+ ],
+ "tally": {
+  "true": 4,
+  "false": 4,
+  "ambiguous": 1
+ },
+ "precision_excl_ambiguous": 0.5
+}

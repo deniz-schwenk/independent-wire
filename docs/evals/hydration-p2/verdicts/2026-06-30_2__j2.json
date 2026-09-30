@@ -1,0 +1,69 @@
+{
+ "date": "2026-06-30",
+ "topic": 2,
+ "judge": 2,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 3,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Spanish-language (El País) and German-language (Tagesschau) coverage include institutional history of the facility (established 2012, 11 residential places) that is absent from UK, Pakistani, and Turkish coverage.",
+      "why_unsupported": "Only the El País analysis (article 4) mentions the facility being specialised since 2012 with 11 residential places. No Tagesschau analysis (articles 8, 11, 12) contains the 2012/11-places detail; article 12 only notes the child and mother lived at the facility. Attributing this institutional history to German-language (Tagesschau) coverage is not supported."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 3,
+    "specificity": 3,
+    "cross_group_validity": 3,
+    "gap_quality": 4,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language reporting emphasizes police use of force, including details such as the number of shots fired during the car chase, whereas German-language coverage downplays these operational specifics, focusing instead on the suspect's prior police record and the formal investigative process.",
+      "why_unsupported": "German-language coverage does report police use of force: Tagesschau (article 8) explicitly describes the fleeing car being 'shot at by police,' and article 12 gives a detailed reconstruction. The corpus does not show German-language coverage systematically downplaying use-of-force specifics in favour of the investigative process; the only distinctive operational detail (15 shots) appears in the Guardian, but that does not establish the claimed group-level contrast."
+     }
+    ]
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.307355,
+ "tokens": 23791,
+ "duration_s": 118.8,
+ "provider": "Anthropic"
+}

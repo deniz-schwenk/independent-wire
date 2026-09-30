@@ -1,0 +1,69 @@
+{
+ "date": "2026-06-29",
+ "topic": 2,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language sources from Qatar (Al Jazeera), Germany (DW News), and the UK (The Guardian) include the Taliban spokesman's condemnation ('cowardly act of aggression') alongside Pakistan's claims, while English-language sources from France (France 24) and Japan (Japan Today) and the Italian-language source (ANSA, article 0) present primarily or exclusively the Pakistani government's framing without substantive Taliban rebuttal.",
+      "why_unsupported": "Article 5 (France 24) explicitly notes Kabul's accusation that Pakistani airstrikes caused civilian casualties — a substantive Taliban rebuttal — so it does not belong in the 'no Taliban rebuttal' group. Additionally, article 1 (Al Jazeera) does not contain the 'cowardly act of aggression' condemnation; its Taliban element is a denial of harboring militants, so placing it with DW and the Guardian on that specific condemnation is unsupported."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "The Italian outlet (ANSA) splits the story into two separate single-source articles — one carrying only Pakistan's claim of 25 killed militants and another carrying only the Taliban's civilian-casualty condemnation — while English-language outlets from Qatar, Germany, the UK and Japan integrate both the Pakistani and Taliban narratives within single articles.",
+      "why_unsupported": "Article 8 (Japan Today) contains only the Pakistani government's framing (29 fighters killed, Jamaat-ul-Ahrar, Karachi attack, Afghan-national assailant); its analysis shows no Taliban narrative at all, so it does not integrate both the Pakistani and Taliban perspectives as claimed."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 5,
+    "gap_quality": 4,
+    "overall": 4,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.29619,
+ "tokens": 22006,
+ "duration_s": 105.6,
+ "provider": "Anthropic"
+}

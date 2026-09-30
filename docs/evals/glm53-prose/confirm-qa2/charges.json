@@ -1,0 +1,31 @@
+{
+ "qa_analyze": {
+  "raised_j1": {
+   "C": 1,
+   "F_M": 1
+  },
+  "confirmed_2of2": {
+   "C": 1,
+   "F_M": 1
+  },
+  "raised_on_single_judged_cases": {},
+  "confirmed_detail": [
+   {
+    "stage": "qa_analyze",
+    "case": "qa_analyze__2026-09-13__t0",
+    "arm": "C",
+    "quote": "The cited sources (src-001, src-013, src-015) quote Houthi spokesman Yahya Saree describing the strikes as \"precise and direct,\" not \"proportionate.\"",
+    "j1_why": "Only src-001 carries that characterisation (verbatim quote \"precisi e diretti\"; summary: Saree 'called the attacks \"precise and direct\"'). src-013 and src-015 quote Saree only as saying the strikes targeted 'weapons depots and command and control centres that are managing the aggression against our nation and people' \u2014 neither contains 'precise and direct'. The proposed_correction repeats the same misattribution ('the verbatim language used by Houthi spokesman Yahya Saree in src-001, src-013 and src-015').",
+    "j2_why": "Only src-001 carries that wording (verbatim_quote \"precisi e diretti\"). In src-013 and src-015 Saree's quoted words are \"weapons depots and command and control centres that are managing the aggression against our nation and people\"; neither contains 'precise and direct'. The same misattribution is repeated in qa_corrections[0] ('the verbatim language used by Houthi spokesman Yahya Saree in src-001, src-013 and src-015')."
+   },
+   {
+    "stage": "qa_analyze",
+    "case": "qa_analyze__2026-09-14__t2",
+    "arm": "F_M",
+    "quote": "Sources disagree on Elon Musk's company affiliation: most call him owner or founder of xAI (src-003, src-006, src-009), while src-017 describes him as head of 'SpaceXAI (formerly xAI)'.",
+    "j1_why": "src-003 does not call Musk owner or founder of xAI; its actor entry gives his role as 'Owner of SpaceXAI'. Only src-006 and src-009 ('Owner of xAI') match the description attributed to all three.",
+    "j2_why": "src-003 does not call Musk owner of xAI; it lists his role as 'Owner of SpaceXAI' \u2014 the same formulation the output attributes only to src-017. Only src-006 ('Owner of xAI') and src-009 ('Owner of xAI') support the claim."
+   }
+  ]
+ }
+}

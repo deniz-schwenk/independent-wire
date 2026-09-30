@@ -1,0 +1,1498 @@
+[
+ {
+  "day": "2026-05-27",
+  "topic_index": 2,
+  "tp_id": "tp-2026-05-27-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Germany's Foreign Ministry",
+  "severity": "pairs",
+  "pairs": [
+   "Sergej Netschajew -> Germany's Foreign Ministry"
+  ]
+ },
+ {
+  "day": "2026-05-29",
+  "topic_index": 0,
+  "tp_id": "tp-2026-05-29-001",
+  "published": true,
+  "suspect_merges": 4,
+  "largest_collapse": 4,
+  "collapse_target": "Radu Miruță",
+  "severity": "COLLAPSE",
+  "pairs": [
+   "Romania's defense ministry -> Radu Miruță",
+   "Romanian Ministry of Defence -> Radu Miruță",
+   "Romanian Defense Ministry -> Radu Miruță",
+   "Romanian Ministry of National Defense -> Radu Miruță"
+  ]
+ },
+ {
+  "day": "2026-05-29",
+  "topic_index": 1,
+  "tp_id": "tp-2026-05-29-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "IRGC",
+  "severity": "pairs",
+  "pairs": [
+   "Revolutionary Guards -> IRGC"
+  ]
+ },
+ {
+  "day": "2026-05-31",
+  "topic_index": 1,
+  "tp_id": "tp-2026-05-31-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Ella Waweya",
+  "severity": "pairs",
+  "pairs": [
+   "Avichay Adraee -> Ella Waweya"
+  ]
+ },
+ {
+  "day": "2026-06-01",
+  "topic_index": 1,
+  "tp_id": "tp-2026-06-01-002",
+  "published": true,
+  "suspect_merges": 4,
+  "largest_collapse": 2,
+  "collapse_target": "IRGC",
+  "severity": "pairs",
+  "pairs": [
+   "Iranischen Revolutionswächter -> IRGC",
+   "Estados Unidos -> US military",
+   "Guardia Revolucionaria -> IRGC",
+   "Ministerio de Exteriores del emirato -> Kuwait"
+  ]
+ },
+ {
+  "day": "2026-06-03",
+  "topic_index": 2,
+  "tp_id": "tp-2026-06-03-003",
+  "published": true,
+  "suspect_merges": 5,
+  "largest_collapse": 2,
+  "collapse_target": "Christian Lindmeier",
+  "severity": "pairs",
+  "pairs": [
+   "Organisation mondiale de la Santé (OMS) -> Christian Lindmeier",
+   "Haute Cour de justice kényane -> Patricia Nyaundi",
+   "WHO -> Christian Lindmeier",
+   "Mahakama Kuu ya Kenya (Kenya High Court) -> Patricia Nyaundi",
+   "Vyakula vya wafanyakazi na madaktari (Trade unions and doctors) -> Davji Atellah"
+  ]
+ },
+ {
+  "day": "2026-06-04",
+  "topic_index": 2,
+  "tp_id": "tp-2026-06-04-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Aden Duale",
+  "severity": "pairs",
+  "pairs": [
+   "Alfred Mutua -> Aden Duale"
+  ]
+ },
+ {
+  "day": "2026-06-07",
+  "topic_index": 0,
+  "tp_id": "tp-2026-06-07-001",
+  "published": true,
+  "suspect_merges": 4,
+  "largest_collapse": 1,
+  "collapse_target": "Lebanon",
+  "severity": "pairs",
+  "pairs": [
+   "Joseph Aoun -> Lebanon",
+   "Kuveyt Dışişleri Bakanlığı -> Kuwait",
+   "Kuveyt ordusu -> Kuwait’s military",
+   "U.S. military -> US Central Command (Centcom)"
+  ]
+ },
+ {
+  "day": "2026-06-08",
+  "topic_index": 2,
+  "tp_id": "tp-2026-06-08-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Tedros Adhanom Ghebreyesus",
+  "severity": "pairs",
+  "pairs": [
+   "Marie Rosaline Belizaire -> Tedros Adhanom Ghebreyesus"
+  ]
+ },
+ {
+  "day": "2026-06-09",
+  "topic_index": 2,
+  "tp_id": "tp-2026-06-09-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Emmanuel Macron",
+  "severity": "pairs",
+  "pairs": [
+   "French Presidency -> Emmanuel Macron"
+  ]
+ },
+ {
+  "day": "2026-06-11",
+  "topic_index": 2,
+  "tp_id": "tp-2026-06-11-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Kush Desai",
+  "severity": "pairs",
+  "pairs": [
+   "Trump adviser -> Kush Desai"
+  ]
+ },
+ {
+  "day": "2026-06-12",
+  "topic_index": 0,
+  "tp_id": "tp-2026-06-12-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Esmaeil Baghaei",
+  "severity": "pairs",
+  "pairs": [
+   "Mojtaba Jameneí -> Esmaeil Baghaei"
+  ]
+ },
+ {
+  "day": "2026-06-12",
+  "topic_index": 1,
+  "tp_id": "tp-2026-06-12-002",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Thomas DiNapoli",
+  "severity": "pairs",
+  "pairs": [
+   "Mark Levine -> Thomas DiNapoli",
+   "Marcie Frost -> Thomas DiNapoli"
+  ]
+ },
+ {
+  "day": "2026-06-12",
+  "topic_index": 2,
+  "tp_id": "tp-2026-06-12-003",
+  "published": true,
+  "suspect_merges": 3,
+  "largest_collapse": 2,
+  "collapse_target": "Tedros Adhanom Ghebreyesus",
+  "severity": "pairs",
+  "pairs": [
+   "WHO -> Tedros Adhanom Ghebreyesus",
+   "WHO-convened experts -> Tedros Adhanom Ghebreyesus",
+   "WHO and Africa CDC -> Jean Kaseya"
+  ]
+ },
+ {
+  "day": "2026-06-13",
+  "topic_index": 1,
+  "tp_id": "tp-2026-06-13-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "EU officials",
+  "severity": "pairs",
+  "pairs": [
+   "European regulators -> EU officials"
+  ]
+ },
+ {
+  "day": "2026-06-14",
+  "topic_index": 2,
+  "tp_id": "tp-2026-06-14-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Israeli military",
+  "severity": "pairs",
+  "pairs": [
+   "IDF -> Israeli military"
+  ]
+ },
+ {
+  "day": "2026-06-15",
+  "topic_index": 0,
+  "tp_id": "tp-2026-06-15-001",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Donald Trump",
+  "severity": "pairs",
+  "pairs": [
+   "Marco Rubio -> Donald Trump",
+   "White House -> Donald Trump"
+  ]
+ },
+ {
+  "day": "2026-06-16",
+  "topic_index": 1,
+  "tp_id": "tp-2026-06-16-002",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Heidi Reisvang",
+  "severity": "pairs",
+  "pairs": [
+   "John Christian Elden -> Heidi Reisvang",
+   "Hege Salomon -> Heidi Reisvang"
+  ]
+ },
+ {
+  "day": "2026-06-17",
+  "topic_index": 0,
+  "tp_id": "tp-2026-06-17-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "World Health Organization",
+  "severity": "pairs",
+  "pairs": [
+   "Africa CDC -> World Health Organization"
+  ]
+ },
+ {
+  "day": "2026-06-23",
+  "topic_index": 0,
+  "tp_id": "tp-2026-06-23-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Both mediators",
+  "severity": "pairs",
+  "pairs": [
+   "die Vermittlerstaaten Katar und Pakistan -> Both mediators"
+  ]
+ },
+ {
+  "day": "2026-06-23",
+  "topic_index": 1,
+  "tp_id": "tp-2026-06-23-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Jerome Powell",
+  "severity": "pairs",
+  "pairs": [
+   "Kevin Warsh -> Jerome Powell"
+  ]
+ },
+ {
+  "day": "2026-06-24",
+  "topic_index": 1,
+  "tp_id": "tp-2026-06-24-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Abdi Mahamud",
+  "severity": "pairs",
+  "pairs": [
+   "WHO -> Abdi Mahamud"
+  ]
+ },
+ {
+  "day": "2026-06-25",
+  "topic_index": 0,
+  "tp_id": "tp-2026-06-25-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Volodymyr Zelensky",
+  "severity": "pairs",
+  "pairs": [
+   "Arestoviç -> Volodymyr Zelensky"
+  ]
+ },
+ {
+  "day": "2026-06-26",
+  "topic_index": 1,
+  "tp_id": "tp-2026-06-26-002",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 1,
+  "collapse_target": "MeteoSuisse",
+  "severity": "pairs",
+  "pairs": [
+   "Meteoschweiz -> MeteoSuisse",
+   "Contrôleuse générale des lieux de privation de liberté (CGLPL) -> André Ferragne"
+  ]
+ },
+ {
+  "day": "2026-06-29",
+  "topic_index": 2,
+  "tp_id": "tp-2026-06-29-003",
+  "published": true,
+  "suspect_merges": 5,
+  "largest_collapse": 5,
+  "collapse_target": "Hamdulá Fitrat",
+  "severity": "COLLAPSE",
+  "pairs": [
+   "Taliban authorities -> Hamdulá Fitrat",
+   "Taliban provincial officials -> Hamdulá Fitrat",
+   "Taliban officials -> Hamdulá Fitrat",
+   "Afghan Taliban -> Hamdulá Fitrat",
+   "Taliban representatives -> Hamdulá Fitrat"
+  ]
+ },
+ {
+  "day": "2026-06-30",
+  "topic_index": 2,
+  "tp_id": "tp-2026-06-30-003",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Friedrich Merz",
+  "severity": "pairs",
+  "pairs": [
+   "Olaf Lies -> Friedrich Merz",
+   "Frank-Walter Steinmeier -> Friedrich Merz"
+  ]
+ },
+ {
+  "day": "2026-07-01",
+  "topic_index": 1,
+  "tp_id": "tp-2026-07-01-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Ukraine's Foreign Ministry",
+  "severity": "pairs",
+  "pairs": [
+   "Ukrainian Diplomacy -> Ukraine's Foreign Ministry"
+  ]
+ },
+ {
+  "day": "2026-07-04",
+  "topic_index": 1,
+  "tp_id": "tp-2026-07-04-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Emmanuel Macron's office",
+  "severity": "pairs",
+  "pairs": [
+   "Elysee Palace -> Emmanuel Macron's office"
+  ]
+ },
+ {
+  "day": "2026-07-08",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-08-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "US Department of the Treasury",
+  "severity": "pairs",
+  "pairs": [
+   "Office of Foreign Assets Control -> US Department of the Treasury"
+  ]
+ },
+ {
+  "day": "2026-07-09",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-09-001",
+  "published": true,
+  "suspect_merges": 5,
+  "largest_collapse": 1,
+  "collapse_target": "Iranian authorities",
+  "severity": "pairs",
+  "pairs": [
+   "Iran -> Iranian authorities",
+   "US military officials -> Esmaeil Baghaei",
+   "Amir Saeid Iravani -> Iran's mission to the UN",
+   "Iranian army -> Iran's Revolutionary Guards",
+   "Oman -> Kuwait"
+  ]
+ },
+ {
+  "day": "2026-07-10",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-10-001",
+  "published": true,
+  "suspect_merges": 3,
+  "largest_collapse": 2,
+  "collapse_target": "Iranian officials and state media",
+  "severity": "pairs",
+  "pairs": [
+   "Iran -> Iranian officials and state media",
+   "Mesud Pezeşkiyan -> Iranian officials and state media",
+   "Local official in Bushehr -> Mohammed Mozaffari"
+  ]
+ },
+ {
+  "day": "2026-07-10",
+  "topic_index": 1,
+  "tp_id": "tp-2026-07-10-002",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Israeli military",
+  "severity": "pairs",
+  "pairs": [
+   "IDF -> Israeli military",
+   "IDF Spokesperson -> Israeli military"
+  ]
+ },
+ {
+  "day": "2026-07-10",
+  "topic_index": 2,
+  "tp_id": "tp-2026-07-10-003",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Tehran",
+  "severity": "pairs",
+  "pairs": [
+   "Iranian authorities -> Tehran",
+   "Iranian regime -> Tehran"
+  ]
+ },
+ {
+  "day": "2026-07-12",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-12-001",
+  "published": true,
+  "suspect_merges": 3,
+  "largest_collapse": 1,
+  "collapse_target": "US Central Command",
+  "severity": "pairs",
+  "pairs": [
+   "CENTCOM -> US Central Command",
+   "United States administration -> Washington",
+   "Iranian ambassador to the UN -> Amir Saeid Iravani"
+  ]
+ },
+ {
+  "day": "2026-07-13",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-13-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Iranian military",
+  "severity": "pairs",
+  "pairs": [
+   "Iran's navy -> Iranian military"
+  ]
+ },
+ {
+  "day": "2026-07-14",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-14-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Ebrahim Zolfaghari",
+  "severity": "pairs",
+  "pairs": [
+   "Iranian military command spokesman -> Ebrahim Zolfaghari"
+  ]
+ },
+ {
+  "day": "2026-07-14",
+  "topic_index": 2,
+  "tp_id": "tp-2026-07-14-003",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 1,
+  "collapse_target": "Yahya Saree",
+  "severity": "pairs",
+  "pairs": [
+   "Houthi militia spokesperson -> Yahya Saree",
+   "Yemeni Defence Minister -> Taher al-Aqili"
+  ]
+ },
+ {
+  "day": "2026-07-15",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-15-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "International Maritime Organization",
+  "severity": "pairs",
+  "pairs": [
+   "UN shipping agency -> International Maritime Organization"
+  ]
+ },
+ {
+  "day": "2026-07-15",
+  "topic_index": 1,
+  "tp_id": "tp-2026-07-15-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Germany's Foreign Office",
+  "severity": "pairs",
+  "pairs": [
+   "Johann Wadephul -> Germany's Foreign Office"
+  ]
+ },
+ {
+  "day": "2026-07-16",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-16-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "UN shipping agency",
+  "severity": "pairs",
+  "pairs": [
+   "IMO Spokesperson -> UN shipping agency"
+  ]
+ },
+ {
+  "day": "2026-07-17",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-17-001",
+  "published": true,
+  "suspect_merges": 3,
+  "largest_collapse": 1,
+  "collapse_target": "Brigadier General Mohammad Akraminia",
+  "severity": "pairs",
+  "pairs": [
+   "Ebrahim Zolfaghari -> Brigadier General Mohammad Akraminia",
+   "Hossein Mohbi -> IRGC",
+   "Saud Abdulaziz al-Atwan -> Kuwaiti military"
+  ]
+ },
+ {
+  "day": "2026-07-18",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-18-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Ali al-Zaidi",
+  "severity": "pairs",
+  "pairs": [
+   "Masrour Barzani -> Ali al-Zaidi"
+  ]
+ },
+ {
+  "day": "2026-07-18",
+  "topic_index": 2,
+  "tp_id": "tp-2026-07-18-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Lin Jian",
+  "severity": "pairs",
+  "pairs": [
+   "Lâm Kiếm -> Lin Jian"
+  ]
+ },
+ {
+  "day": "2026-07-19",
+  "topic_index": 1,
+  "tp_id": "tp-2026-07-19-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Israeli army",
+  "severity": "pairs",
+  "pairs": [
+   "IDF -> Israeli army"
+  ]
+ },
+ {
+  "day": "2026-07-20",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-20-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Iranian Army",
+  "severity": "pairs",
+  "pairs": [
+   "Iran's military -> Iranian Army"
+  ]
+ },
+ {
+  "day": "2026-07-20",
+  "topic_index": 2,
+  "tp_id": "tp-2026-07-20-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Nabil Abu Rudeineh",
+  "severity": "pairs",
+  "pairs": [
+   "Mohanad Hadi -> Nabil Abu Rudeineh"
+  ]
+ },
+ {
+  "day": "2026-07-22",
+  "topic_index": 1,
+  "tp_id": "tp-2026-07-22-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Ursula von der Leyen",
+  "severity": "pairs",
+  "pairs": [
+   "Serhii Koretskyii -> Ursula von der Leyen"
+  ]
+ },
+ {
+  "day": "2026-07-22",
+  "topic_index": 2,
+  "tp_id": "tp-2026-07-22-003",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "CJP Spokesperson",
+  "severity": "pairs",
+  "pairs": [
+   "Saurav Das -> CJP Spokesperson",
+   "Ratna Singh -> CJP Spokesperson"
+  ]
+ },
+ {
+  "day": "2026-07-23",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-23-001",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Mesud Pezeşkiyan",
+  "severity": "pairs",
+  "pairs": [
+   "Tehran -> Mesud Pezeşkiyan",
+   "Ali Larijani -> Mesud Pezeşkiyan"
+  ]
+ },
+ {
+  "day": "2026-07-25",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-25-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Iranian army",
+  "severity": "pairs",
+  "pairs": [
+   "Iran's military -> Iranian army"
+  ]
+ },
+ {
+  "day": "2026-07-25",
+  "topic_index": 2,
+  "tp_id": "tp-2026-07-25-003",
+  "published": true,
+  "suspect_merges": 4,
+  "largest_collapse": 4,
+  "collapse_target": "Authorities",
+  "severity": "COLLAPSE",
+  "pairs": [
+   "The government in Spain -> Authorities",
+   "Greece -> Authorities",
+   "AEMET -> Authorities",
+   "Spain's Guardia Civil -> Authorities"
+  ]
+ },
+ {
+  "day": "2026-07-26",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-26-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Iran's military",
+  "severity": "pairs",
+  "pairs": [
+   "Iranian army -> Iran's military"
+  ]
+ },
+ {
+  "day": "2026-07-26",
+  "topic_index": 2,
+  "tp_id": "tp-2026-07-26-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Florian Nath",
+  "severity": "pairs",
+  "pairs": [
+   "Polizei Berlin -> Florian Nath"
+  ]
+ },
+ {
+  "day": "2026-07-27",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-27-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Mohammad Akraminia",
+  "severity": "pairs",
+  "pairs": [
+   "Abolfazl Shekarchi -> Mohammad Akraminia"
+  ]
+ },
+ {
+  "day": "2026-07-27",
+  "topic_index": 2,
+  "tp_id": "tp-2026-07-27-003",
+  "published": true,
+  "suspect_merges": 46,
+  "largest_collapse": 46,
+  "collapse_target": "Iris Spranger",
+  "severity": "COLLAPSE",
+  "pairs": [
+   "Alexander Dobrindt -> Iris Spranger",
+   "Friedrich Merz -> Iris Spranger",
+   "Kai Wegner -> Iris Spranger",
+   "Martin Hess -> Iris Spranger",
+   "Florian Nath -> Iris Spranger",
+   "Armin Duenhoelter -> Iris Spranger",
+   "Frank-Walter Steinmeier -> Iris Spranger",
+   "Günter Krings -> Iris Spranger",
+   "Alexander Throm -> Iris Spranger",
+   "Lars Klingbeil -> Iris Spranger",
+   "Thorsten Weiss -> Iris Spranger",
+   "Stefanie Hubig -> Iris Spranger",
+   "Julia Klöckner -> Iris Spranger",
+   "Ashley Jump -> Iris Spranger",
+   "Andre Lehmann -> Iris Spranger",
+   "Ursula von der Leyen -> Iris Spranger",
+   "Alfonso Pantisano -> Iris Spranger",
+   "Tawfik Ballout -> Iris Spranger",
+   "Julian Methig -> Iris Spranger",
+   "Giorgia Meloni -> Iris Spranger",
+   "Emmanuel Macron -> Iris Spranger",
+   "Ed Miliband -> Iris Spranger",
+   "Tino Chrupalla -> Iris Spranger",
+   "Jordan Bardella -> Iris Spranger",
+   "Omid Nouripour -> Iris Spranger",
+   "Daniel Peters -> Iris Spranger",
+   "Dominik Pretz -> Iris Spranger",
+   "Spanish Government -> Iris Spranger",
+   "Sacha -> Iris Spranger",
+   "Félix Plasencia -> Iris Spranger",
+   "Observatorio Venezolano de Violencias LGBTIQ+ -> Iris Spranger",
+   "Thomas Mücke -> Iris Spranger",
+   "Hans-Jakob Schindler -> Iris Spranger",
+   "Serkan Alkan -> Iris Spranger",
+   "Niklas Schrader -> Iris Spranger",
+   "Meike Kamp -> Iris Spranger",
+   "Hızır Oymak -> Iris Spranger",
+   "Cem Yalçınkaya -> Iris Spranger",
+   "Seyran Ates -> Iris Spranger",
+   "Christian Stäblein -> Iris Spranger",
+   "Marc Henrichmann -> Iris Spranger",
+   "Dirk Peglow -> Iris Spranger",
+   "Kristin Brinker -> Iris Spranger",
+   "Alva Träbert -> Iris Spranger",
+   "Rob Jetten -> Iris Spranger",
+   "René Powilleit -> Iris Spranger"
+  ]
+ },
+ {
+  "day": "2026-07-28",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-28-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Anna Kelly",
+  "severity": "pairs",
+  "pairs": [
+   "Olivia Wales -> Anna Kelly"
+  ]
+ },
+ {
+  "day": "2026-07-30",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-30-001",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 1,
+  "collapse_target": "Estados Unidos",
+  "severity": "pairs",
+  "pairs": [
+   "Washington -> Estados Unidos",
+   "Iraqi government source -> Ali al-Zaidi"
+  ]
+ },
+ {
+  "day": "2026-07-31",
+  "topic_index": 0,
+  "tp_id": "tp-2026-07-31-001",
+  "published": true,
+  "suspect_merges": 4,
+  "largest_collapse": 2,
+  "collapse_target": "Tahir Andrabi",
+  "severity": "pairs",
+  "pairs": [
+   "Iraq's Hashed al-Shaabi alliance -> Popular Mobilisation Forces (PMF)",
+   "Pakistan -> Tahir Andrabi",
+   "Foreign Office -> Tahir Andrabi",
+   "Ali al-Zaidi -> Haider al-Aboudi"
+  ]
+ },
+ {
+  "day": "2026-07-31",
+  "topic_index": 2,
+  "tp_id": "tp-2026-07-31-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "IDF Spokesperson's Unit",
+  "severity": "pairs",
+  "pairs": [
+   "Israeli military source -> IDF Spokesperson's Unit"
+  ]
+ },
+ {
+  "day": "2026-08-01",
+  "topic_index": 0,
+  "tp_id": "tp-2026-08-01-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Friedrich Merz",
+  "severity": "pairs",
+  "pairs": [
+   "Johann Wadephul -> Friedrich Merz"
+  ]
+ },
+ {
+  "day": "2026-08-02",
+  "topic_index": 1,
+  "tp_id": "tp-2026-08-02-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Saudi Arabia",
+  "severity": "pairs",
+  "pairs": [
+   "Senior White House and Board of Peace officials -> Saudi Arabia"
+  ]
+ },
+ {
+  "day": "2026-08-02",
+  "topic_index": 2,
+  "tp_id": "tp-2026-08-02-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Friedrich Merz",
+  "severity": "pairs",
+  "pairs": [
+   "Johann Wadephul -> Friedrich Merz"
+  ]
+ },
+ {
+  "day": "2026-08-03",
+  "topic_index": 1,
+  "tp_id": "tp-2026-08-03-002",
+  "published": true,
+  "suspect_merges": 4,
+  "largest_collapse": 4,
+  "collapse_target": "Iranian military officials",
+  "severity": "COLLAPSE",
+  "pairs": [
+   "Abbas Araqchi -> Iranian military officials",
+   "Abbas Araghchi -> Iranian military officials",
+   "Abbas Arakçi -> Iranian military officials",
+   "Abbas Araghtschi -> Iranian military officials"
+  ]
+ },
+ {
+  "day": "2026-08-04",
+  "topic_index": 0,
+  "tp_id": "tp-2026-08-04-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Iran's foreign ministry",
+  "severity": "pairs",
+  "pairs": [
+   "Tehran -> Iran's foreign ministry"
+  ]
+ },
+ {
+  "day": "2026-08-05",
+  "topic_index": 1,
+  "tp_id": "tp-2026-08-05-002",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Office for the Coordination of Humanitarian Affairs (OCHA)",
+  "severity": "pairs",
+  "pairs": [
+   "U.N. Human Rights Monitoring Mission in Ukraine -> Office for the Coordination of Humanitarian Affairs (OCHA)",
+   "UN Human Rights Commission -> Office for the Coordination of Humanitarian Affairs (OCHA)"
+  ]
+ },
+ {
+  "day": "2026-08-06",
+  "topic_index": 1,
+  "tp_id": "tp-2026-08-06-002",
+  "published": true,
+  "suspect_merges": 3,
+  "largest_collapse": 2,
+  "collapse_target": "Iranian officials",
+  "severity": "pairs",
+  "pairs": [
+   "Iran's foreign ministry -> Iranian officials",
+   "IDF -> Israeli military",
+   "Iran -> Iranian officials"
+  ]
+ },
+ {
+  "day": "2026-08-09",
+  "topic_index": 1,
+  "tp_id": "tp-2026-08-09-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Gerald Knaus",
+  "severity": "pairs",
+  "pairs": [
+   "Antonio Tajani -> Gerald Knaus"
+  ]
+ },
+ {
+  "day": "2026-08-09",
+  "topic_index": 2,
+  "tp_id": "tp-2026-08-09-003",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 1,
+  "collapse_target": "Bulgaria's Ministry of Defence",
+  "severity": "pairs",
+  "pairs": [
+   "Bulgarisches Verteidigungsministerium -> Bulgaria's Ministry of Defence",
+   "Georgij Tichyj -> Heorhii Tykhyi"
+  ]
+ },
+ {
+  "day": "2026-08-10",
+  "topic_index": 0,
+  "tp_id": "tp-2026-08-10-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Hossein Mohebi",
+  "severity": "pairs",
+  "pairs": [
+   "IRGC spokesman -> Hossein Mohebi"
+  ]
+ },
+ {
+  "day": "2026-08-10",
+  "topic_index": 2,
+  "tp_id": "tp-2026-08-10-003",
+  "published": true,
+  "suspect_merges": 5,
+  "largest_collapse": 3,
+  "collapse_target": "Yahya Saree",
+  "severity": "COLLAPSE",
+  "pairs": [
+   "Port Director of al-Makha -> Yahya Saree",
+   "Fayed al-Noman -> Rashad al-Alimi",
+   "Houthis -> Yahya Saree",
+   "Houthi rebels -> Yahya Saree",
+   "Islamic Revolutionary Guard Corps -> Hossein Mohebi"
+  ]
+ },
+ {
+  "day": "2026-08-11",
+  "topic_index": 1,
+  "tp_id": "tp-2026-08-11-002",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Julio Fierro Morales",
+  "severity": "pairs",
+  "pairs": [
+   "Kolumbianischer Geologischer Dienst -> Julio Fierro Morales",
+   "Servicio Geológico Colombiano -> Julio Fierro Morales"
+  ]
+ },
+ {
+  "day": "2026-08-12",
+  "topic_index": 2,
+  "tp_id": "tp-2026-08-12-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Nabil Fahmy",
+  "severity": "pairs",
+  "pairs": [
+   "Ahmed Aboul Gheit -> Nabil Fahmy"
+  ]
+ },
+ {
+  "day": "2026-08-13",
+  "topic_index": 0,
+  "tp_id": "tp-2026-08-13-001",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 1,
+  "collapse_target": "Oleksandr Prokudin",
+  "severity": "pairs",
+  "pairs": [
+   "Mayor of Kherson -> Oleksandr Prokudin",
+   "Kassym-Jomart Tokayev -> Kazakh president"
+  ]
+ },
+ {
+  "day": "2026-08-14",
+  "topic_index": 1,
+  "tp_id": "tp-2026-08-14-002",
+  "published": true,
+  "suspect_merges": 3,
+  "largest_collapse": 2,
+  "collapse_target": "Danielle Bell",
+  "severity": "pairs",
+  "pairs": [
+   "HRMMU -> Danielle Bell",
+   "HMRRU -> Danielle Bell",
+   "Rusgrain Union -> Russia's main grain lobby group"
+  ]
+ },
+ {
+  "day": "2026-08-17",
+  "topic_index": 0,
+  "tp_id": "tp-2026-08-17-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Martin O'Donnell",
+  "severity": "pairs",
+  "pairs": [
+   "NATO spokesperson -> Martin O'Donnell"
+  ]
+ },
+ {
+  "day": "2026-08-17",
+  "topic_index": 1,
+  "tp_id": "tp-2026-08-17-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Kazem Gharibabadi",
+  "severity": "pairs",
+  "pairs": [
+   "Iranian authorities -> Kazem Gharibabadi"
+  ]
+ },
+ {
+  "day": "2026-08-17",
+  "topic_index": 2,
+  "tp_id": "tp-2026-08-17-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Israel Defense Forces",
+  "severity": "pairs",
+  "pairs": [
+   "israelische Armee -> Israel Defense Forces"
+  ]
+ },
+ {
+  "day": "2026-08-18",
+  "topic_index": 0,
+  "tp_id": "tp-2026-08-18-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "IRGC spokesman",
+  "severity": "pairs",
+  "pairs": [
+   "Hossein Mohebbi -> IRGC spokesman"
+  ]
+ },
+ {
+  "day": "2026-08-19",
+  "topic_index": 2,
+  "tp_id": "tp-2026-08-19-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Liz Evenson",
+  "severity": "pairs",
+  "pairs": [
+   "Balkees Jarrah -> Liz Evenson"
+  ]
+ },
+ {
+  "day": "2026-08-20",
+  "topic_index": 1,
+  "tp_id": "tp-2026-08-20-002",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 1,
+  "collapse_target": "Kazem Gharibabadi",
+  "severity": "pairs",
+  "pairs": [
+   "Iran in Hyderabad -> Kazem Gharibabadi",
+   "Iranian Official -> Mojtaba Khamenei"
+  ]
+ },
+ {
+  "day": "2026-08-23",
+  "topic_index": 0,
+  "tp_id": "tp-2026-08-23-001",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Christopher Gundermann",
+  "severity": "pairs",
+  "pairs": [
+   "Hugh Grant-Chapman -> Christopher Gundermann",
+   "Diego Marroquín Bitar -> Christopher Gundermann"
+  ]
+ },
+ {
+  "day": "2026-08-23",
+  "topic_index": 2,
+  "tp_id": "tp-2026-08-23-003",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Center for Constitutional Rights",
+  "severity": "pairs",
+  "pairs": [
+   "Catholic Legal Immigration Network -> Center for Constitutional Rights",
+   "African Communities Together -> Center for Constitutional Rights"
+  ]
+ },
+ {
+  "day": "2026-08-24",
+  "topic_index": 2,
+  "tp_id": "tp-2026-08-24-003",
+  "published": true,
+  "suspect_merges": 3,
+  "largest_collapse": 2,
+  "collapse_target": "Syria's foreign affairs authority",
+  "severity": "pairs",
+  "pairs": [
+   "Damascus -> Syria",
+   "Gobierno de Benjamin Netanyahu -> Syria's foreign affairs authority",
+   "Benjamin Netanyahu's office and Defense Minister Israel Katz -> Syria's foreign affairs authority"
+  ]
+ },
+ {
+  "day": "2026-08-26",
+  "topic_index": 0,
+  "tp_id": "tp-2026-08-26-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Kremlin",
+  "severity": "pairs",
+  "pairs": [
+   "Moscow -> Kremlin"
+  ]
+ },
+ {
+  "day": "2026-08-30",
+  "topic_index": 2,
+  "tp_id": "tp-2026-08-30-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Russia's ministry of defence",
+  "severity": "pairs",
+  "pairs": [
+   "Bộ Quốc phòng Nga -> Russia's ministry of defence"
+  ]
+ },
+ {
+  "day": "2026-09-01",
+  "topic_index": 0,
+  "tp_id": "tp-2026-09-01-001",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Cruz Vermelha",
+  "severity": "pairs",
+  "pairs": [
+   "The Red Cross -> Cruz Vermelha",
+   "Red Cross -> Cruz Vermelha"
+  ]
+ },
+ {
+  "day": "2026-09-02",
+  "topic_index": 0,
+  "tp_id": "tp-2026-09-02-001",
+  "published": true,
+  "suspect_merges": 4,
+  "largest_collapse": 2,
+  "collapse_target": "The US",
+  "severity": "pairs",
+  "pairs": [
+   "Iran -> Tehran",
+   "Abu Dhabi -> United Arab Emirates",
+   "U.S. government -> The US",
+   "The U.S. -> The US"
+  ]
+ },
+ {
+  "day": "2026-09-02",
+  "topic_index": 1,
+  "tp_id": "tp-2026-09-02-002",
+  "published": true,
+  "suspect_merges": 3,
+  "largest_collapse": 2,
+  "collapse_target": "Kremlin",
+  "severity": "pairs",
+  "pairs": [
+   "Britain -> The United Kingdom",
+   "Moscow -> Kremlin",
+   "Russia -> Kremlin"
+  ]
+ },
+ {
+  "day": "2026-09-03",
+  "topic_index": 0,
+  "tp_id": "tp-2026-09-03-001",
+  "published": true,
+  "suspect_merges": 4,
+  "largest_collapse": 2,
+  "collapse_target": "Guarda Revolucionária Islâmica",
+  "severity": "pairs",
+  "pairs": [
+   "Ejército de Estados Unidos -> US military",
+   "Gardiens de la Révolution -> Guarda Revolucionária Islâmica",
+   "US-Regionalkommando -> Comando Central das Forças Armadas dos EUA",
+   "Iranische Revolutionsgarde -> Guarda Revolucionária Islâmica"
+  ]
+ },
+ {
+  "day": "2026-09-03",
+  "topic_index": 1,
+  "tp_id": "tp-2026-09-03-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Fuerzas de Defensa de Israel (FDI)",
+  "severity": "pairs",
+  "pairs": [
+   "forces israéliennes -> Fuerzas de Defensa de Israel (FDI)"
+  ]
+ },
+ {
+  "day": "2026-09-04",
+  "topic_index": 1,
+  "tp_id": "tp-2026-09-04-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "ICAO",
+  "severity": "pairs",
+  "pairs": [
+   "OACI -> ICAO"
+  ]
+ },
+ {
+  "day": "2026-09-05",
+  "topic_index": 0,
+  "tp_id": "tp-2026-09-05-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Ukraine's military",
+  "severity": "pairs",
+  "pairs": [
+   "AFU -> Ukraine's military"
+  ]
+ },
+ {
+  "day": "2026-09-06",
+  "topic_index": 2,
+  "tp_id": "tp-2026-09-06-003",
+  "published": true,
+  "suspect_merges": 7,
+  "largest_collapse": 6,
+  "collapse_target": "IDF",
+  "severity": "COLLAPSE",
+  "pairs": [
+   "Ejército de Israel -> IDF",
+   "Israeli army -> IDF",
+   "ইসরায়েলের সেনাবাহিনী -> IDF",
+   "The Israeli army -> IDF",
+   "l’armée israélienne -> IDF",
+   "ministère de la Santé -> লেবাননের জনস্বাস্থ্যবিষয়ক মন্ত্রণালয়",
+   "Israeli military -> IDF"
+  ]
+ },
+ {
+  "day": "2026-09-07",
+  "topic_index": 0,
+  "tp_id": "tp-2026-09-07-001",
+  "published": true,
+  "suspect_merges": 7,
+  "largest_collapse": 4,
+  "collapse_target": "Guardie Rivoluzionarie iraniane",
+  "severity": "COLLAPSE",
+  "pairs": [
+   "las fuerzas armadas de Estados Unidos -> US military",
+   "กองทัพสหรัฐอเมริกา -> US military",
+   "โดนัลด์ ทรัมป์ -> Donald Trump",
+   "The IRGC -> Guardie Rivoluzionarie iraniane",
+   "Les Gardiens de la Révolution -> Guardie Rivoluzionarie iraniane",
+   "die iranische Revolutionsgarde (IRGC) -> Guardie Rivoluzionarie iraniane",
+   "IRGC (سپاه پاسداران) -> Guardie Rivoluzionarie iraniane"
+  ]
+ },
+ {
+  "day": "2026-09-07",
+  "topic_index": 1,
+  "tp_id": "tp-2026-09-07-002",
+  "published": true,
+  "suspect_merges": 7,
+  "largest_collapse": 6,
+  "collapse_target": "Idf",
+  "severity": "COLLAPSE",
+  "pairs": [
+   "Israeli army -> Idf",
+   "El ejército israelí -> Idf",
+   "Israel's army -> Idf",
+   "Israeli military -> Idf",
+   "l'armée israélienne -> Idf",
+   "israelische Armee -> Idf",
+   "Hisbollah -> Hezbolá"
+  ]
+ },
+ {
+  "day": "2026-09-08",
+  "topic_index": 2,
+  "tp_id": "tp-2026-09-08-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Israeli army",
+  "severity": "pairs",
+  "pairs": [
+   "IDF -> Israeli army"
+  ]
+ },
+ {
+  "day": "2026-09-09",
+  "topic_index": 2,
+  "tp_id": "tp-2026-09-09-003",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Saudi Arabia",
+  "severity": "pairs",
+  "pairs": [
+   "Riyadh -> Saudi Arabia"
+  ]
+ },
+ {
+  "day": "2026-09-11",
+  "topic_index": 0,
+  "tp_id": "tp-2026-09-11-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Tehran",
+  "severity": "pairs",
+  "pairs": [
+   "Iran -> Tehran"
+  ]
+ },
+ {
+  "day": "2026-09-11",
+  "topic_index": 1,
+  "tp_id": "tp-2026-09-11-002",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Mohammed Abdul Salam",
+  "severity": "pairs",
+  "pairs": [
+   "Abdulsalam -> Mohammed Abdul Salam"
+  ]
+ },
+ {
+  "day": "2026-09-12",
+  "topic_index": 0,
+  "tp_id": "tp-2026-09-12-001",
+  "published": true,
+  "suspect_merges": 1,
+  "largest_collapse": 1,
+  "collapse_target": "Abdulsalam",
+  "severity": "pairs",
+  "pairs": [
+   "Muhammad Abdul Salam -> Abdulsalam"
+  ]
+ },
+ {
+  "day": "2026-09-13",
+  "topic_index": 0,
+  "tp_id": "tp-2026-09-13-001",
+  "published": true,
+  "suspect_merges": 3,
+  "largest_collapse": 2,
+  "collapse_target": "Riyadh",
+  "severity": "pairs",
+  "pairs": [
+   "Saudi Arabia -> Riyadh",
+   "Arabia Saudita -> Riyadh",
+   "US Energy Information Administration -> EIA"
+  ]
+ },
+ {
+  "day": "2026-09-14",
+  "topic_index": 0,
+  "tp_id": "tp-2026-09-14-001",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 2,
+  "collapse_target": "Ukrzaliznytsia",
+  "severity": "pairs",
+  "pairs": [
+   "Ukrainian Railways -> Ukrzaliznytsia",
+   "Ukraine's state rail operator -> Ukrzaliznytsia"
+  ]
+ },
+ {
+  "day": "2026-09-15",
+  "topic_index": 0,
+  "tp_id": "tp-2026-09-15-001",
+  "published": true,
+  "suspect_merges": 3,
+  "largest_collapse": 2,
+  "collapse_target": "Ukrzaliznytsia",
+  "severity": "pairs",
+  "pairs": [
+   "Ukrainian Railways -> Ukrzaliznytsia",
+   "the Kremlin -> Russia",
+   "die ukrainische Staatsbahn -> Ukrzaliznytsia"
+  ]
+ },
+ {
+  "day": "2026-09-15",
+  "topic_index": 1,
+  "tp_id": "tp-2026-09-15-002",
+  "published": true,
+  "suspect_merges": 2,
+  "largest_collapse": 1,
+  "collapse_target": "Houthis",
+  "severity": "pairs",
+  "pairs": [
+   "Husiler -> Houthis",
+   "Estados Unidos -> ABD"
+  ]
+ }
+]

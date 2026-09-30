@@ -1,0 +1,222 @@
+{
+ "hydration_phase2": {
+  "raised_j1": {
+   "F_M": 9,
+   "C": 17
+  },
+  "confirmed_2of2": {
+   "F_M": 8,
+   "C": 15
+  },
+  "raised_on_single_judged_cases": {},
+  "confirmed_detail": [
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-09__t0",
+    "arm": "F_M",
+    "quote": "The Italian-language source relays only the IRGC retaliation communiqu\u00e9 with no US response, independent confirmation, or context, while the English-, Arabic-, German- and Chinese-language groups all pair Iranian claims with CENTCOM statements, named tankers, and Jordanian interception reports.",
+    "j1_why": "No Arabic-language analysis (article_index 2, 14, 19 - all Al-Sumaria, Iraq) and not the Chinese-language analysis (article_index 10, Liberty Times) mentions Jordanian interception of missiles; Jordanian interception appears only in the English (1, 3, 7, 8), German (4, 12) and Spanish (6, 16) analyses. Articles 14 and 19 also carry no named tankers.",
+    "j2_why": "No Arabic (article_index 2, 14, 19) or Chinese (10) analysis mentions Jordan at all; the Jordanian interception of 18 of 20 missiles appears only in articles 1, 3, 4, 6, 7, 8, 12 and 16 (en/de/es)."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-09__t0",
+    "arm": "C",
+    "quote": "Arabic-language sources (Al-Sumaria, Iraq) foreground Iranian media reports from Tasnim and Fars of US strikes on Iranian tankers near Kharg Island and Jask, emphasizing the Iranian experience of being attacked, whereas English-language sources center on CENTCOM's framing of the strikes as retaliation for IRGC missile attacks on a US warship.",
+    "j1_why": "Fars News Agency appears only in article_index 21, which article_metadata lists as English (Middle East Eye, United Kingdom), not Arabic; that same English article is the Tasnim/Fars 'Iranian experience' dispatch. Conversely the Arabic article_index 2 carries nothing but CENTCOM's own statement and named destroyed tankers, and article_index 19 sources US officials via Fox News describing the strikes as economic strangulation - so the asserted Arabic-vs-English split is not what the analyses show.",
+    "j2_why": "Fars News Agency appears only in article 21 (Middle East Eye, United Kingdom, en); the Arabic articles are 2 (CENTCOM only), 14 (Tasnim only) and 19 (Fox News / unnamed US officials framing the strikes as economic strangulation), so the Arabic group does not foreground 'Tasnim and Fars' and is not uniformly centred on the Iranian experience."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-09__t0",
+    "arm": "C",
+    "quote": "Latin American regional coverage (Mexican and Argentine outlets) gives significant space to the Houthi missile offensive against Saudi energy facilities with analyst commentary on Mohammed bin Salman's dilemma, while Middle East regional outlets (Qatari and Iraqi) focus almost entirely on the bilateral US-Iran naval exchanges and omit the Houthi-Saudi spillover.",
+    "j1_why": "The Houthi offensive with the Krieg commentary on Mohammed bin Salman appears only in article_index 20 (Infobae, Argentina). The Mexican outlet El Financiero (article_index 5 and 15) covers the Strait of Hormuz exchange and the Qalibaf-Hegseth threats respectively and says nothing about the Houthi attacks on Saudi Arabia.",
+    "j2_why": "The Houthi offensive against Saudi energy facilities and the Krieg commentary on Mohammed bin Salman appear only in article 20 (Infobae, Argentina); the Mexican articles 5 and 15 (El Financiero) cover the Hormuz strikes and the Qalibaf-Hegseth exchange and contain no Houthi-Saudi material."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-09__t0",
+    "arm": "C",
+    "quote": "No Israeli government or security perspectives appear, despite Israel's central role in the broader regional conflict and the active involvement of Iran-aligned proxies such as the Houthis in attacks on Saudi energy infrastructure.",
+    "j1_why": "Israel is absent from INPUT entirely - no article summary, actor, or metadata entry mentions Israel or any Israeli role - so the stated reason the absence matters ('Israel's central role in the broader regional conflict') rests on outside knowledge rather than the corpus.",
+    "j2_why": "Absent from INPUT - Israel is not named in any article summary, actor, or metadata entry, so the corpus establishes no 'central role' for it in this story."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-09__t1",
+    "arm": "C",
+    "quote": "Spanish-language sources from Argentina are the only ones to directly quote Hamas (spokesman Basem Naim) and to frame the Falkland Islands/Malvinas dispute as a live diplomatic dimension of the story through Argentine President Milei's response to Ben-Gvir's sovereignty proposal.",
+    "j1_why": "Javier Milei appears nowhere in the three Spanish-language analyses (article_index 11, 24, 31 - Infobae, Argentina); the only Milei quote in the corpus is in article_index 25 (Middle East Eye, United Kingdom, language en), which also carries Ben Gvir's Malvinas sovereignty call, and article_index 7 (DW News, en) likewise carries Ben-Gvir's Falklands demand. The Falklands dimension is therefore an English-language feature, not a Spanish-language one.",
+    "j2_why": "The Hamas half is correct (article_index 31, Infobae, es), but the Falklands/Malvinas material appears only in English-language articles: Ben-Gvir's Falklands proposal is in article_index 7 (DW News, en, Germany) and article_index 25 (Middle East Eye, en, United Kingdom), and Javier Milei's sovereignty response is quoted in article_index 25 (Middle East Eye, en). None of the three Spanish-language articles (11, 24, 31) mentions the Falklands, Malvinas, or Milei."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-09__t2",
+    "arm": "C",
+    "quote": "No voices from humanitarian aid organizations operating on the ground in Yemen \u2014 while IOM and WHO provide aggregate casualty and displacement statistics, no aid workers describe conditions in displacement camps or conflict zones.",
+    "j1_why": "article_index 23 quotes Abdusattor Esoev, 'Head of the International Organization for Migration's mission in Yemen', describing on-the-ground conditions verbatim: 'Families are arriving with nothing: no shelter, no food, no way to know if it's safe to go back.'",
+    "j2_why": "Article 23 quotes Abdusattor Esoev (international_org) saying displaced families are arriving with nothing in terms of shelter, food or knowledge of whether it is safe to return, and that many have already been displaced multiple times - exactly the on-the-ground conditions the output says no one describes."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-10__t0",
+    "arm": "C",
+    "quote": "Arabic-language sources give more prominent space to Iran's characterization of US strikes as 'terrorist' acts and 'war crimes' via the Iranian Foreign Ministry's full condemnation, while English-language sources more prominently feature CENTCOM's framing of the struck tankers as part of a 'multibillion-dollar shadow network funding the IRGC.'",
+    "j1_why": "The two Arabic articles (2 and 21, Al-Sumaria) contain the 'terrorist' characterization and a UN Charter violation claim, but no 'war crime' language anywhere. 'War crime' appears only in English-language articles \u2014 article 20 (Al Jazeera, verbatim_quote 'war crime') and article 27 (Middle East Eye, verbatim_quote '\"war crime\"') \u2014 so the framing is attributed to the group that does not carry it and withheld from the group that does.",
+    "j2_why": "The only Arabic condemnation article (index 2, Al-Sumaria) uses 'terrorist' and 'flagrant violation of the UN Charter' but never 'war crime'; the 'war crime' characterisation of the strikes appears only in English-language articles 20 (Al Jazeera) and 27 (Middle East Eye)."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-10__t1",
+    "arm": "F_M",
+    "quote": "Qatar- and Germany-based English coverage embeds the incident in the same-night civilian toll \u2014 two killed at the Moldovan border crossing and 17 drones hitting Moldova in August alone \u2014 while Italian ANSA and Argentina's Infobae confine the story to state-funeral protocol and Zelensky's working conditions without any Moldovan or Ukrainian civilian-harm backdrop.",
+    "j1_why": "The '17 drones hit Moldovan territory in August alone' claim (Moldovan PM Vasile Tofan) appears only in article_index 8, whose metadata is country France, outlet France 24. No Qatar analysis (indices 1, 18, Al Jazeera) and no Germany analysis (indices 4, 19, DW News) contains it.",
+    "j2_why": "The '17 drones hit Moldovan territory in August alone' figure (Moldovan PM Vasile Tofan) appears only in article_index 8, whose metadata is language 'en', country 'France', outlet 'France 24' \u2014 not in any Qatar (Al Jazeera, indices 1/18) or Germany (DW News, indices 4/19) article."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-10__t1",
+    "arm": "F_M",
+    "quote": "German-language Der Spiegel, DW and Turkey's Hurriyet foreground verification caveats \u2014 an undisclosed source, unknown proximity, and an unnamed source calling the risk claim 'exaggerated' \u2014 while the Ukraine-based English cluster reports the near-strike as established fact and Italian ANSA relays it without reservation.",
+    "j1_why": "article_index 16 (Ukrinform, country Ukraine, language en) states St\u00f8re spoke 'without disclosing his source or how close the drone came' \u2014 the same caveat the output attributes exclusively to the German and Turkish coverage, so the Ukraine-based English cluster does not uniformly report it as established fact.",
+    "j2_why": "Article_index 16 (Ukrinform, Ukraine, en) states Stoere spoke 'without disclosing his source or how close the drone came', and article_index 13 (Kyiv Independent) reports the near-miss 'citing a source', so the Ukraine-based English cluster does carry the same verification caveats rather than reporting it as established fact."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-10__t1",
+    "arm": "C",
+    "quote": "English-language sources (BBC, DW News) connect the drone near-miss to the broader diplomatic context of the Trump-Putin phone call and US peace envoy visits by Witkoff and Kushner, while all other language groups treat the incident without reference to peace-negotiation dynamics.",
+    "j1_why": "article_index 3 (BBC) does not mention the near-miss on Zelensky's plane at all; article_index 4 (DW News), which does cover the near-miss, makes no reference to the Putin-Trump call or the Witkoff/Kushner mission, and article_index 19 (DW News), which does cover the call and the envoys, does not cover the near-miss. The only analysis linking the near-miss to the stalled US-led peace push is article_index 13 (Kyiv Independent).",
+    "j2_why": "The BBC article (index 3) and the DW article (index 19) that cover the Witkoff/Kushner visits and the Putin-Trump call do not mention the near-miss at all; the DW article that does cover the near-miss (index 4) makes no reference to the peace track. Conversely the Kyiv Independent (index 13) is the one article that ties the near-miss to a 'US-led peace push [that] ended with little progress', contradicting 'all other language groups'."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-10__t1",
+    "arm": "C",
+    "quote": "Ukrainian English-language and Russian-language sources extensively cover Ukrainian long-range drone strikes on Russian strategic energy and military infrastructure including the Novy Urengoy gas condensate plant, Novorossiysk naval base, and Sochi, while Western European sources in Italian, German, and Spanish omit or barely mention these Ukrainian offensive operations.",
+    "j1_why": "The Sochi naval-drone attack appears only in article_index 25, whose metadata is language it, country Italy, outlet ANSA. No Ukrainian English-language or Russian-language analysis in the corpus mentions Sochi, so the Italian cluster is the sole source of the very item attributed to the other groups.",
+    "j2_why": "Article_index 25 (ANSA, Italy, it) is entirely about the Ukrainian naval-drone attack on Sochi, and article_index 19 (DW News, Germany) leads on the Ukrainian drone attack on Novorossiysk that killed four; the Spanish-language outlets are also Mexico (El Financiero) and Argentina (Infobae) in the metadata, not Western European."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-10__t1",
+    "arm": "C",
+    "quote": "No Romanian government or military officials are quoted despite Romanian airspace being violated and NATO fighter jets scrambling from Romanian bases, omitting a NATO member's direct perspective on the violation of its sovereign airspace.",
+    "j1_why": "article_index 22 quotes the 'Romanian government' on the drone's crash site near Mihaileni Vechi and quotes Radu Miruta, Minister of Defence of Romania, confirming NATO jets shot down a suspected Russian drone over Romanian airspace on Aug. 16 \u2014 so Romanian government and military officials are in fact quoted.",
+    "j2_why": "Article_index 22 quotes the 'Romanian government' on where the drone crashed and quotes Radu Miruta, Minister of Defence of Romania, confirming NATO jets shot down a suspected Russian drone on Aug. 16 \u2014 so this named gap is covered by the analyses."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-10__t2",
+    "arm": "C",
+    "quote": "Spanish-language Latin American sources give detailed coverage to Ukrainian deep-strike technological capabilities \u2014 including the Fire Point drone manufacturer's claim of a 3,300-km strike on Novy Urengoy gas facilities and Rosaviatsia flight suspensions \u2014 a military-technological angle that other language groups mention only in passing.",
+    "j1_why": "The Fire Point 3,300-km claim and the Rosaviatsia flight suspension appear only in article 7, whose metadata is language 'es', country 'Spain', outlet 'El Pa\u00eds' \u2014 not a Latin American source; the Latin American Spanish articles (6 El Financiero/Mexico; 11, 24, 30 Infobae/Argentina) contain neither detail. The contrast is also wrong: article 13 (Kyiv Independent, 'en') covers the Novy Urengoy strike at length, including Fire Point's FP-1 and the 3,200-km range, not 'in passing'.",
+    "j2_why": "Fire Point's 3,300-km claim and the Rosaviatsia flight suspension appear only in article 7, es/Spain/El Pa\u00eds \u2014 not a Latin American source. The Spanish-language Latin American articles (6 Mexico, 11, 24, 30 Argentina) contain none of this material. Separately, article 13 (en/Ukraine/Kyiv Independent) covers the same deep strike at length \u2014 the SSO's deepest strike of the war, the 3,200-km range, Fire Point's FP-1 model, the burning frigate Admiral Essen \u2014 so 'other language groups mention only in passing' is contradicted."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-10__t2",
+    "arm": "C",
+    "quote": "Turkish-language sources uniquely connect the Ukraine conflict to broader regional escalation through coverage of the Iran-US Strait of Hormuz confrontation and frame the diplomatic track through the possibility of a Putin-Trump-Xi trilateral meeting at APEC, angles absent from all other language groups.",
+    "j1_why": "The Iran-US confrontation is covered by article 4 (CGTN, 'en'), article 14 (Middle East Eye, 'en') and article 16 (Online Khabar, 'ne'), so it is neither unique to Turkish nor 'absent from all other language groups'. Only the APEC trilateral (article 23) is Turkish-only.",
+    "j2_why": "The Iran-US confrontation is covered in the English-language group by article 4 (en/China/CGTN, CENTCOM versus IRGC claims), article 14 (en/UK/Middle East Eye, IRGC strike on Al Azraq) and article 20 (en/South Korea/Yonhap, freedom of navigation in the Strait of Hormuz), and in the Nepali group by article 16 (IRGC missiles at US bases in Jordan). 'Absent from all other language groups' is false for that half of the claim; only the APEC trilateral (article 23) is in fact Turkish-only."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-10__t2",
+    "arm": "C",
+    "quote": "German-language sources frame the Putin-Trump call alongside urgent pledges of Patriot and IRIS-T missiles to Ukraine and Pistorius's warning that the Russian threat is 'real, serious and acute,' while Russian-language sources present the same call exclusively through the Kremlin readout emphasizing Putin's denial of aggressive plans and the promise of restored US-Russia trade relations.",
+    "j1_why": "The 'real, serious and acute' characterisation appears in article 9 (The Guardian, language 'en', United Kingdom). The German-language article 18 (Tagesschau) carries Pistorius's PAC-2/IRIS-T pledges and a warning that Russian air attacks will increase as temperatures fall, but not that phrasing.",
+    "j2_why": "The phrase 'real, serious and acute' occurs only in article 9, en/United Kingdom/The Guardian. The German-language analyses do not contain it: article 18 (de, Tagesschau) has Pistorius warning that Russian air attacks will increase as temperatures fall, and article 26 (de) does not quote Pistorius at all. The divergence attributes to the German-language group a framing present only in the English-language group."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-11__t0",
+    "arm": "F_M",
+    "quote": "Middle East-focused English-language outlets (Al Jazeera, Middle East Eye) foreground the human and maritime cost of the tanker war \u2014 a killed seafarer, 73 wounded in Saudi cities, UKMTO reports of listing vessels \u2014 while Italian-, Spanish-, and Turkish-language coverage centres the story on Trump's electoral timetable and headline oil prices.",
+    "j1_why": "The INPUT places all three cited details outside Al Jazeera and Middle East Eye: the killed seafarer (Peninsula/Hercules Star) and the UKMTO listing-vessel reports appear in article_index 8 (France 24, France) and article_index 10 (Japan Today, Japan), and the 73 wounded in Saudi cities appear in article_index 4 (CNA, Singapore) and article_index 8. The Al Jazeera articles in the corpus (1, 16, 18) cover Trump's end-of-war timing, US approval ratings and convention-floor voter sentiment, and the Middle East Eye articles (11, 17, 19) are a Brent/WTI market report, a regional digest and the WSJ Vance-Rubio story - none foregrounds the seafarer death, the Saudi casualty figure or UKMTO.",
+    "j2_why": "The killed seafarer on the Hercules Star and the UKMTO reports of a listing vessel appear in article_index 8 (France 24, France) and article_index 10 (Japan Today, Japan); the 73 wounded in Saudi cities appear in article_index 4 (CNA, Singapore) and 8. The Al Jazeera articles (1, 16, 18) and Middle East Eye articles (11, 17, 19) carry none of these three details \u2014 11 is a Brent/WTI settlement brief, 17 a regional digest, 19 the WSJ advisers story, 16 US domestic politics and 18 convention-floor voter reaction."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-11__t0",
+    "arm": "C",
+    "quote": "South Asian English-language sources (Dawn, Responsible Statecraft) provide deeper analytical framing with expert commentary on Iranian strategic doctrine and BRICS geopolitical divisions, while Middle East-based English sources (Al Jazeera) focus more on US voter sentiment and convention-floor reactions.",
+    "j1_why": "article_metadata lists article_index 14 (Responsible Statecraft) with country 'United States', not any South Asian country; only article_index 5 (Dawn, Pakistan) is South Asian in the corpus. The BRICS analysis attributed here to a South Asian cluster comes entirely from the US outlet - which this same output elsewhere correctly calls 'US-based English-language coverage'.",
+    "j2_why": "article_metadata for article_index 14 (Responsible Statecraft) gives country 'United States', not a South Asian country; the regional cluster asserted here is contradicted by the metadata, and the same output elsewhere calls it 'US-based English-language coverage'."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-11__t1",
+    "arm": "C",
+    "quote": "Spanish-language sources (El Pa\u00eds) foreground the concept of Iran imposing a 'double chokehold' on both Hormuz and Bab el-Mandeb and quote a senior Iranian official denying control of the Houthis, a perspective absent from English-language coverage which treats the Iran-Houthi link as established fact.",
+    "j1_why": "English-language articles carry exactly that denial: article_index 12 (Japan Today, en) quotes a 'Senior Iranian official' saying 'Iran does not control the Houthis'; article_index 17 (en) quotes Iranian Foreign Ministry spokesperson Esmail Baghaei rejecting the proxy accusation; article_index 23 (Middle East Eye, en) reports an Iranian official calling the Mocha move a Houthi rather than Iranian decision.",
+    "j2_why": "The claimed absence is contradicted by the INPUT: article_index 12 (Japan Today, en) quotes a 'Senior Iranian official' saying 'Iran does not control the Houthis'; article_index 17 (English) quotes Iranian Foreign Ministry spokesperson Esmail Baghaei rejecting the proxy accusation; article_index 23 (Middle East Eye, en) reports an Iranian official saying the move on Mocha was a Houthi rather than Iranian decision."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-11__t1",
+    "arm": "C",
+    "quote": "Qatari and UK-based outlets quoting Houthi spokespeople present the group's assurances about Red Sea navigation safety as direct statements, while Spanish and French outlets more prominently pair those assurances with the Houthi naval blockade declaration against Saudi Arabia, foregrounding the contradiction.",
+    "j1_why": "The pairing runs the other way in the input: the UK-based BBC (article_index 4) reports 'Houthi assurances that Red Sea navigation remains safe while the embargo on Saudi ships stays in place'. The Spanish articles do not pair them at all \u2014 article_index 8 (El Pa\u00eds) records only the 'segura y normal' assurance with no Saudi-ship exception, and article_index 11 (Infobae) contains no navigation statement; the French-language article_index 15 (RFI) contains no navigation-safety assurance.",
+    "j2_why": "No Spanish or French analysis pairs the assurances with the Saudi blockade: article_index 8 and 11 (es) and article_index 15 (fr) contain no mention of the Saudi ship embargo or naval blockade at all. The pairing the sentence denies to UK coverage is exactly what the UK article does \u2014 article_index 4 (BBC) reports 'Houthi assurances that Red Sea navigation remains safe while the embargo on Saudi ships stays in place'."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-11__t1",
+    "arm": "F_M",
+    "quote": "Pakistani-published coverage (Dawn) casts Pakistan as a potential belligerent weighing activation of the Mecca Defence Alliance with Saudi Arabia and Turkey, whereas Gulf, European, and East Asian articles reduce Pakistan to a diplomatic courier shuttling Riyadh's warning to Tehran.",
+    "j1_why": "Neither Dawn article mentions Pakistan or the alliance \u2014 article_index 7 and 20 are Bab al-Mandeb explainers quoting Krieg and the Institute for the Study of War. The belligerent framing appears in Gulf and UK coverage instead: article_index 1 (Al Jazeera, Qatar) reports Pakistan saying 'the Mecca Defence Alliance, could become operational', and article_index 10 (The Guardian) reports Saudi Arabia 'weighing whether to activate the Mecca defence agreement with Pakistan and Turkey'.",
+    "j2_why": "Dawn's two articles (article_index 7 and 20) are Bab al-Mandab explainers whose analyses never mention Pakistan. The Mecca Defence Alliance framing is in article_index 1 (Al Jazeera, Qatar \u2014 a Gulf outlet), where Pakistan 'says its defence pact with Saudi Arabia and Turkiye, the Mecca Defence Alliance, could become operational', and in article_index 10 (The Guardian, UK), so the attribution is inverted."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-11__t1",
+    "arm": "F_M",
+    "quote": "English-, Spanish-, and French-language coverage embeds the Mocha capture in the wider US\u2013Iran war \u2014 quoting Trump's midterm-election predictions, the IRGC's Saildrone strike at Hormuz, and new US Treasury sanctions \u2014 whereas the Arabic-, Italian-, German-, Bengali-, and Turkish-language articles confine the story to a Yemen\u2013Saudi confrontation with no US\u2013Iran escalation layer.",
+    "j1_why": "No Turkish-language article exists in article_metadata: the two Anadolu Agency entries (article_index 3 and 19) are listed as language 'en', country 'Turkey'; the language set present is it, en, ar, es, bn, fr, de.",
+    "j2_why": "No Turkish-language article exists in article_metadata; the two Turkey-published articles (article_index 3 and 19, Anadolu Agency) are both listed as language 'en', so a Turkish-language group is attributed to a corpus that has none."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-11__t2",
+    "arm": "F_M",
+    "quote": "No Arabic-language or Gulf-region outlet appears anywhere in the corpus despite the pledge being pitched amid an ongoing war with Iran, a closed Strait of Hormuz and oil above $100 a barrel \u2014 the very economic conditions the 'dividend' claims to answer.",
+    "j1_why": "article_metadata lists Al Jazeera with country 'Qatar' at article_index 2, 23 and 31, so a Gulf-region outlet is present three times; only the Arabic-language half of the claim is supported.",
+    "j2_why": "article_metadata lists articles 2, 23 and 31 as Al Jazeera with country 'Qatar', a Gulf-region outlet; only the Arabic-language half of the claim holds, and the same output elsewhere refers to 'the Qatar-based cluster (Al Jazeera)'."
+   },
+   {
+    "stage": "hydration_phase2",
+    "case": "hydration_phase2__2026-09-11__t2",
+    "arm": "F_M",
+    "quote": "French-language coverage (RFI) foregrounds rank-and-file convention enthusiasm through attendee, candidate and state-party voices, whereas German-language coverage (Der Spiegel, Tagesschau) emphasizes empty seats, vulnerable Republicans avoiding the event, and doubts about mobilizing anyone beyond the base.",
+    "j1_why": "No German-language analysis mentions empty seats: article 7 (Der Spiegel) cites low approval, the Iran war and fuel prices; article 25 (Der Spiegel) cites the unprecedented convention and doubts about mobilisation; article 20 (Tagesschau) cites NFL timing, limited broadcast carriage and absent Republicans. The half-empty arena appears only in English-language articles 4, 6 and 12.",
+    "j2_why": "No German-language analysis mentions empty seats: article 20 (Tagesschau) notes the NFL clash, limited broadcast carriage and absent Republicans, and article 25 (Der Spiegel) notes only doubts about mobilisation. The half-empty arena appears solely in English analyses 4, 6 and 12."
+   }
+  ]
+ },
+ "qa_analyze": {
+  "raised_j1": {
+   "F_M": 1,
+   "C": 1
+  },
+  "confirmed_2of2": {
+   "C": 1
+  },
+  "raised_on_single_judged_cases": {
+   "F_M": 0,
+   "C": 0
+  },
+  "confirmed_detail": [
+   {
+    "stage": "qa_analyze",
+    "case": "qa_analyze__2026-09-11__t1",
+    "arm": "C",
+    "quote": "Sources report varying distances from Mocha to Bab el-Mandeb: 70km (src-001), 75km (src-005, src-019), and 80km (src-007, src-012).",
+    "j1_why": "src-012 gives no Mocha-to-Bab-el-Mandeb distance: it reports that the Houthis are 'about 15 kilometres from the Red Sea port of Mocha' and that government troops retreated 'toward Mocha, roughly 80 kilometres away' \u2014 the 80 km is the distance to Mocha from the retreating force's position, not the strait. Only src-007 supplies an 80 km strait figure.",
+    "j2_why": "src-012 gives no Mocha-to-Bab el-Mandeb distance; its figures are that the Houthis are 'about 15 kilometres from the Red Sea port of Mocha' and that government troops retreated 'toward Mocha, roughly 80 kilometres away' \u2014 a retreat distance, not the strait distance. Only src-007 ('about 80 kilometres from the Bab el-Mandeb strait') supports the 80km claim as stated."
+   }
+  ]
+ }
+}

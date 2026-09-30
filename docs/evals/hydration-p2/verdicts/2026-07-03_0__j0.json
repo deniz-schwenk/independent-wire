@@ -1,0 +1,73 @@
+{
+ "date": "2026-07-03",
+ "topic": 0,
+ "judge": 0,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Japan Today's coverage uniquely highlights internal societal division by quoting both a disaffected Tehran resident leaving the city and a grieving Basij member, framing the funeral as a contested referendum on the regime's legitimacy, whereas Italian (ANSA) and Gulf (Al Jazeera) coverage presents the event largely through official state narratives of mass mourning and national unity.",
+      "why_unsupported": "The ANSA (Italian) analysis only reports the arrival of Khamenei's body citing IRNA and frames the event as a consequence of US/Israeli strikes; it contains no 'official state narratives of mass mourning and national unity.' The Japan-side observation is well supported, but the claimed contrast with ANSA is not borne out by the analysis."
+     }
+    ]
+   },
+   {
+    "label": "B",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "D",
+    "grounding": 2,
+    "specificity": 4,
+    "cross_group_validity": 3,
+    "gap_quality": 5,
+    "overall": 3,
+    "fabricated_divergences": [
+     {
+      "quote": "Iranian state-linked outlets and their amplification via Turkish (Hurriyet) coverage emphasize official warnings against US/Israeli attack, calls for vengeance, and framing the funeral as a display of national unity and resilience, whereas UK-based Middle East Eye and Japan Today foreground internal dissent, private celebrations after Khamenei's death, and residents fleeing the mobilization.",
+      "why_unsupported": "Middle East Eye's articles (7, 9, 10) cover the body's arrival, the UN Secretary-General's condolences, Iran's UN ambassador, and the US envoy's Hormuz warning — they do NOT foreground internal dissent, private celebrations, or residents fleeing. Those framings appear only in the Japan Today article (6). Grouping MEE with Japan on internal dissent is unsupported. Additionally, no Iranian state-linked outlets exist in the corpus at all."
+     },
+     {
+      "quote": "English-language Gulf and Western outlets (Al Jazeera, France 24, DW) foreground succession uncertainty around Mojtaba Khamenei and the funeral's leverage over nuclear diplomacy, while Turkish-language coverage (Hurriyet) focuses narrowly on military threats and retaliation rhetoric without addressing succession politics.",
+      "why_unsupported": "This is reversed: the Mojtaba succession uncertainty actually appears in the Turkish Hurriyet article (5), which notes uncertainty over whether Khamenei's son and successor Mojtaba will appear. The Al Jazeera (1, 8), France 24 (4), and DW (2) analyses do NOT foreground Mojtaba succession or nuclear-diplomacy leverage, so the attributed contrast is fabricated."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.334395,
+ "tokens": 24235,
+ "duration_s": 130.3,
+ "provider": "Anthropic"
+}

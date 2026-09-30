@@ -1,0 +1,73 @@
+{
+ "date": "2026-07-03",
+ "topic": 2,
+ "judge": 2,
+ "ok": true,
+ "structured": {
+  "assessments": [
+   {
+    "label": "A",
+    "grounding": 5,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 5,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "B",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   },
+   {
+    "label": "C",
+    "grounding": 3,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "English-language sources from the UK (BBC, The Guardian) and Singapore (CNA) include explicit criticism of the Venezuelan government's slow response and note the civilian-led nature of rescue efforts with a lack of heavy machinery, whereas French-language (RFI) and Chinese-language (CGTN) coverage largely omits or downplays government accountability questions.",
+      "why_unsupported": "BBC (idx 2) and The Guardian (idx 9) analyses show only rescue-narrative/survivor content; neither contains explicit criticism of the government's slow response nor 'lack of heavy machinery' - those appear in CNA (idx 4) and Japan Today (idx 10)."
+     },
+     {
+      "quote": "English-language sources from multiple regions (Dawn/Pakistan, The Guardian/UK, Japan Today/Japan) report on looting and the detention of police officers for stealing from rubble, while Spanish-, French-, Italian-, and German-language sources do not address post-disaster criminality.",
+      "why_unsupported": "The Guardian analysis (idx 9) makes no mention of looting or detention; looting/detention appears only in Dawn (idx 6) and Japan Today (idx 10)."
+     }
+    ]
+   },
+   {
+    "label": "D",
+    "grounding": 4,
+    "specificity": 5,
+    "cross_group_validity": 4,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": [
+     {
+      "quote": "Spanish-language outlets (El Financiero, El Pais) foreground governance accountability, with El Financiero explicitly attributing the scale of destruction to decades of institutional decay and corruption under the previous Maduro government, while English-language outlets like CNA and CGTN largely relay the interim president's denial of a slow response without independently probing underlying institutional causes.",
+      "why_unsupported": "The El Pais analysis (idx 8) is a minute-by-minute rescue narrative; it does not foreground governance accountability. Only El Financiero (idx 7) carries the institutional-decay critique."
+     }
+    ]
+   },
+   {
+    "label": "E",
+    "grounding": 5,
+    "specificity": 4,
+    "cross_group_validity": 5,
+    "gap_quality": 5,
+    "overall": 4,
+    "fabricated_divergences": []
+   }
+  ]
+ },
+ "cost_usd": 0.0,
+ "tokens": 45556,
+ "provider": "subagent",
+ "source": "spawned_subagent"
+}
