@@ -4,6 +4,7 @@
 **Extracted:** 2026-04-07
 **Status:** Working catalog for feed expansion — the candidate markers below reflect the 2026-04-07 snapshot, not the live config. The canonical, live source list is [`config/sources.json`](../config/sources.json) (schema v0.3); consult it for current feed counts and language streams — no live numbers are duplicated here.
 **Purpose:** Reference catalog for feed expansion and the no-free-RSS transparency policy. No code imported from WorldMonitor.
+**Program status (2026-09-30):** closed out — see [Program close-out](#program-close-out-2026-09-30) at the end.
 **Rule:** Google News proxy URLs (news.google.com/rss/search) are BANNED. Must find direct RSS URLs.
 
 **Legend:**
@@ -327,3 +328,56 @@ Federal Reserve, CISA
 Al Arabiya AR, Xinhua direct RSS, Nikkei Asia alternative,
 Bangkok Post direct, O Globo direct, Brookings direct, Carnegie direct,
 CSIS direct, UNHCR direct, State Dept direct RSS
+
+---
+
+## Program close-out (2026-09-30)
+
+Evidence: the FEED-PROGRAM-RESUME diagnosis of 2026-09-24 (30 production logs +
+30 collector logs, `raw/*/feeds.json` day stores, and a live probe), and
+`config/sources.json` at main `3ce9408`. The expansion candidate lists above are
+historical (2026-04-07 snapshot); the live source list is `config/sources.json`.
+
+### Language batches — landed and delivering
+
+| batch | commit | date | feeds | delivery over 30 days (06:00 fetch / day store) |
+|---|---|---|---|---|
+| Batch 1 (non-Latin) | `dcf5be6` | 2026-07-01 | Al-Masry Al-Youm (ar), Prothom Alo (bn), Online Khabar (ne), Prachatai (th), Isolezwe (zu), Mwananchi (sw), Kun.uz (uz) | 7/7 live; Prachatai thin (9/30 / 13/30); Al-Masry Al-Youm 23/30 / 28/30; the rest 30/30 |
+| Batch 2 (non-Latin) | `fcfdf88` | 2026-07-06 | Al-Sumaria (ar), Mosaique FM (ar), Khaosod (th), Liberty Times (zh), Mainichi Shimbun (ja), Asahi Shimbun (ja), Initium Media (zh) | 7/7 live; 30/30 in the day store (Mainichi one 06:00 error) |
+
+Khaosod carries Thai at ~150 items/day in the day store, which resolves the
+Prachatai low-volume problem. Nothing from either batch is left to connect.
+
+### Hygiene outcomes (owner decisions, 2026-09-24)
+
+| feed | finding (30 days) | decision |
+|---|---|---|
+| RT | DNS failure on every fetch | disable |
+| Morocco World News | `403 Forbidden` on every fetch, both user agents | disable |
+| WHO | feed abandoned: never an error, 0 entries, newest item ≈ 211 days old | disable (not reclassify) |
+| Press TV | `https` certificate chain broken; `http` works but items are undated | disable (stays a catalog candidate) |
+| IAEA | alive, low cadence (0 at 06:00; collector windows 40/142 non-zero) | stays `daily` |
+| Indian Express | healthy (30/30) — the July hygiene branch would have disabled it | stays `daily` |
+
+The four disables are scheduled for their own `config/sources.json`-only slot
+(branch `feat/feed-hygiene-2026-09`); they are **not** landed at the time of this
+close-out, and the July branch `feat/feed-hygiene` is superseded by it. Open,
+not decided: the NHK World URL points at the `backstory` (features) section.
+GDELT fails daily (HTTP 429 or timeout), and `feeds_failed` counts healthy
+zero-entry feeds as failures; both are a separate collector task, not catalog
+changes.
+
+### The `on_demand` mechanism
+
+- `config/sources.json` (schema `0.3`) holds 163 feeds: 79 enabled `daily`, 83
+  enabled `on_demand`, 1 disabled. The `access` flag and the 83 `on_demand` seeds
+  came in with `43952dc` (registry A1, 2026-07-06).
+- Only `access == "daily"` feeds reach the 06:00 run and the intraday collector:
+  `scripts/fetch_feeds.py:76` filters on it, and both paths go through
+  `load_sources`.
+- **`on_demand` feeds have no consumer on `main`.** Their consumer is the
+  `registry` search backend, which exists only on `feat/registry-a2` (held until
+  registry Phase B). Until that lands, the 83 feeds are catalog-only, including
+  the six languages that exist only in that slice (fa, hi, hu, ko, ro, uk).
+- Bringing those languages into production is a separate, owner-decided
+  Batch 3 (`access: daily` promotions), not part of this program.
