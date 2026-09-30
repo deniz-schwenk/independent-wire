@@ -29,3 +29,6 @@ selection_reason) reviewed at the Architect gate like the T3b rubrics.
 resolve_actor_aliases fell back C→A on 2/3 topics in the hydrated shadow
 — first live firing of that path. Check production logs from 2026-09-01
 on; if the rate holds, the 16k cap / channel-C sizing needs its own slot.
+
+## 4. Bias provenance label (from `chore/lexicon-followups`, not merged — owner 2026-09-24)
+- Idea kept: a per-candidate provenance label (`source` = model / lexicon / `"both"`) that actually reaches the persisted stage row / TP; the branch (`982ecba`+`ba769b9`) computed it but it never landed on disk, so it could not be evaluated.
