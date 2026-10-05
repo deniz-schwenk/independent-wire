@@ -312,6 +312,40 @@ def test_a_clean_run_leaves_the_row_shape_untouched():
     assert stage.last_rejected_merges == []
 
 
+def test_a_zero_flag_run_still_logs_that_validation_ran(caplog):
+    """A silent day must be auditable as "ran and found nothing": the
+    checked/flagged line appears even when nothing is flagged."""
+    actors = [A(1, "Volodymyr Zelenskyy"), A(2, "Volodymyr Zelensky"),
+              A(3, "Kaja Kallas")]
+    agent = _Agent({"aliases": [
+        {"alias_id": "actor-001", "canonical_id": "actor-002"}],
+        "anonymous_flags": []})
+    stage = ResolveActorAliasesStage(agent)
+
+    with caplog.at_level(logging.INFO, logger="src.agent_stages"):
+        _run(stage, *_bus(actors))
+
+    assert "merge validation: 1 pairs checked, 0 flagged (detector mode)" \
+        in caplog.text
+    assert stage.last_rejected_merges == []
+
+
+def test_a_flagging_run_logs_the_same_line_with_its_count(caplog):
+    actors = [A(1, "Volodymyr Zelenskyy"), A(2, "Volodymyr Zelensky"),
+              A(3, "Marco Rubio", "Secretary of State of the United States"),
+              A(4, "Donald Trump", "President of the United States")]
+    agent = _Agent({"aliases": [
+        {"alias_id": "actor-001", "canonical_id": "actor-002"},
+        {"alias_id": "actor-003", "canonical_id": "actor-004"}],
+        "anonymous_flags": []})
+
+    with caplog.at_level(logging.INFO, logger="src.agent_stages"):
+        _run(ResolveActorAliasesStage(agent), *_bus(actors))
+
+    assert "merge validation: 2 pairs checked, 1 flagged (detector mode)" \
+        in caplog.text
+
+
 def test_validation_runs_before_the_union_find(monkeypatch):
     """The 46-into-1 shape. Union-find is transitive, so ONE un-anchored pair
     inside a chain drags every member together.

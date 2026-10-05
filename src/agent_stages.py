@@ -3265,6 +3265,14 @@ class ResolveActorAliasesStage(_AgentStageBase):
         proposed_count = len(aliases_raw)
         aliases_raw, rejected_merges = validate_merges(
             aliases_raw, actors_by_id_full)
+        # Always-on, whatever the count: a silent day must read as "ran and
+        # found nothing", not be indistinguishable from "did not run". Log line
+        # only — the stage row keeps its shape (fields appear on flags alone).
+        logger.info(
+            "ResolveActorAliasesStage: merge validation: %d pairs checked, "
+            "%d flagged (%s mode)",
+            proposed_count, len(rejected_merges), MERGE_VALIDATION_MODE,
+        )
         if rejected_merges:
             dropping = MERGE_VALIDATION_MODE == MERGE_VALIDATION_REJECT
             verb = "REJECTED" if dropping else "FLAGGED"

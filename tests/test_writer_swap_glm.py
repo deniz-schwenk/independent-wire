@@ -87,7 +87,7 @@ async def test_primary_glm_request_body_exact(prompt_file):
     assert kw["max_tokens"] == 120000
     assert kw["extra_body"]["reasoning"] == {"effort": "xhigh"}
     assert kw["extra_body"]["provider"] == {
-        "order": ["baidu/fp8", "ambient/fp8", "venice/fp8"],
+        "order": ["baidu/fp8", "venice/fp8"],
         "allow_fallbacks": False,
         "quantizations": ["fp8"],
         "require_parameters": True,  # added by Agent for schema calls
@@ -339,7 +339,7 @@ def test_writer_output_schema_validity_gate():
 
 
 def test_glm_writer_routing_constant_is_fp8_and_fail_loud():
-    assert GLM_5_2_WRITER_FP8_ROUTING["order"] == ["baidu/fp8", "ambient/fp8", "venice/fp8"]
+    assert GLM_5_2_WRITER_FP8_ROUTING["order"] == ["baidu/fp8", "venice/fp8"]
     assert GLM_5_2_WRITER_FP8_ROUTING["allow_fallbacks"] is False
     assert GLM_5_2_WRITER_FP8_ROUTING["quantizations"] == ["fp8"]
     assert all(t.endswith("/fp8") for t in GLM_5_2_WRITER_FP8_ROUTING["order"])
