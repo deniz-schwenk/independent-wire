@@ -18,7 +18,7 @@
       "region": "Middle East",
       "language": "en",
       "access": "daily",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "Anadolu Agency",
@@ -315,7 +315,7 @@
       "region": "Europe",
       "language": "en",
       "access": "daily",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "El Pais",
@@ -387,7 +387,7 @@
       "region": "Africa",
       "language": "en",
       "access": "daily",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "Clarin",
@@ -531,7 +531,7 @@
       "region": "International",
       "language": "en",
       "access": "daily",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "Krebs on Security",
