@@ -73,8 +73,8 @@ def test_no_warning_when_every_entry_has_access(monkeypatch, tmp_path, caplog):
 
 # ---------------------------------------------------- ingestion round-trip --
 def test_catalog_split_counts():
-    assert len(DAILY) == 80
-    assert len(ON_DEMAND) == 83
+    assert len(DAILY) == 91   # 80 + 11 batch-3 picks converted in place (TASK-FEED-BATCH3)
+    assert len(ON_DEMAND) == 71   # 83 - 11 converted - 1 BBC duplicate removed
     assert all(f.get("access") in ("daily", "on_demand") for f in FEEDS)
 
 
@@ -101,4 +101,4 @@ def test_on_demand_entries_shape_and_language_normalisation():
         assert isinstance(f["proposed_beat_tags"], list)
         assert set(f["evidence"]) == {"appearance_count", "distinct_topics", "first_seen", "last_seen"}
         hosts.add(f["outlet_hostname"])
-    assert len(hosts) == 83  # no duplicate hostnames ingested
+    assert len(hosts) == 71  # no duplicate hostnames ingested (83 - 11 batch-3 - 1 BBC dup)

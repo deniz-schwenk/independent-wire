@@ -180,7 +180,7 @@
       "region": "Global",
       "language": "multi",
       "access": "daily",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "BBC World",
@@ -837,36 +837,6 @@
       "seed_review": "pending"
     },
     {
-      "name": "BBC",
-      "url": "https://feeds.bbci.co.uk/news/rss.xml",
-      "type": "rss",
-      "access": "on_demand",
-      "access_type": "public",
-      "outlet_hostname": "bbc.co.uk",
-      "languages": [
-        "en"
-      ],
-      "country": "United Kingdom",
-      "region_bucket": "europe_central_asia",
-      "tier_observed": 1,
-      "editorial_independence_observed": "publicly_funded_autonomous",
-      "proposed_beat_tags": [
-        "iran",
-        "heatwave",
-        "france",
-        "ukrainian",
-        "cryptocurrency",
-        "billion"
-      ],
-      "evidence": {
-        "appearance_count": 22,
-        "distinct_topics": 20,
-        "first_seen": "2026-06-05",
-        "last_seen": "2026-07-05"
-      },
-      "seed_review": "pending"
-    },
-    {
       "name": "Human Rights Watch",
       "url": "https://www.hrw.org/rss/news",
       "type": "rss",
@@ -934,64 +904,19 @@
       "name": "Iran International",
       "url": "https://www.iranintl.com/feed",
       "type": "rss",
-      "access": "on_demand",
-      "access_type": "public",
-      "outlet_hostname": "iranintl.com",
-      "languages": [
-        "ar",
-        "en",
-        "fa"
-      ],
-      "country": "International",
-      "region_bucket": "middle_east_north_africa",
-      "tier_observed": 3,
-      "editorial_independence_observed": "state_influenced",
-      "proposed_beat_tags": [
-        "iran",
-        "strikes",
-        "gulf",
-        "exchange",
-        "leader",
-        "funeral"
-      ],
-      "evidence": {
-        "appearance_count": 8,
-        "distinct_topics": 7,
-        "first_seen": "2026-05-28",
-        "last_seen": "2026-07-03"
-      },
-      "seed_review": "pending"
+      "region": "Middle East",
+      "language": "fa",
+      "access": "daily",
+      "enabled": true
     },
     {
       "name": "Ukrainska Pravda",
       "url": "https://www.pravda.com.ua/rss",
       "type": "rss",
-      "access": "on_demand",
-      "access_type": "public",
-      "outlet_hostname": "pravda.com.ua",
-      "languages": [
-        "ru",
-        "uk"
-      ],
-      "country": "Ukraine",
-      "region_bucket": "europe_central_asia",
-      "tier_observed": 2,
-      "editorial_independence_observed": "independent",
-      "proposed_beat_tags": [
-        "ukraine",
-        "summit",
-        "trump",
-        "soldiers",
-        "proposes",
-        "entry"
-      ],
-      "evidence": {
-        "appearance_count": 8,
-        "distinct_topics": 8,
-        "first_seen": "2026-05-27",
-        "last_seen": "2026-07-04"
-      },
-      "seed_review": "pending"
+      "region": "Europe",
+      "language": "uk",
+      "access": "daily",
+      "enabled": true
     },
     {
       "name": "Lianhe Zaobao",
@@ -1148,31 +1073,10 @@
       "name": "Aaj Tak",
       "url": "https://www.aajtak.in/rssfeeds?id=home",
       "type": "rss",
-      "access": "on_demand",
-      "access_type": "public",
-      "outlet_hostname": "aajtak.in",
-      "languages": [
-        "hi"
-      ],
-      "country": "India",
-      "region_bucket": "south_asia",
-      "tier_observed": 2,
-      "editorial_independence_observed": "independent",
-      "proposed_beat_tags": [
-        "trump",
-        "judge",
-        "strikes",
-        "bill",
-        "congress",
-        "testifies"
-      ],
-      "evidence": {
-        "appearance_count": 6,
-        "distinct_topics": 6,
-        "first_seen": "2026-05-30",
-        "last_seen": "2026-06-21"
-      },
-      "seed_review": "pending"
+      "region": "South Asia",
+      "language": "hi",
+      "access": "daily",
+      "enabled": true
     },
     {
       "name": "Médecins Sans Frontières",
@@ -1481,31 +1385,10 @@
       "name": "The Korea Economic Daily",
       "url": "https://www.hankyung.com/feed/all-news",
       "type": "rss",
-      "access": "on_demand",
-      "access_type": "public",
-      "outlet_hostname": "hankyung.com",
-      "languages": [
-        "ko"
-      ],
-      "country": "South Korea",
-      "region_bucket": "east_asia_pacific",
-      "tier_observed": null,
-      "editorial_independence_observed": null,
-      "proposed_beat_tags": [
-        "south",
-        "summit",
-        "trilateral",
-        "macron",
-        "trump",
-        "zelensky"
-      ],
-      "evidence": {
-        "appearance_count": 4,
-        "distinct_topics": 3,
-        "first_seen": "2026-05-29",
-        "last_seen": "2026-06-30"
-      },
-      "seed_review": "pending"
+      "region": "East Asia",
+      "language": "ko",
+      "access": "daily",
+      "enabled": true
     },
     {
       "name": "Khabaronline",
@@ -1692,31 +1575,10 @@
       "name": "Tabnak",
       "url": "https://www.tabnak.ir/fa/rss/allnews",
       "type": "rss",
-      "access": "on_demand",
-      "access_type": "public",
-      "outlet_hostname": "tabnak.ir",
-      "languages": [
-        "fa"
-      ],
-      "country": "Iran",
-      "region_bucket": "middle_east_north_africa",
-      "tier_observed": 3,
-      "editorial_independence_observed": "state_influenced",
-      "proposed_beat_tags": [
-        "iran",
-        "strikes",
-        "threats",
-        "states",
-        "exchange",
-        "united"
-      ],
-      "evidence": {
-        "appearance_count": 4,
-        "distinct_topics": 4,
-        "first_seen": "2026-05-27",
-        "last_seen": "2026-07-05"
-      },
-      "seed_review": "pending"
+      "region": "Middle East",
+      "language": "fa",
+      "access": "daily",
+      "enabled": true
     },
     {
       "name": "Corriere della Sera",
@@ -1752,31 +1614,10 @@
       "name": "Donya-e-Eqtesad",
       "url": "https://donya-e-eqtesad.com/feeds",
       "type": "rss",
-      "access": "on_demand",
-      "access_type": "public",
-      "outlet_hostname": "donya-e-eqtesad.com",
-      "languages": [
-        "fa"
-      ],
-      "country": "Iran",
-      "region_bucket": "middle_east_north_africa",
-      "tier_observed": null,
-      "editorial_independence_observed": null,
-      "proposed_beat_tags": [
-        "governance",
-        "paper",
-        "white",
-        "releases",
-        "china",
-        "negotiations"
-      ],
-      "evidence": {
-        "appearance_count": 3,
-        "distinct_topics": 3,
-        "first_seen": "2026-05-29",
-        "last_seen": "2026-06-20"
-      },
-      "seed_review": "pending"
+      "region": "Middle East",
+      "language": "fa",
+      "access": "daily",
+      "enabled": true
     },
     {
       "name": "Frankfurter Allgemeine Zeitung",
@@ -2444,31 +2285,10 @@
       "name": "HotNews",
       "url": "https://hotnews.ro/feed",
       "type": "rss",
-      "access": "on_demand",
-      "access_type": "public",
-      "outlet_hostname": "hotnews.ro",
-      "languages": [
-        "ro"
-      ],
-      "country": "Romania",
-      "region_bucket": "europe_central_asia",
-      "tier_observed": null,
-      "editorial_independence_observed": null,
-      "proposed_beat_tags": [
-        "businessman",
-        "arrests",
-        "associate",
-        "traber",
-        "close",
-        "russia"
-      ],
-      "evidence": {
-        "appearance_count": 2,
-        "distinct_topics": 2,
-        "first_seen": "2026-05-29",
-        "last_seen": "2026-06-18"
-      },
-      "seed_review": "pending"
+      "region": "Europe",
+      "language": "ro",
+      "access": "daily",
+      "enabled": true
     },
     {
       "name": "InfoMoney",
@@ -2654,32 +2474,10 @@
       "name": "Maeil Business Newspaper (MK)",
       "url": "https://www.mk.co.kr/rss/30000001/",
       "type": "rss",
-      "access": "on_demand",
-      "access_type": "public",
-      "outlet_hostname": "mk.co.kr",
-      "languages": [
-        "en",
-        "ko"
-      ],
-      "country": "South Korea",
-      "region_bucket": "east_asia_pacific",
-      "tier_observed": null,
-      "editorial_independence_observed": null,
-      "proposed_beat_tags": [
-        "negotiations",
-        "iran",
-        "peace",
-        "setbacks",
-        "israeli",
-        "face"
-      ],
-      "evidence": {
-        "appearance_count": 2,
-        "distinct_topics": 2,
-        "first_seen": "2026-06-20",
-        "last_seen": "2026-06-30"
-      },
-      "seed_review": "pending"
+      "region": "East Asia",
+      "language": "ko",
+      "access": "daily",
+      "enabled": true
     },
     {
       "name": "Moskovsky Komsomolets",
@@ -2835,31 +2633,10 @@
       "name": "Radio Svoboda",
       "url": "https://www.radiosvoboda.org/api/",
       "type": "rss",
-      "access": "on_demand",
-      "access_type": "public",
-      "outlet_hostname": "radiosvoboda.org",
-      "languages": [
-        "uk"
-      ],
-      "country": "Ukraine",
-      "region_bucket": "europe_central_asia",
-      "tier_observed": 2,
-      "editorial_independence_observed": "state_influenced",
-      "proposed_beat_tags": [
-        "ukraine",
-        "agreement",
-        "reach",
-        "rights",
-        "hungary",
-        "minority"
-      ],
-      "evidence": {
-        "appearance_count": 2,
-        "distinct_topics": 2,
-        "first_seen": "2026-05-27",
-        "last_seen": "2026-06-04"
-      },
-      "seed_review": "pending"
+      "region": "Europe",
+      "language": "uk",
+      "access": "daily",
+      "enabled": true
     },
     {
       "name": "Radio Free Europe/Radio Liberty",
@@ -2955,31 +2732,10 @@
       "name": "Telex",
       "url": "https://telex.hu/rss",
       "type": "rss",
-      "access": "on_demand",
-      "access_type": "public",
-      "outlet_hostname": "telex.hu",
-      "languages": [
-        "hu"
-      ],
-      "country": "Hungary",
-      "region_bucket": "europe_central_asia",
-      "tier_observed": null,
-      "editorial_independence_observed": null,
-      "proposed_beat_tags": [
-        "rights",
-        "pride",
-        "celebrate",
-        "political",
-        "marches",
-        "lgbt"
-      ],
-      "evidence": {
-        "appearance_count": 2,
-        "distinct_topics": 2,
-        "first_seen": "2026-06-04",
-        "last_seen": "2026-06-28"
-      },
-      "seed_review": "pending"
+      "region": "Europe",
+      "language": "hu",
+      "access": "daily",
+      "enabled": true
     },
     {
       "name": "TF1 Info",
@@ -3225,32 +2981,10 @@
       "name": "ZN.UA",
       "url": "https://zn.ua/ukr/rss/full/",
       "type": "rss",
-      "access": "on_demand",
-      "access_type": "public",
-      "outlet_hostname": "zn.ua",
-      "languages": [
-        "ru",
-        "uk"
-      ],
-      "country": "Russia",
-      "region_bucket": "europe_central_asia",
-      "tier_observed": null,
-      "editorial_independence_observed": null,
-      "proposed_beat_tags": [
-        "fighter",
-        "germany",
-        "abandon",
-        "jet",
-        "joint",
-        "project"
-      ],
-      "evidence": {
-        "appearance_count": 2,
-        "distinct_topics": 2,
-        "first_seen": "2026-06-09",
-        "last_seen": "2026-06-21"
-      },
-      "seed_review": "pending"
+      "region": "Europe",
+      "language": "uk",
+      "access": "daily",
+      "enabled": true
     }
   ]
 }
