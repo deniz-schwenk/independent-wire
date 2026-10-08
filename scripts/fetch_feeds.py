@@ -11,9 +11,14 @@ import hashlib
 import json
 import logging
 import os
+import random
 import sys
 import time
+from collections import Counter
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
+from email.utils import parsedate_to_datetime
+from functools import partial
 from pathlib import Path
 from typing import Optional
 
@@ -42,6 +47,49 @@ GDELT_API_URL = (
     "?query=sourcelang:eng&mode=ArtList&maxrecords=50"
     "&sort=DateDesc&format=json&timespan=1h"
 )
+
+# --- Feed outcomes (TASK-COLLECTOR-COUNTERS) ----------------------------------
+# The fetcher used to count every source that returned no entries as "failed",
+# so a healthy feed with nothing new in the 24 h window read as a failure
+# (2026-09-24: 12 "failed" = 4 real errors + 8 quiet feeds). Every source now
+# reports exactly one of four outcomes:
+#   ok      — reachable and parsed, >= 1 entry kept
+#   quiet   — reachable and parsed, 0 entries kept (nothing new; healthy)
+#   invalid — reachable, but the body is not a usable feed (RSS bozo with no
+#             entries; GDELT body that is not JSON)
+#   failed  — transport/HTTP error or timeout, an unknown API source, or GDELT
+#             skipped because its circuit breaker is open
+# Parsing and the feed set are unchanged; only the classification is new.
+FEED_OUTCOMES = ("ok", "quiet", "invalid", "failed")
+
+
+@dataclass
+class FeedOutcome:
+    status: str                       # one of FEED_OUTCOMES
+    entries: list = field(default_factory=list)
+    detail: str = ""                  # why, for invalid/failed (log + report)
+
+
+def _describe_exc(exc: BaseException) -> str:
+    """``ClassName: message``. httpx timeouts stringify to an empty string, which
+    used to log as a bare "GDELT failed: " — the class name is the evidence."""
+    msg = str(exc).strip()
+    return f"{type(exc).__name__}: {msg}" if msg else type(exc).__name__
+
+
+# --- GDELT backoff + collector circuit breaker (TASK-COLLECTOR-COUNTERS) ------
+# GDELT failed on 11 of 11 production runs 2026-09-20..30 (HTTP 429 or a 20 s
+# timeout) and on most collector windows. A 429 is retried, honouring the
+# server's Retry-After when it sends one, else 5 s then 10 s (+ <=1 s jitter);
+# total waiting is capped so the 06:00 run is never held up by more than the
+# budget. Timeouts and other HTTP errors are NOT retried: a retry costs another
+# full timeout and the evidence says the endpoint is throttling, not flaky.
+GDELT_TIMEOUT_S = 20.0
+GDELT_MAX_ATTEMPTS = 3
+GDELT_BACKOFF_S = (5.0, 10.0)        # wait before attempt 2, 3 without Retry-After
+GDELT_BACKOFF_BUDGET_S = 45.0        # total seconds of waiting across retries
+GDELT_RETRY_STATUSES = (429, 503)
+GDELT_BREAKER_THRESHOLD = 3          # consecutive failed windows that open it
 
 
 def setup_logging():
@@ -118,8 +166,10 @@ def parse_rss_entries(feed_data, source: dict, cutoff: datetime) -> list[dict]:
     return entries
 
 
-async def fetch_rss(client: httpx.AsyncClient, source: dict, cutoff: datetime) -> list[dict]:
-    """Fetch and parse a single RSS feed."""
+async def fetch_rss_classified(
+    client: httpx.AsyncClient, source: dict, cutoff: datetime
+) -> FeedOutcome:
+    """Fetch and parse a single RSS feed, reporting ok/quiet/invalid/failed."""
     url = source["url"]
     try:
         resp = await client.get(url, follow_redirects=True, timeout=15.0)
@@ -133,13 +183,19 @@ async def fetch_rss(client: httpx.AsyncClient, source: dict, cutoff: datetime) -
         feed = feedparser.parse(resp.content)
         if feed.bozo and not feed.entries:
             logger.warning("Feed '%s' returned invalid RSS: %s", source["name"], feed.bozo_exception)
-            return []
+            return FeedOutcome("invalid", [], f"invalid RSS: {feed.bozo_exception}")
         entries = parse_rss_entries(feed, source, cutoff)
         logger.info("Feed '%s': %d entries", source["name"], len(entries))
-        return entries
+        return FeedOutcome("ok" if entries else "quiet", entries)
     except Exception as e:
-        logger.warning("Feed '%s' failed: %s", source["name"], e)
-        return []
+        detail = _describe_exc(e)
+        logger.warning("Feed '%s' failed: %s", source["name"], detail)
+        return FeedOutcome("failed", [], detail)
+
+
+async def fetch_rss(client: httpx.AsyncClient, source: dict, cutoff: datetime) -> list[dict]:
+    """Fetch and parse a single RSS feed (entries only; see fetch_rss_classified)."""
+    return (await fetch_rss_classified(client, source, cutoff)).entries
 
 
 def _parse_gdelt_seendate(seendate: str) -> Optional[str]:
@@ -158,13 +214,89 @@ def _parse_gdelt_seendate(seendate: str) -> Optional[str]:
         return None
 
 
-async def fetch_gdelt(client: httpx.AsyncClient, source: dict) -> list[dict]:
-    """Fetch recent articles from the GDELT API."""
+def retry_after_seconds(value: Optional[str], now: Optional[datetime] = None) -> Optional[float]:
+    """Seconds to wait from a ``Retry-After`` header: delta-seconds or an
+    HTTP-date (RFC 9110). ``None`` when absent or unparseable; never negative."""
+    if value is None:
+        return None
+    value = value.strip()
+    if not value:
+        return None
     try:
-        resp = await client.get(GDELT_API_URL, follow_redirects=True, timeout=20.0)
-        resp.raise_for_status()
-        data = resp.json()
-        articles = data.get("articles", [])
+        return max(0.0, float(int(value)))
+    except ValueError:
+        pass
+    try:
+        when = parsedate_to_datetime(value)
+    except (TypeError, ValueError, IndexError):
+        return None
+    if when is None:
+        return None
+    if when.tzinfo is None:
+        when = when.replace(tzinfo=timezone.utc)
+    now = now or datetime.now(tz=timezone.utc)
+    return max(0.0, (when - now).total_seconds())
+
+
+async def fetch_gdelt_classified(
+    client: httpx.AsyncClient,
+    source: dict,
+    *,
+    sleep=asyncio.sleep,
+    jitter=random.random,
+) -> FeedOutcome:
+    """Fetch recent articles from the GDELT API with 429/503 backoff.
+
+    Retry-After is honoured exactly when present; otherwise GDELT_BACKOFF_S plus
+    jitter. A wait that would exceed the remaining GDELT_BACKOFF_BUDGET_S is not
+    taken — the source is reported failed instead. ``sleep``/``jitter`` are the
+    test seams."""
+    waited = 0.0
+    for attempt in range(1, GDELT_MAX_ATTEMPTS + 1):
+        try:
+            resp = await client.get(GDELT_API_URL, follow_redirects=True, timeout=GDELT_TIMEOUT_S)
+        except Exception as e:
+            detail = _describe_exc(e)
+            logger.warning("GDELT failed: %s (attempt %d/%d, not retried)",
+                           detail, attempt, GDELT_MAX_ATTEMPTS)
+            return FeedOutcome("failed", [], detail)
+
+        if resp.status_code in GDELT_RETRY_STATUSES:
+            header = resp.headers.get("Retry-After")
+            ra = retry_after_seconds(header)
+            if attempt == GDELT_MAX_ATTEMPTS:
+                detail = f"HTTP {resp.status_code} on all {GDELT_MAX_ATTEMPTS} attempts"
+                logger.warning("GDELT failed: %s (waited %.1fs)", detail, waited)
+                return FeedOutcome("failed", [], detail)
+            wait = ra if ra is not None else GDELT_BACKOFF_S[attempt - 1] + jitter()
+            if waited + wait > GDELT_BACKOFF_BUDGET_S:
+                detail = (f"HTTP {resp.status_code}; Retry-After {header!r} -> wait "
+                          f"{wait:.1f}s exceeds the remaining "
+                          f"{GDELT_BACKOFF_BUDGET_S - waited:.1f}s budget — not retried")
+                logger.warning("GDELT failed: %s", detail)
+                return FeedOutcome("failed", [], detail)
+            logger.warning(
+                "GDELT HTTP %d (attempt %d/%d), Retry-After=%r — waiting %.1fs",
+                resp.status_code, attempt, GDELT_MAX_ATTEMPTS, header, wait,
+            )
+            await sleep(wait)
+            waited += wait
+            continue
+
+        try:
+            resp.raise_for_status()
+        except Exception as e:
+            detail = _describe_exc(e)
+            logger.warning("GDELT failed: %s", detail)
+            return FeedOutcome("failed", [], detail)
+        try:
+            data = resp.json()
+        except Exception as e:
+            detail = f"body is not JSON ({_describe_exc(e)})"
+            logger.warning("GDELT returned an invalid body: %s", detail)
+            return FeedOutcome("invalid", [], detail)
+
+        articles = data.get("articles", []) if isinstance(data, dict) else []
         entries = []
         for art in articles[:50]:
             title = art.get("title", "").strip()
@@ -182,10 +314,89 @@ async def fetch_gdelt(client: httpx.AsyncClient, source: dict) -> list[dict]:
                 "published_at": _parse_gdelt_seendate(seendate),
             })
         logger.info("GDELT: %d entries", len(entries))
-        return entries
-    except Exception as e:
-        logger.warning("GDELT failed: %s", e)
-        return []
+        return FeedOutcome("ok" if entries else "quiet", entries)
+    return FeedOutcome("failed", [], "unreachable")  # loop always returns
+
+
+async def fetch_gdelt(client: httpx.AsyncClient, source: dict) -> list[dict]:
+    """Fetch recent articles from the GDELT API (entries only)."""
+    return (await fetch_gdelt_classified(client, source)).entries
+
+
+class GdeltBreaker:
+    """Circuit breaker for GDELT across the collector windows of ONE target day.
+
+    State lives in a small JSON file (``{raw_root}/gdelt_breaker.json``):
+    ``{"run_date", "consecutive_failures", "open", "opened_at"}``.
+
+    - CLOSED: the window calls GDELT (with backoff). A failed or invalid outcome
+      adds 1 to ``consecutive_failures``; ok or quiet (GDELT answered) resets it.
+    - OPENS when ``consecutive_failures`` reaches ``threshold``: every remaining
+      window for that ``run_date`` skips GDELT, logged at WARNING each time, so
+      the source is visibly — not silently — disabled for the day.
+    - CLOSES when the target ``run_date`` changes: state recorded for another
+      day is ignored. The 06:00 run never consults the breaker, so it is the
+      daily re-probe.
+
+    Best-effort persistence: an unreadable or unwritable file degrades to a
+    closed breaker (GDELT is tried), never to a failed window."""
+
+    def __init__(self, path: Path, run_date: str, threshold: int = GDELT_BREAKER_THRESHOLD):
+        self.path = path
+        self.run_date = run_date
+        self.threshold = threshold
+        self.state = self._load()
+
+    def _fresh(self) -> dict:
+        return {"run_date": self.run_date, "consecutive_failures": 0,
+                "open": False, "opened_at": None}
+
+    def _load(self) -> dict:
+        try:
+            data = json.loads(self.path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return self._fresh()
+        if not isinstance(data, dict) or data.get("run_date") != self.run_date:
+            return self._fresh()
+        state = self._fresh()
+        state.update({k: data[k] for k in state if k in data})
+        return state
+
+    def _save(self) -> None:
+        try:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            self.path.write_text(json.dumps(self.state), encoding="utf-8")
+        except OSError as exc:
+            logger.warning("GDELT breaker: could not persist state (%s)", exc)
+
+    def allow(self) -> bool:
+        if not self.state["open"]:
+            return True
+        logger.warning(
+            "GDELT SKIPPED — circuit breaker OPEN for target %s since %s after %d "
+            "consecutive failed windows; GDELT is effectively DISABLED until the "
+            "next target day (the 06:00 run re-probes it).",
+            self.run_date, self.state["opened_at"], self.state["consecutive_failures"],
+        )
+        return False
+
+    def record(self, status: str, now_iso: str) -> None:
+        if status in ("ok", "quiet"):
+            self.state["consecutive_failures"] = 0
+            self.state["open"] = False
+            self.state["opened_at"] = None
+        else:
+            self.state["consecutive_failures"] += 1
+            if not self.state["open"] and self.state["consecutive_failures"] >= self.threshold:
+                self.state["open"] = True
+                self.state["opened_at"] = now_iso
+                logger.warning(
+                    "GDELT circuit breaker OPENED for target %s: %d consecutive "
+                    "failed windows. GDELT is now effectively DISABLED for the "
+                    "remaining windows of this target day.",
+                    self.run_date, self.state["consecutive_failures"],
+                )
+        self._save()
 
 
 def deduplicate(findings: list[dict]) -> list[dict]:
@@ -384,13 +595,19 @@ def merge_append(
 
 
 async def gather_fresh_findings(
-    now_utc: datetime, *, undated_seen_path: Path
+    now_utc: datetime, *, undated_seen_path: Path,
+    gdelt_breaker: Optional["GdeltBreaker"] = None,
 ) -> tuple[list[dict], dict]:
     """Fetch every enabled source, in-run URL-dedup, and cross-day undated
     suppression — the shared fetch core for both the 06:00 run and every
     collector window. Returns ``(findings, stats)``; ``findings`` is the cleaned
     delta ready to merge-append into a store. ``undated_seen_path`` is threaded so
-    tests/smokes point it at a temp root (never the real ``raw/``)."""
+    tests/smokes point it at a temp root (never the real ``raw/``).
+
+    Every source gets one outcome (``FEED_OUTCOMES``); ``stats`` carries the four
+    counts plus ``feed_outcomes`` (non-ok sources with their reason). Their sum
+    equals the number of sources. ``gdelt_breaker`` is passed by the collector
+    windows only; the 06:00 run always calls GDELT."""
     today = now_utc.strftime("%Y-%m-%d")
     cutoff = now_utc - timedelta(hours=24)
 
@@ -402,34 +619,33 @@ async def gather_fresh_findings(
     )
 
     all_findings: list[dict] = []
-    feeds_ok = 0
-    feeds_failed = 0
+    outcomes: list[tuple[str, FeedOutcome]] = []
 
     async with httpx.AsyncClient(
         headers={"User-Agent": "IndependentWire/0.1 (news aggregator)"}
     ) as client:
         # Fetch RSS feeds concurrently
-        tasks = [fetch_rss(client, s, cutoff) for s in rss_sources]
+        tasks = [fetch_rss_classified(client, s, cutoff) for s in rss_sources]
         results = await asyncio.gather(*tasks)
-        for entries in results:
-            if entries:
-                all_findings.extend(entries)
-                feeds_ok += 1
-            else:
-                feeds_failed += 1
+        outcomes.extend((s["name"], r) for s, r in zip(rss_sources, results))
 
         # Fetch API sources
         for s in api_sources:
             if "gdelt" in s["url"]:
-                entries = await fetch_gdelt(client, s)
+                if gdelt_breaker is not None and not gdelt_breaker.allow():
+                    outcome = FeedOutcome("failed", [], "skipped: circuit breaker open")
+                else:
+                    outcome = await fetch_gdelt_classified(client, s)
+                    if gdelt_breaker is not None:
+                        gdelt_breaker.record(outcome.status, now_utc.isoformat())
             else:
                 logger.warning("Unknown API source: %s", s["name"])
-                entries = []
-            if entries:
-                all_findings.extend(entries)
-                feeds_ok += 1
-            else:
-                feeds_failed += 1
+                outcome = FeedOutcome("failed", [], "unknown API source")
+            outcomes.append((s["name"], outcome))
+
+    for _name, outcome in outcomes:
+        all_findings.extend(outcome.entries)
+    counts = Counter(o.status for _n, o in outcomes)
 
     # Deduplicate (URL-based, in-run)
     raw_count = len(all_findings)
@@ -443,13 +659,43 @@ async def gather_fresh_findings(
     _save_undated_seen(undated_seen_path, seen)
 
     stats = {
-        "feeds_ok": feeds_ok,
-        "feeds_failed": feeds_failed,
+        "feeds_ok": counts["ok"],
+        "feeds_quiet": counts["quiet"],
+        "feeds_invalid": counts["invalid"],
+        "feeds_failed": counts["failed"],
+        "feed_outcomes": {
+            status: [{"name": n, "detail": o.detail}
+                     for n, o in outcomes if o.status == status]
+            for status in ("quiet", "invalid", "failed")
+        },
         "raw_count": raw_count,
         "dupes": dupes,
         "undated_dropped": undated_dropped,
     }
     return all_findings, stats
+
+
+def feed_counts_summary(stats: dict) -> str:
+    """``"79 feeds: 71 ok, 6 quiet, 0 invalid, 2 failed"`` — the four counts the
+    run log and the daily report read. ``failed`` is real failures only."""
+    n = {k: stats.get(f"feeds_{k}", 0) for k in FEED_OUTCOMES}
+    return (f"{sum(n.values())} feeds: {n['ok']} ok, {n['quiet']} quiet, "
+            f"{n['invalid']} invalid, {n['failed']} failed")
+
+
+def log_feed_outcomes(stats: dict) -> None:
+    """One line per non-ok bucket, naming each source (and its reason), so the
+    morning check reads the failures instead of grepping for them."""
+    by = stats.get("feed_outcomes") or {}
+    for status, level in (("failed", logging.WARNING), ("invalid", logging.WARNING),
+                          ("quiet", logging.INFO)):
+        items = by.get(status) or []
+        if not items:
+            continue
+        names = "; ".join(
+            f"{i['name']} ({i['detail']})" if i.get("detail") else i["name"] for i in items
+        )
+        logger.log(level, "  %s (%d): %s", status, len(items), names)
 
 
 async def main():
@@ -477,11 +723,12 @@ async def main():
 
     elapsed = time.time() - start
     logger.info(
-        "Done in %.1fs: %d feeds OK, %d failed, %d entries "
+        "Done in %.1fs: %s, %d entries "
         "(%d duplicates removed, %d repeat-undated suppressed), written to %s",
-        elapsed, stats["feeds_ok"], stats["feeds_failed"], len(merged),
+        elapsed, feed_counts_summary(stats), len(merged),
         stats["dupes"], stats["undated_dropped"], out_path,
     )
+    log_feed_outcomes(stats)
     if existing:
         logger.info(
             "  (merge mode: %d pre-existing collector entries preserved, "
@@ -631,7 +878,12 @@ async def collect_window(
     and the store's read-modify-write are never touched concurrently. No locking
     is needed (spec: document, don't over-engineer)."""
     start = time.time()
-    fetch = fetch_fn or gather_fresh_findings
+    # The GDELT breaker is wired into the default fetch only, keyed by the target
+    # day; an injected fetch_fn (tests) keeps its plain signature.
+    fetch = fetch_fn or partial(
+        gather_fresh_findings,
+        gdelt_breaker=GdeltBreaker(raw_root / "gdelt_breaker.json", run_date),
+    )
     fresh, stats = await fetch(now_utc, undated_seen_path=raw_root / "undated_seen.json")
 
     out_path = raw_root / run_date / "feeds.json"
@@ -649,12 +901,18 @@ async def collect_window(
         "store_before": len(existing),
         "wall_s": round(elapsed, 1),
     }
+    for k in FEED_OUTCOMES:
+        if f"feeds_{k}" in stats:
+            result[f"feeds_{k}"] = stats[f"feeds_{k}"]
     line = (
         f"{now_utc.isoformat()} [{window_label}] target={run_date} "
         f"fetched={result['fetched']} new_after_dedup={appended} "
         f"store_total={len(merged)} wall={elapsed:.1f}s"
     )
+    if "feeds_quiet" in stats:
+        line += " " + " ".join(f"{k}={stats.get(f'feeds_{k}', 0)}" for k in FEED_OUTCOMES)
     logger.info("collector window: %s", line)
+    log_feed_outcomes(stats)
     _write_collector_log(log_dir, run_date, line)
 
     # Phase 3 — MADLAD prewarm of the non-Latin delta into the cache the 06:00
