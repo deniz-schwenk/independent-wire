@@ -2700,12 +2700,16 @@ def _alias_near(a: str, b: str) -> bool:
 
 
 def merge_candidates_present(final_actors: list) -> tuple[bool, list[str]]:
-    """``(present, reasons)`` for one topic's resolver input.
+    """``(present, reasons)`` for one topic's resolver input — the BROAD
+    signal set.
 
-    ``present`` False means "no plausible merge or anonymous-flag candidate in
-    this actor list", i.e. an empty resolver output is a TRUE NEGATIVE and must
-    not be retried, escalated or flagged. ``reasons`` names the signals that
-    fired, so a stage log line can say WHY rather than just yes/no.
+    Since TASK-EMPTY-TRIGGER-PRECISION-FIX this no longer decides escalation:
+    it fired on 114 of 116 production rows (2026-09-01 .. 10-09) and turned two
+    correct empty answers into degradations. It is kept so the stage log can
+    still name every lexical hint; a hint that
+    :func:`merge_candidates_confirmed` does not confirm is a WEAK signal, and an
+    empty answer with only weak signals is accepted with an INFO line.
+    ``reasons`` names the signals that fired.
     """
     actors = [a for a in (final_actors or []) if isinstance(a, dict)]
     names = [a.get("name", "") or "" for a in actors]
@@ -2783,12 +2787,15 @@ def merge_candidates_present(final_actors: list) -> tuple[bool, list[str]]:
     if len(doms) >= 2:
         hits.append("multi_script")
 
-    # S7 - an actor's ROLE text names another actor. This is how the corpus's
-    # legitimate person<->organisation merges present themselves: "Matthew
-    # Diller", role "President, New York City Bar Association", beside an actor
-    # called "New York City Bar Association". The other actor's FULL
+    # S7 - an actor's ROLE text names another actor. The other actor's FULL
     # multi-token name must appear, so "President of the United States" does
-    # not match an actor called "United States".
+    # not match an actor called "United States". Note what this matches most
+    # often: a person beside their own organisation ("Matthew Diller", role
+    # "President, New York City Bar Association"). The resolver prompt says a
+    # person and an institution are NEVER the same entity, so that is not a
+    # merge candidate; an earlier comment here called it a legitimate merge,
+    # which was wrong against the shipped prompt. The confirming rule in
+    # merge_candidates_confirmed excludes those pairs.
     for i, a in enumerate(actors):
         if "role_names_actor" in hits:
             break
@@ -2799,6 +2806,244 @@ def merge_candidates_present(final_actors: list) -> tuple[bool, list[str]]:
             if i != j and len(nt) >= 2 and set(nt) <= rs:
                 hits.append("role_names_actor")
                 break
+
+    return bool(hits), hits
+
+
+# --- confirming rules (TASK-EMPTY-TRIGGER-PRECISION-FIX) ---------------------
+#
+# merge_candidates_present above is lexical: a shared everyday word
+# ("department", "press", "da Silva"), a source-class noun inside an
+# institution's name ("White House Correspondents' Association"), or a role
+# naming the person's own employer each count. On 2026-09-20 t1 and 2026-10-09
+# t2 that degraded two topics whose correct answer was empty
+# (scratch/audit/resolve-empty/REPORT.md). The rules below confirm a candidate
+# only where the resolver prompt would allow a merge or a flag:
+#   a) role text naming another actor never links a person to an institution,
+#      or one named person to another ("Son of ... Jair Bolsonaro");
+#   b) source-class / role nouns count only as the HEAD of a name that is a
+#      label ("US officials", "EU official"), not inside an institution's name;
+#   c) a variant pair needs a shared token that is not everyday vocabulary, and
+#      a person beside an institution is not a variant pair.
+# S1 / S3 / S4 / S6 are unchanged. Replay over 408 historical topics:
+# scratch/audit/empty-trigger-fix/.
+
+# Institution head nouns, in the languages the corpus's actor names use.
+_ACTOR_INST = re.compile(
+    r"\b(ministr\w*|minist[eè]re|ministerio|ministerium|\w*ministerium|"
+    r"department|departamento|government|gouvernement|governo|gobierno|"
+    r"regierung|administration|agenc\w+|organi[sz]ations?|association|"
+    r"asociaci[oó]n|foundation|fundaci[oó]n|committee|comit[eé]|council|"
+    r"conseil|consejo|institute|instituto|institut|university|universidad|"
+    r"universit[eé]|academy|akademie|academia|army|ej[eé]rcito|arm[eé]e|armed|"
+    r"forces|fuerzas|military|militar|navy|police|polic[ií]a|guard|corps|"
+    r"party|partido|parti|union|uni[oó]n|federation|league|alliance|coalition|"
+    r"court|tribunal|parliament|congress|senate|assembly|commission|"
+    r"comisi[oó]n|authority|authorities|service|services|servicio|office|"
+    r"bureau|company|corporation|corp|inc|ltd|group|grupo|bank|banco|exchange|"
+    r"railways?|network|cent(?:er|re)s?|ngo|movement|front|church|club|press|"
+    r"news|media|times|token|project|programme|program|fund|cross|crescent|"
+    r"command|staff|embassy|consulate|state|states|republic|kingdom|"
+    r"secretariat|board|chamber|syndicate|cdc|who|un|eu|nato|protection|"
+    r"defen[cs]e|civil|house)\b", re.I)
+
+# Titles and person nouns: a role reading like this describes a person.
+_ACTOR_TITLE = re.compile(
+    r"\b(president|presidente|pr[eé]sident|minister|ministra|ministro|spokes\w*|"
+    r"porte-parole|portavoz|sprecher\w*|director|directora|secretary|chief|"
+    r"head|professor|student|lawyer|attorney|ceo|founder|chair\w*|leader|"
+    r"member|ambassador|governor|mayor|senator|deputy|deputada|analyst|"
+    r"researcher|journalist|reporter|editor|commander|general|officer|"
+    r"coordinator|candidate|businessman|businesswoman|creator|son|daughter|"
+    r"wife|husband|brother|sister|mother|father|adviser|advisor|aide|envoy|"
+    r"official|representative|lawmaker|congressman|congresswoman|mp|king|"
+    r"queen|prince|princess|pope|emir|sheikh|scientist|economist|historian|"
+    r"politician|activist|participant|resident|voter|teacher|doctor|nurse|"
+    r"pilot|soldier|lead|negotiator|correspondent|anchor|host|producer|"
+    r"writer|author|poet|artist|singer|actor|actress|player|coach|manager|"
+    r"partner|consultant|expert|specialist|lecturer|scholar|fellow|judge|"
+    r"prosecutor|witness|survivor|victim|farmer|worker|owner|entrepreneur|"
+    r"investor|banker|trader|influencer|blogger|cleric|imam|rabbi|priest|"
+    r"bishop|archbishop|cardinal|justice)\b", re.I)
+
+# Name particles: not part of the token count that makes a personal name.
+_NAME_PARTICLES = {
+    "da", "de", "do", "dos", "das", "di", "del", "della", "van", "von", "der",
+    "den", "al", "el", "bin", "ibn", "abu", "le", "la", "du", "y", "e", "mc",
+    "st",
+}
+
+# Shared tokens that do not identify an entity: institutional vocabulary,
+# compass and generic adjectives, and name particles ("da" in "Lula da Silva"
+# and "Janja da Silva").
+_EVERYDAY_TOKENS = {
+    "us", "uk", "eu", "un", "usa", "united", "states", "state", "national",
+    "international", "federal", "department", "ministry", "ministers",
+    "minister", "office", "government", "council", "committee", "association",
+    "foundation", "institute", "university", "party", "union", "forces",
+    "army", "agency", "organization", "organisation", "freedom", "press",
+    "news", "world", "center", "centre", "group", "republic", "people",
+    "peoples", "democratic", "front", "movement", "court", "supreme", "high",
+    "house", "white", "defense", "defence", "security", "health", "affairs",
+    "foreign", "public", "human", "rights", "media", "bank", "central",
+    "development", "research", "policy", "commission", "authority", "service",
+    "services", "police", "military", "navy", "air", "force", "general",
+    "new", "north", "south", "east", "west", "great", "royal", "civil",
+    "protection", "emergency", "global", "economic", "social",
+    "da", "do", "dos", "das", "di", "del", "della", "e", "y", "den", "abu",
+    "el", "mc", "st", "jr", "sr",
+}
+
+_PARENS_RX = re.compile(r"[\uff08(][^\uff09)]*[\uff09)]")
+
+
+def _alias_head(name: str) -> str:
+    """The head phrase: the part before a first of/for/at/in/from (or the
+    Romance/German equivalents), else the whole name."""
+    return re.split(r"\s+(?:of|for|at|in|from|de|del|du|des)\s+", name or "",
+                    maxsplit=1)[0]
+
+
+def _alias_head_tokens(name: str) -> list[str]:
+    """Candidate head nouns: the head phrase's last word, and for a two-word
+    name also its first ("Stadtsprecher Stade"). Parentheticals are ignored."""
+    body = _PARENS_RX.sub(" ", _alias_head(name))
+    words = re.findall(r"[^\W\d_][\w'’-]*", body, flags=re.UNICODE)
+    words = [re.sub(r"['’]s$", "", w) for w in words]
+    if not words:
+        return []
+    return [words[-1]] + ([words[0]] if len(words) <= 2 else [])
+
+
+def _alias_personal_name(name: str) -> bool:
+    """A Latin-script personal name: 2-5 capitalised words (particles aside),
+    no digits, no possessive, and no institution, title or label noun."""
+    body = _PARENS_RX.sub(" ", name or "").strip()
+    if not body or re.search(r"\d", body) or re.search(r"['’]s\b", body):
+        return False
+    words = [w for w in body.split() if w.lower().strip(".,") not in _NAME_PARTICLES]
+    if not 2 <= len(words) <= 5 or _alias_dominant_script(body) != "latin":
+        return False
+    for w in words:
+        w = w.lstrip("'\"‘“(")
+        if w.lower().startswith(("al-", "el-")):
+            w = w.split("-", 1)[1]
+        if not w[:1].isupper():
+            return False
+    return not (_ACTOR_INST.search(body) or _ACTOR_TITLE.search(body)
+                or _ALIAS_GENERIC.search(body) or _ALIAS_ROLE_NAME.search(body))
+
+
+def _alias_label_head(name: str) -> bool:
+    return any(_ACTOR_TITLE.fullmatch(w) or _ALIAS_GENERIC.fullmatch(w)
+               or _ALIAS_ROLE_NAME.fullmatch(w) for w in _alias_head_tokens(name))
+
+
+def actor_kind(actor: dict) -> str:
+    """``person`` / ``institution`` / ``label`` / ``unknown``, from the name's
+    shape and the words of name and role. Deterministic; ``unknown`` is never
+    excluded from anything."""
+    name, role = actor.get("name") or "", actor.get("role") or ""
+    if _alias_personal_name(name):
+        if _ACTOR_INST.search(role) and not _ACTOR_TITLE.search(role):
+            return "institution"    # "Saudi Arabia", role "Government of ..."
+        return "person"
+    if _alias_label_head(name):
+        return "label"              # "US officials", "Acting Police Minister"
+    if _ACTOR_INST.search(name) or re.fullmatch(r"[A-Z]{2,6}", name.strip()):
+        return "institution"
+    if _ACTOR_INST.search(role) and not _ACTOR_TITLE.search(role):
+        return "institution"
+    return "unknown"
+
+
+def merge_candidates_confirmed(final_actors: list) -> tuple[bool, list[str]]:
+    """``(present, reasons)`` under the confirming rules (a/b/c above) — the
+    verdict the stage escalates on. ``present`` False means an empty resolver
+    answer is accepted: no retries, no fallback rung, no degradation."""
+    actors = [a for a in (final_actors or []) if isinstance(a, dict)]
+    names = [a.get("name", "") or "" for a in actors]
+    T = [_alias_toks(n) for n in names]
+    kinds = [actor_kind(a) for a in actors]
+    hits: list[str] = []
+
+    keys = [" ".join(sorted(t)) for t in T]
+    if len(keys) != len(set(keys)):
+        hits.append("norm_collision")
+
+    # c) variant pair on a non-everyday shared token; never person<->institution
+    for i in range(len(T)):
+        if "variant_pair" in hits:
+            break
+        for j in range(i + 1, len(T)):
+            A, B = set(T[i]), set(T[j])
+            shared = A & B
+            distinctive = shared - _EVERYDAY_TOKENS
+            if not distinctive or {kinds[i], kinds[j]} == {"person", "institution"}:
+                continue
+            if A <= B or B <= A or len(distinctive) >= 2 or any(
+                    _alias_near(x, y) for x in A - shared for y in B - shared):
+                hits.append("variant_pair")
+                break
+
+    acro: set[str] = set()
+    for n in names:
+        acro |= {m.upper() for m in re.findall(r"\b[A-Z]{2,6}\b", n)}
+        for g in _alias_parens(n):
+            c = re.sub(r"[^A-Za-z]", "", g).upper()
+            if 2 <= len(c) <= 6:
+                acro.add(c)
+    if acro & {"".join(t[0] for t in tk).upper() for tk in T if len(tk) >= 2}:
+        hits.append("acronym")
+
+    for i, n in enumerate(names):
+        if "paren_gloss" in hits:
+            break
+        for g in _alias_parens(n):
+            gt = set(_alias_toks(g))
+            if gt and any(i != j and gt & set(t) for j, t in enumerate(T)):
+                hits.append("paren_gloss")
+                break
+
+    # b) whole-name labels only
+    for i, n in enumerate(names):
+        if kinds[i] != "label":
+            continue
+        heads = _alias_head_tokens(n)
+        if any(_ALIAS_GENERIC.fullmatch(w) for w in heads):
+            if "generic_label" not in hits:
+                hits.append("generic_label")
+        elif "role_as_name" not in hits:
+            hits.append("role_as_name")
+
+    doms: set[str] = set()
+    for n in names:
+        d = _alias_dominant_script(n)
+        if not d:
+            continue
+        if d != "latin" and any(re.search(r"[A-Za-z]{3,}", g)
+                                for g in _alias_parens(n)):
+            continue
+        doms.add(d)
+    if len(doms) >= 2:
+        hits.append("multi_script")
+
+    # a) role naming another actor, never across person/institution or between
+    #    two named persons
+    for i, a in enumerate(actors):
+        if "role_names_actor" in hits:
+            break
+        rs = set(_alias_toks(a.get("role", "") or ""))
+        if not rs:
+            continue
+        for j, nt in enumerate(T):
+            if i == j or len(nt) < 2 or not set(nt) <= rs:
+                continue
+            pair = {kinds[i], kinds[j]}
+            if "person" in pair and pair <= {"person", "institution"}:
+                continue
+            hits.append("role_names_actor")
+            break
 
     return bool(hits), hits
 
@@ -3169,18 +3414,31 @@ class ResolveActorAliasesStage(_AgentStageBase):
 
         # Is an empty answer even plausible for THIS actor list
         # (TASK-ALIAS-GATE-TRIGGER)? Computed once, deterministically, from the
-        # input alone — see merge_candidates_present above for why the two
-        # errors are treated asymmetrically.
-        candidates_present, candidate_reasons = merge_candidates_present(
+        # input alone. Escalation follows the CONFIRMING rules
+        # (TASK-EMPTY-TRIGGER-PRECISION-FIX); the broad lexical signals are
+        # still computed so the log names them. A broad signal the confirming
+        # rules do not back is a weak signal.
+        candidates_present, candidate_reasons = merge_candidates_confirmed(
             final_actors)
+        _broad_present, broad_reasons = merge_candidates_present(final_actors)
+        weak_reasons = [r for r in broad_reasons if r not in candidate_reasons]
         if not candidates_present and input_actor_count >= 3:
-            logger.info(
-                "ResolveActorAliasesStage: %d actors, no merge or "
-                "anonymous-flag candidate found by any signal — an empty "
-                "result is the expected answer here and will be accepted as "
-                "such (no retries, no fallback rung, no degradation).",
-                input_actor_count,
-            )
+            if weak_reasons:
+                logger.info(
+                    "ResolveActorAliasesStage: %d actors, only weak signals %s "
+                    "(not confirmed: no pair the resolver prompt would merge or "
+                    "flag) — an empty result will be accepted as the expected "
+                    "answer (no retries, no fallback rung, no degradation).",
+                    input_actor_count, weak_reasons,
+                )
+            else:
+                logger.info(
+                    "ResolveActorAliasesStage: %d actors, no merge or "
+                    "anonymous-flag candidate found by any signal — an empty "
+                    "result is the expected answer here and will be accepted as "
+                    "such (no retries, no fallback rung, no degradation).",
+                    input_actor_count,
+                )
 
         def _is_empty_resolver(parsed: Any) -> bool:
             if input_actor_count < 3:
