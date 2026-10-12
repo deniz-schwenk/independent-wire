@@ -436,6 +436,13 @@ def test_the_traps_that_broke_the_naive_discriminator_stay_fixed():
          "Participation Association)"]))
     assert present is False, why
 
+    # and the confirming rules agree on both traps
+    from src.agent_stages import merge_candidates_confirmed
+    for names in (["Emil Michael", "Michael Kratsios", "Josh Gottheimer",
+                   "Josh Engles"],):
+        present, why = merge_candidates_confirmed(_actors(names))
+        assert present is False, why
+
 
 def test_cross_script_variants_without_a_latin_handle_do_count():
     """The hazard the brief names: \u0421\u0438\u0431\u0456\u0433\u0430 -> Sybiha is invisible to any
@@ -463,36 +470,194 @@ def test_cross_script_variants_without_a_latin_handle_do_count():
     (["Donald Trump", "Sam Altman", "Elon Musk"], False, None),
 ])
 def test_each_signal_fires_on_its_own_shape(names, expect, signal):
-    from src.agent_stages import merge_candidates_present
+    from src.agent_stages import (merge_candidates_confirmed,
+                                  merge_candidates_present)
 
-    present, why = merge_candidates_present(_actors(names))
-    assert present is expect, why
-    if signal:
-        assert signal in why
+    for fn in (merge_candidates_present, merge_candidates_confirmed):
+        present, why = fn(_actors(names))
+        assert present is expect, (fn.__name__, why)
+        if signal:
+            assert signal in why, (fn.__name__, why)
 
 
 def test_role_text_naming_another_actor_counts():
-    """How the corpus's legitimate person<->organisation merges present
-    themselves — the name pair alone shares nothing."""
-    from src.agent_stages import merge_candidates_present
+    """The BROAD S7 signal still fires when an actor's role names another
+    actor. The CONFIRMING rule follows the resolver prompt instead: a person and
+    an institution are never the same entity, nor are two named individuals.
+
+    This test used to call "Matthew Diller" (role "President, New York City Bar
+    Association") beside "New York City Bar Association" a legitimate merge.
+    Against the shipped prompt it is not (TASK-EMPTY-TRIGGER-PRECISION-FIX), so
+    it stays a broad signal and is not confirmed."""
+    from src.agent_stages import (merge_candidates_confirmed,
+                                  merge_candidates_present)
 
     actors = _actors(["Matthew Diller", "New York City Bar Association"])
     actors[0]["role"] = "President, New York City Bar Association"
     present, why = merge_candidates_present(actors)
-    assert present is True
-    assert "role_names_actor" in why
+    assert present is True and "role_names_actor" in why
+    assert merge_candidates_confirmed(actors) == (False, [])
 
-    # It requires the other actor's FULL multi-token name, but that still
-    # matches a geographic phrase embedded in a role: "Marco Rubio", role
-    # "Secretary of State of the United States", beside an actor "United
-    # States", fires. That is a FALSE POSITIVE and it is accepted knowingly —
-    # it costs at most the retries the stage already made, whereas the opposite
-    # error accepts a real degradation in silence. Pinned so the asymmetry is a
-    # recorded decision rather than an accident.
+    # The accepted broad false positive of TASK-ALIAS-GATE-TRIGGER ("Marco
+    # Rubio", role "Secretary of State of the United States", beside "United
+    # States") still fires broadly and is no longer confirmed.
     actors = _actors(["Marco Rubio", "United States"])
     actors[0]["role"] = "Secretary of State of the United States"
     present, why = merge_candidates_present(actors)
     assert present is True and "role_names_actor" in why
+    assert merge_candidates_confirmed(actors) == (False, [])
+
+    # What S7 is for, and still confirms: an institution whose role names
+    # another institution (a cross-language rendering of one ministry) ...
+    actors = _actors(["Ministerio de Sanidad", "French Ministry of Health"])
+    actors[0]["role"] = "French Ministry of Health"
+    actors[1]["role"] = "Ministry of Health of France"
+    present, why = merge_candidates_confirmed(actors)
+    assert present is True and "role_names_actor" in why
+
+    # ... and a role-label standing for a person.
+    actors = _actors(["Israel's Prime Minister", "Benjamin Netanyahu"])
+    actors[0]["role"] = "Prime Minister of Israel"
+    actors[1]["role"] = "Prime Minister of Israel"
+    present, why = merge_candidates_confirmed(actors)
+    assert present is True and "role_names_actor" in why
+
+
+# --- 6. the confirming rules (TASK-EMPTY-TRIGGER-PRECISION-FIX) -------------
+# Two production true empties the broad signals degraded
+# (scratch/audit/resolve-empty/REPORT.md), reduced to the actors behind every
+# signal that fired. Weak signal := a broad signal the confirming rules do not
+# back. Replay over 408 historical topics: scratch/audit/empty-trigger-fix/.
+
+def _actors_with_roles(pairs):
+    acts = _actors([n for n, _ in pairs])
+    for a, (_, role) in zip(acts, pairs):
+        a["role"] = role
+    return acts
+
+
+_TRUE_EMPTY_2026_09_20_T1 = [
+    ("Freedom of the Press Foundation", "Press freedom advocacy organisation"),
+    ("Committee of Reporters for Freedom of the Press", "Press freedom organization"),
+    ("US Treasury Department", "United States Department of the Treasury"),
+    ("US Department of Defense", "United States Department of Defense"),
+    ("White House Correspondents' Association", "White House Correspondents' Association"),
+    ("Jacqui Heinrich", "President of the White House Correspondents' Association"),
+    ("Seth Stern", "Chief of advocacy at the Freedom of the Press Foundation"),
+    ("Bruce Brown", "President of the Reporters Committee for Freedom of the Press"),
+    ("Pete Hegseth", "US Secretary of Defense"),
+]
+_TRUE_EMPTY_2026_10_09_T2 = [
+    ("Luiz Inácio Lula da Silva", "President of Brazil"),
+    ("Rosângela 'Janja' da Silva", "First Lady of Brazil"),
+    ("Jair Bolsonaro", "Former President of Brazil"),
+    ("Eduardo Bolsonaro", "Son of former President Jair Bolsonaro and lawmaker"),
+    ("Kevim Flores", "Creator of the Brasil 22 Token project"),
+    ("Brasil 22 Token", "Cryptocurrency project rewarding pro-Flávio posts"),
+    ("Natália Boulos", "Federal deputy (PSOL)"),
+    ("Guilherme Boulos", "Minister of the General Secretariat of the Presidency"),
+]
+
+
+@pytest.mark.parametrize("shape", [_TRUE_EMPTY_2026_09_20_T1,
+                                   _TRUE_EMPTY_2026_10_09_T2])
+def test_production_true_empties_have_only_weak_signals(shape):
+    from src.agent_stages import (merge_candidates_confirmed,
+                                  merge_candidates_present)
+
+    actors = _actors_with_roles(shape)
+    assert merge_candidates_present(actors)[0] is True, "broad still fires"
+    assert merge_candidates_confirmed(actors) == (False, [])
+
+
+@pytest.mark.parametrize("names,kind", [
+    (("Bruce Brown", "President of the Reporters Committee"), "person"),
+    (("Saudi Arabia", "Government of Saudi Arabia"), "institution"),
+    (("US Department of Defense", "United States Department of Defense"), "institution"),
+    (("White House Correspondents' Association", ""), "institution"),
+    (("US officials", ""), "label"),
+    (("Senior US official (unnamed)", "Senior US government official"), "label"),
+    (("Stadtsprecher Stade", "City spokesperson of Stade"), "label"),
+    (("Acting Police Minister", "Acting Police Minister of South Africa"), "label"),
+])
+def test_actor_kind(names, kind):
+    from src.agent_stages import actor_kind
+
+    name, role = names
+    assert actor_kind({"name": name, "role": role}) == kind
+
+
+def test_whole_name_labels_only():
+    """b) a source-class noun counts as the head of a label, not as a word
+    inside an institution's name."""
+    from src.agent_stages import merge_candidates_confirmed
+
+    assert merge_candidates_confirmed(_actors(
+        ["White House Correspondents' Association", "US Department of Defense",
+         "Kaja Kallas"])) == (False, [])
+    for label, signal in (("Senior US official (unnamed)", "generic_label"),
+                          ("EU official", "generic_label"),
+                          ("Stadtsprecher Stade", "role_as_name")):
+        present, why = merge_candidates_confirmed(_actors(
+            ["Kaja Kallas", label, "Emmanuel Macron"]))
+        assert present is True and signal in why, (label, why)
+
+
+def test_variant_pairs_need_a_distinctive_shared_token():
+    """c) everyday words and name particles do not make a variant pair; a real
+    spelling variant still does."""
+    from src.agent_stages import merge_candidates_confirmed
+
+    assert merge_candidates_confirmed(_actors(
+        ["Luiz Inácio Lula da Silva", "Rosângela 'Janja' da Silva",
+         "Kaja Kallas"])) == (False, [])
+    assert merge_candidates_confirmed(_actors(
+        ["US Treasury Department", "US Department of Defense",
+         "Kaja Kallas"])) == (False, [])
+    for a, b in (("Esmaeil Baqaei", "Esmaeil Baghaei"),
+                 ("Abbas Araghchi", "Seyed Abbas Araghchi"),
+                 ("Dmitry Peskov", "Dmitri Peskov")):
+        present, why = merge_candidates_confirmed(_actors([a, b, "Kaja Kallas"]))
+        assert present is True and "variant_pair" in why, (a, b, why)
+
+
+def test_weak_only_empty_passes_silently_with_an_info_line(caplog):
+    """True-empty direction: a well-formed empty answer on a weak-only input is
+    accepted on the first call — no retry, no rung 2, no degradation — and the
+    log names the weak signals instead of crying wolf."""
+    w = _wrapped([_empty()], [])
+    stage = ResolveActorAliasesStage(w)
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.final_actors = _actors_with_roles(_TRUE_EMPTY_2026_10_09_T2)
+
+    with caplog.at_level(logging.INFO, logger="src.agent_stages"):
+        _run(stage, tb, _ro())
+
+    assert len(w.primary.calls) == 1
+    assert len(w.fallback.calls) == 0
+    assert stage.last_degraded is False
+    assert _stage_status(stage) == ("success", {})
+    assert "only weak signals" in caplog.text
+    assert "role_names_actor" in caplog.text
+
+
+def test_real_merge_day_input_still_escalates_on_genuine_emptiness(caplog):
+    """Other direction: the same weak-signal list plus ONE confirmed variant
+    pair (a real merge-day shape) still retries, engages rung 2 and degrades
+    when every rung comes back empty."""
+    w = _wrapped([_empty(), _empty(), _empty()], [_empty()])
+    stage = ResolveActorAliasesStage(w)
+    tb = TopicBus(editor_selected_topic=EditorAssignment(title="t"))
+    tb.final_actors = _actors_with_roles(
+        _TRUE_EMPTY_2026_10_09_T2 + [("Lula da Silva", "President of Brazil")])
+
+    with caplog.at_level(logging.ERROR, logger="src.agent_stages"):
+        _run(stage, tb, _ro())
+
+    assert len(w.primary.calls) == 3
+    assert len(w.fallback.calls) == 1
+    assert stage.last_degraded is True
+    assert "variant_pair" in stage.last_degraded_reason
 
 
 def test_a_malformed_response_is_still_empty_emission(caplog):
