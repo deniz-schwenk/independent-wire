@@ -25,7 +25,7 @@ from src.perspective_chain import PerspectiveDraftVerifyChain
 from src.perspective_fallback import PerspectiveWithFallback  # noqa: F401
 from src.qa_fallback import QaAnalyzeWithFallback
 from src.writer_fallback import WriterWithFallback
-from src.runner.runner import PipelineRunner, degraded_stage_rows
+from src.runner.runner import PipelineRunner, degraded_stage_rows, lost_topic_rows
 from src.runner.stage_lists import (
     build_hydrated_stages,
     build_production_stages,
@@ -1588,6 +1588,23 @@ async def main():
                     "    %s (%s): %s",
                     r.get("stage", "?"), where,
                     r.get("degraded_reason", "unspecified"),
+                )
+
+        # Lost topics: no Topic Package at all — strictly worse than degraded,
+        # so at least as loud (TASK-SILENT-TOPIC-DEATH-FIX O2). The banner
+        # policy is unchanged (SUCCESS while >= 1 topic ships); the loss is
+        # counted here, at ERROR, with the stage and the reason.
+        lost_rows = lost_topic_rows(run_bus)
+        if lost_rows:
+            logger.error(
+                "  Lost topics: %d — this run is NOT clean", len(lost_rows)
+            )
+            for r in lost_rows:
+                logger.error(
+                    "    topic %s (%s) at %s: %s: %s",
+                    r.get("topic_index", "?"), r.get("topic_slug", "?"),
+                    r.get("failed_stage", "?"), r.get("error_type", "?"),
+                    r.get("error", "unspecified"),
                 )
 
         # Post-pipeline: publish if requested and at least 1 topic succeeded

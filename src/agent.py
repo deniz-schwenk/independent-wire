@@ -12,6 +12,8 @@ import json
 import logging
 import os
 import random
+import re
+import shutil
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -53,6 +55,21 @@ MAX_RETRIES = 3
 MAX_STRUCTURED_RETRIES = 2
 BASE_DELAY = 2  # seconds
 RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 529}
+
+# Responses rejected at the transport-parse layer — an HTTP 200 whose body
+# carries no usable ``choices``, or a body that is not JSON at all — are
+# persisted raw so the next occurrence names its own cause. The 2026-10-15
+# topic-0 loss left nothing to read: DeepSeek held one planner call 900 s and
+# then sent JSON without ``choices``, and the body was gone
+# (scratch/audit/topic0-failure/REPORT.md; TASK-SILENT-TOPIC-DEATH-FIX O5).
+# Scratch-side (gitignored), one directory per local day, capped per day and
+# pruned to the newest REJECTED_KEEP_DAYS days. ``IW_REJECTED_RESPONSES_DIR``
+# overrides the root. Only the response is written — never the request, so no
+# prompt or credential lands here beyond what the provider itself sent back.
+REJECTED_KEEP_DAYS = 14
+REJECTED_MAX_PER_DAY = 50
+REJECTED_MAX_BODY_CHARS = 1_000_000
+_REJECTED_DAY_DIR = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 # Provider defaults for LLM API endpoints
 PROVIDER_DEFAULTS: dict[str, dict[str, str | None]] = {
@@ -182,6 +199,99 @@ class AgentAPIError(AgentError):
 
 class AgentTimeoutError(AgentError):
     """Raised when the LLM API call times out."""
+
+
+class AgentMalformedResponseError(AgentAPIError):
+    """An HTTP 200 whose body has no usable ``choices`` (missing, null, empty,
+    or a first choice without a message).
+
+    The openai SDK builds the response object without validation, so such a
+    body used to surface as ``TypeError: 'NoneType' object is not
+    subscriptable`` at the ``response.choices[0]`` read — below every fallback
+    ladder, which catch :class:`AgentError` only, and the topic died silently
+    (2026-10-15). Raised as a transport-class error on purpose: every existing
+    ladder then descends exactly as it does for a 5xx.
+    """
+
+
+def _rejected_responses_root() -> Path:
+    override = os.environ.get("IW_REJECTED_RESPONSES_DIR")
+    if override:
+        return Path(override)
+    return Path(__file__).resolve().parents[1] / "scratch" / "rejected-responses"
+
+
+def _prune_rejected_days(root: Path) -> None:
+    days = sorted(
+        d for d in root.iterdir() if d.is_dir() and _REJECTED_DAY_DIR.match(d.name)
+    )
+    for old in days[:-REJECTED_KEEP_DAYS]:
+        shutil.rmtree(old, ignore_errors=True)
+
+
+def persist_rejected_response(
+    *,
+    agent_name: str,
+    model: str,
+    provider: str,
+    reason: str,
+    body: Any,
+    response_id: str = "",
+) -> Path | None:
+    """Write one rejected response to the scratch-side artifacts directory and
+    return its path. Best-effort: a write failure or a full day is logged and
+    returns ``None`` — persisting evidence must never become a new failure."""
+    try:
+        root = _rejected_responses_root()
+        day_dir = root / datetime.now().date().isoformat()
+        day_dir.mkdir(parents=True, exist_ok=True)
+        if sum(1 for _ in day_dir.glob("*.json")) >= REJECTED_MAX_PER_DAY:
+            logger.warning(
+                "Agent '%s': rejected response NOT persisted — daily cap of %d "
+                "artifacts reached in %s", agent_name, REJECTED_MAX_PER_DAY, day_dir,
+            )
+            return None
+        text = body if isinstance(body, str) else json.dumps(
+            body, ensure_ascii=False, default=str
+        )
+        stamp = datetime.now(timezone.utc).strftime("%H%M%S%f")
+        safe_name = re.sub(r"[^A-Za-z0-9_.-]", "-", agent_name) or "agent"
+        path = day_dir / f"{stamp}-{safe_name}.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "ts": datetime.now(timezone.utc).isoformat(),
+                    "agent": agent_name,
+                    "model": model,
+                    "provider": provider,
+                    "response_id": response_id,
+                    "reason": reason,
+                    "body_chars": len(text),
+                    "truncated": len(text) > REJECTED_MAX_BODY_CHARS,
+                    "body": text[:REJECTED_MAX_BODY_CHARS],
+                },
+                indent=2,
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        _prune_rejected_days(root)
+        return path
+    except Exception as exc:  # noqa: BLE001 — evidence capture is advisory
+        logger.warning(
+            "Agent '%s': could not persist rejected response (%s)", agent_name, exc
+        )
+        return None
+
+
+def _has_usable_choices(response: Any) -> bool:
+    choices = getattr(response, "choices", None)
+    if not choices:
+        return False
+    try:
+        return getattr(choices[0], "message", None) is not None
+    except (TypeError, IndexError, KeyError):
+        return False
 
 
 def _format_tokens_for_log(total_tokens: int, usage_missing_count: int) -> str:
@@ -577,7 +687,7 @@ class Agent:
 
         for attempt in range(MAX_RETRIES + 1):
             try:
-                return await self._client.chat.completions.create(**kwargs)
+                response = await self._client.chat.completions.create(**kwargs)
             except APIStatusError as e:
                 if e.status_code not in RETRYABLE_STATUS_CODES or attempt == MAX_RETRIES:
                     raise AgentAPIError(
@@ -597,21 +707,79 @@ class Agent:
 
                 await asyncio.sleep(delay)
             except json.JSONDecodeError as e:
+                saved = persist_rejected_response(
+                    agent_name=self.name,
+                    model=self.model,
+                    provider=self.provider,
+                    reason=f"response body is not JSON: {e}",
+                    body=getattr(e, "doc", "") or "",
+                )
                 if attempt == MAX_RETRIES:
                     raise AgentAPIError(
-                        f"Agent '{self.name}': Malformed API response after {MAX_RETRIES} retries: {e}",
+                        f"Agent '{self.name}': Malformed API response after {MAX_RETRIES} retries: {e}"
+                        f" (raw body → {saved or 'not persisted'})",
                     ) from e
                 delay = BASE_DELAY * (2**attempt) + random.uniform(0, 1)
                 logger.warning(
-                    "Agent '%s': Malformed API response, retry %d/%d in %.1fs: %s",
+                    "Agent '%s': Malformed API response, retry %d/%d in %.1fs: %s "
+                    "(raw body → %s)",
                     self.name, attempt + 1, MAX_RETRIES, delay, str(e)[:100],
+                    saved or "not persisted",
                 )
                 import asyncio
 
                 await asyncio.sleep(delay)
+            else:
+                # The single choke point for BOTH ``response.choices[0]``
+                # reads in this class (the tool loop in ``run`` and the
+                # structured-output retry in ``_parse_or_retry_structured``):
+                # a 200 without usable choices becomes a transport-class
+                # AgentError here, so no caller ever indexes a None.
+                self._require_usable_choices(response)
+                return response
 
         # Unreachable, but satisfies type checker
         raise AgentAPIError(f"Agent '{self.name}': Retries exhausted")
+
+    def _require_usable_choices(self, response: Any) -> None:
+        """Reject an HTTP 200 whose body carries no usable ``choices``.
+
+        Not retried on the same channel: the one observed case (2026-10-15)
+        held the connection 900 s before sending it, so an in-call retry could
+        cost an hour; the stage's fallback ladder is the remedy, and raising
+        an AgentError is what engages it. The body is persisted first."""
+        if _has_usable_choices(response):
+            return
+        choices = getattr(response, "choices", None)
+        if choices is None:
+            shape = "choices missing or null"
+        elif not choices:
+            shape = "choices empty"
+        else:
+            shape = "first choice has no message"
+        try:
+            body: Any = response.model_dump(mode="json")
+        except Exception:  # noqa: BLE001 — never let the dump mask the cause
+            body = repr(response)
+        response_id = getattr(response, "id", "") or ""
+        reason = f"HTTP 200 without usable choices ({shape})"
+        saved = persist_rejected_response(
+            agent_name=self.name,
+            model=self.model,
+            provider=self.provider,
+            reason=reason,
+            body=body,
+            response_id=response_id,
+        )
+        logger.error(
+            "Agent '%s': %s from %s (channel %s, response_id=%s) — rejected as "
+            "a transport failure so the fallback ladder engages; raw body → %s",
+            self.name, reason, self.model, self.provider, response_id or "?",
+            saved or "not persisted",
+        )
+        raise AgentMalformedResponseError(
+            f"Agent '{self.name}': {reason}; raw body → {saved or 'not persisted'}"
+        )
 
     async def _execute_tool_call(self, tool_call: object) -> dict:
         """Execute a single tool call and return the tool result message."""
