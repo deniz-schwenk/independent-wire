@@ -11,9 +11,12 @@ run spent anything, and each surfaced only mid-run or not at all:
 
 THREE READ-ONLY CHECKS, nothing that can spend:
 
+0. SOCKETS  — the TIME_WAIT count and the ephemeral port range, one INFO line
+   on EVERY run (daily and collector), so the run log carries the daily trend
+   while TIME_WAIT reaping on this box is unreliable. Never a trigger by itself.
 1. NETWORK  — one HEAD request. Failure -> ABORT (exit 3) before step 1, with
-   a diagnosis line carrying the errno, the TIME_WAIT count and the ephemeral
-   port range, so port exhaustion is named, not guessed.
+   a diagnosis line carrying the errno and the same socket reading, so port
+   exhaustion is named, not guessed.
 2. OPENROUTER CREDITS — GET /credits. Remaining below the HARD floor -> ABORT
    with the balance; below the SOFT floor -> WARN and continue. Floors live in
    config/preflight.json.
@@ -144,7 +147,14 @@ def ephemeral_port_range() -> str:
 # ------------------------------------------------------------------ checks
 
 
-def check_network(cfg: dict, fetch: Fetch) -> Result:
+def socket_reading() -> str:
+    """One measurement per run: shared by the INFO line and the network
+    diagnosis, so the two never disagree and netstat runs once."""
+    return (f"TIME_WAIT sockets {time_wait_count()}; "
+            f"ephemeral port range {ephemeral_port_range()}")
+
+
+def check_network(cfg: dict, fetch: Fetch, sockets: str | None = None) -> Result:
     url = cfg["network_probe_url"]
     t0 = time.monotonic()
     try:
@@ -155,8 +165,7 @@ def check_network(cfg: dict, fetch: Fetch) -> Result:
         line = (
             f"NETWORK DOWN: HEAD {url} failed — errno {name}"
             f"{f' ({num})' if num is not None else ''}{exhaustion}: {exc}; "
-            f"TIME_WAIT sockets {time_wait_count()}; "
-            f"ephemeral port range {ephemeral_port_range()}"
+            f"{sockets or socket_reading()}"
         )
         return Result("network", ABORT, line,
                       f"network down (errno {name}{exhaustion})")
@@ -261,7 +270,10 @@ def run_preflight(
     say = lambda s: print(s, file=out, flush=True)  # noqa: E731
     say(f"[0/6] preflight ({mode}) — {datetime.now().strftime('%Y-%m-%d %H:%M:%S %Z')}".rstrip())
 
-    results = [check_network(cfg, fetch)]
+    sockets = socket_reading()
+    say(f"[0/6]   INFO  {sockets}")
+
+    results = [check_network(cfg, fetch, sockets)]
     if results[0].level == OK and mode == "daily":
         with ThreadPoolExecutor(max_workers=2) as pool:
             futures = [

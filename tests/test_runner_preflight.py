@@ -85,6 +85,28 @@ def _fixed_diagnostics(monkeypatch):
     monkeypatch.setattr(pf, "ephemeral_port_range", lambda: "49152-65535 (16384 ports)")
 
 
+# ------------------------------------------------------------------ sockets
+
+
+@pytest.mark.parametrize("mode", ["daily", "collector"])
+def test_time_wait_is_logged_as_info_on_every_run(mode):
+    """The daily TIME_WAIT trend belongs in the run log on green runs too,
+    not only in the failure diagnosis."""
+    rc, out, notes = _run(FakeFetch(), mode=mode)
+    assert rc == pf.EXIT_OK and notes == []
+    assert ("[0/6]   INFO  TIME_WAIT sockets 16211; ephemeral port range "
+            "49152-65535 (16384 ports)") in out.splitlines()
+
+
+def test_sockets_are_measured_once_per_run(monkeypatch):
+    calls = []
+    monkeypatch.setattr(pf, "time_wait_count", lambda: calls.append(1) or "7")
+    exc = urllib.error.URLError(OSError(errno.EADDRNOTAVAIL, "x"))
+    rc, out, _ = _run(FakeFetch(network=exc))
+    assert rc == pf.EXIT_ABORT and len(calls) == 1
+    assert out.count("TIME_WAIT sockets 7;") == 3     # INFO, check line, banner
+
+
 # ------------------------------------------------------------------ network
 
 
