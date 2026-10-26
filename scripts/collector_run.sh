@@ -51,6 +51,16 @@ if [[ -f .env ]]; then
   set -a; source .env; set +a
 fi
 
+# --- Network preflight (TASK-RUNNER-PREFLIGHT) -----------------------------
+# The network check only — no credit calls on a fetch-only window. A dead
+# network or exhausted ephemeral ports skip the window loudly (log + ping);
+# like the branch guard, a skip is self-healing, so exit 0.
+PREFLIGHT_RC=0
+zsh "$REPO/scripts/preflight.sh" collector "collector_run.sh" "$LOG" || PREFLIGHT_RC=$?
+if (( PREFLIGHT_RC == 3 )); then
+  exit 0
+fi
+
 {
   echo "===== collector window — $(date) — branch=$CURRENT_BRANCH ====="
   "$UV" run python scripts/fetch_feeds.py --collector-window

@@ -18,6 +18,9 @@
 #   ALWAYS exits 0. A notification that breaks the runner is worse than no
 #   notification, so every failure here is swallowed after one line on stderr.
 #   NOTIFY_DRY=1 prints the message and sends nothing.
+#   NOTIFY_KIND=warn marks a WARNING the run continues past (runner preflight,
+#   TASK-RUNNER-PREFLIGHT): ⚠️ instead of 🚨 and "The run continues." instead
+#   of "No run was completed." Default (unset / anything else) is unchanged.
 #
 # CREDENTIALS. TELEGRAM_BOT_TOKEN and TELEGRAM_HOME_CHANNEL, looked up in the
 # repo .env first and then ~/.hermes/.env (the existing Hermes bot). The repo
@@ -40,10 +43,15 @@ REASON="${${REASON%%$'\n'*}##[[:space:]]#}"
 REPO="${${0:A}:h:h}"
 STAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 HOSTNAME_SHORT="$(hostname -s 2>/dev/null || echo host)"
-TEXT="🚨 Independent Wire — ${SOURCE}
+if [[ "${NOTIFY_KIND:-}" == "warn" ]]; then
+  ICON="⚠️"; FOOTER="The run continues. See ~/iw-logs/."
+else
+  ICON="🚨"; FOOTER="No run was completed. See ~/iw-logs/."
+fi
+TEXT="${ICON} Independent Wire — ${SOURCE}
 ${STAMP} on ${HOSTNAME_SHORT}
 ${REASON}
-No run was completed. See ~/iw-logs/."
+${FOOTER}"
 
 if [[ -n "${NOTIFY_DRY:-}" ]]; then
   print -r -- "--- NOTIFY_DRY: would send ---"
