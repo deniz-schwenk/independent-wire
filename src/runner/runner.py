@@ -142,6 +142,50 @@ def fire_degradation_gate(run_bus: Optional[RunBus]) -> list[dict]:
     return rows
 
 
+def lost_topic_rows(run_bus: Optional[RunBus]) -> list[dict]:
+    """Every topic of this run that produced NO Topic Package, in order.
+
+    One row per lost topic — the runner's ``topic-N`` failure row, which
+    carries ``topic_index``, ``topic_slug``, ``failed_stage``, ``error_type``,
+    ``error`` and the traceback. Same reasoning as :func:`degraded_stage_rows`:
+    read off the existing ``run_stage_log`` slot, no new Bus slot. Public so
+    ``scripts/run.py`` can count them in the run summary.
+    """
+    if run_bus is None:
+        return []
+    return [
+        r for r in (run_bus.run_stage_log or [])
+        if isinstance(r, dict) and r.get("kind") == "topic"
+        and r.get("status") == "failed"
+        and str(r.get("stage", "")).startswith("topic-")
+    ]
+
+
+def fire_lost_topic_gate(run_bus: Optional[RunBus]) -> list[dict]:
+    """A lost topic is strictly worse than a degraded one, so it is at least as
+    loud: ERROR at publish decision time, one line per topic naming the stage
+    and the reason (TASK-SILENT-TOPIC-DEATH-FIX O2). Until 2026-10-26 a lost
+    topic surfaced only as an INFO line in the run summary while the banner
+    read SUCCESS. Publishing policy is unchanged — the topics that did complete
+    still ship. Returns the rows."""
+    rows = lost_topic_rows(run_bus)
+    if not rows:
+        return []
+    logger.error(
+        "LOST TOPIC GATE: %d topic(s) produced NO Topic Package in this run. "
+        "Publishing proceeds with the remaining topics — this run is NOT clean.",
+        len(rows),
+    )
+    for r in rows:
+        logger.error(
+            "  LOST: topic %s (%s) at %s — %s: %s",
+            r.get("topic_index", "?"), r.get("topic_slug", "?"),
+            r.get("failed_stage", "?"), r.get("error_type", "?"),
+            r.get("error", "unspecified"),
+        )
+    return rows
+
+
 def _collect_agent_metrics(stage: Any) -> dict:
     """Read accumulated cost/tokens off the wrapper's agent.
 
@@ -367,6 +411,9 @@ class PipelineRunner:
         self.topic_buses: list[TopicBus] = []
         self._topic_status: list[str] = []
         self._topic_stages_completed: list[list[str]] = []
+        # (name, stage) each topic is currently in — what the failure path
+        # reports when a stage raises (the exception itself does not carry it).
+        self._topic_current_stage: dict[int, tuple[str, Any]] = {}
         self._stop_requested = False
         self._current_run_id: Optional[str] = None
         self._current_run_date: Optional[str] = None
@@ -539,17 +586,41 @@ class PipelineRunner:
                 return run_bus
             except Exception as exc:
                 self._topic_status[topic_index] = "failed"
+                failed_stage, stage_obj = self._topic_current_stage.get(
+                    topic_index, ("?", None)
+                )
+                tb_text = traceback.format_exc()
+                slug = _topic_slug(self.topic_buses[topic_index])
+                # Per-stage failed row, mirroring _execute_run_stage: the stage
+                # name, the reason, and whatever the failed attempts cost (a
+                # billed call that died is still spend). The topic-N row below
+                # stays as the topic-level record (and carries the traceback).
+                run_bus = self._log_stage(
+                    run_bus, failed_stage, "topic", "failed",
+                    topic_index=topic_index,
+                    topic_slug=slug,
+                    error_type=type(exc).__name__,
+                    error=str(exc),
+                    **_collect_agent_metrics(stage_obj),
+                )
                 run_bus = self._log_stage(
                     run_bus,
                     f"topic-{topic_index}",
                     "topic",
                     "failed",
+                    topic_index=topic_index,
+                    topic_slug=slug,
+                    failed_stage=failed_stage,
+                    error_type=type(exc).__name__,
                     error=str(exc),
-                    traceback=traceback.format_exc(),
+                    traceback=tb_text,
                 )
-                logger.warning(
-                    "Runner: topic %d failed at stage; continuing with next topic",
-                    topic_index,
+                logger.error(
+                    "Runner: topic %d (%s) FAILED at stage %s — %s: %s. The "
+                    "topic is LOST (no Topic Package); continuing with the next "
+                    "topic.\n%s",
+                    topic_index, slug, failed_stage, type(exc).__name__, exc,
+                    tb_text.rstrip(),
                 )
         return run_bus
 
@@ -563,6 +634,7 @@ class PipelineRunner:
         for stage_index in range(start_index, len(self.topic_stages)):
             stage = self.topic_stages[stage_index]
             name = _stage_label(stage)
+            self._topic_current_stage[topic_index] = (name, stage)
             read_only = run_bus.as_readonly()
             expected_state = run_bus.as_readonly()
             validate_preconditions(stage, topic_bus)
@@ -636,6 +708,7 @@ class PipelineRunner:
         # Publish decision time: the last point before anything reaches disk
         # as a Topic Package.
         fire_degradation_gate(run_bus)
+        fire_lost_topic_gate(run_bus)
 
         if not self.skip_render:
             render_stage = RenderStage(self.output_dir)
@@ -697,12 +770,19 @@ class PipelineRunner:
         )
 
 
+def _topic_slug(topic_bus: Any) -> str:
+    est = getattr(topic_bus, "editor_selected_topic", None)
+    return (getattr(est, "topic_slug", "") or "") if est is not None else ""
+
+
 class _TopicSkipStop(Exception):
     """Internal flow-control: --to matched and the last topic finished."""
 
 
 __all__ = [
     "FinalizeRunStage",
+    "fire_lost_topic_gate",
+    "lost_topic_rows",
     "PipelineRunner",
     "RenderStage",
     "_stage_label",
