@@ -131,6 +131,20 @@ else
 fi
 # --- end stale git index.lock guard -----------------------------------------
 
+# --- Preflight [0/6] (TASK-RUNNER-PREFLIGHT) --------------------------------
+# Three read-only checks before anything is spent: network (errno + TIME_WAIT
+# count on failure, so port exhaustion is named), OpenRouter credits (below the
+# HARD floor -> abort; below the SOFT floor -> warn), DeepSeek channel-C balance
+# (warn only). Floors: config/preflight.json. Same loud-failure semantics as the
+# branch guard: banner in the log + ping (sent by the preflight itself), exit
+# BEFORE step [1/6]. Placed after both guards so a refused tree costs no call.
+PREFLIGHT_RC=0
+zsh "$REPO/scripts/preflight.sh" daily "daily_run.sh" "$LOG" || PREFLIGHT_RC=$?
+if (( PREFLIGHT_RC == 3 )); then
+  exit 1
+fi
+# --- end preflight ------------------------------------------------------------
+
 # A crash is as silent as a refusal, so the ERR trap pings too. It covers the
 # pipeline step, the zero-Topic-Package guard, publish, and the git push.
 trap 'echo "===== FAILED — $TODAY — $(date) — see log above =====" >> "$LOG"; notify "FAILED: the run exited non-zero — see the log."' ERR

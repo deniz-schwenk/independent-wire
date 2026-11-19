@@ -1,0 +1,10 @@
+{
+  "_purpose": "Runner preflight, step [0/6] of scripts/daily_run.sh (TASK-RUNNER-PREFLIGHT). Three read-only checks before anything is spent: network, OpenRouter credits, DeepSeek (channel C) balance. Collector windows run the network check only. Read by scripts/preflight.py; IW_PREFLIGHT_CONFIG points at an alternative file.",
+  "_floors_note": "OpenRouter remaining = total_credits - total_usage from GET /credits. Below the HARD floor the run aborts before spending (default $3, about two full runs at ~$1.1-1.5 each); below the SOFT floor it warns (log + Telegram) and continues.",
+  "openrouter_hard_floor_usd": 3.0,
+  "openrouter_soft_floor_usd": 8.0,
+  "network_probe_url": "https://openrouter.ai/api/v1/models",
+  "openrouter_credits_url": "https://openrouter.ai/api/v1/credits",
+  "deepseek_balance_url": "https://api.deepseek.com/user/balance",
+  "timeout_s": 4.0
+}
