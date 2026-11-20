@@ -4,7 +4,7 @@
 
 **[→ Read the latest dossiers at independent-wire.org](https://independent-wire.org)**
 
-Independent Wire is an open-source AI pipeline that produces multi-perspective news dossiers with full source transparency. It scans 80 sources across 18 language streams, identifies where coverage diverges, documents which voices are missing, and publishes everything — including its own biases and limitations.
+Independent Wire is an open-source AI pipeline that produces multi-perspective news dossiers with full source transparency. It scans 85 daily RSS feeds in 24 languages (as of 2026-11-20), identifies where coverage diverges, documents which voices are missing, and publishes everything — including its own biases and limitations.
 
 No publisher. No engagement algorithm. No hidden editorial line. Every decision the system makes is traceable, auditable, and open.
 
@@ -32,7 +32,7 @@ The pipeline runs on two levels. **Run-level** stages select the day's topics; *
 
 ```mermaid
 flowchart TD
-    RSS["RSS fetch<br/>80 sources · 18 language streams · ~1,200 findings"]:::det
+    RSS["RSS fetch<br/>85 daily feeds · 24 languages<br/>5,451–7,168 findings per run (last 7 runs to 2026-11-20)"]:::det
     RSS --> RUN
 
     subgraph RUN["RUN LEVEL · select the day's topics"]
@@ -49,6 +49,7 @@ flowchart TD
     subgraph TOPIC["TOPIC LEVEL · one Topic Package per selected topic"]
         direction TB
         HY["hydrate<br/>fetch + extract full article text"]:::det
+        AGG["Hydration aggregator<br/>analyze each article · synthesize divergences + gaps"]:::llm
         RES["Researcher<br/>plan multilingual queries → assemble dossier"]:::llm
         ACT["resolve actors<br/>dedupe people/orgs by evidence"]:::llm
         PER["Perspective<br/>map positions · flag missing voices"]:::llm
@@ -56,7 +57,7 @@ flowchart TD
         QA["QA / Fact-Check<br/>find errors · propose corrections"]:::llm
         CON["Consolidator<br/>classify what is missing"]:::llm
         BIAS["Bias Detector<br/>Python aggregation + LLM language analysis"]:::llm
-        HY --> RES --> ACT --> PER --> WR --> QA --> CON --> BIAS
+        HY --> AGG --> RES --> ACT --> PER --> WR --> QA --> CON --> BIAS
     end
 
     BIAS --> OUT["Topic Package JSON → HTML → publication"]:::det
@@ -67,6 +68,8 @@ flowchart TD
 
 *Solid blue border = LLM-backed stage · dashed grey border = deterministic Python.*
 
+In total, 14 agent roles run in 12 LLM stages. Researcher, Perspective and Bias Detector each use two roles: plan + assemble, draft + verify, and extract + judge. Each role has its own `SYSTEM.md` / `INSTRUCTIONS.md` pair. The stage order is a fixed Python list. No agent has tools: every agent is configured with `tools=[]`, and the 7 runs to 2026-11-20 logged 0 tool calls. Web search is a deterministic stage that executes the queries the research planner wrote.
+
 Two principles run through every stage:
 
 - **Deterministic before LLM** — if Python can do it (counting, ID assignment, field merging, date extraction), Python does it. LLMs are reserved for genuine judgment.
@@ -74,17 +77,19 @@ Two principles run through every stage:
 
 ### The model stack
 
-Each stage uses the cheapest model that does its job well. Cheap, broad work (clustering, extraction) runs on fast models; expensive judgment (editorial, writing, bias) runs on stronger ones.
+Models are assigned per stage. Five open-weight models are the primaries (as of 2026-11-20). Claude models serve only as one-shot fallbacks when a primary call fails, and every fallback is logged.
 
-| Role | Model |
-|---|---|
-| Curator · Researcher-assemble · Actor resolution | DeepSeek V4 Flash |
-| Hydration extraction · Bias extraction · Consolidator | DeepSeek V4 Pro |
-| Editor · Writer · QA / Fact-Check · Hydration synthesis | GLM-5.2 |
-| Perspective | Claude Sonnet 5 |
-| Researcher-plan · Bias judge | Claude Opus 4.6 |
+| Primary model | Provider | Roles | Fallback |
+|---|---|---|---|
+| DeepSeek V4.1 Flash | OpenRouter, pinned to DeepSeek's own endpoint | Curator · Hydration extraction · Researcher-assemble · Actor resolution · Consolidator · Bias extraction | Same vendor via the DeepSeek API directly (a second transport) |
+| DeepSeek V4 Pro | DeepSeek API, direct | Researcher-plan | DeepSeek V4 Pro via OpenRouter, then Claude Opus 4.6 |
+| GLM-5.2 | OpenRouter | Editor · Writer | Editor: Claude Sonnet 5 · Writer: Claude Opus 4.6 |
+| GLM-5.3 | OpenRouter | Perspective (draft) · Bias judge | Perspective: Claude Sonnet 5 (verify step skipped) · Bias judge: Claude Opus 4.6 |
+| GLM-5.3 Flash | OpenRouter | Perspective (verify) · QA / Fact-Check · Hydration synthesis | QA: Claude Sonnet 5 · Hydration synthesis: Claude Opus 4.6 |
 
-All models are called through OpenRouter. **Every agent's prompt lives in the repo under `agents/`** — readable, forkable, and under the same license as the code.
+The six DeepSeek V4.1 Flash roles use the vendor's current build by name; they were not chosen by a per-stage quality evaluation.
+
+Not everything runs through OpenRouter. The research planner runs on the DeepSeek API directly. Web search and the German translation run on Ollama Cloud. Web search is a documented opaque dependency: a commercial provider ranks the results, and the project can neither audit nor influence that ranking ([ARCHITECTURE.md](docs/ARCHITECTURE.md)). **Every agent's prompt lives in the repo under `agents/`** — readable, forkable, and under the same license as the code.
 
 ## What This Is Not
 
@@ -100,8 +105,8 @@ Operational and publishing daily at [independent-wire.org](https://independent-w
 
 | Component | Status |
 |---|---|
-| Pipeline (hydrated, 12 agents, 5 models) | ✅ Operational |
-| Source base (80 feeds, 18 language streams) | ✅ Live |
+| Pipeline (hydrated; 14 agent roles in 12 LLM stages, 5 primary models) | ✅ Operational |
+| Source base (85 daily feeds, 24 languages; as of 2026-11-20) | ✅ Live |
 | Topic Package rendering (self-contained HTML) | ✅ Live |
 | Publication website | ✅ [independent-wire.org](https://independent-wire.org) |
 | Bilingual edition (English + German) | ✅ Live — [independent-wire.org/de](https://independent-wire.org/de/) |
@@ -113,13 +118,13 @@ Operational and publishing daily at [independent-wire.org](https://independent-w
 
 ## Cost Transparency
 
-The system runs on commercial AI APIs via OpenRouter. No advertising. No subscriptions. No data collection. **Operating cost = API cost, and nothing else.** Every run records its actual per-stage cost in the pipeline's run log.
+The system runs on commercial AI APIs: OpenRouter, the DeepSeek API, and a flat-rate Ollama Cloud subscription. No advertising. No reader subscriptions. No data collection. **Operating cost = API cost plus that flat-rate subscription, and nothing else.** Every run records its actual per-stage cost in the pipeline's run log.
 
-A hydrated run that produces three Topic Packages costs a few euros in API calls — model choices are tuned per stage to keep that number low. The design goal is simple: operating cost must never create pressure to compromise editorial independence.
+A hydrated run that produces three Topic Packages had a median API cost of **$1.40** over the last 30 completed runs (2026-10-14 to 2026-11-20, range $1.02–$2.11). That figure is the sum of `cost_usd` in each run's `output/{date}/_state/run-*/run_stage_log.jsonl`. It does not include the flat-rate Ollama Cloud subscription, which covers web search and the German translation. The design goal is simple: operating cost must never create pressure to compromise editorial independence.
 
 ## Architecture
 
-Three abstractions: **Agent** (a configured LLM caller), **Pipeline** (deterministic orchestration), **Tool** (a swappable external capability). Async throughout. No agent framework and no orchestration platform — just a small, well-understood dependency set: `openai` (the OpenRouter client), `httpx`, `feedparser`, `pydantic`, `fastembed` and `scikit-learn` (deterministic pre-clustering), and `json-repair`.
+Three abstractions: **Agent** (a configured LLM caller), **Pipeline** (deterministic orchestration), **Tool** (a swappable external capability). Async throughout. No agent framework and no orchestration platform — just a small, well-understood dependency set: `openai` (the OpenAI-compatible client for OpenRouter and the DeepSeek API), `httpx`, `feedparser`, `pydantic`, `fastembed` and `scikit-learn` (deterministic pre-clustering), and `json-repair`.
 
 Details: [ARCHITECTURE.md](docs/ARCHITECTURE.md) · [AGENT-IO-MAP.md](docs/AGENT-IO-MAP.md) · [ROADMAP.md](docs/ROADMAP.md)
 

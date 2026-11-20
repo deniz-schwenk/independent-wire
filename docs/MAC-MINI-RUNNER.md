@@ -18,8 +18,10 @@ This separation keeps development and production from colliding: the Mini's dail
 - Repo: `~/Documents/independent-wire/repo-clone`
 - Package manager: `uv` at `~/.local/bin/uv` (installed via `curl -LsSf https://astral.sh/uv/install.sh | sh`)
 - Python: 3.11.x, managed by `uv` (project requires `>=3.11`); `uv sync` installs it and all deps from `uv.lock`
-- Secrets: `~/Documents/independent-wire/repo-clone/.env` (gitignored). Only
-  `OPENROUTER_API_KEY` is required (covers LLM calls and Perplexity search).
+- Secrets: `~/Documents/independent-wire/repo-clone/.env` (gitignored). Required:
+  `OPENROUTER_API_KEY` (most LLM calls) and `DEEPSEEK_API_KEY` (research planner +
+  flash-stage fallback transport); `OLLAMA_API_KEY` for web search and the German
+  translation (without it, web search degrades loudly to DuckDuckGo).
   NOTE: the code reads `os.environ` directly (no python-dotenv), so `daily_run.sh`
   sources `.env` into the environment before running anything.
 
@@ -58,10 +60,12 @@ After ~7 days of its own runs the Mini is self-sustaining and never needs the Ai
 Deterministic, no LLM-orchestration. Steps, logged to `~/iw-logs/run-YYYY-MM-DD.log`
 (last line is `SUCCESS` or `FAILED`):
 
+0. `scripts/preflight.sh`           (network, OpenRouter credits, DeepSeek balance;
+   aborts before spending if OpenRouter is below the hard floor in `config/preflight.json`)
 1. `git pull --rebase origin main`  (latest code from the Air)
 2. `uv sync`                        (match deps to pulled code)
 3. `scripts/fetch_feeds.py`         (RSS → `raw/{date}/feeds.json`)
-4. `scripts/run.py --hydrated`      (the pipeline; ~€1/run)
+4. `scripts/run.py --hydrated`      (the pipeline; median $1.40 API cost/run, last 30 runs to 2026-11-20)
 5. `scripts/publish.py`             (TP-JSON → `site/` HTML)
 6. `git add site/` (explicit) → commit if changed → `git push origin main`
 
@@ -100,7 +104,7 @@ autonomously overnight. (Hermes' own auth context avoids the unsolved question o
 1. `git clone git@github.com-iw:deniz-schwenk/independent-wire.git ~/Documents/independent-wire/repo-clone`
    (after the SSH deploy key + `~/.ssh/config` alias are in place)
 2. `cd` in; `~/.local/bin/uv sync`
-3. `cp .env.example .env` and set `OPENROUTER_API_KEY`
+3. `cp .env.example .env` and set `OPENROUTER_API_KEY`, `DEEPSEEK_API_KEY`, `OLLAMA_API_KEY`
 4. Bootstrap previous coverage (copy last 7 days of `output/{date}/` from the Air)
 5. Install the launchd agent (plist above) and `launchctl load -w` it
 6. Point Hermes' 07:00 report job at the repo

@@ -1,7 +1,7 @@
 # Independent Wire — Roadmap
 
 **Created:** 2026-03-26
-**Updated:** 2026-05-28
+**Updated:** 2026-11-20
 **Status:** Living document — strategic overview. The granular per-commit history lives in git, in [`AUDIT-TIMELINE.md`](AUDIT-TIMELINE.md), and in the architecture decision records (`docs/ADR-*.md`); this roadmap stays high-level on purpose.
 **Basis:** the [vision paper](VISION-independent-wire.pdf) (March 2026), the working prototype, and the V2 architecture work (April–May 2026).
 
@@ -36,7 +36,7 @@ The core framework is operational and the pipeline publishes daily. It produces 
 
 Highlights from this phase: a two-phase researcher (plan → search → assemble); a hybrid bias card (deterministic Python aggregation + LLM language analysis); strict-mode JSON schemas for every agent via OpenRouter; an HTML renderer and the publication site; and the hydration variant that fetches and extracts full article text. The production model set was settled empirically across 90+ evaluation calls.
 
-**Public live demo:** ✅ daily publication at [independent-wire.org](https://independent-wire.org) — three Topic Packages per day, 66 sources across 11 language streams, operating cost a few euros per run (roughly €30/month for daily operation).
+**Public live demo:** ✅ daily publication at [independent-wire.org](https://independent-wire.org) — three Topic Packages per day. As of 2026-11-20: 85 daily RSS feeds in 24 languages; median API cost $1.40 per run over the last 30 completed runs (see the README's *Cost Transparency* section).
 
 ---
 
@@ -60,7 +60,7 @@ Recent completed work: a renderer-hygiene sweep, and the Consolidator refactor t
 
 These improve V2 further without blocking any current capability:
 
-- Migrate the Opus-based agents from 4.6 to 4.7 (requires reworking how reasoning effort is configured per agent).
+- Migrate the Claude Opus fallback rungs from 4.6 to 4.7 (requires reworking how reasoning effort is configured per agent).
 - Run multiple topics concurrently — architecturally trivial in V2, since topics share no state.
 - A pre-call spending cap, to catch cost overruns before a call rather than after a phase.
 - Direct institutional source fetch via a curated registry, bypassing the LLM planner for known endpoints.
@@ -74,7 +74,7 @@ These improve V2 further without blocking any current capability:
 
 ### H3.5 — Source coverage
 
-- Grow from 66 to 100+ feeds, prioritising underrepresented regions (Latin America, sub-Saharan Africa, Southeast Asia), via a community contribution path.
+- Grow from 85 daily feeds (as of 2026-11-20) to 100+, prioritising underrepresented regions (Latin America, sub-Saharan Africa, Southeast Asia), via a community contribution path.
 - Reactivate the Collector agent as a Curator pre-filter when scaling past ~200 feeds.
 
 ### H3.6 — Community and external interfaces
@@ -93,7 +93,7 @@ Tracking how a story evolves across days and weeks — enabled by the run bus's 
 
 ## Sustainability and funding
 
-No commercial model. No advertising. No investor equity. Operating-cost target: a few euros per run, roughly €30/month for daily operation. Funding paths: community sponsorship, public-interest grants, institutional partnerships. The system is designed so its operating costs can never create pressure to compromise editorial independence.
+No commercial model. No advertising. No investor equity. Measured operating cost: median $1.40 in API calls per run (last 30 completed runs to 2026-11-20), about $42/month for daily operation, plus a flat-rate Ollama Cloud subscription. Funding paths: community sponsorship, public-interest grants, institutional partnerships. The system is designed so its operating costs can never create pressure to compromise editorial independence.
 
 ---
 
